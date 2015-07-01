@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% block head_meta %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% endblock head_meta %}
+
+    <title>{% block title %}{% endblock %} - {% block module_title %}{% endblock %} - 舆情案例管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-responsive.min.css">
+
+    <!-- daterangepicker css -->
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/datarangepiker.css') }}">
+
+    <!-- Custom styles for this template -->
+    <style type="text/css">
+        /*
+         * Base structure
+         */
+
+        /* Move down content because we have a fixed navbar that is 50px tall */
+        body {
+            padding-top: 60px;
+            font-family: Arial,"Microsoft YaHei","微软雅黑","WenQuanYi Micro Hei","文泉驿微米黑",STXihei,"华文细黑",sans-serif;
+            font-size: 12px;
+            background-color: #ebebeb;
+        }
+        body, form, ul, ol, li, h1, h2, h3, h4, h5, h6, p, dl, dd, td, th, input, img {
+            margin: 0;
+            padding: 0;
+        }
+
+        .open a, a, a:hover {
+            text-decoration: None;
+        }
+        i.iOK, a.compOK:hover {
+            color: #FFF;
+        }
+
+        ul, ol, li {
+            list-style: none;
+        }
+        #compTab .tabLi.curr {
+            border-bottom: 2px solid #fff;
+            background-color: #fff;
+            width: 221px;
+        }
+        #compTab .tabLi {
+            float: left;
+            width: 110px;
+            height: 68px;
+            margin-left: -2px;
+            border-left: 2px solid #e1e1e1;
+            border-bottom: 2px solid #ebebeb;
+        }
+        #compTab .tabLi.curr span, #compTab .tabLi:hover span {
+            display: block;
+            text-align: center;
+            color: #4284e2;
+        }
+        .tabLi {
+            cursor: pointer;
+        }
+        #compTab {
+            height: 70px;
+            background-color: #f6f6f6;
+            overflow: hidden;
+        }
+        #compTab .tabLi.curr .byWord, #compTab .tabLi:hover .byWord {
+            background-position: -80px -80px;
+        }
+        #compTab .tabLi .byWord, #compTab .tabLi.dsab:hover .byWord {
+            background-position: -120px -80px;
+        }
+        #compTab .tabLi .icons {
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 6px auto 0 auto;
+        }
+        .icons {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            background-image: url(/static/img/icons.png);
+        }
+        .comCtl {
+            width: 202px;
+            height: 38px;
+            margin: 7px auto;
+        }
+        .comBorderL {
+            float: left;
+            width: 194px;
+            height: 34px;
+            border: 1px solid #e5e5e5;
+            border-right: 0;
+            background-color: #f6f6f6;
+        }
+        .hideDel .comBorderL .comWord {
+            width: 180px;
+        }
+        .comBorderL .comWord {
+            font-weight: normal;
+        }
+        .comBorderL .comWord, .comBorderL .holdBox {
+            display: block;
+            width: 150px;
+            height: 32px;
+            margin: 2px 0 0 2px;
+            padding-left: 10px;
+            border: 0;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f6f6f6;
+            line-height: 30px;
+            _height: 30px;
+            _line-height: 30px;
+        }
+        input, textarea, select {
+            outline: 0;
+            font-size: inherit;
+            font-family: inherit;
+        }
+        img, input, label {
+            vertical-align: middle;
+        }
+        .comBorderL .icontext {
+            display: inline-block;
+            height: 32px;
+            line-height: 32px;
+            padding-left: 4px;
+            margin-right: -3px;
+        }
+        .comBorderL .comWord, .comBorderL .holdBox {
+            display: block;
+            width: 150px;
+            height: 32px;
+            margin: 2px 0 0 2px;
+            padding-left: 10px;
+            border: 0;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f6f6f6;
+            line-height: 30px;
+            _height: 30px;
+            _line-height: 30px;
+        }
+        .mw1300 {
+            max-width: 1300px;
+            margin: 0 auto;
+            _width: 1000px;
+        }
+
+        .navbar-inner {
+          background-color: rgb(19, 112, 218);
+          background-image: none;
+          background-repeat: no-repeat;
+          filter: none;
+        }
+
+        .navbar-fixed-top .nav>li>a, .navbar-fixed-top .nav>li>a:hover {
+            color: #FFF;
+            background-color: transparent;
+        }
+
+        .navbar-fixed-top .nav>.active>a, .navbar-fixed-top .nav>li>a.iactive:hover{
+            color: #FFF;
+            border-bottom: 3px solid #FFF;
+        }
+
+        .navbar-inverse .navbar-brand {
+            color: #FFF;
+            background: transparent;
+        }
+        .navbar-fixed-top ul li a {
+            display: block;
+            float: left;
+        }
+
+        .filter-block {
+            padding: 10px 20px;
+            background-color: #F9F9F9;
+            border-bottom: 1px solid gainsboro;
+        }
+
+        .override-linehight {
+            line-height: 34px;
+        }
+
+        .filter-block .datepicker {
+            padding: 0 15px;
+            width: 235px;
+            float: left;
+        }
+
+        #mainWrap {
+            border-left: 222px solid #ebebeb;
+        }
+
+        .lTools {
+            z-index: 1000;
+            position: absolute;
+            height:650px;
+            width: 222px;
+            top: 61px;
+            display: block;
+            padding: 1px;
+            overflow-x: hidden;
+            overflow-y: visible;
+            background-color: #FFF;
+            border-right: 1px solid #eee;
+        }
+
+        .nav-sidebar {
+            margin-right: -21px;
+            margin-bottom: 20px;
+            margin-left: -20px;
+        }
+        .nav-sidebar > li > a {
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+        .nav-sidebar > .active > a, .nav-sidebar > .active > a:hover, .nav-sidebar > .active > a:focus {
+            color: #fff;
+            background-color: #428bca;
+        }
+        .compVsplit {
+            clear: both;
+            margin: 1px 12px 10px 10px;
+            border-top: 1px dashed #e5e5e5;
+        }
+        .compOK {
+            color: #FFF;
+            text-decoration: none;
+            display: block;
+            width: 198px;
+            height: 27px;
+            margin-left: 9px;
+            padding-top: 6px;
+            text-align: center;
+            border: 1px solid #3073d1;
+            background-color: #4284e2;
+            cursor: pointer;
+        }
+        .mainSplit {
+            top: 16px;
+            position: relative;
+            _overflow: visible;
+            padding: 20px 26px 20px 15px;
+        }
+        a:hover{
+            color: #428bca;
+        }
+        i {
+            color:#2894FF
+        }
+    </style>
+    {% block head_css %}
+    {% endblock head_css %}
+
+    <!-- JQuery core JS -->
+    <script src="/static/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+
+    <!-- Bootstrap core JS -->
+    <script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datarangepiker.js') }}"></script>
+    {% block head_js %}
+    {% endblock head_js %}
+
+</head>
+
+<body>
+{% block navbar %}
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="mw1300">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a class="brand" href="/index/"><strong><font size="+2">舆情案例提取</font></strong></a></li>
+                    </ul>
+                    &nbsp;&nbsp;
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="source" href="/index/manage/" target="_blank">话题配置管理</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mw1300">
+        <div id="lTools" class="lTools">
+            <div class="tabTitle">
+                <ul id="compTab" class="tabUl">
+                    <li class="tabLi curr"><i class="icons byWord"></i><span>选项面板</span></li>
+                </ul>
+            </div>
+
+            <div class="tabConts">
+                <div style="margin: 20px auto 10px 20px;border-bottom: 1px dotted #666;width: 182px;font-weight: bold;font-size: 14px;">参数选择</div>
+
+                <div class="input-group input-group-sm" style="width: 200px; margin: 2px auto 2px 10px;">
+                    <span class="input-group-addon">关键词</span>
+                    <input id="keyword_input" type="text" class="form-control " style="text-align:right;" placeholder="未指定" value="{{ topic }}" disabled>
+                </div>
+
+                <div class="compVsplit"></div>
+
+                <div class="input-group input-group-sm" style="width: 200px; margin: 2px auto 2px 10px;">
+                    <span class="input-group-addon">时间段</span>
+                        <div id="reportrange" class="form-control" style="padding: 5px;">
+                            <span id="all_time">{{ time_range }}</span>
+                            <b class="caret"></b>
+                        </div>
+                </div>
+
+                <div class="compVsplit"></div>
+
+                <div class="input-group input-group-sm" style="width: 200px; margin: 2px auto 2px 10px;">
+                    <span class="input-group-addon">时间粒度</span>
+                    <div class="form-control">
+                        <select id="select_dur" style="width:110px;text-align:right;">
+                            {% for pv in pointIntervals %}
+                                {% if pv['en'] == pointInterval['en'] %}
+                                    <option value="{{ pv['en'] }}" selected="selected"> {{ pv['zh'] }} </option>
+                                {% else %}
+                                    <option value="{{ pv['en'] }}"> {{ pv['zh'] }} </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <input id="all_durtime" name="all_dur" type="hidden" value="{{ pointInterval['en'] }}">
+                    </div>
+                </div>
+
+                <div class="compVsplit"></div>
+
+                <div style="margin: 20px auto 10px 20px;border-bottom: 1px dotted #666;width: 182px;font-weight: bold;font-size: 14px;">要素选择</div>
+
+                <div id="radio_yaosu" style="margin:5px auto auto 20px;">
+                    <div style="margin: 20px auto 10px 0px;font-size: 13px;">舆情概况</div>
+                    {% for en, zh in gaishu_yaosus['yaosu'] %}
+                        {% if en == yaosu %}
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="{{ en }}" checked>
+                                        {{ zh }}
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="{{ en }}">
+                                        {{ zh }}
+                                </label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <div style="margin: 20px auto 10px 0px;font-size: 13px;">深度分析</div>
+                    {% for en, zh in deep_yaosus['yaosu'] %}
+                          {% if en == yaosu %}
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="{{ en }}" checked >
+                                        {{ zh }}
+                                </label>
+                            </div>
+                          {% else %}
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="{{ en }}" type="hidden">
+                                        {{ zh }}
+                                </label>
+                            </div>
+                          {% endif %}
+ 
+                    {% endfor %}
+
+                    <input id="yaosu_input" name="all_dur" type="hidden" value="{{ yaosu }}">
+                </div>
+
+                <span id="submit_request"><a class="compOK" ><i class="glyphicon glyphicon-ok icons iOK"></i>搜索</a></span>
+            </div>
+        </div>
+
+        <div id="mainWrap">
+            <div class="mainSplit">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+
+{% endblock navbar %}
+
+    <script>
+        var all_startDate = new Date('09/01/2013');
+        var all_endDate = new Date('09/21/2013');
+        var all_maxDate = new Date('09/21/2013');
+        var all_minDate = new Date('09/01/2013');
+        var week_ago = subtract(all_endDate,7);
+        //var month_ago = subtract(all_endDate,30);
+        //var 3month_ago = subtract(all_endDate,90);
+
+        function subtract(date,days){
+            var nd = new Date(date);
+            nd = nd.valueOf();
+            nd = nd - days * 24 * 60 * 60 * 1000;
+            nd = new Date(nd);
+            var y = nd.getFullYear();
+            var m = nd.getMonth()+1;
+            var d = nd.getDate();
+            if(m <= 9) m = "0"+m;
+            if(d <= 9) d = "0"+d; 
+            var cdate = y+"-"+m+"-"+d;
+            return cdate;
+        }
+        $('#reportrange').daterangepicker({
+            ranges: {
+                '今天': [all_endDate, all_endDate],
+                '最近7天': [week_ago, all_endDate],
+            },
+            startDate: all_startDate,
+            endDate: all_endDate,
+            minDate: all_minDate,
+            maxDate: all_maxDate
+        },
+        function(start, end) {
+            $('#reportrange span').html(start.format('YYYYMMDD') + '-' + end.format('YYYYMMDD'));
+        }
+        );
+
+        $("#select_dur").change(function(){
+            $('#all_durtime').val($(this).children('option:selected').val());
+        });
+
+        $("input[name='optionsRadios']").on("click", function(){
+            $('#yaosu_input').val($(this).val());
+            var bz = $('#yaosu_input').val();
+        });
+
+
+        $("#submit_request").click(function(){
+            var QUERY = document.getElementById('keyword_input').value;
+            var TIME_RANGE = $('#all_time').html();
+            var POINT_INTERVAL = document.getElementById('all_durtime').value;
+            var YAOSU = $('#yaosu_input').val();
+            window.location.href = "/index/" + YAOSU + "/?query=" + QUERY + "&time_range=" + TIME_RANGE + "&point_interval=" + POINT_INTERVAL;
+        });
+
+        function date2ts(date){
+            // 20130901
+            var year = date.substring(0, 4);
+            var month = date.substring(4, 6);
+            var day = date.substring(6, 8);
+            return new Date(year, month-1, day).getTime() / 1000;
+        }
+        var QUERY = document.getElementById('keyword_input').value;
+        var TIME_RANGE = $('#all_time').html();
+        var START_TS = date2ts(TIME_RANGE.split('-')[0]);
+        var END_TS = date2ts(TIME_RANGE.split('-')[1]) + 3600 * 24;
+        var POINT_INTERVAL = document.getElementById('all_durtime').value;
+        var YAOSU = $('#yaosu_input').val();
+    </script>
+    {% block tail_js %}
+    {% endblock tail_js %}
+</body>
+</html>
+
