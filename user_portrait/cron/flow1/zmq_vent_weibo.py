@@ -6,12 +6,13 @@ import time
 import json
 import struct
 from datetime import datetime
-from config import ZMQ_VENT_PORT, ZMQ_CTRL_VENT_PORT, ZMQ_VENT_HOST, ZMQ_CTRL_HOST, BIN_FILE_PATH
+from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 from bin2json import bin2json
 from zmq_utils import load_items_from_bin, send_all, send_weibo
 
 
 if __name__=="__main__":
+
     """
     push data to every work
 
@@ -22,11 +23,11 @@ if __name__=="__main__":
 
     # used for send weibo
     sender = context.socket(zmq.PUSH)
-    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST, ZMQ_VENT_PORT))  
+    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW1))  
     
     # used for controlled by controllor
     controller = context.socket(zmq.SUB)
-    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST, ZMQ_CTRL_VENT_PORT))
+    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
     controller.setsockopt(zmq.SUBSCRIBE, "")
 
     poller = zmq.Poller()
@@ -43,7 +44,8 @@ if __name__=="__main__":
         else:
             socks = None
         
-        if socks and socks.get(controller) == zmq.POLLIN: # receive data from zmq pollor
+        if socks and socks.get(controller) == zmq.POLLIN: 
+            # receive control message from zmq pollor
             item = controller.recv_json()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
@@ -51,6 +53,8 @@ if __name__=="__main__":
                 continue
             elif item == "RESTART": # restart the vent work
                 message = "RESTART"
+                total_count = 0
+                total_cost = 0
                 total_count, total_cost = send_weibo(total_count, total_cost)
         else:
             if message == "PAUSE":

@@ -41,7 +41,7 @@ def check_elasticsearch(p_name):
 if __name__ == '__main__':
 
     # test procedure running
-    d_name = ['controller.py','zmq_vent_weibo.py', 'zmq_work_weibo.py']
+    d_name = ['redis_to_es.py','zmq_vent_weibo.py', 'zmq_work_weibo.py']
     for item in d_name:
         check(item)
 
