@@ -4,7 +4,10 @@ from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from extensions import admin
 #from global_config import MYSQL_HOST, MYSQL_USER, MYSQL_DB, MONGODB_HOST, MONGODB_PORT, MASTER_TIMELINE_54API_WEIBO_DB
-from case.index.views import mod as indexModule
+#from case.index.views import mod as indexModule
+from user_portrait.index.views import mod as indexModule
+from user_portrait.attribute.views import mod as attributeModule
+
 
 def create_app():
     app = Flask(__name__)

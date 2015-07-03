@@ -10,7 +10,10 @@ REDIS_CLUSTER_PORT_FLOW2 = 6379
 REDIS_HOST = '219.224.135.97'
 REDIS_PORT = 6380
 
-USER_ES_HOST = '219.224.135.97'
+# need three ES identification 
+USER_PROFILE_ES_HOST = ['219.224.135.96','219.224.135.97','219.224.135.98']
+USER_PORTRAIT_ES_HOST = []
+
 
 # use to identify the db number of redis-97
 R_BEGIN_TIME = '2013-09-01'
