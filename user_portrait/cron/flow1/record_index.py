@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+"""
+record the activity of user
+
+"""
+
 import logging
 import time
 from elasticsearch import Elasticsearch

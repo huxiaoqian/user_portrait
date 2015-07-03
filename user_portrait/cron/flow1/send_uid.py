@@ -3,11 +3,10 @@
 import redis
 import time
 from rediscluster import RedisCluster
+from global_utils import _default_cluster_redis
+#weibo_redis = redis.StrictRedis(host='219.224.135.47', port='6379')
 
-weibo_redis = redis.StrictRedis(host='219.224.135.47', port='6379')
-
-#startup_nodes = [{"host": '219.224.135.93', "port": "6379"}]
-#weibo_redis = RedisCluster(startup_nodes = startup_nodes)
+weibo_redis = _default_cluster_redis
 
 count = 0
 scan_cursor = 0

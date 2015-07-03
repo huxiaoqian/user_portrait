@@ -4,19 +4,18 @@ import zmq
 import time
 import redis
 import os
-from config import ZMQ_VENT_PORT, ZMQ_CTRL_VENT_PORT, ZMQ_VENT_HOST, ZMQ_CTRL_HOST, REDIS_VENT_HOST, REDIS_VENT_PORT, REDIS_NICK_UID_HOST, REDIS_NICK_UID_PORT, _default_single_redis, _default_cluster_redis, BIN_FILE_PATH
+from global_config import ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_CTRL_HOST_FLOW1, REDIS_CLUSTER_HOST_FLOW1_LIST, REDIS_CLUSTER_PORT_FLOW1_LIST
 
 if __name__ == "__main__":
 
     context = zmq.Context()
-    cluster_redis = _default_cluster_redis(REDIS_VENT_HOST, REDIS_VENT_PORT)
 
     controller = context.socket(zmq.PUB)
-    controller.bind("tcp://%s:%s" %(ZMQ_CTRL_HOST, ZMQ_CTRL_VENT_PORT))
+    controller.bind("tcp://%s:%s" %(ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
 
-    for node in range(91,96):
-        for port in [6379, 6380]:
-            startup_nodes = [{"host": '219.224.135.%s'%i, "port": '%s'%j}]
+    for node in REDIS_CLUSTER_HOST_FLOW1_LIST:
+        for port in REDIS_CLUSTER_PORT_FLOW1_LIST:
+            startup_nodes = [{"host": node, "port": port}]
             weibo_redis = RedisCluster(startup_nodes = startup_nodes)
             weibo_redis.flushall()
     print "finish flushing"

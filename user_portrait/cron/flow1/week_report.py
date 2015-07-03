@@ -5,9 +5,9 @@ from timeit import Timer
 import json
 from index_cal import influence_weibo_cal
 from elasticsearch import Elasticsearch
+from global_utils import _default_es_cluster_flow1
 
-
-es = Elasticsearch("219.224.135.93:9200")
+es = _default_es_cluster_flow1
 #index_name = time.strftime("%Y%m%d",time.localtime(time.time()-86400))
 #index_name = time.strftime("%Y%m%d",time.localtime(1377964800))
 index_type = "bci"
@@ -136,7 +136,7 @@ def store_to_elasticsearch(es,result,index_name):
                     break
                 except Exception,r:
                     print Exception,':',r
-                    es = Elasticsearch("219.224.135.93")
+                    es = _default_es_cluster_flow1
                     continue
     es.bulk(bulk_actions, index=index_name, doc_type="bci", timeout=30)
 
@@ -148,12 +148,16 @@ def expand_index_action(data):
 
 if __name__ == "__main__":
 
-    index_time = 1377964800
-    start_index = time.strftime("%Y%m%d",time.localtime(index_time))
-    print start_index
+    """
+    a week report of weibo from elasticsearch
+
+    """
+
+    #index_time = 1377964800
+    start_index = time.strftime("%Y%m%d",time.localtime(time.time() - 86400))
     start_list = search_top_k(20000, start_index)
     for i in range(1,7):
-        index_time = index_time + 86400
+        index_time = index_time - 86400
         next_index = time.strftime("%Y%m%d",time.localtime(index_time))
         next_list = search_top_k(20000, next_index)
         start_list = list_merge(start_list, next_list)
