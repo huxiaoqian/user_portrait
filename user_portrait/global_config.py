@@ -11,3 +11,6 @@ REDIS_HOST = '219.224.135.97'
 REDIS_PORT = 6380
 
 USER_ES_HOST = '219.224.135.97'
+
+# use to identify the db number of redis-97
+R_BEGIN_TIME = '2013-09-01'
