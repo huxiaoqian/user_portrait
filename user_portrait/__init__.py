@@ -7,6 +7,7 @@ from extensions import admin
 #from case.index.views import mod as indexModule
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
+from user_portrait.manage.views import mod as manageModule
 
 
 def create_app():
@@ -14,6 +15,7 @@ def create_app():
 
     # Create modules
     app.register_blueprint(indexModule)
+    app.register_blueprint(manageModule)
     app.register_blueprint(attributeModule)
 
     # the debug toolbar is only enabled in debug mode
