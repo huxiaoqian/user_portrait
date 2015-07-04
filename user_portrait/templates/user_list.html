@@ -190,7 +190,7 @@
                 <tbody>
                     {% for item in source.hits.hits %}
                 <tr>
-                    <td class="text-center"><a href="{{ url_for('user.detail', id=item._id) }}">{{ item._id }}</td>
+                    <td class="text-center"><a href="{{ url_for('profile.detail', id=item._id) }}">{{ item._id }}</td>
                     <td class="text-center">{{ item._source.nick_name }}</td>
                     <td class="text-center">{{ gender(item._source.sex) }}</td>
                     <td class="text-center">{{ item._source.user_location }}</td>
