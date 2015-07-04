@@ -50,7 +50,7 @@ if __name__=="__main__":
             socks = None
         
         if socks and socks.get(controller) == zmq.POLLIN: # receive data from zmq pollor
-            item = controller.recv_json()
+            item = controller.recv()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
                 time.sleep(10)
