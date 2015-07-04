@@ -1,0 +1,197 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />       
+    </head>
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <style>
+    body {font-family: 宋体}
+    td {font-size: 9pt; line-height: 18px}
+    .formfont {font-size: 16px; font-family: Verdana}
+    .p2 {font-size: 14px; line-height: 24px; font-family: "Arial"}
+    .p3 {font-size: 13px; line-height: 24px; font-family: "Arial"}
+    .t {color: #00C; text-decoration: underline}
+    a.t:hover {text-decoration: underline}
+    .nav {font-weight: bold; font-size: 14px; color: #FFF; line-height: 20px; text-decoration: none}
+    a.nav:hover {text-decoration: underline}
+    .r {font-size: 14px; text-decoration: underline}
+    a.r:hover {color: #E10900}
+    .g {color: #666}
+    .c {color:#77C}
+    .cp{clear:both;text-align:center;padding-top:10px;padding-bottom:10px;border-top:0px solid #7AA9DF;color:#777;font-size:12px;font-family:Arial}
+    .cy,a.cy:link,a.cy:visited{color:#77C;font-size:12px;font-family:Arial}
+    .padl10{padding-left:10px}
+    #ft {clear: both;padding-bottom: 10px; line-height: 20px; padding-top: 10px; text-align: center}
+    #ft {font-size: 12px; color: #77C; font-family: arial; white-space: nowrap}
+    #ft  {font-size: 12px; color: #77C; font-family: arial; white-space: nowrap}
+    </style>
+<table width="100%" style="margin-top:-70px"border=0>
+    <tr height=60>
+      <td height="69">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td bgcolor="#E5ECF9" height="24" class="p2" nowrap>&nbsp;<b> 搜索</b></td>
+            <td bgcolor="#E5ECF9" height="24" class="p2" nowrap></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr>
+    <td>
+      <form name=f id=f method="get">
+        <input type=hidden name=et>
+        <table cellspacing=0 cellpadding=3 width="98%" border=0 align="center">
+          <tbody>
+          <tr >
+            <td  style="border-top:1px solid #c9d7f1;border-left:1px solid #c9d7f1;border-right:1px solid #c9d7f1;border-bottom:1px solid #c9d7f1;">
+              <table cellspacing=0 cellpadding=0 width="100%" border=0>
+                <tr bgcolor=#E6E6E6>
+                  <td bgcolor="#E5ECF9">
+                    <table cellspacing=0 cellpadding=2 width="100%">
+                      <tbody>
+                        <tr bgcolor=#E5ECF9>
+                          <td colspan="4" height="7"></td>
+                        </tr>
+                      <tr>
+                        <td width="16%" height="35" class="padl10"><b>用户ID</b></td>
+
+                        <td width="24%">用户ID</td>
+                        <td width="31%">
+                          <input size=35 name=q1>
+                        </td>
+                        <td>
+                          <input name="submit" type='submit' id="submit" value=搜索>
+                        </td>
+              </tr>
+              <tr bgcolor=#E5ECF9>
+                        <td colspan="4" height="7"></td>
+                        </tr>
+              <tr bgcolor=#FFFFFF>
+                        <td colspan="4" height="7"></td>
+                        </tr>
+                    </table>
+                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>用户昵称</b></td>
+                        <td width="24%"> 用户昵称</td>
+                        <td>
+                          <input size=35 name=q2>
+                        </td>
+                      </tr>
+                    </table>
+                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>用户真实姓名</b></td>
+                        <td width="24%"> 用户真实姓名</td>
+                        <td>
+                          <input size=35 name=q3>
+                        </td>
+                      </tr>
+                    </table>
+                    <table cellspacing=0 cellpadding=2 width="100%">
+
+              <tr bgcolor=#ffffff>
+                        <td height="35" class="padl10"><b>用户是否认证</b></td>
+                        <td>用户是否认证</td>
+                        <td>
+                          <select name="tn">
+                  <option value=2 selected> 不选</option>
+                  <option value=1> 已认证</option>
+                  <option value=0> 非认证</option>
+                          </select>
+                </td>
+              </tr>       
+              <tr bgcolor=#ffffff>
+                        <td height="35" class="padl10"><b>用户性别</b></td>
+                        <td>用户性别</td>
+                        <td>
+                          <select name="sex">
+                  <option value=0 selected> 不选</option>
+                  <option value=1> 男</option>
+                  <option value=2> 女</option>
+                          </select>
+                </td>
+                      </tr>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>搜索结果显示条数</b></td>
+                        <td width="24%">选择搜索结果显示的条数　</td>
+                        <td>
+                          <select name="size">
+                            <option value=10 selected> 每页显示10条</option>
+                            <option value=20> 每页显示20条</option>
+                            <option value=50> 每页显示50条</option>
+                            <option value=100> 每页显示100条</option>
+                          </select>                  </td>
+                      </tr>
+                    </table>
+                  </td>
+                <tr>
+                  <td>
+                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>微博来源</b></td>
+                        <td width="24%"> 限定要搜索的微博来源是</td>
+                        <td>
+                          <input size=35 name=q4>
+                          <i>例如：新浪 腾讯 搜狐 网易&nbsp;</i>
+                        </td>
+                      </tr>
+              <tr bgcolor=#ffffff>
+                        <td colspan="4" height="7"></td>
+                        </tr>
+                    </table>
+                  </td>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </form>
+    </td>
+  </tr>
+</table>    
+        <h4 class="page-header"style="margin-top:10px">检索信息</h3>
+        <div class="table">
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">耗时：{{ source.took }}ms</li>
+              <li class="list-group-item list-group-item-info">命中：{{ source.hits.total }}</li>
+              <li class="list-group-item list-group-item-warning">最大权重：{{ source.hits.max_score }}</li>
+            </ul>
+        </div>
+
+        <h4 class="sub-header">用户信息列表</h4>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">uid</th>
+                        <th class="text-center">昵称</th>
+                        <th class="text-center">性别</th>
+                        <th class="text-center">所在地</th>
+                        <th class="text-center">好友数</th>
+                        <th class="text-center">粉丝数</th>
+                        <th class="text-center">微博数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in source.hits.hits %}
+                <tr>
+                    <td class="text-center"><a href="{{ url_for('user.detail', id=item._id) }}">{{ item._id }}</td>
+                    <td class="text-center">{{ item._source.nick_name }}</td>
+                    <td class="text-center">{{ gender(item._source.sex) }}</td>
+                    <td class="text-center">{{ item._source.user_location }}</td>
+                    <td class="text-center">{{ item._source.friendsnum }}</td>
+                    <td class="text-center">{{ item._source.fansnum }}</td>
+                    <td class="text-center">{{ item._source.statusnum }}</td>
+                </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </body>
+</html>
