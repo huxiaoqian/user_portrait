@@ -2,13 +2,14 @@
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
-from extensions import admin
+from extensions import admin, es, redis
+from jinja import gender, tsfmt
 #from global_config import MYSQL_HOST, MYSQL_USER, MYSQL_DB, MONGODB_HOST, MONGODB_PORT, MASTER_TIMELINE_54API_WEIBO_DB
 #from case.index.views import mod as indexModule
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
-
+from user_portrait.profile.views import mod as profileModule
 
 def create_app():
     app = Flask(__name__)
@@ -17,6 +18,7 @@ def create_app():
     app.register_blueprint(indexModule)
     app.register_blueprint(manageModule)
     app.register_blueprint(attributeModule)
+    app.register_blueprint(profileModule)
 
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True
@@ -79,5 +81,10 @@ def create_app():
     # init mongo
     mongo.init_app(app)
     '''
+    es.init_app(app)
+    redis.init_app(app)
+
+    funcs = dict(gender=gender, tsfmt=tsfmt)
+    app.jinja_env.globals.update(funcs)
     return app
    
