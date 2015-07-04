@@ -6,7 +6,7 @@ import time
 import json
 import struct
 from datetime import datetime
-from config import ZMQ_VENT_PORT, ZMQ_CTRL_VENT_PORT, ZMQ_VENT_HOST, ZMQ_CTRL_HOST, BIN_FILE_PATH
+from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 from bin2json import bin2json
 
 def load_items_from_bin(bin_path):
