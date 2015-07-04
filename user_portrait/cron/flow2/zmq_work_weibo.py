@@ -29,9 +29,10 @@ def extract_uname(text):
     return repost_chains
 
 def cal_propage_work(item):
+    '''
     uid = item['uid']
     print 'uid:', uid
-    '''
+    
     timestamp = item['timestamp']
     #ip = item['geo']
     ip = item['send_ip']
