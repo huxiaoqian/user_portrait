@@ -15,42 +15,76 @@ from user_portrait.global_config import R_DICT
 from user_portrait.search_user_profile import search_uid2uname
 
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
+#redis:{'retweet_'+uid:{ruid:count}}
+#return results: {ruid:[uname,count]}
 def search_attention(uid):
-    ruid_results = r.hgetall('retweet_'+str(uid))
-    print 'ruid_results:', ruid_results
-    # search uid
-    '''
-    uname = search_uid2uname(at_uid)
-    if not uname:
-    uname = '未知'
-    '''
-    if ruid_results:    
-        return ruid_results
+    stat_results = dict()
+    results = dict()
+    for db_num in R_DICT:
+        r = R_DICT[db_num]
+        ruid_results = r.hgetall('retweet_'+str(uid))
+        if ruid_results:
+            for ruid in ruid_results:
+                try:
+                    stat_results[ruid] += ruid_results[ruid]
+                except:
+                    stat_results[ruid] = ruid_results[ruid]
+    print 'results:', stat_results
+    for ruid in stat_results:
+        # search uid
+        '''
+        uname = search_uid2uname(ruid)
+        if not uname:
+        '''
+        uname = '未知'
+        
+        count = stat_results[ruid]
+        results[ruid] = [uname, count]
+    if results:    
+        return results
     else:
         return None
 
 #search:'be_retweet_' + str(uid) return followers {br_uid1:count1, br_uid2:count2}
+#redis:{'be_retweet_'+uid:{br_uid:count}}
+#return results:{br_uid:[uname, count]}
 def search_follower(uid):
-    br_uid_results = r.hgetall('be_retweet_'+str(uid))
-    print 'br_uid_results:', br_uid_results
-    # search uid
-    '''
-    uname = search_uid2uname(at_uid)
-    if not uname:
-    uname = '未知'
-    '''
-    if br_uid_results:
+    results = dict()
+    stat_results = dict()
+    for db_num in R_DICT:
+        r = R_DICT[db_num]
+        br_uid_results = r.hgetall('be_retweet_'+str(uid))
+        #print 'br_uid_results:', br_uid_results
+        if br_uid_results:
+            for br_uid in br_uid_results:
+                try:
+                    stat_results[br_uid] += br_uid_results[br_uid]
+                except:
+                    stat_results[br_uid] = br_uid_results[br_uid]
+    print 'stat_results:', stat_results
+    for br_uid in stat_results:
+        # search uid
+        '''
+        uname = search_uid2uname(br_uid)
+        if not uname:
+        '''
+        uname = '未知'
+        
+        count = stat_results[br_uid]
+        results[br_uid] = [uname, count]
+    if results:
         return results
     else:
         return None
 
 #search:now_ts , uid return 7day at uid list  {uid1:count1, uid2:count2}
-#{Date:{str(uid):''}}
+#{'at_'+Date:{str(uid):'{at_uid:count}'}}
+#return results:{at_uid:[uname,count]}
 def search_mention(now_ts, uid):
     date = ts2datetime(now_ts)
     ts = datetime2ts(date)
     #print 'at date-ts:', ts
-    results = dict()
+    stat_results = dict()
     for i in range(1,8):
         ts = ts - 24 * 3600
         result_string = r_cluster.hget('at_' + str(ts), str(uid))
@@ -58,26 +92,34 @@ def search_mention(now_ts, uid):
             continue
         result_dict = json.loads(result_string)
         for at_uid in result_dict:
-            # search uid
-            '''
-            uname = search_uid2uname(at_uid)
-            if not uname:
-                uname = '未知'
-            '''
             try:
-                results[at_uid] += result_dict[at_uid]
+                stat_results[at_uid] += result_dict[at_uid]
             except:
-                results[at_uid] = result_dict[at_uid]
+                stat_results[at_uid] = result_dict[at_uid]
     
-    return results
+    for at_uid in stat_results:
+        # search uid
+        '''
+        uname = search_uid2uname(at_uid)
+        if not uname:
+        '''    
+        uname = '未知'
+        count = stat_results[at_uid]
+        results[at_uid] = [uname, count]
+    if results:
+        return results
+    else:
+        return None
 
 #search:now_ts, uid return 7day loaction list {location1:count1, location2:count2}
 #{'ip_'+str(Date_ts):{str(uid):'{city:count}'}
+# return results: {city:{ip1:count1,ip2:count2}}
 def search_location(now_ts, uid):
     date = ts2datetime(now_ts)
     #print 'date:', date
     ts = datetime2ts(date)
     #print 'date-ts:', ts
+    stat_results = dict()
     results = dict()
     for i in range(1, 8):
         ts = ts - 24 * 3600
@@ -87,18 +129,24 @@ def search_location(now_ts, uid):
             continue
         result_dict = json.loads(result_string)
         for ip in result_dict:
-            city = ip2city(ip)
             try:
-                results['ip'][ip] += result_dict['ip'][ip]
-                results['city'][city] += 1
+                stat_results[ip] += result_dict[ip]
             except:
-                results['ip'][ip] = result_dict['ip'][ip]
-                results['city'][city] = 1
+                stat_results[ip] = result_dict[ip]
+    for ip in stat_results:
+        city = ip2city(ip)
+        if city:
+            try:
+                results[city][ip] = stat_results[ip]
+            except:
+                results[city] = {ip: stat_results[ip]}
+                
     print 'location results:', results
     return results
 
 #search: now_ts, uid return 7day activity trend list {time_segment:weibo_count}
-# {Date:{str(uid): '{time_segment: weibo_count}'}}
+# redis:{'activity_'+Date:{str(uid): '{time_segment: weibo_count}'}}
+# return :{time_segment:count}
 def search_activity(now_ts, uid):
     date = ts2datetime(now_ts)
     #print 'date:', date
