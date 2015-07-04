@@ -9,7 +9,7 @@ from search import search_location, search_mention, search_activity,\
 # use to test 13-09-08
 test_time = 1378569600
 
-mod = Blueprint('attribtue', __name__, url_prefix='/attribute')
+mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
 @mod.route('/location/')
 def ajax_location():
