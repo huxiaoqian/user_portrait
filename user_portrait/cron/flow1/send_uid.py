@@ -1,9 +1,14 @@
 # -*- coding = utf-8 -*-
 
 import redis
+import sys
 import time
 from rediscluster import RedisCluster
+
+reload(sys)
+sys.path.append('../../')
 from global_utils import _default_cluster_redis
+
 #weibo_redis = redis.StrictRedis(host='219.224.135.47', port='6379')
 
 weibo_redis = _default_cluster_redis

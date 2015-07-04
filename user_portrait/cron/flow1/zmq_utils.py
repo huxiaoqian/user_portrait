@@ -1,13 +1,18 @@
 # -*- coding:utf-8 -*-
 
 import os
+import sys
 import zmq
 import time
 import json
 import struct
 from datetime import datetime
-from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 from bin2json import bin2json
+
+reload(sys)
+sys.path.append('../../')
+from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
+
 
 def load_items_from_bin(bin_path):
     return open(bin_path, 'rb')

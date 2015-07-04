@@ -5,8 +5,12 @@ import zmq
 import time
 import json
 import math
+import sys
 from datetime import datetime
-from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, 
+
+reload(sys)
+sys.path.append('../../')
+from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1 
 from global_utils import  _default_cluster_redis
 
 """
@@ -118,9 +122,10 @@ if __name__ == "__main__":
         if item['sp_type'] == 1:
             try:
                 cal_propage_work(item)
-            except:
-                pass
-        
+            except Exception, r:
+                print Exception, r
+
+
         count += 1
         if count % 10000 == 0:
             te = time.time()
