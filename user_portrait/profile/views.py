@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 import json
 from flask import views, Blueprint, render_template, request
-from user_portrait.extensions import es
-from user_portrait.extensions import es_get_source, es_mget_source
+from user_portrait.extensions import es, es_get_source, es_mget_source
 from .form import SearchForm
+
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
 
@@ -25,8 +25,10 @@ class HomeView(views.MethodView):
         data['nick_name'] = request.args.get('q2')
         data['real_name'] = request.args.get('q3')
         data['isreal'] = request.args.get('tn')
-        msize = request.args.get('size')
         data['sex'] = request.args.get('sex')
+        data['weibo_from'] = request.args.get('q5')
+        data['weibo_to'] = request.args.get('q6')
+        size = request.args.get('size')
         if data['isreal'] == '2':
             data['isreal'] = ''
         if data['sex'] == '0':
@@ -35,7 +37,10 @@ class HomeView(views.MethodView):
             if data[key]:
                 if key in fuzz_item:
                     query.append({'wildcard':{key : "*" + data[key] + '*'}})
-                    num += 1  
+                    num += 1
+                elif key == 'weibo_from' or 'weibo_to':
+                    query.append({'range':{"statusnum":{"from":data['weibo_from'],"to":data['weibo_to']}}})
+                    num += 1
                 else :
                     query.append({'match':{key : data[key]}})
                     num += 1
@@ -61,9 +66,8 @@ class HomeView(views.MethodView):
                             }
                         }
                     },
-                    size = msize
+                    size = size
                 )
-                print 123456
             except Exception as e:
                 # TODO handle exception
                 raise e 
@@ -86,7 +90,7 @@ class KeywordView(views.MethodView):
     template = 'keyword.html'
 
     def get(self):
-        # keywords = list(redis.smembers('keywords'))
+        keywords = list(redis.smembers('keywords'))
         return render_template(self.template, keywords=json.dumps(keywords))
 
 class SearchView(views.MethodView):

@@ -8,7 +8,8 @@ import json
 import struct
 from datetime import datetime
 from bin2json import bin2json
-from zmq_utils import load_items_from_bin, send_all, send_weibo
+#from zmq_utils import load_items_from_bin, send_all, send_weibo
+from zmq_csv_utils import send_weibo
 
 reload(sys)
 sys.path.append('../../')

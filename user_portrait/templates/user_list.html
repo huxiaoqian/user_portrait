@@ -56,14 +56,14 @@
                           <td colspan="4" height="7"></td>
                         </tr>
                       <tr>
-                        <td width="16%" height="35" class="padl10"><b>用户ID</b></td>
+                        <td width="16%" height="35" class="padl10"><b>用户UID</b></td>
 
-                        <td width="24%">用户ID</td>
+                        <td width="24%">用户UID维度搜索</td>
                         <td width="31%">
-                          <input size=35 name=q1>
+                          <input size=20 name=q1 type="text" value=""  scrolling="no" placeholder="uid">
                         </td>
                         <td>
-                          <input name="submit" type='submit' id="submit" value=搜索>
+                          <input name="submit" type='submit' id="submit" value=开始搜索>
                         </td>
               </tr>
               <tr bgcolor=#E5ECF9>
@@ -76,18 +76,18 @@
                     <table cellspacing=0 cellpadding=2 width="100%" border=0>
                       <tr bgcolor=#ffffff>
                         <td width="16%" height="35" class="padl10"><b>用户昵称</b></td>
-                        <td width="24%"> 用户昵称</td>
+                        <td width="24%"> 用户昵称维度搜索</td>
                         <td>
-                          <input size=35 name=q2>
+                          <input size=20 name=q2 scrolling="no" value="" placeholder="nick name">
                         </td>
                       </tr>
                     </table>
                     <table cellspacing=0 cellpadding=2 width="100%" border=0>
                       <tr bgcolor=#ffffff>
                         <td width="16%" height="35" class="padl10"><b>用户真实姓名</b></td>
-                        <td width="24%"> 用户真实姓名</td>
+                        <td width="24%"> 用户真实姓名维度搜索</td>
                         <td>
-                          <input size=35 name=q3>
+                          <input size=20 name=q3 scrolling="no" value="" placeholder="real name">
                         </td>
                       </tr>
                     </table>
@@ -95,21 +95,21 @@
 
               <tr bgcolor=#ffffff>
                         <td height="35" class="padl10"><b>用户是否认证</b></td>
-                        <td>用户是否认证</td>
+                        <td>用户是否认证维度搜索</td>
                         <td>
                           <select name="tn">
-                  <option value=2 selected> 不选</option>
+                  <option value=2 selected> 全选</option>
                   <option value=1> 已认证</option>
-                  <option value=0> 非认证</option>
+                  <option value=0> 未认证</option>
                           </select>
                 </td>
               </tr>       
               <tr bgcolor=#ffffff>
                         <td height="35" class="padl10"><b>用户性别</b></td>
-                        <td>用户性别</td>
+                        <td>用户性别维度搜索</td>
                         <td>
                           <select name="sex">
-                  <option value=0 selected> 不选</option>
+                  <option value=0 selected> 全选</option>
                   <option value=1> 男</option>
                   <option value=2> 女</option>
                           </select>
@@ -117,28 +117,38 @@
                       </tr>
                       <tr bgcolor=#ffffff>
                         <td width="16%" height="35" class="padl10"><b>搜索结果显示条数</b></td>
-                        <td width="24%">选择搜索结果显示的条数　</td>
+                        <td width="24%">选择搜索结果显示的微博条数　</td>
                         <td>
                           <select name="size">
-                            <option value=10 selected> 每页显示10条</option>
-                            <option value=20> 每页显示20条</option>
-                            <option value=50> 每页显示50条</option>
-                            <option value=100> 每页显示100条</option>
+                            <option value=10 selected> 显示10条</option>
+                            <option value=20> 显示20条</option>
+                            <option value=50> 显示50条</option>
+                            <option value=100> 显示100条</option>
                           </select>                  </td>
                       </tr>
-                    </table>
-                  </td>
-                <tr>
-                  <td>
-                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
-                      <tr bgcolor=#ffffff>
-                        <td width="16%" height="35" class="padl10"><b>微博来源</b></td>
-                        <td width="24%"> 限定要搜索的微博来源是</td>
+              <tr bgcolor=#ffffff>
+                        <td height="35" class="padl10"><b>用户微博来源</b></td>
+                        <td>用户微博来源维度搜索</td>
                         <td>
-                          <input size=35 name=q4>
-                          <i>例如：新浪 腾讯 搜狐 网易&nbsp;</i>
+                          <select name="q4">
+                  <option value=0 selected> 全选</option>
+                  <option value=1> 新浪微博</option>
+                  <option value=2> 腾讯微博</option>
+                  <option value=3> 搜狐微博</option>
+                  <option value=4> 网易微博</option>
+                          </select>
+                </td>
+              </tr> 
+              <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>用户微博数搜索</b></td>
+                        <td width="24%"> 用户微博数搜索</td>
+                        <td>
+                          <b>从</b><input size=10 name=q5>
+                          <b>至</b><input size=10 name=q6>
                         </td>
                       </tr>
+              </table>
               <tr bgcolor=#ffffff>
                         <td colspan="4" height="7"></td>
                         </tr>
