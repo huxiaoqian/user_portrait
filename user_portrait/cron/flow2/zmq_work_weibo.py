@@ -14,7 +14,8 @@ from test_save_attribute import save_at
 reload(sys)
 sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
-from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
+from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 
 
 def extract_uname(text):
@@ -28,11 +29,12 @@ def extract_uname(text):
     return repost_chains
 
 def cal_propage_work(item):
-    uid = item['user']
+    uid = item['uid']
     print 'uid:', uid
     '''
     timestamp = item['timestamp']
-    ip = item['geo']
+    #ip = item['geo']
+    ip = item['send_ip']
     # attribute location
     if ip:
         save_city(uid, ip, timestamp)
@@ -70,12 +72,14 @@ if __name__ == "__main__":
     while 1:
         try:
             item = receiver.recv_json()
+            #print 'item:', item
         except Exception, e:
             print Exception, ":", e 
         if not item:
             continue 
         
         if item['sp_type'] == 1:
+            print 'item:', item
             try:
                 cal_propage_work(item)
             except:

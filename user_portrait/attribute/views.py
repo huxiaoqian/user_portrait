@@ -1,6 +1,7 @@
 #-*- coding:utf-8 -*-
 
 import os
+import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from search import search_location, search_mention, search_activity,\

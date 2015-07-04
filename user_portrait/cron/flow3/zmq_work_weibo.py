@@ -27,9 +27,10 @@ def extract_uname(text):
     return repost_chains
 
 def cal_propage_work(item):
-    uid = item['user']
+    uid = item['uid']
     timestamp = item['timestamp']
-    r_uid = weibo['retweeted_uid']
+    #r_uid = item['retweeted_uid']
+    r_uid = item['root_uid']
     #save_ruid(uid, r_uid, timestamp)
 
 
