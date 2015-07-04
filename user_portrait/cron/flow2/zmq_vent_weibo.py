@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
-import sys
+
 import os
+import sys
 import zmq
 import time
 import json
@@ -11,11 +12,12 @@ from zmq_utils import load_items_from_bin, send_all, send_weibo
 
 reload(sys)
 sys.path.append('../../')
-from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
+from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
+
 
 
 if __name__=="__main__":
-
     """
     push data to every work
 
@@ -26,11 +28,11 @@ if __name__=="__main__":
 
     # used for send weibo
     sender = context.socket(zmq.PUSH)
-    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW1))  
+    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW2))  
     
     # used for controlled by controllor
     controller = context.socket(zmq.SUB)
-    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
+    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW2))
     controller.setsockopt(zmq.SUBSCRIBE, "")
 
     poller = zmq.Poller()
@@ -41,31 +43,28 @@ if __name__=="__main__":
     message = "PAUSE" # default start
 
     while 1:
-        event = poller.poll(0)
+        event = poller.poll(1)
         if event:
-            socks = dict(poller.poll(0))
+            socks = dict(poller.poll(1))
         else:
             socks = None
         
-        if socks and socks.get(controller) == zmq.POLLIN: 
-            # receive control message from zmq pollor
+        if socks and socks.get(controller) == zmq.POLLIN: # receive data from zmq pollor
             item = controller.recv()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
-                time.sleep(1)
+                time.sleep(10)
                 continue
             elif item == "RESTART": # restart the vent work
                 message = "RESTART"
-                total_count = 0
-                total_cost = 0
-                total_count, total_cost = send_weibo(sender, total_count, total_cost)
+                total_count, total_cost = send_weibo(total_count, total_cost)
         else:
             if message == "PAUSE":
-                time.sleep(1)
+                time.sleep(10)
                 print message
                 continue
             else:
-                total_count, total_cost = send_weibo(sender, total_count, total_cost)
+                total_count, total_cost = send_weibo(total_count, total_cost)
 
            
 

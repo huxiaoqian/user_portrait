@@ -11,8 +11,8 @@ from bin2json import bin2json
 
 reload(sys)
 sys.path.append('../../')
-from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
-
+from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 
 def load_items_from_bin(bin_path):
     return open(bin_path, 'rb')
@@ -37,7 +37,7 @@ def send_all(f, sender):
             break
 
         weibo_item = bin2json(data, total_len, sp_type)
-        if weibo_item["sp_type"] == 1:
+        if weibo_item:
             sender.send_json(weibo_item)
             count += 1
 
@@ -52,7 +52,7 @@ def send_all(f, sender):
     return count, total_cost
 
 
-def send_weibo(sender, total_count=0, total_cost=0):
+def send_weibo(total_count=0, total_cost=0):
     """
     send weibo data to zmq_work
     """
@@ -63,14 +63,14 @@ def send_weibo(sender, total_count=0, total_cost=0):
         for each in file_list:
             if 'bin' in each and 'ok' not in each:
                 filename = each.split('.')[0]
-                if '%s.bin.ok' % filename in file_list and '%s_yes.txt' % filename not in file_list:
+                if '%s.bin.ok' % filename in file_list and '%s_yes2.txt' % filename not in file_list:
                     bin_input = load_items_from_bin(os.path.join(BIN_FILE_PATH, each))
                     load_origin_data_func = bin_input
                     tmp_count, tmp_cost = send_all(load_origin_data_func, sender)
                     total_count += tmp_count
                     total_cost += tmp_cost
 
-                    with open(os.path.join(BIN_FILE_PATH, '%s_yes.txt' % filename), 'w') as fw:
+                    with open(os.path.join(BIN_FILE_PATH, '%s_yes2.txt' % filename), 'w') as fw:
                         fw.write('finish reading' + '\n')
 
         print 'this scan total deliver %s, cost %s sec' % (total_count, total_cost)
