@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block css %}
+{{ super() }}
+<style>
+    .node {
+      opacity: 0.5;
+    }
+
+    .node:hover {
+      opacity: 1;
+    }
+
+    .link {
+      stroke: #999;
+      stroke-opacity: 0.3;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="main">
+    <!--tablist-->
+    <ul id="myTab" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#list" id="list-tab" role="tab" data-toggle="tab" aria-controls="list" aria-expanded="false">用户列表</a></li>
+        <li role="presentation" class=""><a href="#relation" id="relation-tab" role="tab" data-toggle="tab" aria-controls="relation" aria-expanded="true">用户关联关系</a></li>
+        <li role="presentation" class=""><a href="#map" id="map-tab" role="tab" data-toggle="tab" aria-controls="map" aria-expanded="true">用户地区分布</a></li>
+    </ul>
+
+    <!--tabcontents-->
+    <div id="myTabContent" class="tab-content">
+        <!--tab 1-->
+        <div role="tabpanel" class="tab-pane fade active in" id="list" aria-labelledby="list-tab">
+            <br><br>
+            {% include "user_list.html" %}
+
+        <!--tab 2-->
+        <div role="tabpanel" class="tab-pane fade" id="relation" aria-labelledby="relation-tab">
+            <br><br>
+        </div> 
+
+        <!--tab 3-->
+        <div role="tabpanel" class="tab-pane fade" id="map" aria-labelledby="map-tab">
+            <br><br>
+            {% include "user_map.html" %}
+        </div> 
+</div>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+<script src="/static/js/d3.v3.min.js"></script>
+<script>
+
+    function name(d) { return d.name; }
+    function group(d) { return d.group; }
+
+    var color = d3.scale.category10();
+    function colorByGroup(d) { return color(group(d)); }
+
+    var width = 1200,
+        height = 645;
+
+    var svg = d3.select('#relation')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    var node, link;
+
+    var voronoi = d3.geom.voronoi()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; })
+        .clipExtent([[0, 0], [width, height]]);
+
+    function recenterVoronoi(nodes) {
+        var shapes = [];
+        voronoi(nodes).forEach(function(d) {
+            if ( !d.length ) return;
+            var n = [];
+            d.forEach(function(c){
+                n.push([ c[0] - d.point.x, c[1] - d.point.y ]);
+            });
+            n.point = d.point;
+            shapes.push(n);
+        });
+        return shapes;
+    }
+
+    var force = d3.layout.force()
+        .charge(-1400)
+        .friction(0.3)
+        .linkDistance(40)
+        .size([width, height]);
+
+    force.on('tick', function() {
+        node.attr('transform', function(d) { return 'translate('+d.x+','+d.y+')'; })
+            .attr('clip-path', function(d) { return 'url(#clip-'+d.index+')'; });
+
+        link.attr('x1', function(d) { return d.source.x; })
+            .attr('y1', function(d) { return d.source.y; })
+            .attr('x2', function(d) { return d.target.x; })
+            .attr('y2', function(d) { return d.target.y; });
+
+        var clip = svg.selectAll('.clip')
+            .data( recenterVoronoi(node.data()), function(d) { return d.point.index; } );
+
+        clip.enter().append('clipPath')
+            .attr('id', function(d) { return 'clip-'+d.point.index; })
+            .attr('class', 'clip');
+        clip.exit().remove()
+
+        clip.selectAll('path').remove();
+        clip.append('path')
+            .attr('d', function(d) { return 'M'+d.join(',')+'Z'; });
+    });
+
+    d3.json('/static/json/graph.json', function(err, data) {
+
+        data.nodes.forEach(function(d, i) {
+            d.id = i;
+        });
+
+        link = svg.selectAll('.link')
+            .data( data.links )
+            .enter().append('line')
+            .attr('class', 'link')
+            .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+        node = svg.selectAll('.node')
+            .data( data.nodes )
+            .enter().append('g')
+            .attr('title', name)
+            .attr('class', 'node')
+            .call( force.drag );
+
+        node.append('circle')
+            .attr('r', 20)
+            .attr('fill', colorByGroup)
+            .attr('fill-opacity', 0.5);
+
+        node.append('circle')
+            .attr('r', 2)
+            .attr('stroke', 'black');
+
+        node.append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.name });
+
+        force
+            .nodes( data.nodes )
+            .links( data.links )
+            .start();
+    });
+
+</script>
+{% endblock %}
