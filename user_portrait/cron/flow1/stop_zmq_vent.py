@@ -3,7 +3,11 @@
 import zmq
 import time
 import redis
+import sys
 import os
+
+reload(sys)
+sys.path.append('../../')
 from global_config import ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, BIN_FILE_PATH
 
 

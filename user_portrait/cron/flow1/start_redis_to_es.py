@@ -4,6 +4,10 @@ import zmq
 import time
 import redis
 import os
+import sys
+
+reload(sys)
+sys.path.append('../../')
 from global_utils import _default_cluster_redis, _default_es_cluster_flow1
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 

@@ -20,7 +20,7 @@ ZMQ_CTRL_VENT_PORT_FLOW1 = '5585'
 ZMQ_VENT_HOST_FLOW1 = '219.224.135.93'
 ZMQ_CTRL_HOST_FLOW1 = '219.224.135.93'
 
-BIN_FILE_PATH = '../data' # '219.224.135.93:/home/ubuntu8/yuankun'
+BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yuankun'
 
 
 # need three ES identification 

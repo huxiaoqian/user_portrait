@@ -2,9 +2,13 @@
 import time
 import math
 from timeit import Timer
+import sys
 import json
 from index_cal import influence_weibo_cal
 from elasticsearch import Elasticsearch
+
+reload(sys)
+sys.path.append('../../')
 from global_utils import _default_es_cluster_flow1
 
 es = _default_es_cluster_flow1
