@@ -4,7 +4,7 @@ from flask.ext import admin
 from flask import current_app
 from elasticsearch import Elasticsearch as _Elasticsearch
 from elasticsearch.exceptions import NotFoundError
-from redis import StrictRedis as _Redi
+from redis import StrictRedis as _Redis
 #from flask.ext.pymongo import PyMongo
 #from flask.ext.sqlalchemy import SQLAlchemy
 #from flask.ext.mongoengine import MongoEngine
@@ -56,7 +56,6 @@ es = ElasticSearch()
 INDEX_NAME = 'weibo_user'
 DOC_TYPE = 'user'
 
-
 # 自定义查询
 def es_get_source(id, es=es, index=INDEX_NAME, doc_type=DOC_TYPE):
     try:
@@ -76,4 +75,3 @@ def es_mget_source(ids, es=es, index=INDEX_NAME, doc_type=DOC_TYPE):
         raise e
     source = [item['_source'] for item in source['docs'] if item['found'] is True]
     return source
-
