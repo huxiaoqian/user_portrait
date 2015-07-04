@@ -10,9 +10,10 @@ from datetime import datetime
 from test_save_attribute import save_ruid
 
 reload(sys)
-sys.apth.append('../../')
+sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
-from global_config import ZMQ_VENT_PORT, ZMQ_CTRL_VENT_PORT, ZMQ_VENT_HOST, ZMQ_CTRL_HOST
+from global_config import ZMQ_VENT_PORT_FLOW3, ZMQ_CTRL_VENT_PORT_FLOW3,\
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 
 
 def extract_uname(text):
@@ -29,7 +30,7 @@ def cal_propage_work(item):
     uid = item['user']
     timestamp = item['timestamp']
     r_uid = weibo['retweeted_uid']
-    save_ruid(uid, r_uid, timestamp)
+    #save_ruid(uid, r_uid, timestamp)
 
 
 if __name__ == "__main__":
@@ -39,10 +40,10 @@ if __name__ == "__main__":
     context = zmq.Context()
 
     receiver = context.socket(zmq.PULL)
-    receiver.connect('tcp://%s:%s' %(ZMQ_VENT_HOST, ZMQ_VENT_PORT))
+    receiver.connect('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW3))
 
     controller = context.socket(zmq.SUB)
-    controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST, ZMQ_CTRL_VENT_PORT))
+    controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW3))
 
     count = 0
     tb = time.time()
