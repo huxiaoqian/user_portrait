@@ -4,7 +4,7 @@ import json
 
 from flask import views, Blueprint, render_template, request
 
-from toogle.extensions import es, redis
+from user_portrait.extensions import es, redis
 
 bp = Blueprint('home', __name__)
 
