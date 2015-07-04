@@ -24,7 +24,7 @@ if __name__ == "__main__":
             weibo_redis.flushall()
     print "finish flushing"
     '''
-    time.sleep(0.1)
-    controller.send("RESTART")
+    for i in range(5):
+        controller.send("RESTART")
 
 

@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import time
 import math
-from timeit import Timer
 import json
+import sys
 from index_cal import influence_weibo_cal
 from elasticsearch import Elasticsearch
-from global_utils import _default_es_cluster_flow1
 
-es = _default_es_cluster_flow1
+reload(sys)
+sys.path.append('../../')
+from global_utils import ES_CLUSTER_FLOW1
+
+es = ES_CLUSTER_FLOW1
 #index_name = time.strftime("%Y%m%d",time.localtime())
 index_type = "bci"
 

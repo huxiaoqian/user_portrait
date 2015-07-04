@@ -2,19 +2,22 @@
 
 import redis
 import math
+import sys
 import logging
 import time
 from elasticsearch import Elasticsearch
-from global_utils import  _default_cluster_redis, _default_es_cluster_flow1
 from index_cal import influence_weibo_cal, user_index_cal, deliver_weibo_brust, activity_weibo, statistic_weibo, expand_index_action 
 from rediscluster import RedisCluster
 
+reload(sys)
+sys.path.append('../../')
+from global_utils import  ES_CLUSTER_FLOW1, R_CLUSTER_FLOW1
 
 def compute(user_set):
     bulk_action = []
     count_c = 0
     
-    weibo_redis = _default_cluster_redis
+    weibo_redis = R_CLUSTER_FLOW1
     for user in user_set:
         user_info = weibo_redis.hgetall(user)#dict
         origin_weibo_retweeted_timestamp = []
@@ -149,14 +152,14 @@ def compute(user_set):
                     bulk_action = []
                     break
                 except Exception,r:
-                    es = _default_es_cluster_flow1
+                    es = ES_CLUSTER_FLOW1
                     print "bulk error"
             print count_c
 
 
 if __name__ == "__main__":
 
-    cluster_redis = _default_cluster_redis
+    cluster_redis = R_CLUSTER_FLOW1
 
 
     es_logger = logging.getLogger("elasticsearch")
@@ -166,7 +169,7 @@ if __name__ == "__main__":
     FileHandler.setFormatter(formatter)
     es_logger.addHandler(FileHandler)
     
-    es = _default_es_cluster_flow1
+    es = ES_CLUSTER_FLOW1
 
     count = 0
     tb = time.time()

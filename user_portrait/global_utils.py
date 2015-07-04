@@ -45,6 +45,7 @@ es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)
 
 
 def _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1):
-    es = Elsticsearch(host, timeout=60, retry_on_timeout=TRUE, max_retries=6)
+    es = Elasticsearch(host, timeout=60, retry_on_timeout=True, max_retries=6)
+    return es
 
-
+ES_CLUSTER_FLOW1 = _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1)

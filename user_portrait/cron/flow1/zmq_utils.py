@@ -37,7 +37,7 @@ def send_all(f, sender):
             break
 
         weibo_item = bin2json(data, total_len, sp_type)
-        if weibo_item:
+        if weibo_item["sp_type"] == 1:
             sender.send_json(weibo_item)
             count += 1
 
@@ -52,7 +52,7 @@ def send_all(f, sender):
     return count, total_cost
 
 
-def send_weibo(total_count=0, total_cost=0):
+def send_weibo(sender, total_count=0, total_cost=0):
     """
     send weibo data to zmq_work
     """

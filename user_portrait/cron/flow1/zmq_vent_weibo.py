@@ -58,14 +58,14 @@ if __name__=="__main__":
                 message = "RESTART"
                 total_count = 0
                 total_cost = 0
-                total_count, total_cost = send_weibo(total_count, total_cost)
+                total_count, total_cost = send_weibo(sender, total_count, total_cost)
         else:
             if message == "PAUSE":
                 time.sleep(1)
                 print message
                 continue
             else:
-                total_count, total_cost = send_weibo(total_count, total_cost)
+                total_count, total_cost = send_weibo(sender, total_count, total_cost)
 
            
 

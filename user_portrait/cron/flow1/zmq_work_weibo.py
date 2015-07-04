@@ -11,7 +11,7 @@ from datetime import datetime
 reload(sys)
 sys.path.append('../../')
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1 
-from global_utils import  _default_cluster_redis
+from global_utils import  R_CLUSTER_FLOW1
 
 """
 single_redis is nickname_to_uid
@@ -26,6 +26,7 @@ def get_queue_index(timestamp):
     return int(index)
 
 def cal_propage_work(item):
+    cluster_redis = R_CLUSTER_FLOW1
     user = str(item['uid'])
     followers_count = item['user_fansnum']
     cluster_redis.hset(user, 'user_fansnum', followers_count)
@@ -105,7 +106,7 @@ if __name__ == "__main__":
     controller = context.socket(zmq.SUB)
     controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
 
-    cluster_redis = _default_cluster_redis
+    cluster_redis = R_CLUSTER_FLOW1
     
 
     count = 0
