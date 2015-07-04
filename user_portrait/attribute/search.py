@@ -85,6 +85,7 @@ def search_mention(now_ts, uid):
     ts = datetime2ts(date)
     #print 'at date-ts:', ts
     stat_results = dict()
+    results = dict()
     for i in range(1,8):
         ts = ts - 24 * 3600
         result_string = r_cluster.hget('at_' + str(ts), str(uid))
