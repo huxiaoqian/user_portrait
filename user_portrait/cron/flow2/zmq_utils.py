@@ -52,7 +52,7 @@ def send_all(f, sender):
     return count, total_cost
 
 
-def send_weibo(total_count=0, total_cost=0):
+def send_weibo(sender, total_count=0, total_cost=0):
     """
     send weibo data to zmq_work
     """

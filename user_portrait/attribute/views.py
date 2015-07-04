@@ -1,6 +1,7 @@
 #-*- coding:utf-8 -*-
 
 import os
+import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from search import search_location, search_mention, search_activity,\
@@ -9,7 +10,7 @@ from search import search_location, search_mention, search_activity,\
 # use to test 13-09-08
 test_time = 1378569600
 
-mod = Blueprint('attribtue', __name__, url_prefix='/attribute')
+mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
 @mod.route('/location/')
 def ajax_location():

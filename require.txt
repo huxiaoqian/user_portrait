@@ -1,0 +1,8 @@
+require package:
+1 flask-admin
+  pip install flask-admin
+2 flask-debugtoobal
+  pip install flask-debugtoobar
+3 IP
+  pip install 17monip
+

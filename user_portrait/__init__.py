@@ -14,6 +14,7 @@ def create_app():
 
     # Create modules
     app.register_blueprint(indexModule)
+    app.register_blueprint(attributeModule)
 
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True

@@ -3,15 +3,12 @@
 import json
 import time
 import datetime
-from case.time_utils import ts2datetime, ts2date
+from user_portrait.time_utils import ts2datetime, ts2date
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect, make_response
 
-scws = load_scws()
 
 mod = Blueprint('portrait', __name__, url_prefix='/index')
 
-
-em = EventManager()
 
 '''
 def acquire_user_by_id(uid):

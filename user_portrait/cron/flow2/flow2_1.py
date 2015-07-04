@@ -4,7 +4,6 @@ import urllib
 import json
 import sys
 
-from retweet import accumulate_retweet
 from mention import accumulate_at
 from area import accumulate_ip
 from activity import accumulate_activity
