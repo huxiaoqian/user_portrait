@@ -1,14 +1,17 @@
 # -*- coding:utf-8 -*-
-
+import sys
 import os
 import zmq
 import time
 import json
 import struct
 from datetime import datetime
-from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 from bin2json import bin2json
 from zmq_utils import load_items_from_bin, send_all, send_weibo
+
+reload(sys)
+sys.path.append('../../')
+from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 
 
 if __name__=="__main__":
@@ -38,18 +41,18 @@ if __name__=="__main__":
     message = "PAUSE" # default start
 
     while 1:
-        event = poller.poll(1)
+        event = poller.poll(0)
         if event:
-            socks = dict(poller.poll(1))
+            socks = dict(poller.poll(0))
         else:
             socks = None
         
         if socks and socks.get(controller) == zmq.POLLIN: 
             # receive control message from zmq pollor
-            item = controller.recv_json()
+            item = controller.recv()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
-                time.sleep(10)
+                time.sleep(1)
                 continue
             elif item == "RESTART": # restart the vent work
                 message = "RESTART"
@@ -58,7 +61,7 @@ if __name__=="__main__":
                 total_count, total_cost = send_weibo(total_count, total_cost)
         else:
             if message == "PAUSE":
-                time.sleep(10)
+                time.sleep(1)
                 print message
                 continue
             else:
