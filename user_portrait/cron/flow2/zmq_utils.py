@@ -11,7 +11,8 @@ from bin2json import bin2json
 
 reload(sys)
 sys.path.append('../../')
-from global_config import ZMQ_VENT_PORT, ZMQ_CTRL_VENT_PORT, ZMQ_VENT_HOST, ZMQ_CTRL_HOST, BIN_FILE_PATH
+from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 
 def load_items_from_bin(bin_path):
     return open(bin_path, 'rb')

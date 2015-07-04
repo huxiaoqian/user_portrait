@@ -12,9 +12,9 @@ from test_save_attribute import save_activity
 from test_save_attribute import save_at
 
 reload(sys)
-sys.apth.append('../../')
+sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
-from global_config import ZMQ_VENT_PORT, ZMQ_CTRL_VENT_PORT, ZMQ_VENT_HOST, ZMQ_CTRL_HOST
+from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 
 
 def extract_uname(text):
@@ -59,10 +59,10 @@ if __name__ == "__main__":
     context = zmq.Context()
 
     receiver = context.socket(zmq.PULL)
-    receiver.connect('tcp://%s:%s' %(ZMQ_VENT_HOST, ZMQ_VENT_PORT))
+    receiver.connect('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW2))
 
     controller = context.socket(zmq.SUB)
-    controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST, ZMQ_CTRL_VENT_PORT))
+    controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW2))
 
     count = 0
     tb = time.time()
@@ -70,12 +70,12 @@ if __name__ == "__main__":
     while 1:
         try:
             item = receiver.recv_json()
-	    except Exception, e:
+        except Exception, e:
             print Exception, ":", e 
         if not item:
             continue 
         
-	    if item['sp_type'] == 1:
+        if item['sp_type'] == 1:
             try:
                 cal_propage_work(item)
             except:

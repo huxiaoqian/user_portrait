@@ -10,8 +10,8 @@ import json
 import redis
 
 from user_portrait.time_utils import ts2datetime, datetime2ts
-from user_portrait.global_config import R_CLUSTER_FLOW2 as r_cluster
-from user_portrait.global_config import R_DICT
+from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
+from user_portrait.global_utils import R_DICT
 from user_portrait.search_user_profile import search_uid2uname
 
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
