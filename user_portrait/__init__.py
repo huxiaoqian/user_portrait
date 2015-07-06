@@ -13,6 +13,7 @@ from user_portrait.jinja import gender, tsfmt
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
+from user_portrait.recommentation.views import mod as recommentationModule
 
 bps = [
     'user_portrait.profile.home:bp',
@@ -32,6 +33,7 @@ def create_app():
     app.register_blueprint(indexModule)
     app.register_blueprint(manageModule)
     app.register_blueprint(attributeModule)
+    app.register_blueprint(recommentationModule)
 
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True

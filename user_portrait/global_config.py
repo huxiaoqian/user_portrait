@@ -38,3 +38,7 @@ USER_PORTRAIT_ES_HOST = []
 
 # use to identify the db number of redis-97
 R_BEGIN_TIME = '2013-09-01'
+
+# use to recommentation
+RECOMMENTATION_FILE_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/recommentaion_file'
+RECOMMENTATION_TOPK = 10000
