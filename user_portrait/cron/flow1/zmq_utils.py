@@ -37,7 +37,14 @@ def send_all(f, sender):
             break
 
         weibo_item = bin2json(data, total_len, sp_type)
-        if weibo_item["sp_type"] == 1:
+
+        if int(weibo_item["sp_type"]) == 1:
+            message_type == int(item['message_type'])
+            if message_type == 2:
+                mid = str(item['mid'][2:])
+            else:
+                mid = str(item['mid'])
+
             sender.send_json(weibo_item)
             count += 1
 
