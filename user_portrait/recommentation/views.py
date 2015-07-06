@@ -4,9 +4,9 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from search import search_recommentation_in
+from search import recommentation_in
 
-from global_config.time_utils import datetime2ts
+from user_portrait.time_utils import datetime2ts
 
 # use to test 13-09-08
 test_time = 1378569600
@@ -26,7 +26,7 @@ def ajax_recommentation_in():
     if now_ts - 3600*24*7 > input_ts:
         return None
     else:
-        results = search_recommentation_in(input_ts)
+        results = recommentation_in(input_ts)
 
         return json.dumps(results)
 

@@ -2,7 +2,7 @@
 import sys
 import csv
 import time
-from user_portrait.global_config import RECOMMENTATAION_FILE_PATH
+from user_portrait.global_config import RECOMMENTATION_FILE_PATH
 from user_portrait.time_utils import ts2datetime
 # need to decide the way to save the recommentation list
 def recommentation_in(input_ts):
