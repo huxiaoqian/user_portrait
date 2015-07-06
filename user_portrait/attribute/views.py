@@ -96,11 +96,6 @@ def ajax_retweetd_weibo():
     uid = request.args.get('uid', '')
     date = request.args.get('date', '')
     uid = str(uid)
-
-    # test
-    #date = '2013/09/01'
-    #uid = '1713926427'
-
     date = str(date).replace('/', '')
 
     results = search_retweeted_attribute(date, uid)
@@ -127,8 +122,6 @@ def ajax_basic_info():
     fans = search_fans_attribute(date, uid)
     results = es_get_source(uid)
     results['fansnum'] = fans['user_fansnum']
-
     return json.dumps(results)
-
 
 

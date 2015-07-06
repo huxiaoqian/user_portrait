@@ -62,5 +62,6 @@ def search_fans_attribute(user_index, uid, doc_type="bci"):
 
 
 if __name__ == "__main__":
-    print search_origin_attribute("20130901", "13926427")
+
+    print search_origin_attribute("20130901", "1713926427")
 
