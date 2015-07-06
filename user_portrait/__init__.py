@@ -9,8 +9,8 @@ from user_portrait.jinja import gender, tsfmt
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
+from user_portrait.recommentation.views import mod as recommentationModule
 from user_portrait.profile.views import mod as profileModule
-#from global_config import MYSQL_HOST, MYSQL_USER, MYSQL_DB, MONGODB_HOST, MONGODB_PORT, MASTER_TIMELINE_54API_WEIBO_DB
 
 
 def create_app():
@@ -19,6 +19,12 @@ def create_app():
     register_blueprints(app)
     register_extensions(app)
     register_jinja_funcs(app)
+
+    # Create modules
+    app.register_blueprint(indexModule)
+    app.register_blueprint(manageModule)
+    app.register_blueprint(attributeModule)
+    app.register_blueprint(recommentationModule)
 
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True

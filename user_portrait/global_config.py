@@ -40,6 +40,10 @@ USER_PORTRAIT_ES_PORT = 9200
 # use to identify the db number of redis-97
 R_BEGIN_TIME = '2013-09-01'
 
+# use to recommentation
+RECOMMENTATION_FILE_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/recommentaion_file'
+RECOMMENTATION_TOPK = 10000
+
 # all weibo database
 WEIBO_API_HOST = ''
 WEIBO_API_PORT = ''
