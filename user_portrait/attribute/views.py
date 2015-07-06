@@ -8,7 +8,7 @@ from search import search_location, search_mention, search_activity,\
                    search_attention, search_follower
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_fans_attribute
 from search_mid import index_mid
-from user_portrait.extensions import es_get_source
+from user_portrait.search_user_profile import es_get_source
 
 # use to test 13-09-08
 test_time = 1378569600
