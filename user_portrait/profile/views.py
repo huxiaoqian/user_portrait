@@ -8,8 +8,6 @@ from .form import SearchForm
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
 es = es_user_profile
-INDEX_NAME = 'weibo_user'
-DOC_TYPE = 'user'
 
 class HomeView(views.MethodView):
     """
@@ -124,16 +122,16 @@ class UserView(views.MethodView):
     template = 'individual.html'
 
     def get(self, id):
-        user = es_get_source(id, es, INDEX_NAME, DOC_TYPE)
+        user = es_get_source(id)
         followers = []
         friends = []
         if user:
             user_followers_ids = user.get('followers')
             user_friends_ids = user.get('friends')
             if user_followers_ids:
-                followers = es_mget_source(user_followers_ids,es,INDEX_NAME,DOC_TYPE)
+                followers = es_mget_source(user_followers_ids)
             if user_friends_ids:
-                friends = es_mget_source(user_friends_ids,es,INDEX_NAME,DOC_TYPE)
+                friends = es_mget_source(user_friends_ids)
 
         return render_template(self.template, user=user,
                                followers=followers, friends=friends,

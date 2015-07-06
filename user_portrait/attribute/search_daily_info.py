@@ -9,9 +9,7 @@ return basic attribute: origin/retweeted weibo number, origin/retweeted weibo\
 import sys
 from elasticsearch import Elasticsearch
 
-reload(sys)
-sys.path.append('./../')
-from search_daily_basic_info import search_weibo_behavior
+from user_portrait.search_daily_basic_info import search_weibo_behavior
 
 def search_origin_attribute(user_index, uid, doc_type="bci"):
 
