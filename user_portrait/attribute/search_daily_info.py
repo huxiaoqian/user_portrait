@@ -8,7 +8,6 @@ return basic attribute: origin/retweeted weibo number, origin/retweeted weibo\
 
 import sys
 from elasticsearch import Elasticsearch
-
 from user_portrait.search_daily_basic_info import search_weibo_behavior
 
 def search_origin_attribute(user_index, uid, doc_type="bci"):
@@ -21,7 +20,7 @@ def search_origin_attribute(user_index, uid, doc_type="bci"):
     basic_attribute = {}
 
     if not user_info:
-        return None
+        return basic_attribute
 
     for key in origin_weibo_iter_keys:
         basic_attribute[key] = user_info[key]
@@ -39,7 +38,7 @@ def search_retweeted_attribute(user_index, uid, doc_type="bci"):
     basic_attribute = {}
 
     if not user_info:
-        return None
+        return basic_attribute
 
     for key in retweeted_weibo_iter_keys:
         basic_attribute[key] = user_info[key]
@@ -54,7 +53,7 @@ def search_fans_attribute(user_index, uid, doc_type="bci"):
     basic_attribute = {}
 
     if not user_info:
-        return None
+        return basic_attribute
     else:
         basic_attribute[fans] = user_info[fans]
 
@@ -63,5 +62,6 @@ def search_fans_attribute(user_index, uid, doc_type="bci"):
 
 
 if __name__ == "__main__":
+
     print search_origin_attribute("20130901", "1713926427")
 

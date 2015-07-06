@@ -7,6 +7,7 @@ from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VEN
 from global_config import REDIS_CLUSTER_HOST_FLOW1, REDIS_CLUSTER_PORT_FLOW1,\
                           REDIS_CLUSTER_HOST_FLOW2, REDIS_CLUSTER_PORT_FLOW2,\
                           REDIS_HOST, REDIS_PORT
+from global_config import WEIBO_API_HOST, WEIBO_API_PORT
 from global_config import USER_PROFILE_ES_HOST, USER_PROFILE_ES_PORT, ES_CLUSTER_HOST_FLOW1, USER_PORTRAIT_ES_HOST, USER_PORTRAIT_ES_PORT
 
 def _default_cluster_redis(host=REDIS_CLUSTER_HOST_FLOW1, port=REDIS_CLUSTER_PORT_FLOW1):
@@ -45,8 +46,14 @@ es_user_profile = Elasticsearch('219.224.135.97:9208', timeout = 60)
 # es_user_profile = Elasticsearch('%s:%s' % (USER_PROFILE_ES_HOST, USER_PROFILE_ES_PORT), timeout = 60)
 es_user_portrait = Elasticsearch('%s:%s' % (USER_PORTRAIT_ES_HOST, USER_PORTRAIT_ES_PORT), timeout = 60)
 
+
 def _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1):
     es = Elasticsearch(host, timeout=60, retry_on_timeout=True, max_retries=6)
     return es
 
 ES_CLUSTER_FLOW1 = _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1)
+
+def get_client(api_host=WEIBO_API_HOST, api_port=WEIBO_API_PORT):
+    return Client(api_host, api_port)
+
+
