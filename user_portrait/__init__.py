@@ -1,30 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
+from elasticsearch import Elasticsearch
 from flask_debugtoolbar import DebugToolbarExtension
-from extensions import admin
-from flask import Flask
-from werkzeug.utils import import_string
-from user_portrait._settings import DevConfig
-from user_portrait.extensions import es
+from user_portrait.extensions import admin
+from user_portrait.global_utils import es_user_profile, es_user_portrait
 from user_portrait.jinja import gender, tsfmt
-#from global_config import MYSQL_HOST, MYSQL_USER, MYSQL_DB, MONGODB_HOST, MONGODB_PORT, MASTER_TIMELINE_54API_WEIBO_DB
-#from case.index.views import mod as indexModule
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
 from user_portrait.recommentation.views import mod as recommentationModule
+from user_portrait.profile.views import mod as profileModule
 
-bps = [
-    'user_portrait.profile.home:bp',
-    'user_portrait.profile.search:bp',
-    'user_portrait.profile.user:bp',
-]
 
 def create_app():
     app = Flask(__name__)
 
-    #app.config.from_object(config)
     register_blueprints(app)
     register_extensions(app)
     register_jinja_funcs(app)
@@ -100,14 +91,16 @@ def create_app():
    
 
 def register_blueprints(app):
-    for bp in bps:
-        app.register_blueprint(import_string(bp))
-
+    app.register_blueprint(indexModule)
+    app.register_blueprint(manageModule)
+    app.register_blueprint(attributeModule)
+    app.register_blueprint(profileModule)
 
 def register_extensions(app):
-    es.init_app(app)
-    # redis.init_app(app)
-
+    app.config.setdefault('ES_USER_PROFILE_URL', 'http://219.224.135.97:9208/')
+    app.extensions['es_user_profile'] = Elasticsearch(app.config['ES_USER_PROFILE_URL'])
+    app.config.setdefault('ES_USER_PORTRAIT_URL', 'http://219.224.135.93:9200/')
+    app.extensions['es_user_portrait'] = Elasticsearch(app.config['ES_USER_PORTRAIT_URL'])
 
 def register_jinja_funcs(app):
     funcs = dict(gender=gender,

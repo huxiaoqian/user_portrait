@@ -7,7 +7,8 @@ import json
 import struct
 from datetime import datetime
 from bin2json import bin2json
-from zmq_utils import load_items_from_bin, send_all, send_weibo
+#from zmq_utils import load_items_from_bin, send_all, send_weibo
+from zmq_csv_utils import load_items_from_bin, send_all, send_weibo
 
 reload(sys)
 sys.path.append('../../')
@@ -58,14 +59,14 @@ if __name__=="__main__":
                 message = "RESTART"
                 total_count = 0
                 total_cost = 0
-                total_count, total_cost = send_weibo(total_count, total_cost)
+                total_count, total_cost = send_weibo(sender, total_count, total_cost)
         else:
             if message == "PAUSE":
                 time.sleep(1)
                 print message
                 continue
             else:
-                total_count, total_cost = send_weibo(total_count, total_cost)
+                total_count, total_cost = send_weibo(sender, total_count, total_cost)
 
            
 

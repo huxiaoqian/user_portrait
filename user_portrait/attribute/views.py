@@ -6,6 +6,9 @@ import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from search import search_location, search_mention, search_activity,\
                    search_attention, search_follower
+from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_fans_attribute
+from search_mid import index_mid
+from user_portrait.extensions import es_get_source
 
 # use to test 13-09-08
 test_time = 1378569600
@@ -59,6 +62,66 @@ def ajax_follower():
     uid = str(uid)
     results = search_follower(uid)
 
+    return json.dumps(results)
+
+"""
+attention: the format of date from request must be vertified
+format : '2015/07/04'
+
+"""
+
+@mod.route('/origin_weibo/')
+def ajax_origin_weibo():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '') # which day you want to see
+    uid = str(uid)
+
+    # test
+    date = '2013/09/01'
+    uid = '1713926427'
+
+    date = str(date).replace('/', '')
+
+    results = search_origin_attribute(date, uid)
+
+    """
+    results['origin_weibo_top_retweeted_comtent'] = index_mid(results["origin_weibo_top_retweeted_id"])
+    results['origin_weibo_top_comment_content'] = index_mid(results["origin_weibo_top_comment_id"])
+    """
+
+    return json.dumps(results)
+
+@mod.route('/retweeted_weibo/')
+def ajax_retweetd_weibo():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
+    uid = str(uid)
+    date = str(date).replace('/', '')
+
+    results = search_retweeted_attribute(date, uid)
+
+    """
+    results['retweeted_weibo_top_retweeted_content'] = index_mid(results['retweeted_weibo_top_retweeted_id'])
+    results['retweeted_weibo_top_comment_content'] = index_mid(results['retweeted_weibo_top_comment_id'])
+    """
+
+    return json.dumps(results)
+
+@mod.route('/basic_info/')
+def ajax_basic_info():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
+    uid = str(uid)
+
+    # test 
+    date = '2013/09/01'
+    uid = '1713926427'
+
+    date = str(date).replace('/', '')
+
+    fans = search_fans_attribute(date, uid)
+    results = es_get_source(uid)
+    results['fansnum'] = fans['user_fansnum']
     return json.dumps(results)
 
 

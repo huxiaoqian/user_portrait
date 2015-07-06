@@ -11,7 +11,7 @@ from datetime import datetime
 reload(sys)
 sys.path.append('../../')
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1 
-from global_utils import  _default_cluster_redis
+from global_utils import  R_CLUSTER_FLOW1
 
 """
 single_redis is nickname_to_uid
@@ -26,6 +26,7 @@ def get_queue_index(timestamp):
     return int(index)
 
 def cal_propage_work(item):
+    cluster_redis = R_CLUSTER_FLOW1
     user = str(item['uid'])
     followers_count = item['user_fansnum']
     cluster_redis.hset(user, 'user_fansnum', followers_count)
@@ -33,14 +34,11 @@ def cal_propage_work(item):
     retweeted_uid = str(item['root_uid'])
     retweeted_mid = str(item['root_mid'])
 
-    message_type = item['message_type']
-    if message_type == 2:
-        mid = str(item['mid'][2:])
-    else:
-        mid = str(item['mid'])
-
+    message_type = int(item['message_type'])
+    mid = str(item['mid'])
     timestamp = item['timestamp']
     text = item['text']
+
     if message_type == 1:
         cluster_redis.sadd('user_set', user)
         cluster_redis.hset(user, mid + '_origin_weibo_timestamp', timestamp)
@@ -105,31 +103,32 @@ if __name__ == "__main__":
     controller = context.socket(zmq.SUB)
     controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
 
-    cluster_redis = _default_cluster_redis
+    cluster_redis = R_CLUSTER_FLOW1
     
 
     count = 0
     tb = time.time()
     ts = tb
     while 1:
-        try:
-            item = receiver.recv_json()
-        except Exception, e:
-            print Exception, ":", e 
+        item = receiver.recv_json()
+
         if not item:
             continue 
-        
-        if item['sp_type'] == 1:
-            try:
+
+        if int(item['sp_type']) == 1:
+            if 1:
+            #try
                 cal_propage_work(item)
-            except Exception, r:
-                print Exception, r
+            #except Exception, r:
+            #    print Exception, r
 
 
-        count += 1
-        if count % 10000 == 0:
-            te = time.time()
-            print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
+            count += 1
+            if count % 10000 == 0:
+                te = time.time()
+                print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
+                ts = te
+
             if count % 100000 == 0:
                 print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 
-            ts = te
+                ts = te

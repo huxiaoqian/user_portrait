@@ -33,9 +33,10 @@ if __name__ == "__main__":
     controller.bind("tcp://%s:%s" %(ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
  
     for i in range(5):
+        time.sleep(0.1)
         controller.send("PAUSE")
         # repeat to send to ensure 
 
-    delete_files()
+    #delete_files()
   
 

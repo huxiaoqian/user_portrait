@@ -32,9 +32,10 @@ BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yua
 BIN_FILE_PATH = '/home/ubuntu8/data1309/20130901'
 
 # need three ES identification 
-USER_PROFILE_ES_HOST = ['219.224.135.96','219.224.135.97','219.224.135.98']
-USER_PORTRAIT_ES_HOST = []
-
+USER_PROFILE_ES_HOST = ['219.224.135.96:9208','219.224.135.97:9208','219.224.135.98:9208']
+USER_PROFILE_ES_PORT = 9208
+USER_PORTRAIT_ES_HOST = ['219.224.135.93', '219.224.135.94']
+USER_PORTRAIT_ES_PORT = 9200
 
 # use to identify the db number of redis-97
 R_BEGIN_TIME = '2013-09-01'
@@ -42,3 +43,7 @@ R_BEGIN_TIME = '2013-09-01'
 # use to recommentation
 RECOMMENTATION_FILE_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/recommentaion_file'
 RECOMMENTATION_TOPK = 10000
+
+# all weibo database
+WEIBO_API_HOST = ''
+WEIBO_API_PORT = ''
