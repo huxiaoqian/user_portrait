@@ -39,3 +39,7 @@ USER_PORTRAIT_ES_PORT = 9200
 
 # use to identify the db number of redis-97
 R_BEGIN_TIME = '2013-09-01'
+
+# all weibo database
+WEIBO_API_HOST = ''
+WEIBO_API_PORT = ''
