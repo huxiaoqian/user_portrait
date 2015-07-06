@@ -173,8 +173,8 @@ if __name__ == "__main__":
 
     count = 0
     tb = time.time()
-    print es.nodes.info("node_id=all")
-    print es.cluster.health()
+#    print es.nodes.info("node_id=all")
+#    print es.cluster.health()
 
     while 1:
         es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))

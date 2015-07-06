@@ -26,4 +26,8 @@ def search_weibo_behavior(user_index, uid, d_type="bci"):
         else:
             user_info = es.get(index=user_index, doc_type=d_type, id=uid, _source=True)['_source']
             return user_info
+"""
+if __name__ == "__main__":
+    print search_weibo_behavior("20130901", "1713926427")
+"""
 
