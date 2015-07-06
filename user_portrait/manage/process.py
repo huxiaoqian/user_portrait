@@ -14,8 +14,8 @@ def expand_index_action(data):
 
 def es_create():
     es.indices.delete(index=index_name)
-    print es.nodes.info("node_id=all")
-    print es.cluster.health()
+    # print es.nodes.info("node_id=all")
+    # print es.cluster.health()
     flag = es.indices.exists(index=index_name)
     if not flag:
         es.indices.create(index=index_name, ignore=400)
