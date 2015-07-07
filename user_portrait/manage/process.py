@@ -9,9 +9,10 @@ from user_portrait.global_utils import R_RECOMMENTATION, es_user_portrait
 from user_portrait.time_utils import datetime2ts
 
 es = es_user_portrait
-r_cluster = R_RECOMMENTATION
 index_type = 'user'
 index_name = "user_portrait"
+
+r_cluster = R_RECOMMENTATION
 hash_name = 'compute'
 
 
