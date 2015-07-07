@@ -1,14 +1,15 @@
 # -*- coding: UTF-8 -*-
 import json
 import time
-from datetime import date, timedelta
 import sys
-sys.path.append('../')
+sys.path.append('../../')
+from datetime import date, timedelta
 from elasticsearch import Elasticsearch
-from global_utils import R_RECOMMENTATION as r_cluster
-from time_utils import datetime2ts
+from user_portrait.global_utils import R_RECOMMENTATION, es_user_portrait
+from user_portrait.time_utils import datetime2ts
 
-es = Elasticsearch('219.224.135.93', timeout = 60)
+es = es_user_portrait
+r_cluster = R_RECOMMENTATION
 index_type = 'user'
 index_name = "user_portrait"
 hash_name = 'compute'
