@@ -6,7 +6,7 @@ import sys
 sys.path.append('../')
 from elasticsearch import Elasticsearch
 from global_utils import R_RECOMMENTATION as r_cluster
-from time_utils import date2ts
+from time_utils import datetime2ts
 
 es = Elasticsearch('219.224.135.93', timeout = 60)
 index_type = 'user'
@@ -92,7 +92,7 @@ def auto_cal():
     results_dict = r_cluster.hgetall(hash_name)
     for uid in results_dict:
         result = json.loads(results_dict[uid])
-        in_date = date.fromtimestamp(date2ts(result[0]))
+        in_date = date.fromtimestamp(datetime2ts(result[0]))
         if (today - in_date) > delta:
             uid_list.append(uid)
     start_cal(uid_list)
