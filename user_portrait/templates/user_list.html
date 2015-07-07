@@ -5,39 +5,9 @@
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Pragma" content="no-cache">
-    <style>
-    body {font-family: 宋体}
-    td {font-size: 9pt; line-height: 18px}
-    .formfont {font-size: 16px; font-family: Verdana}
-    .p2 {font-size: 14px; line-height: 24px; font-family: "Arial"}
-    .p3 {font-size: 13px; line-height: 24px; font-family: "Arial"}
-    .t {color: #00C; text-decoration: underline}
-    a.t:hover {text-decoration: underline}
-    .nav {font-weight: bold; font-size: 14px; color: #FFF; line-height: 20px; text-decoration: none}
-    a.nav:hover {text-decoration: underline}
-    .r {font-size: 14px; text-decoration: underline}
-    a.r:hover {color: #E10900}
-    .g {color: #666}
-    .c {color:#77C}
-    .cp{clear:both;text-align:center;padding-top:10px;padding-bottom:10px;border-top:0px solid #7AA9DF;color:#777;font-size:12px;font-family:Arial}
-    .cy,a.cy:link,a.cy:visited{color:#77C;font-size:12px;font-family:Arial}
-    .padl10{padding-left:10px}
-    #ft {clear: both;padding-bottom: 10px; line-height: 20px; padding-top: 10px; text-align: center}
-    #ft {font-size: 12px; color: #77C; font-family: arial; white-space: nowrap}
-    #ft  {font-size: 12px; color: #77C; font-family: arial; white-space: nowrap}
-    </style>
-<table width="100%" style="margin-top:-70px"border=0>
-    <tr height=60>
-      <td height="69">
-        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-          <tr>
-            <td bgcolor="#E5ECF9" height="24" class="p2" nowrap>&nbsp;<b> 搜索</b></td>
-            <td bgcolor="#E5ECF9" height="24" class="p2" nowrap></td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-</table>
+
+    <h4 class="page-header" style='margin-top:-40px'>用户信息条件搜索</h4>
+
 <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
   <tr>
     <td>
@@ -48,53 +18,61 @@
           <tr >
             <td  style="border-top:1px solid #c9d7f1;border-left:1px solid #c9d7f1;border-right:1px solid #c9d7f1;border-bottom:1px solid #c9d7f1;">
               <table cellspacing=0 cellpadding=0 width="100%" border=0>
-                <tr bgcolor=#E6E6E6>
-                  <td bgcolor="#E5ECF9">
-                    <table cellspacing=0 cellpadding=2 width="100%">
-                      <tbody>
-                        <tr bgcolor=#E5ECF9>
-                          <td colspan="4" height="7"></td>
-                        </tr>
+                <tr>
+                  <td>
+                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
                       <tr>
-                        <td width="16%" height="35" class="padl10"><b>用户UID</b></td>
+                        <td width="16%" height="35" class="padl10"><b>UID</b></td>
 
-                        <td width="24%">用户UID维度搜索</td>
+                        <td width="24%">用户UID维度模糊搜索</td>
                         <td width="31%">
-                          <input size=20 name=q1 type="text" value=""  scrolling="no" placeholder="uid">
+                          <input size=20 name=q1 type="text" scrolling="no">
                         </td>
                         <td>
                           <input name="submit" type='submit' id="submit" value=开始搜索>
                         </td>
-              </tr>
-              <tr bgcolor=#E5ECF9>
-                        <td colspan="4" height="7"></td>
-                        </tr>
-              <tr bgcolor=#FFFFFF>
-                        <td colspan="4" height="7"></td>
-                        </tr>
+                      </tr>
                     </table>
                     <table cellspacing=0 cellpadding=2 width="100%" border=0>
-                      <tr bgcolor=#ffffff>
-                        <td width="16%" height="35" class="padl10"><b>用户昵称</b></td>
-                        <td width="24%"> 用户昵称维度搜索</td>
+                      <tr>
+                        <td width="16%" height="35" class="padl10"><b>昵称</b></td>
+                        <td width="24%"> 用户昵称维度模糊搜索</td>
                         <td>
-                          <input size=20 name=q2 scrolling="no" value="" placeholder="nick name">
+                          <input size=20 name=q2 scrolling="no" value="">
                         </td>
                       </tr>
                     </table>
                     <table cellspacing=0 cellpadding=2 width="100%" border=0>
-                      <tr bgcolor=#ffffff>
-                        <td width="16%" height="35" class="padl10"><b>用户真实姓名</b></td>
-                        <td width="24%"> 用户真实姓名维度搜索</td>
+                      <tr>
+                        <td width="16%" height="35" class="padl10"><b>真实姓名</b></td>
+                        <td width="24%"> 用户真实姓名维度模糊搜索</td>
                         <td>
-                          <input size=20 name=q3 scrolling="no" value="" placeholder="real name">
+                          <input size=20 name=q3 scrolling="no" value="">
+                        </td>
+                      </tr>
+                    </table>
+                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr>
+                        <td width="16%" height="35" class="padl10"><b>注册邮箱</b></td>
+                        <td width="24%"> 用户注册邮箱维度精确搜索</td>
+                        <td>
+                          <input size=20 name=q7 scrolling="no" value="">
+                        </td>
+                      </tr>
+                    </table>
+                    <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr>
+                        <td width="16%" height="35" class="padl10"><b>用户所在地</b></td>
+                        <td width="24%"> 用户所在地维度搜索</td>
+                        <td>
+                          <input size=20 name=q7 scrolling="no" value="">
                         </td>
                       </tr>
                     </table>
                     <table cellspacing=0 cellpadding=2 width="100%">
 
-              <tr bgcolor=#ffffff>
-                        <td height="35" class="padl10"><b>用户是否认证</b></td>
+              <tr>
+                        <td height="35" class="padl10"><b>认证</b></td>
                         <td>用户是否认证维度搜索</td>
                         <td>
                           <select name="tn">
@@ -104,8 +82,8 @@
                           </select>
                 </td>
               </tr>       
-              <tr bgcolor=#ffffff>
-                        <td height="35" class="padl10"><b>用户性别</b></td>
+              <tr>
+                        <td height="35" class="padl10"><b>性别</b></td>
                         <td>用户性别维度搜索</td>
                         <td>
                           <select name="sex">
@@ -115,8 +93,8 @@
                           </select>
                 </td>
                       </tr>
-                      <tr bgcolor=#ffffff>
-                        <td width="16%" height="35" class="padl10"><b>搜索结果显示条数</b></td>
+                      <tr>
+                        <td width="16%" height="35" class="padl10"><b>显示条数</b></td>
                         <td width="24%">选择搜索结果显示的微博条数　</td>
                         <td>
                           <select name="size">
@@ -126,8 +104,8 @@
                             <option value=100> 显示100条</option>
                           </select>                  </td>
                       </tr>
-              <tr bgcolor=#ffffff>
-                        <td height="35" class="padl10"><b>用户微博来源</b></td>
+              <tr>
+                        <td height="35" class="padl10"><b>微博来源</b></td>
                         <td>用户微博来源维度搜索</td>
                         <td>
                           <select name="q4">
@@ -141,15 +119,35 @@
               </tr> 
               <table cellspacing=0 cellpadding=2 width="100%" border=0>
                       <tr bgcolor=#ffffff>
-                        <td width="16%" height="35" class="padl10"><b>用户微博数搜索</b></td>
-                        <td width="24%"> 用户微博数搜索</td>
+                        <td width="16%" height="35" class="padl10"><b>微博数搜索</b></td>
+                        <td width="24%"> 用户微博数维度搜索</td>
                         <td>
                           <b>从</b><input size=10 name=q5>
                           <b>至</b><input size=10 name=q6>
                         </td>
                       </tr>
               </table>
-              <tr bgcolor=#ffffff>
+              <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>粉丝数搜索</b></td>
+                        <td width="24%"> 用户粉丝数维度搜索</td>
+                        <td>
+                          <b>从</b><input size=10 name=q8>
+                          <b>至</b><input size=10 name=q9>
+                        </td>
+                      </tr>
+              </table>
+              <table cellspacing=0 cellpadding=2 width="100%" border=0>
+                      <tr bgcolor=#ffffff>
+                        <td width="16%" height="35" class="padl10"><b>关注数搜索</b></td>
+                        <td width="24%"> 用户关注数维度搜索</td>
+                        <td>
+                          <b>从</b><input size=10 name=q10>
+                          <b>至</b><input size=10 name=q11>
+                        </td>
+                      </tr>
+              </table>
+              <tr>
                         <td colspan="4" height="7"></td>
                         </tr>
                     </table>
@@ -163,17 +161,12 @@
       </form>
     </td>
   </tr>
-</table>    
-        <h4 class="page-header"style="margin-top:10px">检索信息</h3>
-        <div class="table">
-            <ul class="list-group">
-              <li class="list-group-item list-group-item-success">耗时：{{ source.took }}ms</li>
-              <li class="list-group-item list-group-item-info">命中：{{ source.hits.total }}</li>
-              <li class="list-group-item list-group-item-warning">最大权重：{{ source.hits.max_score }}</li>
-            </ul>
-        </div>
-
-        <h4 class="sub-header">用户信息列表</h4>
+</table>  
+        <h4 class="page-header"style="margin-top:10px">检索信息</h4>
+           
+        <div style="float:left;width:50%"class="list-group-item list-group-item-success">耗时：{{ source.took }}ms</div>
+        <div style="float:right;width:50%"class="list-group-item list-group-item-success">命中：{{ source.hits.total }}条</div>
+        <h4 class="page-header"style="margin-top:80px">用户信息列表</h4>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>

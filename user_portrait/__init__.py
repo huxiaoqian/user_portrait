@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from user_portrait.extensions import admin, es
-from user_portrait.jinja import gender, tsfmt
+from user_portrait.jinja import gender, tsfmt, Int2string
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
@@ -93,5 +93,6 @@ def register_extensions(app):
 
 def register_jinja_funcs(app):
     funcs = dict(gender=gender,
-                 tsfmt=tsfmt)
+                 tsfmt=tsfmt,
+                 int2string=Int2string)
     app.jinja_env.globals.update(funcs)

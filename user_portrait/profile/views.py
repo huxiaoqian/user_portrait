@@ -17,7 +17,8 @@ class HomeView(views.MethodView):
 
     def get(self):
         #q = request.args.get('q')
-        fuzz_item = ['uid', 'nick_name', 'real_name']
+        fuzz_item = ['uid', 'nick_name', 'real_name', 'location']
+        range_item = ['statusnum', 'fansnum', 'friendsnum']
         data = {}
         query = []
         num = 0
@@ -26,25 +27,38 @@ class HomeView(views.MethodView):
         data['real_name'] = request.args.get('q3')
         data['isreal'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
-        data['weibo_from'] = request.args.get('q5')
-        data['weibo_to'] = request.args.get('q6')
+        data['email'] = request.args.get('q7') 
+        data['location'] = request.args.get('q12')
+        for key in range_item:
+            data[key] = {}
+        data['statusnum']['from'] = request.args.get('q5')
+        data['statusnum']['to'] = request.args.get('q6')
+        data['fansnum']['from'] = request.args.get('q8')
+        data['fansnum']['to'] = request.args.get('q9')
+        data['friendsnum']['from'] = request.args.get('q10')
+        data['friendsnum']['to'] = request.args.get('q11')
+
         size = request.args.get('size')
         if data['isreal'] == '2':
             data['isreal'] = ''
         if data['sex'] == '0':
             data['sex'] = ''
         for key in data:
-            if data[key]:
+
+            if data[key] and key not in range_item:
                 if key in fuzz_item:
                     query.append({'wildcard':{key : "*" + data[key] + '*'}})
-                    num += 1
-                elif key == 'weibo_from' or 'weibo_to':
-                    query.append({'range':{"statusnum":{"from":data['weibo_from'],"to":data['weibo_to']}}})
                     num += 1
                 else :
                     query.append({'match':{key : data[key]}})
                     num += 1
-
+            elif data[key]:
+                if data[key]['from'] and data[key]['to']:
+                    query.append({'range':{key:{"from":data[key]['from'],"to":data[key]['to']}}})
+                    num += 1
+        
+        # for k in query:
+        #     print query[key]
         # nick_name = request.args.get('q2')
         # if q is not None:
         #     q = q.strip()
@@ -157,9 +171,15 @@ class UserFriendsView(views.MethodView):
     def get(self, id):
         return render_template(self.template, id=id)
 
+class Testviews(views.MethodView):
+
+    def get(self):
+        return  render_template('test.html')
+
 mod.add_url_rule('/', view_func=HomeView.as_view('homepage'))
 mod.add_url_rule('/keywords/', view_func=KeywordView.as_view('keyword'))
 mod.add_url_rule('/search/', view_func=SearchView.as_view('index'))
 mod.add_url_rule('/<id>/', view_func=UserView.as_view('detail'))
 mod.add_url_rule('/<id>/followers/', view_func=UserFollowersView.as_view('followers'))
 mod.add_url_rule('/<id>/friends/', view_func=UserFriendsView.as_view('friends'))
+mod.add_url_rule('/test/', view_func=Testviews.as_view('test'))
