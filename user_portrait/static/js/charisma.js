@@ -275,8 +275,9 @@ function docReady() {
     $('.datatable').dataTable({
         "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
+        "bSort": false,
         "oLanguage": {
-            "sLengthMenu": "_MENU_ records per page"
+            "sLengthMenu": "_MENU_ 每页"
         }
     });
     $('.btn-close').click(function (e) {
