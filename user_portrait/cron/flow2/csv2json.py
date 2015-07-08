@@ -25,7 +25,7 @@ SP_TYPE_KEYS = '1'  # 1代表新浪微博
 
 CSV2BIN_DICT = {'uid':'user', 'root_uid':'retweeted_uid', 'mid':'_id', \
                 'root_mid':'retweeted_mid', 'text':'text', 'user_fansum':0 ,\
-                'mid_commentum':0, 'text_length':0, 'audit_status':0 ,\
+                'mid_commentnum':0, 'text_length':0, 'audit_status':0 ,\
                 'mid_retweetnum':0, 'video_url_length':0, 'send_ip':'geo' ,\
                 'send_port':0, 'client_type':0, 'mobile_type':0, 'timestamp':'timestamp' ,\
                 'sp_type': 1, 'video_content_length':0, 'pic_content_length':0 ,\
