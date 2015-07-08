@@ -4,10 +4,11 @@ import time
 from elasticsearch import Elasticsearch
 from flask import Blueprint, redirect
 from process import es_create
+from user_portrait.global_utils import es_user_portrait
 
 mod = Blueprint('manage', __name__, url_prefix='/manage')
 
-es = Elasticsearch('219.224.135.93', timeout = 60)
+es = es_user_portrait
 index_type = 'user'
 index_name = "user_portrait"
 

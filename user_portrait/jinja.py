@@ -11,6 +11,9 @@ def gender(g):
 	else:
 		return u'未知'
 
+def Int2string(g):
+	return str(g) 
+
 
 def tsfmt(ts):
     return date.fromtimestamp(ts) if ts else None
