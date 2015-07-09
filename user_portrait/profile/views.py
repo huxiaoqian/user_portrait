@@ -1,13 +1,11 @@
 # -*- coding:utf-8 -*-
 import json
 from flask import views, Blueprint, render_template, request
-from user_portrait.search_user_profile import es_get_source, es_mget_source
-from user_portrait.global_utils import es_user_profile
+from user_portrait.extensions import es, es_get_source, es_mget_source
 from .form import SearchForm
 
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
-es = es_user_profile
 
 class HomeView(views.MethodView):
     """
@@ -19,18 +17,22 @@ class HomeView(views.MethodView):
 
     def get(self):
         #q = request.args.get('q')
-        fuzz_item = ['uid', 'nick_name', 'real_name', 'location']
+        fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location']
         range_item = ['statusnum', 'fansnum', 'friendsnum']
+        select_item = ['sex', 'tn', 'sp_type']
         data = {}
         query = []
         num = 0
+        order = []
         data['uid'] = request.args.get('q1')
         data['nick_name'] = request.args.get('q2')
         data['real_name'] = request.args.get('q3')
+        data['sp_type'] = request.args.get('q4')
         data['isreal'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
         data['email'] = request.args.get('q7') 
-        data['location'] = request.args.get('q12')
+        data['user_location'] = request.args.get('q12')
+        rank_order = request.args.get('order')
         for key in range_item:
             data[key] = {}
         data['statusnum']['from'] = request.args.get('q5')
@@ -39,37 +41,37 @@ class HomeView(views.MethodView):
         data['fansnum']['to'] = request.args.get('q9')
         data['friendsnum']['from'] = request.args.get('q10')
         data['friendsnum']['to'] = request.args.get('q11')
-
         size = request.args.get('size')
+        if rank_order == "0":
+            order = [{'statusnum':{'order':'desc'}}]
+            num += 1
+        if rank_order == "1":
+            order = [{'fansnum':{'order':'desc'}}]
+            num += 1
+        if rank_order == "2":
+            order = [{'friendsnum':{'order':'desc'}}]
+            num += 1
+
         if data['isreal'] == '2':
             data['isreal'] = ''
         if data['sex'] == '0':
             data['sex'] = ''
+        if data['sp_type'] == '0':
+            data['sp_type'] = ''
         for key in data:
-
             if data[key] and key not in range_item:
                 if key in fuzz_item:
                     query.append({'wildcard':{key : "*" + data[key] + '*'}})
                     num += 1
-                else :
-                    query.append({'match':{key : data[key]}})
-                    num += 1
+                if key in select_item :
+                    if data[key]:
+                        query.append({'match':{key : data[key]}})
+                        num += 1
             elif data[key]:
                 if data[key]['from'] and data[key]['to']:
                     query.append({'range':{key:{"from":data[key]['from'],"to":data[key]['to']}}})
                     num += 1
-        
-        # for k in query:
-        #     print query[key]
-        # nick_name = request.args.get('q2')
-        # if q is not None:
-        #     q = q.strip()
-        # if not q:
-        #     return render_template(self.home_template)
-        
-        # add to redis
-        #redis.sadd('keywords', q)
-        # es search
+
         if num > 0:
             try:
                 source = es.search(
@@ -80,9 +82,10 @@ class HomeView(views.MethodView):
                             'bool':{
                                 'must':query
                             }
+                        },
+                        "sort":order,
+                        "size" : 100
                         }
-                    },
-                    size = size
                 )
             except Exception as e:
                 # TODO handle exception
@@ -92,9 +95,11 @@ class HomeView(views.MethodView):
                 index = 'weibo_user',
                 doc_type = 'user',
                 body = {
-                    'query':{'match_all':{}}
+                    'query':{'match_all':{}
                 },
-                size = 100
+                    "sort":[{'statusnum':{'order':'desc'}}],
+                    "size" : 100
+                    }
             )
 
         return render_template(self.index_template, source=source)
