@@ -35,6 +35,12 @@ class HomeView(views.MethodView):
         rank_order = request.args.get('order')
         for key in range_item:
             data[key] = {}
+        data['statusnum']['from'] = '0'
+        data['statusnum']['to'] = '100000000'
+        data['fansnum']['from'] = '0'
+        data['fansnum']['to'] = '100000000'
+        data['friendsnum']['from'] = '0'
+        data['friendsnum']['to'] = '100000000'
         data['statusnum']['from'] = request.args.get('q5')
         data['statusnum']['to'] = request.args.get('q6')
         data['fansnum']['from'] = request.args.get('q8')
@@ -42,6 +48,11 @@ class HomeView(views.MethodView):
         data['friendsnum']['from'] = request.args.get('q10')
         data['friendsnum']['to'] = request.args.get('q11')
         size = request.args.get('size')
+        for key in range_item:
+            if data[key]['from'] == '' and data[key]['to'] != '':
+                data[key]['from'] = '0'
+            if data[key]['from'] != '' and data[key]['to'] == '':
+                data[key]['to'] = '100000000'
         if rank_order == "0":
             order = [{'statusnum':{'order':'desc'}}]
             num += 1
@@ -71,6 +82,7 @@ class HomeView(views.MethodView):
                 if data[key]['from'] and data[key]['to']:
                     query.append({'range':{key:{"from":data[key]['from'],"to":data[key]['to']}}})
                     num += 1
+                    print data[key]['to']
 
         if num > 0:
             try:
@@ -84,7 +96,7 @@ class HomeView(views.MethodView):
                             }
                         },
                         "sort":order,
-                        "size" : 100
+                        "size" : size
                         }
                 )
             except Exception as e:
