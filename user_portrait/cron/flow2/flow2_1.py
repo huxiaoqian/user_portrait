@@ -4,9 +4,8 @@ import urllib
 import json
 import sys
 
-from mention import accumulate_at
-from area import accumulate_ip
-from activity import accumulate_activity
+from text_utils import accumulate_text, write_sensitive_user
+
 reload(sys)
 sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
@@ -123,16 +122,14 @@ def csv2dict(file_path):
         itemdict = itemLine2Dict(line)
         # attribute of city
 
-        if itemdict:
-            accumulate_ip(itemdict)
-            # attribute of @ social
-            accumulate_at(itemdict)
-            # attribte of activity
-            accumulate_activity(itemdict)
+        if itemdict and itemdict['text']:
+            #print 'text:', itemdict['text'], type(itemdict['text'])
+            accumulate_text(itemdict['user'], itemdict['text'])
+    write_sensitive_user() 
                        
 if __name__=='__main__':
-    for j in range(1,2):
-        for i in range(1,2):
+    for j in range(7,8):
+        for i in range(1,15):
             print 'start compute:', str(j) + '_' + str(i)
-            file_path = '/home/ubuntu4/huxiaoqian/portrait/MB_QL_9_'+str(j) +'_NODE'+ str(i) + '.csv'  
+            file_path = '/home/ubuntu8/data1309/20130901/MB_QL_9_'+str(j) +'_NODE'+ str(i) + '.csv'  
             csv2dict(file_path)

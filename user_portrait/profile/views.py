@@ -134,6 +134,7 @@ class HomeView(views.MethodView):
                 item_content.append(self.decode_item(source_content[key]))
 
             writer.writerow(item_content)
+        csvfile.close()
         return render_template(self.index_template, source=source)
 
     def decode_item(self, data):
