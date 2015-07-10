@@ -4,9 +4,7 @@ import urllib
 import json
 import sys
 
-from mention import accumulate_at
-from area import accumulate_ip
-from activity import accumulate_activity
+from text_attribute import deal_text_word
 
 ORIGIN_KEYS = ['user', 'retweeted_uid', '_id', 'retweeted_mid', 'timestamp',
                'input_time', 'geo', 'province', 'city', 'message_type', 'user_fansnum',
@@ -112,6 +110,8 @@ def csv2dict(file_path):
     r_count = 0
     for line in f:
         count += 1
+        if count == 30:
+            break
         if count % 10000 ==0:
             te = time.time()
             print 'all_count:', count, '%s sec' % (te - ts)
@@ -120,17 +120,15 @@ def csv2dict(file_path):
         itemdict = itemLine2Dict(line)
         # attribute of city
         
-        if itemdict:
-            accumulate_ip(itemdict)
-            # attribute of @ social
-            accumulate_at(itemdict)
-            # attribute of activity
-            accumulate_activity(itemdict)
+        if itemdict and itemdict['text']:
+            text = itemdict['text']
+            user = itemdict['user']
+            deal_text_word(user, text)
 
                        
 if __name__=='__main__':
     for j in range(1,2):
         for i in range(1,2):
             print 'start compute:', str(j) + '_' + str(i)
-            file_path = '/home/ubuntu4/huxiaoqian/portrait/MB_QL_9_' + str(j)+ '_NODE'+ str(i) + '.csv'  
+            file_path = '/home/ubuntu8/data1309/20130901/MB_QL_9_' + str(j)+ '_NODE'+ str(i) + '.csv'  
             csv2dict(file_path)
