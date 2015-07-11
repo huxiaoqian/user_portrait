@@ -1,12 +1,16 @@
 # -*- coding:utf-8 -*-
 import json
+import csv
 from flask import views, Blueprint, render_template, request
 from user_portrait.global_utils import es_user_profile as es
 from user_portrait.search_user_profile import es_get_source, es_mget_source
+from os.path import dirname, abspath, join
 from .form import SearchForm
 
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
+
+
 
 class HomeView(views.MethodView):
     """
@@ -18,6 +22,8 @@ class HomeView(views.MethodView):
 
     def get(self):
         #q = request.args.get('q')
+        item_content = []
+        item_head = []
         fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location']
         range_item = ['statusnum', 'fansnum', 'friendsnum']
         select_item = ['sex', 'tn', 'sp_type']
@@ -114,8 +120,30 @@ class HomeView(views.MethodView):
                     "size" : 100
                     }
             )
+        file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
+        isflag = 1
+        csvfile = file(file_location, 'wb')
+        writer = csv.writer(csvfile)
+        for key in source['hits']['hits']:
+            source_content = key['_source']
+            if isflag:
+                item_head = [key for key in source_content]
+                writer.writerow(item_head)
+                isflag = 0
 
+            for key in source_content:
+                item_content.append(self.decode_item(source_content[key]))
+
+            writer.writerow(item_content)
+        csvfile.close()
         return render_template(self.index_template, source=source)
+
+    def decode_item(self, data):
+        try:
+            result = data.encode('utf-8')
+        except:
+            result = data
+        return result
 
 
 class KeywordView(views.MethodView):
@@ -196,6 +224,52 @@ class Testviews(views.MethodView):
     def get(self):
         return  render_template('test.html')
 
+# class DownloadView(views.MethodView):
+
+#     def get(self):
+#         user_id = request.args.get('id')
+#         q = request.args.get('q')
+#         select_id = user_id.split(',')
+#         file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
+#         isflag = 1
+#         csvfile = file(file_location, 'wb')
+#         writer = csv.writer(csvfile)
+
+#         for uid in select_id:
+#             item_content = []
+#             if uid:
+#                 source = es.search(
+#                     index = 'weibo_user',
+#                     doc_type = 'user',
+#                     body ={
+#                         'query':{
+#                             'match':{'id':uid}
+#                         },
+#                         'size':10
+#                     }                        
+#                 )
+#                 source_content = source['hits']['hits'][0]['_source']
+#                 if isflag:
+#                     item_head = [key for key in source_content]
+#                     writer.writerow(item_head)
+#                     isflag = 0
+
+#                 for key in source_content:
+#                     if isinstance(source_content[key],unicode):
+#                         print 'it is unicode'
+#                     item_content.append(self.decode_item(source_content[key]))
+
+#                 writer.writerow(item_content)
+
+#         csvfile.close()
+#         return  json.dumps(export_data)
+
+#     def decode_item(self, data):
+#         try:
+#             result = data.encode('utf-8')
+#         except:
+#             result = data
+#         return result
 mod.add_url_rule('/', view_func=HomeView.as_view('homepage'))
 mod.add_url_rule('/keywords/', view_func=KeywordView.as_view('keyword'))
 mod.add_url_rule('/search/', view_func=SearchView.as_view('index'))
@@ -203,3 +277,4 @@ mod.add_url_rule('/<id>/', view_func=UserView.as_view('detail'))
 mod.add_url_rule('/<id>/followers/', view_func=UserFollowersView.as_view('followers'))
 mod.add_url_rule('/<id>/friends/', view_func=UserFriendsView.as_view('friends'))
 mod.add_url_rule('/test/', view_func=Testviews.as_view('test'))
+# mod.add_url_rule('/download/', view_func=DownloadView.as_view('download'))
