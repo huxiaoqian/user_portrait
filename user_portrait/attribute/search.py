@@ -8,7 +8,7 @@ import csv
 import time
 import json
 import redis
-
+sys.path.append('../../')
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
@@ -190,7 +190,7 @@ if __name__=='__main__':
     print 'attention:', results1
     results2 = search_follower(uid)
     print 'follow:', results2
-    results3 = search_at(now_ts, uid)
+    results3 = search_mention(now_ts, uid)
     print 'at_user:', results3 
     results4 = search_location(now_ts, uid)
     print 'location:', results4
