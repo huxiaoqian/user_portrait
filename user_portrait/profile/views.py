@@ -2,7 +2,8 @@
 import json
 import csv
 from flask import views, Blueprint, render_template, request
-from user_portrait.extensions import es, es_get_source, es_mget_source
+from user_portrait.global_utils import es_user_profile as es
+from user_portrait.search_user_profile import es_get_source, es_mget_source
 from os.path import dirname, abspath, join
 from .form import SearchForm
 
@@ -32,11 +33,11 @@ class HomeView(views.MethodView):
         order = []
         data['uid'] = request.args.get('q1')
         data['nick_name'] = request.args.get('q2')
-        data['real_name'] = request.args.get('q3')
+        data['rel_name'] = request.args.get('q3')
         data['sp_type'] = request.args.get('q4')
         data['isreal'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
-        data['email'] = request.args.get('q7') 
+        data['user_email'] = request.args.get('q7') 
         data['user_location'] = request.args.get('q12')
         rank_order = request.args.get('order')
         for key in range_item:
