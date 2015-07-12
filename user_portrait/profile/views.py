@@ -24,7 +24,7 @@ class HomeView(views.MethodView):
         #q = request.args.get('q')
         item_content = []
         item_head = []
-        fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location']
+        fuzz_item = ['uid', 'nick_name', 'rel_name', 'user_location']
         range_item = ['statusnum', 'fansnum', 'friendsnum']
         select_item = ['sex', 'tn', 'sp_type']
         data = {}
