@@ -29,7 +29,7 @@ def search_attention(uid):
                     stat_results[ruid] += ruid_results[ruid]
                 except:
                     stat_results[ruid] = ruid_results[ruid]
-    print 'results:', stat_results
+    # print 'results:', stat_results
     for ruid in stat_results:
         # search uid
         '''
@@ -61,7 +61,7 @@ def search_follower(uid):
                     stat_results[br_uid] += br_uid_results[br_uid]
                 except:
                     stat_results[br_uid] = br_uid_results[br_uid]
-    print 'stat_results:', stat_results
+    # print 'stat_results:', stat_results
     for br_uid in stat_results:
         # search uid
         '''
