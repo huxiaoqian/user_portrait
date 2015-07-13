@@ -1,13 +1,16 @@
 # -*- coding:utf-8 -*-
 import json
+import csv
 from flask import views, Blueprint, render_template, request
+from user_portrait.global_utils import es_user_profile as es
 from user_portrait.search_user_profile import es_get_source, es_mget_source
-from user_portrait.global_utils import es_user_profile
+from os.path import dirname, abspath, join
 from .form import SearchForm
 
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
-es = es_user_profile
+
+
 
 class HomeView(views.MethodView):
     """
@@ -19,43 +22,75 @@ class HomeView(views.MethodView):
 
     def get(self):
         #q = request.args.get('q')
-        fuzz_item = ['uid', 'nick_name', 'real_name']
+        item_content = []
+        item_head = []
+        fuzz_item = ['uid', 'nick_name', 'rel_name', 'user_location']
+        range_item = ['statusnum', 'fansnum', 'friendsnum']
+        select_item = ['sex', 'tn', 'sp_type']
         data = {}
         query = []
         num = 0
+        order = []
         data['uid'] = request.args.get('q1')
         data['nick_name'] = request.args.get('q2')
-        data['real_name'] = request.args.get('q3')
+        data['rel_name'] = request.args.get('q3')
+        data['sp_type'] = request.args.get('q4')
         data['isreal'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
-        data['weibo_from'] = request.args.get('q5')
-        data['weibo_to'] = request.args.get('q6')
+        data['user_email'] = request.args.get('q7') 
+        data['user_location'] = request.args.get('q12')
+        rank_order = request.args.get('order')
+        for key in range_item:
+            data[key] = {}
+        data['statusnum']['from'] = '0'
+        data['statusnum']['to'] = '100000000'
+        data['fansnum']['from'] = '0'
+        data['fansnum']['to'] = '100000000'
+        data['friendsnum']['from'] = '0'
+        data['friendsnum']['to'] = '100000000'
+        data['statusnum']['from'] = request.args.get('q5')
+        data['statusnum']['to'] = request.args.get('q6')
+        data['fansnum']['from'] = request.args.get('q8')
+        data['fansnum']['to'] = request.args.get('q9')
+        data['friendsnum']['from'] = request.args.get('q10')
+        data['friendsnum']['to'] = request.args.get('q11')
         size = request.args.get('size')
+        for key in range_item:
+            if data[key]['from'] == '' and data[key]['to'] != '':
+                data[key]['from'] = '0'
+            if data[key]['from'] != '' and data[key]['to'] == '':
+                data[key]['to'] = '100000000'
+        if rank_order == "0":
+            order = [{'statusnum':{'order':'desc'}}]
+            num += 1
+        if rank_order == "1":
+            order = [{'fansnum':{'order':'desc'}}]
+            num += 1
+        if rank_order == "2":
+            order = [{'friendsnum':{'order':'desc'}}]
+            num += 1
+
         if data['isreal'] == '2':
             data['isreal'] = ''
         if data['sex'] == '0':
             data['sex'] = ''
+        if data['sp_type'] == '0':
+            data['sp_type'] = ''
         for key in data:
-            if data[key]:
+            if data[key] and key not in range_item:
                 if key in fuzz_item:
                     query.append({'wildcard':{key : "*" + data[key] + '*'}})
                     num += 1
-                elif key == 'weibo_from' or 'weibo_to':
-                    query.append({'range':{"statusnum":{"from":data['weibo_from'],"to":data['weibo_to']}}})
+                if key in select_item :
+                    if data[key]:
+                        query.append({'match':{key : data[key]}})
+                        num += 1
+            elif data[key]:
+                if data[key]['from'] and data[key]['to']:
+                    query.append({'range':{key:{"from":data[key]['from'],"to":data[key]['to']}}})
                     num += 1
-                else :
-                    query.append({'match':{key : data[key]}})
-                    num += 1
+                    print data[key]['to']
 
-        # nick_name = request.args.get('q2')
-        # if q is not None:
-        #     q = q.strip()
-        # if not q:
-        #     return render_template(self.home_template)
-        
-        # add to redis
-        #redis.sadd('keywords', q)
-        # es search
         if num > 0:
             try:
                 source = es.search(
@@ -66,9 +101,10 @@ class HomeView(views.MethodView):
                             'bool':{
                                 'must':query
                             }
+                        },
+                        "sort":order,
+                        "size" : size
                         }
-                    },
-                    size = size
                 )
             except Exception as e:
                 # TODO handle exception
@@ -78,12 +114,36 @@ class HomeView(views.MethodView):
                 index = 'weibo_user',
                 doc_type = 'user',
                 body = {
-                    'query':{'match_all':{}}
+                    'query':{'match_all':{}
                 },
-                size = 100
+                    "sort":[{'statusnum':{'order':'desc'}}],
+                    "size" : 100
+                    }
             )
+        file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
+        isflag = 1
+        csvfile = file(file_location, 'wb')
+        writer = csv.writer(csvfile)
+        for key in source['hits']['hits']:
+            source_content = key['_source']
+            if isflag:
+                item_head = [key for key in source_content]
+                writer.writerow(item_head)
+                isflag = 0
 
+            for key in source_content:
+                item_content.append(self.decode_item(source_content[key]))
+
+            writer.writerow(item_content)
+        csvfile.close()
         return render_template(self.index_template, source=source)
+
+    def decode_item(self, data):
+        try:
+            result = data.encode('utf-8')
+        except:
+            result = data
+        return result
 
 
 class KeywordView(views.MethodView):
@@ -159,9 +219,62 @@ class UserFriendsView(views.MethodView):
     def get(self, id):
         return render_template(self.template, id=id)
 
+class Testviews(views.MethodView):
+
+    def get(self):
+        return  render_template('test.html')
+
+# class DownloadView(views.MethodView):
+
+#     def get(self):
+#         user_id = request.args.get('id')
+#         q = request.args.get('q')
+#         select_id = user_id.split(',')
+#         file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
+#         isflag = 1
+#         csvfile = file(file_location, 'wb')
+#         writer = csv.writer(csvfile)
+
+#         for uid in select_id:
+#             item_content = []
+#             if uid:
+#                 source = es.search(
+#                     index = 'weibo_user',
+#                     doc_type = 'user',
+#                     body ={
+#                         'query':{
+#                             'match':{'id':uid}
+#                         },
+#                         'size':10
+#                     }                        
+#                 )
+#                 source_content = source['hits']['hits'][0]['_source']
+#                 if isflag:
+#                     item_head = [key for key in source_content]
+#                     writer.writerow(item_head)
+#                     isflag = 0
+
+#                 for key in source_content:
+#                     if isinstance(source_content[key],unicode):
+#                         print 'it is unicode'
+#                     item_content.append(self.decode_item(source_content[key]))
+
+#                 writer.writerow(item_content)
+
+#         csvfile.close()
+#         return  json.dumps(export_data)
+
+#     def decode_item(self, data):
+#         try:
+#             result = data.encode('utf-8')
+#         except:
+#             result = data
+#         return result
 mod.add_url_rule('/', view_func=HomeView.as_view('homepage'))
 mod.add_url_rule('/keywords/', view_func=KeywordView.as_view('keyword'))
 mod.add_url_rule('/search/', view_func=SearchView.as_view('index'))
 mod.add_url_rule('/<id>/', view_func=UserView.as_view('detail'))
 mod.add_url_rule('/<id>/followers/', view_func=UserFollowersView.as_view('followers'))
 mod.add_url_rule('/<id>/friends/', view_func=UserFriendsView.as_view('friends'))
+mod.add_url_rule('/test/', view_func=Testviews.as_view('test'))
+# mod.add_url_rule('/download/', view_func=DownloadView.as_view('download'))

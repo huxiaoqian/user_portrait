@@ -21,7 +21,7 @@ r_begin_ts = datetime2ts(R_BEGIN_TIME)
 def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
-    day_gap = ((date_ts - r_begin_ts) / Day) % (14 * 16)
+    day_gap = ((date_ts - r_begin_ts) / Day) % (14 * 15)
     db_number = day_gap / 14
     print 'db_number:', db_number
 
