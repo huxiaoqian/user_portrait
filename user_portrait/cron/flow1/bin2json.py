@@ -33,7 +33,7 @@ def bin2json(data, total_len, sp_type):
 
     sp_type = ord(sp_type)
     send_ip = ip2geo(send_ip)
-    
+
     uid = uid.replace('\x00', '')
     if uid == '':
         return None
@@ -52,7 +52,7 @@ def bin2json(data, total_len, sp_type):
         if root_uid != '':
             root_uid == int(root_uid)
         root_mid = root_mid.replace('\x00', '')
-        
+
     if client_remark_len != 0:
         fmt = "%ds" % (client_remark_len)
         client_remark = struct.unpack(fmt, data[offset: offset+ client_remark_len])
@@ -62,8 +62,8 @@ def bin2json(data, total_len, sp_type):
 
     if 0 != text_length:
         fmt = "%ds" % (text_length)
-	text = struct.unpack(fmt, data[offset: offset + text_length])
-	text = text[0].decode('utf8', 'ignore')
+        text = struct.unpack(fmt, data[offset: offset + text_length])
+        text = text[0].decode('utf8', 'ignore')
     else:
         text = ""
     offset += text_length

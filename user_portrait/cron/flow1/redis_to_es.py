@@ -13,7 +13,10 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import  ES_CLUSTER_FLOW1, R_CLUSTER_FLOW1
 
-def compute(user_set):
+es = ES_CLUSTER_FLOW1
+cluster_redis = R_CLUSTER_FLOW1
+
+def compute(user_set, es):
     bulk_action = []
     count_c = 0
     
@@ -31,6 +34,8 @@ def compute(user_set):
         retweeted_weibo_comment_timestamp = []
         retweeted_weibo_list = []
         user_fansnum = 0
+        comment_weibo_number = 0
+        user_friendsnum = 0
         for key in user_info.iterkeys():
             if 'origin_weibo_retweeted_timestamp_' in key:
                 origin_weibo_retweeted_timestamp.append(key.split('_')[-1])
@@ -54,6 +59,10 @@ def compute(user_set):
                 retweeted_weibo_comment_count.append(key.split('_')[0])
             elif 'fansnum' in key:
                 user_fansnum = user_info[key]
+            elif "user_friendsnum" in key:
+                user_friendsnum = user_info[key]
+            elif 'comment_weibo' in key:
+                comment_weibo_number = user_info[key]
             else:
                 print user_info, key
 
@@ -106,7 +115,9 @@ def compute(user_set):
         user_item['user_index'] = user_index
         user_item['user'] = user
         user_item['user_fansnum'] = user_fansnum
+        user_item["user_friendsnum"] = user_friendsnum
         user_item['origin_weibo_number'] = len(origin_weibo_list)
+        user_item['comment_weibo_number'] = comment_weibo_number
         user_item['retweeted_weibo_number'] = len(retweeted_weibo_list)
 
         user_item['origin_weibo_retweeted_total_number'] = origin_weibo_retweeted_total_number
@@ -141,7 +152,6 @@ def compute(user_set):
         user_item['retweeted_weibo_top_comment_id'] = retweeted_weibo_top_comment_id
         #user_item['retweeted_weibo_comment_detail'] = retweeted_weibo_comment_detail
 
-
         x = expand_index_action(user_item)
         bulk_action.extend([x[0], x[1]])
         count_c += 1
@@ -159,9 +169,6 @@ def compute(user_set):
 
 if __name__ == "__main__":
 
-    cluster_redis = R_CLUSTER_FLOW1
-
-
     es_logger = logging.getLogger("elasticsearch")
     es_logger.setLevel(logging.ERROR)
     FileHandler = logging.FileHandler("es.log")
@@ -169,7 +176,11 @@ if __name__ == "__main__":
     FileHandler.setFormatter(formatter)
     es_logger.addHandler(FileHandler)
     
-    es = ES_CLUSTER_FLOW1
+    es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
+    bool = es.indices.exists(index=es_index)
+    print bool
+    if not bool:
+        es.indices.create(index=es_index, ignore=400)
 
     count = 0
     tb = time.time()
@@ -177,18 +188,6 @@ if __name__ == "__main__":
 #    print es.cluster.health()
 
     while 1:
-        es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-        try:
-            bool = es.indices.exists(index=es_index)
-            print bool
-            if not bool:
-                es.indices.create(index=es_index, ignore=400)
-        except Exception,r:
-            print Exception,":",r
-            print "retry"
-            es = _default_es_cluster_flow1
-            continue
-
         id_set=[]
         try:
             user_set = cluster_redis.rpop('active_user_id')
@@ -198,7 +197,7 @@ if __name__ == "__main__":
                     user = item.split("'")[1]
                     count += 1
                     id_set.append(user)
-                compute(id_set)
+                compute(id_set, es)
                 print "ok"
 
                 if True:

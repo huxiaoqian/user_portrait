@@ -5,18 +5,18 @@ import json
 import os
 
 def influence_weibo_cal(total_number, average_number, top_number,brust):
-    influence_weibo = 0.4*math.log(int(total_number)+1) + 0.2*math.log(int(average_number)+1) +0.15*math.log(int(top_number)+1) + 0.15*math.log(10*brust[0]+1) +0.1*math.log(10*brust[1]+1)
+    influence_weibo = 0.5*math.log(int(total_number)+1) + 0.2*math.log(int(average_number)+1) +0.1*math.log(int(top_number)+1) + 0.1*math.log(10*brust[0]+1) +0.1*math.log(10*brust[1]+1)
     return influence_weibo
 
 def user_index_cal(origin_weibo_list, retweeted_weibo_list, user_fansnum, influence_origin_weibo_retweeted, influence_origin_weibo_comment, influence_retweeted_weibo_retweeted, influence_retweeted_weibo_comment):
-    user_index = 300*(0.2*(0.6*math.log(len(origin_weibo_list)+1)+0.3*math.log(len(retweeted_weibo_list)+1)+0.1*math.log(int(user_fansnum)+1))+0.8*(0.3*influence_origin_weibo_retweeted+0.3*influence_origin_weibo_comment+0.2*influence_retweeted_weibo_retweeted+0.2*influence_retweeted_weibo_comment))
+    user_index = 300*(0.15*(0.6*math.log(len(origin_weibo_list)+1)+0.3*math.log(len(retweeted_weibo_list)+1)+0.1*math.log(int(user_fansnum)+1))+0.85*(0.3*influence_origin_weibo_retweeted+0.3*influence_origin_weibo_comment+0.2*influence_retweeted_weibo_retweeted+0.2*influence_retweeted_weibo_comment))
     return user_index
 
 def deliver_weibo_brust(time_list, division=900, percent=0.5):
 
     time_list = [int(value) for value in time_list]
     max_value = max(time_list)
-    if max_value <= 100:
+    if max_value <= 10:
         return 0, 0
     else:
         list_brust = [value for value in time_list if value >= percent*max_value]
@@ -61,3 +61,4 @@ def expand_index_action(data):
     _id = data['user']
     action = {'index': {"_id": _id}}
     return action, data
+

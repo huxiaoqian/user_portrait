@@ -44,7 +44,6 @@ def send_all(f, sender):
                 mid = str(item['mid'][2:])
             else:
                 mid = str(item['mid'])
-
             sender.send_json(weibo_item)
             count += 1
 
@@ -63,7 +62,7 @@ def send_weibo(sender, total_count=0, total_cost=0):
     """
     send weibo data to zmq_work
     """
-           
+
     try:
         file_list = set(os.listdir(BIN_FILE_PATH))
         print "total file is ", len(file_list)
