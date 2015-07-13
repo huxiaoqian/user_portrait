@@ -45,22 +45,22 @@ def search_retweeted_attribute(user_index, uid, doc_type="bci"):
 
     return basic_attribute
 
-def search_fans_attribute(user_index, uid, doc_type="bci"):
+def search_user_index(user_index, uid, doc_type="bci"):
 
-    fans = 'user_fansnum'
 
     user_info = search_weibo_behavior(user_index, uid)
-    basic_attribute = {}
+    activity_attribute = {}
 
     if not user_info:
-        return basic_attribute
+        return activity_attribute
     else:
-        basic_attribute[fans] = user_info[fans]
+        activity_attribute["user_index"] = user_info["user_index"]
 
-    return basic_attribute
+    return activity_attribute
 
 
 
 if __name__ == "__main__":
-    print search_origin_attribute("20130901", "13926427")
+
+    print search_origin_attribute("20130901", "1713926427")
 

@@ -29,5 +29,6 @@ def search_weibo_behavior(user_index, uid, d_type="bci"):
 """
 if __name__ == "__main__":
     print search_weibo_behavior("20130901", "1713926427")
+
 """
 
