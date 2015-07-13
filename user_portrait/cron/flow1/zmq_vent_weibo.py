@@ -47,7 +47,7 @@ if __name__=="__main__":
             socks = dict(poller.poll(0))
         else:
             socks = None
-        
+
         if socks and socks.get(controller) == zmq.POLLIN: 
             # receive control message from zmq pollor
             item = controller.recv()
@@ -60,6 +60,7 @@ if __name__=="__main__":
                 total_count = 0
                 total_cost = 0
                 total_count, total_cost = send_weibo(sender, total_count, total_cost)
+                break
         else:
             if message == "PAUSE":
                 time.sleep(1)
@@ -68,7 +69,6 @@ if __name__=="__main__":
             else:
                 total_count, total_cost = send_weibo(sender, total_count, total_cost)
 
-           
 
 
 

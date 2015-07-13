@@ -22,6 +22,7 @@ def search_uid2uname(uid):
 
 # 自定义查询
 def es_get_source(id):
+    # return {"name":name, "email":email...}
     try:
         source = es.get_source(index=INDEX_NAME, doc_type=DOC_TYPE, id=id)
     except NotFoundError as e:
@@ -41,4 +42,6 @@ def es_mget_source(ids):
 
 if __name__ == '__main__':
     uid = '1770831781'
-    search_uid2uname(uid)
+    # search_uid2uname(uid)
+    source = es_get_source(uid)
+    print source

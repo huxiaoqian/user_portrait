@@ -34,10 +34,20 @@ def es_create():
         item = {
             "uid": 5*str(i),
             "uname": "testname",
-            "topic": "education",
-            "area": "education",
+            "topic": {
+                "教育": 1,
+                "科技":1
+            },
+            "domain": "教育 科技",
             "psycho_feature": "featurefeaturefeature",
-            "psycho_status": "statusstatusstatus"
+            "psycho_status": "statusstatusstatus",
+            "text_len": 10,
+            "emoticon": "hahahahahaha",
+            "hashtag": "hahahahahaha",
+            "emotion_words": "hahahahahaha",
+            "link": 10,
+            "online_pattern": "hahahahahaha",
+            "activity_location": "beijing"
         }
         action = expand_index_action(item)
         bulk_action.extend([action, item])
@@ -45,10 +55,20 @@ def es_create():
         item = {
             "uid": 10*str(i),
             "uname": "testname",
-            "topic": "politics",
-            "area": "politics",
+            "topic": {
+                "政治": 1,
+                "科技": 1
+            },
+            "domain": "政治 科技",
             "psycho_feature": "featurefeaturefeature",
-            "psycho_status": "statusstatusstatus"
+            "psycho_status": "statusstatusstatus",
+            "text_len": 10,
+            "emoticon": "hahahahahaha",
+            "hashtag": "hahahahahaha",
+            "emotion_words": "hahahahahaha",
+            "link": 10,
+            "online_pattern": "hahahahahaha",
+            "activity_location": "beijing"
         }
         action = expand_index_action(item)
         bulk_action.extend([action, item])
@@ -67,7 +87,7 @@ def start_cal(uid_list):
         value_string[1] = status #change status from 0 to 1
         r_cluster.hset(hash_name, uid, json.dumps(value_string))
         print value_string[0], value_string[1]
-
+    """
     # calculation starts, return 'success'
     signal = calculation(uid_list)
     if signal == 'success':
@@ -75,6 +95,7 @@ def start_cal(uid_list):
         for uid in uid_list:
             r_cluster.hdel(hash_name, uid)
         print 'success'
+    """
 
 # just for test
 def reset_redis(uid_list):
@@ -112,9 +133,9 @@ def calculation(uids):
     return 'success'
 
 def test(uid_list):
-    # es_create()
-    reset_redis(uid_list)
-    auto_cal()
+    es_create()
+    # reset_redis(uid_list)
+    # auto_cal()
     # start_cal(uid_list)
 
 if __name__=='__main__':
