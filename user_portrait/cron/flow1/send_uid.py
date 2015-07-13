@@ -30,11 +30,11 @@ print te-ts
 while 1:
     re_scan = weibo_redis.sscan('user_set',scan_cursor, count=10000)
     if re_scan[0] == 0:
-        weibo_redis.lpush("user_id", re_scan[1])
+        weibo_redis.lpush("active_user_id", re_scan[1])
         print 'finish'
         break
     else:
-        weibo_redis.lpush("user_id", re_scan[1])
+        weibo_redis.lpush("active_user_id", re_scan[1])
         count += 10000
         scan_cursor = re_scan[0]
         if count % 100000 == 0:

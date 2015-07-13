@@ -29,7 +29,9 @@ def cal_propage_work(item):
     cluster_redis = R_CLUSTER_FLOW1
     user = str(item['uid'])
     followers_count = item['user_fansnum']
+    friends_count = item.get("user_friendsnum", 0)
     cluster_redis.hset(user, 'user_fansnum', followers_count)
+    cluster_redis.hset(user, 'user_friendsnum', friends_count)
 
     retweeted_uid = str(item['root_uid'])
     retweeted_mid = str(item['root_mid'])
@@ -44,12 +46,14 @@ def cal_propage_work(item):
         cluster_redis.hset(user, mid + '_origin_weibo_timestamp', timestamp)
 
     elif message_type == 2: # comment weibo
+        cluster_redis.sadd('user_set', user)
         if cluster_redis.sismember(user + '_comment_weibo', retweeted_mid):
             return 
         cluster_redis.sadd(user + '_comment_weibo', retweeted_mid)
         #RE = re.compile(u'//@([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+):', re.UNICODE)
         #nicknames = RE.findall(text)
         queue_index = get_queue_index(timestamp)
+        cluster_redis.hincrby(user, 'comment_weibo', 1)
 
         if 1:
         #if len(nicknames) == 0:
