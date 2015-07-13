@@ -140,7 +140,8 @@ def store_to_elasticsearch(es,result,index_name):
                     print Exception,':',r
                     es = Elasticsearch("219.224.135.93")
                     continue
-    es.bulk(bulk_actions, index=index_name, doc_type="bci", timeout=30)
+    if bulk_actions:
+        es.bulk(bulk_actions, index=index_name, doc_type="bci", timeout=30)
 
 def expand_index_action(data):
     _id = data['_id']

@@ -37,6 +37,6 @@ if __name__ == "__main__":
         controller.send("PAUSE")
         # repeat to send to ensure 
 
-    delete_files()
+    #delete_files()
   
 

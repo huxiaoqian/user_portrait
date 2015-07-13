@@ -27,18 +27,18 @@ if __name__ == "__main__":
     index_exist = es.indices.exists(index=es_former_index)
     if index_exist:
         es.indices.delete(index=es_former_index)
-        print "delete the index of %s" % es_former_index
+#        print "delete the index of %s" % es_former_index
 
     count = 0
     scan_cursor = 0
     tb = time.time()
     number = cluster_redis.scard("user_set")
-    print number
+#    print number
 
     while True:
         re_scan = cluster_redis.sscan('user_set',scan_cursor, count=10000)
         if re_scan[0] == 0:
-            print 'finish'
+#            print 'finish'
             cluster_redis.lpush("active_user_id", re_scan[1])
             break
         else:
@@ -47,6 +47,6 @@ if __name__ == "__main__":
             scan_cursor = re_scan[0]
             if count % 100000 == 0:
                 ts = time.time()
-                print '%s : %s' %(count, ts - tb)
+ #               print '%s : %s' %(count, ts - tb)
                 tb = ts
 

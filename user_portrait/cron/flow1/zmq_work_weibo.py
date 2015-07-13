@@ -29,30 +29,31 @@ def cal_propage_work(item):
     cluster_redis = R_CLUSTER_FLOW1
     user = str(item['uid'])
     followers_count = item['user_fansnum']
+    friends_count = item.get("user_friendsnum", 0)
     cluster_redis.hset(user, 'user_fansnum', followers_count)
+    cluster_redis.hset(user, 'user_friendsnum', friends_count)
 
     retweeted_uid = str(item['root_uid'])
     retweeted_mid = str(item['root_mid'])
 
-    message_type = item['message_type']
-    if message_type == 2:
-        mid = str(item['mid'][2:])
-    else:
-        mid = str(item['mid'])
-
+    message_type = int(item['message_type'])
+    mid = str(item['mid'])
     timestamp = item['timestamp']
     text = item['text']
+
     if message_type == 1:
         cluster_redis.sadd('user_set', user)
         cluster_redis.hset(user, mid + '_origin_weibo_timestamp', timestamp)
 
     elif message_type == 2: # comment weibo
+        cluster_redis.sadd('user_set', user)
         if cluster_redis.sismember(user + '_comment_weibo', retweeted_mid):
             return 
         cluster_redis.sadd(user + '_comment_weibo', retweeted_mid)
         #RE = re.compile(u'//@([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+):', re.UNICODE)
         #nicknames = RE.findall(text)
         queue_index = get_queue_index(timestamp)
+        cluster_redis.hincrby(user, 'comment_weibo', 1)
 
         if 1:
         #if len(nicknames) == 0:
@@ -113,24 +114,25 @@ if __name__ == "__main__":
     tb = time.time()
     ts = tb
     while 1:
-        try:
-            item = receiver.recv_json()
-        except Exception, e:
-            print Exception, ":", e 
+        item = receiver.recv_json()
+
         if not item:
             continue 
-        
-        if item['sp_type'] == 1:
-            try:
+
+        if int(item['sp_type']) == 1:
+            if 1:
+            #try
                 cal_propage_work(item)
-            except Exception, r:
-                print Exception, r
+            #except Exception, r:
+            #    print Exception, r
 
 
-        count += 1
-        if count % 10000 == 0:
-            te = time.time()
-            print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
+            count += 1
+            if count % 10000 == 0:
+                te = time.time()
+                print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
+                ts = te
+
             if count % 100000 == 0:
                 print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 
-            ts = te
+                ts = te

@@ -6,11 +6,16 @@ record the activity of user
 """
 
 import logging
+import sys
 import time
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 
-es = Elasticsearch("219.224.135.93")
+reload(sys)
+sys.path.append('./../../')
+from global_uitls import ES_CLUSTER_FOLW1
+
+es = ES_CLUSTER_FLOW1
 index_date = "20130902"
 
 def expand_index_action(data):
