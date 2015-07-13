@@ -8,15 +8,13 @@ import sys
 import time
 # read weibo bulk from api
 from weibo_api import read_user_weibo
+from save_utils import attr_hash, save_user_results
 reload(sys)
 sys.path.append('../../../../../libsvm-3.17/python/')
 from sta_ad import load_scws
 
 cx_dict = ['a', 'n', 'nr', 'ns', 'nz', 'v', '@', 'd']
 sw = load_scws()
-
-#liwc_dict = get_liwc_dict()
-#emoticon_dict = get_emoticon_dict()
 
 def get_emoticon_dict():
     results = dict()
@@ -56,18 +54,20 @@ def read_uid_list():
 
 def attr_text_len(weibo_list):
     len_list = [len(weibo['text']) for weibo in weibo_list]
-    max_len = max(len_list)
-    min_len = min(len_list)
+    #max_len = max(len_list)
+    #min_len = min(len_list)
     ave_len = float(sum(len_list)) / len(len_list)
     #print 'len_list:', len_list
-    return [min_len, max_len, ave_len]
+    #return [min_len, max_len, ave_len]
+    return ave_len
 
 '''
 def attr_punc(weibo_list):
     results = {}   
     return results
 '''
-
+# hash turn to save in flow2
+'''
 def attr_hash(weibo_list):
     results = {}
     for weibo in weibo_list:
@@ -83,7 +83,7 @@ def attr_hash(weibo_list):
             except:
                 results[hashtag] = 1
     return results
-
+'''
 def attr_emoticon(weibo_list):
     results = {}
     for weibo in weibo_list:
@@ -116,11 +116,11 @@ def attr_liwc(weibo_list):
                 if liwc_word in cut_word_list:
                     if num in results:
                         try:
-                            results[num][liwc_word] += 1
+                            results[num][liwc_word.decode('utf-8')] += 1
                         except:
-                            results[num][liwc_word] = 1
+                            results[num][liwc_word.decode('utf-8')] = 1
                     else:
-                        results[num] = {liwc_word: 1}
+                        results[num] = {liwc_word.decode('utf-8'): 1}
     # test
     '''
     for num in results:
@@ -141,11 +141,22 @@ def attr_link(weibo_list):
     if count:
         all_count = sum(count)    
         ave_count = float(all_count) / len(weibo_list)
-        max_count = max(count)
-        min_count = min(count)
-        return [min_count, max_count, ave_count, all_count]
+        #max_count = max(count)
+        #min_count = min(count)
+        #return [min_count, max_count, ave_count, all_count]
+        return ave_count
     else:
-        return None
+        return 0
+
+def attr_online_pattern(weibo_list):
+    results= {}
+    for weibo in weibo_list:
+        online_pattern = weibo['online_pattern']
+        try:
+            results[online_pattern] += 1
+        except:
+            results[online_pattern] = 1
+    return results
 
 def compute_text_attribute(user, weibo_list):
     result = {}
@@ -156,11 +167,21 @@ def compute_text_attribute(user, weibo_list):
     # text attr3: emoticon
     result['emoticon'] = attr_emoticon(weibo_list)
     # text attr4: hashtag
-    result['hashtag'] = attr_hash(weibo_list)
+    result['hashtag'] = attr_hash(user)
     # text attr5: liwc word
     result['emotion_words'] = attr_liwc(weibo_list)
     # text attr6: web link
     result['link'] = attr_link(weibo_list)
+    # text attr7: online pattern
+    result['online_pattern'] = attr_online_pattern(weibo_list)
+    # test domain
+    #result['domain'] = attr_domain(weibo_list)
+    result['domain'] = 'test domain'
+    # test psycho_feature
+    #result['psycho_status'] = attr_psycho(weibo_list)
+    result['psycho_status'] = 'test psycho_status'
+    # test topic
+    result['topic'] = 'test topic'
     return result
 
 def main():
@@ -169,13 +190,19 @@ def main():
     # get user weibo 7day {user:[weibos]}
     user_weibo_dict = read_user_weibo(uid_list)
     # compute text attribute
-    user_results = {}
+    bulk_action = []
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
+        uname = weibo_list[0]['uname']
         results = compute_text_attribute(user, weibo_list)
-        user_results[user] = results 
-    return user_results # save by bulk
+        results['uname'] = uname
+        results['uid'] = str(user)
+        # deal to the bulk action
+        action = {'index':{'_id': str(user)}}
+        bulk_action.extend([action, results])
+    status = save_user_results(bulk_action)
+    return status # save by bulk
     
 if __name__=='__main__':
-    user_results = main()
-    print 'user_result:', user_results
+    bulk_action = main()
+    print 'bulk_action:', bulk_action
