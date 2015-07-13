@@ -3,7 +3,7 @@
 import sys
 import time
 import json
-from connection import profile_match, portrait_match
+from connection import profile_match, portrait_match, portrait_exist
 sys.path.append('../../../')
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.search_user_portrait import search_portrait_by_id
@@ -55,7 +55,23 @@ def search_portrait(uid):
                 sum_dict[r] = 0
                 print r
         print 'len:', len(uid_set)
-    return uid_set
+
+    topic_set = set()
+    results = portrait_exist("教育")
+    if results:
+        for item in results:
+            topic_set.add(item["_id"])
+
+        print 'len:', len(topic_set)
+
+    domain_set = set()
+    results = portrait_match('domain', '教育 科技')
+    if results:
+        for item in results:
+            domain_set.add(item["_id"])
+
+        print 'len:', len(domain_set)
+    return uid_set, topic_set, domain_set
 
 def search_friends(uid):
     results = search_attention(uid)
@@ -140,6 +156,10 @@ if __name__=='__main__':
     profile_set = search_profile(uid)
     sets.append(profile_set)
 
-    # search_portrait(uid)
+    uid = "11111"
+    portrait_set, topic_set, domain_set = search_portrait(uid)
+    sets.append(portrait_set)
+    sets.append(topic_set)
+    sets.append(domain_set)
 
     total_select(sets)

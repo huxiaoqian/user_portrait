@@ -34,8 +34,11 @@ def es_create():
         item = {
             "uid": 5*str(i),
             "uname": "testname",
-            "topic": "education",
-            "domain": "education",
+            "topic": {
+                "教育": 1,
+                "科技":1
+            },
+            "domain": "教育 科技",
             "psycho_feature": "featurefeaturefeature",
             "psycho_status": "statusstatusstatus",
             "text_len": 10,
@@ -52,8 +55,11 @@ def es_create():
         item = {
             "uid": 10*str(i),
             "uname": "testname",
-            "topic": "politics",
-            "domain": "politics",
+            "topic": {
+                "政治": 1,
+                "科技": 1
+            },
+            "domain": "政治 科技",
             "psycho_feature": "featurefeaturefeature",
             "psycho_status": "statusstatusstatus",
             "text_len": 10,
