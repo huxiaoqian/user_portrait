@@ -26,10 +26,14 @@ ZMQ_CTRL_VENT_PORT_FLOW2 = '5586'
 ZMQ_VENT_PORT_FLOW3 = '6389'
 ZMQ_CTRL_VENT_PORT_FLOW3 = '5587'
 
+# csv file path
 '''
 BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yuankun'
 '''
 BIN_FILE_PATH = '/home/ubuntu8/data1309/20130902'
+
+# sensitive words path
+SENSITIVE_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/flow4/sensitive_words.txt'
 
 # need three ES identification 
 USER_PROFILE_ES_HOST = ['219.224.135.96:9208','219.224.135.97:9208','219.224.135.98:9208']

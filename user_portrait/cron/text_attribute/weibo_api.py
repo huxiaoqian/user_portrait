@@ -12,12 +12,14 @@ def read_user_weibo(uid_list):
 # test: read user weibo
 def read_user_weibo(uid_list):
     user_weibo_dict = dict()
-    csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/weibo_111.csv', 'rb')
+    csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/uid_text.csv', 'rb')
     reader = csv.reader(csvfile)
     for line in reader:
         weibo = dict()
         user = line[0]
+        weibo['uname'] = 'unknown'
         weibo['text'] = line[1].decode('utf-8')
+        weibo['online_pattern'] = 'weibo.com'
         try:
             user_weibo_dict[user].append(weibo)
         except:
