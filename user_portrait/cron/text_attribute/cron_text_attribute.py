@@ -5,6 +5,7 @@ compute the user attribute about text
 import re
 import csv
 import sys
+import json
 import time
 # read weibo bulk from api
 from weibo_api import read_user_weibo
@@ -15,6 +16,16 @@ from sta_ad import load_scws
 
 cx_dict = ['a', 'n', 'nr', 'ns', 'nz', 'v', '@', 'd']
 sw = load_scws()
+
+EXTRA_WORD_WHITE_LIST_PATH = '/home/ubuntu8/libsvm-3.17/python/dict/one_word_white_list.txt'
+
+def load_one_words():
+    one_words = [line.strip('\r\n') for line in file(EXTRA_WORD_WHITE_LIST_PATH)]
+    return one_words
+
+single_word_whitelist = set(load_one_words())
+single_word_whitelist |= set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')
+
 
 def get_emoticon_dict():
     results = dict()
@@ -107,6 +118,7 @@ def attr_emoticon(weibo_list):
 # {class_num:{word:count}}
 def attr_liwc(weibo_list):
     results = {}
+    keyword_results = {}
     for weibo in weibo_list:
         text = weibo['text']
         cut_text = sw.participle(text.encode('utf-8'))
@@ -158,6 +170,31 @@ def attr_online_pattern(weibo_list):
             results[online_pattern] = 1
     return results
 
+def attr_keywords(weibo_list):
+    results = {}
+    for weibo in weibo_list:
+        text = weibo['text'].encode('utf-8')
+        pattern_list = [r'\（分享自 .*\）', r'http://t.cn/\w*']
+        for i in pattern_list:
+            p = re.compile(i)
+            text = p.sub('', text)
+        tks = [token for token
+               in sw.participle(text)
+               if 3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist]
+        #print 'tks:', tks
+        for tk in tks:
+            word = tk[0].decode('utf-8')
+            try:
+                results[word] += 1
+            except:
+                results[word] = 1
+        sort_results = sorted(results.items(), key=lambda x:[1], reverse=True)[:10]
+        keywords_results = {}
+        for sort_item in sort_results:
+            keywords_results[sort_item[0]] = sort_item[1]
+    print 'attr_keyword:', keywords_results
+    return keywords_results
+
 def compute_text_attribute(user, weibo_list):
     result = {}
     # text attr1: len
@@ -165,15 +202,17 @@ def compute_text_attribute(user, weibo_list):
     # text attr2: punctuation
     #result['punc'] = attr_punc(weibo_list)
     # text attr3: emoticon
-    result['emoticon'] = attr_emoticon(weibo_list)
+    result['emoticon'] = json.dumps(attr_emoticon(weibo_list))
     # text attr4: hashtag
-    result['hashtag'] = attr_hash(user)
+    result['hashtag'] = json.dumps(attr_hash(user))
     # text attr5: liwc word
-    result['emotion_words'] = attr_liwc(weibo_list)
+    result['emotion_words'] = json.dumps(attr_liwc(weibo_list))
     # text attr6: web link
     result['link'] = attr_link(weibo_list)
     # text attr7: online pattern
-    result['online_pattern'] = attr_online_pattern(weibo_list)
+    result['online_pattern'] = json.dumps(attr_online_pattern(weibo_list))
+    # text attr8: keywords
+    result['keywords'] = json.dumps(attr_keywords(weibo_list))
     # test domain
     #result['domain'] = attr_domain(weibo_list)
     result['domain'] = 'test domain'
@@ -181,6 +220,7 @@ def compute_text_attribute(user, weibo_list):
     #result['psycho_status'] = attr_psycho(weibo_list)
     result['psycho_status'] = 'test psycho_status'
     # test topic
+    #result['topic'] = attr_topic(weibo_list)
     result['topic'] = 'test topic'
     return result
 
@@ -197,11 +237,12 @@ def main():
         results = compute_text_attribute(user, weibo_list)
         results['uname'] = uname
         results['uid'] = str(user)
+        #print 'keyword:', results['keywords']
         # deal to the bulk action
         action = {'index':{'_id': str(user)}}
         bulk_action.extend([action, results])
-    status = save_user_results(bulk_action)
-    return status # save by bulk
+    #status = save_user_results(bulk_action)
+    return True # save by bulk
     
 if __name__=='__main__':
     bulk_action = main()

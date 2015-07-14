@@ -33,7 +33,7 @@ def search_from_es(date):
     user_set = []
     user_set = [user_dict['_id'] for user_dict in result]
     print 'len user_set:',len(user_set)
-    return result, user_set
+    return result, set(user_set)
 
 def filter_in(top_user_set):
     results = []
@@ -71,6 +71,16 @@ def write_recommentation(date, re_user, results):
     return True
 
 
+def read_black_user():
+    results = set()
+    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/dzs_uid.txt', 'rb')
+    for line in f:
+        uid_list = line.split(',')
+        for uid in uid_list:
+            results.add(uid)
+
+    return results
+
 def main():
     now_ts = time.time()
     #test
@@ -78,6 +88,14 @@ def main():
     date = ts2datetime(now_ts - 3600*24)
     #step1: read from top es_daily_rank
     top_results, top_user_set = search_from_es(date)
+    
+    # black_uid
+    black_user_set = read_black_user()
+    print 'black_user_set:', len(black_user_set)
+    intersection = top_user_set & black_user_set
+    print 'intersection:', len(intersection)
+
+    '''
     #step2: filter users have been in
     candidate_results = filter_in(top_user_set)
     #step3: filter rules about ip count& reposts/bereposts count&activity count
@@ -85,7 +103,7 @@ def main():
     #step4: write to recommentation csv/redis
     status = write_recommentation(date, results, top_results)
     if status==True:
-        print 'Ddate:%s recommentation done' % date
-
+        print 'date:%s recommentation done' % date
+    '''
 if __name__=='__main__':
     main()

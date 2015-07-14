@@ -11,7 +11,6 @@ from time_utils import datetime2ts, ts2datetime
 index_type = 'user'
 index_name = 'user_portrait'
 
-
 def attr_hash(uid):
     hashtag_results = {}
     now_ts = time.time()
@@ -35,6 +34,6 @@ def attr_hash(uid):
 
 def save_user_results(bulk_action):
     print 'bulk_action:', bulk_action[0:2]
-    es.bulk(bulk_action, index=index_name, doc_type=index_type)
+    es.bulk(bulk_action, index=index_name, doc_type=index_type, timeout=30)
     return True    
     
