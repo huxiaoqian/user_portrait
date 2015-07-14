@@ -10,7 +10,7 @@ from user_portrait.search_user_portrait import search_portrait_by_id
 from user_portrait.attribute.search import search_attention, search_follower,\
         search_mention, search_location, search_activity
 from user_portrait.attribute.search_daily_info import search_origin_attribute,\
-        search_retweeted_attribute, search_fans_attribute
+        search_retweeted_attribute, search_user_index
 
 def search_profile(uid):
     user_profile_keys = ['input_time', 'uid', 'photo_url', 'statusnum', 'nick_name',\
@@ -19,21 +19,26 @@ def search_profile(uid):
             'id', 'user_email', 'friendsnum']
     source = es_get_source(uid)
     print 'profile:', source
-    # match_keys = ['user_location']
-    token = source['user_location']
-    results = profile_match('user_location', token)
-    sum_dict = {}
-    uid_set = set()
-    if results:
-        for item in results:
-            uid_set.add(item["_id"])
 
-            r = item["_source"]["user_location"]
-            if r not in sum_dict:
-                sum_dict[r] = 0
-                print r
-        print 'len:', len(uid_set)
-    return uid_set
+    results_list = []
+    match_keys = ['user_location']
+
+    for key in match_keys:
+        token = source[key]
+        results = profile_match(key, token)
+        sum_dict = {}
+        uid_set = set()
+        if results:
+            for item in results:
+                uid_set.add(item["_id"])
+
+                r = item["_source"][key]
+                if r not in sum_dict:
+                    sum_dict[r] = 0
+                    print r
+            print 'len:', len(uid_set)
+        results_list.append(uid_set)
+    return results_list
 
 def search_portrait(uid):
     user_portrait_keys = ['uid', 'uname', 'domain', 'topic', 'psycho_status', \
@@ -114,8 +119,8 @@ def search_daily_info(user_index, uid, doc_type="bci"):
     print "origin_attribute:", result
     result = search_retweeted_attribute(user_index, uid, doc_type)
     print "retweeted_attribute:", result
-    result = search_fans_attribute(user_index, uid, doc_type)
-    print "fans_attribute:", result
+    result = search_user_index(user_index, uid, doc_type)
+    print "user_index:", result
 
 def total_select(sets):
     results_dict = {}
@@ -153,8 +158,8 @@ if __name__=='__main__':
     sets.append(mention_set)
 
     search_daily_info("20130901", uid)
-    profile_set = search_profile(uid)
-    sets.append(profile_set)
+    profile_list = search_profile(uid)
+    sets.extend(profile_list)
 
     uid = "11111"
     portrait_set, topic_set, domain_set = search_portrait(uid)
