@@ -34,20 +34,18 @@ def es_create():
         item = {
             "uid": 5*str(i),
             "uname": "testname",
-            "topic": {
-                "教育": 1,
-                "科技":1
-            },
+            "topic": json.dumps({"教育": 1,"科技":1}),
             "domain": "教育 科技",
             "psycho_feature": "featurefeaturefeature",
             "psycho_status": "statusstatusstatus",
             "text_len": 10,
-            "emoticon": "hahahahahaha",
-            "hashtag": "hahahahahaha",
-            "emotion_words": "hahahahahaha",
+            "emoticon": json.dumps({"key":"hahaha"}),
+            "hashtag": json.dumps({"key":"hahaha"}),
+            "emotion_words": json.dumps({"key": "hahaha"}),
             "link": 10,
-            "online_pattern": "hahahahahaha",
-            "activity_location": "beijing"
+            "online_pattern": json.dumps({"key": "hahaha"}),
+            "activity_location": "beijing",
+            "keywords":json.dumps({"key":"hahaha"})
         }
         action = expand_index_action(item)
         bulk_action.extend([action, item])
@@ -55,20 +53,18 @@ def es_create():
         item = {
             "uid": 10*str(i),
             "uname": "testname",
-            "topic": {
-                "政治": 1,
-                "科技": 1
-            },
+            "topic": json.dumps({"政治": 1,"科技": 1}),
             "domain": "政治 科技",
             "psycho_feature": "featurefeaturefeature",
             "psycho_status": "statusstatusstatus",
             "text_len": 10,
-            "emoticon": "hahahahahaha",
-            "hashtag": "hahahahahaha",
-            "emotion_words": "hahahahahaha",
+            "emoticon": json.dumps({"key":"hahaha"}),
+            "hashtag": json.dumps({"key":"hahaha"}),
+            "emotion_words": json.dumps({"key": "hahaha"}),
             "link": 10,
-            "online_pattern": "hahahahahaha",
-            "activity_location": "beijing"
+            "online_pattern": json.dumps({"key": "hahaha"}),
+            "activity_location": "beijing",
+            "keywords":json.dumps({"key":"hahaha"})
         }
         action = expand_index_action(item)
         bulk_action.extend([action, item])

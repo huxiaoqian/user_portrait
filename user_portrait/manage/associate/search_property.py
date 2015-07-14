@@ -3,14 +3,14 @@
 import sys
 import time
 import json
-from connection import profile_match, portrait_match, portrait_exist
+from connection import profile_match, portrait_match
 sys.path.append('../../../')
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.search_user_portrait import search_portrait_by_id
 from user_portrait.attribute.search import search_attention, search_follower,\
         search_mention, search_location, search_activity
 from user_portrait.attribute.search_daily_info import search_origin_attribute,\
-        search_retweeted_attribute, search_fans_attribute
+        search_retweeted_attribute, search_user_index
 
 def search_profile(uid):
     user_profile_keys = ['input_time', 'uid', 'photo_url', 'statusnum', 'nick_name',\
@@ -19,21 +19,26 @@ def search_profile(uid):
             'id', 'user_email', 'friendsnum']
     source = es_get_source(uid)
     print 'profile:', source
-    # match_keys = ['user_location']
-    token = source['user_location']
-    results = profile_match('user_location', token)
-    sum_dict = {}
-    uid_set = set()
-    if results:
-        for item in results:
-            uid_set.add(item["_id"])
 
-            r = item["_source"]["user_location"]
-            if r not in sum_dict:
-                sum_dict[r] = 0
-                print r
-        print 'len:', len(uid_set)
-    return uid_set
+    results_list = []
+    match_keys = ['user_location']
+
+    for key in match_keys:
+        token = source[key]
+        results = profile_match(key, token)
+        sum_dict = {}
+        uid_set = set()
+        if results:
+            for item in results:
+                uid_set.add(item["_id"])
+
+                r = item["_source"][key]
+                if r not in sum_dict:
+                    sum_dict[r] = 0
+                    print r
+            print key, 'len:', len(uid_set)
+        results_list.append(uid_set)
+    return results_list
 
 def search_portrait(uid):
     user_portrait_keys = ['uid', 'uname', 'domain', 'topic', 'psycho_status', \
@@ -41,39 +46,31 @@ def search_portrait(uid):
             'text_len', 'emotion_words', 'activity_location']
     source = search_portrait_by_id(uid)
     print 'portrait:', source
-    # match_keys = ['activity_location']
-    token = source['activity_location']
-    results = portrait_match('activity_location', token)
-    sum_dict = {}
-    uid_set = set()
-    if results:
-        for item in results:
-            uid_set.add(item["_id"])
 
-            r = item["_source"]["activity_location"]
-            if r not in sum_dict:
-                sum_dict[r] = 0
-                print r
-        print 'len:', len(uid_set)
+    results_list = []
+    match_keys = ['activity_location', 'topic', 'domain', 'hashtag']
 
-    topic_set = set()
-    results = portrait_exist("教育")
-    if results:
-        for item in results:
-            topic_set.add(item["_id"])
+    for key in match_keys:
+        token = source[key]
+        results = portrait_match(key, token)
+        sum_dict = {}
+        uid_set = set()
+        if results:
+            for item in results:
+                uid_set.add(item["_id"])
 
-        print 'len:', len(topic_set)
+                r = item["_source"][key]
+                if r not in sum_dict:
+                    sum_dict[r] = 0
+                    print r
+            print key, 'len:', len(uid_set)
+        results_list.append(uid_set)
 
-    domain_set = set()
-    results = portrait_match('domain', '教育 科技')
-    if results:
-        for item in results:
-            domain_set.add(item["_id"])
-
-        print 'len:', len(domain_set)
-    return uid_set, topic_set, domain_set
+    return results_list
 
 def search_friends(uid):
+    results_list = []
+
     results = search_attention(uid)
     attention_set = set()
     if results:
@@ -81,6 +78,7 @@ def search_friends(uid):
         for uid in results:
             attention_set.add(uid)
         print 'attention_len:', len(attention_set)
+    results_list.append(attention_set)
 
     results = search_follower(uid)
     follower_set = set()
@@ -89,9 +87,12 @@ def search_friends(uid):
         for uid in results:
             follower_set.add(uid)
         print 'follower_len:', len(follower_set)
-    return attention_set, follower_set
+    results_list.append(follower_set)
+    return results_list
 
 def search_ultra(now_ts, uid):
+    results_list = []
+
     results = search_mention(now_ts, uid)
     print 'at_user', results
     mention_set = set()
@@ -100,22 +101,22 @@ def search_ultra(now_ts, uid):
         for uid in results:
             mention_set.add(uid)
         print 'mention_len:', len(mention_set)
-
+    results_list.append(mention_set)
     """
     results4 = search_location(now_ts, uid)
     print 'location:', results4
-    """
     results5 = search_activity(now_ts, uid)
     print 'activity:', results5
-    return mention_set
+    """
+    return results_list
 
 def search_daily_info(user_index, uid, doc_type="bci"):
     result = search_origin_attribute(user_index, uid, doc_type)
     print "origin_attribute:", result
     result = search_retweeted_attribute(user_index, uid, doc_type)
     print "retweeted_attribute:", result
-    result = search_fans_attribute(user_index, uid, doc_type)
-    print "fans_attribute:", result
+    result = search_user_index(user_index, uid, doc_type)
+    print "user_index:", result
 
 def total_select(sets):
     results_dict = {}
@@ -144,22 +145,19 @@ if __name__=='__main__':
     uid = '1000004720'
     uid = '1000036312'
     sets = []
-    attention_set, follower_set = search_friends(uid)
-    sets.append(attention_set)
-    sets.append(follower_set)
+    friends_list = search_friends(uid)
+    sets.extend(friends_list)
 
     now_ts = 1377964800 + 3600 * 24 * 4
-    mention_set = search_ultra(now_ts, uid)
-    sets.append(mention_set)
+    ultra_list = search_ultra(now_ts, uid)
+    sets.extend(ultra_list)
 
-    search_daily_info("20130901", uid)
-    profile_set = search_profile(uid)
-    sets.append(profile_set)
+    # search_daily_info("20130901", uid)
+    profile_list = search_profile(uid)
+    sets.extend(profile_list)
 
     uid = "11111"
-    portrait_set, topic_set, domain_set = search_portrait(uid)
-    sets.append(portrait_set)
-    sets.append(topic_set)
-    sets.append(domain_set)
+    portrait_list = search_portrait(uid)
+    sets.extend(portrait_list)
 
     total_select(sets)
