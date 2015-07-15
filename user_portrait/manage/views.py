@@ -5,7 +5,6 @@ from elasticsearch import Elasticsearch
 from flask import Blueprint, redirect, views, render_template, request
 from process import es_create
 from user_portrait.global_utils import es_user_portrait
-from user_portrait.extensions import es, es_get_source, es_mget_source
 
 mod = Blueprint('manage', __name__, url_prefix='/manage')
 

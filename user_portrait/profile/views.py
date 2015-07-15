@@ -2,9 +2,10 @@
 import json
 import csv
 from flask import views, Blueprint, render_template, request
-from user_portrait.extensions import es, es_get_source, es_mget_source
 from os.path import dirname, abspath, join
 from .form import SearchForm
+from user_portrait.global_utils import es_user_profile as es
+from user_portrait.search_user_profile import es_get_source, es_mget_source
 
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
