@@ -4,13 +4,14 @@ recommentation
 save uid list should be in
 '''
 import sys
+import time
 import json
 import redis
 #from user_portrait.global_utils import R_RECOMMENTATION as r
 reload(sys)
 sys.path.append('../')
 from user_portrait.global_utils import R_RECOMMENTATION as r
-
+from user_portrait.time_utils import ts2datetime
 #test
 '''
 def save_uid2compute(uid_list):
@@ -27,7 +28,7 @@ def recommentation_in(input_ts):
     results = []
     # read from redis
     hash_name = 'recomment_'+str(date)
-    results = r.hgetall(hashname)
+    results = r.hgetall(hash_name)
     # search from user_profile to rich th show information
     return results
 
@@ -40,8 +41,9 @@ def identify_in(data):
     for item in data:
         date = item[0] # identify the date form '2013-09-01' with web
         in_hash_key = in_hash_name + str(date)
+        uid = item[1]
         value_string = []
-        r.hset(in_hash_key, uid, status)
+        r.hset(in_hash_key, uid, in_status)
         in_date = ts2datetime(time.time())
         r.hset(compute_hash_name, uid, json.dumps([in_date, compute_status]))
     return True
@@ -50,22 +52,24 @@ def identify_in(data):
 def show_compute(date):
     results = {}
     hash_name = 'compute'
-    results = r.hgetall(hashname)
+    results = r.hgetall(hash_name)
     #search user profile to inrich information
     return results
 
 # identify uid to start compute
 def identify_compute(data):
-    results = {}
+    results = False
     compute_status = 1
     hash_name = 'compute'
     uid2compute = r.hgetall(hash_name)
-    for uid in data:
+    for item in data:
+        uid = item[1]
         result = r.hget(hash_name, uid)
-        in_date = result[uid][0]
+        print 'result:', result
+        in_date = json.loads(result)[0]
         r.hset(hash_name, uid, json.dumps([in_date, compute_status]))
 
-    return results
+    return True
 
 
 if __name__=='__main__':

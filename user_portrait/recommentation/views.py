@@ -10,7 +10,7 @@ from user_portrait.time_utils import datetime2ts
 
 # use to test 13-09-08
 test_time = 1378569600
-test_date = '2013-09-08'
+test_date = '2013-09-07'
 
 mod = Blueprint('recommentation', __name__, url_prefix='/recommentation')
 
@@ -27,7 +27,7 @@ def ajax_recommentation_in():
     else:
         results = recommentation_in(input_ts)
 
-        return json.dumps(results)
+    return json.dumps(results)
 
 
 # identify_in 
@@ -39,7 +39,10 @@ def ajax_identify_in():
     data = request.args.get('data','') # data '[(date, uid)]'
     data = json.loads(data)
     if data:
+        #test
+        data = [('2013-09-07','1767905823')]
         results = identify_in(data) # success:1
+        print 'results:', data
     return json.dumps(results)
 
 
@@ -58,6 +61,8 @@ def ajax_compute_identify():
     results = {}
     data = request.args.get('date', '') # data '[(date, uid)]'
     if data:
+        #test
+        data = [('2015-07-15','1767905823')]
         results = identify_compute(data)
     return json.dumps(results)
 
