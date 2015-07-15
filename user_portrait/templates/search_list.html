@@ -1,0 +1,271 @@
+{% extends "mbase.html" %}
+
+{% block css %}
+{{ super() }}
+<style>
+/*    .node {
+      opacity: 0.5;
+    }
+
+    .node:hover {
+      opacity: 1;
+    }
+
+    .link {
+      stroke: #999;
+      stroke-opacity: 0.3;
+    }*/
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="main" style="margin-top:-14px">
+    <div id="myTabContent" class="tab-content" style='overflow-x: hidden;'>
+        <!--tab 1-->
+        <div role="tabpanel" class="tab-pane fade active in" id="list" aria-labelledby="list-tab">
+            <h4 class="page-header" style='margin-top:-40px'>用户信息条件检索</h4><!-- <a href="#top">111111111111</a> -->
+            <div><a style='float:right' role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          高级检索
+          </a></div>
+            <div class="divcss5-cent" style='margin-left:170px'>
+                <form>
+                    <select class="form-control" onchange="setSubmitName(this)"style="float:left;width:12%" id="select_item" name="search">
+                        <option value="uid">UID</option>
+                        <option value="nick_name">昵称</option>
+                        <option value="rel_name">真实姓名</option>
+                        <option value="email">邮箱</option>
+                    </select>
+                        <span><input type="text" id='search'name=q1 style='float:left;width:40%;margin-left:-1px' class="form-control" placeholder="search"></span>
+                        <span class="input-group-btn">
+                           <a href="#goto"><input class="btn btn-primary" style='width:81px'name="submit" type='submit' id="submit" value=简单检索></a>
+                        </span>
+                </form>
+            </div>
+
+            <div class="collapse" id="collapseExample">
+              <div class="well"> 
+                        <div class="row">
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                            <span class="input-group-addon" style="width:96px" id="sizing-addon1">UID</span>
+                              <input type="text" class="form-control" name=q0 placeholder="UID模糊检索">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">昵称</span>
+                              <input type="text" class="form-control" name=q2 placeholder="昵称模糊检索">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">真实姓名</span>
+                              <input type="text" class="form-control"  name=q3 placeholder="真名模糊检索">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">注册地</span>
+                              <input type="text" class="form-control"  value=''name=q12 placeholder="注册地模糊检索">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="row" style='margin-top:10px'>
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">出生年月日</span>
+                              <input type="text" class="form-control" name=q13 value='' placeholder="yyyy-mm-dd">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">用户邮箱</span>
+                              <input type="text" class="form-control" name=q7 placeholder="邮箱精确检索">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="row" style='margin-top:10px'>
+                        <div class="col-lg-3">
+                           <div class="input-group">
+                            <span class="input-group-addon" style="width:96px" id="sex">用户性别</span>
+                            <span><select class="form-control" style="width:125px" name="sex">
+                              <option value=0 selected> 全选</option>
+                              <option value=1> 男</option>
+                              <option value=2> 女</option>
+                            </select></span>
+                          </div>
+                          </div>
+                          <div class="col-lg-3">
+                           <div class="input-group">
+                            <span class="input-group-addon" style="width:96px" id="isreal">是否认证</span>
+                            <span><select class="form-control" style="width:125px" name="tn">
+                              <option value=2 selected> 全选</option>
+                              <option value=0> 未认证</option>
+                              <option value=1> 已认证</option>
+                            </select></span>
+                          </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                            <span class="input-group-addon" style="width:96px" id="source">微博来源</span>
+                            <span><select class="form-control" style="width:125px" name="q4">
+                              <option value=0 selected> 全选</option>
+                              <option value=1> 新浪微博</option>
+                              <option value=2> 腾讯微博</option>
+                              <option value=3> 搜狐微博</option>
+                              <option value=4> 网易微博</option>
+                            </select></span>
+                          </div>
+                          </div>
+
+                        </div><!-- /.row -->
+                        <div class="row" style='margin-top:10px'>
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">微博数大于</span>
+                              <input type="text" class="form-control" name=q5 placeholder="微博数大于">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px" id="sizing-addon1">微博数小于</span>
+                              <input type="text" class="form-control" name=q6  placeholder="微博数小于">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px"id="sizing-addon1">粉丝数大于</span>
+                              <input type="text" class="form-control" name=q8 placeholder="粉丝数大于">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px"id="sizing-addon1">粉丝数小于</span>
+                              <input type="text" class="form-control"  name=q9  placeholder="粉丝数小于">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="row" style='margin-top:10px'>
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px"id="sizing-addon1">关注数大于</span>
+                              <input type="text" class="form-control"  name=q10 placeholder="关注数大于">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" id="sizing-addon1">关注数小于</span>
+                              <input type="text" class="form-control"  name=q11 placeholder="关注数小于">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->
+                        </div><!-- /.row -->
+                        <div class="row" style='margin-top:10px'>
+                          <div class="col-lg-3">
+                            <div class="input-group">
+                              <span class="input-group-addon" style="width:96px"id="sizing-addon1">显示条数</b></span>
+                              <input type="text" class="form-control"  name=size placeholder="显示用户个数">
+                            </div><!-- /input-group -->
+                          </div><!-- /.col-lg-6 -->                
+                          <div class="col-lg-3">
+                          <div class="input-group">
+                          <span class="input-group-addon"style="width:96px">降序排序</span>
+                          <span><select class="form-control" style="width:125px" name="order" id='select_order'>
+                            <option value=0 selected> 微博数</option>
+                            <option value=1> 粉丝数</option>
+                            <option value=2> 关注数</option>
+                          </select></span>
+                        </div>
+                        </div>
+                          <span class="input-group-btn">
+                             <a href="#goto"><input style='margin-left:20px' class="btn btn-primary" onclick="click_data();" value=检索></a>
+                          </span>
+                        </div><!-- /.row -->
+              </div>
+            </div>
+                <div >
+                <a name="goto"><h4 class="page-header"style="margin-top:10px">检索信息</h4></a>
+                </div> 
+                <div id = 'search_information'> 
+                <div style="float:left;width:50%"class="list-group-item list-group-item-success">耗时：ms</div>
+                <div style="float:right;width:50%"class="list-group-item list-group-item-success">命中：个</div>
+                </div>
+                <div class="row">
+                <div class="box col-md-12">
+                <div class="box-inner">
+                <div class="box-header well" data-original-title="">
+                      <h2><i class="glyphicon glyphicon-user"></i> 用户属性列表</h2>
+                      <div class="box-icon">
+                          <a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+                          <a href="#" class="btn btn-minimize btn-round btn-default"><i
+                                  class="glyphicon glyphicon-chevron-up"></i></a>
+                          <a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+                      </div>
+                  </div>
+                <div class="box-content">
+                <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+                <div style='float:right'><a  class="btn btn-danger" href="#">
+                        <i class="glyphicon glyphicon-trash icon-white"></i>
+                        删除
+                    </a></div>
+                <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>uid</th>
+                    <th>在线模式</th>
+                    <th>活动地</th>
+                    <th>领域</th>
+                    <th>心理特征</th>
+                    <th>hashtag</th>
+                    <th>选择</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in item_set %}
+                <tr>
+                    <td>{{ item.uname }}</td>
+                    <td class="center">{{ item.uid }}</td>
+                    <td class="center">{{ item.online_pattern }}</td>
+                    <td class="center">{{ item.activity_location }}</td>
+                    <td class="center">
+                        <span class="label-warning label label-default">{{ item.domain }}</span>
+                    </td>
+                    <td class="center">{{ item.psycho_feature }}</td>
+                    <td class="center">{{ item.hashtag }}</td>
+                    <td class="center"><input type="checkbox" id='{{ item.uid }}' ></td>
+                </tr>
+                 {% endfor %}
+                </tbody>
+                </table>
+                </div>
+                </div>
+                </div>
+                <!--/span-->
+
+                </div><!--/row-->   
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+<script src="/static/js/d3.v3.min.js"></script>
+<script>
+
+function setSubmitName(obj){
+    var search = document.getElementById('search');
+    if('uid'==obj.value){
+        search.name='q1';
+    }
+    else if('nick_name'==obj.value){
+        search.name='q2';
+    }
+    else if('rel_name'==obj.value){
+        search.name='q3';
+    }
+    else {
+        search.name='q7';
+    }
+  }
+</script>
+{% endblock %}
