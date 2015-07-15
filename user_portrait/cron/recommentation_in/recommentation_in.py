@@ -59,7 +59,7 @@ def filter_rules(candidate_results):
     results = filter_mention(filter_result3)
     return results
 
-'''
+
 def write_recommentation(date, re_user, results):
     f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/recommentation_list.csv', 'wb')
     writer = csv.writer(f)
@@ -69,7 +69,6 @@ def write_recommentation(date, re_user, results):
     for item in sort_results:
         writer.writerow(item)
     return True
-'''
 
 def save_recommentation2redis(date, user_set):
     hash_name = 'recomment_'+str(date)
@@ -89,6 +88,19 @@ def read_black_user():
     f.close()
     return results
 
+# get sensitive user and filt in
+def get_sensitive_user(date):
+    results = set()
+    r_cluster = R_CLUSTER_FLOW2
+    ts = datetime2ts(date)
+    results = r_cluster.hgetall('sensitive_'+str(ts))
+    if results:
+        user_list = results.keys()
+    else:
+        user_list = []
+    #results = filter_in(user_list)
+    return results
+
 def main():
     now_ts = time.time()
     #test
@@ -96,26 +108,29 @@ def main():
     date = ts2datetime(now_ts - 3600*24)
     #step1: read from top es_daily_rank
     top_user_set = search_from_es(date)
-    #step2: get sensitive user
-    sensitive_user = get_sensitive_user(date)
-    list(top_user_set).extend(sensitive_user)
-    top_user_set = set(top_user_set)
-    #step3: filter black_uid
+    #step2: filter black_uid
     black_user_set = read_black_user()
     print 'black_user_set:', len(black_user_set)
     intersection = top_user_set & black_user_set
     print 'intersection:', len(intersection)
     subtract_user_set = top_user_set - black_user_set
     print 'after filter blacklist:', len(subtract_user_set)
-    #step4: filter users have been in
+    #step3: filter users have been in
     candidate_results = filter_in(subtract_user_set)
-    #step5: filter rules about ip count& reposts/bereposts count&activity count
+    #step4: filter rules about ip count& reposts/bereposts count&activity count
     results = filter_rules(candidate_results)
     print 'after filter:', len(results)
+    #step5: get sensitive user
+    sensitive_user = get_sensitive_user(date)
+    list(results).extend(sensitive_user)
+    results = set(results)
+    print 'end:', len(results)
     #step6: write to recommentation csv/redis
-    status = save_recommentaiton2redis(date, results)
+    status = save_recommentation2redis(date, results)
     if status==True:
         print 'date:%s recommentation done' % date
 
 if __name__=='__main__':
     main()
+    #results = get_sensitive_user('2013-09-07')
+    #print 'sensitive_user:', len(results)

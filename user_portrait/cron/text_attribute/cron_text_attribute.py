@@ -77,7 +77,7 @@ def attr_punc(weibo_list):
     results = {}   
     return results
 '''
-# hash turn to save in flow2
+# hash turn to save in flow4
 '''
 def attr_hash(weibo_list):
     results = {}
