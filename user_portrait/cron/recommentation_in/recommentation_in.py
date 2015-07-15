@@ -9,6 +9,7 @@ from filter_rules import filter_activity, filter_ip, filter_retweet_count, filte
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2,  R_DICT, ES_DAILY_RANK, es_user_portrait
+from global_utils import R_RECOMMENTATION as r
 from global_config import RECOMMENTATION_TOPK as k
 from time_utils import datetime2ts, ts2datetime
 
@@ -33,19 +34,17 @@ def search_from_es(date):
     user_set = []
     user_set = [user_dict['_id'] for user_dict in result]
     print 'len user_set:',len(user_set)
-    return result, set(user_set)
+    return set(user_set)
 
 def filter_in(top_user_set):
     results = []
     try:
-        in_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':top_user_set})
-        #print 'in_results:', in_results
+        in_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':list(top_user_set)})
     except Exception as e:
         raise e
     filter_list = [item['_id'] for item in in_results['docs'] if item['found'] is True]
-    print 'len filter_list:', len(filter_list)
-    results = set(top_user_set) - set(in_results)
-    print 'filter in results:', len(results)
+    results = set(top_user_set) - set(filter_list)
+    print 'after filter in:', len(results)
     return results
 
 def filter_rules(candidate_results):
@@ -60,6 +59,7 @@ def filter_rules(candidate_results):
     results = filter_mention(filter_result3)
     return results
 
+'''
 def write_recommentation(date, re_user, results):
     f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/recommentation_list.csv', 'wb')
     writer = csv.writer(f)
@@ -69,16 +69,24 @@ def write_recommentation(date, re_user, results):
     for item in sort_results:
         writer.writerow(item)
     return True
+'''
+
+def save_recommentation2redis(date, user_set):
+    hash_name = 'recomment_'+str(date)
+    status = 0
+    for uid in user_set:
+        r.hset(hash_name, uid, status)
+    return True
 
 
 def read_black_user():
     results = set()
-    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/dzs_uid.txt', 'rb')
-    for line in f:
-        uid_list = line.split(',')
-        for uid in uid_list:
-            results.add(uid)
-
+    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/blacklist.csv', 'rb')
+    reader = csv.reader(f)
+    for line in reader:
+        uid = line[0]
+        results.add(uid)
+    f.close()
     return results
 
 def main():
@@ -87,23 +95,27 @@ def main():
     now_ts = datetime2ts('2013-09-08')
     date = ts2datetime(now_ts - 3600*24)
     #step1: read from top es_daily_rank
-    top_results, top_user_set = search_from_es(date)
-    
-    # black_uid
+    top_user_set = search_from_es(date)
+    #step2: get sensitive user
+    sensitive_user = get_sensitive_user(date)
+    list(top_user_set).extend(sensitive_user)
+    top_user_set = set(top_user_set)
+    #step3: filter black_uid
     black_user_set = read_black_user()
     print 'black_user_set:', len(black_user_set)
     intersection = top_user_set & black_user_set
     print 'intersection:', len(intersection)
-
-    '''
-    #step2: filter users have been in
-    candidate_results = filter_in(top_user_set)
-    #step3: filter rules about ip count& reposts/bereposts count&activity count
+    subtract_user_set = top_user_set - black_user_set
+    print 'after filter blacklist:', len(subtract_user_set)
+    #step4: filter users have been in
+    candidate_results = filter_in(subtract_user_set)
+    #step5: filter rules about ip count& reposts/bereposts count&activity count
     results = filter_rules(candidate_results)
-    #step4: write to recommentation csv/redis
-    status = write_recommentation(date, results, top_results)
+    print 'after filter:', len(results)
+    #step6: write to recommentation csv/redis
+    status = save_recommentaiton2redis(date, results)
     if status==True:
         print 'date:%s recommentation done' % date
-    '''
+
 if __name__=='__main__':
     main()
