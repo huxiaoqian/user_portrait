@@ -47,6 +47,10 @@ R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7
 #type2:{compute:{uid:[in_date,status], uid:[in_date, status]}} status:0 not compute status:1 computing 
 R_RECOMMENTATION = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 
+R_RECOMMENTATION_OUT = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
+# type: hash----{recommend_out, 2013_09_01, list}
+
+
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)
 es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 60)
