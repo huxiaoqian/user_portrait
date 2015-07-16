@@ -13,10 +13,10 @@ reload(sys)
 sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1
 
-es = ES_CLUSTER_FLOW1
 index_type = "bci"
+es = ES_CLUSTER_FLOW1
 
-def search_rank(index_name, start_point, size, index_type="bci"):
+def search_rank(index_name, start_point, size, es, index_type="bci"):
     query_body={
         "query": {
             "match_all": {}
@@ -43,7 +43,7 @@ def update_index_action(data, attribute, attribute_value):
     xdata = {"doc": {attribute: attribute_value}}
     return action, xdata
 
-def main():
+def main(es):
     """
     update all user in a day
     """
@@ -62,7 +62,7 @@ def main():
     tb = time.time()
 
     for left_range in n_range:
-        result = search_rank(index_name, left_range, 10000)
+        result = search_rank(index_name, left_range, 10000, es)
 
         for item in result:
             update_info = {}
@@ -93,4 +93,5 @@ def main():
     print "finish !"
 
 if __name__ == "__main__":
-    main()
+    es = ES_CLUSTER_FLOW1
+    main(es)
