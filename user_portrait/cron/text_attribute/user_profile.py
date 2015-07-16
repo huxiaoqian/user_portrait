@@ -10,8 +10,9 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_profile as es
 
-fields_list = ["nick_name", "sex", "user_location", "isreal", "fansnum", \
-          "statusnum", "friendsnum", "photo_url"]
+fields_dict = {'uname':"nick_name", 'gender':"sex", 'location':"user_location", \
+               'verified':"isreal", 'fansnum':"fansnum", 'statusnum':"statusnum", \
+               'friendsnum':"friendsnum", 'photo_url':"photo_url"}
 
 index_name = 'weibo_user'
 index_type = 'user'
@@ -22,8 +23,8 @@ def get_profile_information(uid_list):
     print 'search_result:', search_result
     for item in search_result:
         user_dict = {}
-        for field in fields_list:
-            user_dict[field] = item['_source'][field]
+        for field in fields_dict:
+            user_dict[field] = item['_source'][fields_dict[field]]
 
         result_dict[item['_id']] = user_dict
     print 'result_dict:', result_dict

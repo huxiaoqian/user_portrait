@@ -1,7 +1,8 @@
 # -*- coding: UTF-8 -*-
 import sys
 import time
-from weibo_api import compute2in
+from weibo_api import read_user_weibo
+from cron_text_attribute import compute2in
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_RECOMMENTATION as r

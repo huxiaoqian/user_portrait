@@ -74,29 +74,6 @@ def attr_text_len(weibo_list):
     #return [min_len, max_len, ave_len]
     return ave_len
 
-'''
-def attr_punc(weibo_list):
-    results = {}   
-    return results
-'''
-# hash turn to save in flow4
-'''
-def attr_hash(weibo_list):
-    results = {}
-    for weibo in weibo_list:
-        text = weibo['text']
-        if isinstance(text, str):
-            text = text.decode('utf-8', 'ignore')
-        RE = re.compile(u'#([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+)#', re.UNICODE)
-        hashtag_list = RE.findall(text)
-        # there all use unicode 
-        for hashtag in hashtag_list:
-            try:
-                results[hashtag] += 1
-            except:
-                results[hashtag] = 1
-    return results
-'''
 def attr_emoticon(weibo_list):
     results = {}
     for weibo in weibo_list:
@@ -201,27 +178,26 @@ def compute_text_attribute(user, weibo_list):
     result = {}
     # text attr1: len
     result['text_len'] = attr_text_len(weibo_list)
-    # text attr2: punctuation
-    #result['punc'] = attr_punc(weibo_list)
-    # text attr3: emoticon
+    # text attr2: emoticon
     result['emoticon'] = json.dumps(attr_emoticon(weibo_list))
-    # text attr4: hashtag
-    result['hashtag'] = json.dumps(attr_hash(user))
-    # text attr5: liwc word
+    # text attr3: liwc word
     result['emotion_words'] = json.dumps(attr_liwc(weibo_list))
-    # text attr6: web link
+    # text attr4: web link
     result['link'] = attr_link(weibo_list)
-    # text attr7: online pattern
+    # text attr5: online pattern
     result['online_pattern'] = json.dumps(attr_online_pattern(weibo_list))
-    # text attr8: keywords
+    # text attr6: keywords
     result['keywords'] = json.dumps(attr_keywords(weibo_list))
-    # test domain
+    # test attr7: domain
     #result['domain'] = attr_domain(weibo_list)
     result['domain'] = 'test domain'
-    # test psycho_feature
-    #result['psycho_status'] = attr_psycho(weibo_list)
+    # test attr8: psycho_feature
+    #result['psycho_feature'] = attr_psycho_feature(user, weibo_list)
+    result['psycho_feature'] = 'test psycho_feature'
+    # test attr9: psycho_status
+    #result['psycho_status'] = attr_psycho_status(user, weibo_list)
     result['psycho_status'] = 'test psycho_status'
-    # test topic
+    # test atrr10: topic
     #result['topic'] = attr_topic(weibo_list)
     result['topic'] = 'test topic'
     return result
