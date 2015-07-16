@@ -3,7 +3,7 @@
 import redis
 import math
 import sys
-import logging
+import os
 import time
 from elasticsearch import Elasticsearch
 from index_cal import influence_weibo_cal, user_index_cal, deliver_weibo_brust, activity_weibo, statistic_weibo, expand_index_action 
@@ -169,13 +169,6 @@ def compute(user_set, es):
 
 if __name__ == "__main__":
 
-    es_logger = logging.getLogger("elasticsearch")
-    es_logger.setLevel(logging.ERROR)
-    FileHandler = logging.FileHandler("es.log")
-    formatter = logging.Formatter("%(asctime)s_%(name)s_%(levelname)s_%(message)s")
-    FileHandler.setFormatter(formatter)
-    es_logger.addHandler(FileHandler)
-    
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
     bool = es.indices.exists(index=es_index)
     print bool
@@ -205,7 +198,8 @@ if __name__ == "__main__":
                     print "%s : %s" %(count, ts - tb)
                     tb = ts
             else:
-                time.sleep(60)
+                os.system("python update_daily_user_index_rank.py &")
+                sys.exit(0)
         except Exception ,r:
             print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + " : " + Exception + " : "+r
             time.sleep(60)

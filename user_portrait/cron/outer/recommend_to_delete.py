@@ -7,6 +7,7 @@ based on user activity, recommend to delete the user in portrait database
 
 import sys
 import time
+import json
 import redis
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
@@ -55,7 +56,7 @@ def main():
     recommend_list = search_low_number(threshould) # recommended user to delete in portrait database
     print len(recommend_list)
     if recommend_list:
-        recommend_redis.hset("recommend_delete_list", record_time, recommend_list) # lpush uid into a redis
+        recommend_redis.hset("recommend_delete_list", record_time, json.dumps(recommend_list)) # lpush uid into a redis
         return 1
     else:
         print "no one to recommend"

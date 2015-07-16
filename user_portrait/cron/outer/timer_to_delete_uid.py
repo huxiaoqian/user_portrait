@@ -8,6 +8,7 @@ preset time to delete the users (uid) recommended and stored in redis
 import sys
 import redis
 import time
+import json
 import datetime
 from elasticsearch import Elasticsearch
 
@@ -55,7 +56,10 @@ def main():
         print item_timestamp
 
         if ts - item_timestamp > 0:
-            temp_list = transfer_str_to_list(date[item])
+            temp_list = json.loads(recommend_redis.hget("decide_delete_list", item))
+            if not temp_list:
+                continue
+
             for uid in temp_list:
                 del_data = expand_delete_action(uid)
                 bulk_action.append(del_data)

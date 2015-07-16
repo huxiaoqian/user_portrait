@@ -48,7 +48,7 @@ R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7
 R_RECOMMENTATION = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 
 R_RECOMMENTATION_OUT = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
-# type: hash----{recommend_out, 2013_09_01, list}
+# type: hash----{recommend_out, 20130901, list}
 
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
