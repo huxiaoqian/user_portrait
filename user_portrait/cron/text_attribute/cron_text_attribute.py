@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 '''
 compute the user attribute about text
+data source: weibo api
+scene: add user to user portrait
 '''
 import re
 import csv
@@ -249,7 +251,6 @@ def main():
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
         results = compute_text_attribute(user, weibo_list)
-        results['uname'] = uname
         results['uid'] = str(user)
         #print 'keyword:', results['keywords']
         # deal to the bulk action

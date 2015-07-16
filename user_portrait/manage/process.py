@@ -30,45 +30,35 @@ def es_create():
         es.indices.create(index=index_name, ignore=400)
 
     bulk_action = []
-    for i in range(10):
+    for i in range(20):
         item = {
             "uid": 5*str(i),
             "uname": "testname",
-            "topic": json.dumps({"教育": 1,"科技":1}),
-            "domain": "教育 科技",
-            "psycho_feature": "featurefeaturefeature",
-            "psycho_status": "statusstatusstatus",
+            "gender": "male",
+            "location": "testlocation",
+            "verified": "yes",
+            "fansnum": 10,
+            "statusnum": 10,
+            "friendsnum": 10,
+            "photo_url": "testurl",
+            "topic": "art education",
+            "domain": "lawyer",
+            "psycho_feature": "testfeature",
+            "psycho_status": "teststatus",
+            "activity_geo": "beijing nanjing", 
             "text_len": 10,
-            "emoticon": json.dumps({"key":"hahaha"}),
-            "hashtag": json.dumps({"key":"hahaha"}),
-            "emotion_words": json.dumps({"key": "hahaha"}),
+            "emoticon": json.dumps({"smile":1}), 
+            "emotion_words": json.dumps({"words1":1}),
             "link": 10,
-            "online_pattern": json.dumps({"key": "hahaha"}),
-            "activity_location": "beijing",
-            "keywords":json.dumps({"key":"hahaha"})
-        }
+            "online_pattern": json.dumps({"way1":1}),
+            "keywords": json.dumps({"words":1}),
+            "hashtag": json.dumps({"hashtag1":1}),
+            "importance": 10,
+            "activeness": 10,
+            "influence": 10
+                }
         action = expand_index_action(item)
         bulk_action.extend([action, item])
-    for i in range(10):
-        item = {
-            "uid": 10*str(i),
-            "uname": "testname",
-            "topic": json.dumps({"政治": 1,"科技": 1}),
-            "domain": "政治 科技",
-            "psycho_feature": "featurefeaturefeature",
-            "psycho_status": "statusstatusstatus",
-            "text_len": 10,
-            "emoticon": json.dumps({"key":"hahaha"}),
-            "hashtag": json.dumps({"key":"hahaha"}),
-            "emotion_words": json.dumps({"key": "hahaha"}),
-            "link": 10,
-            "online_pattern": json.dumps({"key": "hahaha"}),
-            "activity_location": "beijing",
-            "keywords":json.dumps({"key":"hahaha"})
-        }
-        action = expand_index_action(item)
-        bulk_action.extend([action, item])
-
     es.bulk(bulk_action, index=index_name, doc_type=index_type)
 
 def start_cal(uid_list):
@@ -139,4 +129,5 @@ if __name__=='__main__':
     test_uid_list = ['2101413011','1995786393','2132734472','2776631980','2128524603',\
                      '1792702427','2703153040','2787852095','1599102507','1726544024']
     test(test_uid_list)
+    
 
