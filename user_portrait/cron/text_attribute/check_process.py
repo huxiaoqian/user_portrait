@@ -41,7 +41,7 @@ def check_elasticsearch(p_name):
 if __name__ == '__main__':
 
     # test procedure running
-    d_name = ['recommentation_in.py']
+    d_name = ['scan_compute_redis.py']
     for item in d_name:
         check(item)
 

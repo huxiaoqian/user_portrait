@@ -60,7 +60,7 @@ def ajax_compute_show():
 @mod.route('/identify_compute/')
 def ajax_compute_identify():
     results = {}
-    data = request.args.get('date', '') # data '[(date, uid)]'
+    data = request.args.get('data', '') # data '[(date, uid)]'
     if data:
         #test
         data = [('2015-07-15','1767905823')]

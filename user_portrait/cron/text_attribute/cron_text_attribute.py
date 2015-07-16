@@ -224,6 +224,20 @@ def compute_text_attribute(user, weibo_list):
     result['topic'] = 'test topic'
     return result
 
+#start-up by scan_compute_redis
+def compute2in(user_weibo_dict):
+    for user in user_weibo_dict:
+        weibo_list = user_weibo_dict[user]
+        uname = weibo_list[0]['uname']
+        results = compute_text_attribute(user, weibo_list)
+        results['uname'] = uname
+        results['uid'] = str(user)
+        action = {'index':{'_id':str(user)}}
+        bulk_action.extend([action, results])
+    status = save_user_results(bulk_action)
+    return True
+
+#test manual instruction
 def main():
     # read the uid list
     uid_list = read_uid_list()
