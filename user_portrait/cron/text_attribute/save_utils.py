@@ -37,3 +37,10 @@ def save_user_results(bulk_action):
     es.bulk(bulk_action, index=index_name, doc_type=index_type, timeout=30)
     return True    
 
+def update_day(bulk_action):
+    status = False
+    return status
+
+def update_week(bulk_action):
+    status = False
+    return status

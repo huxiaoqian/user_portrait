@@ -95,14 +95,14 @@ def get_influence(uid):
         }
     }
     rank = es.count(index=index_time, doc_type=index_type, body=query_body)['count']
-    print 'rank:', rank
+    #print 'rank:', rank
     return result
 
 def get_importance(uid, domain, topic):
     result = 0
     domain_result = 0
     domain_list = domain.split(' ')
-    print 'domain_list:', domain_list
+    #print 'domain_list:', domain_list
     for domain in domain_list:
         try:
             domain_result += domain_weight_dict[domain]
@@ -110,7 +110,7 @@ def get_importance(uid, domain, topic):
             pass
     topic_result = 0
     topic_list = topic.split(' ')
-    print 'topic_list:', topic_list
+    #print 'topic_list:', topic_list
     for topic in topic_list:
         try:
             topic_result += topic_weight_dict[topic]
@@ -128,7 +128,7 @@ def get_importance(uid, domain, topic):
     retweetednum = es_result['origin_weibo_retweeted_total_number'] + es_result['retweeted_weibo_retweeted_total_number']
     result = importance_weight_dict['fansnum']*fansnum + importance_weight_dict['retweeted_num']*retweetednum + \
              importance_weight_dict['domain']*domain_result + importance_weight_dict['topic']*topic_result
-    print 'importance result:', result
+    #print 'importance result:', result
     return result
 
 # status: insert or update
