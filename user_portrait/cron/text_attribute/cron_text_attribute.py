@@ -203,13 +203,19 @@ def compute_text_attribute(user, weibo_list):
     return result
 
 #start-up by scan_compute_redis
-def compute2in(user_weibo_dict):
+def compute2in(uid_list, user_weibo_dict):
+    flow_result = get_flow_information(uid_list)
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
         results = compute_text_attribute(user, weibo_list)
         results['uname'] = uname
         results['uid'] = str(user)
+        user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
+        evaluation_index = get_evaluate_index(user_info, status='insert')
+        results = dict(results, **evaluation_index)
+        flow_dict = flow_result[str(user)]
+        results = dict(results, **flow_dict)
         action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)
