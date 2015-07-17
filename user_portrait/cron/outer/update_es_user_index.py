@@ -35,16 +35,6 @@ if __name__ == "__main__":
 
     tb = time.time()
 
-    """
-    es_logger = logging.getLogger("elasticsearch")
-    es_logger.setLevel(logging.ERROR)
-    FileHandler = logging.FileHandler("es.log")
-    formatter = logging.Formatter("%(asctime)s_%(name)s_%(levelname)s_%(message)s")
-    FileHandler.setFormatter(formatter)
-    es_logger.addHandler(FileHandler)
-
-    """
-
     index_exist = es.indices.exists(index=index_destination)
     if not index_exist:
         es.indices.create(index=index_destination, ignore=400)
@@ -125,13 +115,6 @@ if __name__ == "__main__":
 
     if bulk_action:
         es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
-
-
-
-
-
-
-
 
 
 
