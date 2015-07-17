@@ -5,12 +5,14 @@ save uid list should be in
 '''
 import sys
 import time
+import datetime
 import json
 import redis
 #from user_portrait.global_utils import R_RECOMMENTATION as r
 reload(sys)
 sys.path.append('../')
 from user_portrait.global_utils import R_RECOMMENTATION as r
+from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.time_utils import ts2datetime
 #test
 '''
@@ -71,6 +73,72 @@ def identify_compute(data):
 
     return True
 
+def show_out_uid(date):
+    out_dict = {}
+    data = str(date).replace("-","")
+    uid_dict = r_out.hgetall("recommend_delete_list")
+    if not uid_dict:
+        return out_dict # no one is recommended to out
+
+    keys = r_out.hkeys("recommend_delete_list")
+
+    """
+    if data in set(keys):
+        out_dict[data] = json.dumps(r_out.hget("recommend_delete_list", data))
+
+    """
+    for iter_key in keys:
+        out_dict[iter_key] = json.dumps(r_out.hget("recommend_delete_list",iter_key))
+
+    return out_dict
+
+def decide_out_uid(data):
+    uid_list = []
+    date = time.strftime("%Y%m%d", time.localtime(time.time()))
+    if data:
+        uid_list = data.split(",") # decide to delete uids
+        r_out.hset("decide_delete_list", date, json.dumps(uid_list))
+    r_out.delete("recommend_delete_list")
+    r_out.hset("history_delete_list", date, json.dumps(uid_list))
+
+    return 1
+
+def genereat_date(former_date, later_date="21000101"):
+    date_list = []
+    date_list.append(former_date)
+    former_struct = datetime.date(int(former_date[0:4]), int(former_date[4:6]), int(former_date[6:]))
+    later_struct = datetime.date(int(later_date[0:4]), int(later_date[4:6]), int(later_date[6:]))
+    former_timestamp = time.mktime(former_struct.timetuple())
+    later_timestamp = time.mktime(later_struct.timetuple())
+    i = 0
+
+    next_timestamp = former_timestamp
+    while 1:
+        next_timestamp += 86400
+        if next_timestamp <= later_timestamp:
+            date_list.append(time.strftime('%Y%m%d',time.localtime(next_timestamp)))
+            i += 1
+            if i == 7:
+                break
+        else:
+            break
+
+    return date_list
+
+def search_history_delete(date):
+    history_uid_dict = {}
+    if not date:
+        now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
+        date_list = genereat_date(now_date)
+
+    else:
+        query_date = date.split(",")
+        date_list = generate_date(query_date[0], query_date[1])
+
+    for key in date_list:
+        history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
+
+    return json.dumps(history_uid_dict)
 
 if __name__=='__main__':
     #test

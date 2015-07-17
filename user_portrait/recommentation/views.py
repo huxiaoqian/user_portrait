@@ -5,6 +5,7 @@ import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import recommentation_in, identify_in, show_compute, identify_compute
+from utils import show_out_uid,decide_out_uid, search_history_delete
 
 from user_portrait.time_utils import datetime2ts
 
@@ -55,7 +56,7 @@ def ajax_compute_show():
         results = show_compute(date)
     return json.dumps(results)
 
-#identify the uid list to compute
+#identify the uid :list to compute
 @mod.route('/identify_compute/')
 def ajax_compute_identify():
     results = {}
@@ -67,13 +68,29 @@ def ajax_compute_identify():
     return json.dumps(results)
 
 # show recommentaion out uid
-@mod.route('/show_out/')
+@mod.route('/show_out/a')
 def ajax_recommentation_out():
-    results = dict()
+    results = []
+    date = request.args.get('date', '') # date 2013-09-01
+    if date:
+        results = show_out_uid(date)
     return json.dumps(results)
 
 # identify recommentation out uid
 @mod.route('/identify_out/')
 def ajax_identify_out():
     results = 0
+    data = request.args.get('data', '') # uid,uid,uid
+    results = decide_out_uid(data)
+
     return json.dumps(results)
+
+# show history delete out uid
+@mod.route('/history_delete/')
+def ajax_history_delete():
+    results = {}
+    date = request.args.get('date', '') # date 2013-09-01, 2013-09-02
+    results = search_history_delete(date)
+
+    return results # return {"20150715": "[uid]"}
+
