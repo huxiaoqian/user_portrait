@@ -10,7 +10,7 @@ from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
 from user_portrait.recommentation.views import mod as recommentationModule
 from user_portrait.profile.views import mod as profileModule
-
+from user_portrait.overview.views import mod as overviewModule
 
 def create_app():
     app = Flask(__name__)
@@ -24,6 +24,7 @@ def create_app():
     app.register_blueprint(manageModule)
     app.register_blueprint(attributeModule)
     app.register_blueprint(recommentationModule)
+    app.register_blueprint(overviewModule)
 
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True
