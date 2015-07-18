@@ -72,23 +72,37 @@ function get_input_data(){
 
 function toggle(target){
        targetid = target.substr(7, target.length);
-       console.log(targetid);
        $("#" + targetid).val();
        if (document.getElementById){
            target_search=document.getElementById(target);
                if (target_search.style.display=="block"){
-                  $("#" + targetid).val("");
                    target_search.style.display="none";
                    click_data();
                } else {
-                  $("#" + targetid).val("");
+                   if (targetid == 'isreal'){
+                      $("#" + targetid).find("option[value='2']").attr("selected",true);
+                   }else if (targetid == 'sex'){
+                      $("#" + targetid).find("option[value='3']").attr("selected",true);
+                   }else if (targetid == 'select_source'){
+                      $("#" + targetid).find("option[value='0']").attr("selected",true);
+                   }else if (targetid == 'weibo'){
+                      $("#weibo_from").val("");
+                      $("#weibo_to").val("");
+                   }else if (targetid == 'fans'){
+                      $("#fans_from").val("");
+                      $("#fans_to").val("");
+                   }else if (targetid == 'friends'){
+                      $("#friends_from").val("");
+                      $("#friends_to").val("");
+                   }
+                   else {
+                      $("#" + targetid).val("");
+                   }
                    target_search.style.display="none";                    
                    click_data();
                }
        }
   }
-
-
   function search_conditions(){
       $('#search_conditions').empty();
       html = '<div>'
