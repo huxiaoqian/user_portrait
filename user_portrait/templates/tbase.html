@@ -6,30 +6,30 @@
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     		<meta charset="utf-8">
     		<meta name="viewport" content="width=device-width, initial-scale=1">
-			<title>XXX系统</title>
+            <title>{% block title %}XXX系统{% endblock title %}</title>
 		{% endblock %}
 		<!-- end head 标签 -->
 
 		<!-- 布局css -->
 		{% block css %}
-		    <link href="../../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-		    <link rel="stylesheet" type="text/css" href="../../static/css/base.css">
-		    <link rel="stylesheet" type="text/css" href="../../static/css/sidebar.css" />
-	        <link href="../../static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
+		    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+		    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css" />
+	        <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
 			<!-- the model styles -->
-		    <link href="../../static/css/charisma-app.css" rel="stylesheet">
-		    <link href='../../static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
-		    <link href='../../static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
-		    <link href='../../static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-		    <link href='../../static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
-		    <link href='../../static/css/jquery.noty.css' rel='stylesheet'>
-		    <link href='../../static/css/noty_theme_default.css' rel='stylesheet'>
-		    <link href='../../static/css/elfinder.min.css' rel='stylesheet'>
-		    <link href='../../static/css/elfinder.theme.css' rel='stylesheet'>
-		    <link href='../../static/css/jquery.iphone.toggle.css' rel='stylesheet'>
-		    <link href='../../static/css/uploadify.css' rel='stylesheet'>
-		    <link href='../../static/css/animate.min.css' rel='stylesheet'>
-			<link href='../../static/bootstrap/css/bootstrap.css' rel="stylesheet" >
+		    <link href="/static/css/charisma-app.css" rel="stylesheet">
+		    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+		    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+		    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+		    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
+		    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
+		    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
+		    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
+		    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
+		    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
+		    <link href='/static/css/uploadify.css' rel='stylesheet'>
+		    <link href='/static/css/animate.min.css' rel='stylesheet'>
+			<link href='/static/bootstrap/css/bootstrap.css' rel="stylesheet" >
 
 			
 		    <!-- end model styles -->
@@ -38,12 +38,12 @@
 
 		<!-- 引入js -->
 	    {% block head_js %}
-	    	<script  src="../../static/js/jquery.second.js"></script>
-	    	<script src="../../static/js/jquery.min.js"></script>
-	    	<script src='../../static/bootstrap/js/bootstrap.js'></script>
-	    	<script src='../../static/js/echarts-all.js'></script>
-	    	<script src="../../static/js/jquery-ui.min.js"></script>
-			<script src="../../static/js/jquery.sidebar.js"></script>
+	    	<script  src="/static/js/jquery.second.js"></script>
+	    	<script src="/static/js/jquery.min.js"></script>
+	    	<script src='/static/bootstrap/js/bootstrap.js'></script>
+	    	<script src='/static/js/echarts-all.js'></script>
+	    	<script src="/static/js/jquery-ui.min.js"></script>
+			<script src="/static/js/jquery.sidebar.js"></script>
 	    {% endblock %}
 	    <!-- end js -->
 	</head>
@@ -78,16 +78,16 @@
 		{% block left %}
 			<div class="leftsidebar_box">
 				<dl class="">
-					<dt onClick="changeImage()">整体概览</dt>
+					<dt onClick=";">整体概览</dt>
 				</dl>
 
 				<dl class="">
-					<dt onClick="changeImage()">出入库<img src="../../static/img/images/left/select_xl01.png"></dt>
+					<dt onClick=";">出入库<img src="/static/img/images/left/select_xl01.png"></dt>
 					<dd><a href="#">出库</a></dd>
 					<dd><a href="#">入库</a></dd>
 				</dl>
 				<dl class="">
-					<dt>应用<img src="../../static/img/images/left/select_xl01.png"></dt>
+					<dt>应用<img src="/static/img/images/left/select_xl01.png"></dt>
 					<dd><a href="#">群体分析</a></dd>
 					<dd><a href="#">影响力</a></dd>
 				</dl>
@@ -115,15 +115,15 @@
 			<script type="text/javascript">
 				$("div.leftsidebar_box").sidebar();
 				$(".leftsidebar_box dt").css({"background-color":"#4f8fff"});
-				$(".leftsidebar_box dt img").attr("src","../../static/img/images/left/select_xl01.png");
+				$(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
 				$(function(){
 					$(".leftsidebar_box dd").hide();
 					$(".leftsidebar_box dt").click(function(){
 						$(".leftsidebar_box dt").css({"background-color":"#4f8fff"})
 						$(this).css({"background-color": "#317eb4"});
 						$(this).parent().find('dd').removeClass("menu_chioce");
-						$(".leftsidebar_box dt img").attr("src","../../static/img/images/left/select_xl01.png");
-						$(this).parent().find('img').attr("src","../../static/img/images/left/select_xl.png");
+						$(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+						$(this).parent().find('img').attr("src","/static/img/images/left/select_xl.png");
 						$(".menu_chioce").slideUp(); 
 						$(this).parent().find('dd').slideToggle();
 						$(this).parent().find('dd').addClass("menu_chioce");
@@ -135,37 +135,37 @@
 
 		<!-- 引入js -->
 		{% block end_js %}
-        <script src="../../static/bower_components/bootstrap/css_js/js/bootstrap.min.js"></script>
+        <script src="/static/bower_components/bootstrap/css_js/js/bootstrap.min.js"></script>
 			<!-- library for cookie management -->
-			<script src="../../static/js/jquery.cookie.js"></script>
+			<script src="/static/js/jquery.cookie.js"></script>
 			<!-- calender plugin -->
-			<script src='../../static/bower_components/moment/min/moment.min.js'></script>
-			<script src='../../static/bower_components/fullcalendar/css_js/fullcalendar.min.js'></script>
+			<script src='/static/bower_components/moment/min/moment.min.js'></script>
+			<script src='/static/bower_components/fullcalendar/css_js/fullcalendar.min.js'></script>
 			<!-- data table plugin -->
-			<script src='../../static/js/jquery.dataTables.min.js'></script>
+			<script src='/static/js/jquery.dataTables.min.js'></script>
 			<!-- select or dropdown enhancer -->
-			<script src="../../static/bower_components/chosen/chosen.jquery.min.js"></script>
+			<script src="/static/bower_components/chosen/chosen.jquery.min.js"></script>
 			<!-- plugin for gallery image view -->
-			<script src="../../static/bower_components/colorbox/jquery.colorbox-min.js"></script>
+			<script src="/static/bower_components/colorbox/jquery.colorbox-min.js"></script>
 			<!-- notification plugin -->
-			<script src="../../static/js/jquery.noty.js"></script>
+			<script src="/static/js/jquery.noty.js"></script>
 			<!-- library for making tables responsive -->
-			<script src="../../static/bower_components/responsive-tables/responsive-tables.js"></script>
+			<script src="/static/bower_components/responsive-tables/responsive-tables.js"></script>
 			<!-- tour plugin -->
-			<script src="../../static/bower_components/bootstrap-tour/css_js/js/bootstrap-tour.min.js"></script>
+			<script src="/static/bower_components/bootstrap-tour/css_js/js/bootstrap-tour.min.js"></script>
 			<!-- star rating plugin -->
-			<script src="../../static/js/jquery.raty.min.js"></script>
+			<script src="/static/js/jquery.raty.min.js"></script>
 			<!-- for iOS style toggle switch -->
-			<script src="../../static/js/jquery.iphone.toggle.js"></script>
+			<script src="/static/js/jquery.iphone.toggle.js"></script>
 			<!-- autogrowing textarea plugin -->
-			<script src="../../static/js/jquery.autogrow-textarea.js"></script>
+			<script src="/static/js/jquery.autogrow-textarea.js"></script>
 			<!-- multiple file upload plugin -->
-			<script src="../../static/js/jquery.uploadify-3.1.min.js"></script>
+			<script src="/static/js/jquery.uploadify-3.1.min.js"></script>
 			<!-- history.js for cross-browser state change on ajax -->
-			<script src="../../static/js/jquery.history.js"></script>
+			<script src="/static/js/jquery.history.js"></script>
 			<!-- application script for Charisma demo -->
-			<script src="../../static/js/table.js"></script>
-			<script src="../../static/js/charisma.js"></script>
+			<script src="/static/js/table.js"></script>
+			<script src="/static/js/charisma.js"></script>
 		{% endblock %}
 		<!-- end js -->
 	</body>
