@@ -202,6 +202,7 @@ def compute_text_attribute(user, weibo_list):
     # test atrr10: topic
     #result['topic'] = attr_topic(weibo_list)
     result['topic'] = 'test topic'
+    #test attr
     return result
 
 #start-up by scan_compute_redis

@@ -8,6 +8,7 @@ second:influence
 last: importance
      input: uid, domain, uid
 '''
+import IP
 import sys
 import json
 import time
@@ -19,6 +20,7 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import ES_CLUSTER_FLOW1 as es
+from global_utils import es_user_portrait 
 from time_utils import ts2datetime, datetime2ts
 
 def get_activeness(uid, activity_geo):
@@ -131,6 +133,59 @@ def get_importance(uid, domain, topic):
     #print 'importance result:', result
     return result
 
+def ip2geo(ip_list):
+    ip_list = list(ip_list)
+    city_set = set()
+    for ip in ip_list:
+        try:
+            city = IP.find(str(ip))
+            if city:
+                city.encode('utf-8')
+            else:
+                city = ''
+        except Exception, e:
+            city = ''
+        if city:
+            len_city = len(city.split('\t'))
+            if len_city==4:
+                city = '\t'.join(city.split('\t')[:2])
+            city_set.add(city)
+    return list(city_set)
+
+#use to update
+def get_activity_geo(uid):
+    ip_result = []
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    ts = datetime2ts(now_date)
+    geo_result = {}
+    # test
+    ts = datetime2ts('2013-09-08')
+    for i in range(1,8):
+        ts = ts - 24*3600
+        r_result = r_cluster.hget('ip_'+str(ts), uid)
+        if r_result:
+            ip_list = json.loads(r_result).keys()
+            ip_result.extend(ip_list)
+    ip_list = set(ip_result)
+    geo_string = '&'.join(ip2geo(ip_list))
+    print 'geo_string:', geo_string
+    return geo_string
+
+#use to update
+def get_domain_topic(uid):
+    result = dict()
+    index_time = 'user_portrait'
+    index_type = 'user'
+    result = es_user_portrait.get(index=index_time, doc_type=index_type, id=uid)['_source']
+    if result:
+        print 'domain, toic:', result['domain'], result['topic']
+        return result['domain'], result['topic'] 
+    else:
+        return None, None
+
+
+
 # status: insert or update
 # if insert, input info include: uid, domain, topic, activity_geo
 # if update, input info include: uid (other information to be got from es)
@@ -145,8 +200,8 @@ def get_evaluate_index(user_info, status='insert'):
         topic = user_info['topic']
     elif status=='update':
         activity_geo = get_activity_geo(uid)
-        domain = get_domain(uid)
-        topic = get_topic(uid)
+        domain, topic = get_domain_topic(uid)
+        print 'domain, topic:', domain, topic
     results['activeness'] = get_activeness(uid, activity_geo)
     results['influence'] = get_influence(uid)
     results['importance'] = get_importance(uid, domain, topic)
@@ -155,5 +210,7 @@ def get_evaluate_index(user_info, status='insert'):
 
 if __name__=='__main__':
     test_uid_info = {'uid':'2407339403','domain':'domain1 domain2', 'topic':'testtopic', 'activity_geo':'geo&geo'}
-    get_evaluate_index(test_uid_info, 'insert') # status: insert or update
+    #get_evaluate_index(test_uid_info, 'insert') # status: insert or update
     #get_influence(uid='1978622405')
+    #get_activity_geo('1978622405')
+    get_domain_topic('1721131891')
