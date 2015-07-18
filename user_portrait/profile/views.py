@@ -236,7 +236,7 @@ class UserView(views.MethodView):
         data['nick_name'] = request.args.get('q2')
         data['real_name'] = request.args.get('q3')
         data['sp_type'] = request.args.get('q4')
-        data['isreal'] = request.args.get('tn')
+        data['tn'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
         data['user_email'] = request.args.get('q7') 
         data['user_location'] = request.args.get('q12')
@@ -271,8 +271,8 @@ class UserView(views.MethodView):
         if rank_order == "2":
             order = [{'friendsnum':{'order':'desc'}}]
 
-        if data['isreal'] == '2':
-            data['isreal'] = ''
+        if data['tn'] == '2':
+            data['tn'] = ''
         if data['sex'] == '3':
             data['sex'] = ''
         if data['sp_type'] == '0':
