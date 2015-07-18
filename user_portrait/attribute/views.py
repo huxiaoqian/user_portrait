@@ -26,6 +26,12 @@ def ajax_portrait_attribute():
         return None
 
 
+@mod.route('/portrait_search/')
+def ajax_portrait_search():
+    result = {}
+    return result
+
+
 @mod.route('/location/')
 def ajax_location():
     uid = request.args.get('uid', '')
