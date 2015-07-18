@@ -4,7 +4,7 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from search import search_location, search_mention, search_activity,\
+from search import search_attribute_portrait, search_location, search_mention, search_activity,\
                    search_attention, search_follower
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
@@ -15,6 +15,17 @@ test_time = 1378569600
 
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
+@mod.route('/portrait_attribute/')
+def ajax_portrait_attribute():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    results = search_attribute_portrait(uid)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
+
+
 @mod.route('/location/')
 def ajax_location():
     uid = request.args.get('uid', '')
@@ -23,8 +34,10 @@ def ajax_location():
     # test
     now_ts = test_time
     results = search_location(now_ts, uid)
-        
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/mention/')
 def ajax_mention():
@@ -34,8 +47,10 @@ def ajax_mention():
     # test
     now_ts = test_time
     results = search_mention(now_ts, uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/activity/')
 def ajax_activity():
@@ -45,24 +60,30 @@ def ajax_activity():
     # test
     now_ts = test_time
     results = search_activity(now_ts, uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/attention/')
 def ajax_attention():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_attention(uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/follower/')
 def ajax_follower():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_follower(uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 """
 attention: the format of date from request must be vertified
