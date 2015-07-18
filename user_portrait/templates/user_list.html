@@ -32,7 +32,7 @@
     .mouse:hover{
     border:#000000 solid 1px;
     }
-          </style>
+    </style>
     <script type="text/javascript" src="../../static/js/laydate.js"></script>
     <script type="text/javascript" src="../../static/js/jock-citypicker-2.0.min.js"></script>
     <body>
@@ -132,13 +132,13 @@
                         <div class="col-lg-3"style="width:340px">
                           <div class="input-group">
                             <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">注册地</span>
-                            <input id="test" type="text" class="form-control" id='user_location' value=''name=q12 placeholder="检索注册地">
+                            <input id="test" type="text" class="form-control" name=q12 placeholder="检索注册地">
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-3"style="width:340px">
                           <div class="input-group">
                             <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">真实姓名</span>
-                            <input class="form-control" type="text" id='rel_name' name=q3 value="" placeholder="检索真实姓名">
+                            <input class="form-control" type="text" id='rel_name' name=q3  placeholder="检索真实姓名">
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-3"style="width:340px">
@@ -195,7 +195,7 @@
                         <div class="col-lg-3"style="width:340px">
                           <div class="input-group">
                             <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee"id="sizing-addon1">显示条数</b></span>
-                            <input type="text" class="form-control"  name=size placeholder="1000">
+                            <input type="text" class="form-control"  name=size placeholder="500">
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->                
                         <div class="col-lg-3"style="width:340px">
@@ -209,7 +209,9 @@
                         </div>
                         </div>
                         <span class="input-group-btn">
-                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions()" value=检索 data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></a>
+                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions()" value=检索 data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true"></span>
+                           </a>
                         </span>
                       </div><!-- /.row -->
               </div>
