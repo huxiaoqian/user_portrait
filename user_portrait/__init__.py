@@ -11,7 +11,7 @@ from user_portrait.manage.views import mod as manageModule
 from user_portrait.recommentation.views import mod as recommentationModule
 from user_portrait.profile.views import mod as profileModule
 from user_portrait.overview.views import mod as overviewModule
-from user_portrait.overview.views import mode as groupModule
+from user_portrait.group.views import mod as groupModule
 def create_app():
     app = Flask(__name__)
 
