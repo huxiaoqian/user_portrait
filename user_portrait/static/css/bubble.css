@@ -12,7 +12,7 @@ but as a whole, the document is fairly efficient
 /* main body styling */
 
 body {
-	background: #bbb;
+    /* background: #bbb;*/
 	font-family:  Georgia, Helvetica, Arial, sans-serif;
 }
 
@@ -107,9 +107,11 @@ h6 {
 #page {
     background: white;
     position: relative;
-    width: 75%;
+    width: 100%;
+    /*
     margin: 0px 0 20px 10%;
     padding: 18px 18px 18px 18px;
+    */
 }
 
 #page a {
