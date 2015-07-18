@@ -54,7 +54,7 @@
 	max-width: 1500px;
 	padding-left: 15px;
 	margin-top: 10px;
-	background-image: url(../images/bg.jpg);
+	background-image: url(../img/images/bg.jpg);
 	background-repeat: repeat;
 }
 
@@ -68,7 +68,7 @@
 	height:33px;
 	font-size:16px;
 	color:#FFF;
-	background-image: url(../images/btn-bg.jpg);
+	background-image: url(../img/images/btn-bg.jpg);
 	background-repeat: repeat;
 	background-position: top;
 	font-family: "Microsoft YaHei UI";
@@ -195,7 +195,7 @@ aria-hidden="true";
 	vertical-align: middle;
 	background-attachment: scroll;
 	background-color: transparent;
-	background-image: url(../images/close.jpg);
+	background-image: url(../img/images/close.jpg);
 	background-repeat: no-repeat;
 	margin-top: 15px;
 	margin-right: 10px;
@@ -239,7 +239,6 @@ overflow: auto;
 	-moz-border-bottom-colors: none;
 	-moz-border-left-colors: none;
 	background-color: #FBFCFC;
-	box-shadow: 0px 1px 1px #D9DADB inset;
 	margin-top: 5px;
 	margin-right: 5px;
 	border-image: none;
@@ -248,29 +247,23 @@ overflow: auto;
 	border-style: solid;
 }
 
-
-.input {
-	font: 15px/22px "微軟正黑體";
-	height: 22px;
-	color: #5F5F5F;
-	border-width: 1px;
-	border-style: solid;
-
--moz-border-top-colors: none;
--moz-border-right-colors: none;
--moz-border-bottom-colors: none;
--moz-border-left-colors: none;
-	border-image: none;
-	border-color: #9B9B9D #DCDCDC #DCE7EB;
-	border-radius: 3px;
-	background-color: #FBFCFC;
-	box-shadow: 0px 1px 1px #D9DADB inset;
-	margin-left: 20px;
-	padding-top: 9px;
-	padding-right: 4px;
-	padding-bottom: 9px;
-	padding-left: 4px;
-	margin-right: 20px;
+.cols input{
+    font:15px/22px;
+    height:22px;
+    color:#5f5f5f;
+    border-width:1px;
+    border-style:solid;
+    border-image:none;
+    border-color:#9B9B9D #DCDCDC #DCE7EB;
+    border-radius:3px;
+    background-color:#FBFCFC;
+    box-shadow:0px 1px 1px #D9DADB inset;
+    margin-left:20px;
+    padding-top:9px;
+    padding-right:4px;
+    padding-bottom:9px;
+    padding-left:4px;
+    margin-right:20px;
 }
 .uid {
 	margin-left: 60px;
@@ -280,7 +273,7 @@ select {
 	border: 1px solid #D5D7E0;
 	border-radius: 3px;
 	height: 40px;
-	font: 15px "微軟正黑體";
+	font: 15px "Î¢Ü›ÕýºÚów";
 	color: #5F5F5F;
 	width:160px;
 	margin-right: 26px;
@@ -305,7 +298,7 @@ width: 100%;
 height: 100%;
 background: #000 none repeat scroll 0% 0%;
 }
-label{
+.cols label{
 	float:left;
 	font-family: "Microsoft YaHei UI";
 	line-height: 24px;
@@ -351,12 +344,12 @@ display:none;
 
 .leftsidebar_box dd a{color:#f5f5f5;line-height:20px;}
 .leftsidebar_box dt img{position:absolute;right:10px;top:20px;}
-.system_log dt{background-image:url(images/left/system.png)}
-.custom dt{background-image:url(images/left/custom.png)}
-.channel dt{background-image:url(images/left/channel.png)}
-.app dt{background-image:url(images/left/app.png)}
-.cloud dt{background-image:url(images/left/cloud.png)}
-.syetem_management dt{background-image:url(images/left/syetem_management.png)}
-.source dt{background-image:url(images/left/source.png)}
-.statistics dt{background-image:url(images/left/statistics.png)}
+.system_log dt{background-image:url(../img/images/left/system.png)}
+.custom dt{background-image:url(../img/images/left/custom.png)}
+.channel dt{background-image:url(../img/images/left/channel.png)}
+.app dt{background-image:url(../img/images/left/app.png)}
+.cloud dt{background-image:url(../img/images/left/cloud.png)}
+.syetem_management dt{background-image:url(../img/images/left/syetem_management.png)}
+.source dt{background-image:url(../img/images/left/source.png)}
+.statistics dt{background-image:url(../img/images/left/statistics.png)}
 .leftsidebar_box dl dd:last-child{padding-bottom:10px;}
