@@ -206,7 +206,7 @@ def compute_text_attribute(user, weibo_list):
     return result
 
 #start-up by scan_compute_redis
-def compute2in(uid_list, user_weibo_dict):
+def compute2in(uid_list, user_weibo_dict, status='insert'):
     flow_result = get_flow_information(uid_list)
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
@@ -221,7 +221,10 @@ def compute2in(uid_list, user_weibo_dict):
         results = dict(results, **evaluation_index)
         #flow_dict = flow_result[str(user)]
         #results = dict(results, **flow_dict)
-        action = {'index':{'_id':str(user)}}
+        if status=='insert':
+            action = {'index':{'_id':str(user)}}
+        else:
+            action = {'update':{'_id', str(user)}}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)
     return True

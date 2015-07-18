@@ -60,14 +60,14 @@ def get_activeness(uid, activity_geo):
             max_val = val
             max_freq = freq[i]
         i = i + 1
-    print 'i:', i
-    print 'max_freq, max_val:', max_freq, max_val
+    #print 'i:', i
+    #print 'max_freq, max_val:', max_freq, max_val
     # deal avtivity_geo input: 'geo&geo'
     activity_geo_count = len(activity_geo.split('&'))
     result = activeness_weight_dict['activity_time'] * math.log(max_freq  + 1) + \
              activeness_weight_dict['activity_geo'] * math.log(activity_geo_count + 1) +\
              activeness_weight_dict['statusnum'] * math.log(statusnum + 1)
-    print 'activeness:', result
+    #print 'activeness:', result
     return result
 
 def get_influence(uid):
@@ -78,9 +78,11 @@ def get_influence(uid):
     now_date = '2013-09-07'
     index_time = ''.join(now_date.split('-'))
     index_type = 'bci'
-    result = es.get(index=index_time, id=uid, doc_type=index_type)['_source']['user_index']
-    print 'result_dict:', result
-    query_body = {
+    try:
+        result = es.get(index=index_time, id=uid, doc_type=index_type)['_source']['user_index']
+        #print 'result_dict:', result
+        '''
+        query_body = {
         'query':{
             'filtered':{
                 'query':{
@@ -95,9 +97,12 @@ def get_influence(uid):
                     }
             }
         }
-    }
-    rank = es.count(index=index_time, doc_type=index_type, body=query_body)['count']
-    #print 'rank:', rank
+        }
+        rank = es.count(index=index_time, doc_type=index_type, body=query_body)['count']
+        #print 'rank:', rank
+        '''
+    except:
+        return None
     return result
 
 def get_importance(uid, domain, topic):
@@ -125,13 +130,16 @@ def get_importance(uid, domain, topic):
     date = '2013-09-07'
     index_time = ''.join(date.split('-'))
     index_type = 'bci'
-    es_result = es.get(index=index_time, doc_type=index_type, id=uid)['_source']
-    fansnum = es_result['user_fansnum']
-    retweetednum = es_result['origin_weibo_retweeted_total_number'] + es_result['retweeted_weibo_retweeted_total_number']
-    result = importance_weight_dict['fansnum']*fansnum + importance_weight_dict['retweeted_num']*retweetednum + \
+    try:
+        es_result = es.get(index=index_time, doc_type=index_type, id=uid)['_source']
+        fansnum = es_result['user_fansnum']
+        retweetednum = es_result['origin_weibo_retweeted_total_number'] + es_result['retweeted_weibo_retweeted_total_number']
+        result = importance_weight_dict['fansnum']*fansnum + importance_weight_dict['retweeted_num']*retweetednum + \
              importance_weight_dict['domain']*domain_result + importance_weight_dict['topic']*topic_result
-    #print 'importance result:', result
-    return result
+        #print 'importance result:', result
+        return result
+    except:
+        return None
 
 def ip2geo(ip_list):
     ip_list = list(ip_list)
@@ -169,7 +177,7 @@ def get_activity_geo(uid):
             ip_result.extend(ip_list)
     ip_list = set(ip_result)
     geo_string = '&'.join(ip2geo(ip_list))
-    print 'geo_string:', geo_string
+    #print 'geo_string:', geo_string
     return geo_string
 
 #use to update
@@ -179,7 +187,7 @@ def get_domain_topic(uid):
     index_type = 'user'
     result = es_user_portrait.get(index=index_time, doc_type=index_type, id=uid)['_source']
     if result:
-        print 'domain, toic:', result['domain'], result['topic']
+        #print 'domain, toic:', result['domain'], result['topic']
         return result['domain'], result['topic'] 
     else:
         return None, None
@@ -201,7 +209,7 @@ def get_evaluate_index(user_info, status='insert'):
     elif status=='update':
         activity_geo = get_activity_geo(uid)
         domain, topic = get_domain_topic(uid)
-        print 'domain, topic:', domain, topic
+        #print 'domain, topic:', domain, topic
     results['activeness'] = get_activeness(uid, activity_geo)
     results['influence'] = get_influence(uid)
     results['importance'] = get_importance(uid, domain, topic)

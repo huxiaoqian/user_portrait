@@ -33,20 +33,29 @@ def update_attribute_day():
                 count += 1
             except StopIteration:
                 print 'all done'
+                if bulk_action:
+                    print 'bulk_action:', bulk_action
+                    status = save_user_results(bulk_action)
+                    print 'status:', status
                 sys.exit(0)
             except Exception, r:
                 print Exception, r
                 sys.exit(0)
-                uid = scan_re['uid']
-                user_info = {'uid':uid}
-                evaluate_result = get_evaluate_index(user_info, status='update')
-                results = dict(user_info, **evaluate_result)
-                action = {'update':{'_id':str(user)}}
-                bulk_action.extend([action, results])
+            uid = scan_re['uid']
+            user_info = {'uid':uid}
+            evaluate_result = get_evaluate_index(user_info, status='update')
+            results = {}
+            results = dict(results, **evaluate_result)
+            action = {'update':{'_id':str(uid)}}
+            bulk_action.extend([action, results])
+            #print 'bulk_action:', bulk_action
             if count%1000 == 0:
                 break
+        '''
+        print 'bulk_action:', bulk_action
         if bulk_action:
             status = save_user_results(bulk_action)
+        '''
     print 'status:', status
     return status
 
