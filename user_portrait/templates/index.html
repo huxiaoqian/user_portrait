@@ -19,31 +19,13 @@
 {% endblock %}
 
 {% block main %}
-<div class="main">
-    <!--tablist-->
-<!--     <ul id="myTab" class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#list" id="list-tab" role="tab" data-toggle="tab" aria-controls="list" aria-expanded="false">用户列表</a></li>
-        <li role="presentation" class=""><a href="#relation" id="relation-tab" role="tab" data-toggle="tab" aria-controls="relation" aria-expanded="true">用户关联关系</a></li>
-        <li role="presentation" class=""><a href="#map" id="map-tab" role="tab" data-toggle="tab" aria-controls="map" aria-expanded="true">用户地区分布</a></li>
-    </ul> -->
-
-    <!--tabcontents-->
+<div class="main" style='margin-left:200px;'>
     <div id="myTabContent" class="tab-content" style='overflow-x: hidden;'>
-        <!--tab 1-->
         <div role="tabpanel" class="tab-pane fade active in" id="list" aria-labelledby="list-tab">
             <br><br>
             {% include "user_list.html" %}
-
-        <!--tab 2-->
-        <div role="tabpanel" class="tab-pane fade" id="relation" aria-labelledby="relation-tab">
-            <br><br>
-        </div> 
-
-        <!--tab 3-->
-        <div role="tabpanel" class="tab-pane fade" id="map" aria-labelledby="map-tab">
-            <br><br>
-            {% include "user_map.html" %}
-        </div> 
+        </div>
+    </div> 
 </div>
 {% endblock %}
 

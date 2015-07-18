@@ -5,9 +5,9 @@ from datetime import date
 
 def gender(g):
 	if g == 1:
-		return u'男'
+		return u'/../../static/img/male.png'
 	elif g == 2:
-		return u'女'
+		return u'/../../static/img/female.png'
 	else:
 		return u'未知'
 
