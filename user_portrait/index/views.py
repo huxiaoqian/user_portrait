@@ -15,10 +15,10 @@ def loading():
 
     return render_template('portrait/index.html')
 
-@mod.route('/test/')
-def test():
+@mod.route('/contrast/')
+def contrast():
 
-    return render_template('portrait/test_bubble.html')
+    return render_template('portrait/contrast.html')
 
 @mod.route('/personal/')
 def personal():
