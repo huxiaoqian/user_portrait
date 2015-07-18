@@ -18,16 +18,21 @@ index_name = 'weibo_user'
 index_type = 'user'
 
 def get_profile_information(uid_list):
+    #print 'len uid list:', len(uid_list)
     result_dict = dict()
     search_result = es.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
-    print 'search_result:', search_result
+    #print 'search_result:', search_result
     for item in search_result:
         user_dict = {}
         for field in fields_dict:
-            user_dict[field] = item['_source'][fields_dict[field]]
-
+            try:
+                user_dict[field] = item['_source'][fields_dict[field]]
+            except:
+                user_dict[field] = 'unknown'
         result_dict[item['_id']] = user_dict
-    print 'result_dict:', result_dict
+    #print 'result_dict:', result_dict
+    #print 'len result_dict:', len(search_result)
+    return result_dict
 
 if __name__=="__main__":
     test_uid = ['2635896591', '2234766704']
