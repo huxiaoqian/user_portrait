@@ -8,7 +8,7 @@ import csv
 import time
 import json
 import redis
-
+#XXX
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
