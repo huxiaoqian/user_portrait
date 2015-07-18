@@ -194,6 +194,28 @@ def search_attribute_portrait(uid):
         results = None
     return results
 
+#use to search user_portrait by lots of condition 
+def search_portrait(condition_num, query, sort, size):
+    user_result = []
+    index_name = 'user_portrait'
+    index_type = 'user'
+    if condition_num > 0:
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, \
+                    body={'query':{'bool':{'must':query}}, 'sort':order, 'size':size})['hits']['hits']
+        except Exception,e:
+            raise e
+    else:
+        result = es_user_portrait.search(index=index_name, doc_type=index_type, \
+                body={'query':{'match_all':{}}, 'sort':[{'statusnum':{'order':'desc'}}],\
+                     'size':100})['hits']['hits']
+    if result:
+        for item in result:
+            user_dict = result[item]['_source']
+            user_result.append([user_dict['uid'], user_dict['uname'], user_dict['fansnum'], user_dict['statusnum'], user_dict['friendsnum']])
+
+    return user_result
+
 
 if __name__=='__main__':
     uid = '1798289842'
