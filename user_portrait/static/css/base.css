@@ -1,4 +1,5 @@
 * { margin:0; padding:0;}
+.font15{font:15px;}
 .headtitle {
 	font-family: "Microsoft YaHei UI";
 	font-size: 40px;
@@ -54,11 +55,7 @@
 	max-width: 1500px;
 	padding-left: 15px;
 	margin-top: 10px;
-<<<<<<< HEAD
 	background-image: url(../img/images/bg.jpg);
-=======
-	background-image: url(/static/img/images/bg.jpg);
->>>>>>> 568b9f1ec6d965e45b9eb41d51ac1ef335749d90
 	background-repeat: repeat;
 }
 
@@ -72,11 +69,7 @@
 	height:33px;
 	font-size:16px;
 	color:#FFF;
-<<<<<<< HEAD
 	background-image: url(../img/images/btn-bg.jpg);
-=======
-	background-image: url(/static/img/images/btn-bg.jpg);
->>>>>>> 568b9f1ec6d965e45b9eb41d51ac1ef335749d90
 	background-repeat: repeat;
 	background-position: top;
 	font-family: "Microsoft YaHei UI";
@@ -183,19 +176,18 @@ dl,dt,dd{
 	width: 920px;
 	background: #FFF none repeat scroll 0% 0%;
 	border: 1px solid #AA8BE8;
-	height: 470px;
+	height: 500px;
 margin-left: -460px;
-aria-hidden="true";
+    font_family:"Microsoft YaHei UI";
 }
 #supersearch .title {
-	line-height: 39px;
 	font-size: 20px;
 	color: #3F3F3F;
 	border-bottom: 1px solid #E2E2E6;
 	padding-left: 10px;
 	font-family: "Microsoft YaHei UI";
 }
-.close {
+#close {
 	width: 12px;
 	height: 12px;
 	float: right;
@@ -205,10 +197,7 @@ aria-hidden="true";
 	background-color: transparent;
 	background-image: url(../img/images/close.jpg);
 	background-repeat: no-repeat;
-	margin-top: 15px;
-	margin-right: 10px;
-	margin-bottom: 10px;
-	margin-left: 10px;
+    margin-right:10px;
 }
 .search-content {
 width: 800px;
@@ -216,23 +205,56 @@ height: 380px;
 margin: 0px auto;
 overflow: auto;
 }
-.modeName {
-	font-family: "Microsoft YaHei UI";
-	font-size: 16px;
-	color: #333333;
-	margin-top: 10px;
-	border-bottom-width: 1px;
-	border-bottom-style: dashed;
-	border-bottom-color: #999;
-	margin-bottom: 5px;
-}
+
 .cols {
 	float: left;
 	width: 800px;
 	margin-top: 20px;
 	margin-bottom: 5px;
 }
-
+.inputbox{
+    height:42px;
+    color:#5f5f5f;
+    border-width:1px;
+    border-style:solid;
+    border-image:none;
+    border-color:#9b9b9d #dcdcdc #dce7eb;
+    border-radius:3px;
+    background-color:#fbfcfc;
+    box-shadow:0px 1px 1px #d9dadb insert;
+    margin-left:20px;
+    padding-top:9px;
+    padding-right:4px;
+    padding-bottom:9px;
+    padding-left:4px;
+    margin-right:20px;
+}
+.cols-label{
+    float:left;
+    line-height:24px;
+    margin-top:10px;
+    margin-left:20px;
+    margin-right:10px;
+    font-weight:0;
+}
+.topic{
+    margin-right:5px;
+}
+.select-box{
+    border:1px solid #d5d7e0;
+    border-radius:3px;
+    height:40px;
+    font:15px;
+    color:#5f5f5f;
+    width:160px;
+    margin-right:26px;
+    padding-top:8px;
+    padding-right:8px;
+    padding-bottom:8px;
+    padding-left:5px;
+    border-color:#9b9b9d #dcdcdc #dce7eb;
+    box-shadow:0px 1px 1px #d9dadb insert;
+}
 .lineh42 {
 	line-height: 42px;
 	display: inline;
@@ -241,60 +263,14 @@ overflow: auto;
 .mleft {
 	margin-left: 30px;
 }
-.checkbox {
-	-moz-border-top-colors: none;
-	-moz-border-right-colors: none;
-	-moz-border-bottom-colors: none;
-	-moz-border-left-colors: none;
-	background-color: #FBFCFC;
-	margin-top: 5px;
-	margin-right: 5px;
-	border-image: none;
-	color: #5F5F5F;
-	border-width: 1px;
-	border-style: solid;
-}
 
-.cols input{
-    font:15px/22px;
-    height:22px;
-    color:#5f5f5f;
-    border-width:1px;
-    border-style:solid;
-    border-image:none;
-    border-color:#9B9B9D #DCDCDC #DCE7EB;
-    border-radius:3px;
-    background-color:#FBFCFC;
-    box-shadow:0px 1px 1px #D9DADB inset;
-    margin-left:20px;
-    padding-top:9px;
-    padding-right:4px;
-    padding-bottom:9px;
-    padding-left:4px;
-    margin-right:20px;
-}
+
+
 .uid {
 	margin-left: 60px;
 }
 
-select {
-	border: 1px solid #D5D7E0;
-	border-radius: 3px;
-	height: 40px;
-	font: 15px "Î¢Ü›ÕýºÚów";
-	color: #5F5F5F;
-	width:160px;
-	margin-right: 26px;
-	padding-top: 8px;
-	padding-right: 8px;
-	padding-bottom: 8px;
-	padding-left: 5px;
-	border-image: none;
-	border-color: #9B9B9D #DCDCDC #DCE7EB;
-	border-radius: 3px;
-	background-color: #FBFCFC;
-	box-shadow: 0px 1px 1px #D9DADB inset;
-}
+
 
 #float-wrap {
    position: fixed;
@@ -306,13 +282,7 @@ width: 100%;
 height: 100%;
 background: #000 none repeat scroll 0% 0%;
 }
-.cols label{
-	float:left;
-	font-family: "Microsoft YaHei UI";
-	line-height: 24px;
-	margin-top: 10px;
-	margin-left: 20px;
-}
+
 .clearfix {
 	padding: 10px;
 	display: block;
@@ -329,7 +299,6 @@ display:none;
 	width: 108px;
 	float: right;
 	margin-right: 10px;
-	line-height: 30px;
 }
 .mright23{
 	margin-right: 23px;
