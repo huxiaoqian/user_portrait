@@ -38,7 +38,6 @@ class HomeView(views.MethodView):
         data['email'] = request.args.get('q7') 
         data['user_location'] = request.args.get('q12')
         rank_order = request.args.get('order')
-        size = 100
         for key in range_item:
             data[key] = {}
         data['statusnum']['from'] = '0'
@@ -101,7 +100,7 @@ class HomeView(views.MethodView):
                             }
                         },
                         "sort":order,
-                        "size" : size
+                        "size" : 100
                         }
                 )
             except Exception as e:
@@ -258,7 +257,7 @@ class UserView(views.MethodView):
         data['friendsnum']['to'] = request.args.get('q11')
         size = request.args.get('size')
         if size == '':
-            size = 1000
+            size = 500
         for key in range_item:
             if data[key]['from'] == '' and data[key]['to'] != '':
                 data[key]['from'] = '0'

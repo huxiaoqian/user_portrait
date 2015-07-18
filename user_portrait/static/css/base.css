@@ -54,7 +54,11 @@
 	max-width: 1500px;
 	padding-left: 15px;
 	margin-top: 10px;
+<<<<<<< HEAD
 	background-image: url(../img/images/bg.jpg);
+=======
+	background-image: url(/static/img/images/bg.jpg);
+>>>>>>> 568b9f1ec6d965e45b9eb41d51ac1ef335749d90
 	background-repeat: repeat;
 }
 
@@ -68,7 +72,11 @@
 	height:33px;
 	font-size:16px;
 	color:#FFF;
+<<<<<<< HEAD
 	background-image: url(../img/images/btn-bg.jpg);
+=======
+	background-image: url(/static/img/images/btn-bg.jpg);
+>>>>>>> 568b9f1ec6d965e45b9eb41d51ac1ef335749d90
 	background-repeat: repeat;
 	background-position: top;
 	font-family: "Microsoft YaHei UI";
