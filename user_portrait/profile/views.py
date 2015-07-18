@@ -2,10 +2,9 @@
 import json
 import csv
 from flask import views, Blueprint, render_template, request
+from user_portrait.extensions import es, es_get_source, es_mget_source
 from os.path import dirname, abspath, join
 from .form import SearchForm
-from user_portrait.global_utils import es_user_profile as es
-from user_portrait.search_user_profile import es_get_source, es_mget_source
 
 
 mod = Blueprint('profile', __name__, url_prefix='/profile')
@@ -30,7 +29,7 @@ class HomeView(views.MethodView):
         num = 0
         order = []
         data['uid'] = request.args.get('q1')
-        data['nick_name'] = request.args.get('q2')
+        data['nick_name'] = request.args.get('nickname')
         data['rel_name'] = request.args.get('q3')
         data['sp_type'] = request.args.get('q4')
         data['isreal'] = request.args.get('tn')
@@ -71,7 +70,7 @@ class HomeView(views.MethodView):
 
         if data['isreal'] == '2':
             data['isreal'] = ''
-        if data['sex'] == '0':
+        if data['sex'] == '3':
             data['sex'] = ''
         if data['sp_type'] == '0':
             data['sp_type'] = ''
@@ -225,7 +224,7 @@ class UserView(views.MethodView):
     def get(self):
         item_content = []
         item_head = []
-        fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location']
+        fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location', 'user_email', 'user_birth']
         range_item = ['statusnum', 'fansnum', 'friendsnum']
         select_item = ['sex', 'tn', 'sp_type']
         data = {}
@@ -238,8 +237,9 @@ class UserView(views.MethodView):
         data['sp_type'] = request.args.get('q4')
         data['isreal'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
-        data['email'] = request.args.get('q7') 
+        data['user_email'] = request.args.get('q7') 
         data['user_location'] = request.args.get('q12')
+        data['user_birth'] = request.args.get('q13')
         rank_order = request.args.get('order')
         for key in range_item:
             data[key] = {}
@@ -257,7 +257,7 @@ class UserView(views.MethodView):
         data['friendsnum']['to'] = request.args.get('q11')
         size = request.args.get('size')
         if size == '':
-            size = 100
+            size = 1000
         for key in range_item:
             if data[key]['from'] == '' and data[key]['to'] != '':
                 data[key]['from'] = '0'
@@ -272,7 +272,7 @@ class UserView(views.MethodView):
 
         if data['isreal'] == '2':
             data['isreal'] = ''
-        if data['sex'] == '0':
+        if data['sex'] == '3':
             data['sex'] = ''
         if data['sp_type'] == '0':
             data['sp_type'] = ''

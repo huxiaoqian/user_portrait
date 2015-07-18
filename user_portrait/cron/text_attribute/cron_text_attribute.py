@@ -11,6 +11,8 @@ import json
 import time
 # read weibo bulk from api
 from weibo_api import read_user_weibo
+from flow_information import get_flow_information
+from evaluate_index import get_evaluate_index
 from save_utils import attr_hash, save_user_results
 reload(sys)
 sys.path.append('../../../../../libsvm-3.17/python/')
@@ -171,7 +173,7 @@ def attr_keywords(weibo_list):
         keywords_results = {}
         for sort_item in sort_results:
             keywords_results[sort_item[0]] = sort_item[1]
-    print 'attr_keyword:', keywords_results
+    #print 'attr_keyword:', keywords_results
     return keywords_results
 
 def compute_text_attribute(user, weibo_list):
@@ -203,13 +205,21 @@ def compute_text_attribute(user, weibo_list):
     return result
 
 #start-up by scan_compute_redis
-def compute2in(user_weibo_dict):
+def compute2in(uid_list, user_weibo_dict):
+    flow_result = get_flow_information(uid_list)
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
         results = compute_text_attribute(user, weibo_list)
         results['uname'] = uname
         results['uid'] = str(user)
+        flow_dict = flow_result[str(user)]
+        results = dict(results, **flow_dict)
+        user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
+        evaluation_index = get_evaluate_index(user_info, status='insert')
+        results = dict(results, **evaluation_index)
+        #flow_dict = flow_result[str(user)]
+        #results = dict(results, **flow_dict)
         action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)
@@ -221,6 +231,8 @@ def main():
     uid_list = read_uid_list()
     # get user weibo 7day {user:[weibos]}
     user_weibo_dict = read_user_weibo(uid_list)
+    uid_list = user_weibo_dict.keys()
+    flow_result = get_flow_information(uid_list)
     # compute text attribute
     bulk_action = []
     for user in user_weibo_dict:
@@ -228,11 +240,17 @@ def main():
         uname = weibo_list[0]['uname']
         results = compute_text_attribute(user, weibo_list)
         results['uid'] = str(user)
-        #print 'keyword:', results['keywords']
+        flow_dict = flow_result[str(user)]
+        results = dict(results, **flow_dict)
         # deal to the bulk action
+        user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
+        evaluation_index = get_evaluate_index(user_info, status='insert')
+        results = dict(results, **evaluation_index)
+        #flow_dict = flow_result[str(user)]
+        #results = dict(results, **flow_dict)
         action = {'index':{'_id': str(user)}}
         bulk_action.extend([action, results])
-    #status = save_user_results(bulk_action)
+    status = save_user_results(bulk_action)
     return True # save by bulk
     
 if __name__=='__main__':

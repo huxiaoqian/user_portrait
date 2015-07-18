@@ -21,7 +21,7 @@ def scan_compute_redis():
     #acquire bulk user weibo data
     user_weibo_dict = read_user_weibo(user_list)
     #compute text attribute
-    compute_status = compute2in(user_weibo_dict)
+    compute_status = compute2in(user_list, user_weibo_dict)
     if compute_status==True:
         delete_compute_redis(user_set)
 

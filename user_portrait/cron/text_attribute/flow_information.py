@@ -40,15 +40,21 @@ def get_flow_information(uid_list):
                     geo_results[uid_list[j]].extend(ip_list)
                 except:
                     geo_results[uid_list[j]] = ip_list
-
+    
     for uid in uid_list:
-        hashtag_list = set(hashtag_results[uid])
-        hashtag_string = ' '.join(hashtag_list)
-        ip_list = set(geo_results[uid])
-        geo_list = ip2geo(ip_list)
-        geo_string = '&'.join(geo_list)
+        try:
+             hashtag_list = set(hashtag_results[uid])
+             hashtag_string = ' '.join(hashtag_list)
+        except KeyError:
+            hashtag_string = ''
+        try:
+            ip_list = set(geo_results[uid])
+            geo_list = ip2geo(ip_list)
+            geo_string = '&'.join(geo_list)
+        except KeyError:
+            geo_string = ''
         results_dict[uid] = {'hashtag':hashtag_string, 'activity_geo':geo_string}
-    print 'results_dict:', results_dict
+    #print 'results_dict:', results_dict
     return results_dict
 
 def ip2geo(ip_list):
