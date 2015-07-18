@@ -38,7 +38,7 @@
 
 		<!-- 引入js -->
 	    {% block head_js %}
-	    	<script  src="/static/js/jquery.second.js"></script>
+	    	<script src="/static/js/jquery.second.js"></script>
 	    	<script src="/static/js/jquery.min.js"></script>
 	    	<script src='/static/bootstrap/js/bootstrap.js'></script>
 	    	<script src='/static/js/echarts-all.js'></script>
@@ -82,12 +82,12 @@
 				</dl>
 
 				<dl class="">
-					<dt onClick=";">出入库<img src="/static/img/images/left/select_xl01.png"></dt>
+					<dt onClick=";">出入库管理</dt>
 					<dd><a href="#">出库</a></dd>
 					<dd><a href="#">入库</a></dd>
 				</dl>
 				<dl class="">
-					<dt>应用<img src="/static/img/images/left/select_xl01.png"></dt>
+					<dt>综合应用</dt>
 					<dd><a href="#">群体分析</a></dd>
 					<dd><a href="#">影响力</a></dd>
 				</dl>
@@ -188,16 +188,19 @@
 			<script type="text/javascript">
 				$("div.leftsidebar_box").sidebar();
 				$(".leftsidebar_box dt").css({"background-color":"#4f8fff"});
-				$(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
-				$(function(){
+				/* $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+                */
+                $(function(){
 					$(".leftsidebar_box dd").hide();
 					$(".leftsidebar_box dt").click(function(){
 						$(".leftsidebar_box dt").css({"background-color":"#4f8fff"})
 						$(this).css({"background-color": "#317eb4"});
 						$(this).parent().find('dd').removeClass("menu_chioce");
-						$(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+                        /*
+                        $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
 						$(this).parent().find('img').attr("src","/static/img/images/left/select_xl.png");
-						$(".menu_chioce").slideUp(); 
+                        */
+                        $(".menu_chioce").slideUp(); 
 						$(this).parent().find('dd').slideToggle();
 						$(this).parent().find('dd').addClass("menu_chioce");
 					});
