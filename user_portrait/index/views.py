@@ -19,6 +19,11 @@ def loading():
 def test():
 
     return render_template('portrait/test_bubble.html')
+
+@mod.route('/personal/')
+def personal():
+
+    return render_template('portrait/personal.html')
 """
 @mod.route('/manage/')
 def manage():
