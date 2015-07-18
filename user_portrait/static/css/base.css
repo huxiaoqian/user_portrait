@@ -54,7 +54,7 @@
 	max-width: 1500px;
 	padding-left: 15px;
 	margin-top: 10px;
-	background-image: url(../images/bg.jpg);
+	background-image: url(/static/img/images/bg.jpg);
 	background-repeat: repeat;
 }
 
@@ -68,7 +68,7 @@
 	height:33px;
 	font-size:16px;
 	color:#FFF;
-	background-image: url(../images/btn-bg.jpg);
+	background-image: url(/static/img/images/btn-bg.jpg);
 	background-repeat: repeat;
 	background-position: top;
 	font-family: "Microsoft YaHei UI";

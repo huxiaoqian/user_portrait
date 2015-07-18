@@ -20,6 +20,11 @@ def test():
 
     return render_template('portrait/test_bubble.html')
 
+@mod.route('/personal/')
+def personal():
+
+    return render_template('portrait/personal.html')
+
 @mod.route('/recommend_in/')
 def recommend_in():
 
