@@ -18,7 +18,7 @@
 		    <link href='../../static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
 		    <link href='../../static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
 		    <link href='../../static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-		    <link href='../../static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
+		    <link href='../../static/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
 		    <link href='../../static/css/jquery.noty.css' rel='stylesheet'>
 		    <link href='../../static/css/noty_theme_default.css' rel='stylesheet'>
 		    <link href='../../static/css/elfinder.min.css' rel='stylesheet'>
@@ -28,6 +28,15 @@
 		    <link href='../../static/css/animate.min.css' rel='stylesheet'>
 		    <!-- end model styles -->
 	    {% endblock %}
+	    <style type="text/css">
+        /*
+         * Base structure
+         */
+        /* Move down content because we have a fixed navbar that is 50px tall */
+        body {
+            font-family: Arial,"Microsoft YaHei","微软雅黑","WenQuanYi Micro Hei","文泉驿微米黑",STXihei,"华文细黑",sans-serif;
+        }
+        </style>
 
 	    {% block head_js %}
 	    	<script src='../../static/js/jquery.dataTables.min.js'></script>
@@ -41,15 +50,8 @@
 			<!-- head menu -->
 			{% block navbar%}
 			     <div class="navbar-inner">
-			            <button type="button" class="navbar-toggle pull-left animated flip">
-			                <span class="sr-only">Toggle navigation</span>
-			                <span class="icon-bar"></span>
-			                <span class="icon-bar"></span>
-			                <span class="icon-bar"></span>
-			            </button>
-			            <a class="navbar-brand" style='font-size:20px;width:300px'> <!-- <img alt="Charisma Logo" src="#" class="hidden-xs"/> -->
-			            <span>人物背景信息库系统</span></a>			           
-			 
+			            <a class="navbar-brand" style="font-size:25px;width:300px;font-family:'微软雅黑'">
+			            <span>人物背景信息库系统</span></a>			           			 
 					<div class="btn-group pull-right">
 		                <a href="#"><font color="#FFFFFF">人物画像系统</font></a>
 		            </div>
@@ -104,7 +106,7 @@
 			<!-- library for making tables responsive -->
 			<script src="../../static/bower_components/responsive-tables/responsive-tables.js"></script>
 			<!-- tour plugin -->
-			<script src="../../static/bower_components/bootstrap-tour/css_js/js/bootstrap-tour.min.js"></script>
+			<script src="../../static/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
 			<!-- star rating plugin -->
 			<script src="../../static/js/jquery.raty.min.js"></script>
 			<!-- for iOS style toggle switch -->
