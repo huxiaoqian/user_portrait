@@ -1,0 +1,93 @@
+{% extends "tbase.html" %}
+{% block title %}个人详情{% endblock title %}
+
+{% block css %}
+{{ super() }}
+<link  type="text/css" href="/static/personal/css/style.css" rel="stylesheet"/>
+{% endblock css %}
+
+{% block head_js %}
+{{ super() }}
+<!--
+<script type="text/javascript" src="/static/personal/js/jquery-1.7.2.min.js" ></script>
+-->
+<script type="text/javascript">
+$(function(){
+	/**软件功能切换js**/
+	$(".soft_con_icon ul li a").mouseover(function(){
+		var id = $(this).attr("id");
+		var x=$(this).parent().index();
+		$(this).children("p").css({"color":"#008dd9"}).parent().parent().siblings().children().children("p").css({"color":"#333333"});
+		var src1=id+"_hover.gif"
+		$(".soft_con_icon ul li a").each(function(index, element) {
+         	var other_id = $(this).attr("id");
+			if(id == other_id){
+			   $(this).children("img").attr("src","/static/personal/images/"+src1);
+			}else{
+			   var src2 = other_id+".gif";
+			   $(this).children("img").attr("src","/static/personal/images/"+src2);
+			}
+        });
+		if(x==0){
+		   $("#xzgl").css({"display":"block"}).siblings().css({"display":"none"});
+		   $(".soft_con1").css({"background":" url(/static/personal/images/line_select_001.gif)"});
+		}else if(x==1){
+		   $("#crm").css({"display":"block"}).siblings().css({"display":"none"});
+		   $(".soft_con1").css({"background":"url(/static/personal/images/line_select_002.gif)"});
+		}else if(x==2){
+		   $("#xmgl").css({"display":"block"}).siblings().css({"display":"none"});
+		   $(".soft_con1").css({"background":"url(/static/personal/images/line_select_003.gif)"});
+		}else if(x==3){
+		   $("#zsgl").css({"display":"block"}).siblings().css({"display":"none"});
+		   $(".soft_con1").css({"background":"url(/static/personal/images/line_select_004.gif)"});
+		}else{
+		   $("#ydbg").css({"display":"block"}).siblings().css({"display":"none"});
+		   $(".soft_con1").css({"background":"url(/static/personal/images/line_select_005.gif)"});
+		}
+	});
+	
+});
+</script>
+{% endblock head_js %}
+
+{% block main %}
+<div class="soft_function">
+
+	<div class="soft_con_icon">
+		<ul>
+			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/pic_fun_adm_hover.gif" width="150" height="150"/><p style="color:#008dd9">A类选项</p></a></li>
+			<li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/pic_fun_crm.gif" width="150" height="150"/><p>B类选项</p></a></li>
+			<li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/pic_fun_project.gif" width="150" height="150"/><p>C类选项</p></a></li>
+			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/pic_fun_k.gif" width="150" height="150"/><p>D类选项</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/pic_fun_mobile.gif" width="150" height="150"/><p>E类选项</p></a></li>
+		</ul>
+	</div> 
+
+	<div class="soft_con1" style="background:url(/static/personal/images/line_select_001.gif);"></div>
+
+	<div class="soft_con">
+
+		<div id="xzgl" class="soft_con2">
+            {% include "portrait/detail/social.html"%}
+        </div>
+	
+		<div id="crm" class="soft_con2" style="display:none">
+            {% include "portrait/detail/thought.html"%}
+        </div>
+	
+		<div id="xmgl" class="soft_con2" style="display:none">
+            {% include "portrait/detail/activity.html"%}
+		</div>
+	
+		<div id="zsgl" class="soft_con2" style="display:none">
+            {% include "portrait/detail/language.html"%}
+		</div>
+	
+		<div id="ydbg" class="soft_con2" style="display:none">
+            {% include "portrait/detail/influence.html"%}
+		</div>
+	
+	</div>
+	
+</div>
+{% endblock main %}

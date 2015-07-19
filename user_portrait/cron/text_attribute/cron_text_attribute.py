@@ -13,6 +13,7 @@ import time
 from weibo_api import read_user_weibo
 from flow_information import get_flow_information
 from evaluate_index import get_evaluate_index
+from user_profile import get_profile_information
 from save_utils import attr_hash, save_user_results
 reload(sys)
 sys.path.append('../../../../../libsvm-3.17/python/')
@@ -202,11 +203,13 @@ def compute_text_attribute(user, weibo_list):
     # test atrr10: topic
     #result['topic'] = attr_topic(weibo_list)
     result['topic'] = 'test topic'
+    #test attr
     return result
 
 #start-up by scan_compute_redis
-def compute2in(uid_list, user_weibo_dict):
+def compute2in(uid_list, user_weibo_dict, status='insert'):
     flow_result = get_flow_information(uid_list)
+    register_result = get_profile_information(uid_list)
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
@@ -218,9 +221,12 @@ def compute2in(uid_list, user_weibo_dict):
         user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
         evaluation_index = get_evaluate_index(user_info, status='insert')
         results = dict(results, **evaluation_index)
-        #flow_dict = flow_result[str(user)]
-        #results = dict(results, **flow_dict)
-        action = {'index':{'_id':str(user)}}
+        register_dict = register_result[user]
+        result = dict(results, **register_dict)
+        if status=='insert':
+            action = {'index':{'_id':str(user)}}
+        else:
+            action = {'update':{'_id', str(user)}}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)
     return True
@@ -232,7 +238,10 @@ def main():
     # get user weibo 7day {user:[weibos]}
     user_weibo_dict = read_user_weibo(uid_list)
     uid_list = user_weibo_dict.keys()
+    print 'uid_list:', len(uid_list)
+    print 'user weibo dict:', len(user_weibo_dict)
     flow_result = get_flow_information(uid_list)
+    register_result = get_profile_information(uid_list)
     # compute text attribute
     bulk_action = []
     for user in user_weibo_dict:
@@ -246,8 +255,9 @@ def main():
         user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
         evaluation_index = get_evaluate_index(user_info, status='insert')
         results = dict(results, **evaluation_index)
-        #flow_dict = flow_result[str(user)]
-        #results = dict(results, **flow_dict)
+        #print 'register_result:', register_result
+        register_dict = register_result[str(user)]
+        results = dict(results, **register_dict)
         action = {'index':{'_id': str(user)}}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)

@@ -20,7 +20,7 @@ Search_weibo.prototype = {
     var user_url ='';
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">关注数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th></tr></thead>';
     var item = data['hits']['hits'];
     html += '<tbody>';
     for(var i = 0; i < item.length; i++){
@@ -36,7 +36,7 @@ Search_weibo.prototype = {
       html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '><img src="' + item[i]['_source']['photo_url'] + '"class="img-circle"></td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['nick_name'] +'<img src="'+ item[i]['_source']['sex'] +'"style="height:20px"><img src="/static/img/vertify.png" style="height:20px"</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['user_location'] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['friendsnum'] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle;width:72px">'+ item[i]['_source']['friendsnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['fansnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['statusnum'] +'</td>';
       // html += '<td class="center" style="text-align:center">'+ new Date(parseInt(item[i]['_source']['create_at']) +'</td>';
@@ -72,23 +72,37 @@ function get_input_data(){
 
 function toggle(target){
        targetid = target.substr(7, target.length);
-       console.log(targetid);
        $("#" + targetid).val();
        if (document.getElementById){
            target_search=document.getElementById(target);
                if (target_search.style.display=="block"){
-                  $("#" + targetid).val("");
                    target_search.style.display="none";
                    click_data();
                } else {
-                  $("#" + targetid).val("");
+                   if (targetid == 'isreal'){
+                      $("#" + targetid).find("option[value='2']").attr("selected",true);
+                   }else if (targetid == 'sex'){
+                      $("#" + targetid).find("option[value='3']").attr("selected",true);
+                   }else if (targetid == 'select_source'){
+                      $("#" + targetid).find("option[value='0']").attr("selected",true);
+                   }else if (targetid == 'weibo'){
+                      $("#weibo_from").val("");
+                      $("#weibo_to").val("");
+                   }else if (targetid == 'fans'){
+                      $("#fans_from").val("");
+                      $("#fans_to").val("");
+                   }else if (targetid == 'friends'){
+                      $("#friends_from").val("");
+                      $("#friends_to").val("");
+                   }
+                   else {
+                      $("#" + targetid).val("");
+                   }
                    target_search.style.display="none";                    
                    click_data();
                }
        }
   }
-
-
   function search_conditions(){
       $('#search_conditions').empty();
       html = '<div>'
@@ -108,6 +122,14 @@ function toggle(target){
       }
       else{
         html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_nick_name">' + '昵称：' + nick_name + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_nick_name") class="cross">X</a></span>';
+      }
+
+      user_location = $("#test").val();
+      if (user_location == ''){
+        html += '';
+      }
+      else{
+        html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_user_location">' + '注册地：' + user_location + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_user_location") class="cross">X</a></span>';
       }
 
       sex = $("#sex").val();

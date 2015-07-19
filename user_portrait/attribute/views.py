@@ -4,8 +4,8 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from search import search_location, search_mention, search_activity,\
-                   search_attention, search_follower
+from search import search_attribute_portrait, search_location, search_mention, search_activity,\
+                   search_attention, search_follower, search_portrait
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
@@ -15,6 +15,94 @@ test_time = 1378569600
 
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
+@mod.route('/portrait_attribute/')
+def ajax_portrait_attribute():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    results = search_attribute_portrait(uid)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
+
+
+@mod.route('/portrait_search/')
+def ajax_portrait_search():
+    result = {}
+    query_data = {}
+    query = []
+    condition_num = 0
+    fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
+    select_item = ['gender', 'verified', 'topic', 'domain', 'psycho_feature', 'psycho_status']
+    range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
+    for item in fuzz_item:
+        item_data = request.args.get(item, '')
+        if item_data:
+            query.append({'wildcard':{item:'*'+item_data+'*'}})
+            condition_num += 1
+    for item in select_item:
+        item_data = request.args.get(item, '')
+        if item_data:
+            query.append({'match':{item: item_data}})
+            condition_num += 1
+    for item in range_item:
+        item_data_low = request.args.get(item+'low', '')
+        item_data_up = request.args.get(item+'up', '')
+        if not item_data_low:
+            item_data_low = 0
+        else:
+            item_data_low = float(item_data_low)
+        if not item_data_up:
+            item_data_up = 10000000
+        else:
+            item_data_up = float(item_data_up)
+        query.append({'range':{item:{'from':item_data_low, 'to':item_data_up}}})
+        condition_num += 1
+    size = request.args.get('size', 100)
+    sort = request.args.get('sort', 'statusnum')
+    result = search_portrait(condition_num, query, sort, size)
+
+    '''
+    uid = request.args.get('uid', '')
+    if uid:
+        query_data['uid'] = uid
+    uname = request.args.get('uname', '')
+    if uname:
+        query_data['uname'] = uname
+    gender = request.args.get('gender', '')
+    if gender:
+        query_data['gender'] = gender
+    location = request.args.get('location', '')
+    if location:
+        quert_data['location'] = location
+    verified = request.args.get('verified', '')
+    if verified:
+        query_data['verified'] = verified
+    topic = request.args.get('topic', '')
+    if topic:
+        query_data['topic'] = topic
+    domain = request.args.get('domain', '')
+    if domain:
+        query_data['domain'] = domain
+    psycho_feature = request.args.get('psycho_feature', '')
+    if psycho_feature:
+        query_data['psycho_feature'] = psycho_feature
+    psycho_status = request.args.get('psycho_status', '')
+    if psycho_status:
+        query_data['psycho_status'] = psycho_status
+    activity_geo = request.args.get('activity_geo', '')
+    if activity_geo:
+        query_data['activity_geo'] = activity_geo
+    keywords = request.args.get('keywords', '')
+    if keywords:
+        query_data['keywords'] = keywords
+    hashtag = request.args.get('hashtag', '')
+    if hashtag:
+        query_data['hashtag'] = hashtag
+    '''
+    return json.dumps(result)
+
+
 @mod.route('/location/')
 def ajax_location():
     uid = request.args.get('uid', '')
@@ -23,8 +111,10 @@ def ajax_location():
     # test
     now_ts = test_time
     results = search_location(now_ts, uid)
-        
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/mention/')
 def ajax_mention():
@@ -34,8 +124,10 @@ def ajax_mention():
     # test
     now_ts = test_time
     results = search_mention(now_ts, uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/activity/')
 def ajax_activity():
@@ -45,24 +137,30 @@ def ajax_activity():
     # test
     now_ts = test_time
     results = search_activity(now_ts, uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/attention/')
 def ajax_attention():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_attention(uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 @mod.route('/follower/')
 def ajax_follower():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_follower(uid)
-
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
 
 """
 attention: the format of date from request must be vertified

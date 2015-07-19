@@ -4,7 +4,7 @@ import csv
 
 '''
 # read from weibo api
-def compute_in(uid_list):
+def read_user_weibo(uid_list):
     user_weibo_dict = dict()
     return user_weibo_dict
 '''

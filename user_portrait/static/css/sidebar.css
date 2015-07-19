@@ -14,7 +14,7 @@
 
 div.sidebar-container {
     width : 180px;
-    height : 250px;
+    height : 300px;
     position:fixed;
     background-color:#4F8FFF;
     filter: alpha(opacity=87);

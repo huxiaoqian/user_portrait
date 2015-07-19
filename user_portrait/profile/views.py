@@ -2,7 +2,8 @@
 import json
 import csv
 from flask import views, Blueprint, render_template, request
-from user_portrait.extensions import es, es_get_source, es_mget_source
+from user_portrait.global_utils import es_user_profile as es
+from user_portrait.search_user_profile import es_get_source, es_mget_source
 from os.path import dirname, abspath, join
 from .form import SearchForm
 
@@ -37,7 +38,6 @@ class HomeView(views.MethodView):
         data['email'] = request.args.get('q7') 
         data['user_location'] = request.args.get('q12')
         rank_order = request.args.get('order')
-        size = 100
         for key in range_item:
             data[key] = {}
         data['statusnum']['from'] = '0'
@@ -100,7 +100,7 @@ class HomeView(views.MethodView):
                             }
                         },
                         "sort":order,
-                        "size" : size
+                        "size" : 100
                         }
                 )
             except Exception as e:
@@ -235,7 +235,7 @@ class UserView(views.MethodView):
         data['nick_name'] = request.args.get('q2')
         data['real_name'] = request.args.get('q3')
         data['sp_type'] = request.args.get('q4')
-        data['isreal'] = request.args.get('tn')
+        data['tn'] = request.args.get('tn')
         data['sex'] = request.args.get('sex')
         data['user_email'] = request.args.get('q7') 
         data['user_location'] = request.args.get('q12')
@@ -257,7 +257,7 @@ class UserView(views.MethodView):
         data['friendsnum']['to'] = request.args.get('q11')
         size = request.args.get('size')
         if size == '':
-            size = 1000
+            size = 500
         for key in range_item:
             if data[key]['from'] == '' and data[key]['to'] != '':
                 data[key]['from'] = '0'
@@ -270,8 +270,8 @@ class UserView(views.MethodView):
         if rank_order == "2":
             order = [{'friendsnum':{'order':'desc'}}]
 
-        if data['isreal'] == '2':
-            data['isreal'] = ''
+        if data['tn'] == '2':
+            data['tn'] = ''
         if data['sex'] == '3':
             data['sex'] = ''
         if data['sp_type'] == '0':
