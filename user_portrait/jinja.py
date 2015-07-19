@@ -9,6 +9,14 @@ def gender(g):
 	elif g == 2:
 		return u'/../../static/img/female.png'
 	else:
+		return u''
+
+def gender_text(g):
+	if g == 1:
+		return u'男'
+	elif g == 2:
+		return u'女'
+	else:
 		return u'未知'
 
 def Int2string(g):
