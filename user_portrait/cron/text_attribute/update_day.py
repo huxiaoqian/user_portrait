@@ -7,7 +7,6 @@ update attribute: activeness, importance, influence
 import sys
 import json
 import time
-from save_utils import update_day
 from evaluate_index import get_evaluate_index
 from save_utils import save_user_results
 from elasticsearch.helpers import scan
@@ -34,9 +33,9 @@ def update_attribute_day():
             except StopIteration:
                 print 'all done'
                 if bulk_action:
-                    print 'bulk_action:', bulk_action
+                    #print 'bulk_action:', bulk_action
                     status = save_user_results(bulk_action)
-                    print 'status:', status
+                    #print 'status:', status
                 sys.exit(0)
             except Exception, r:
                 print Exception, r
@@ -47,19 +46,12 @@ def update_attribute_day():
             results = {}
             results = dict(results, **evaluate_result)
             action = {'update':{'_id':str(uid)}}
-            bulk_action.extend([action, results])
+            bulk_action.extend([action, {'doc': results}])
             #print 'bulk_action:', bulk_action
-            if count%1000 == 0:
-                break
-        '''
-        print 'bulk_action:', bulk_action
-        if bulk_action:
-            status = save_user_results(bulk_action)
-        '''
     print 'status:', status
     return status
 
 
 if __name__=='__main__':
     status = update_attribute_day()
-    print 'update attribute week status:', status
+    print 'update attribute day status:', status

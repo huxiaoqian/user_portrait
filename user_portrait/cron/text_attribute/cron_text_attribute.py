@@ -222,11 +222,12 @@ def compute2in(uid_list, user_weibo_dict, status='insert'):
         evaluation_index = get_evaluate_index(user_info, status='insert')
         results = dict(results, **evaluation_index)
         register_dict = register_result[user]
-        result = dict(results, **register_dict)
+        results = dict(results, **register_dict)
         if status=='insert':
             action = {'index':{'_id':str(user)}}
         else:
             action = {'update':{'_id', str(user)}}
+            results = {'doc': results}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)
     return True
