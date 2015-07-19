@@ -273,9 +273,8 @@ function docReady() {
 
     //datatable
     $('.datatable').dataTable({
-        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
-        "bSort": false,
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -369,6 +368,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
                 }
+                $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
             };
 
             $(nPaging).addClass('pagination').append(
@@ -416,6 +416,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);
+                            $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
                         });
                 }
 

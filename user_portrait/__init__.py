@@ -11,8 +11,12 @@ from user_portrait.manage.views import mod as manageModule
 from user_portrait.recommentation.views import mod as recommentationModule
 from user_portrait.profile.views import mod as profileModule
 from user_portrait.overview.views import mod as overviewModule
+<<<<<<< HEAD
 from user_portrait.influence_application.views import mod as influenceModule
 
+=======
+from user_portrait.group.views import mod as groupModule
+>>>>>>> 4703ffd0c3fa23cd6d3e0a6b30eb165f466cb673
 def create_app():
     app = Flask(__name__)
 
@@ -26,8 +30,12 @@ def create_app():
     app.register_blueprint(attributeModule)
     app.register_blueprint(recommentationModule)
     app.register_blueprint(overviewModule)
+<<<<<<< HEAD
     app.register_blueprint(influenceModule)
 
+=======
+    app.register_blueprint(groupModule)
+>>>>>>> 4703ffd0c3fa23cd6d3e0a6b30eb165f466cb673
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True
 

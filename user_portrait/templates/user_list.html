@@ -5,228 +5,374 @@
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Pragma" content="no-cache">
+    <title>用户背景信息</title>
+    <link rel="stylesheet" rev="stylesheet" href="../../static/css/jock-citypicker-2.0.min.css" type="text/css" />
     <style>
-    .divcss5-cent{margin:0 auto} 
+    a{text-decoration: none;}
+    .cross{margin:0 0 0 150;}
+    .sign-button{margin:5 0 0 0;}
+    #div1{display:block; margin:0 0 0 100;}
+    #search_uid{display:block; margin:0 0 0 100;}
+    .query-button{
+    padding:0 0 0 0;
+    font-weight:bold;
+    color:white;
+    font-size:15;
+    height:30;
+    width:80;
+    }
+    .remind_border{border: 5 solid gray; width:350; padding:0 100 0 0; background-color:lightgray;}  
+    .mouse{
+    width:100px
+
+    height:100px;
+    border:#d0d0d0 solid 1px;
+
+    }
+    .mouse:hover{
+    border:#000000 solid 1px;
+    }
     </style>
+    <script type="text/javascript" src="../../static/js/laydate.js"></script>
+    <script type="text/javascript" src="../../static/js/jock-citypicker-2.0.min.js"></script>
     <body>
-    <h4 class="page-header" style='margin-top:-40px'>用户信息条件检索</h4><!-- <a href="#top">111111111111</a> -->
-    <div><a style='float:right' role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    <h4 class="page-header" style='margin-top:-40px'>用户信息条件检索</h4>
+    <div><a style='float:right;margin-top:10px;cursor:pointer' type="button" data-toggle="modal" data-target="#myModal">
   高级检索
   </a></div>
     <div class="divcss5-cent" style='margin-left:170px'>
         <form>
-            <select class="form-control" onchange="setSubmitName(this)"style="float:left;width:12%" id="select_item" name="search">
-                <option value="uid">UID</option>
-                <option value="nick_name">昵称</option>
-                <option value="rel_name">真实姓名</option>
-                <option value="email">邮箱</option>
-            </select>
-                <span><input type="text" id='search'name=q1 style='float:left;width:40%;margin-left:-1px' class="form-control" placeholder="search"></span>
-                <span class="input-group-btn">
-                   <a href="#goto"><input class="btn btn-primary" style='width:81px'name="submit" type='submit' id="submit" value=简单检索></a>
-                </span>
+            <span><input type="text" id='search'name=nickname style='float:left;width:60%;height:38px;margin-left:-1px' placeholder="搜索昵称"></span>
+            <span class="input-group-btn">
+               <a href="#goto"><input class="btn btn-primary" style='width:100px;margin-left:10px' type='submit' id="submit" value=简单检索></a>
+            </span>
         </form>
-    </div>
+        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div role="document"style='margin-left:40px;margin-top:120px'>
+            <div class="modal-content" style="width:1180px;height:400px">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">高级搜索</h4>
+              </div>
+              <div class="modal-body">
+                  <div class="row">
+                        <div class="col-lg-3"style="width:100px">
+                          <div class="input-group"style="width:100px">
+                          <span  id="sizing-addon1">基本信息</span>
+                          </div>
+                        </div>
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                          <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">UID</span>
+                            <input type="text" class="form-control" id='uid' name=q0 placeholder="检索UID">
+                          </div>
+                        </div>
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">昵称</span>
+                            <input type="text" class="form-control" id='nick_name'name=q2 placeholder="检索昵称">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col6 -->
+                        <div class="col-lg-3"style="width:340px">
+                         <div class="input-group">
+                          <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee">用户性别</span>
+                          <span><select class="form-control" style="width:198px" id="sex" name="sex">
+                            <option value=3 selected> 不限</option>
+                            <option value=0> 未填写</option>
+                            <option value=1> 男</option>
+                            <option value=2> 女</option>
+                          </select></span>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="row" style='margin-top:10px'>
+                        <div class="col-lg-3"style="width:100px">
+                          <div class="input-group"style="width:100px">
+                          <span  id="sizing-addon1"></span>
+                          </div>
+                        </div>
+                        <div class="col-lg-3"style="width:340px">
+                         <div class="input-group">
+                          <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee">是否认证</span>
+                          <span><select class="form-control" style="width:198px" id="isreal" name="tn">
+                            <option value=2 selected> 不限</option>
+                            <option value=0> 未认证</option>
+                            <option value=1> 已认证</option>
+                          </select></span>
+                        </div>
+                        </div> 
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee">用户邮箱</span>
+                            <input type="text" class="form-control" style="width:102px" name=q7 id="user_email" placeholder="">
+                            <span><select style="width:95px;height:38px;font-size:10px" id="select_email">
+                            <option value=0 selected>@163.com</option>
+                            <option value=1>@qq.com</option>
+                            <option value=2>@sina.com</option>
+                            <option value=3>@126.com</option>
+                            <option value=4>@139.com</option>
+                            <option value=5>@sohu.com</option>
+                            <option value=6>@gmail.com</option>
+                            <option value=7>@hotmail.com</option>
+                          </select></span>
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->                   
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee"style="width:96px" id="sizing-addon1">出生年月日</span>
+                            <input type="text" class="form-control" id="demo" value="" name=q13 placeholder="yyyy-mm-dd">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
 
-    <div class="collapse" id="collapseExample">
-      <div class="well"> 
-                <div class="row">
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                    <span class="input-group-addon" style="width:96px" id="sizing-addon1">UID</span>
-                      <input type="text" class="form-control" name=q0 placeholder="UID模糊检索">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">昵称</span>
-                      <input type="text" class="form-control" name=q2 placeholder="昵称模糊检索">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">真实姓名</span>
-                      <input type="text" class="form-control"  name=q3 placeholder="真名模糊检索">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">注册地</span>
-                      <input type="text" class="form-control"  value=''name=q12 placeholder="注册地模糊检索">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                </div><!-- /.row -->
-                <div class="row" style='margin-top:10px'>
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">出生年月日</span>
-                      <input type="text" class="form-control" name=q13 value='' placeholder="yyyy-mm-dd">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">用户邮箱</span>
-                      <input type="text" class="form-control" name=q7 placeholder="邮箱精确检索">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                </div><!-- /.row -->
-                <div class="row" style='margin-top:10px'>
-                <div class="col-lg-3">
-                   <div class="input-group">
-                    <span class="input-group-addon" style="width:96px" id="sex">用户性别</span>
-                    <span><select class="form-control" style="width:125px" name="sex">
-                      <option value=0 selected> 全选</option>
-                      <option value=1> 男</option>
-                      <option value=2> 女</option>
-                    </select></span>
-                  </div>
-                  </div>
-                  <div class="col-lg-3">
-                   <div class="input-group">
-                    <span class="input-group-addon" style="width:96px" id="isreal">是否认证</span>
-                    <span><select class="form-control" style="width:125px" name="tn">
-                      <option value=2 selected> 全选</option>
-                      <option value=0> 未认证</option>
-                      <option value=1> 已认证</option>
-                    </select></span>
-                  </div>
-                  </div>
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                    <span class="input-group-addon" style="width:96px" id="source">微博来源</span>
-                    <span><select class="form-control" style="width:125px" name="q4">
-                      <option value=0 selected> 全选</option>
-                      <option value=1> 新浪微博</option>
-                      <option value=2> 腾讯微博</option>
-                      <option value=3> 搜狐微博</option>
-                      <option value=4> 网易微博</option>
-                    </select></span>
-                  </div>
-                  </div>
+                        </div>
+                      <div class="row" style='margin-top:10px'>
+                        <div class="col-lg-3"style="width:100px">
+                          <div class="input-group"style="width:100px">
+                          <span  id="sizing-addon1"></span>
+                          </div>
+                        </div>
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">注册地</span>
+                            <input id="test" type="text" class="form-control" name=q12 placeholder="检索注册地">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">真实姓名</span>
+                            <input class="form-control" type="text" id='rel_name' name=q3  placeholder="检索真实姓名">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                          <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="source">微博来源</span>
+                          <span><select class="form-control" style="width:198px" id='select_source' name="q4">
+                            <option value=0 selected> 不限</option>
+                            <option value=1>新浪微博</option>
+                            <option value=2>腾讯微博</option>
+                            <option value=3>搜狐微博</option>
+                            <option value=4>网易微博</option>
+                          </select></span>
+                        </div>
+                        </div> 
+                      </div><!-- /.row -->
+                      <div class="row" style='margin-top:10px'>
+                        <div class="col-lg-3" style="width:100px" >
+                          <div class="input-group"style="width:100px">
+                          <span id="sizing-addon1">附加条件</span>
+                          </div>
+                        </div>
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">微博数</span>
+                            
+                            <input type="text" class="form-control"id='weibo_from' name=q6 style="width:90px" placeholder="0">
+                            <span style='font-size:25px'>-</span>
+                            <input type="text" class="form-control"id='weibo_to' name=q8 style="width:98px;float:right"  placeholder="100000000">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon"style="width:96px;border:1px solid #eeeeee"id="sizing-addon1">粉丝数</span>
+                            <input type="text" class="form-control" id='fans_from'name=q8 style="width:90px"placeholder="0">
+                            <span style='font-size:25px'>-</span>
+                            <input type="text" class="form-control" id='fans_to' name=q9 style="width:98px;float:right" placeholder="100000000">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon"style="width:96px;border:1px solid #eeeeee"id="sizing-addon1">好友数</span>
+                            <input type="text" class="form-control" id='friends_from' name=q10 style="width:90px" placeholder="0">
+                            <span style='font-size:25px'>-</span>
+                            <input type="text" class="form-control" id='friends_to' name=q11 style="width:98px;float:right" placeholder="100000000">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                      </div><!-- /.row -->
+                      <div class="row" style='margin-top:10px'>
+                        <div class="col-lg-3"style="width:100px">
+                          <div class="input-group"style="width:100px">
+                          <span id="sizing-addon1">显示设置</span>
+                          </div>
+                        </div>
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee"id="sizing-addon1">显示条数</b></span>
+                            <input type="text" class="form-control"  name=size placeholder="500">
+                          </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->                
+                        <div class="col-lg-3"style="width:340px">
+                          <div class="input-group">
+                          <span class="input-group-addon"style="width:96px;border:1px solid #eeeeee">降序排序</span>
+                          <span><select class="form-control" style="width:198px" name="order" id='select_order'>
+                            <option value=0 selected> 微博数</option>
+                            <option value=1> 粉丝数</option>
+                            <option value=2> 关注数</option>
+                          </select></span>
+                        </div>
+                        </div>
+                        <span class="input-group-btn">
+                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions()" value=检索 data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true"></span>
+                           </a>
+                        </span>
+                      </div><!-- /.row -->
+              </div>
+              <div class="modal-footer">
+<!--                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
 
-                </div><!-- /.row -->
-                <div class="row" style='margin-top:10px'>
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">微博数大于</span>
-                      <input type="text" class="form-control" name=q5 placeholder="微博数大于">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px" id="sizing-addon1">微博数小于</span>
-                      <input type="text" class="form-control" name=q6  placeholder="微博数小于">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px"id="sizing-addon1">粉丝数大于</span>
-                      <input type="text" class="form-control" name=q8 placeholder="粉丝数大于">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px"id="sizing-addon1">粉丝数小于</span>
-                      <input type="text" class="form-control"  name=q9  placeholder="粉丝数小于">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                </div><!-- /.row -->
-                <div class="row" style='margin-top:10px'>
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px"id="sizing-addon1">关注数大于</span>
-                      <input type="text" class="form-control"  name=q10 placeholder="关注数大于">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" id="sizing-addon1">关注数小于</span>
-                      <input type="text" class="form-control"  name=q11 placeholder="关注数小于">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->
-                </div><!-- /.row -->
-                <div class="row" style='margin-top:10px'>
-                  <div class="col-lg-3">
-                    <div class="input-group">
-                      <span class="input-group-addon" style="width:96px"id="sizing-addon1">显示条数</b></span>
-                      <input type="text" class="form-control"  name=size placeholder="显示用户个数">
-                    </div><!-- /input-group -->
-                  </div><!-- /.col-lg-6 -->                
-                  <div class="col-lg-3">
-                  <div class="input-group">
-                  <span class="input-group-addon"style="width:96px">降序排序</span>
-                  <span><select class="form-control" style="width:125px" name="order" id='select_order'>
-                    <option value=0 selected> 微博数</option>
-                    <option value=1> 粉丝数</option>
-                    <option value=2> 关注数</option>
-                  </select></span>
-                </div>
-                </div>
-                  <span class="input-group-btn">
-                     <a href="#goto"><input style='margin-left:20px' class="btn btn-primary" onclick="click_data();" value=检索></a>
-                  </span>
-                </div><!-- /.row -->
-      </div>
-    </div>
         <div >
         <a name="goto"><h4 class="page-header"style="margin-top:10px">检索信息</h4></a>
-        </div> 
-        <div id = 'search_information'> 
-        <div style="float:left;width:50%"class="list-group-item list-group-item-success">耗时：{{ source.took }}ms</div>
-        <div style="float:right;width:50%"class="list-group-item list-group-item-success">命中：{{ source.hits.total }}个</div>
         </div>
-        <h4 class="page-header" style='margin-top:80px'>用户信息列表</h4>
-        <div class="table-responsive"id='table'>
-              <table  class="table table-striped table-bordered bootstrap-datatable datatable responsive">
-          <div style='float:right'><a  role="button" name= '0' onclick="selectAll('{{ url_for('static',filename='download/test.csv') }}');" />全部导出</a></div>
-
-              
+        <div style='float:left'id='search_conditions'></div>
+        <div id='search_information'>
+        <div class="page-header" style='margin-top:30px'>用户信息列表(耗时：<font color='#1F90FF'>{{ source.took }}</font>ms 命中：<font color='#1F90FF'>{{ source.hits.total }}</font>条)</div><a style='cursor:pointer;margin-left:755px' role="button" name= '0' onclick="selectAll('{{ url_for('static',filename='download/test.csv') }}');">全部导出</a>
+        </div>
+        <div class="table-responsive"id='table' style='overflow-x:hidden;'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
                 <thead>
                     <tr>
-                        <th>uid</th>
-                        <th>昵称</th>
-                        <th>性别</th>
-                        <th>注册地</th>
-                        <th>关注数</th>
-                        <th>粉丝数</th>
-                        <th>微博数</th>
+                        <th style="text-align:center">头像</th>
+                        <th style="text-align:center">昵称</th>
+                        <th style="text-align:center">注册地</th>
+                        <th style="text-align:center">好友数</th>
+                        <th style="text-align:center">粉丝数</th>
+                        <th style="text-align:center">微博数</th>
+                        <th style="text-align:center">全选<input type="checkbox" onclick="selectAll()" ></th>
+                        <!-- <th style="text-align:center">创建时间</th> -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in source.hits.hits %}
                 <tr>
-                    <td class="center"><a href="{{ url_for('profile.detail', id=item._id) }}">{{ item._id }}</td>
-                    <td class="center">{{ item._source.nick_name }}</td>
-                    <td class="center">{{ gender(item._source.sex) }}</td>
-                    <td class="center">{{ item._source.user_location }}</td>
-                    <td class="center">{{ item._source.friendsnum }}</td>
-                    <td class="center">{{ item._source.fansnum }}</td>
-                    <td class="center">{{ item._source.statusnum }}</td>
-                    <!-- <td class="center"><input type="checkbox" id='{{ item._id }}' ></td> -->
+                    <td class="center" style="text-align:center;vertical-align:middle"><a href="{{ url_for('profile.detail', id=item._id) }}"><img src="{{ item._source.photo_url }}" class="img-circle"></td>
+                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.nick_name }}<img src= '{{ gender(item._source.sex) }}' style='height:20px' ><img src= '/../../static/img/vertify.png' style='height:20px' ></td>
+                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.user_location }}</td>
+                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.friendsnum }}</td>
+                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.fansnum }}</td>
+                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.statusnum }}</td>
+                    <!-- <td class="center" style="text-align:center">{{ tsfmt(item._source.create_at) }}</td> -->
+                    <td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox" id='{{ item._id }}' ></td>
                 </tr>
                     {% endfor %}
                 </tbody>
-            </table>
+            </table> 
         </div>
         </div>
     </body>
 </html>
-<script>
- 
-  function setSubmitName(obj){
-    var search = document.getElementById('search');
-    if('uid'==obj.value){
-        search.name='q1';
-    }
-    else if('nick_name'==obj.value){
-        search.name='q2';
-    }
-    else if('rel_name'==obj.value){
-        search.name='q3';
-    }
-    else {
-        search.name='q7';
-    }
+
+<script type="text/javascript">
+    !function(){
+      laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
+      laydate({elem: '#demo'});//绑定元素
+    }();
+
+    //日期范围限制
+    var start = {
+        elem: '#start',
+        format: 'YYYY-MM-DD',
+        min: laydate.now(), //设定最小日期为当前日期
+        max: '2099-06-16', //最大日期
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+             end.min = datas; //开始日选好后，重置结束日的最小日期
+             end.start = datas //将结束日的初始值设定为开始日
+        }
+    };
+
+    var end = {
+        elem: '#end',
+        format: 'YYYY-MM-DD',
+        min: laydate.now(),
+        max: '2099-06-16',
+        istime: true,
+        istoday: false,
+        choose: function(datas){
+            start.max = datas; //结束日选好后，充值开始日的最大日期
+        }
+    };
+    laydate(start);
+    laydate(end);
+
+    //自定义日期格式
+    laydate({
+        elem: '#test1',
+        format: 'YYYY年MM月DD日',
+        festival: true, //显示节日
+        choose: function(datas){ //选择日期完毕的回调
+            alert('得到：'+datas);
+        }
+    });
+
+    //日期范围限定在昨天到明天
+    laydate({
+        elem: '#hello3',
+        min: laydate.now(-1), //-1代表昨天，-2代表前天，以此类推
+        max: laydate.now(+1) //+1代表明天，+2代表后天，以此类推
+    });
+
+    window.onload = function(){
+    var a = document.getElementById("test");
+    var b = document.getElementById("test2");
+    var c = document.getElementById("test3");
+
+    /*
+    *1：插件默认定位到网页原点(0,0)，需要自己给出插件的绝对定位
+    *2: 插件回调函数为空函数，需要自定义回调，插件返回被选择的城市作为回调的参数
+    *3: 在一个页面上，插件只产生一个实例
+    */
+    //例一：
+    a.onclick = function(){
+      citypicker.show({left: 80, top : 20}, function(data){
+        a.value = data;
+      });
+    };
+    
+    //例二:
+    var p = {left: 323, top : 20};
+    var fn1 = function(city){
+      b.value = city;
+    };
+    
+    b.onclick = function(){
+      citypicker.bind(fn1).fix(p).show();
+    };
+
+    //例三:
+    var fn2 = function(city){
+      c.value = city;
+    };
+    c.onclick = function(){
+      citypicker.show({
+        left : 566,
+        top  : 20,
+        selected : fn2
+      });
+    };
   }
+
+  //  function setSubmitName(obj){
+  //   var search = document.getElementById('search');
+  //   if('uid'==obj.value){
+  //       search.name='q1';
+  //   }
+  //   else if('nick_name'==obj.value){
+  //       search.name='q2';
+  //   }
+  //   else if('rel_name'==obj.value){
+  //       search.name='q3';
+  //   }
+  //   else {
+  //       search.name='q7';
+  //   }
+  // }
+  
+
 </script>
 

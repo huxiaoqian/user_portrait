@@ -12,6 +12,7 @@ sys.path.append('../../')
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
+from user_portrait.global_utils import es_user_portrait
 from user_portrait.search_user_profile import search_uid2uname
 
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
@@ -181,6 +182,41 @@ def ip2city(ip):
     except Exception,e:
         return None
     return city
+
+#use to search user_portrait to show the attribute saved in es_user_portrait
+def search_attribute_portrait(uid):
+    results = dict()
+    index_name = 'user_portrait'
+    index_type = 'user'
+    try:
+        results = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+    except:
+        results = None
+    return results
+
+#use to search user_portrait by lots of condition 
+def search_portrait(condition_num, query, sort, size):
+    user_result = []
+    index_name = 'user_portrait'
+    index_type = 'user'
+    if condition_num > 0:
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, \
+                    body={'query':{'bool':{'must':query}}, 'sort':sort, 'size':size})['hits']['hits']
+        except Exception,e:
+            raise e
+    else:
+        result = es_user_portrait.search(index=index_name, doc_type=index_type, \
+                body={'query':{'match_all':{}}, 'sort':[{'statusnum':{'order':'desc'}}],\
+                     'size':100})['hits']['hits']
+    if result:
+        #print 'result:', result
+        for item in result:
+            user_dict = item['_source']
+            user_result.append([user_dict['uid'], user_dict['uname'], user_dict['fansnum'], user_dict['statusnum'], user_dict['friendsnum']])
+
+    return user_result
+
 
 if __name__=='__main__':
     uid = '1798289842'

@@ -1,0 +1,263 @@
+</<!DOCTYPE html>
+<html>
+	<head>
+		<!-- html head 标签 -->
+		{% block head_meta %}
+		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    		<meta charset="utf-8">
+    		<meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>{% block title %}XXX系统{% endblock title %}</title>
+		{% endblock %}
+		<!-- end head 标签 -->
+
+		<!-- 布局css -->
+		{% block css %}
+		    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+		    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css" />
+	        <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
+			<!-- the model styles -->
+		    <link href="/static/css/charisma-app.css" rel="stylesheet">
+		    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+		    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+		    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+		    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
+		    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
+		    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
+		    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
+		    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
+		    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
+		    <link href='/static/css/uploadify.css' rel='stylesheet'>
+		    <link href='/static/css/animate.min.css' rel='stylesheet'>
+			<link href='/static/bootstrap/css/bootstrap.css' rel="stylesheet" >
+
+			
+		    <!-- end model styles -->
+	    {% endblock %}
+	    <!-- end css -->
+
+		<!-- 引入js -->
+	    {% block head_js %}
+	    	<script src="/static/js/jquery.second.js"></script>
+	    	<script src="/static/js/jquery.min.js"></script>
+	    	<script src='/static/bootstrap/js/bootstrap.js'></script>
+	    	<script src='/static/js/echarts-all.js'></script>
+	    	<script src="/static/js/jquery-ui.min.js"></script>
+			<script src="/static/js/jquery.sidebar.js"></script>
+	    {% endblock %}
+	    <!-- end js -->
+	</head>
+	<body>
+		<!-- 上面导航 -->
+		{% block header %}
+			<div id="header">
+		    	<h1 class="headtitle">XXXX系统</h1>
+		        <form class="search-form" id="" method="post" action="">
+		       	  	<span class="searchborder fleft">
+		  				<input type="text" id="keyword" value="请按uid或昵称搜索" />
+				    </span>
+		            <span class="fleft">
+		            	<a title="" href="" >
+						<input class="search" type="button" value="简单搜索" /></a>
+		            	<a title="" href="" class="webpage" id="showBtn">高级搜索</a>
+		            </span>  
+				</form>
+				
+				<div class="fleft entrance">
+					<a title="" href="" class="link2portrait">xxxxx入口</a>
+				</div>
+				
+		        <div class="fright userInfo">
+		                <a title="logout" href=""> logout </a>
+		        </div>
+		    </div>
+		{% endblock %}
+		<!-- end 导航 -->
+		
+		<!-- 左侧导航 -->
+		{% block left %}
+			<div class="leftsidebar_box">
+				<dl class="">
+					<dt onClick=";">整体概览</dt>
+				</dl>
+
+				<dl class="">
+					<dt onClick=";">出入库管理</dt>
+					<dd><a href="#">出库</a></dd>
+					<dd><a href="#">入库</a></dd>
+				</dl>
+				<dl class="">
+					<dt>综合应用</dt>
+					<dd><a href="#">群体分析</a></dd>
+					<dd><a href="#">影响力</a></dd>
+				</dl>
+			</div>	
+		{% endblock %}
+		<!-- end 导航 -->
+		
+		<!-- 高级搜索 -->
+		{% block search %}
+			<div id = "float-wrap"  class="hidden"></div>				
+	<div id="supersearch"  class="hidden">
+		
+		<h3 class="title">
+			高级搜索
+			<a href="javascript:void(0)" class="close" id="close"></a>
+		</h3>
+		<div class="search-content">
+			<div class="cols">
+				<span class="fleft lineh42 mright23">uid</span>
+				<input class="inputbox fleft" type="text" value="请输入uid" />
+				<span class="fleft lineh42 mright13">用户名</span>
+				<input class="inputbox fleft" type="text" value="请输入用户名" />
+				<span class="fleft lineh42 ">地点</span>
+				<input class="inputbox fleft" type="text" value="北京" />
+			</div>
+			<div class="cols">
+				<span class="fleft lineh42 ">关键字</span>
+				<input class="inputbox fleft" type="text" value="请输入关键字" />
+				<span class="fleft lineh42 ">hashtag</span>
+				<input class="inputbox fleft" type="text" value="请输入hashtag" />
+			</div>
+			<div class="cols">
+				<form action="" method="get">
+					<span class="fleft lineh42 mright20 ">领域</span>
+                    <label class="cols-label"><input class=" fleft chosebox " type="checkbox" value=""/><span class="font15">文化</span></label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
+					<label class="cols-label"><input class=" fleft chosebox " type="checkbox" value="" />娱乐</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />时尚</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />财经</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />媒体</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />科技</label>
+				</form>
+			</div>
+			<div class="cols">
+				<form action="" method="get">
+					<span class="fleft lineh42 mright20">话题</span>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />环境</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />医药</label>
+					<label class="cols-label" ><input class="fleft chosebox" type="checkbox" value="" />军事</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />政治</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />交通</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />社会</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />艺术</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />经济</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />计算机</label>
+				</form>
+			</div>
+			<div class="cols">
+				<span class="fleft lineh42 mright30">心理状态</span>
+				<select name="" class="fleft select-box">
+					<option value="">不限</option>
+					<option value="">积极向上</option>
+					<option value="">消极失望</option>
+					<option value="">焦虑</option>
+					<option value="">生气</option>
+					<option value="">悲伤</option>
+				</select>
+				<span class="fleft lineh42 mright17">心理特征</span>
+				<select name="" class="fleft select-box">
+					<option value="">不限</option>
+					<option value="">胆汁质</option>
+					<option value="">多血质</option>
+					<option value="">黏液质</option>
+					<option value="">抑郁质</option>
+				</select>
+			</div>
+		</div>
+		<div class="clearfix lineh42">
+		  <input name="submit" type="submit" class="bluebtn" id="bluebtn" value="确定" />
+		</div>
+	</div>
+		{% endblock %}
+		<!-- end serarch -->
+		
+		<!-- start main -->
+		<div style="margin-left:200px;margin-top:45px;width:1000px;">
+			{% block main %}
+
+			{% endblock %}
+		</div>
+		<!-- end main -->
+
+		<!-- DIY js -->
+		{% block Own_js %}
+			<script type="text/javascript">
+				$("div.leftsidebar_box").sidebar();
+				$(".leftsidebar_box dt").css({"background-color":"#4f8fff"});
+				/* $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+                */
+                $(function(){
+					$(".leftsidebar_box dd").hide();
+					$(".leftsidebar_box dt").click(function(){
+						$(".leftsidebar_box dt").css({"background-color":"#4f8fff"})
+						$(this).css({"background-color": "#317eb4"});
+						$(this).parent().find('dd').removeClass("menu_chioce");
+                        /*
+                        $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+						$(this).parent().find('img').attr("src","/static/img/images/left/select_xl.png");
+                        */
+                        $(".menu_chioce").slideUp(); 
+						$(this).parent().find('dd').slideToggle();
+						$(this).parent().find('dd').addClass("menu_chioce");
+					});
+				});
+				$("#showBtn").off("click").click(function(){
+					$("#float-wrap").removeClass("hidden");
+					$("#supersearch").removeClass("hidden");
+					return false;
+				});
+				$("#close").off("click").click(function(){
+					$("#float-wrap").addClass("hidden");
+					$("#supersearch").addClass("hidden");
+					return false;
+				});
+                $("#bluebtn").off("click").click(function(){
+                    $("#float-wrap").addClass("hidden");
+                    $("#supersearch").addClass("hidden");
+                    return false;
+                });
+			</script>
+		{% endblock %}
+		<!-- end DIY -->
+
+		<!-- 引入js -->
+		{% block end_js %}
+        <script src="/static/bower_components/bootstrap/css_js/js/bootstrap.min.js"></script>
+			<!-- library for cookie management -->
+			<script src="/static/js/jquery.cookie.js"></script>
+			<!-- calender plugin -->
+			<script src='/static/bower_components/moment/min/moment.min.js'></script>
+			<script src='/static/bower_components/fullcalendar/css_js/fullcalendar.min.js'></script>
+			<!-- data table plugin -->
+			<script src='/static/js/jquery.dataTables.min.js'></script>
+			<!-- select or dropdown enhancer -->
+			<script src="/static/bower_components/chosen/chosen.jquery.min.js"></script>
+			<!-- plugin for gallery image view -->
+			<script src="/static/bower_components/colorbox/jquery.colorbox-min.js"></script>
+			<!-- notification plugin -->
+			<script src="/static/js/jquery.noty.js"></script>
+			<!-- library for making tables responsive -->
+			<script src="/static/bower_components/responsive-tables/responsive-tables.js"></script>
+			<!-- tour plugin -->
+			<script src="/static/bower_components/bootstrap-tour/css_js/js/bootstrap-tour.min.js"></script>
+			<!-- star rating plugin -->
+			<script src="/static/js/jquery.raty.min.js"></script>
+			<!-- for iOS style toggle switch -->
+			<script src="/static/js/jquery.iphone.toggle.js"></script>
+			<!-- autogrowing textarea plugin -->
+			<script src="/static/js/jquery.autogrow-textarea.js"></script>
+			<!-- multiple file upload plugin -->
+			<script src="/static/js/jquery.uploadify-3.1.min.js"></script>
+			<!-- history.js for cross-browser state change on ajax -->
+			<script src="/static/js/jquery.history.js"></script>
+			<!-- application script for Charisma demo -->
+			<script src="/static/js/table.js"></script>
+			<script src="/static/js/charisma.js"></script>
+		{% endblock %}
+		<!-- end js -->
+	</body>
+</html>
