@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-as to everyday activity rank, update and record its rank
+as to everyday activity rank, update 400000 and record its rank
 
 """
 

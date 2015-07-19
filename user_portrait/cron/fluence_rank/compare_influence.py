@@ -14,15 +14,15 @@ from global_utils import ES_CLUSTER_FLOW1
 
 es = ES_CLUSTER_FLOW1
 vary_index = "vary"
-size = 10000
+size = 100000
 
-def uid_rank_change(index_name, doctype):
+def uid_rank_change(index_name, doctype, size):
     query_body={
         "query": {
             "match_all": {}
             },
         "sort": [{"user_index": {"order": "desc"}}],
-        "size": 10000
+        "size": size
     }
 
 
@@ -57,10 +57,10 @@ def bulk_function(es, uid_list, former_index_common_dict, later_index_common_dic
         es.bulk(bulk_action, index=vary_index, doc_type="bci", timeout=30)
 
 
-def main(former_index="20130901", later_index="20130902", size=10000):
+def main(former_index="20130902", later_index="20130903", size=100000):
 
-    set_1 = uid_rank_change(former_index, "bci")
-    set_2 = uid_rank_change(later_index, "bci")
+    set_1 = uid_rank_change(former_index, "bci", size)
+    set_2 = uid_rank_change(later_index, "bci", size)
 
     common_set = set_1.intersection(set_2) # intersection
     difference_set_12 = set_1.difference(set_2) # 1 - 2
@@ -98,3 +98,5 @@ def main(former_index="20130901", later_index="20130902", size=10000):
     bulk_function(es, list(difference_set_21), {}, later_index_alone_dict, later_index)
 
 
+if __name__ == "__main__":
+    main()
