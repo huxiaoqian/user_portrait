@@ -6,9 +6,7 @@ import time
 import sys
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
-reload(sys)
-sys.path.append('./../../')
-from global_utils import ES_CLUSTER_FLOW1
+from user_portrait.global_utils import ES_CLUSTER_FLOW1
 
 
 es = ES_CLUSTER_FLOW1
@@ -55,7 +53,7 @@ return vary top_k
 
 """
 
-def query_vary_top_k(index_name, doctype, top_k, sort_index):
+def query_vary_top_k(index_name, doctype, top_k, sort_index="vary"):
     query_body = {
         "query": {
             "match_all": {}
