@@ -46,7 +46,7 @@ Search_weibo_recommend.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ in_status +'</td>';
+      html += '<td class="center" id="'+ i +'">'+ in_status +'</td>';
       if(item[i]==0)
         html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + i + '" /></td>';
       else if(item[i]==1)
@@ -88,7 +88,7 @@ Search_weibo_compute.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>计算状态</th><th>' + '<input name="compute_all" id="compute_all" type="checkbox" value="" onclick="compute_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>入库时间</th><th>计算状态</th><th>' + '<input name="compute_all" id="compute_all" type="checkbox" value="" onclick="compute_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -112,7 +112,8 @@ Search_weibo_compute.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ compute_status +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center" id="'+ i +'">'+ compute_status +'</td>';
       if(item[i][1]==0)
         html += '<td class="center">'+ '<input name="compute_status" class="compute_status" type="checkbox" value="' + i + '" />' +'</td>';
       else if(item[i][1]==1||item[i][1]==2)
@@ -136,21 +137,28 @@ draw_table_compute = new Search_weibo_compute(url_compute, '#compute');
 draw_table_compute.call_sync_ajax_request(url_compute, draw_table_compute.ajax_method, draw_table_compute.Draw_table);
 
 function recommend_button(){
+  var recommend_uids = [];
+  var recommend_result = [];
+  var recommend_date = $("#recommend_date_select").val()
   $('input[name="in_status"]:checked').each(function(){
-      console.log($(this).attr('value'));
+      $(this).attr('disabled',true);
+      recommend_uids.push($(this).attr('value'));
   })
-  var today_recommend = new Date();
-  var now_recommend = today_recommend.getFullYear()+"-"+((today_recommend.getMonth()+1)<10?"0":"")+(today_recommend.getMonth()+1)+"-"+((today_recommend.getDate())<10?"0":"")+(today_recommend.getDate());
-  console.log(now_recommend);
+  for(var i in recommend_uids)
+    $("#"+recommend_uids[i]).html("已入库");
+  recommend_result[recommend_date] = recommend_uids;
+  console.log(recommend_result);
 }
 
 function compute_button(){
+  var compute_uids = [];
   $('input[name="compute_status"]:checked').each(function(){
-      console.log($(this).attr('value'));
+      $(this).attr('disabled',true);
+      compute_uids.push($(this).attr('value'));
   })
-  var today_compute = new Date();
-  var now_compute = today_compute.getFullYear()+"-"+((today_compute.getMonth()+1)<10?"0":"")+(today_compute.getMonth()+1)+"-"+((today_compute.getDate())<10?"0":"")+(today_compute.getDate());
-  console.log(now_compute);
+  for(var i in compute_uids)
+    $("#"+compute_uids[i]).html("确定计算");
+  console.log(compute_uids);
 }
 
 var today = new Date();
@@ -188,10 +196,6 @@ $("#compute_date").append(compute_date_html);
 
 function recommend_date_button(){
   console.log($("#recommend_date_select").val());
-}
-
-function compute_date_button(){
-  console.log($("#compute_date_select").val());
 }
 
 function recommend_all(){

@@ -368,6 +368,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
                 }
+                $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
             };
 
             $(nPaging).addClass('pagination').append(
@@ -415,6 +416,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);
+                            $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
                         });
                 }
 

@@ -26,6 +26,7 @@ def get_flow_information(uid_list):
     for i in range(1,8):
         ts = ts - 3600*24  
         results = r_cluster.hmget('hashtag_'+str(ts), uid_list)
+        #print 'r_cluster hashtag:', results
         ip_results = r_cluster.hmget('ip_'+str(ts), uid_list)
         for j in range(0,len(uid_list)):
             if results[j]:

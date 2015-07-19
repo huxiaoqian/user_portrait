@@ -122,30 +122,30 @@
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20 ">领域</span>
-                    <label class="cols-label"><input class=" fleft " type="checkbox" value=""/><span class="font15">文化</span></label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />教育</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />娱乐</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />时尚</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />财经</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />媒体</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />体育</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />科技</label>
+                    <label class="cols-label"><input class=" fleft chosebox " type="checkbox" value=""/><span class="font15">文化</span></label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
+					<label class="cols-label"><input class=" fleft chosebox " type="checkbox" value="" />娱乐</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />时尚</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />财经</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />媒体</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />科技</label>
 				</form>
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20">话题</span>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />环境</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />教育</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />医药</label>
-					<label class="cols-label" ><input class=" fleft" type="checkbox" value="" />军事</label>
-					<label class="cols-label"><input class=" fleft" type="checkbox" value="" />政治</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />交通</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />体育</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />社会</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />艺术</label>
-					<label class="cols-label"><input class=" fleft " type="checkbox" value="" />经济</label>
-					<label class="cols-label"><input class=" fleft" type="checkbox" value="" />计算机</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />环境</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />医药</label>
+					<label class="cols-label" ><input class="fleft chosebox" type="checkbox" value="" />军事</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />政治</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />交通</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />社会</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />艺术</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />经济</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />计算机</label>
 				</form>
 			</div>
 			<div class="cols">
@@ -169,7 +169,7 @@
 			</div>
 		</div>
 		<div class="clearfix lineh42">
-		  <input name="submit" type="submit" class="bluebtn " value="确定" />
+		  <input name="submit" type="submit" class="bluebtn" id="bluebtn" value="确定" />
 		</div>
 	</div>
 		{% endblock %}
@@ -204,18 +204,22 @@
 						$(this).parent().find('dd').slideToggle();
 						$(this).parent().find('dd').addClass("menu_chioce");
 					});
-				})
+				});
 				$("#showBtn").off("click").click(function(){
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
 					return false;
 				});
-	
 				$("#close").off("click").click(function(){
 					$("#float-wrap").addClass("hidden");
 					$("#supersearch").addClass("hidden");
 					return false;
 				});
+                $("#bluebtn").off("click").click(function(){
+                    $("#float-wrap").addClass("hidden");
+                    $("#supersearch").addClass("hidden");
+                    return false;
+                });
 			</script>
 		{% endblock %}
 		<!-- end DIY -->
