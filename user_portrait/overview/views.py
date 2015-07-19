@@ -18,4 +18,7 @@ mod = Blueprint('overview', __name__, url_prefix='/overview')
 def ajax_recommentation_in():
     date = request.args.get('date', '') # '2013-09-01'
     results = get_attr(date)
-    return json.dumps(results)
+    if results:
+        return json.dumps(results)
+    else:
+        return None

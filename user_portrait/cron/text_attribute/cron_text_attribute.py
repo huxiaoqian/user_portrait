@@ -193,16 +193,16 @@ def compute_text_attribute(user, weibo_list):
     result['keywords'] = json.dumps(attr_keywords(weibo_list))
     # test attr7: domain
     #result['domain'] = attr_domain(weibo_list)
-    result['domain'] = 'test domain'
+    result['domain'] = 'test_domain'
     # test attr8: psycho_feature
     #result['psycho_feature'] = attr_psycho_feature(user, weibo_list)
     result['psycho_feature'] = 'test psycho_feature'
     # test attr9: psycho_status
     #result['psycho_status'] = attr_psycho_status(user, weibo_list)
-    result['psycho_status'] = 'test psycho_status'
+    result['psycho_status'] = json.dumps({'status1':1, 'status2':2})
     # test atrr10: topic
     #result['topic'] = attr_topic(weibo_list)
-    result['topic'] = 'test topic'
+    result['topic'] = json.dumps({'art':1, 'education':2})
     #test attr
     return result
 
