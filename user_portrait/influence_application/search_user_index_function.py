@@ -6,19 +6,19 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from search_vary_index_function import generate_date
 
-reload(sys)
-sys.path.append('./../../')
-from global_utils import ES_CLUSTER_FLOW1
+from user_portrait.global_utils import ES_CLUSTER_FLOW1
 
 es = ES_CLUSTER_FLOW1
 index_name = "20130901"
 index_portrait_user = "user_index_profile" # record all users' activity
+user_index_profile = "user_index_profile"
+manage = "manage"
 
 """
 based on user_index, search users in different range
 
 """
-def query_es(index_name,range_1, range_2, size=0, count=1):
+def count_es(es, index_name,range_1=0, range_2=3000):
     query_body = {
         "query":{
             "filtered": {
@@ -37,16 +37,28 @@ def query_es(index_name,range_1, range_2, size=0, count=1):
         }
     }
 
-    if size != 0:
-        query_body["size"] = size
 
-    if count == 0:
-        result = es.search(index=index_name, doc_type="bci", body=query_body)['hits']['hits']
-    else:
-        result = es.count(index=index_name, doc_type="bci", body=query_body)['count']
+    result = es.count(index=index_name, doc_type="bci", body=query_body)['count']
 
     return result
 
+def user_index_range_distribution(index_name,doctype="bci"):
+
+    return_list = []
+    distribute_range = []
+    top_index = search_top_index(index_name=index_name,top_k=1, top=True)
+    max_score = int(math.ceil(top_index/100.0)) * 100
+
+    # devide active user based on active degree
+
+    score_range = [0, 100, 200, 500, 700, 900, 1100, 1300, 1500, max_score]
+    for i in range(len(score_range)-1):
+        temp_number = count_es(es, index_name, score_range[i], score_range[i+1])
+        distribute_range.append(temp_number)
+    return_list.append(score_range)
+    return_list.append(distribute_range)
+
+    return return_list
 
 def query_brust(index_name,field_name, range_1=0, range_2=50000, count=0):
     query_body = {
@@ -84,7 +96,7 @@ def query_brust(index_name,field_name, range_1=0, range_2=50000, count=0):
 
 # search user_index top_k
 
-def search_top_index(index_name, top_k, index_type="bci"):
+def search_top_index(index_name, top_k=1, index_type="bci", top=False):
     query_body = {
         "query": {
             "match_all": {}
@@ -93,13 +105,19 @@ def search_top_index(index_name, top_k, index_type="bci"):
         "sort": [{"user_index": {"order": "desc"}}]
     }
 
-    if top_k == 1:
+    if top:
         result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits'][0]['_source']['user_index']
     else:
         search_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
         result = []
+        rank = 1
         for item in search_result:
-            result.append(item['_source']['user_index'])
+            info = {}
+            info['uid'] = item['_id']
+            info['user_index'] = item['_source']['user_index']
+            info['rank'] = rank
+            rank += 1
+            result.append(info)
     return result
 
 """
@@ -111,7 +129,10 @@ def search_influence_detail(uid_list, index_name, doctype):
     result = es.mget(index=index_name, doc_type=doctype, body={"ids": uid_list}, _source=True)["docs"]
     result_dict = {}
     for item in result:
-        result_dict[item['_id']] = item['_source']
+        if not item['found']:
+            result_dict[item['_id']] = {}
+        else:
+            result_dict[item['_id']] = item['_source']
 
     return result_dict
 
@@ -158,7 +179,7 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
     return return_dict
 
 
-def search_portrait_history_active_info(uid, start_date, end_date, index_name="user_index_profile", doctype="manage"):
+def search_portrait_history_active_info(uid, start_date, end_date, index_name=user_index_profile, doctype=manage):
     # date.formate: 20130901
     date_list = generate_date(start_date, end_date)
 
@@ -183,7 +204,7 @@ if __name__ == "__main__":
     """
     all_range = []
     distribute_range = []
-    top_index = search_top_index("20130901",5)
+    top_index = search_top_index(index_name="20130901",top_k=1, top=True)
     print top_index
     max_score = int(math.ceil(top_index/100.0)) * 100
 
@@ -227,8 +248,8 @@ if __name__ == "__main__":
     result = search_max_single_field(field_name, '20130901', 'bci')
     print result
 
-    """
 
     result = search_portrait_history_active_info('2256040435', "20130901", "20130910")
     print result
 
+    """
