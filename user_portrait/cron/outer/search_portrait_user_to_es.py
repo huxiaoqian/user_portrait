@@ -14,7 +14,7 @@ sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1, es_user_profile
 
 es = ES_CLUSTER_FLOW1
-user_portrait = "20130901" # act as portrait database
+user_portrait = "20130902" # act as portrait database
 user_portrait_doctype = "bci"
 index_destination = "test" # act as user active database
 index_destination_doctype = "manage"
@@ -24,10 +24,45 @@ def expand_index_action(data):
     action = {'index': {'_id': _id}}
     return action, data
 
+def co_search(es, user_list, bulk_action, count_n, tb):
+    search_list = []
+    for item in user_list:
+        uid = item.get('user', '0') # obtain uid, notice "uid" or "user"
+        search_list.append(uid)
+
+    search_result = es.mget(index=index_destination, doc_type=index_destination_doctype, body={"ids": search_list}, _source=False)["docs"]
+    search_list = []
+
+    for item in search_result:
+        if not item['found']:
+            user_info = {}
+            user_info['uid'] = item['_id']
+            user_info['low_number'] = 0
+            xdata = expand_index_action(user_info)
+            bulk_action.extend([xdata[0], xdata[1]])
+            count_n += 1
+        if count_n % 1000 == 0:
+            while True:
+                try:
+                    es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
+                    bulk_action = []
+                    break
+                except:
+                    es = ES_CLUSTER_FLOW1
+            print count_n
+
+        if count_n % 10000 == 0:
+            ts = time.time()
+            print "count_n %s  per  %s  second"  %(count_n, ts-tb)
+            print "count : %s" % count 
+            tb = ts
+
+    return bulk_action, count_n, tb
 
 if __name__ == "__main__":
 
     tb = time.time()
+    es = ES_CLUSTER_FLOW1
 
     index_exist = es.indices.exists(index=index_destination)
     if not index_exist:
@@ -38,54 +73,27 @@ if __name__ == "__main__":
     count = 0
     count_n = 0
     search_list = []
+    user_list = []
     while 1:
-        user_list = []
-        while 1:
-            try:
-                scan_re = s_re.next()['_source']
-                count += 1
-            except StopIteration:
-                print "all done"
-                sys.exit(0)
-            except Exception, r:
-                print Exception, r
-                sys.exit(0)
-
+        try:
+            scan_re = s_re.next()['_source']
+            count += 1
             user_list.append(scan_re)
             if count % 1000 == 0:
-                break
+                bulk_action, count_n, tb = co_search(es, user_list, bulk_action, count_n, tb)
+                user_list = []
+        except StopIteration:
+            print "all done"
+            bulk_action, count_n = co_search(es, user_list, bulk_action, count_n,tb)
+            break
+        except Exception, r:
+            print Exception, r
+            sys.exit(0)
 
-        for item in user_list:
-            uid = item.get('user', '0') # obtain uid, notice "uid" or "user"
-            search_list.append(uid)
-
-        search_result = es.mget(index=index_destination, doc_type=index_destination_doctype, body={"ids": search_list}, _source=False)["docs"]
-        search_list = []
-
-        for item in search_result:
-            if not item['found']:
-                user_info = {}
-                user_info['uid'] = item['_id']
-                user_info['low_number'] = 0
-                xdata = expand_index_action(user_info)
-                bulk_action.extend([xdata[0], xdata[1]])
-                count_n += 1
-            if count_n % 2000 == 0:
-                while True:
-                    try:
-                        es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
-                        bulk_action = []
-                        break
-                    except:
-                        es = ES_CLUSTER_FLOW1
-                print count_n
-
-            if count_n % 10000 == 0:
-                ts = time.time()
-                print "%s  per  %s  second"  %(count_n, ts-tb)
-                tb = ts
 
     if bulk_action:
         es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
 
+    print count
+    print count_n
 
