@@ -2,8 +2,8 @@
 @charset "utf-8";
 /* CSS Document */
 *{margin:0;padding:0;font-family:"微软雅黑";}
-div{overflow:hidden;}
-a{cursor:pointer;text-decoration:none;outline:none;hidefocus}
+/* div{overflow:hidden;}*/
+ia{cursor:pointer;text-decoration:none;outline:none;hidefocus}
 img{border:0;}
 
 /* soft_function */
