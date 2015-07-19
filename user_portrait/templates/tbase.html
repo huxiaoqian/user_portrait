@@ -6,7 +6,7 @@
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     		<meta charset="utf-8">
     		<meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>{% block title %}XXX系统{% endblock title %}</title>
+            <title>{% block title %}人物画像系统{% endblock title %}</title>
 		{% endblock %}
 		<!-- end head 标签 -->
 
@@ -51,7 +51,7 @@
 		<!-- 上面导航 -->
 		{% block header %}
 			<div id="header">
-		    	<h1 class="headtitle">XXXX系统</h1>
+		    	<h1 class="headtitle">人物画像系统</h1>
 		        <form class="search-form" id="" method="post" action="">
 		       	  	<span class="searchborder fleft">
 		  				<input type="text" id="keyword" value="请按uid或昵称搜索" />
@@ -64,11 +64,11 @@
 				</form>
 				
 				<div class="fleft entrance">
-					<a title="" href="" class="link2portrait">xxxxx入口</a>
+					<a title="" href="" class="link2portrait">人物背景系统入口</a>
 				</div>
 				
 		        <div class="fright userInfo">
-		                <a title="logout" href=""> logout </a>
+		                <a title="logout" href=""> 登出 </a>
 		        </div>
 		    </div>
 		{% endblock %}
@@ -176,7 +176,7 @@
 		<!-- end serarch -->
 		
 		<!-- start main -->
-		<div style="margin-left:200px;margin-top:45px;width:1000px;">
+		<div id="main" style="margin-left:200px;margin-top:45px;width:1000px;">
 			{% block main %}
 
 			{% endblock %}
@@ -210,12 +210,11 @@
 					$("#supersearch").removeClass("hidden");
 					return false;
 				});
-
 				$("#close").off("click").click(function(){
 					$("#float-wrap").addClass("hidden");
 					$("#supersearch").addClass("hidden");
 					return false;
-                    });
+				});
                 $("#bluebtn").off("click").click(function(){
                     $("#float-wrap").addClass("hidden");
                     $("#supersearch").addClass("hidden");

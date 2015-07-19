@@ -1,20 +1,54 @@
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_project_detailed_001.gif"/>
-				<p class="p1">计划任务</p>
-				<p class="p2">在线、实时创建维护项目计划，并可向他人发起项目任务，指...</p>
-			</div>
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_project_detailed_002.gif"/>
-				<p class="p1">甘特图</p>
-				<p class="p2">在线编辑项目甘特图，可与专业工具媲美，而且操作更为简单...</p>
-			</div>
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_project_detailed_003.gif"/>
-				<p class="p1">项目汇报</p>
-				<p class="p2">定期汇报项目的最新进展，将汇报与具体的项目进行绑定；领导...</p>
-			</div>
-			<div class="function2">
-				<img src="/static/personal/images/pic_fun_project_detailed_004.gif"/>
-				<p class="p1">工作负荷</p>
-				<p class="p2">自动提取项目计划、任务中的员工工作量，以不同的颜色标识员...</p>
-			</div>
+<div id="ain" style="height:300px;width:900px"></div>
+<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+ <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts图表
+        var myChart = echarts.init(document.getElementById('ain')); 
+        
+        var option = {
+            tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['原创微博','转发','评论']
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : ['周一','周二','周三','周四','周五','周六','周日']
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'原创微博',
+            type:'line',
+            stack: '总量',
+            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            data:[120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+            name:'转发',
+            type:'line',
+            stack: '总量',
+            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            data:[220, 182, 191, 234, 290, 330, 310]
+        },
+        {
+            name:'评论',
+            type:'line',
+            stack: '总量',
+            itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            data:[150, 232, 201, 154, 190, 330, 410]
+        }
+    ]
+        };
+
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+    </script>

@@ -29,7 +29,7 @@ def get_user_count():
                 }
             }
     count = es.count(index=index_name, doc_type=index_type, body=query_body)['count']
-    print 'all user count:', count
+    #print 'all user count:', count
     return count
 
 '''
@@ -38,7 +38,6 @@ def get_total_status():
     total_count = 0
     return total_count
 '''
-
 
 def get_scan_results():
     result_dict = {}
@@ -161,12 +160,12 @@ def get_scan_results():
                 # gender ratio count
                 count = sum(gender_result.values())
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
-                print 'gender ratio:', gender_ratio
+                #print 'gender ratio:', gender_ratio
                 result_dict['gender_ratio'] = json.dumps(gender_ratio)
                 # verified ratio count
                 count = sum(verified_result.values())
                 verified_ratio = {'yes':float(verified_result['yes']) / count, 'no':float(verified_result['no'])/count}
-                print 'verified ratio:', verified_ratio
+                #print 'verified ratio:', verified_ratio
                 result_dict['verified_ratio'] = json.dumps(verified_ratio)
                 # location top
                 if location_result:
@@ -174,7 +173,7 @@ def get_scan_results():
                     location_top = sort_location[:5]
                 else:
                     location_top = {}
-                print 'location top:', location_top
+                #print 'location top:', location_top
                 result_dict['location_top'] = json.dumps(location_top)
                 # activity geo top
                 if activity_geo_result:
@@ -182,7 +181,7 @@ def get_scan_results():
                     activity_geo_top = sort_activity_geo[:5]
                 else:
                     activity_geo_top = {}
-                print 'activity_geo_top:', activity_geo_top
+                #print 'activity_geo_top:', activity_geo_top
                 result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
                 # keywords top
                 if keywords_result:
@@ -190,7 +189,7 @@ def get_scan_results():
                     keywords_top = sort_keywords[:50]
                 else:
                     keywords_top = {}
-                print 'keywords_top:', keywords_top
+                #print 'keywords_top:', keywords_top
                 result_dict['keywords_top'] = json.dumps(keywords_top)
                 # hashtag top
                 if hashtag_result:
@@ -198,7 +197,7 @@ def get_scan_results():
                     hashtag_top = sort_hashtag[:50]
                 else:
                     hashtag_top = {}
-                print 'hashtag top:', hashtag_top
+                #print 'hashtag top:', hashtag_top
                 result_dict['hashtag_top'] = json.dumps(hashtag_top)
                 # topic top
                 if topic_result:
@@ -206,7 +205,7 @@ def get_scan_results():
                     topic_top = sort_topic[:5]
                 else:
                     topic_top = {}
-                print 'topic top:', topic_top
+                #print 'topic top:', topic_top
                 result_dict['topic_top'] = json.dumps(topic_top)
                 # online_pattern top
                 if online_pattern_result:
@@ -214,7 +213,7 @@ def get_scan_results():
                     online_pattern_top = sort_online_pattern[:5]
                 else:
                     online_pattern_top = {}
-                print 'online pattern top:', online_pattern_top
+                #print 'online pattern top:', online_pattern_top
                 result_dict['online_pattern_top'] = json.dumps(online_pattern_top)
                 # domain top
                 if domain_result:
@@ -222,11 +221,11 @@ def get_scan_results():
                     domain_top = sort_domain[:5]
                 else:
                     domain_top = {}
-                print 'domain top:', domain_top
+                #print 'domain top:', domain_top
                 result_dict['domain_top'] = json.dumps(domain_top)
                 return result_dict 
             except Exception, r:
-                print Exception, r
+                #print Exception, r
                 return result_dict
     return result_dict
 
@@ -252,7 +251,7 @@ def get_retweeted_top():
         result = es_cluster.search(index=index_time, doc_type=index_type, body=query_body)['hits']['hits']
     except:
         return None
-    print 'result:', len(result)
+    #print 'result:', len(result)
     for item in result:
         if count==5:
             break
@@ -263,7 +262,7 @@ def get_retweeted_top():
             try:
                 source = exist_result['_source']
                 count += 1
-                print 'count:', count
+                #print 'count:', count
                 uname = source['uname']
                 top_mid = item['_source']['origin_weibo_top_retweeted_id']
                 top_retweeted_number = item['_source']['origin_weibo_retweeted_top_number']
@@ -272,7 +271,7 @@ def get_retweeted_top():
                 continue
         except:
             continue
-    print 'retweeted top user:', top_results
+    #print 'retweeted top user:', top_results
     return {'top_retweeted_user':json.dumps(top_results)}
 
 # operate information: recomment in count , out count, compute count
@@ -289,7 +288,7 @@ def get_operate_information():
         result['out_count'] = 0
     #result['out_count'] = len(json.loads(r_recomment.hget('recommend_delete_list', str(delete_date))))
     result['compute'] = len(r_recomment.hkeys('compute'))
-    print 'operate compute:', result
+    #print 'operate compute:', result
     return result
 
 
@@ -309,7 +308,7 @@ def compute_overview():
     results = dict(results, **retweeted_top)
     operate_result = get_operate_information()
     results = dict(results, **operate_result)
-    print 'results:', results
+    #print 'results:', results
     save_result(results)
     return results
 

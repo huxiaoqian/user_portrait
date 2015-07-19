@@ -29,6 +29,11 @@ def personal():
 def recommend_in():
 
     return render_template('portrait/recommend_in.html')
+
+@mod.route('/test/')
+def test():
+
+    return render_template('portrait/stack.html')
 """
 @mod.route('/manage/')
 def manage():

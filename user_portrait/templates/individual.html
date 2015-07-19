@@ -88,21 +88,38 @@
 		</div>
 	</div>
 <script type="text/javascript">
-	var description = '{{ user.description }}';
-	description = description.replace(/\r\n/g,'');
-	console.log(description);
+	var description;
+	try{
+		console.log('{{ user.description }}');
+		description = '{{ user.description }}';
+	}catch(err){
+		alert('error name'+err.name);
+		description = '';
+	}
+
+	// console.log(description);
 	option = {
 	    title : {
 	        text: '',
 	        x: 'center'
 	    },
+	    color:['#B0E0E6','#FFC0CB'],
 	    tooltip : {
 	        trigger: 'item',
 	        formatter: '{a} {b}'
 	    }, 
 	    legend: {
 	        x: 'left',
-	        data:['基本信息','微博信息']
+	        data:[
+		        {
+		        	name:'基本信息',
+		        	textStyle:{color:'#B0E0E6'}
+		        },
+		        {
+		        	name:'微博信息',
+		        	textStyle:{color:'#FFC0CB'}
+		        }
+	        ],
 	    },
 	    toolbox: {
 	        show : true,
@@ -123,10 +140,10 @@
 	                    symbol:'circle'
 	                },
 	                {
-	                    name: '基本信息'
+	                    name: '基本信息',
 	                },
 	                {
-	                    name:'微博信息'
+	                    name:'微博信息',
 	                }
 	            ],
 	            itemStyle: {
@@ -162,6 +179,7 @@
 	            linkSymbol: 'arrow',
 	            steps: 10,
 	            coolDown: 0.9,
+	            size:'95%',
 	            //preventOverlap: true,
 	            nodes:[
 	                {
@@ -182,7 +200,7 @@
 	                        }
 	                    }
 	                },
-	                {category:1, name: '用户邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
 	                itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -209,7 +227,7 @@
 	                          }
 	                      	}
 	                }},
-	                {category:1, name: '用户在{{ user.user_location }}注册',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '在{{ user.user_location }}注册',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -235,7 +253,7 @@
 	                //           }
 	                //       	}
 	                // }},
-	                {category:1, name: '用户邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -248,7 +266,7 @@
 	                          }
 	                      	}
 	                }},
-	                {category:1, name: '用户于{{ tsfmt(user.create_at) }}注册',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '于{{ tsfmt(user.create_at) }}注册',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -329,7 +347,7 @@
 
 	            ],
 	            links : [
-	                {source : '{{ user.description }}', target : '用户邮箱是{{ user.user_email }}',  
+	                {source : '{{ user.description }}', target : '邮箱是{{ user.user_email }}',  
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
@@ -348,13 +366,13 @@
 	                    }
 	                }
 	                },
-	                {source : '{{ user.description }}', target : '用户在{{ user.user_location }}注册', 
+	                {source : '{{ user.description }}', target : '在{{ user.user_location }}注册', 
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
 	                    }
 	                }},
-	                {source : '{{ user.description }}', target : '用户于{{ tsfmt(user.create_at) }}注册', 
+	                {source : '{{ user.description }}', target : '于{{ tsfmt(user.create_at) }}注册', 
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
@@ -419,7 +437,7 @@
 			        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
 			        // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
 			    } else { // 点击的是点
-			    	if (data.name == '{{ user.nick_name }}'){
+			    	if (data.name == '{{ user.description }}'){
 			    		window.open("{{ 'http://weibo.com/u/' + int2string(user.uid) }}");
 			    	} 
 			    }
