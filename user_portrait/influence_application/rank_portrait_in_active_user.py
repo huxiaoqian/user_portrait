@@ -33,7 +33,7 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
     return_list = []
     index_exist = es.indices.exists(index=active_index)
     if not index_exist:
-        print "no active_index exist"
+        return "no active_index exist"
         sys.exit(0)
 
     count_s = 0
@@ -44,10 +44,10 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
         user_list = search_k(es, active_index, active_type, start, field, 100)
         start += 100
         for item in user_list:
-            if field == "user_index":
-                uid = item.get('user', '0') # obtain uid, notice "uid" or "user"
+            if field == "vary":
+                uid = item.get('uid', '0') # obtain uid, notice "uid" or "user"
             else:
-                uid = item.get('uid', '0')
+                uid = item.get('user', '0')
             search_list.append(uid)
 
         search_result = es.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]

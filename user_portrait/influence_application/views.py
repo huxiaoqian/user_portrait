@@ -12,7 +12,7 @@ from search_vary_index_function import query_vary_top_k
 
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 
-portrait_index = "user_index_profile"
+portrait_index = "user_index_profile" # user_portrait_database
 portrait_type = "manage"
 
 mod = Blueprint('influence_application', __name__, url_prefix='/influence_application')
@@ -127,6 +127,31 @@ def ajax_hot_origin_weibo():
 
     return json.dumps(results)
 
+@mod.route('/hot_origin_weibo_brust/')
+def ajax_hot_origin_weibo_brust():
+    date = request.args.get('date', '') # '2013-09-01'
+    number = request.args.get('number', 3) # default
+    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
+    former_date = "20130901" # test
+    date = str(date)
+
+    if not date:
+        index_name = former_date
+    else:
+        index_name = date.replace('-','')
+
+    if index_name != former_date:
+        results = 0
+    else:
+        results = {}
+        dict_1 = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_retweeted_brust_average")
+        dict_2 = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_comment_brust_average")
+        results['origin_weibo_retweeted_brust'] = dict_1
+        results['origin_weibo_comment_brust'] = dict_2
+
+    return json.dumps(results)
+
+
 @mod.route('/portrait_history_active')
 def ajax_portrait_history_active():
     start_date = request.args.get('start_date', '')# 2013-09-01
@@ -172,3 +197,4 @@ def ajax_portrait_user_in_vary():
     results = search_portrait_user_in_activity(es, number, "vary", "bci", portrait_index, portrait_type, "vary")
 
     return json.dumps(results)
+
