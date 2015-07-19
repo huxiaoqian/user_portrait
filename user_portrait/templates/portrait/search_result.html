@@ -1,0 +1,14 @@
+{% extends "tbase.html" %}
+{% block title %}搜索结果{% endblock title%}
+{% block main %}
+<h4 class="page-header" style='margin-top:0px'>搜索结果</h4>
+<div class="box-content">
+        <span style="margin-top:20px">已选条件：</span><span id="conditions" style="margin-left:10px"></span>
+        <div id="search_result" style="margin-top:20px"></div>
+        <div style="margin-right:10px;text-align:right">
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:10px" name="compare_button" id="compare_button" onclick="compare_button()">个体对比</button>
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:10px" name="group_button" id="group_button" onclick="group_button()">群体分析</button>
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:10px" name="delete_button" id="delete_button" onclick="delete_button()">删除用户</button>
+</div>
+    <script type="text/javascript" src="/static/js/search_result.js"></script> 
+{% endblock %}

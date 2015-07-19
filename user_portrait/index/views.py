@@ -30,6 +30,11 @@ def recommend_in():
 
     return render_template('portrait/recommend_in.html')
 
+@mod.route('/search_result/')
+def search_result():
+
+    return render_template('portrait/search_result.html')
+
 @mod.route('/test/')
 def test():
 
