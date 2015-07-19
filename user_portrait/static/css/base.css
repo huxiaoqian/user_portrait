@@ -1,5 +1,6 @@
 * { margin:0; padding:0;}
-.font15{font:15px;}
+.font15{font-size:15px;
+}
 .headtitle {
 	font-family: "Microsoft YaHei UI";
 	font-size: 40px;
@@ -263,13 +264,27 @@ overflow: auto;
 .mleft {
 	margin-left: 30px;
 }
-
+#supersearch .chosebox{
+-moz-border-top-colors: none;
+-moz-border-right-colors: none;
+-moz-border-bottom-colors: none;
+-moz-border-left-colors: none;
+background-color: #FBFCFC;
+margin-top: 5px;
+margin-right: 5px;
+border-image: none;
+color: #5F5F5F;
+border-width: 1px;
+border-style: solid;
+}
 
 
 .uid {
 	margin-left: 60px;
 }
-
+#supersearch label{
+font-weight:normal;
+}
 
 
 #float-wrap {
