@@ -38,7 +38,7 @@
 
 		<!-- 引入js -->
 	    {% block head_js %}
-	    	<script  src="/static/js/jquery.second.js"></script>
+	    	<script src="/static/js/jquery.second.js"></script>
 	    	<script src="/static/js/jquery.min.js"></script>
 	    	<script src='/static/bootstrap/js/bootstrap.js'></script>
 	    	<script src='/static/js/echarts-all.js'></script>
@@ -82,12 +82,12 @@
 				</dl>
 
 				<dl class="">
-					<dt onClick=";">出入库<img src="/static/img/images/left/select_xl01.png"></dt>
+					<dt onClick=";">出入库管理</dt>
 					<dd><a href="#">出库</a></dd>
 					<dd><a href="#">入库</a></dd>
 				</dl>
 				<dl class="">
-					<dt>应用<img src="/static/img/images/left/select_xl01.png"></dt>
+					<dt>综合应用</dt>
 					<dd><a href="#">群体分析</a></dd>
 					<dd><a href="#">影响力</a></dd>
 				</dl>
@@ -107,50 +107,50 @@
 		<div class="search-content">
 			<div class="cols">
 				<span class="fleft lineh42 mright23">uid</span>
-				<input class="input fleft" type="text" value="请输入uid" />
+				<input class="inputbox fleft" type="text" value="请输入uid" />
 				<span class="fleft lineh42 mright13">用户名</span>
-				<input class="input fleft" type="text" value="请输入用户名" />
+				<input class="inputbox fleft" type="text" value="请输入用户名" />
 				<span class="fleft lineh42 ">地点</span>
-				<input class="input fleft" type="text" value="北京" />
+				<input class="inputbox fleft" type="text" value="北京" />
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 ">关键字</span>
-				<input class="input fleft" type="text" value="请输入关键字" />
+				<input class="inputbox fleft" type="text" value="请输入关键字" />
 				<span class="fleft lineh42 ">hashtag</span>
-				<input class="input fleft" type="text" value="请输入hashtag" />
+				<input class="inputbox fleft" type="text" value="请输入hashtag" />
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20 ">领域</span>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />文化</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />教育</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />娱乐</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />时尚</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />财经</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />媒体</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />体育</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />科技</label>
+                    <label class="cols-label"><input class=" fleft chosebox " type="checkbox" value=""/><span class="font15">文化</span></label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
+					<label class="cols-label"><input class=" fleft chosebox " type="checkbox" value="" />娱乐</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />时尚</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />财经</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />媒体</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />科技</label>
 				</form>
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20">话题</span>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />环境</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />教育</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />医药</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />军事</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />政治</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />交通</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />体育</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />社会</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />艺术</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />经济</label>
-					<label ><input class=" fleft checkbox" type="checkbox" value="" />计算机</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />环境</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />医药</label>
+					<label class="cols-label" ><input class="fleft chosebox" type="checkbox" value="" />军事</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />政治</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />交通</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />社会</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />艺术</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />经济</label>
+					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />计算机</label>
 				</form>
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 mright30">心理状态</span>
-				<select name="" class="fleft">
+				<select name="" class="fleft select-box">
 					<option value="">不限</option>
 					<option value="">积极向上</option>
 					<option value="">消极失望</option>
@@ -159,7 +159,7 @@
 					<option value="">悲伤</option>
 				</select>
 				<span class="fleft lineh42 mright17">心理特征</span>
-				<select name="" class="fleft">
+				<select name="" class="fleft select-box">
 					<option value="">不限</option>
 					<option value="">胆汁质</option>
 					<option value="">多血质</option>
@@ -169,14 +169,14 @@
 			</div>
 		</div>
 		<div class="clearfix lineh42">
-		  <input name="submit" type="submit" class="bluebtn " value="确定" />
+		  <input name="submit" type="submit" class="bluebtn" id="bluebtn" value="确定" />
 		</div>
 	</div>
 		{% endblock %}
 		<!-- end serarch -->
 		
 		<!-- start main -->
-		<div>
+		<div style="margin-left:200px;margin-top:45px;width:1000px;">
 			{% block main %}
 
 			{% endblock %}
@@ -188,31 +188,39 @@
 			<script type="text/javascript">
 				$("div.leftsidebar_box").sidebar();
 				$(".leftsidebar_box dt").css({"background-color":"#4f8fff"});
-				$(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
-				$(function(){
+				/* $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+                */
+                $(function(){
 					$(".leftsidebar_box dd").hide();
 					$(".leftsidebar_box dt").click(function(){
 						$(".leftsidebar_box dt").css({"background-color":"#4f8fff"})
 						$(this).css({"background-color": "#317eb4"});
 						$(this).parent().find('dd').removeClass("menu_chioce");
-						$(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
+                        /*
+                        $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
 						$(this).parent().find('img').attr("src","/static/img/images/left/select_xl.png");
-						$(".menu_chioce").slideUp(); 
+                        */
+                        $(".menu_chioce").slideUp(); 
 						$(this).parent().find('dd').slideToggle();
 						$(this).parent().find('dd').addClass("menu_chioce");
 					});
-				})
+				});
 				$("#showBtn").off("click").click(function(){
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
 					return false;
 				});
-	
+
 				$("#close").off("click").click(function(){
 					$("#float-wrap").addClass("hidden");
 					$("#supersearch").addClass("hidden");
 					return false;
-				});
+                    });
+                $("#bluebtn").off("click").click(function(){
+                    $("#float-wrap").addClass("hidden");
+                    $("#supersearch").addClass("hidden");
+                    return false;
+                });
 			</script>
 		{% endblock %}
 		<!-- end DIY -->
@@ -253,4 +261,4 @@
 		{% endblock %}
 		<!-- end js -->
 	</body>
-</html>>
+</html>

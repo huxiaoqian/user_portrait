@@ -20,7 +20,7 @@ Search_weibo.prototype = {
     var user_url ='';
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th><th style="text-align:center">全选<input type="checkbox" onclick="selectAll()" ></th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th><th style="text-align:center;width:60px">全选<input type="checkbox" onclick="selectAll()" ></th></tr></thead>';
     var item = data['hits']['hits'];
     html += '<tbody>';
     for(var i = 0; i < item.length; i++){
@@ -51,10 +51,10 @@ Search_weibo.prototype = {
 }
  function draw_information(data){
   $('#search_information').empty();
-  html = ''
+  var html = '';
   took = data['took'];
   term = data['hits']['total'];
-  html += '<div class="page-header" style="margin-top:65px">用户信息列表(耗时：<font color="#1F90FF">' + took + '</font>ms' + '命中：<font color="#1F90FF">' + term + '</font>条)</div><a style="cursor:pointer;margin-left:755px" role="button" id = "download">全部导出</a>';
+  html += '<div class="page-header" style="margin-top:65px">用户信息列表(耗时：<font color="#1F90FF">' + took + '</font>ms' + '命中：<font color="#1F90FF">' + term + '</font>条)</div><a style="cursor:pointer;margin-left:785px" role="button" id = "download">导出</a>';
   $('#search_information').append(html);
 }
 
@@ -72,6 +72,12 @@ function get_input_data(){
 }
 
 function toggle(target){
+       $('#loading_datatable').empty();
+       var html = '';
+       html += '<div class="progress"style="width:100px">';
+       html += '<div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">加载中……</div></div>';
+       $('#loading_datatable').append(html);
+       console.log(html);
        targetid = target.substr(7, target.length);
        $("#" + targetid).val();
        if (document.getElementById){
