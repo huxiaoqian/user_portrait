@@ -34,8 +34,6 @@ def get_total_status():
     total_count = 0
     return total_count
 
-
-
 def get_scan_results():
     gender_result = {'1':0, '2':0}
     verified_result = {'yes':0, 'no':0}
@@ -174,9 +172,6 @@ def get_scan_results():
                 print Exception, r
                 sys.exit(0)
     return gender_ratio
-    
-
-
 
 def compute_overview():
     results = {}
