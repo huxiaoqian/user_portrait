@@ -32,7 +32,7 @@
     .mouse:hover{
     border:#000000 solid 1px;
     }
-          </style>
+    </style>
     <script type="text/javascript" src="../../static/js/laydate.js"></script>
     <script type="text/javascript" src="../../static/js/jock-citypicker-2.0.min.js"></script>
     <body>
@@ -44,7 +44,7 @@
         <form>
             <span><input type="text" id='search'name=nickname style='float:left;width:60%;height:38px;margin-left:-1px' placeholder="搜索昵称"></span>
             <span class="input-group-btn">
-               <a href="#goto"><input class="btn btn-primary" style='width:100px;margin-left:10px'name="submit" type='submit' id="submit" value=简单检索></a>
+               <a href="#goto"><input class="btn btn-primary" style='width:100px;margin-left:10px' type='submit' id="submit" value=简单检索></a>
             </span>
         </form>
         </div>
@@ -111,7 +111,10 @@
                             <option value=1>@qq.com</option>
                             <option value=2>@sina.com</option>
                             <option value=3>@126.com</option>
-                            <option value=4>@sohu.com</option>
+                            <option value=4>@139.com</option>
+                            <option value=5>@sohu.com</option>
+                            <option value=6>@gmail.com</option>
+                            <option value=7>@hotmail.com</option>
                           </select></span>
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->                   
@@ -132,13 +135,13 @@
                         <div class="col-lg-3"style="width:340px">
                           <div class="input-group">
                             <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">注册地</span>
-                            <input id="test" type="text" class="form-control" id='user_location' value=''name=q12 placeholder="检索注册地">
+                            <input id="test" type="text" class="form-control" name=q12 placeholder="检索注册地">
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-3"style="width:340px">
                           <div class="input-group">
                             <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee" id="sizing-addon1">真实姓名</span>
-                            <input class="form-control" type="text" id='rel_name' name=q3 value="" placeholder="检索真实姓名">
+                            <input class="form-control" type="text" id='rel_name' name=q3  placeholder="检索真实姓名">
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-3"style="width:340px">
@@ -195,7 +198,7 @@
                         <div class="col-lg-3"style="width:340px">
                           <div class="input-group">
                             <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee"id="sizing-addon1">显示条数</b></span>
-                            <input type="text" class="form-control"  name=size placeholder="1000">
+                            <input type="text" class="form-control"  name=size placeholder="500">
                           </div><!-- /input-group -->
                         </div><!-- /.col-lg-6 -->                
                         <div class="col-lg-3"style="width:340px">
@@ -209,7 +212,9 @@
                         </div>
                         </div>
                         <span class="input-group-btn">
-                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions()" value=检索 data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></a>
+                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions()" value=检索 data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true"></span>
+                           </a>
                         </span>
                       </div><!-- /.row -->
               </div>
@@ -225,7 +230,7 @@
         </div>
         <div style='float:left'id='search_conditions'></div>
         <div id='search_information'>
-        <div class="page-header" style='margin-top:30px'>用户信息列表(耗时：{{ source.took }}ms 命中：{{ source.hits.total }}个)</div><a style='cursor:pointer' role="button" name= '0' onclick="selectAll('{{ url_for('static',filename='download/test.csv') }}');">全部导出</a>
+        <div class="page-header" style='margin-top:30px'>用户信息列表(耗时：<font color='#1F90FF'>{{ source.took }}</font>ms 命中：<font color='#1F90FF'>{{ source.hits.total }}</font>条)</div><a style='cursor:pointer;margin-left:755px' role="button" name= '0' onclick="selectAll('{{ url_for('static',filename='download/test.csv') }}');">全部导出</a>
         </div>
         <div class="table-responsive"id='table' style='overflow-x:hidden;'>
               <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
@@ -237,6 +242,7 @@
                         <th style="text-align:center">好友数</th>
                         <th style="text-align:center">粉丝数</th>
                         <th style="text-align:center">微博数</th>
+                        <th style="text-align:center">全选<input type="checkbox" onclick="selectAll()" ></th>
                         <!-- <th style="text-align:center">创建时间</th> -->
                     </tr>
                 </thead>
@@ -250,7 +256,7 @@
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.fansnum }}</td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.statusnum }}</td>
                     <!-- <td class="center" style="text-align:center">{{ tsfmt(item._source.create_at) }}</td> -->
-                    <!-- <td class="center"><input type="checkbox" id='{{ item._id }}' ></td> -->
+                    <td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox" id='{{ item._id }}' ></td>
                 </tr>
                     {% endfor %}
                 </tbody>

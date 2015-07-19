@@ -20,7 +20,7 @@ Search_weibo.prototype = {
     var user_url ='';
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">关注数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th><th style="text-align:center">全选<input type="checkbox" onclick="selectAll()" ></th></tr></thead>';
     var item = data['hits']['hits'];
     html += '<tbody>';
     for(var i = 0; i < item.length; i++){
@@ -36,9 +36,10 @@ Search_weibo.prototype = {
       html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '><img src="' + item[i]['_source']['photo_url'] + '"class="img-circle"></td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['nick_name'] +'<img src="'+ item[i]['_source']['sex'] +'"style="height:20px"><img src="/static/img/vertify.png" style="height:20px"</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['user_location'] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['friendsnum'] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle;width:72px">'+ item[i]['_source']['friendsnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['fansnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['statusnum'] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox"></td>';
       // html += '<td class="center" style="text-align:center">'+ new Date(parseInt(item[i]['_source']['create_at']) +'</td>';
       html += '</tr>';
     }
@@ -53,7 +54,7 @@ Search_weibo.prototype = {
   html = ''
   took = data['took'];
   term = data['hits']['total'];
-  html += '<div class="page-header" style="margin-top:65px">用户信息列表(耗时：' + took + 'ms' + '命中：' + term + '个)</div><a style="cursor:pointer" role="button" id = "download">全部导出</a>';
+  html += '<div class="page-header" style="margin-top:65px">用户信息列表(耗时：<font color="#1F90FF">' + took + '</font>ms' + '命中：<font color="#1F90FF">' + term + '</font>条)</div><a style="cursor:pointer;margin-left:755px" role="button" id = "download">全部导出</a>';
   $('#search_information').append(html);
 }
 
@@ -124,6 +125,14 @@ function toggle(target){
         html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_nick_name">' + '昵称：' + nick_name + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_nick_name") class="cross">X</a></span>';
       }
 
+      user_location = $("#test").val();
+      if (user_location == ''){
+        html += '';
+      }
+      else{
+        html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_test">' + '注册地：' + user_location + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_test") class="cross">X</a></span>';
+      }
+
       sex = $("#sex").val();
       if (sex == '3'){
         sex = '不限';
@@ -165,8 +174,14 @@ function toggle(target){
         select_email = '@sina.com';
       }else if(select_email == '3'){
         select_email = '@126.com';
-      }else{
+      }else if(select_email == '4'){
+        select_email = '@139.com';
+      }else if(select_email == '5'){
         select_email = '@sohu.com';
+      }else if(select_email == '6'){
+        select_email = '@gmail.com';
+      }else{
+        select_email = '@hotmail.com';
       }
 
       user_email = $("#user_email").val();
@@ -202,7 +217,7 @@ function toggle(target){
         html += '';
       }
       else{
-        html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_source">' + '来源：' + select_source + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_source") class="cross">X</a></span>';
+        html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_select_source">' + '来源：' + select_source + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_select_source") class="cross">X</a></span>';
       }
 
       rel_name = $("#rel_name").val();
@@ -427,33 +442,28 @@ $.extend($.fn.dataTableExt.oPagination, {
         }
     }
 });
-  // function selectAll(checkbox,file) {
+  // function selectAll() {
   //     var checkbox_first = $('input[type=checkbox]').eq(0);
   //     $('input[type=checkbox]').prop('checked', $(checkbox_first).prop('checked'));
-  //     var ids = '';
-  //     $('input[type=checkbox]').each(function(){
-  //       var select_id = $(this).attr('id');
-  //       if(select_id){
-  //         select_id = select_id + ',';
-  //         ids += select_id;
-  //       }
-  //     });
-  //     console.log(ids);
-  //     $.ajax({
-  //       url: '/profile/download/?id='+ids,
-  //       type: "GET",
-  //       dataType: "json",
-  //       async: false,
-  //       success: function(data){
-  //         console.log(data);
-  //          // window.location.href = file;
-  //       }
-  //   });
+    //   var ids = '';
+  
+    //   console.log(ids);
+    //   $.ajax({
+    //     url: '/profile/download/?id='+ids,
+    //     type: "GET",
+    //     dataType: "json",
+    //     async: false,
+    //     success: function(data){
+    //       console.log(data);
+    //        // window.location.href = file;
+    //     }
+    // });
   // }
 
 
-   function selectAll(file) {
-      // $('input[type=checkbox]').prop('checked', $(checkbox).prop('checked'));
+   function selectAll() {
+      var check_first = $('input[type=checkbox]').eq(0);
+      $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
       // var obj = $('input[type=checkbox]').eq(0);
       // var q = 1;
       // var ids = '';
@@ -461,8 +471,8 @@ $.extend($.fn.dataTableExt.oPagination, {
       //   var q = obj.attr('name');
       // }
       // if(q==0){
-      console.log(file);
-      window.location.href = file
+      // console.log(file);
+      // window.location.href = file
       // }
       // else{
       //     $('input[type=checkbox]').each(function(){
