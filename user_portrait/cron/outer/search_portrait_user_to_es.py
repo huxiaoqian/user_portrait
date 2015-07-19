@@ -84,7 +84,7 @@ if __name__ == "__main__":
                 user_list = []
         except StopIteration:
             print "all done"
-            bulk_action, count_n = co_search(es, user_list, bulk_action, count_n,tb)
+            bulk_action, count_n, tb = co_search(es, user_list, bulk_action, count_n,tb)
             break
         except Exception, r:
             print Exception, r
