@@ -295,7 +295,7 @@ function docReady() {
         $('#myModal').modal('show');
     });
 
-
+    /*
     $('#calendar').fullCalendar({
         header: {
             left: 'prev,next today',
@@ -343,7 +343,7 @@ function docReady() {
             }
         ]
     });
-
+    */
 }
 
 
