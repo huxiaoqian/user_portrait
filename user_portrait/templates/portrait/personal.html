@@ -18,7 +18,8 @@ $(function(){
 		var id = $(this).attr("id");
 		var x=$(this).parent().index();
 		$(this).children("p").css({"color":"#008dd9"}).parent().parent().siblings().children().children("p").css({"color":"#333333"});
-		var src1=id+"_hover.gif"
+        /*
+        var src1=id+"_hover.gif"
 		$(".soft_con_icon ul li a").each(function(index, element) {
          	var other_id = $(this).attr("id");
 			if(id == other_id){
@@ -27,7 +28,8 @@ $(function(){
 			   var src2 = other_id+".gif";
 			   $(this).children("img").attr("src","/static/personal/images/"+src2);
 			}
-        });
+            });
+        */
 		if(x==0){
 		   $("#xzgl").css({"display":"block"}).siblings().css({"display":"none"});
 		   $(".soft_con1").css({"background":" url(/static/personal/images/line_select_001.gif)"});
@@ -51,15 +53,18 @@ $(function(){
 {% endblock head_js %}
 
 {% block main %}
+<div id="personal_head" style="height:100px;background-color:#cfc5c5;">
+</div>
+
 <div class="soft_function">
 
 	<div class="soft_con_icon">
 		<ul>
-			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/pic_fun_adm_hover.gif" width="150" height="150"/><p style="color:#008dd9">A类选项</p></a></li>
-			<li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/pic_fun_crm.gif" width="150" height="150"/><p>B类选项</p></a></li>
-			<li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/pic_fun_project.gif" width="150" height="150"/><p>C类选项</p></a></li>
-			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/pic_fun_k.gif" width="150" height="150"/><p>D类选项</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/pic_fun_mobile.gif" width="150" height="150"/><p>E类选项</p></a></li>
+			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/basic.png"/><p style="color:#008dd9">注册属性</p></a></li>
+            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/activity.png"/><p>活动属性</p></a></li>
+            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
+			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
 		</ul>
 	</div> 
 
@@ -68,15 +73,15 @@ $(function(){
 	<div class="soft_con">
 
 		<div id="xzgl" class="soft_con2">
-            {% include "portrait/detail/social.html"%}
+            {% include "portrait/detail/basic.html"%}
         </div>
 	
 		<div id="crm" class="soft_con2" style="display:none">
-            {% include "portrait/detail/thought.html"%}
+            {% include "portrait/detail/activity.html"%}
         </div>
 	
 		<div id="xmgl" class="soft_con2" style="display:none">
-            {% include "portrait/detail/activity.html"%}
+            {% include "portrait/detail/thought.html"%}
 		</div>
 	
 		<div id="zsgl" class="soft_con2" style="display:none">
@@ -84,7 +89,7 @@ $(function(){
 		</div>
 	
 		<div id="ydbg" class="soft_con2" style="display:none">
-            {% include "portrait/detail/influence.html"%}
+            {% include "portrait/detail/social.html"%}
 		</div>
 	
 	</div>
