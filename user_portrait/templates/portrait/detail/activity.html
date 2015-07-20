@@ -1,54 +1,89 @@
-<div id="ain" style="height:300px;width:900px"></div>
+<link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
+<div id="active" style="height:300px;width:750px"></div>
+
+<div id="trend" style="height:50px;width:950px">
+该用户的活跃时间段为：<span class="">08:00-12:00</span>和<span class="">20:00-24:00</span
+</div>
+
+<div id ="Plocation">
+	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
+	<div class="LocationDetail">
+		<dl>
+			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" >北京</span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">上海</span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">广州</span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">深圳</span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">杭州</span></dt>
+		</dl>
+	</div>
+</div>
 <script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
- <script type="text/javascript">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
-        var myChart = echarts.init(document.getElementById('ain')); 
+        var myChart = echarts.init(document.getElementById('active')); 
         
         var option = {
+			title : {
+                        'text':'微博时间走势',
+						textStyle:{
+                        fontSize:20,
+                        fontFamily:'Microsoft YaHei UI',
+                        fontWeight:400,
+                    },
+            },
             tooltip : {
-        trigger: 'axis'
-    },
-    legend: {
-        data:['原创微博','转发','评论']
-    },
-    calculable : true,
-    xAxis : [
-        {
-            type : 'category',
-            boundaryGap : false,
-            data : ['周一','周二','周三','周四','周五','周六','周日']
-        }
-    ],
-    yAxis : [
-        {
-            type : 'value'
-        }
-    ],
-    series : [
-        {
-            name:'原创微博',
-            type:'line',
-            stack: '总量',
-            itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            data:[120, 132, 101, 134, 90, 230, 210]
-        },
-        {
-            name:'转发',
-            type:'line',
-            stack: '总量',
-            itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            data:[220, 182, 191, 234, 290, 330, 310]
-        },
-        {
-            name:'评论',
-            type:'line',
-            stack: '总量',
-            itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            data:[150, 232, 201, 154, 190, 330, 410]
-        }
-    ]
+        		trigger: 'axis'
+    			},
+    		legend: {
+        				data:['原创','转发','评论']
+    			},
+    		calculable : false,
+    		xAxis : [
+        				{
+            				type : 'category',
+            				boundaryGap : false,
+            				data : ['周一','周二','周三','周四','周五','周六','周日']
+        				}
+   		 			],
+    		yAxis : [
+        				{
+            				type : 'value'
+       	 				}
+    				],
+    		series : [
+        				{
+            			name:'原创',
+            			type:'line',
+            			stack: '总量',
+            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            			data:[120, 132, 101, 134, 90, 230, 210]
+        				},
+        				{
+            			name:'转发',
+            			type:'line',
+            			stack: '总量',
+            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            			data:[220, 182, 191, 234, 290, 330, 310]
+        				},
+        				{
+            			name:'评论',
+            			type:'line',
+            			stack: '总量',
+            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
+            			data:[150, 232, 201, 154, 190, 330, 410]
+        				}
+    			]
         };
-
         // 为echarts对象加载数据 
         myChart.setOption(option); 
     </script>
+
