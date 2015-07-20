@@ -217,6 +217,16 @@ def search_portrait(condition_num, query, sort, size):
 
     return user_result
 
+def delete_action(uid_list):
+    index_name = 'user_portrait'
+    index_type = 'user'
+    for uid in uid_list:
+        action = {'delete':{'_id': uid}}
+        bulk_action.append(action)
+    es.bulk(bulk_action, index=index_name, doc_type=index_type)
+    time.sleep(1)
+    return True
+
 
 if __name__=='__main__':
     uid = '1798289842'

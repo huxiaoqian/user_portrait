@@ -58,7 +58,15 @@ function compare_button(){
       compare_uids.push($(this).attr('value'));
   })
   console.log(compare_uids);
-  draw_table_compare_confirm(compare_uids, "#compare_comfirm");
+  var len = compare_uids.length;
+  if(len>3 || len<2){
+    alert("请选择2至3个用户！");
+    $('#compare').modal('hide');
+  }
+  else{
+    draw_table_compare_confirm(compare_uids, "#compare_comfirm");
+    $('#compare').modal('show');
+  }
 }
 
 function group_button(){
@@ -179,10 +187,13 @@ function delete_confirm_button(){
       delete_confirm_uids.push($(this).text());
   })
   console.log(delete_confirm_uids);
-  
+  self.location.reload();
+
+  /*
   $('[name="uids"]').each(function(){
     for(var i in delete_confirm_uids)
       if($(this).text()==delete_confirm_uids[i])
         $(this).parent().remove();
   })
+  */
 }

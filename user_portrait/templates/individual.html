@@ -46,7 +46,7 @@
 					    		<tr>
 					    		    <td><li class="list-group-item" style="width:240px">UID：{{ user.uid }}</li></td>
 					    		    <td><li class="list-group-item" style="width:240px">昵称：{{ user.nick_name }}</li></td>
-					    		    <td><li class="list-group-item" style="width:240px">性别：{{ gender(user.sex) }}</li></td>
+					    		    <td><li class="list-group-item" style="width:240px">性别：{{ gender_text(user.sex) }}</li></td>
 					    		</tr>
 					    		<tr>
 					    			<td><li class="list-group-item" style="width:240px"><a href = {{ 'http://weibo.com/u/' + int2string(user.uid) }}>个人微博主页</a></li></td>
@@ -122,7 +122,8 @@
 	        ],
 	    },
 	    toolbox: {
-	        show : true,
+            show : true,
+            x : 800,
 	        feature : {
 	            restore : {show: true},
 	            magicType: {show: true, type: ['force', 'chord']},
@@ -240,19 +241,19 @@
 	                          }
 	                      	}
 	                }},
-	                // {category:1, name: '{{ gender(user.sex) }}士',value : 7,symbolSize: [60, 30],
-	                // itemStyle: {
-	                //         normal: {
-	                //           color:'#B0E0E6',
-	                //           label:{
-	                //           	textStyle: {
-	                //           		fontFamily:'微软雅黑',
-	                //           		fontSize : 10 ,
-	                //                     color: 'black'
-	                //                 }
-	                //           }
-	                //       	}
-	                // }},
+	                {category:1, name: '{{ gender_text(user.sex) }}士',value : 7,symbolSize: [60, 30],
+	                    itemStyle: {
+	                        normal: {
+	                          color:'#B0E0E6',
+	                          label:{
+	                          	textStyle: {
+	                          		fontFamily:'微软雅黑',
+	                          		fontSize : 10 ,
+	                                    color: 'black'
+	                                }
+	                          }
+	                      	}
+	                }},
 	                {category:1, name: '邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
@@ -353,12 +354,12 @@
 	                        width: 2
 	                    }
 	                }},
-	                // {source : '{{ user.nick_name }}', target : '{{ gender(user.sex) }}士', 
-	                // itemStyle: {
-	                //     normal: {
-	                //         width: 2
-	                //     }
-	                // }},
+	                {source : '{{ user.description }}', target : '{{ gender_text(user.sex) }}士', 
+	                itemStyle: {
+	                    normal: {
+	                        width: 2
+	                    }
+	                }},
 	                {source : '{{ user.description }}', target : '出生于{{ user.user_birth }}',
 	                itemStyle: {
 	                    normal: {
