@@ -1,20 +1,70 @@
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_k_detailed_001.gif"/>
-				<p class="p1">文件柜</p>
-				<p class="p2">创建个人文件柜，将个人的重要文件存储至平台，随时随地查看...</p>
-			</div>
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_k_detailed_002.gif"/>
-				<p class="p1">个人网盘</p>
-				<p class="p2">平台提供的个人网盘，由员工个人进行管理，可根据需要创建不...</p>
-			</div>
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_k_detailed_003.gif"/>
-				<p class="p1">文件共享</p>
-				<p class="p2">员工可将个人网盘中的文件与他人共享，实现资源文件在企业内...</p>
-			</div>
-			<div class="function2">
-				<img src="/static/personal/images/pic_fun_k_detailed_004.gif"/>
-				<p class="p1">权限控制</p>
-				<p class="p2">以用户、用户组、部门为单位进行严密的权限设置，为秘密文件...</p>
-			</div>
+<div id="language" style="width:200px;height:200px"></div>
+
+<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+<script type="text/javascript">
+function createRandomItemStyle() {
+    return {
+        normal: {
+            color: 'rgb(' + [
+                Math.round(Math.random() * 160),
+                Math.round(Math.random() * 160),
+                Math.round(Math.random() * 160)
+            ].join(',') + ')'
+        }
+    };
+}
+var myChart = echarts.init(document.getElementById('language')); 
+var option = {
+    title: {
+        text: '关键词',
+    },
+    tooltip: {
+        show: true
+    },
+    series: [{
+        name: 'Google Trends',
+        type: 'wordCloud',
+        size: ['80%', '80%'],
+        textRotation : [0, 45, 90, -45],
+        textPadding: 0,
+        autoSize: {
+            enable: true,
+            minSize: 14
+        },
+        data: [
+            {
+                name: "Sam S Club",
+                value: 10000,
+                itemStyle: {
+                    normal: {
+                        color: 'black'
+                    }
+                }
+            },
+            {
+                name: "Macys",
+                value: 6181,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Amy Schumer",
+                value: 4386,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Jurassic World",
+                value: 4055,
+                itemStyle: createRandomItemStyle()
+            },
+            
+            {
+                name: "Point Break",
+                value: 265,
+                itemStyle: createRandomItemStyle()
+            }
+        ]
+    }]
+};
+   myChart.setOption(option); 
+    </script>
+                    
