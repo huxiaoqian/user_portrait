@@ -212,7 +212,7 @@
                         </div>
                         </div>
                         <span class="input-group-btn">
-                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions()" value=检索 data-dismiss="modal" aria-label="Close">
+                           <a href="#goto"><input style='margin-left:15px;width:295px' class="btn btn-primary" onclick="click_data();search_conditions();" value=检索 data-dismiss="modal" aria-label="Close">
                            <span aria-hidden="true"></span>
                            </a>
                         </span>
@@ -227,8 +227,8 @@
 
         <div >
           <a name="goto"><h4 class="page-header"style="margin-top:10px">检索信息</h4></a>
-          <div id="loading_datatable"></div>
         </div>
+        <div id="loading_information"></div>
         <div style='float:left'id='search_conditions'></div>
         <div id='search_information'>
         <div class="page-header" style='margin-top:30px'>用户信息列表(耗时：<font color='#1F90FF'>{{ source.took }}</font>ms 命中：<font color='#1F90FF'>{{ source.hits.total }}</font>条)</div><a style='cursor:pointer;margin-left:785px' role="button" name= '0' onclick="selectAll('{{ url_for('static',filename='download/test.csv') }}');">导出</a>
