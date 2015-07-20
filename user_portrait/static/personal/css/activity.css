@@ -1,9 +1,7 @@
 #Plocation {
 	height: 280px;
 	width: 200px;
-	position: absolute;
-	left: 970px;
-	top: 380px;
+    float:right;
 }
 .LocationDetail{
     width:auto;
