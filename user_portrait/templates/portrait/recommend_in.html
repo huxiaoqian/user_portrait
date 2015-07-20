@@ -1,5 +1,12 @@
 {% extends "tbase.html" %}
 {% block title %}入库推荐{% endblock title%}
+{% block css %}
+{{ super() }}
+<style>
+    .dataTables_filter{text-align:right;margin-bottom:5px;}
+    .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+</style>
+{% endblock css %}
 {% block main %}
 <h4 class="page-header" style='margin-top:0px'>入库推荐</h4>
 <div class="box-content">
@@ -13,13 +20,13 @@
                         <span>推荐日期：</span><span id="recommend_date" style="margin-left:10px"></span>
                         <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="recommend_date_button" title="确定日期选择" onclick="recommend_date_button()">确定</button></span>
                         <div id="recommend" style="margin-top:10px"></div>
-                        <div style="margin-right:10px;text-align:right">
+                        <div style="text-align:right">
                             <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="recommend_button" id="recommend_button" onclick="recommend_button()">选择入库</button>
                         </div>
                     </div>
                     <div class="tab-pane" id="custom" style="margin-top:20px">
                         <div id="compute" style="margin-top:10px"></div>
-                        <div style="margin-right:10px;text-align:right">
+                        <div style="text-align:right">
                             <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="compute_button" id="compute_button" onclick="compute_button()">进行计算</button>
                         </div>
                     </div>
