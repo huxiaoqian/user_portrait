@@ -4,7 +4,7 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import compare_user_portait, compare_user_activity
+from utils import compare_user_portrait, compare_user_activity
 from utils import imagine
 from user_portrait.time_utils import datetime2ts
 

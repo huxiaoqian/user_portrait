@@ -3,16 +3,16 @@ import sys
 import time
 import json
 #test
+'''
 reload(sys)
 sys.path.append('../')
 from global_utils import es_user_portrait as es
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from time_utils import ts2datetime, datetime2ts,ts2date
 '''
-from user_portrati.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.time_utils import ts2datetime, datetime2ts
-'''
 
 # compare two or three user
 # need json.lodas to read the dict attribute
