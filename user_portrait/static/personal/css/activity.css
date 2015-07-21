@@ -1,0 +1,38 @@
+#Plocation {
+	height: 280px;
+	width: 200px;
+    float:right;
+}
+.LocationDetail{
+    width:auto;
+    margin:0px auto;
+}
+.mleft{
+    margin-left:70px;
+}
+.LocationImg {
+	height: 40px;
+	width: 40px;
+    background-image:url(/static/personal/images/location1.png);
+    background-repeat:no-repeat;
+    display:block;
+}
+.Acity{
+    text-indent:5px;
+    margin-top:10px;
+}
+#trend{
+    font-family:"Microsoft YaHei UI";
+    text-align:center;
+}
+
+.fleft {
+	float: left;
+}
+.LocationTitle{
+    font-family:"Microsoft YaHei UI";
+    font-size:20px;
+    font-weight:400;
+    width:100%;
+    text-indent:20px;
+}

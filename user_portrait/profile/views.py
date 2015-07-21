@@ -257,7 +257,7 @@ class UserView(views.MethodView):
         data['friendsnum']['to'] = request.args.get('q11')
         size = request.args.get('size')
         if size == '':
-            size = 500
+            size = 100
         for key in range_item:
             if data[key]['from'] == '' and data[key]['to'] != '':
                 data[key]['from'] = '0'

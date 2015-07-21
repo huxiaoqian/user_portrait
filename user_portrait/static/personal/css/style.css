@@ -13,7 +13,7 @@ img{border:0;}
 .soft_con_icon ul li a p{color:#333333;font-size:20px;font-family:"微软雅黑";text-align:center}
 .soft_con{height:296px;width:1000px}
 .soft_con1{height:20px;width:1000px;background:url(images/line_select_001.gif)}
-.soft_con2{height:auto;width:998px;border-bottom:1px solid #d4d4d4;border-left:1px solid #d4d4d4;border-right:1px solid #d4d4d4;background:#fcfcfc}
+.soft_con2{height:auto;width:998px;border-left:1px solid #d4d4d4;border-right:1px solid #d4d4d4;background:#fcfcfc}
 .soft_con2 div{float:left;margin:8px 0px;}
 .function1{height:259px;width:249px;border-right:1px dashed #d4d4d4}
 .function2{height:259px;width:248px;}
@@ -21,5 +21,6 @@ img{border:0;}
 .soft_con2 div p{text-align:center}
 .p1{font-size:20px;color:#555555;font-family:"微软雅黑";line-height:45px}
 .p2{font-size:14px;color:#c0c0c0;font-family:"微软雅黑";width:208px;height:50px;line-height:24px;margin:auto;overflow: hidden;}
-
+.soft_con_icon ul li a img{width:100px;height:100px;margin-left:25px;margin-top:40px;}
+.soft_con_icon ul li a p{margin-top:10px;}
 

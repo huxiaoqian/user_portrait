@@ -1,14 +1,78 @@
 {% extends "tbase.html" %}
 {% block title %}搜索结果{% endblock title%}
+{% block css %}
+{{ super() }}
+<style>
+    .dataTables_filter{text-align:right;margin-bottom:5px;}
+    .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+</style>
+{% endblock css %}
 {% block main %}
 <h4 class="page-header" style='margin-top:0px'>搜索结果</h4>
 <div class="box-content">
         <span style="margin-top:20px">已选条件：</span><span id="conditions" style="margin-left:10px"></span>
         <div id="search_result" style="margin-top:20px"></div>
-        <div style="margin-right:10px;text-align:right">
-            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:10px" name="compare_button" id="compare_button" onclick="compare_button()">个体对比</button>
-            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:10px" name="group_button" id="group_button" onclick="group_button()">群体分析</button>
-            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:10px" name="delete_button" id="delete_button" onclick="delete_button()">删除用户</button>
+        <div style="text-align:right">
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="compare_button" id="compare_button" title="选择2至3个用户对比" data-toggle="modal" data-target="#compare" onclick="compare_button()">个体对比</button>
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="group_button" id="group_button" data-toggle="modal" data-target="#group" onclick="group_button()">群体分析</button>
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="delete_button" id="delete_button" data-toggle="modal" data-target="#delete" onclick="delete_button()">删除用户</button>
 </div>
-    <script type="text/javascript" src="/static/js/search_result.js"></script> 
+<div class="modal fade" id="compare" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">个体对比</h4>
+      </div>
+      <div class="modal-body">
+        <div id="compare_comfirm" style="margin-top:20px"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="compare_confirm_button()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">群体分析</h4>
+      </div>
+      <div class="modal-body">
+        <div id="group_comfirm" style="margin-top:20px"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_confirm_button()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">删除</h4>
+      </div>
+      <div class="modal-body">
+        <div id="delete_comfirm" style="margin-top:20px"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="delete_confirm_button()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
+
+{% block Own_js %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/search_result.js"></script> 
+{% endblock Own_js %}
