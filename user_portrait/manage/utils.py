@@ -3,16 +3,19 @@ import sys
 import time
 import json
 #test
+'''
 reload(sys)
 sys.path.append('../')
 from global_utils import es_user_portrait as es
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
+from global_utils import es_user_profile
 from time_utils import ts2datetime, datetime2ts,ts2date
 '''
-from user_portrati.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
+from user_portrait.global_utils import es_user_portrait
 from user_portrait.time_utils import ts2datetime, datetime2ts
-'''
+
 
 # compare two or three user
 # need json.lodas to read the dict attribute
@@ -27,7 +30,7 @@ def compare_user_portrait(uid_list):
 
 # compare user activity and activity time segment
 def compare_user_activity(uid_list):
-    result = {} # output data: {user:[{date:weibo_count}, {time_segment:weibo_count}]}
+    result = {} # output data: {user:[weibo_status]}, {user:[(date,weibo)]}, ts_list
     timesegment_result = {}
     now_ts = time.time()
     date = ts2datetime(now_ts)
@@ -81,7 +84,19 @@ def compare_user_activity(uid_list):
                 user_list[user].append(count)
             except:
                 user_list[user] = [count]
-    return user_list, user_timesegment_list
+    return user_list, user_timesegment_list, ts_list
+
+# compare the user profile
+def compare_user_profile(uid_list):
+    results = dict()
+
+    return results
+
+
+
+
+
+
 
 # based on one user to imagine a group
 def imagine(uid):
