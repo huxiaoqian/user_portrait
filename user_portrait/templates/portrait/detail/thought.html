@@ -1,20 +1,164 @@
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_crm_detailed_001.gif"/>
-				<p class="p1">客户管理</p>
-				<p class="p2">创建企业的客户资源库，维护客户的综合信息；及时、定期跟进...</p>
-			</div>
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_crm_detailed_002.gif"/>
-				<p class="p1">销售管理</p>
-				<p class="p2">提供多样化的销售管理机制，实现销售过程的流程控制与维护...</p>
-			</div>
-			<div class="function1">
-				<img src="/static/personal/images/pic_fun_crm_detailed_003.gif"/>
-				<p class="p1">合同管理</p>
-				<p class="p2">统一管理合同信息，形成企业的知识库；提供应用插件，实现合...</p>
-			</div>
-			<div class="function2">
-				<img src="/static/personal/images/pic_fun_crm_detailed_004.gif"/>
-				<p class="p1">供应商管理</p>
-				<p class="p2">建立企业的供应商资源，完善企业供应链；在实际的业务操作...</p>
-			</div>
+ <style type="text/css">   
+    .border-table {   
+        border-collapse: collapse;   
+        border: none;   
+    }   
+    .border-table td {   
+        border: solid #FFE4B5 1px;   
+    }   
+</style>
+<div>
+  <h4 class="page-header"style='margin-top:10px'>他的标签</h4>
+  <div id="character" style="height:50px;width:900px">
+	<table>
+	<tr>
+	<td class="center">
+		<span class="label-warning label label-default"style='font-size:16px'>狮子座</span>
+	</td>
+	<td class="center">
+		<span class="label-warning label label-default"style='font-size:16px'>90后</span>
+	</td>
+	<td class="center">
+		<span class="label-warning label label-default"style='font-size:16px'>摇滚</span>
+	</td>
+	<td class="center">
+		<span class="label-warning label label-default"style='font-size:16px'>游戏控</span>
+	</td>
+	</tr>
+	</table>
+  </div>
+</div>
+<div><h4 class="page-header"style='margin-top:10px'>思想</h4>
+	<div id="radar_topic1" style="height:350px;width:450px"></div>
+	<div id="radar_topic2" style="height:350px;width:450px;float:right"></div>
+	<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+</div>
+ <script type="text/javascript">
+ 	$(document).ready(function(){
+ 		drawradar_topic1();
+ 		drawradar_topic2();
+ 	})
+        // 基于准备好的dom，初始化echarts图表
+    function drawradar_topic1(){
+        var myChart = echarts.init(document.getElementById('radar_topic1')); 
+        
+		var option = {
+	    title : {
+	        text: '',
+	        subtext: ''
+	    },
+	    tooltip : {
+	        trigger: 'axis'
+	    },
+	    legend: {
+	        x : 'center',
+	        data:['罗纳尔多']
+	    },
+	    toolbox: {
+	        show : true,
+	        feature : {
+	            mark : {show: true},
+	            dataView : {show: true, readOnly: false},
+	            restore : {show: true},
+	            saveAsImage : {show: true}
+	        }
+	    },
+	    calculable : true,
+	    polar : [
+	        {
+	            indicator : [
+	                {text : '进攻', max  : 100},
+	                {text : '防守', max  : 100},
+	                {text : '体能', max  : 100},
+	                {text : '速度', max  : 100},
+	                {text : '力量', max  : 100},
+	                {text : '技巧', max  : 100}
+	            ],
+	            radius : 100
+	        }
+	    ],
+	    series : [
+	        {
+	            name: '完全实况球员数据',
+	            type: 'radar',
+	            itemStyle: {
+	                normal: {
+	                    areaStyle: {
+	                        type: 'default'
+	                    }
+	                }
+	            },
+	            data : [
+	                {
+	                    value : [97, 32, 74, 95, 88, 92],
+	                    name : '罗纳尔多'
+	                }
+	            ]
+	        }
+	    ]
+	};                
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+    }
+    function drawradar_topic2(){
+        var myChart = echarts.init(document.getElementById('radar_topic2')); 
+        
+		var option = {
+	    title : {
+	        text: '',
+	        subtext: ''
+	    },
+	    tooltip : {
+	        trigger: 'axis'
+	    },
+	    legend: {
+	        x : 'center',
+	        data:['罗纳尔多']
+	    },
+	    toolbox: {
+	        show : true,
+	        feature : {
+	            mark : {show: true},
+	            dataView : {show: true, readOnly: false},
+	            restore : {show: true},
+	            saveAsImage : {show: true}
+	        }
+	    },
+	    calculable : true,
+	    polar : [
+	        {
+	            indicator : [
+	                {text : '进攻', max  : 100},
+	                {text : '防守', max  : 100},
+	                {text : '体能', max  : 100},
+	                {text : '速度', max  : 100},
+	                {text : '力量', max  : 100},
+	                {text : '技巧', max  : 100}
+	            ],
+	            radius : 100
+	        }
+	    ],
+	    series : [
+	        {
+	            name: '完全实况球员数据',
+	            type: 'radar',
+	            itemStyle: {
+	                normal: {
+	                    areaStyle: {
+	                        type: 'default'
+	                    }
+	                }
+	            },
+	            data : [
+	                {
+	                    value : [97, 32, 74, 95, 88, 92],
+	                    name : '罗纳尔多'
+	                }
+	            ]
+	        }
+	    ]
+	};                
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+    }
+    </script>

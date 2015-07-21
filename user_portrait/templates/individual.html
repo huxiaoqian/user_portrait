@@ -37,11 +37,11 @@
 			<div id='txt'>
 				<div class="main col-sm-9 col-md-10">
 					<div class="col-sm-12">
-						<div class="panel panel-default" style="width:975px">
-							<div class="panel-heading text-center" style="width:973px">
+						<div class="panel panel-default" style="width:875px;margin-left:35px">
+							<div class="panel-heading text-center" style="width:873px">
 								<img src="{{ user.photo_url }}" alt="" class="img-circle">
 							</div>
-							<table>
+							<table style="margin-left:55px;">
 					    	<ul class="list-group">
 					    		<tr>
 					    		    <td><li class="list-group-item" style="width:240px">UID：{{ user.uid }}</li></td>
@@ -80,7 +80,7 @@
 			<div id='photo'>
 				<div class="main col-sm-9 col-md-10">
 					<div class="col-sm-12">
-						<div class="panel panel-default" style="width:975px; height:600px" id='echart'>
+						<div class="panel panel-default" style="width:875px; height:600px;margin-left:35px;" id='echart'>
 						</div>
 					</div>
 				</div>
@@ -123,7 +123,6 @@
 	    },
 	    toolbox: {
             show : true,
-            x : 800,
 	        feature : {
 	            restore : {show: true},
 	            magicType: {show: true, type: ['force', 'chord']},
