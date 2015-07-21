@@ -13,18 +13,9 @@ Search_weibo.prototype = {
       success:callback
     });
   },
-  call_sync_ajax_request_loading:function(url, method, callback){
-    console.log(url);
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
 
   Draw_table: function(data){
+    // console.log(data);
     draw_information(data);
     $('#table').empty();
     var user_url ='';
@@ -56,33 +47,18 @@ Search_weibo.prototype = {
     $('#table').append(html);
     html += '</tbody>';
     html += '</table>';
-    if (data) {
-      
-  }
-},
- loading_information: function(){
-
-  $('#loading_information').empty();
-  var html = '';
-  html += '<div style="width:200px;margin-top:-30px" ><div class="progress-bar" id="loading" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">加载中……</div></div><a style="cursor:pointer;margin-left:785px" role="button" id = "download">导出</a>';
-  $('#loading_information').append(html);
-    alert('1111111111');
- }
-
+  //   if (data) {
+  //     document.getElementById("loading").innerText ="加载完成！";
+  // }
 }
- // function loading_information(){
- //  $('#loading_information').empty();
- //  var html = '';
- //  html += '<div style="width:200px;margin-top:-30px" ><div class="progress-bar" id="loading" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">加载中……</div></div><a style="cursor:pointer;margin-left:785px" role="button" id = "download">导出</a>';
- //  $('#loading_information').append(html);
- // }
-
+}
  function draw_information(data){
   $('#search_information').empty();
   var html = '';
   took = data['took'];
   term = data['hits']['total'];
   html += '<div class="page-header" style="margin-top:65px">用户信息列表(耗时：<font color="#1F90FF">' + took + '</font>ms' + '命中：<font color="#1F90FF">' + term + '</font>条)</div>';
+  html += '<a style="cursor:pointer;margin-left:785px" role="button" id = "download">导出</a>';
   $('#search_information').append(html);
 }
 
@@ -100,6 +76,7 @@ function get_input_data(){
 }
 
 function toggle(target){
+       console.log(html);
        targetid = target.substr(7, target.length);
        $("#" + targetid).val();
        if (document.getElementById){
@@ -127,8 +104,8 @@ function toggle(target){
                    else {
                       $("#" + targetid).val("");
                    }
-                   target_search.style.display="none";
-                   click_data();                  
+                   target_search.style.display="none";                    
+                   click_data();
                }
        }
   }
@@ -289,19 +266,18 @@ function toggle(target){
       html += '<span class="mouse"  style="float:left;margin-left:10px;margin-bottom:10px" id="search_friends">' + '好友数：' + datafrom['friends_from'] + '-' + datato['friends_to'] + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_friends") class="cross">X</a></span>';
       }
  
+
+
       html += '</div>';
      $('#search_conditions').append(html);
   }
 
 var Search_weibo = new Search_weibo(); 
 
-
 function click_data(){
-  url = '';
   weibo_url = '/profile/user/?';
   weibo_url += get_input_data();
   weibo_url = weibo_url.substring(0,weibo_url.length-1);
-  Search_weibo.call_sync_ajax_request_loading(weibo_url, Search_weibo.ajax_method, Search_weibo.loading_information);
   Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_table);
   $('#download').click(function(){
         console.log('download');
@@ -316,7 +292,6 @@ function click_data(){
             "sLengthMenu": "_MENU_ 每页"
         }
     });
-       document.getElementById("loading").innerText ="加载完成！";
         $('.btn-close').click(function (e) {
         e.preventDefault();
         $(this).parent().parent().parent().fadeOut();
@@ -332,6 +307,7 @@ function click_data(){
         e.preventDefault();
         $('#myModal').modal('show');
     });
+
 
     $('#calendar').fullCalendar({
         header: {
