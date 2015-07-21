@@ -4,7 +4,7 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import recommentation_in, identify_in, show_compute, identify_compute
+from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute
 from utils import show_out_uid,decide_out_uid, search_history_delete
 
 from user_portrait.time_utils import datetime2ts
@@ -44,6 +44,17 @@ def ajax_identify_in():
         data = [('2013-09-07','1767905823')]
         results = identify_in(data) # success:1
         print 'results:', data
+    return json.dumps(results)
+
+
+#show recomment history
+#input:date
+@mod.route('/show_in_history/')
+def ajax_show_in_history():
+    results = {}
+    date = request.args.get('date', '')
+    if date:
+        results = show_in_history(date)
     return json.dumps(results)
 
 
