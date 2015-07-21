@@ -7,6 +7,7 @@ from flask import Blueprint, url_for, render_template, request, abort, flash, se
 from utils import compare_user_portrait, compare_user_activity, compare_user_profile
 from utils import imagine
 from user_portrait.time_utils import datetime2ts
+from imagine import imagine
 
 mod = Blueprint('manage', __name__, url_prefix='/manage')
 
@@ -50,8 +51,10 @@ def ajax_user_profile():
 @mod.route('/imagine/')
 def ajax_imagine():
     uid = request.args.get('uid', '') # uid
-    if uid:
-        result = imagine(uid)
+    query_fields_dict = request.args.get('query_fields_dict','') # query dict and corresponding weight
+    #query_fields_dict = json.loads(query_fields_dict)
+    if uid and query_fields_dict:
+        result = imagine(uid, query_fields_dict)
     if result:
         return json.dumps(result)
     else:
