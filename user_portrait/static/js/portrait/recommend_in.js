@@ -265,6 +265,12 @@ var url_history = '/recommentation/show_in_history/?date=2013-09-07';
 draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Draw_table);
 
+function recommend_confirm(data){
+  console.log(data);
+  if(data)
+    alert('入库成功！');
+}
+
 function recommend_button(){
   var recommend_uids = [];
   var recommend_result = [];
@@ -273,8 +279,11 @@ function recommend_button(){
       recommend_uids.push($(this).attr('value'));
       //$(this).parent().parent().remove();
   })
-  recommend_result[recommend_date] = recommend_uids;
-  console.log(recommend_result);
+  console.log(recommend_date);
+  console.log(recommend_uids);
+  var recommend_confirm_url = '/recommentation/identify_in/?data="[('+ "'" + recommend_date + "'" +','+ "'" + recommend_uids + "'" +')]"'
+  console.log(recommend_confirm_url);
+  draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, recommend_confirm);
 }
 
 function compute_button(){
