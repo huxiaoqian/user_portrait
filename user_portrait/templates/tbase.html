@@ -6,7 +6,7 @@
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     		<meta charset="utf-8">
     		<meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>{% block title %}人物画像系统{% endblock title %}</title>
+            <title>{% block title %}XXXXXX{% endblock title %}</title>
 		{% endblock %}
 		<!-- end head 标签 -->
 
@@ -50,20 +50,20 @@
 		<!-- 上面导航 -->
 		{% block header %}
 			<div id="header">
-		    	<h1 class="headtitle">人物画像系统</h1>
+		    	<h1 class="headtitle">XXXXXX</h1>
 		        <form class="search-form" id="" method="post" action="">
 		       	  	<span class="searchborder fleft">
 		  				<input type="text" id="keyword" value="请按uid或昵称搜索"  onfocus="if (value =='请按uid或昵称搜索'){value =''}" onblur="if (value ==''){value='请按uid或昵称搜索'}"/>
 				    </span>
 		            <span class="fleft">
-		            	<a title="" href="" >
-						<input class="search" type="button" value="简单搜索" /></a>
+		            	<a title="">
+						<input id="simple_search" class="search" type="button" value="简单搜索" /></a>
 		            	<a title="" href="" class="webpage" id="showBtn">高级搜索</a>
 		            </span>  
 				</form>
 				
 				<div class="fleft entrance">
-					<a title="" href="" class="link2portrait">人物背景系统入口</a>
+					<a title="" href="" class="link2portrait">XXXXXX入口</a>
 				</div>
 				
 		        <div class="fright userInfo">
@@ -203,7 +203,7 @@
 						$(this).parent().find('dd').slideToggle();
 						$(this).parent().find('dd').addClass("menu_chioce");
 					});
-				});
+                });
 				$("#showBtn").off("click").click(function(){
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
@@ -219,7 +219,8 @@
                     $("#supersearch").addClass("hidden");
                     return false;
                 });
-			</script>
+            </script>
+            <script src="/static/js/portrait/tbase.js"></script>
 		{% endblock %}
 		<!-- end DIY -->
 
