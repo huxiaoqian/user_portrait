@@ -117,7 +117,7 @@ def ajax_history_delete():
 def ajax_cancel_delete():
     data = request.args.get('data','') # uid,uid
     date = request.args.get('date', '') # date, 2013-09-01
-    if not data or no date:
+    if not data or not date:
         return "no one cancelled"
     else:
         uid_list = data.split(',')
