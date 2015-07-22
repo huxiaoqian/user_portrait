@@ -27,12 +27,17 @@ def save_uid2compute(uid_list):
 # show recommentation in uid
 def recommentation_in(input_ts):
     date = ts2datetime(input_ts)
-    results = []
+    recomment_results = []
     # read from redis
     hash_name = 'recomment_'+str(date)
     results = r.hgetall(hash_name)
     # search from user_profile to rich th show information
-    return results
+    for item in results:
+        status = results[item]
+        if status=='0':
+            recomment_results.append(item)
+
+    return recomment_results
 
 # identify uid to in user_portrait
 def identify_in(data):
@@ -49,6 +54,14 @@ def identify_in(data):
         in_date = ts2datetime(time.time())
         r.hset(compute_hash_name, uid, json.dumps([in_date, compute_status]))
     return True
+
+
+#show in history
+def show_in_history(date):
+    results = []
+    hash_name = 'recomment_'+str(date)
+    results = r.hgetall(hash_name)
+    return results
 
 # show uid who have in but not compute
 def show_compute(date):

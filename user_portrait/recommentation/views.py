@@ -4,7 +4,7 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import recommentation_in, identify_in, show_compute, identify_compute
+from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute
 from utils import show_out_uid,decide_out_uid, search_history_delete
 
 from user_portrait.time_utils import datetime2ts
@@ -47,6 +47,22 @@ def ajax_identify_in():
     return json.dumps(results)
 
 
+#show recomment history
+#input:date
+@mod.route('/show_in_history/')
+def ajax_show_in_history():
+    results = {}
+    date = request.args.get('date', '')
+    input_ts = datetime2ts(date)
+    now_ts = time.time()
+    now_ts = test_time
+    if now_ts - 24*3600*7 > input_ts:
+        return None
+    else:
+        results = show_in_history(date)
+    return json.dumps(results)
+
+
 #show uid has not compute but have been identify in
 @mod.route('/show_compute/')
 def ajax_compute_show():
@@ -71,7 +87,7 @@ def ajax_compute_identify():
     return json.dumps(results)
 
 # show recommentaion out uid
-@mod.route('/show_out/a')
+@mod.route('/show_out/')
 def ajax_recommentation_out():
     results = []
     date = request.args.get('date', '') # date 2013-09-01

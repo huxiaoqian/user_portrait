@@ -87,24 +87,20 @@ def compare_user_activity(uid_list):
 
 # compare the user profile
 def compare_user_profile(uid_list):
-    results = dict()
-
+    results = []
+    index_name = 'weibo_user'
+    index_type = 'user'
+    search_results = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
+    #print 'results:', search_results
+    for result in search_results:
+        item = result['_source']
+        results.append(item)
+    print 'results:', results
     return results
-
-
-
-
-
-
-
-# based on one user to imagine a group
-def imagine(uid):
-    result = {}
-    return result
-
 
 if __name__=='__main__':
     #test
     uid_list = ['1642591402', '2948738352', '2803301701']
     #compare_user_portrait(uid_list)
-    compare_user_activity(uid_list)
+    #compare_user_activity(uid_list)
+    compare_user_profile(uid_list)
