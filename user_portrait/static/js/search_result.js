@@ -61,11 +61,9 @@ function compare_button(){
   var len = compare_uids.length;
   if(len>3 || len<2){
     alert("请选择2至3个用户！");
-    $('#compare').modal('hide');
   }
   else{
     draw_table_compare_confirm(compare_uids, "#compare_comfirm");
-    $('#compare').modal('show');
   }
 }
 
