@@ -4,7 +4,7 @@ from flask import Flask
 from elasticsearch import Elasticsearch
 from flask_debugtoolbar import DebugToolbarExtension
 from user_portrait.extensions import admin
-from user_portrait.jinja import gender, tsfmt, Int2string, gender_text
+from user_portrait.jinja import gender, tsfmt, Int2string, gender_text, user_email, user_location, user_birth, user_vertify, weibo_source
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
@@ -110,5 +110,10 @@ def register_jinja_funcs(app):
     funcs = dict(gender=gender,
                  tsfmt=tsfmt,
                  int2string=Int2string,
-                 gender_text=gender_text)
+                 gender_text=gender_text,
+                 user_email=user_email,
+                 user_location=user_location,
+                 user_birth=user_birth,
+                 user_vertify=user_vertify,
+                 weibo_source=weibo_source)
     app.jinja_env.globals.update(funcs)

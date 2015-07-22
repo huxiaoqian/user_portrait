@@ -50,8 +50,8 @@
 					    		</tr>
 					    		<tr>
 					    			<td><li class="list-group-item" style="width:240px"><a href = {{ 'http://weibo.com/u/' + int2string(user.uid) }}>个人微博主页</a></li></td>
-					    			<td><li class="list-group-item" style="width:240px">邮箱：{{ user.user_email }}</li></td>
-					    			<td><li class="list-group-item" style="width:240px">出生年月：{{ user.user_birth }}</li></td>
+					    			<td><li class="list-group-item" style="width:240px">邮箱：{{ user_email(user.user_email) }}</li></td>
+					    			<td><li class="list-group-item" style="width:240px">出生年月：{{ user_birth(user.user_birth) }}</li></td>
 					    		</tr>
 					    		<tr>
 					    			<td><li class="list-group-item" style="width:240px">粉丝数：{{ user.fansnum }}</li></td>
@@ -59,13 +59,13 @@
 					    			<td><li class="list-group-item" style="width:240px">微博数：{{ user.statusnum }}</li></td>
 					    		</tr>
 					    		<tr>
-					    			<td><li class="list-group-item" style="width:240px">认证：{{ user.isreal }} </li></td>
-					    			<td><li class="list-group-item" style="width:240px">位置：{{ user.user_location }}</li></td>
+					    			<td><li class="list-group-item" style="width:240px">认证：{{ user_vertify(user.isreal) }} </li></td>
+					    			<td><li class="list-group-item" style="width:240px">位置：{{ user_location(user.user_location) }}</li></td>
 					    			<td><li class="list-group-item" style="width:240px">创建时间：{{ tsfmt(user.create_at) }}</li></td>	
 					    		</tr>
 					    		<tr>
 					    			<td><li class="list-group-item" style="width:240px">个人博客主页{{ user.blog_url }}</li></td>
-					    			<td><li class="list-group-item" style="width:240px">SP类型：{{ user.sp_type }}</li></td>
+					    			<td><li class="list-group-item" style="width:240px">SP类型：{{ weibo_source(user.sp_type) }}</li></td>
 					    			<td><li class="list-group-item" style="width:240px">用户收藏数：{{ user.favouritesnum }}</li></td>
 					    		</tr>
 					    		<tr>	    			
@@ -200,7 +200,7 @@
 	                        }
 	                    }
 	                },
-	                {category:1, name: '邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '邮箱是{{ user_email(user.user_email) }}',value : 7,symbolSize: [60, 30],
 	                itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -214,7 +214,7 @@
 	                      	}
 	                    }
 	                },
-	                {category:1, name: '出生于{{ user.user_birth }}',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '出生于{{ user_birth(user.user_birth) }}',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -227,7 +227,7 @@
 	                          }
 	                      	}
 	                }},
-	                {category:1, name: '在{{ user.user_location }}注册',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '在{{ user_location(user.user_location) }}注册',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -253,7 +253,7 @@
 	                          }
 	                      	}
 	                }},
-	                {category:1, name: '邮箱是{{ user.user_email }}',value : 7,symbolSize: [60, 30],
+	                {category:1, name: '邮箱是{{ user_email(user.user_email) }}',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                          color:'#B0E0E6',
@@ -318,7 +318,7 @@
 	                            }
 	                        }
 	                }},
-	                {category:2, name: '信息来源于{{ user.sp_type }}',value : 7,symbolSize: [60, 30],
+	                {category:2, name: '信息来源于{{ weibo_source(user.sp_type) }}',value : 7,symbolSize: [60, 30],
 	            	itemStyle: {
 	                        normal: {
 	                        	color:'#FFC0CB',
@@ -347,7 +347,7 @@
 
 	            ],
 	            links : [
-	                {source : '{{ user.description }}', target : '邮箱是{{ user.user_email }}',  
+	                {source : '{{ user.description }}', target : '邮箱是:{{ user_email(user.user_email) }}',  
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
@@ -359,14 +359,14 @@
 	                        width: 2
 	                    }
 	                }},
-	                {source : '{{ user.description }}', target : '出生于{{ user.user_birth }}',
+	                {source : '{{ user.description }}', target : '出生于:{{ user_birth(user.user_birth) }}',
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
 	                    }
 	                }
 	                },
-	                {source : '{{ user.description }}', target : '在{{ user.user_location }}注册', 
+	                {source : '{{ user.description }}', target : '在{{ user_location(user.user_location) }}注册', 
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
@@ -402,7 +402,7 @@
 	                        width: 2
 	                    }
 	                }},
-	                {source : '{{ user.description }}', target : '信息来源于{{ user.sp_type }}',
+	                {source : '{{ user.description }}', target : '信息来源于:{{ weibo_source(user.sp_type) }}',
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
