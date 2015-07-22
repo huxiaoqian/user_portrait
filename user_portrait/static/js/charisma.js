@@ -295,7 +295,7 @@ function docReady() {
         $('#myModal').modal('show');
     });
 
-    /*
+
     $('#calendar').fullCalendar({
         header: {
             left: 'prev,next today',
@@ -343,7 +343,7 @@ function docReady() {
             }
         ]
     });
-    */
+
 }
 
 
@@ -368,7 +368,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
                 }
-                $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
+               $(check_first).attr("checked", false);
             };
 
             $(nPaging).addClass('pagination').append(
@@ -416,7 +416,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);
-                            $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
+                            $(check_first).attr("checked", false);
                         });
                 }
 
