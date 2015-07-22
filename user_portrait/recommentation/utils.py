@@ -58,7 +58,6 @@ def identify_in(data):
 
 #show in history
 def show_in_history(date):
-    date = ts2datetime(date)
     results = []
     hash_name = 'recomment_'+str(date)
     results = r.hgetall(hash_name)

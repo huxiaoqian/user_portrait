@@ -53,7 +53,12 @@ def ajax_identify_in():
 def ajax_show_in_history():
     results = {}
     date = request.args.get('date', '')
-    if date:
+    input_ts = datetime2ts(date)
+    now_ts = time.time()
+    now_ts = test_time
+    if now_ts - 24*3600*7 > input_ts:
+        return None
+    else:
         results = show_in_history(date)
     return json.dumps(results)
 
@@ -82,7 +87,7 @@ def ajax_compute_identify():
     return json.dumps(results)
 
 # show recommentaion out uid
-@mod.route('/show_out/a')
+@mod.route('/show_out/')
 def ajax_recommentation_out():
     results = []
     date = request.args.get('date', '') # date 2013-09-01
