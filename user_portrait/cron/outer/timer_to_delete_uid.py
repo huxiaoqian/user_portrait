@@ -55,6 +55,7 @@ def main():
         item_timestamp = time.mktime(time_struct.timetuple())
         print item_timestamp
 
+        #if ts - item_timestamp > 7 * 86400:
         if ts - item_timestamp > 0:
             temp_list = json.loads(recommend_redis.hget("decide_delete_list", item))
             if not temp_list:

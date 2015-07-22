@@ -74,9 +74,10 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     uid_list = []
     for item in result:
         info = {}
-        info['uid'] = item['_id']
-        info['score'] = item['_score']
+        info = item
         uid_list.append(info)
+
+    uid_list.append(query_fields_dict)
 
     return uid_list
 
