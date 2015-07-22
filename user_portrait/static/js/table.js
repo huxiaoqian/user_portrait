@@ -35,18 +35,20 @@ Search_weibo.prototype = {
       user_url = "http://" + user_host + "/profile/" + item[i]['_id'];
       html += '<tr>';
       html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '><img src="' + item[i]['_source']['photo_url'] + '"class="img-circle"></td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['nick_name'] +'<img src="'+ item[i]['_source']['sex'] +'"style="height:20px"><img src="/static/img/vertify.png" style="height:20px"</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '>' + item[i]['_source']['nick_name'] + '</a><img src="'+ item[i]['_source']['sex'] +'"style="height:20px"><img src="/static/img/vertify.png" style="height:20px"</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['user_location'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle;width:72px">'+ item[i]['_source']['friendsnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['fansnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['statusnum'] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox" id="' +  item[i]['_source']['uid'] + '" ></td>';
       // html += '<td class="center" style="text-align:center">'+ new Date(parseInt(item[i]['_source']['create_at']) +'</td>';
       html += '</tr>';
     }
-    $('#table').append(html);
     html += '</tbody>';
     html += '</table>';
+    html += '<input class="btn btn-primary" id="download_result" style="float:right;margin-top:-20px" type="submit" id="submit" value=全部导出>';
+    html += '<input class="btn btn-primary" style="float:right;margin-right:10px;margin-top:-20px" type="submit" onclick=export_file("/static/download/test.csv") name=0 value=选中导出>'; 
+    $('#table').append(html);
   //   if (data) {
   //     document.getElementById("loading").innerText ="加载完成！";
   // }
@@ -58,8 +60,39 @@ Search_weibo.prototype = {
   took = data['took'];
   term = data['hits']['total'];
   html += '<div class="page-header" style="margin-top:65px">用户信息列表(耗时：<font color="#1F90FF">' + took + '</font>ms' + '命中：<font color="#1F90FF">' + term + '</font>条)</div>';
-  html += '<a style="cursor:pointer;margin-left:785px" role="button" id = "download">导出</a>';
   $('#search_information').append(html);
+}
+
+function export_file(file){
+  var obj = $('input[type=checkbox]').eq(0);
+  var q = 1;
+  var ids = '';
+  if (obj.is(":checked")){
+    var q = obj.attr('name');
+  }
+  if(q==0){
+  window.location.href = file
+  }
+  else{
+      $('input[type=checkbox]:checked').each(function(){
+        var select_id = $(this).attr('id');
+        if(select_id){
+          select_id = select_id + ',';
+          ids += select_id;
+        }
+      });
+      console.log(ids);
+      var downloadurl = window.location.host;
+      $.ajax({
+        url: 'http://' + downloadurl + '/profile/download/?q='+q+'&id='+ids,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        success: function(data){
+           window.location.href = file;
+        }
+    });
+  }
 }
 
 function get_input_data(){
@@ -279,7 +312,7 @@ function click_data(){
   weibo_url += get_input_data();
   weibo_url = weibo_url.substring(0,weibo_url.length-1);
   Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_table);
-  $('#download').click(function(){
+  $('#download_result').click(function(){
         console.log('download');
         var download_url = 'http://'+ window.location.host + '/static/download/test.csv';
         window.location.href = download_url;
@@ -356,7 +389,6 @@ function click_data(){
             }
         ]
     });
-
 }
 
 $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
@@ -379,7 +411,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
                 }
-                $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
+                $(check_first).attr("checked", false);
             };
 
             $(nPaging).addClass('pagination').append(
@@ -427,7 +459,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);
-                            $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
+                            $(check_first).attr("checked", false);
                         });
                 }
 
@@ -447,56 +479,3 @@ $.extend($.fn.dataTableExt.oPagination, {
         }
     }
 });
-  // function selectAll() {
-  //     var checkbox_first = $('input[type=checkbox]').eq(0);
-  //     $('input[type=checkbox]').prop('checked', $(checkbox_first).prop('checked'));
-    //   var ids = '';
-  
-    //   console.log(ids);
-    //   $.ajax({
-    //     url: '/profile/download/?id='+ids,
-    //     type: "GET",
-    //     dataType: "json",
-    //     async: false,
-    //     success: function(data){
-    //       console.log(data);
-    //        // window.location.href = file;
-    //     }
-    // });
-  // }
-
-
-   function selectAll() {
-      var check_first = $('input[type=checkbox]').eq(0);
-      $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
-      // var obj = $('input[type=checkbox]').eq(0);
-      // var q = 1;
-      // var ids = '';
-      // if (obj.is(":checked")){
-      //   var q = obj.attr('name');
-      // }
-      // if(q==0){
-      // console.log(file);
-      // window.location.href = file
-      // }
-      // else{
-      //     $('input[type=checkbox]').each(function(){
-      //       var select_id = $(this).attr('id');
-      //       if(select_id){
-      //         select_id = select_id + ',';
-      //         ids += select_id;
-      //       }
-      //     });
-      //     console.log(ids);
-      //     $.ajax({
-      //       url: 'http://219.224.135.93:9045/profile/download/?q='+q+'&id='+ids,
-      //       type: "GET",
-      //       dataType: "json",
-      //       async: false,
-      //       success: function(data){
-      //         console.log(data);
-      //          window.location.href = file;
-      //       }
-      //   });
-      // }
-  }
