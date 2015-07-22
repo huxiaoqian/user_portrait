@@ -113,3 +113,17 @@ def ajax_history_delete():
 
     return results # return {"20150715": "[uid]"}
 
+@mod.route('/cancel_delete/')
+def ajax_cancel_delete():
+    data = request.args.get('data','') # uid,uid
+    date = request.args.get('date', '') # date, 2013-09-01
+    if not data or no date:
+        return "no one cancelled"
+    else:
+        uid_list = data.split(',')
+        date = date.replace('-','')
+        delete_list = json.loads(hget('decide_delete_list',date))
+        revise_list = list(set(delete_list).difference(set(uid_list)))
+        hset('decide_delete_list', date, json.dumps(revise_list))
+
+    return 1
