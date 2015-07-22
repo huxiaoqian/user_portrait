@@ -52,10 +52,28 @@ def ajax_user_profile():
 def ajax_imagine():
     uid = request.args.get('uid', '') # uid
     query_fields_dict = request.args.get('query_fields_dict','') # query dict and corresponding weight
-    #query_fields_dict = json.loads(query_fields_dict)
+    keys_list = ['domain', 'topic', 'keywords', 'psycho_status', 'psycho_feature', 'activity_geo', 'hashtag']
+    weight_list = ['domain_weight', 'topic_weight', 'keywords_weight', 'psycho_status_weight', 'psycho_feature_weight', 'activity_geo_weight', 'hashtag_weight']
+    # 'field' control search order
+    # order_list = ['importance', 'influence', 'activeness', 'default']
+
+    query_fields_dict = {}
+    for i in range(7):
+        key = request.args.get(keys_list[i], '') # if not selected, key is set to ''
+        value = request.args.get(weight_list[i], '')
+        if key:
+            query_fields_dict[keys_list[i]] = int(value)
+    field = request.args.get('field', '')
+    query_fields_dict['field'] = field
+
+    size = request.args.get('size', 10)
+    if size == "":
+        size = 10
+    query_fields_dict['size'] = int(size)
+
     if uid and query_fields_dict:
         result = imagine(uid, query_fields_dict)
     if result:
         return json.dumps(result)
-    else:
-        return None
+
+    return None

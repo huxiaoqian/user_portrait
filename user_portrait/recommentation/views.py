@@ -71,7 +71,7 @@ def ajax_compute_identify():
     return json.dumps(results)
 
 # show recommentaion out uid
-@mod.route('/show_out/a')
+@mod.route('/show_out/')
 def ajax_recommentation_out():
     results = []
     date = request.args.get('date', '') # date 2013-09-01

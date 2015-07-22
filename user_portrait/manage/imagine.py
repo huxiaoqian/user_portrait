@@ -40,18 +40,24 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     elif query_fields_dict['field'] == "importance":
         score_standard['field'] = "importance"
         score_standard['factor'] = 0.01
-    else:
+    elif query_fields_dict['field'] == 'influence':
         score_standard['field'] = "influence"
         score_standard['factor'] = 0.1
+    else:
+        score_standard['field'] = "influence"
+        score_standard['factor'] = 0
+        query_body['query']['function_score']['boost_mode'] = "sum"
 
     query_body['query']['function_score']['field_value_factor'] = score_standard
 
     query_fields_dict.pop('field')
 
-    for (k,v) in query_fields_dict.items():
 
-        if k == "field": # field specific for outer weight
-            continue
+    query_body['size'] = query_fields_dict['size']
+    query_fields_dict.pop('size')
+
+
+    for (k,v) in query_fields_dict.items():
 
         temp = {}
         if v == 1:
@@ -78,5 +84,5 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
 
 if __name__ == '__main__':
-    print imagine(2001627641, {'topic':1, 'uname':2,'field':'influence'}, index_name='user_portrait', doctype='user')
+    print imagine(2001627641, {'topic':1, 'uname':2,'field':'default'}, index_name='user_portrait', doctype='user')
 

@@ -64,8 +64,9 @@ def function_score(es, index_name, doctype):
                 "field_value_factor":{
                     "field": "activeness",
                     "modifier": "log1p",
-                    "factor": 100
-                }
+                    "factor": 0
+                },
+                'boost_mode':'sum'
             }
         }
     }
