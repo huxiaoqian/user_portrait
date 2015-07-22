@@ -31,7 +31,7 @@ Search_weibo_result.prototype = {
     for(var i in item){
       var data_list = item[i]
       user_url = window.location.href;
-      user_url = user_url + i;
+      user_url = user_url + item[i];
       html += '<tr>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ data_list[0] +'</td>';
       html += '<td class="center">'+ data_list[1] +'</td>';
@@ -39,7 +39,7 @@ Search_weibo_result.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + i + '" /></td>';
+      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[i] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
