@@ -30,15 +30,15 @@ Search_weibo_result.prototype = {
     html += '<tbody>';
     for(var i in item){
       user_url = window.location.href;
-      user_url = user_url + i;
+      user_url = user_url + item[i];
       html += '<tr>';
-      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ i +'</td>';
+      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[i] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + i + '" /></td>';
+      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[i] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
