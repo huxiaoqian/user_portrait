@@ -108,7 +108,7 @@ def show_out_uid(date):
         detail_info = {}
         if date_out_list:
             #detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
-            detail_info = es.mget(index="user_index_profile", doc_type="manage", body={"ids":date_out_list}, _source=True)['docs']
+            detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
         info = []
         info.append(date_out_list)
@@ -133,16 +133,18 @@ def decide_out_uid(data):
         recommend_uid_list.extend(json.loads(r_out.hget("recommend_delete_list",iter_key)))
     not_out_list = list(set(recommend_uid_list).difference(set(uid_list))) # update user info in user_index_profile
 
+    """
+    update user states
     if not_out_list:
         update_record_index(not_out_list)
-
+    """
     r_out.delete("recommend_delete_list")
     if uid_list:
         r_out.hset("history_delete_list", date, json.dumps(uid_list))
 
     return 1
 
-def genereat_date(former_date, later_date="21000101"):
+def generate_date(former_date, later_date="21000101"):
     date_list = []
     date_list.append(former_date)
     former_struct = datetime.date(int(former_date[0:4]), int(former_date[4:6]), int(former_date[6:]))
@@ -166,16 +168,17 @@ def genereat_date(former_date, later_date="21000101"):
 
 def search_history_delete(date):
     history_uid_dict = {}
-    if not date:
+    if date == []:
         now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
-        date_list = genereat_date(now_date)
+        date_list = generate_date(now_date)
 
     else:
-        query_date = date.split(",")
-        date_list = generate_date(query_date[0], query_date[1])
+        date_list = generate_date(date[0].replace('-',''), date[1].replace('-',''))
 
     for key in date_list:
-        history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
+        temp = r_out.hget("history_delete_list", key)
+        if temp:
+            history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
 
     return json.dumps(history_uid_dict)
 

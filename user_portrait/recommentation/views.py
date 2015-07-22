@@ -1,12 +1,13 @@
 #-*- coding:utf-8 -*-
 
 import os
+import redis
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute
 from utils import show_out_uid,decide_out_uid, search_history_delete
-
+from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.time_utils import datetime2ts
 
 # use to test 13-09-08
@@ -109,6 +110,7 @@ def ajax_identify_out():
 def ajax_history_delete():
     results = {}
     date = request.args.get('date', '') # date 2013-09-01, 2013-09-02
+    date = str(date).split(',')
     results = search_history_delete(date)
 
     return results # return {"20150715": "[uid]"}
@@ -122,8 +124,12 @@ def ajax_cancel_delete():
     else:
         uid_list = data.split(',')
         date = date.replace('-','')
-        delete_list = json.loads(hget('decide_delete_list',date))
+        delete_list = json.loads(r_out.hget('decide_delete_list',date))
         revise_list = list(set(delete_list).difference(set(uid_list)))
-        hset('decide_delete_list', date, json.dumps(revise_list))
+        r_out.hset('decide_delete_list', date, json.dumps(revise_list))
 
-    return 1
+        delete_list = json.loads(r_out.hget('history_delete_list',date))
+        revise_list = list(set(delete_list).difference(set(uid_list)))
+        r_out.hset('history_delete_list',date, json.dumps(revise_list))
+
+    return json.dumps('1')
