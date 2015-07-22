@@ -134,7 +134,7 @@ Search_weibo_history.prototype = {
   },
 
   Draw_table: function(data){
-    //console.log(data);
+    console.log(data);
     var div = that.div
     //console.log(div);
     $(div).empty();

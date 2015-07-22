@@ -10,7 +10,9 @@
 {% block main %}
 <h4 class="page-header" style='margin-top:0px'>搜索结果</h4>
 <div class="box-content">
+    {% if stype==2 %}
         <span style="margin-top:20px">已选条件：</span><span id="conditions" style="margin-left:10px"></span>
+    {% endif %}
         <div id="search_result" style="margin-top:20px"></div>
         <div style="text-align:right">
             <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="compare_button" id="compare_button" title="选择2至3个用户对比" data-toggle="modal" data-target="#compare" onclick="compare_button()">个体对比</button>
@@ -74,5 +76,10 @@
 
 {% block Own_js %}
 {{ super() }}
-<script type="text/javascript" src="/static/js/search_result.js"></script> 
+<script>
+var stype = {{ stype }};
+var term = "{{ term }}";
+console.log(term);
+</script>
+<script type="text/javascript" src="/static/js/portrait/search_result.js"></script> 
 {% endblock Own_js %}
