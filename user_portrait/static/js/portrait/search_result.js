@@ -17,7 +17,7 @@ Search_weibo_result.prototype = {
   },
 
   Draw_table: function(data){
-    //console.log(data);
+    console.log(data);
     var div = that.div
     //console.log(div);
     $(div).empty();
@@ -29,11 +29,12 @@ Search_weibo_result.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      var data_list = item[i]
       user_url = window.location.href;
       user_url = user_url + item[i];
       html += '<tr>';
-      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ data_list[0] +'</td>';
+      html += '<td class="center">'+ data_list[1] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
@@ -46,8 +47,7 @@ Search_weibo_result.prototype = {
     $(div).append(html);
   }
 }
-
-var url_search_result = '/recommentation/show_in/?date=2013-09-07';
+var url_search_result = '/attribute/portrait_search/?stype=1&term=' + term;
 draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
 

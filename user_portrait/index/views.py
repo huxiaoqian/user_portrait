@@ -32,8 +32,13 @@ def recommend_in():
 
 @mod.route('/search_result/')
 def search_result():
-
-    return render_template('portrait/search_result.html')
+    stype = request.args.get('stype')
+    if stype == 1:
+        term = request.args.get('term', '')
+        return render_template('portrait/search_result.html', stype=stype, term=term)
+    else:
+        term = request.args.get('term', '')
+        return render_template('portrait/search_result.html', stype=stype, term=term)
 
 @mod.route('/test/')
 def test():
