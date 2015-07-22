@@ -30,6 +30,11 @@ def recommend_in():
 
     return render_template('portrait/recommend_in.html')
 
+@mod.route('/recommend_out/')
+def recommend_out():
+
+    return render_template('portrait/recommend_out.html')
+
 @mod.route('/search_result/')
 def search_result():
     stype = request.args.get('stype', 1)
