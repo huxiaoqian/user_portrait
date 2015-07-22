@@ -18,13 +18,13 @@ Search_weibo_recommend.prototype = {
 
   Draw_table: function(data){
     //console.log(data);
-    var div = that.div
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
     //console.log(user_url);
     html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table id="test_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
@@ -45,6 +45,43 @@ Search_weibo_recommend.prototype = {
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+  },
+  Re_Draw_table: function(data){
+    console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url ;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="test_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    var item = data;
+    html += '<tbody>';
+    for(var i in item){
+      user_url = window.location.href;
+      user_url = user_url + item[i];
+      html += '<tr>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ 11111111 +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+    $('#test_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
   }
 }
 
@@ -243,14 +280,22 @@ history_date_html += '<option value="' + history_date[5] + '">' + history_date[5
 history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
 history_date_html += '</select>';
 $("#history_date").append(history_date_html);
-
+/*
 function recommend_date_button(){
   console.log($("#recommend_date_select").val());
   var url_recommend_new = '/recommentation/show_in/?date=' + $("#recommend_date_select").val();
   //console.log(url_recommend_new);
   draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
-  draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Draw_table);
+  draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
 }
+*/
+$('#recommend_date_button').click(function(){
+  console.log($("#recommend_date_select").val());
+  var url_recommend_new = '/recommentation/show_in/?date=' + $("#recommend_date_select").val();
+  //console.log(url_recommend_new);
+  draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
+  draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
+});
 
 function history_date_button(){
   console.log($("#history_date_select").val());
