@@ -44,3 +44,9 @@ def test():
 def manage():
     return render_template('index/manage.html')
 """
+
+
+@mod.route('/contact/')
+def contact():
+    
+    return render_template('contact.html')

@@ -1,0 +1,344 @@
+{% extends "tbase.html" %}
+{% block main %}
+<link href="/static/css/lanrenzhijia.css" type="text/css" rel="stylesheet" />
+<script src="/static/js/lanrenzhijia.js" type="text/javascript"></script>
+<script type="text/javascript" src='/static/js/esl.js'></script>
+<script type="text/javascript" src='/static/js/echarts-all.js'></script>
+<script type="text/javascript" src='/static/js/echarts.js'></script>
+<style>
+    .caroufredsel_wrapper{
+        left: -16px;
+    }
+</style>
+<script>
+    $(function() {
+        $('#tabs').carouFredSel({
+            circular: false,
+            items: 1,
+            width: '100%',
+            auto: false,
+            pagination: {
+                container: '#pager',
+                anchorBuilder: function( nr ) {
+                    if($(this).attr('id')== 'txt'){
+                        return '<a href="#">列表视图</a>';
+                    }
+                    else{
+                        return '<a href="#">图标视图</a>';
+                    }
+                    // return '<a href="#">' + $(this).find('h3').text() + '</a>';
+                }
+            }
+        });
+    });
+</script>
+<div class='row'>
+<div class="box col-md-12" >
+    <div class="box-inner">
+        <div class="box-header" data-original-title="">
+            <h2 style='margin-left:5px'>条件选择</h2>
+        </div>
+        <div class="box-content" style="height:200px">
+            <div class="col-md-12">
+                <label class='control-label'>关联维度：</label>
+                <div class='controls'>
+                    <div class='col-md-12' style="margin-bottom:4px">
+                        <div class='col-lg-3'>
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">领域</span>                             
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
+                        </div>
+
+                         <div class='col-lg-3'>
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">话题</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
+                        </div>
+                         <div class='col-lg-3'>
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">关键词</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
+                        </div>
+                        <div class='col-lg-3'>
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">心理状态</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
+                        </div>
+                    </div>
+                    <div class='col-md-12'>
+                         <div class='col-lg-3' >
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" class="sizing-addon5">心理特征</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
+                        </div>
+                        <div class='col-lg-3'>
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">地理特征</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
+                        </div>
+                        <div class='col-lg-3' >
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">hashtag</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="padding-top:5px">
+                <label class='control-label'>排序方法：</label>
+                <div class='controls'>
+                    <div class='col-md-12'>
+                        <div class='col-lg-3'>
+                            <input type='radio' id='inline-checkbox1' name="inlineRadioOptions" value='option1' checked='checked'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">默认排序</span>
+                        </div>
+                        <div class='col-lg-3'>
+                            <input type='radio' id='inline-checkbox1' name="inlineRadioOptions" value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">重要度排序</span>
+                        </div>
+                        <div class='col-lg-3'>
+                            <input type='radio' id='inline-checkbox1' name="inlineRadioOptions" value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">活跃度排序</span>
+                        </div>
+                        <div class='col-lg-3'>
+                            <input type='radio' id='inline-checkbox1' name="inlineRadioOptions" value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid #eeeeee; display:inline-block" id="sizing-addon1">影响力排序</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style='margin-top:19px'>
+                <div class='col-md-12' style='text-align:right; padding-right:35px'>
+                    <span class="label label-success" style='cursor:pointer;'>提交</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+</div>
+<div id="wrapper" style="padding-left:0px; overflow:visible">
+        <div id='pager'></div>
+        <div id='tabs' style='width:1000px'>
+            <div id='txt'>
+                <div class="main col-sm-9 col-md-10">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default" style="width:1000px; height:400px;margin-left:-30px" id='table'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id='photo'>
+                <div class="main col-sm-9 col-md-10">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default" style="width:1000px; height:400px;margin-left:-30px" id='echart'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<script type="text/javascript">
+    // var description;
+    // option = {
+    //         title : {
+    //             text: '人物关系：乔布斯',
+    //             subtext: '数据来自人立方',
+    //             x:'right',
+    //             y:'bottom'
+    //         },
+    //         tooltip : {
+    //             trigger: 'item',
+    //             formatter: '{a} : {b}'
+    //         },
+    //         toolbox: {
+    //             show : true,
+    //             feature : {
+    //                 restore : {show: true},
+    //                 magicType: {show: true, type: ['force', 'chord']},
+    //                 saveAsImage : {show: true}
+    //             }
+    //         },
+    //         legend: {
+    //             x: 'left',
+    //             data:['家人','朋友']
+    //         },
+    //         series : [
+    //             {
+    //                 type:'force',
+    //                 name : "人物关系",
+    //                 ribbonType: false,
+    //                 categories : [
+    //                     {
+    //                         name: '人物'
+    //                     },
+    //                     {
+    //                         name: '家人'
+    //                     },
+    //                     {
+    //                         name:'朋友'
+    //                     }
+    //                 ],
+    //                 itemStyle: {
+    //                     normal: {
+    //                         label: {
+    //                             show: true,
+    //                             textStyle: {
+    //                                 color: '#333'
+    //                             }
+    //                         },
+    //                         nodeStyle : {
+    //                             brushType : 'both',
+    //                             borderColor : 'rgba(255,215,0,0.4)',
+    //                             borderWidth : 1
+    //                         },
+    //                         linkStyle: {
+    //                             type: 'curve'
+    //                         }
+    //                     },
+    //                     emphasis: {
+    //                         label: {
+    //                             show: false
+    //                             // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+    //                         },
+    //                         nodeStyle : {
+    //                             //r: 30
+    //                         },
+    //                         linkStyle : {}
+    //                     }
+    //                 },
+    //                 useWorker: false,
+    //                 minRadius : 15,
+    //                 maxRadius : 25,
+    //                 gravity: 1.1,
+    //                 scaling: 1.1,
+    //                 roam: 'move',
+    //                 nodes:[
+    //                     {category:0, name: '乔布斯', value : 10, label: '乔布斯\n（主要）'},
+    //                     {category:1, name: '丽萨-乔布斯',value : 2},
+    //                     {category:1, name: '保罗-乔布斯',value : 3},
+    //                     {category:1, name: '克拉拉-乔布斯',value : 3},
+    //                     {category:1, name: '劳伦-鲍威尔',value : 7},
+    //                     {category:2, name: '史蒂夫-沃兹尼艾克',value : 5},
+    //                     {category:2, name: '奥巴马',value : 8},
+    //                     {category:2, name: '比尔-盖茨',value : 9},
+    //                     {category:2, name: '乔纳森-艾夫',value : 4},
+    //                     {category:2, name: '蒂姆-库克',value : 4},
+    //                     {category:2, name: '龙-韦恩',value : 1},
+    //                 ],
+    //                 links : [
+    //                     {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'},
+    //                     {source : '保罗-乔布斯', target : '乔布斯', weight : 2, name: '父亲'},
+    //                     {source : '克拉拉-乔布斯', target : '乔布斯', weight : 1, name: '母亲'},
+    //                     {source : '劳伦-鲍威尔', target : '乔布斯', weight : 2},
+    //                     {source : '史蒂夫-沃兹尼艾克', target : '乔布斯', weight : 3, name: '合伙人'},
+    //                     {source : '奥巴马', target : '乔布斯', weight : 1},
+    //                     {source : '比尔-盖茨', target : '乔布斯', weight : 6, name: '竞争对手'},
+    //                     {source : '乔纳森-艾夫', target : '乔布斯', weight : 1, name: '爱将'},
+    //                     {source : '蒂姆-库克', target : '乔布斯', weight : 1},
+    //                     {source : '龙-韦恩', target : '乔布斯', weight : 1},
+    //                     {source : '克拉拉-乔布斯', target : '保罗-乔布斯', weight : 1},
+    //                     {source : '奥巴马', target : '保罗-乔布斯', weight : 1},
+    //                     {source : '奥巴马', target : '克拉拉-乔布斯', weight : 1},
+    //                     {source : '奥巴马', target : '劳伦-鲍威尔', weight : 1},
+    //                     {source : '奥巴马', target : '史蒂夫-沃兹尼艾克', weight : 1},
+    //                     {source : '比尔-盖茨', target : '奥巴马', weight : 6},
+    //                     {source : '比尔-盖茨', target : '克拉拉-乔布斯', weight : 1},
+    //                     {source : '蒂姆-库克', target : '奥巴马', weight : 1}
+    //                 ]
+    //             }
+    //         ]
+    // };                   
+    // var myChart = echarts.init(document.getElementById('echart'));
+    // myChart.setOption(option);
+    // require([
+    //         'echarts'
+    //     ],
+    //     function(ec){
+    //         var ecConfig = require('echarts/config');
+    //         function focus(param) {
+    //             var data = param.data;
+    //             var links = option.series[0].links;
+    //             var nodes = option.series[0].nodes;
+    //             if (
+    //                 data.source != null
+    //                 && data.target != null
+    //             ) { //点击的是边
+    //                 var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+    //                 var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+    //                 // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+    //             } else { // 点击的是点
+    //             }
+    //         }
+    //             myChart.on(ecConfig.EVENT.CLICK, focus)
+
+    //             myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+    //                 console.log(myChart.chart.force.getPosition());
+    //             });
+    //         }
+    // )
+//draw function
+function Search_weibo(){
+  this.ajax_method = 'GET';
+}
+
+Search_weibo.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+
+    Draw_table: function(data){
+        // $('#table').empty();
+        // var user_url ='';
+        // html = '';
+        // html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+        // html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th><th style="text-align:center;width:70px">全选<input type="checkbox" onclick="selectAll()" ></th></tr></thead>';
+        // var item = data['hits']['hits'];
+        // html += '<tbody>';
+        // for(var i = 0; i < item.length; i++){
+        //   if (item[i]['_source']['sex']=='1'){
+        //     item[i]['_source']['sex']= '/static/img/male.png';
+        //   }
+        //   else{
+        //     item[i]['_source']['sex']= '/static/img/female.png';
+        //   }
+        //   user_host = window.location.host;
+        //   user_url = "http://" + user_host + "/profile/" + item[i]['_id'];
+        //   html += '<tr>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '><img src="' + item[i]['_source']['photo_url'] + '"class="img-circle"></td>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['nick_name'] +'<img src="'+ item[i]['_source']['sex'] +'"style="height:20px"><img src="/static/img/vertify.png" style="height:20px"</td>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['user_location'] +'</td>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle;width:72px">'+ item[i]['_source']['friendsnum'] +'</td>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['fansnum'] +'</td>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['statusnum'] +'</td>';
+        //   html += '<td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox"></td>';
+        //   // html += '<td class="center" style="text-align:center">'+ new Date(parseInt(item[i]['_source']['create_at']) +'</td>';
+        //   html += '</tr>';
+        // }
+        // $('#table').append(html);
+        // html += '</tbody>';
+        // html += '</table>';
+    }
+}
+var Search_weibo = new Search_weibo(); 
+var weibo_url = '/profile/user/?';
+Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_table);
+
+$('.inline-checkbox').click(function(){
+    if($(this).is(':checked')){
+        $(this).next().next().val('1');
+        $(this).next().next().attr('disabled',false);
+    }
+    else{
+        $(this).next().next().val('');
+        $(this).next().next().attr('disabled',true);
+    }
+});
+</script>
+{% endblock %}
