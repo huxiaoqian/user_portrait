@@ -15,7 +15,7 @@ from user_portrait.global_utils import es_user_portrait
 from user_portrait.time_utils import ts2datetime, datetime2ts
 
 
-index_name = 'group_analysis'
+index_name = 'group_result'
 index_type = 'group'
 
 
@@ -64,5 +64,6 @@ if __name__=='__main__':
                 '1642591402', '2074370833', '1640601392', '1773489534',\
                 '2722498861', '2803301701']
     input_data['submit_date'] = '2013-09-08'
+    input_data['state'] = 'it is a test'
     submit_task(input_data)
 
