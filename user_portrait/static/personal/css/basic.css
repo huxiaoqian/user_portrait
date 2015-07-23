@@ -1,0 +1,36 @@
+#Pdetail{
+	margin:0px auto;
+}
+#Pdetail .m-wrap {
+  margin: -6px 0;
+  overflow: hidden;
+  padding-left: 400px;
+}
+.clearfix {
+  display: block;
+}
+.li_1 {
+  float: left;
+  width: 100%;
+  line-height:42px;
+}
+.m-wrap li {
+  line-height: 42px;
+  font-size:16px;
+} 
+.pt_title {
+  float: left;
+  width: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: normal;
+  text-align: right;
+  color: #808080;
+
+}
+.pt_detail {
+  display: block;
+  margin-left: 60px;
+  word-break: break-all;
+padding-left:5px;
+}

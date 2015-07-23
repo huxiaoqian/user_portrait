@@ -33,7 +33,7 @@ def search_low_number(low_range, index_name=index_destination, index_type=index_
                 "filter": {
                     "range": {
                         "low_number":{
-                            "lt": low_range
+                            "gt": low_range
                         }
                     }
                 }

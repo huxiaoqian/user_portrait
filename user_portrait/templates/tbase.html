@@ -6,7 +6,7 @@
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     		<meta charset="utf-8">
     		<meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>{% block title %}人物画像系统{% endblock title %}</title>
+            <title>{% block title %}XXXXXX{% endblock title %}</title>
 		{% endblock %}
 		<!-- end head 标签 -->
 
@@ -50,20 +50,20 @@
 		<!-- 上面导航 -->
 		{% block header %}
 			<div id="header">
-		    	<h1 class="headtitle">人物画像系统</h1>
+		    	<h1 class="headtitle">XXXXXX</h1>
 		        <form class="search-form" id="" method="post" action="">
 		       	  	<span class="searchborder fleft">
-		  				<input type="text" id="keyword" value="请按uid或昵称搜索"  onfocus="if (value =='请按uid或昵称搜索'){value =''}" onblur="if (value ==''){value='请按uid或昵称搜索'}"/>
+		  				<input type="text" id="keyword" value="" placeholder="请输入uid或昵称"/>
 				    </span>
 		            <span class="fleft">
-		            	<a title="" href="" >
-						<input class="search" type="button" value="简单搜索" /></a>
+		            	<a title="">
+						<input id="simple_search" class="search" type="button" value="简单搜索" /></a>
 		            	<a title="" href="" class="webpage" id="showBtn">高级搜索</a>
 		            </span>  
 				</form>
 				
 				<div class="fleft entrance">
-					<a title="" href="" class="link2portrait">人物背景系统入口</a>
+					<a title="" href="" class="link2portrait">XXXXXX入口</a>
 				</div>
 				
 		        <div class="fright userInfo">
@@ -106,17 +106,17 @@
 		<div class="search-content">
 			<div class="cols">
 				<span class="fleft lineh42 mright23">uid</span>
-				<input class="inputbox fleft" type="text" value="请输入uid" onfocus="if (value =='请输入uid'){value =''}" onblur="if (value ==''){value='请输入uid'}" />
+				<input class="inputbox fleft" type="text" value="" placeholder="请输入uid" />
 				<span class="fleft lineh42 mright13">用户名</span>
-				<input class="inputbox fleft" type="text" value="请输入用户名" onfocus="if (value =='请输入用户名'){value =''}" onblur="if (value ==''){value='请输入用户名'}" />
+				<input class="inputbox fleft" type="text" value="" placeholder="请输入用户名" />
 				<span class="fleft lineh42 ">地点</span>
-				<input class="inputbox fleft" type="text" value="北京" onfocus="if (value =='北京'){value =''}" onblur="if (value ==''){value='北京'}"/>
+				<input class="inputbox fleft" type="text" value="" placeholder="北京"/>
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 ">关键字</span>
-				<input class="inputbox fleft" type="text" value="请输入关键字" onfocus="if (value =='请输入关键字'){value =''}" onblur="if (value ==''){value='请输入关键字'}" />
+				<input class="inputbox fleft" type="text" value="" placeholder="请输入关键字" />
 				<span class="fleft lineh42 ">hashtag</span>
-				<input class="inputbox fleft" type="text" value="请输入hashtag" onfocus="if (value =='请输入hashtag'){value =''}" onblur="if (value ==''){value='请输入hashtag'}"/>
+				<input class="inputbox fleft" type="text" value="" placeholder="请输入hashtag" />
 			</div>
 			<div class="cols">
 				<form action="" method="get">
@@ -203,7 +203,7 @@
 						$(this).parent().find('dd').slideToggle();
 						$(this).parent().find('dd').addClass("menu_chioce");
 					});
-				});
+                });
 				$("#showBtn").off("click").click(function(){
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
@@ -219,7 +219,8 @@
                     $("#supersearch").addClass("hidden");
                     return false;
                 });
-			</script>
+            </script>
+            <script src="/static/js/portrait/tbase.js"></script>
 		{% endblock %}
 		<!-- end DIY -->
 
@@ -254,7 +255,6 @@
 			<!-- history.js for cross-browser state change on ajax -->
 			<script src="/static/js/jquery.history.js"></script>
 			<!-- application script for Charisma demo -->
-			<script src="/static/js/table.js"></script>
 			<script src="/static/js/charisma.js"></script>
 		{% endblock %}
 		<!-- end js -->
