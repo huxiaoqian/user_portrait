@@ -15,6 +15,11 @@ def loading():
 
     return render_template('portrait/index.html')
 
+@mod.route('/overview/')
+def overview():
+
+    return render_template('portrait/overview.html')
+
 @mod.route('/contrast/')
 def contrast():
 
