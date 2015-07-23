@@ -42,7 +42,7 @@ def ajax_identify_in():
     data = json.loads(data)
     if data:
         #test
-        data = [('2013-09-07','1767905823')]
+        # data = [('2013-09-07','1767905823')]
         results = identify_in(data) # success:1
         print 'results:', data
     return json.dumps(results)
