@@ -18,10 +18,33 @@ from user_portrait.time_utils import ts2datetime, datetime2ts
 index_name = 'group_result'
 index_type = 'group'
 
-
+#submit new task and identify the task name unique
 def submit_task(input_data):
-    r.lpush('group_task', json.dumps(input_data))
+    status = 0
+    result = r.lrange('group_task', 0, -1)
+    #print 'result:',result
+    for task in result:
+        task_dict = json.loads(task)
+        task_name = task['task_name']
+        if input_data==task_name:
+            status += 1
+    result = es.get(index=index_name, doc_type=index_type, id=task_name)
+    try:
+        task_exist = result['_source']
+    except:
+        status += 1
+    if status != 0:
+        return False
+    else:
+        r.lpush('group_task', json.dumps(input_data))
     return True
+
+#search task by topic
+def search_task(task_name, submit_date, state):
+    results = []
+
+    return results
+
 
 def get_group_results(task_name):
     result = {}

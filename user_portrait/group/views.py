@@ -4,13 +4,14 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import submit_task, get_group_results, delete_group_results
+from utils import submit_task, search_task, get_group_results, delete_group_results
 
 from user_portrait.search_user_profile import es_get_source
 
 mod = Blueprint('group', __name__, url_prefix='/group')
 
 # submit group analysis task and save to redis as lists
+# submit group task: task name should be unique
 @mod.route('/submit_task/')
 def ajax_submit_task():
     input_data = dict()
@@ -27,7 +28,8 @@ def ajax_show_task():
     results = {}
     task_name = request.args.get('task_name', '')
     submit_date = request.args.get('submit_date', '')
-    
+    state = request.args.get('state', '')
+    results = search_task(task_name, submit_date, state)
     return json.dumps(results)
 
 
