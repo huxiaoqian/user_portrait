@@ -22,72 +22,17 @@ class HomeView(views.MethodView):
         #q = request.args.get('q')
         item_content = []
         item_head = []
-        fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location']
-        range_item = ['statusnum', 'fansnum', 'friendsnum']
-        select_item = ['sex', 'tn', 'sp_type']
+        fuzz_item = ['uid', 'nick_name']
         data = {}
         query = []
         num = 0
-        order = []
-        data['uid'] = request.args.get('q1')
-        data['nick_name'] = request.args.get('nickname')
-        data['rel_name'] = request.args.get('q3')
-        data['sp_type'] = request.args.get('q4')
-        data['isreal'] = request.args.get('tn')
-        data['sex'] = request.args.get('sex')
-        data['email'] = request.args.get('q7') 
-        data['user_location'] = request.args.get('q12')
-        rank_order = request.args.get('order')
-        for key in range_item:
-            data[key] = {}
-        data['statusnum']['from'] = '0'
-        data['statusnum']['to'] = '100000000'
-        data['fansnum']['from'] = '0'
-        data['fansnum']['to'] = '100000000'
-        data['friendsnum']['from'] = '0'
-        data['friendsnum']['to'] = '100000000'
-        data['statusnum']['from'] = request.args.get('q5')
-        data['statusnum']['to'] = request.args.get('q6')
-        data['fansnum']['from'] = request.args.get('q8')
-        data['fansnum']['to'] = request.args.get('q9')
-        data['friendsnum']['from'] = request.args.get('q10')
-        data['friendsnum']['to'] = request.args.get('q11')
-        size = request.args.get('size')
-        for key in range_item:
-            if data[key]['from'] == '' and data[key]['to'] != '':
-                data[key]['from'] = '0'
-            if data[key]['from'] != '' and data[key]['to'] == '':
-                data[key]['to'] = '100000000'
-        if rank_order == "0":
-            order = [{'statusnum':{'order':'desc'}}]
-            num += 1
-        if rank_order == "1":
-            order = [{'fansnum':{'order':'desc'}}]
-            num += 1
-        if rank_order == "2":
-            order = [{'friendsnum':{'order':'desc'}}]
-            num += 1
-
-        if data['isreal'] == '2':
-            data['isreal'] = ''
-        if data['sex'] == '3':
-            data['sex'] = ''
-        if data['sp_type'] == '0':
-            data['sp_type'] = ''
+        data['uid'] = request.args.get('uidnickname')
+        data['nick_name'] = request.args.get('uidnickname')
         for key in data:
-            if data[key] and key not in range_item:
+            if data[key]:
                 if key in fuzz_item:
                     query.append({'wildcard':{key : "*" + data[key] + '*'}})
                     num += 1
-                if key in select_item :
-                    if data[key]:
-                        query.append({'match':{key : data[key]}})
-                        num += 1
-            elif data[key]:
-                if data[key]['from'] and data[key]['to']:
-                    query.append({'range':{key:{"from":data[key]['from'],"to":data[key]['to']}}})
-                    num += 1
-
         if num > 0:
             try:
                 source = es.search(
@@ -96,10 +41,10 @@ class HomeView(views.MethodView):
                     body = {
                         'query':{
                             'bool':{
-                                'must':query
+                                'should':query
                             }
                         },
-                        "sort":order,
+                        "sort":[{'statusnum':{'order':'desc'}}],
                         "size" : 100
                         }
                 )
@@ -346,52 +291,52 @@ class UserView(views.MethodView):
             result = data
         return result
 
-# class DownloadView(views.MethodView):
+class DownloadView(views.MethodView):
 
-#     def get(self):
-#         user_id = request.args.get('id')
-#         q = request.args.get('q')
-#         select_id = user_id.split(',')
-#         file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
-#         isflag = 1
-#         csvfile = file(file_location, 'wb')
-#         writer = csv.writer(csvfile)
+    def get(self):
+        user_id = request.args.get('id')
+        q = request.args.get('q')
+        select_id = user_id.split(',')
+        file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
+        isflag = 1
+        csvfile = file(file_location, 'wb')
+        writer = csv.writer(csvfile)
 
-#         for uid in select_id:
-#             item_content = []
-#             if uid:
-#                 source = es.search(
-#                     index = 'weibo_user',
-#                     doc_type = 'user',
-#                     body ={
-#                         'query':{
-#                             'match':{'id':uid}
-#                         },
-#                         'size':10
-#                     }                        
-#                 )
-#                 source_content = source['hits']['hits'][0]['_source']
-#                 if isflag:
-#                     item_head = [key for key in source_content]
-#                     writer.writerow(item_head)
-#                     isflag = 0
+        for uid in select_id:
+            item_content = []
+            if uid:
+                source = es.search(
+                    index = 'weibo_user',
+                    doc_type = 'user',
+                    body ={
+                        'query':{
+                            'match':{'id':uid}
+                        },
+                        'size':1
+                    }                        
+                )
+                source_content = source['hits']['hits'][0]['_source']
+                if isflag:
+                    item_head = [key for key in source_content]
+                    writer.writerow(item_head)
+                    isflag = 0
 
-#                 for key in source_content:
-#                     if isinstance(source_content[key],unicode):
-#                         print 'it is unicode'
-#                     item_content.append(self.decode_item(source_content[key]))
+                for key in source_content:
+                    if isinstance(source_content[key],unicode):
+                        print 'it is unicode'
+                    item_content.append(self.decode_item(source_content[key]))
 
-#                 writer.writerow(item_content)
+                writer.writerow(item_content)
 
-#         csvfile.close()
-#         return  json.dumps(export_data)
+        csvfile.close()
+        return  json.dumps(source)
 
-#     def decode_item(self, data):
-#         try:
-#             result = data.encode('utf-8')
-#         except:
-#             result = data
-#         return result
+    def decode_item(self, data):
+        try:
+            result = data.encode('utf-8')
+        except:
+            result = data
+        return result
 
 mod.add_url_rule('/', view_func=HomeView.as_view('homepage'))
 mod.add_url_rule('/keywords/', view_func=KeywordView.as_view('keyword'))
@@ -401,4 +346,4 @@ mod.add_url_rule('/<id>/followers/', view_func=UserFollowersView.as_view('follow
 mod.add_url_rule('/<id>/friends/', view_func=UserFriendsView.as_view('friends'))
 mod.add_url_rule('/test/', view_func=Testviews.as_view('test'))
 mod.add_url_rule('/user/', view_func=UserView.as_view('user'))
-# mod.add_url_rule('/download/', view_func=DownloadView.as_view('download'))
+mod.add_url_rule('/download/', view_func=DownloadView.as_view('download'))

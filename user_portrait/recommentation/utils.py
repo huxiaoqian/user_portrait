@@ -8,11 +8,14 @@ import time
 import datetime
 import json
 import redis
+from elasticsearch import Elasticsearch
+from update_activeness_record import update_record_index
 #from user_portrait.global_utils import R_RECOMMENTATION as r
 reload(sys)
 sys.path.append('../')
 from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
+from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.time_utils import ts2datetime
 #test
 '''
@@ -101,7 +104,16 @@ def show_out_uid(date):
 
     """
     for iter_key in keys:
-        out_dict[iter_key] = json.dumps(r_out.hget("recommend_delete_list",iter_key))
+        date_out_list = json.loads(r_out.hget("recommend_delete_list",iter_key))
+        detail_info = {}
+        if date_out_list:
+            #detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
+            detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
+            # extract the return dict with the field '_source'
+        info = []
+        info.append(date_out_list)
+        info.append(detail_info)
+        out_dict[iter_key] = info
 
     return out_dict
 
@@ -110,13 +122,29 @@ def decide_out_uid(data):
     date = time.strftime("%Y%m%d", time.localtime(time.time()))
     if data:
         uid_list = data.split(",") # decide to delete uids
+        exist_data = r_out.hget("decide_delete_list", date)
+        if exist_data:
+            uid_list.extend(json.loads(exist_data))
         r_out.hset("decide_delete_list", date, json.dumps(uid_list))
+
+    recommend_keys = r_out.hkeys("recommend_delete_list")
+    recommend_uid_list = []
+    for iter_key in recommend_keys:
+        recommend_uid_list.extend(json.loads(r_out.hget("recommend_delete_list",iter_key)))
+    not_out_list = list(set(recommend_uid_list).difference(set(uid_list))) # update user info in user_index_profile
+
+    """
+    update user states
+    if not_out_list:
+        update_record_index(not_out_list)
+    """
     r_out.delete("recommend_delete_list")
-    r_out.hset("history_delete_list", date, json.dumps(uid_list))
+    if uid_list:
+        r_out.hset("history_delete_list", date, json.dumps(uid_list))
 
     return 1
 
-def genereat_date(former_date, later_date="21000101"):
+def generate_date(former_date, later_date="21000101"):
     date_list = []
     date_list.append(former_date)
     former_struct = datetime.date(int(former_date[0:4]), int(former_date[4:6]), int(former_date[6:]))
@@ -140,16 +168,17 @@ def genereat_date(former_date, later_date="21000101"):
 
 def search_history_delete(date):
     history_uid_dict = {}
-    if not date:
+    if date == []:
         now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
-        date_list = genereat_date(now_date)
+        date_list = generate_date(now_date)
 
     else:
-        query_date = date.split(",")
-        date_list = generate_date(query_date[0], query_date[1])
+        date_list = generate_date(date[0].replace('-',''), date[1].replace('-',''))
 
     for key in date_list:
-        history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
+        temp = r_out.hget("history_delete_list", key)
+        if temp:
+            history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
 
     return json.dumps(history_uid_dict)
 

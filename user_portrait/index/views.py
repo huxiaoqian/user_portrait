@@ -15,6 +15,11 @@ def loading():
 
     return render_template('portrait/index.html')
 
+@mod.route('/overview/')
+def overview():
+
+    return render_template('portrait/overview.html')
+
 @mod.route('/contrast/')
 def contrast():
 
@@ -30,10 +35,20 @@ def recommend_in():
 
     return render_template('portrait/recommend_in.html')
 
+@mod.route('/recommend_out/')
+def recommend_out():
+
+    return render_template('portrait/recommend_out.html')
+
 @mod.route('/search_result/')
 def search_result():
-
-    return render_template('portrait/search_result.html')
+    stype = request.args.get('stype', 1)
+    if stype == 1:
+        term = request.args.get('term', '')
+        return render_template('portrait/search_result.html', stype=stype, term=term)
+    else:
+        term = request.args.get('term', '')
+        return render_template('portrait/search_result.html', stype=stype, term=term)
 
 @mod.route('/test/')
 def test():

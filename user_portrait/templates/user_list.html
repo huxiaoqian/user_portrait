@@ -44,7 +44,7 @@
   </a></div>
     <div class="divcss5-cent" style='margin-left:170px'>
         <form>
-            <span><input type="text" id='search'name=nickname style='float:left;width:60%;height:38px;margin-left:-1px' placeholder="搜索昵称"></span>
+            <span><input type="text" id='search'name=uidnickname style='float:left;width:60%;height:38px;margin-left:-1px' placeholder="搜索UID或者昵称"></span>
             <span class="input-group-btn">
                <a href="#goto"><input class="btn btn-primary" style='width:100px;margin-left:10px' type='submit' id="submit" value=简单检索></a>
             </span>
@@ -233,9 +233,10 @@
         <div id="loading_information"></div>
         <div style='float:left'id='search_conditions'></div>
         <div id='search_information'>
-        <div class="page-header" style='margin-top:30px'>用户信息列表(耗时：<font color='#1F90FF'>{{ source.took }}</font>ms 命中：<font color='#1F90FF'>{{ source.hits.total }}</font>条)</div><a style='cursor:pointer;margin-left:785px' role="button" name= '0' onclick="selectAll('{{ url_for('static',filename='download/test.csv') }}');">导出</a>
+        <div class="page-header" style='margin-top:30px'>用户信息列表(耗时：<font color='#1F90FF'>{{ source.took }}</font>ms 命中：<font color='#1F90FF'>{{ source.hits.total }}</font>条)</div>
         </div>
-        <div class="table-responsive"id='table' style='overflow-x:hidden;'>
+        <d
+        iv class="table-responsive"id='table' style='overflow-x:hidden;'>
               <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
                 <thead>
                     <tr>
@@ -253,7 +254,7 @@
                     {% for item in source.hits.hits %}
                 <tr>
                     <td class="center" style="text-align:center;vertical-align:middle"><a href="{{ url_for('profile.detail', id=item._id) }}"><img src="{{ item._source.photo_url }}" class="img-circle"></td>
-                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.nick_name }}<img src= '{{ gender(item._source.sex) }}' style='height:20px' ><img src= '/../../static/img/vertify.png' style='height:20px' ></td>
+                    <td class="center" style="text-align:center;vertical-align:middle"><a href="{{ url_for('profile.detail', id=item._id) }}">{{ item._source.nick_name }}</a><img src= '{{ gender(item._source.sex) }}' style='height:20px' ><img src= '/../../static/img/vertify.png' style='height:20px' ></td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.user_location }}</td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.friendsnum }}</td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.fansnum }}</td>
@@ -263,8 +264,9 @@
                 </tr>
                     {% endfor %}
                 </tbody>
-            </table> 
-        </div>
+            </table>
+          <input class="btn btn-primary" id="download_result" style='float:right;margin-top:-20px' type='submit' id="submit" value=全部导出>
+          <input class="btn btn-primary" style='float:right;margin-right:10px;margin-top:-20px' type='submit' onclick="export_selected('{{ url_for('static',filename='download/test.csv') }}');" name=0 value=选中导出> 
         </div>
     </body>
 </html>
@@ -274,7 +276,6 @@
       laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
       laydate({elem: '#demo'});//绑定元素
     }();
-
     //日期范围限制
     var start = {
         elem: '#start',
@@ -336,46 +337,48 @@
         a.value = data;
       });
     };
-    
-    //例二:
-    var p = {left: 323, top : 20};
-    var fn1 = function(city){
-      b.value = city;
-    };
-    
-    b.onclick = function(){
-      citypicker.bind(fn1).fix(p).show();
-    };
-
-    //例三:
-    var fn2 = function(city){
-      c.value = city;
-    };
-    c.onclick = function(){
-      citypicker.show({
-        left : 566,
-        top  : 20,
-        selected : fn2
-      });
-    };
   }
+  $('#download_result').click(function(){
+        console.log('download');
+        var download_url = 'http://'+ window.location.host + '/static/download/test.csv';
+        window.location.href = download_url;
+  });
 
-  //  function setSubmitName(obj){
-  //   var search = document.getElementById('search');
-  //   if('uid'==obj.value){
-  //       search.name='q1';
-  //   }
-  //   else if('nick_name'==obj.value){
-  //       search.name='q2';
-  //   }
-  //   else if('rel_name'==obj.value){
-  //       search.name='q3';
-  //   }
-  //   else {
-  //       search.name='q7';
-  //   }
-  // }
-  
+  var check_first = $('input[type=checkbox]').eq(0);
+function selectAll(){
+  $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
+}
 
+function export_selected(file){
+  var obj = $('input[type=checkbox]').eq(0);
+  var q = 1;
+  var ids = '';
+  if (obj.is(":checked")){
+    var q = obj.attr('name');
+  }
+  if(q==0){
+  window.location.href = file
+  }
+  else{
+      $('input[type=checkbox]:checked').each(function(){
+        var select_id = $(this).attr('id');
+        if(select_id){
+          select_id = select_id + ',';
+          ids += select_id;
+        }
+      });
+      console.log(ids);
+      var downloadurl = window.location.host;
+      $.ajax({
+        url: 'http://' + downloadurl + '/profile/download/?q='+q+'&id='+ids,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        success: function(data){
+           window.location.href = file;
+        }
+    });
+  }
+}
 </script>
 

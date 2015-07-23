@@ -1,12 +1,13 @@
 #-*- coding:utf-8 -*-
 
 import os
+import redis
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute
 from utils import show_out_uid,decide_out_uid, search_history_delete
-
+from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.time_utils import datetime2ts
 
 # use to test 13-09-08
@@ -37,13 +38,27 @@ def ajax_recommentation_in():
 @mod.route('/identify_in/')
 def ajax_identify_in():
     results = 0 # mark fail
+    '''
     data = request.args.get('data','') # data '[(date, uid)]'
     data = json.loads(data)
     if data:
         #test
-        data = [('2013-09-07','1767905823')]
+        # data = [('2013-09-07','1767905823')]
         results = identify_in(data) # success:1
         print 'results:', data
+    '''
+    date = request.args.get('date', '') # date = '2013-09-07'
+    uid_list = request.args.get('uid_list', '')
+    data = []
+    if date and uid_list:
+        #test
+        #date = '2013-09-07'
+        for uid in uid_list:
+            data.append([date, uid])
+            results = identify_in(data)
+            print 'results:', results
+    else:
+        results = None
     return json.dumps(results)
 
 
@@ -79,11 +94,17 @@ def ajax_compute_show():
 @mod.route('/identify_compute/')
 def ajax_compute_identify():
     results = {}
-    data = request.args.get('data', '') # data '[(date, uid)]'
+    data = request.args.get('data', '') # data '['date&uid', 'date&uid']'
+    input_data = []
     if data:
         #test
-        data = [('2015-07-15','1767905823')]
-        results = identify_compute(data)
+        #data = [('2015-07-15','1767905823')]
+        data = json.loads(data)
+        for item in data:
+            date = item.split('&')[0]
+            uid = item.split('&')[1]
+            input_data.append([date ,uid])
+        results = identify_compute(input_data)
     return json.dumps(results)
 
 # show recommentaion out uid
@@ -109,7 +130,26 @@ def ajax_identify_out():
 def ajax_history_delete():
     results = {}
     date = request.args.get('date', '') # date 2013-09-01, 2013-09-02
+    date = str(date).split(',')
     results = search_history_delete(date)
 
     return results # return {"20150715": "[uid]"}
 
+@mod.route('/cancel_delete/')
+def ajax_cancel_delete():
+    data = request.args.get('data','') # uid,uid
+    date = request.args.get('date', '') # date, 2013-09-01
+    if not data or not date:
+        return "no one cancelled"
+    else:
+        uid_list = data.split(',')
+        date = date.replace('-','')
+        delete_list = json.loads(r_out.hget('decide_delete_list',date))
+        revise_list = list(set(delete_list).difference(set(uid_list)))
+        r_out.hset('decide_delete_list', date, json.dumps(revise_list))
+
+        delete_list = json.loads(r_out.hget('history_delete_list',date))
+        revise_list = list(set(delete_list).difference(set(uid_list)))
+        r_out.hset('history_delete_list',date, json.dumps(revise_list))
+
+    return json.dumps('1')
