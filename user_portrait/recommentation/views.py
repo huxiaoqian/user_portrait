@@ -48,7 +48,8 @@ def ajax_identify_in():
         print 'results:', data
     '''
     date = request.args.get('date', '') # date = '2013-09-07'
-    uid_list = request.args.get('uid_list', '')
+    uid_string = request.args.get('uid_list', '')
+    uid_list = uid_string.split(',')
     data = []
     if date and uid_list:
         #test
@@ -99,7 +100,7 @@ def ajax_compute_identify():
     if data:
         #test
         #data = [('2015-07-15','1767905823')]
-        data = json.loads(data)
+        data = data.split(',')
         for item in data:
             date = item.split('&')[0]
             uid = item.split('&')[1]
