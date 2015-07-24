@@ -48,7 +48,7 @@ Search_weibo_recommend.prototype = {
   },
   Re_Draw_table: function(data){
     //console.log(data);
-    var div = that.div
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
@@ -105,17 +105,18 @@ Search_weibo_history.prototype = {
 
   Draw_table: function(data){
     //console.log(data);
-    var div = that.div
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>出库时间</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      var history_date;
       user_url = window.location.href;
       user_url = user_url + i;
       html += '<tr>';
@@ -126,7 +127,8 @@ Search_weibo_history.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center">'+ history_date +'</td>';
+      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" id="' + i + '" value="' + history_date + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -142,10 +144,11 @@ Search_weibo_history.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>出库时间</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      var history_date;
       user_url = window.location.href;
       user_url = user_url + i;
       html += '<tr>';
@@ -156,7 +159,8 @@ Search_weibo_history.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center">'+ history_date +'</td>';
+      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" id="' + i + '" value="' + history_date + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -180,23 +184,57 @@ var url_history = '/recommentation/history_delete/?date=2013-09-07';
 draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Draw_table);
 
+function confirm(data){
+  console.log(data);
+  if(data)
+    alert('操作成功！');
+}
+
 function recommend_button(){
   var recommend_uids = [];
   $('input[name="in_status"]:checked').each(function(){
       recommend_uids.push($(this).attr('value'));
-      //$(this).parent().parent().remove();
   })
-  console.log(recommend_uids);
+  //console.log(recommend_date);
+  //console.log(recommend_uids);
+  var uids_trans = '';
+  for(var i in recommend_uids){
+      uids_trans += recommend_uids[i];
+      if(i<(recommend_uids.length-1))
+        uids_trans += ',';
+  }
+  var recommend_confirm_url = '/recommentation/identify_out/?data=' + uids_trans;
+  console.log(recommend_confirm_url);
+  draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm);
+  self.location.reload();
 }
 
 function history_button(){
+  var history_dates = [];
   var history_uids = [];
   $('input[name="history_status"]:checked').each(function(){
       $(this).attr('disabled',true);
-      history_uids.push($(this).attr('value'));
+      history_dates.push($(this).attr('value'));
+      history_uids.push($(this).attr('id'));
   })
-  console.log($("#history_date_select").val());
-  console.log(history_uids);
+  //console.log(history_dates);
+  //console.log(history_uids);
+  var uids_history = '';
+  var dates_history = '';
+  for(var i in history_uids){
+      uids_history += history_uids[i];
+      if(i<(history_uids.length-1))
+        uids_history += ',';
+  }
+  for(var j in history_dates){
+      dates_history += history_dates[j];
+      if(j<(history_dates.length-1))
+        dates_history += ',';
+  }
+  var history_confirm_url = '/recommentation/history_delete/?date=' + dates_history + '&data=' + uids_history;
+  console.log(history_confirm_url);
+  draw_table_history.call_sync_ajax_request(history_confirm_url, draw_table_history.ajax_method, confirm);
+  self.location.reload();  
 }
 
 var tomorrow = new Date(2013,8,8);
@@ -235,24 +273,6 @@ history_date_html += '<option value="' + history_date[5] + '">' + history_date[5
 history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
 history_date_html += '</select>';
 $("#history_date").append(history_date_html);
-
-/*
-function recommend_date_button(){
-  console.log($("#recommend_date_select").val());
-  var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val();
-  //console.log(url_recommend_new);
-  draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
-  draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Draw_table);
-}
-
-function history_date_button(){
-  console.log($("#history_date_select").val());
-  var url_history_new = '/recommentation/show_out_history/?date=' + $("#history_date_select").val();
-  //console.log(url_history_new);
-  draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
-  draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Draw_table);
-}
-*/
 
 $('#recommend_date_button').click(function(){
   console.log($("#recommend_date_select").val());
