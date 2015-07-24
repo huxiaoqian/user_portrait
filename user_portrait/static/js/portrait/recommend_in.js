@@ -105,7 +105,7 @@ Search_weibo_compute.prototype = {
 
   Draw_table: function(data){
     //console.log(data);
-    var div = that.div
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
@@ -172,7 +172,7 @@ Search_weibo_history.prototype = {
 
   Draw_table: function(data){
     //console.log(data);
-    var div = that.div
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
@@ -209,7 +209,7 @@ Search_weibo_history.prototype = {
   },
   Re_Draw_table: function(data){
     //console.log(data);
-    var div = that.div
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
@@ -273,7 +273,6 @@ function confirm(data){
 
 function recommend_button(){
   var recommend_uids = [];
-  var recommend_result = [];
   var recommend_date = $("#recommend_date_select").val()
   $('input[name="in_status"]:checked').each(function(){
       recommend_uids.push($(this).attr('value'));
