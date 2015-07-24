@@ -16,6 +16,8 @@ sys.path.append('../')
 from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_profile
+from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.time_utils import ts2datetime
 #test
 '''
@@ -27,20 +29,84 @@ def save_uid2compute(uid_list):
         value_string = [test_date, status]
         r.hset(hash_name, uid, json.dumps(value_string))
 '''
+
+#get user detail
+#output: uid, uname, location, fansnum, statusnum, influence
+def get_user_detail(date, input_result, status):
+    results = []
+    if status=='show_in':
+        uid_list = input_result
+    if status=='show_compute':
+        uid_list = input_result.keys()
+    if status=='show_in_history':
+        uid_list = input_result.keys()
+    index_name = ''.join(date.split('-'))
+    # test
+    index_name = '20130907'
+    index_type = 'bci'
+    user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
+    #print 'user_portrait_result:', user_portrait_result[0]
+    user_profile_result = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
+    #print 'user_profile_result:', user_profile_result
+    for i in range(0, len(uid_list)):
+        uid = uid_list[i]
+        bci_dict = user_bci_result[i]
+        profile_dict = user_profile_result[i]
+        try:
+            bci_source = bci_dict['_source']
+        except:
+            bci_source = None
+        if bci_source:
+            influence = bci_source['user_index']
+        else:
+            influence = ''
+        try:
+            profile_source = profile_dict['_source']
+        except:
+            profile_source = None
+        if profile_source:
+            uname = profile_source['nick_name'] 
+            location = profile_source['user_location']
+            fansnum = profile_source['fansnum']
+            statusnum = profile_source['statusnum']
+        else:
+            uname = ''
+            location = ''
+            fansnum = ''
+            statusnum = ''
+        if status == 'show_in':
+            results.append([uid, uname, location, fansnum, statusnum, influence])
+        if status == 'show_compute':
+            in_date = input_result[uid][0]
+            compute_status = input_result[uid][1]
+            results.append([uid, uname, location, fansnum, statusnum, influence, in_date, compute_status])
+        if status == 'show_in_history':
+            in_status = input_result[uid]
+            results.append([uid, uname, location, fansnum, statusnum, influence, in_status])
+
+    return results
+
+
 # show recommentation in uid
 def recommentation_in(input_ts):
     date = ts2datetime(input_ts)
     recomment_results = []
     # read from redis
+    results = []
     hash_name = 'recomment_'+str(date)
     results = r.hgetall(hash_name)
+    if not results:
+        return results
     # search from user_profile to rich th show information
     for item in results:
         status = results[item]
         if status=='0':
             recomment_results.append(item)
-
-    return recomment_results
+    if recomment_results:
+        results = get_user_detail(date, recomment_results, 'show_in')
+    else:
+        results = []
+    return results
 
 # identify uid to in user_portrait
 def identify_in(data):
@@ -63,16 +129,22 @@ def identify_in(data):
 def show_in_history(date):
     results = []
     hash_name = 'recomment_'+str(date)
-    results = r.hgetall(hash_name)
+    r_results = r.hgetall(hash_name)
+    if r_results:
+        results = get_user_detail(date, r_results, 'show_in_history')
     return results
 
 # show uid who have in but not compute
 def show_compute(date):
-    results = {}
+    results = []
     hash_name = 'compute'
-    results = r.hgetall(hash_name)
+    r_results = r.hgetall(hash_name)
     #search user profile to inrich information
-    return results
+    if r_results:
+        results = get_user_detail(date, r_results, 'show_compute')
+        return results
+    else:
+        return results
 
 # identify uid to start compute
 def identify_compute(data):
