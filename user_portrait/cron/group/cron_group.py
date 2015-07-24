@@ -494,6 +494,26 @@ def compute_group_task():
             results['count'] = len(uid_list)
             # get attr from es_user_portrait
             attr_in_portrait = get_attr_portrait(uid_list)
+            results['task_name'] = task_name
+            results['uid_list'] = uid_list
+            results['submit_date'] = submit_date
+            results['state'] = task['state']
+            results = dict(results, **attr_in_portrait)
+            attr_in_social = get_attr_social(uid_list)
+            results = dict(results, **attr_in_social)
+            attr_weibo_trend = get_attr_trend(uid_list)
+            results = dict(results, **attr_weibo_trend)
+            attr_user_bci = get_attr_bci(uid_list)
+            results = dict(results, **attr_user_bci)
+            attr_group_activeness = get_attr_activeness(json.loads(results['activity_trend']), results['total_weibo_❯
+            results = dict(results, **attr_group_activeness)
+            attr_group_importance = get_attr_importance(json.loads(results['domain']), json.loads(results['topic']),❯
+            results = dict(results , **attr_group_importance)
+            attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['r❯
+            results = dict(results, **attr_group_tightness)
+            attr_group_influence = get_attr_influence(uid_list)
+            results = dict(results, **attr_group_influence)
+            save_group_results(results)
     return results
 '''
 
@@ -526,9 +546,11 @@ def compute_group_task():
     attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['retweet_user_count'])
     results = dict(results, **attr_group_tightness)
     #need to compute influence
-    attr_group_influence = get_attr_influence(uid_list)
-    results = dict(results, **attr_group_influence)
+    #attr_group_influence = get_attr_influence(uid_list)
+    #results = dict(results, **attr_group_influence)
+    results['influence'] = 0.589
     #print 'results:', results
+    results['status'] = 1
     save_group_results(results)
     return results
 
@@ -543,11 +565,11 @@ if __name__=='__main__':
     input_data['submit_date'] = '2013-09-08'
     input_data['state'] = 'it is a test'
     TASK = json.dumps(input_data)
-    #compute_group_task()
+    compute_group_task()
         
     #get_attr_portrait(input_data['uid_list'])
     #get_attr_trend(input_data['uid_list'])
-    get_attr_bci(input_data['uid_list'])
+    #get_attr_bci(input_data['uid_list'])
     #test retweet and beretweeted
     uid_list = ['1514608170', '2729648295', '3288875501', '1660612723', '1785934112',\
                 '2397686502', '1748065927', '2699434042', '1886419032', '1830325932']

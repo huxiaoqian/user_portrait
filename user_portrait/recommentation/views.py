@@ -95,17 +95,20 @@ def ajax_compute_show():
 @mod.route('/identify_compute/')
 def ajax_compute_identify():
     results = {}
-    data = request.args.get('data', '') # data '['date&uid', 'date&uid']'
+    date = request.args.get('date', '') # 'date1, date2'
+    uid_string = request.args.get('uid_list', '') # 'uid1, uid2'
     input_data = []
-    if data:
+    if date and uid_string:
         #test
-        #data = [('2015-07-15','1767905823')]
-        data = data.split(',')
-        for item in data:
-            date = item.split('&')[0]
-            uid = item.split('&')[1]
+        #input_data = [('2015-07-15','1767905823')]
+        date_list = date.split(',')
+        uid_list = uid_string.split(',')
+        for i in range(0,len(date_list)):
+            date = date_list[i]
+            uid = uid_list[i]
             input_data.append([date ,uid])
-        results = identify_compute(input_data)
+        print 'input_data:', input_data
+        #results = identify_compute(input_data)
     return json.dumps(results)
 
 # show recommentaion out uid

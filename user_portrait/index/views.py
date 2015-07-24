@@ -47,8 +47,19 @@ def search_result():
         term = request.args.get('term', '')
         return render_template('portrait/search_result.html', stype=stype, term=term)
     else:
-        term = request.args.get('term', '')
-        return render_template('portrait/search_result.html', stype=stype, term=term)
+        uid = request.args.get('uid', '')
+        uname = request.args.get('uname', '')
+        location = request.args.get('location', '')
+        adkeyword = request.args.get('adkeyword', '')
+        hashtag = request.args.get('hashtag', '')
+        psycho_status = request.args.get('psycho_status', '')
+        psycho_feature = request.args.get('psycho_feature', '')
+        domain = request.args.get('domain', '')
+        topic = request.args.get('topic', '')
+
+        return render_template('portrait/search_result.html', stype=stype, uid=uid, uname=uname,\
+                location=location, adkeyword=adkeyword, hashtag=hashtag, psycho_status=psycho_status,\
+                psycho_feature=psycho_feature, domain=domain, topic=topic)
 
 @mod.route('/test/')
 def test():

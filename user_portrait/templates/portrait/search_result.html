@@ -70,5 +70,30 @@
     </div>
   </div>
 </div>
-<script type="text/javascript" src="/static/js/portrait/search_result.js"></script> 
 {% endblock %}
+{% block Own_js %}
+{{ super() }}
+<script>
+    var stype = {{ stype }};
+    if (stype == 1){
+        var term = "{{ term }}";
+        var url_search_result = '/attribute/portrait_search/?stype='+stype+'&term='+term;
+    }
+    else{
+        var uid = "{{ uid }}";
+        var uname = "{{ uname }}";
+        var mlocation = "{{ location }}";
+        var adkeyword = "{{ adkeyword }}";
+        var hashtag = "{{ hashtag }}";
+        var psycho_feature = "{{ psycho_feature }}";
+        var psycho_status = "{{ psycho_status }}";
+        var domain = "{{ domain }}";
+        var topic = "{{ topic }}";
+        var url_search_result = '/attribute/portrait_search/?stype='+stype+'&uid='+uid+'&uname='+uname;
+        url_search_result += '&location='+mlocation+'&keywords='+adkeyword+'&hashtag='+hashtag;
+        url_search_result += '&psycho_feature='+psycho_feature+'&psycho_status'+psycho_status;
+        url_search_result += '&domain='+domain+'&topic'+topic;
+    }
+</script>
+<script type="text/javascript" src="/static/js/portrait/search_result.js"></script> 
+{% endblock Own_js%}

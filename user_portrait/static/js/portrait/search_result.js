@@ -26,13 +26,13 @@ Search_weibo_result.prototype = {
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>uid</th><th>用户名</th><th>性别</th><th>注册地</th><th>领域</th><th>话题</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
-    var item = data;
     html += '<tbody>';
-    for(var i in item){
+    for(var i = 0; i<data.length;i++){
+      var item = data[i];
       user_url = window.location.href;
-      user_url = user_url + item[i];
+      user_url = user_url + item[0];
       html += '<tr>';
-      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[i] +'</td>';
+      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
@@ -47,7 +47,7 @@ Search_weibo_result.prototype = {
   }
 }
 
-var url_search_result = '/recommentation/show_in/?date=2013-09-07';
+console.log(url_search_result);
 draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
 
