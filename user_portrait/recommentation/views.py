@@ -113,8 +113,10 @@ def ajax_compute_identify():
 def ajax_recommentation_out():
     results = []
     date = request.args.get('date', '') # date 2013-09-01
-    if date:
-        results = show_out_uid(date)
+    fields = request.args.get('fields','')
+    fields = fields.split(',')
+    if date and fields:
+        results = show_out_uid(date, fields)
     return json.dumps(results)
 
 # identify recommentation out uid
@@ -130,8 +132,8 @@ def ajax_identify_out():
 @mod.route('/history_delete/')
 def ajax_history_delete():
     results = {}
-    date = request.args.get('date', '') # date 2013-09-01, 2013-09-02
-    date = str(date).split(',')
+    date = request.args.get('date', '') # date 2013-09-01
+    date = date.replace('-', '')
     results = search_history_delete(date)
 
     return results # return {"20150715": "[uid]"}
