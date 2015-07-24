@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-add all user in portrait database and this es is used as all users' activity record
+destination index has stored all users in user_portrait, 
 scan the index of everyday active user in profile database and correspondded activity, and default index is 0
 record format: {"uid": 1234567890, '20130901': 500', "20130904": 700}
 
@@ -18,11 +18,14 @@ sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1
 
 es = ES_CLUSTER_FLOW1
-# index_date is everyday index
+# index_date is everyday active index
 index_date = "20130907"
 index_date_doctype = "bci"
-index_destination = "user_index_profile"
+index_destination = "user_index_profile" # record all active user index on the Internet
 index_destination_doctype = "manage"
+
+index_copy_portrait = "this_is_a_copy_portrait_index" # record only portrait user index
+doctype_copy_portrait = "manage"
 
 def expand_update_action(data):
     _id = data['uid']
@@ -85,7 +88,7 @@ def co_search(es, user_list, bulk_action, count_index, tb):
 
     return bulk_action, count_index, tb
 
-if __name__ == "__main__":
+def main(index_date, index_date_doctype, index_destination, index_destination_doctype):
 
     tb = time.time()
     es = ES_CLUSTER_FLOW1
@@ -123,3 +126,8 @@ if __name__ == "__main__":
     print count_n
     print count_index
 
+
+if __name__ == "__main__":
+    # index_date = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
+    main(index_date, index_date_doctype, index_destination, index_destination_doctype)
+    main(index_date, index_date_doctype, index_copy_portrait, doctype_copy_portrait)

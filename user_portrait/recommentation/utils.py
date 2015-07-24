@@ -89,33 +89,26 @@ def identify_compute(data):
 
     return True
 
-def show_out_uid(date):
-    out_dict = {}
-    data = str(date).replace("-","")
-    uid_dict = r_out.hgetall("recommend_delete_list")
-    if not uid_dict:
-        return out_dict # no one is recommended to out
+def show_out_uid(date, fields):
+    out_list = []
+    date = str(date).replace("-","")
+    uid_list = r_out.hget("recommend_delete_list", date)
+    if not uid_list:
+        return out_list # no one is recommended to out
 
-    keys = r_out.hkeys("recommend_delete_list")
-
-    """
-    if data in set(keys):
-        out_dict[data] = json.dumps(r_out.hget("recommend_delete_list", data))
-
-    """
-    for iter_key in keys:
-        date_out_list = json.loads(r_out.hget("recommend_delete_list",iter_key))
-        detail_info = {}
-        if date_out_list:
-            #detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
-            detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
+    return_list = []
+    date_out_list = json.loads(r_out.hget("recommend_delete_list",date))
+    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
-        info = []
-        info.append(date_out_list)
-        info.append(detail_info)
-        out_dict[iter_key] = info
+    print detail
+    for i in range(len(date_out_list)):
+        detail_info = []
+        detail_info.append(date_out_list[i])
+        for item in fields:
+            detail_info.append(detail[i]['_source'][item])
+        return_list.append(detail_info)
 
-    return out_dict
+    return return_list
 
 def decide_out_uid(data):
     uid_list = []
@@ -144,6 +137,7 @@ def decide_out_uid(data):
 
     return 1
 
+"""
 def generate_date(former_date, later_date="21000101"):
     date_list = []
     date_list.append(former_date)
@@ -165,22 +159,22 @@ def generate_date(former_date, later_date="21000101"):
             break
 
     return date_list
+"""
 
 def search_history_delete(date):
-    history_uid_dict = {}
-    if date == []:
+    history_uid_list = []
+    if not date:
         now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
-        date_list = generate_date(now_date)
-
+    elif date:
+        now_date = date
     else:
-        date_list = generate_date(date[0].replace('-',''), date[1].replace('-',''))
+        pass
 
-    for key in date_list:
-        temp = r_out.hget("history_delete_list", key)
-        if temp:
-            history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
+    temp = r_out.hget("history_delete_list", now_date)
+    if temp:
+        history_uid_list = json.loads(r_out.hget("history_delete_list", now_date))
 
-    return json.dumps(history_uid_dict)
+    return json.dumps(history_uid_list)
 
 if __name__=='__main__':
     #test
