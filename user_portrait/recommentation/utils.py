@@ -92,14 +92,20 @@ def recommentation_in(input_ts):
     date = ts2datetime(input_ts)
     recomment_results = []
     # read from redis
+    results = []
     hash_name = 'recomment_'+str(date)
     results = r.hgetall(hash_name)
+    if not results:
+        return results
     # search from user_profile to rich th show information
     for item in results:
         status = results[item]
         if status=='0':
             recomment_results.append(item)
-    results = get_user_detail(date, recomment_results, 'show_in')
+    if recomment_results:
+        results = get_user_detail(date, recomment_results, 'show_in')
+    else:
+        results = []
     return results
 
 # identify uid to in user_portrait
@@ -124,7 +130,8 @@ def show_in_history(date):
     results = []
     hash_name = 'recomment_'+str(date)
     r_results = r.hgetall(hash_name)
-    results = get_user_detail(date, r_results, 'show_in_history')
+    if r_results:
+        results = get_user_detail(date, r_results, 'show_in_history')
     return results
 
 # show uid who have in but not compute
