@@ -33,7 +33,7 @@ Search_weibo_result.prototype = {
       user_url = user_url + item[0];
       html += '<tr>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ item[1] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
