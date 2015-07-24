@@ -11,13 +11,14 @@ from global_utils import es_user_portrait as es
 from time_utils import ts2datetime, datetime2ts
 '''
 from user_portrait.global_utils import R_GROUP as r
-from user_portrait.global_utils import es_user_portrait
+from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.time_utils import ts2datetime, datetime2ts
 
 
 index_name = 'group_result'
 index_type = 'group'
 
+'''
 #submit new task and identify the task name unique
 def submit_task(input_data):
     status = 0
@@ -38,9 +39,28 @@ def submit_task(input_data):
     else:
         r.lpush('group_task', json.dumps(input_data))
     return True
+'''
+
+#submit new task and identify the task name unique in es-group_result and save it to redis list
+def submit_task(input_data):
+    status = 0 # mark it can not submit
+    task_name = input_data['task_name']
+    try:
+        result = es.get(index=index_name, doc_type=index_type, id=task_name)
+    except:
+        status = 1
+    if status != 0:
+        r.lpush('group_task', json.dumps(input_data))
+        input_data['status'] = 0 # mark the task not compute
+        count = len(input_data['uid_list'].split(','))
+        input_data['count'] = count
+        es.index(index='group_result', doc_type='group', id=task_name, body=input_data)
+    return status
+
+
 
 #search task by some condition -whether add download
-def search_task(task_name, submit_date, state, size):
+def search_task(task_name, submit_date, state):
     results = []
     query = []
     condition_num = 0
@@ -53,7 +73,7 @@ def search_task(task_name, submit_date, state, size):
     if state:
         query.append({'wildcard':{'state': '*' + state + '*'}})
         condition_num += 1
-    if num > 0:
+    if condition_num > 0:
         try:
             source = es.search(
                     index = 'group_result',
@@ -64,37 +84,42 @@ def search_task(task_name, submit_date, state, size):
                                 'must':query
                                 }
                             },
-                        'sort': [{'count':{'order': 'desc'}}],
-                        'size': size
+                        'sort': [{'count':{'order': 'desc'}}]
                         }
                     )
         except Exception as e:
             raise e
     else:
         source = es.search(
-                index = 'group_task',
+                index = 'group_result',
                 doc_type = 'group',
                 body = {
                     'query':{'match_all':{}
                         },
-                    'sort': [{'count': {'order': 'desc'}}],
-                    'size' : size
+                    'sort': [{'count': {'order': 'desc'}}]
                     }
                 )
 
+    try:
+        task_dict_list = source['hits']['hits']
+    except:
+        return None
+    result = []
     
-    return source
+    for task_dict in task_dict_list:
+        result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], task_dict['_source']['state'], task_dict['_source']['status']])
+    
+    return result
 
 #show group results
 def get_group_results(task_name):
     result = {}
-    result = es.get(index=index_name, doc_type=index_type, id=task_name)['docs']
     try:
-        source = result['_source']
+        result = es.get(index=index_name, doc_type=index_type, id=task_name)
+        #print 'result:', result
     except:
-        source = None
-
-    return source
+        return None
+    return result
 
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):

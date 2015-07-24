@@ -14,9 +14,11 @@ sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1, es_user_profile
 
 es = ES_CLUSTER_FLOW1
-user_portrait = "20130902" # act as portrait database
+#user_portrait = "user_portrait" # act as portrait database
+user_portrait = "20130901"
+#user_portrait_doctype = "user"
 user_portrait_doctype = "bci"
-index_destination = "test" # act as user active database
+index_destination = "this_is_a_copy_user_portrait" # act as user all portrait user database
 index_destination_doctype = "manage"
 
 def expand_index_action(data):

@@ -69,6 +69,7 @@ if __name__=='__main__':
         'activeness': 0.789,
         'importance': 0.753,
         'tightness': 0.267,
-        'influence': 0.78235
+        'influence': 0.78235,
+        'status': 1
     }
     save_group_results(results)
