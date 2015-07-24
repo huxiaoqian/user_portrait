@@ -29,7 +29,9 @@ def ajax_show_task():
     task_name = request.args.get('task_name', '')
     submit_date = request.args.get('submit_date', '')
     state = request.args.get('state', '')
-    results = search_task(task_name, submit_date, state)
+    size = request.args.get('size', 100)
+    size = int(size)
+    results = search_task(task_name, submit_date, state, size)
     return json.dumps(results)
 
 
