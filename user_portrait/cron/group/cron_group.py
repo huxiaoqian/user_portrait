@@ -484,10 +484,11 @@ def compute_group_task():
     attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['retweet_user_count'])
     results = dict(results, **attr_group_tightness)
     #need to compute influence
-    attr_group_influence = get_attr_influence(uid_list)
-    results = dict(results, **attr_group_influence)
-    #results['influence'] = 0.589
+    #attr_group_influence = get_attr_influence(uid_list)
+    #results = dict(results, **attr_group_influence)
+    results['influence'] = 0.589
     #print 'results:', results
+    results['status'] = 1
     save_group_results(results)
     return results
 

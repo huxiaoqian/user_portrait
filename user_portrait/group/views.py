@@ -17,10 +17,10 @@ def ajax_submit_task():
     input_data = dict()
     input_data['task_name'] = request.args.get('task_name', '')
     input_data['uid_list'] = request.args.get('uid_list', '') # uid_list=[uid1, uid2]
-    input_data['submit_ts'] = request.args.get('submit_ts', '')
+    input_data['submit_date'] = request.args.get('submit_date', '')
     input_data['state'] = request.args.get('state', '')
     status = submit_task(input_data)
-    return status
+    return json.dumps(status)
 
 # show the group task table
 @mod.route('/show_task/')
@@ -29,28 +29,23 @@ def ajax_show_task():
     task_name = request.args.get('task_name', '')
     submit_date = request.args.get('submit_date', '')
     state = request.args.get('state', '')
-    size = request.args.get('size', 100)
-    size = int(size)
-    results = search_task(task_name, submit_date, state, size)
+    results = search_task(task_name, submit_date, state)
     return json.dumps(results)
 
 
 # show the group analysis result
 @mod.route('/show_group_result/')
 def ajax_show_group_result():
+    results = {}
     task_name = request.args.get('task_name', '')
     results = get_group_results(task_name)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    print 'result:', results
+    return json.dumps(results)
 
 # delete the group task
 @mod.route('/delete_group_task/')
 def ajax_delete_group_task():
+    results = {}
     task_name = request.args.get('task_name', '')
     results = delete_group_results(task_name)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    return json.dumps(results)
