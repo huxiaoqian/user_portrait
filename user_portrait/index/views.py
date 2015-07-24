@@ -20,6 +20,11 @@ def overview():
 
     return render_template('portrait/overview.html')
 
+@mod.route('/group_analysis/')
+def group_analysis():
+
+    return render_template('portrait/group_analysis.html')
+
 @mod.route('/contrast/')
 def contrast():
 
