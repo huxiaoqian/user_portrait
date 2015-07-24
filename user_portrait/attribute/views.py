@@ -18,7 +18,9 @@ item_dict = {'domain':{'cul':u'文化', 'edu':u'教育', 'ent':u'娱乐', 'fas':
                       'fin':u'财经', 'med':u'媒体', 'phy':u'体育', 'sci':u'科技'}, \
              'topic':{'env':u'环境', 'edu':u'教育', 'med':u'医药', 'mil':u'军事',\
                      'pol':u'政治', 'tra':u'交通', 'phy':u'体育', 'soc':u'社会',\
-                     'art':u'艺术', 'eco':u'经济', 'com':u'计算机'}}
+                     'art':u'艺术', 'eco':u'经济', 'com':u'计算机'},\
+             'psycho_feature':{'dzz':u'胆汁质', 'dxz':u'多血质', 'nyz':u'粘液质', 'yyz':u'抑郁质'},\
+             'psycho_status':{'pos':u'积极', 'neg':u'消极', 'anx':u'焦虑', 'ang':u'生气', 'sad':u'悲伤'}}
 
 
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')
@@ -61,7 +63,11 @@ def ajax_portrait_search():
         for item in select_item:
             item_data = request.args.get(item, '')
             if item_data:
-                query.append({'match':{item: item_data}})
+                if item == 'psycho_feature' or item == 'psycho_status':
+                    match_dict = item_dict[item]
+                    query.append({'match':{item: match_dict[item_data]}})
+                else:
+                    query.append({'match':{item: item_data}})
                 condition_num += 1
         for item in range_item:
             item_data_low = request.args.get(item+'low', '')
