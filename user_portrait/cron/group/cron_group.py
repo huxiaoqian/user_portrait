@@ -4,7 +4,6 @@ import json
 import time
 import math
 import numpy as np
-#from utils import get_attr_influence
 from save_utils import save_group_results
 from config import activeness_weight_dict, importance_weight_dict,\
                    domain_weight_dict, topic_weight_dict, tightness_weight_dict
@@ -277,6 +276,7 @@ def get_attr_trend(uid_list):
 
 def get_attr_bci(uid_list):
     result = dict()
+    influence_dict = {}
     now_ts = time.time()
     now_date = ts2datetime(now_ts-24*3600)
     ts = datetime2ts(now_date)
@@ -368,15 +368,15 @@ def get_attr_bci(uid_list):
 
     # yuankun revise
 
-    result['origin_weibo_retweeted_average_number'] = origin_weibo_retweeted_total_number/origin_weibo_number/7
-    result['origin_weibo_comment_average_number'] = origin_weibo_comment_total_number/origin_weibo_number/7
-    result['retweeted_weibo_retweeted_average_number'] = retweeted_weibo_retweeted_total_number/retweeted_weibo_number/7
-    result['retweeted_weibo_comment_average_number'] = retweeted_weibo_comment_total_number/retweeted_weibo_number/7
-    result['origin_weibo_retweeted_top_number'] = origin_weibo_retweeted_top/len(uid_list)/7
-    result['origin_weibo_comment_top_number'] = origin_weibo_comment_top/len(uid_list)/7
-    result['retweeted_weibo_retweeted_top_number'] = retweeted_weibo_retweeted_top/len(uid_list)/7
-    result['retweeted_weibo_comment_top_number'] = retweeted_weibo_comment_top/len(uid_list)/7
-    result['fans_number'] = fans_number
+    influence_dict['origin_weibo_retweeted_average_number'] = origin_weibo_retweeted_total_number/origin_weibo_number/7
+    influence_dict['origin_weibo_comment_average_number'] = origin_weibo_comment_total_number/origin_weibo_number/7
+    influence_dict['retweeted_weibo_retweeted_average_number'] = retweeted_weibo_retweeted_total_number/retweeted_weibo_number/7
+    influence_dict['retweeted_weibo_comment_average_number'] = retweeted_weibo_comment_total_number/retweeted_weibo_number/7
+    influence_dict['origin_weibo_retweeted_top_number'] = origin_weibo_retweeted_top/len(uid_list)/7
+    influence_dict['origin_weibo_comment_top_number'] = origin_weibo_comment_top/len(uid_list)/7
+    influence_dict['retweeted_weibo_retweeted_top_number'] = retweeted_weibo_retweeted_top/len(uid_list)/7
+    influence_dict['retweeted_weibo_comment_top_number'] = retweeted_weibo_comment_top/len(uid_list)/7
+    influence_dict['fans_number'] = fans_number
 
     result['origin_max_retweeted_number'] = origin_max_retweeted_number
     result['origin_max_retweeted_id'] = origin_max_retweeted_id
@@ -392,13 +392,12 @@ def get_attr_bci(uid_list):
     result['retweet_max_retweeted_user'] = retweet_max_retweeted_user
     result['retweet_max_comment_user'] = retweet_max_comment_user
     print 'result:', result
-    return result
+    return result,influence_dict
 
 # yuankun revise
-def get_attr_influence(uid_list):
+def get_attr_influence(uid_list, bci_dict):
     result = {}
     weight = [0.3, 0.4, 0.2, 0.1]
-    bci_dict = get_attr_bci(uid_list)
     influence = weight[0]*(0.3*math.log(1+bci_dict['origin_weibo_retweeted_top_number'])+0.3*math.log(1+bci_dict['origin_weibo_comment_top_number'])+\
                 0.2*math.log(1+bci_dict['retweeted_weibo_retweeted_top_number'])+0.2*math.log(1+bci_dict['retweeted_weibo_comment_top_number'])) + \
                 weight[1]*(0.3*math.log(1+bci_dict['origin_weibo_retweeted_average_number'])+0.3*math.log(1+bci_dict['origin_weibo_comment_average_number']) + \
@@ -537,7 +536,7 @@ def compute_group_task():
     results = dict(results, **attr_in_social)
     attr_weibo_trend = get_attr_trend(uid_list)
     results = dict(results, **attr_weibo_trend)
-    attr_user_bci = get_attr_bci(uid_list)
+    attr_user_bci, influence_dict = get_attr_bci(uid_list)
     results = dict(results, **attr_user_bci)
     attr_group_activeness = get_attr_activeness(json.loads(results['activity_trend']), results['total_weibo_number'], json.loads(results['activity_geo']))
     results = dict(results, **attr_group_activeness)
@@ -546,7 +545,7 @@ def compute_group_task():
     attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['retweet_user_count'])
     results = dict(results, **attr_group_tightness)
     #need to compute influence
-    #attr_group_influence = get_attr_influence(uid_list)
+    attr_group_influence = get_attr_influence(uid_list, influence_dict)
     #results = dict(results, **attr_group_influence)
     results['influence'] = 0.589
     #print 'results:', results
