@@ -1,0 +1,704 @@
+{% extends "tbase.html" %}
+    {% block title %}整体概览{% endblock title%}
+      {% block css %}
+      {{ super() }}
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+<!-- 		    <link href="../../static/css/dashboard.css" rel="stylesheet"> -->		    
+    <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
+	<!-- the model styles -->
+    <link href="/static/css/charisma-app.css" rel="stylesheet">
+    <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
+    <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
+    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
+    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='/static/css/uploadify.css' rel='stylesheet'>
+    <link href='/static/css/animate.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/static/css/portrait.css">
+    <style type="text/css">
+
+ 	</style>
+ {% endblock css %}
+
+ {% block head_js %}
+  {{ super() }}
+	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/static/js/ga_sunsp.js"></script>    
+  {% endblock head_js %}
+
+
+    {% block main %}
+    <div id="page">
+         <div id="mainBubble">
+        </div>
+        <div id="content">
+			<div class=" row">
+			    <div class="col-md-3 col-sm-3 col-xs-6">
+			        <a  title="6 new members." class="well top-block" href="#">
+			            <i class="glyphicon glyphicon-user blue"></i>
+
+			            <div>Total Members</div>
+			            <div>507</div>
+			            <span class="notification">6</span>
+			        </a>
+			    </div>
+
+			    <div class="col-md-3 col-sm-3 col-xs-6">
+			        <a title="4 new pro members." class="well top-block" href="#">
+			            <i class="glyphicon glyphicon-star green"></i>
+
+			            <div>Pro Members</div>
+			            <div>228</div>
+			            <span class="notification green">4</span>
+			        </a>
+			    </div>
+
+			    <div class="col-md-3 col-sm-3 col-xs-6">
+			        <a  title="$34 new sales." class="well top-block" href="#">
+			            <i class="glyphicon glyphicon-shopping-cart yellow"></i>
+
+			            <div>Sales</div>
+			            <div>$13320</div>
+			            <span class="notification yellow">$34</span>
+			        </a>
+			    </div>
+
+			    <div class="col-md-3 col-sm-3 col-xs-6">
+			        <a title="12 new messages." class="well top-block" href="#">
+			            <i class="glyphicon glyphicon-envelope red"></i>
+
+			            <div>Messages</div>
+			            <div>25</div>
+			            <span class="notification red">12</span>
+			        </a>
+			    </div>
+			</div>
+        </div>
+        <div>
+        <h4 class="page-header" style='margin-top:0px'>基本信息</h4>
+        <div id='sex' style='float:left;width:300px;height:200px'></div>
+        
+        <div id='vertify' style='float:right;width:300px;height:200px'></div>
+        <div id='keywordcloud' style='float:left;width:400px;height:200px'></div>
+        </div>
+        <div>
+        <h4 class="page-header"style='margin-top:0px'>领域TOP5</h4>	
+        <div class="row category margin-bottom-20">
+			<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope">
+			   <div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Data Mining" style="color:#777" class="ng-binding">Data Mining</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   		    <ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Jiawei Han" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jiawei-han/53f42f36dabfaedce54dcd0c" title="Jiawei Han"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1852/642/1365/53f42f36dabfaedce54dcd0c.jpeg" alt="Jiawei Han"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Philip S. Yu" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/philip-s.-yu/53f47977dabfae8a6845b643" title="Philip S. Yu"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02203/Philip_S_Yu_1359672497921.jpg" alt="Philip S. Yu"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Hillol Kargupta" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/hillol-kargupta/53f42b92dabfaedd74d1aa54" title="Hillol Kargupta"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/489/1225201564520.jpeg" alt="Hillol Kargupta"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Andrew Kusiak" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/andrew-kusiak/53f437bedabfaec09f189843" title="Andrew Kusiak"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/497/1225206241923.gif" alt="Andrew Kusiak"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Vipin Kumar" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/vipin-kumar/53f47eb6dabfae9126cc40d7" title="Vipin Kumar"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/43/1225199267972.jpeg" alt="Vipin Kumar"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Heikki Mannila" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/heikki-mannila/53f47eb0dabfae9126cc3eef" title="Heikki Mannila"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/05fb/0000/0000/53f47eb0dabfae9126cc3eef.jpg" alt="Heikki Mannila"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Hans-Peter Kriegel" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/hans-peter-kriegel/53f47eaadabfaeb22f56f92d" title="Hans-Peter Kriegel"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/037b/0009/0000/53b0264edabfae456e200482.jpg" alt="Hans-Peter Kriegel"></div></a></li><!-- end ngRepeat: result in t.result --><li ng-repeat="result in t.result" target="_blank" title="Chengqi Zhang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/chengqi-zhang/53f48f57dabfaee4dc8b3a05" title="Chengqi Zhang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01502/Chengqi_Zhang_1300686725417.png" alt="Chengqi Zhang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Xindong Wu" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/xindong-wu/53f4aae6dabfaecc1b77b3f5" title="Xindong Wu"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0ba4/0009/0000/53b03a52dabfae456e328b51.jpg" alt="Xindong Wu"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Christos Faloutsos" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/christos-faloutsos/53f4718edabfaeb22f559444" title="Christos Faloutsos"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02244/Christos_Faloutsos_1330010247329.jpg" alt="Christos Faloutsos"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		    </ul>
+			   		</div>
+			   	</div>
+			   	<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Social Network" style="color:#777" class="ng-binding">Social Network</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   			<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jie Tang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jie-tang/53f46a3edabfaee43ed05f08" title="Jie Tang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01823/Jie_Tang_1348889820664.jpg" alt="Jie Tang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jon Kleinberg" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jon-kleinberg/53f49f78dabfaec18e77c303" title="Jon Kleinberg"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/03751/Jon_M_Kleinberg_1324478578467.jpg" alt="Jon Kleinberg"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jennifer Golbeck" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jennifer-golbeck/54856ef5dabfae8a11fb2961" title="Jennifer Golbeck"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/65/1664/1017/54856ef5dabfae8a11fb2961.jpeg" alt="Jennifer Golbeck"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Yutaka Matsuo" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/yutaka-matsuo/53f4aa49dabfaeca6777bb02" title="Yutaka Matsuo"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0861/0005/0000/53afd292dabfae456ece30f8.jpg" alt="Yutaka Matsuo"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Christos Faloutsos" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/christos-faloutsos/53f4718edabfaeb22f559444" title="Christos Faloutsos"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02244/Christos_Faloutsos_1330010247329.jpg" alt="Christos Faloutsos"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Alan Mislove" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/alan-mislove/53f63276dabfae3d5e9bf326" title="Alan Mislove"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/401/1139/973/53f63276dabfae3d5e9bf326.png" alt="Alan Mislove"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jure Leskovec" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jure-leskovec/53f44424dabfaec09f1c0bcf" title="Jure Leskovec"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/00393/Jure_Leskovec_1297509278836.jpg" alt="Jure Leskovec"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Caroline Haythornthwaite" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/caroline-haythornthwaite/54860d88dabfae8a11fb2f30" title="Caroline Haythornthwaite"><div class="small-photo shadow-5"><span class="helper"></span><img src="/img/people/default.jpg" alt="Caroline Haythornthwaite"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Kathleen M. Carley" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/kathleen-m.-carley/5448123fdabfae87b7dd1a83" title="Kathleen M. Carley"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1822/874/1687/5448123fdabfae87b7dd1a83.jpeg" alt="Kathleen M. Carley"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Krishna P. Gummadi" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/krishna-p.-gummadi/53f44945dabfaee02ad249a8" title="Krishna P. Gummadi"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/00652/P_Krishna_Gummadi_1323072307122.jpg" alt="Krishna P. Gummadi"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				</ul>
+			   			</div>
+			   		</div>
+			   	<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Machine Learning" style="color:#777" class="ng-binding">Machine Learning</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   			<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Pat Langley" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/pat-langley/53f48cc4dabfaea7cd1d0140" title="Pat Langley"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0000/0001/0000/53f48cc4dabfaea7cd1d0140.jpg" alt="Pat Langley"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Ivan Bratko" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/ivan-bratko/53f48cd6dabfaea7cd1d05ba" title="Ivan Bratko"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01620/Ivan_Bratko_1334980269459.jpeg" alt="Ivan Bratko"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Guang-Bin Huang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/guang-bin-huang/53f4a75cdabfaeb22f57430a" title="Guang-Bin Huang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0000/0001/0000/53f4a75cdabfaeb22f57430a.jpg" alt="Guang-Bin Huang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Ian H. Witten" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/ian-h.-witten/53f48bb7dabfaea7cd1cca6f" title="Ian H. Witten"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/01e8/0008/0000/53b00a1cdabfae456e04dde8.jpg" alt="Ian H. Witten"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Ryszard S. Michalski" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/ryszard-s.-michalski/53f43087dabfaeb22f42ff6c" title="Ryszard S. Michalski"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1961/1841/813/53f43087dabfaeb22f42ff6c.jpeg" alt="Ryszard S. Michalski"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Thomas G. Dietterich" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/thomas-g.-dietterich/53f4895cdabfaedd74eb27aa" title="Thomas G. Dietterich"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0000/0001/0000/53f4895cdabfaedd74eb27aa.jpg" alt="Thomas G. Dietterich"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Floriana Esposito" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/floriana-esposito/53f46fe4dabfaee43ed1be68" title="Floriana Esposito"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/06b9/0003/0000/53afa7fadabfae456ea41eab.jpg" alt="Floriana Esposito"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Klaus-Robert Müller" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/klaus-robert-müller/53f48da4dabfaea7cd1d387c" title="Klaus-Robert Müller"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/42/1225199156720.gif" alt="Klaus-Robert Müller"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Igor Kononenko" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/igor-kononenko/53f45201dabfaedf435fa85e" title="Igor Kononenko"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/01dd/0007/0000/53aff212dabfae456eed46f1.jpg" alt="Igor Kononenko"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Zhi-Hua Zhou" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/zhi-hua-zhou/53f48bc7dabfaea7cd1cce70" title="Zhi-Hua Zhou"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/extend_data/cj/2006/images/2006052.jpg" alt="Zhi-Hua Zhou"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		</ul>
+			   	</div>
+			  </div>
+			<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope">
+			   <div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Data Mining" style="color:#777" class="ng-binding">Data Mining</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   		    <ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Jiawei Han" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jiawei-han/53f42f36dabfaedce54dcd0c" title="Jiawei Han"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1852/642/1365/53f42f36dabfaedce54dcd0c.jpeg" alt="Jiawei Han"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Philip S. Yu" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/philip-s.-yu/53f47977dabfae8a6845b643" title="Philip S. Yu"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02203/Philip_S_Yu_1359672497921.jpg" alt="Philip S. Yu"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Hillol Kargupta" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/hillol-kargupta/53f42b92dabfaedd74d1aa54" title="Hillol Kargupta"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/489/1225201564520.jpeg" alt="Hillol Kargupta"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Andrew Kusiak" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/andrew-kusiak/53f437bedabfaec09f189843" title="Andrew Kusiak"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/497/1225206241923.gif" alt="Andrew Kusiak"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Vipin Kumar" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/vipin-kumar/53f47eb6dabfae9126cc40d7" title="Vipin Kumar"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/43/1225199267972.jpeg" alt="Vipin Kumar"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Heikki Mannila" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/heikki-mannila/53f47eb0dabfae9126cc3eef" title="Heikki Mannila"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/05fb/0000/0000/53f47eb0dabfae9126cc3eef.jpg" alt="Heikki Mannila"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Hans-Peter Kriegel" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/hans-peter-kriegel/53f47eaadabfaeb22f56f92d" title="Hans-Peter Kriegel"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/037b/0009/0000/53b0264edabfae456e200482.jpg" alt="Hans-Peter Kriegel"></div></a></li><!-- end ngRepeat: result in t.result --><li ng-repeat="result in t.result" target="_blank" title="Chengqi Zhang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/chengqi-zhang/53f48f57dabfaee4dc8b3a05" title="Chengqi Zhang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01502/Chengqi_Zhang_1300686725417.png" alt="Chengqi Zhang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Xindong Wu" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/xindong-wu/53f4aae6dabfaecc1b77b3f5" title="Xindong Wu"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0ba4/0009/0000/53b03a52dabfae456e328b51.jpg" alt="Xindong Wu"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Christos Faloutsos" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/christos-faloutsos/53f4718edabfaeb22f559444" title="Christos Faloutsos"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02244/Christos_Faloutsos_1330010247329.jpg" alt="Christos Faloutsos"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		    </ul>
+			   		</div>
+			   	</div>
+			   	<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Social Network" style="color:#777" class="ng-binding">Social Network</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   			<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jie Tang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jie-tang/53f46a3edabfaee43ed05f08" title="Jie Tang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01823/Jie_Tang_1348889820664.jpg" alt="Jie Tang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jon Kleinberg" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jon-kleinberg/53f49f78dabfaec18e77c303" title="Jon Kleinberg"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/03751/Jon_M_Kleinberg_1324478578467.jpg" alt="Jon Kleinberg"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jennifer Golbeck" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jennifer-golbeck/54856ef5dabfae8a11fb2961" title="Jennifer Golbeck"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/65/1664/1017/54856ef5dabfae8a11fb2961.jpeg" alt="Jennifer Golbeck"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Yutaka Matsuo" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/yutaka-matsuo/53f4aa49dabfaeca6777bb02" title="Yutaka Matsuo"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0861/0005/0000/53afd292dabfae456ece30f8.jpg" alt="Yutaka Matsuo"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Christos Faloutsos" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/christos-faloutsos/53f4718edabfaeb22f559444" title="Christos Faloutsos"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02244/Christos_Faloutsos_1330010247329.jpg" alt="Christos Faloutsos"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Alan Mislove" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/alan-mislove/53f63276dabfae3d5e9bf326" title="Alan Mislove"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/401/1139/973/53f63276dabfae3d5e9bf326.png" alt="Alan Mislove"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jure Leskovec" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jure-leskovec/53f44424dabfaec09f1c0bcf" title="Jure Leskovec"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/00393/Jure_Leskovec_1297509278836.jpg" alt="Jure Leskovec"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Caroline Haythornthwaite" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/caroline-haythornthwaite/54860d88dabfae8a11fb2f30" title="Caroline Haythornthwaite"><div class="small-photo shadow-5"><span class="helper"></span><img src="/img/people/default.jpg" alt="Caroline Haythornthwaite"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Kathleen M. Carley" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/kathleen-m.-carley/5448123fdabfae87b7dd1a83" title="Kathleen M. Carley"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1822/874/1687/5448123fdabfae87b7dd1a83.jpeg" alt="Kathleen M. Carley"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Krishna P. Gummadi" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/krishna-p.-gummadi/53f44945dabfaee02ad249a8" title="Krishna P. Gummadi"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/00652/P_Krishna_Gummadi_1323072307122.jpg" alt="Krishna P. Gummadi"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				</ul>
+			   			</div>
+			   		</div>
+			   	<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Machine Learning" style="color:#777" class="ng-binding">Machine Learning</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   			<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Pat Langley" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/pat-langley/53f48cc4dabfaea7cd1d0140" title="Pat Langley"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0000/0001/0000/53f48cc4dabfaea7cd1d0140.jpg" alt="Pat Langley"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Ivan Bratko" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/ivan-bratko/53f48cd6dabfaea7cd1d05ba" title="Ivan Bratko"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01620/Ivan_Bratko_1334980269459.jpeg" alt="Ivan Bratko"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Guang-Bin Huang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/guang-bin-huang/53f4a75cdabfaeb22f57430a" title="Guang-Bin Huang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0000/0001/0000/53f4a75cdabfaeb22f57430a.jpg" alt="Guang-Bin Huang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Ian H. Witten" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/ian-h.-witten/53f48bb7dabfaea7cd1cca6f" title="Ian H. Witten"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/01e8/0008/0000/53b00a1cdabfae456e04dde8.jpg" alt="Ian H. Witten"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Ryszard S. Michalski" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/ryszard-s.-michalski/53f43087dabfaeb22f42ff6c" title="Ryszard S. Michalski"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1961/1841/813/53f43087dabfaeb22f42ff6c.jpeg" alt="Ryszard S. Michalski"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Thomas G. Dietterich" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/thomas-g.-dietterich/53f4895cdabfaedd74eb27aa" title="Thomas G. Dietterich"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0000/0001/0000/53f4895cdabfaedd74eb27aa.jpg" alt="Thomas G. Dietterich"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Floriana Esposito" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/floriana-esposito/53f46fe4dabfaee43ed1be68" title="Floriana Esposito"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/06b9/0003/0000/53afa7fadabfae456ea41eab.jpg" alt="Floriana Esposito"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Klaus-Robert Müller" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/klaus-robert-müller/53f48da4dabfaea7cd1d387c" title="Klaus-Robert Müller"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/42/1225199156720.gif" alt="Klaus-Robert Müller"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Igor Kononenko" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/igor-kononenko/53f45201dabfaedf435fa85e" title="Igor Kononenko"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/01dd/0007/0000/53aff212dabfae456eed46f1.jpg" alt="Igor Kononenko"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   			<li ng-repeat="result in t.result" target="_blank" title="Zhi-Hua Zhou" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/zhi-hua-zhou/53f48bc7dabfaea7cd1cce70" title="Zhi-Hua Zhou"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/extend_data/cj/2006/images/2006052.jpg" alt="Zhi-Hua Zhou"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		</ul>
+			   	</div>
+			  </div>
+			<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope">
+			   <div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Data Mining" style="color:#777" class="ng-binding">Data Mining</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   		    <ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Jiawei Han" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jiawei-han/53f42f36dabfaedce54dcd0c" title="Jiawei Han"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1852/642/1365/53f42f36dabfaedce54dcd0c.jpeg" alt="Jiawei Han"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Philip S. Yu" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/philip-s.-yu/53f47977dabfae8a6845b643" title="Philip S. Yu"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02203/Philip_S_Yu_1359672497921.jpg" alt="Philip S. Yu"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Hillol Kargupta" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/hillol-kargupta/53f42b92dabfaedd74d1aa54" title="Hillol Kargupta"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/489/1225201564520.jpeg" alt="Hillol Kargupta"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Andrew Kusiak" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/andrew-kusiak/53f437bedabfaec09f189843" title="Andrew Kusiak"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/497/1225206241923.gif" alt="Andrew Kusiak"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Vipin Kumar" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/vipin-kumar/53f47eb6dabfae9126cc40d7" title="Vipin Kumar"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/43/1225199267972.jpeg" alt="Vipin Kumar"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Heikki Mannila" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/heikki-mannila/53f47eb0dabfae9126cc3eef" title="Heikki Mannila"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/05fb/0000/0000/53f47eb0dabfae9126cc3eef.jpg" alt="Heikki Mannila"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Hans-Peter Kriegel" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/hans-peter-kriegel/53f47eaadabfaeb22f56f92d" title="Hans-Peter Kriegel"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/037b/0009/0000/53b0264edabfae456e200482.jpg" alt="Hans-Peter Kriegel"></div></a></li><!-- end ngRepeat: result in t.result --><li ng-repeat="result in t.result" target="_blank" title="Chengqi Zhang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/chengqi-zhang/53f48f57dabfaee4dc8b3a05" title="Chengqi Zhang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01502/Chengqi_Zhang_1300686725417.png" alt="Chengqi Zhang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Xindong Wu" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/xindong-wu/53f4aae6dabfaecc1b77b3f5" title="Xindong Wu"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0ba4/0009/0000/53b03a52dabfae456e328b51.jpg" alt="Xindong Wu"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		        <li ng-repeat="result in t.result" target="_blank" title="Christos Faloutsos" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/christos-faloutsos/53f4718edabfaeb22f559444" title="Christos Faloutsos"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02244/Christos_Faloutsos_1330010247329.jpg" alt="Christos Faloutsos"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   		    </ul>
+			   		</div>
+			   	</div>
+			   	<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block"><!--i.icon-custom.icon-sm.roundesddded-x.icon-bg-light-grey.icon-line.icon-badge-->
+			   		<h1 class="no-margin"><small><a href="/search/Social Network" style="color:#777" class="ng-binding">Social Network</a></small></h1>
+			   		<hr style="margin-top: 5px; margin-bottom: 15px">
+			   			<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline"><!-- ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jie Tang" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jie-tang/53f46a3edabfaee43ed05f08" title="Jie Tang"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/01823/Jie_Tang_1348889820664.jpg" alt="Jie Tang"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jon Kleinberg" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jon-kleinberg/53f49f78dabfaec18e77c303" title="Jon Kleinberg"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/03751/Jon_M_Kleinberg_1324478578467.jpg" alt="Jon Kleinberg"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jennifer Golbeck" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jennifer-golbeck/54856ef5dabfae8a11fb2961" title="Jennifer Golbeck"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/65/1664/1017/54856ef5dabfae8a11fb2961.jpeg" alt="Jennifer Golbeck"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Yutaka Matsuo" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/yutaka-matsuo/53f4aa49dabfaeca6777bb02" title="Yutaka Matsuo"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/0861/0005/0000/53afd292dabfae456ece30f8.jpg" alt="Yutaka Matsuo"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Christos Faloutsos" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/christos-faloutsos/53f4718edabfaeb22f559444" title="Christos Faloutsos"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/02244/Christos_Faloutsos_1330010247329.jpg" alt="Christos Faloutsos"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Alan Mislove" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/alan-mislove/53f63276dabfae3d5e9bf326" title="Alan Mislove"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/401/1139/973/53f63276dabfae3d5e9bf326.png" alt="Alan Mislove"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Jure Leskovec" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/jure-leskovec/53f44424dabfaec09f1c0bcf" title="Jure Leskovec"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/00393/Jure_Leskovec_1297509278836.jpg" alt="Jure Leskovec"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Caroline Haythornthwaite" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/caroline-haythornthwaite/54860d88dabfae8a11fb2f30" title="Caroline Haythornthwaite"><div class="small-photo shadow-5"><span class="helper"></span><img src="/img/people/default.jpg" alt="Caroline Haythornthwaite"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Kathleen M. Carley" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/kathleen-m.-carley/5448123fdabfae87b7dd1a83" title="Kathleen M. Carley"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/upload/avatar/1822/874/1687/5448123fdabfae87b7dd1a83.jpeg" alt="Kathleen M. Carley"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				<li ng-repeat="result in t.result" target="_blank" title="Krishna P. Gummadi" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="/profile/krishna-p.-gummadi/53f44945dabfaee02ad249a8" title="Krishna P. Gummadi"><div class="small-photo shadow-5"><span class="helper"></span><img src="//static.aminer.org/picture/00652/P_Krishna_Gummadi_1323072307122.jpg" alt="Krishna P. Gummadi"></div></a></li><!-- end ngRepeat: result in t.result -->
+			   				</ul>
+			   			</div>
+			   		</div>
+			</div>
+        </div>
+        <div>
+        <h4 class="page-header"style='margin-top:0px'>TOP5</h4>	
+        <div><span style='font-size:16px'>xx排名</span><span style="margin-left:300px;font-size:16px">xx排名</span><span style="margin-left:300px;font-size:16px">xx排名</span></div>
+         <div class="table-responsive"id='table' style='overflow-x:hidden;width:300px;float:left'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
+                <tr>
+                    <th style="text-align:center">排名</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">1</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">2</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">3</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">4</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">5</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+            </table>
+        </div>
+         <div class="table-responsive"id='table' style='overflow-x:hidden;width:300px;float:right'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
+                <tr>
+                    <th style="text-align:center">排名</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">1</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">2</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">3</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">4</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">5</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+            </table>
+        </div>
+         <div class="table-responsive"id='table' style='overflow-x:hidden;width:300px;margin-left:350px'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
+                <tr>
+                    <th style="text-align:center">排名</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">1</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">2</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">3</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">4</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">5</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+            </table>
+        </div>
+         <div><span style='font-size:16px'>xx排名</span><span style="margin-left:300px;font-size:16px">xx排名</span><span style="margin-left:300px;font-size:16px">xx排名</span></div>
+         <div class="table-responsive"id='table' style='overflow-x:hidden;width:300px;float:left'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
+                <tr>
+                    <th style="text-align:center">排名</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">1</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">2</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">3</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">4</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">5</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+            </table>
+        </div>
+         <div class="table-responsive"id='table' style='overflow-x:hidden;width:300px;float:right'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
+                <tr>
+                    <th style="text-align:center">排名</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">1</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">2</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">3</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">4</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">5</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+            </table>
+        </div>
+         <div class="table-responsive"id='table' style='overflow-x:hidden;width:300px;margin-left:350px'>
+              <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">            
+                <tr>
+                    <th style="text-align:center">排名</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">1</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">2</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">3</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">4</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+                <tr>
+                    <th style="text-align:center">5</th>
+                    <th style="text-align:center">昵称</th>                       
+                </tr>
+            </table>
+        </div>
+
+      </div>
+    </div>
+    {% endblock main %}
+
+    {% block Own_js %}
+    {{ super() }}
+  <script>
+   	$(document).ready(function(){
+ 		draw_sex();
+ 		draw_vertify();
+ 		draw_keyword();
+ 	})
+ 	function draw_sex(){
+ 	var myChart = echarts.init(document.getElementById('sex')); 
+	var option = {
+	    tooltip : {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+	    legend: {
+	        orient : 'vertical',
+	        x : 'left',
+	        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+	    },
+	    toolbox: {
+	        show : true,
+	        feature : {
+	            mark : {show: true},
+	            dataView : {show: true, readOnly: false},
+	            magicType : {
+	                show: true, 
+	                type: ['pie', 'funnel'],
+	                option: {
+	                    funnel: {
+	                        x: '25%',
+	                        width: '50%',
+	                        funnelAlign: 'center',
+	                        max: 1548
+	                    }
+	                }
+	            },
+	            restore : {show: true},
+	            saveAsImage : {show: true}
+	        }
+	    },
+	    calculable : true,
+	    series : [
+	        {
+	            name:'访问来源',
+	            type:'pie',
+	            radius : ['50%', '70%'],
+	            itemStyle : {
+	                normal : {
+	                    label : {
+	                        show : false
+	                    },
+	                    labelLine : {
+	                        show : false
+	                    }
+	                },
+	                emphasis : {
+	                    label : {
+	                        show : true,
+	                        position : 'center',
+	                        textStyle : {
+	                            fontSize : '30',
+	                            fontWeight : 'bold'
+	                        }
+	                    }
+	                }
+	            },
+	            data:[
+	                {value:335, name:'直接访问'},
+	                {value:310, name:'邮件营销'},
+	                {value:234, name:'联盟广告'},
+	                {value:135, name:'视频广告'},
+	                {value:1548, name:'搜索引擎'}
+	            ]
+	        }
+	    ]
+	}; 
+	 myChart.setOption(option);  
+	}
+	function draw_vertify(){
+	var myChart = echarts.init(document.getElementById('vertify'));
+	var option = {
+	    tooltip : {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+	    legend: {
+	        orient : 'vertical',
+	        x : 'left',
+	        data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+	    },
+	    toolbox: {
+	        show : true,
+	        feature : {
+	            mark : {show: true},
+	            dataView : {show: true, readOnly: false},
+	            magicType : {
+	                show: true, 
+	                type: ['pie', 'funnel'],
+	                option: {
+	                    funnel: {
+	                        x: '25%',
+	                        width: '50%',
+	                        funnelAlign: 'center',
+	                        max: 1548
+	                    }
+	                }
+	            },
+	            restore : {show: true},
+	            saveAsImage : {show: true}
+	        }
+	    },
+	    calculable : true,
+	    series : [
+	        {
+	            name:'访问来源',
+	            type:'pie',
+	            radius : ['50%', '70%'],
+	            itemStyle : {
+	                normal : {
+	                    label : {
+	                        show : false
+	                    },
+	                    labelLine : {
+	                        show : false
+	                    }
+	                },
+	                emphasis : {
+	                    label : {
+	                        show : true,
+	                        position : 'center',
+	                        textStyle : {
+	                            fontSize : '30',
+	                            fontWeight : 'bold'
+	                        }
+	                    }
+	                }
+	            },
+	            data:[
+	                {value:335, name:'直接访问'},
+	                {value:310, name:'邮件营销'},
+	                {value:234, name:'联盟广告'},
+	                {value:135, name:'视频广告'},
+	                {value:1548, name:'搜索引擎'}
+	            ]
+	        }
+	    ]
+	};  
+	 myChart.setOption(option); 
+	} 
+
+  	function createRandomItemStyle() {
+  		
+    return {
+        normal: {
+            color: 'rgb(' + [
+                Math.round(Math.random() * 160),
+                Math.round(Math.random() * 160),
+                Math.round(Math.random() * 160)
+            ].join(',') + ')'
+        }
+    };
+}
+function draw_keyword(){
+	var myChart = echarts.init(document.getElementById('keywordcloud'));
+    var option = {
+    title: {
+        text: '',
+    },
+    tooltip: {
+        show: true
+    },
+    series: [{
+        name: '关键词',
+        type: 'wordCloud',
+        size: ['80%', '80%'],
+        textRotation : [0, 45, 90, -45],
+        textPadding: 0,
+        autoSize: {
+            enable: true,
+            minSize: 15
+        },
+        data: [
+            {
+                name: "Sam S Club",
+                value: 10000,
+                itemStyle: {
+                    normal: {
+                        color: 'black'
+                    }
+                }
+            },
+            {
+                name: "Macys",
+                value: 6181,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Amy Schumer",
+                value: 4386,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Jurassic World",
+                value: 4055,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Charter Communications",
+                value: 2467,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Chick Fil A",
+                value: 2244,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Planet Fitness",
+                value: 1898,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Pitch Perfect",
+                value: 1484,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Express",
+                value: 1112,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Home",
+                value: 965,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Johnny Depp",
+                value: 847,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Lena Dunham",
+                value: 582,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Lewis Hamilton",
+                value: 555,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "KXAN",
+                value: 550,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Mary Ellen Mark",
+                value: 462,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Farrah Abraham",
+                value: 366,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Rita Ora",
+                value: 360,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Serena Williams",
+                value: 282,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "NCAA baseball tournament",
+                value: 273,
+                itemStyle: createRandomItemStyle()
+            },
+            {
+                name: "Point Break",
+                value: 265,
+                itemStyle: createRandomItemStyle()
+            }
+        ]
+    }]
+};
+                    
+			myChart.setOption(option); 
+                    
+  }                                
+  </script>
+{% endblock Own_js %}
+

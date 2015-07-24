@@ -55,6 +55,8 @@ R_RECOMMENTATION_OUT = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 # type: hash----{recommend_delete_list, 20130901, list}
 # type: hash----{decide_delete_list, 20130901, list}
 
+R_ADMIN = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
+# type: hash ----{admin, username, password}
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)

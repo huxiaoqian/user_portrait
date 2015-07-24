@@ -15,6 +15,11 @@ def loading():
 
     return render_template('portrait/index.html')
 
+@mod.route('/overview/')
+def overview():
+
+    return render_template('portrait/overview.html')
+
 @mod.route('/contrast/')
 def contrast():
 
@@ -65,3 +70,9 @@ def test():
 def manage():
     return render_template('index/manage.html')
 """
+
+
+@mod.route('/contact/')
+def contact():
+    
+    return render_template('contact.html')
