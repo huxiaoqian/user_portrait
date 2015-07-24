@@ -47,9 +47,11 @@ def get_user_detail(date, input_result, status):
     user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
     #print 'user_portrait_result:', user_portrait_result[0]
     user_profile_result = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
+    #print 'user_profile_result:', user_profile_result
     for i in range(0, len(uid_list)):
         uid = uid_list[i]
         bci_dict = user_bci_result[i]
+        profile_dict = user_profile_result[i]
         try:
             bci_source = bci_dict['_source']
         except:
@@ -59,7 +61,7 @@ def get_user_detail(date, input_result, status):
         else:
             influence = ''
         try:
-            profile_source = user_profile_result['_source']
+            profile_source = profile_dict['_source']
         except:
             profile_source = None
         if profile_source:
@@ -131,8 +133,11 @@ def show_compute(date):
     hash_name = 'compute'
     r_results = r.hgetall(hash_name)
     #search user profile to inrich information
-    results = get_user_detail(date, r_results, 'show_compute')
-    return results
+    if r_results:
+        results = get_user_detail(date, r_results, 'show_compute')
+        return results
+    else:
+        return results
 
 # identify uid to start compute
 def identify_compute(data):
