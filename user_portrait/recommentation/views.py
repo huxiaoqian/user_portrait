@@ -124,8 +124,11 @@ def ajax_recommentation_out():
 @mod.route('/identify_out/')
 def ajax_identify_out():
     results = 0
+    date = request.args.get("date", '') # date, 2015-07-25
     data = request.args.get('data', '') # uid,uid,uid
-    results = decide_out_uid(data)
+    if date and data:
+        date = date.replace('-','')
+        results = decide_out_uid(date, data)
 
     return json.dumps(results)
 
@@ -156,4 +159,4 @@ def ajax_cancel_delete():
         revise_list = list(set(delete_list).difference(set(uid_list)))
         r_out.hset('history_delete_list',date, json.dumps(revise_list))
 
-    return json.dumps('1')
+    return json.dumps(1)
