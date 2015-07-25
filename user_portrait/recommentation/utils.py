@@ -77,8 +77,8 @@ def get_user_detail(date, input_result, status):
         if status == 'show_in':
             results.append([uid, uname, location, fansnum, statusnum, influence])
         if status == 'show_compute':
-            in_date = input_result[uid][0]
-            compute_status = input_result[uid][1]
+            in_date = json.loads(input_result[uid])[0]
+            compute_status = json.loads(input_result[uid])[1]
             results.append([uid, uname, location, fansnum, statusnum, influence, in_date, compute_status])
         if status == 'show_in_history':
             in_status = input_result[uid]

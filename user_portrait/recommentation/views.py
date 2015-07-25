@@ -56,8 +56,8 @@ def ajax_identify_in():
         #date = '2013-09-07'
         for uid in uid_list:
             data.append([date, uid])
-            results = identify_in(data)
-            print 'results:', results
+        results = identify_in(data)
+        print 'results:', results
     else:
         results = None
     return json.dumps(results)

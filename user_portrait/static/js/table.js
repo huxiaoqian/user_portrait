@@ -1,4 +1,5 @@
  function Search_weibo(){
+  var check_first = $('input[type=checkbox]').eq(0);
   this.ajax_method = 'GET';
 }
 
@@ -40,7 +41,7 @@ Search_weibo.prototype = {
       html += '<td class="center" style="text-align:center;vertical-align:middle;width:72px">'+ item[i]['_source']['friendsnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['fansnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['statusnum'] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox" id="' +  item[i]['_source']['uid'] + '" ></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><input name="profile_result_option" type="checkbox" value="' +  item[i]['_source']['uid'] + '" ></td>';
       // html += '<td class="center" style="text-align:center">'+ new Date(parseInt(item[i]['_source']['create_at']) +'</td>';
       html += '</tr>';
     }
@@ -308,6 +309,10 @@ function toggle(target){
 var Search_weibo = new Search_weibo(); 
 
 function click_data(){
+  // for page control
+  global_pre_page = 1;
+  global_choose_uids = new Array();
+  // page control end
   weibo_url = '/profile/user/?';
   weibo_url += get_input_data();
   weibo_url = weibo_url.substring(0,weibo_url.length-1);
@@ -317,165 +322,12 @@ function click_data(){
         var download_url = 'http://'+ window.location.host + '/static/download/test.csv';
         window.location.href = download_url;
   });
-       $('.datatype').dataTable({
-        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-        "sPaginationType": "bootstrap",
-        "bSort": true, 
-        "oLanguage": {
-            "sLengthMenu": "_MENU_ 每页"
-        }
-    });
-        $('.btn-close').click(function (e) {
-        e.preventDefault();
-        $(this).parent().parent().parent().fadeOut();
-    });
-    $('.btn-minimize').click(function (e) {
-        e.preventDefault();
-        var $target = $(this).parent().parent().next('.box-content');
-        if ($target.is(':visible')) $('i', $(this)).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-        else                       $('i', $(this)).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-        $target.slideToggle();
-    });
-    $('.btn-setting').click(function (e) {
-        e.preventDefault();
-        $('#myModal').modal('show');
-    });
-
-
-    $('#calendar').fullCalendar({
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,agendaWeek,agendaDay'
-        },
-        defaultDate: '2014-06-12',
-        events: [
-            {
-                title: 'All Day Event',
-                start: '2014-06-01'
-            },
-            {
-                title: 'Long Event',
-                start: '2014-06-07',
-                end: '2014-06-10'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-06-09T16:00:00'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2014-06-16T16:00:00'
-            },
-            {
-                title: 'Meeting',
-                start: '2014-06-12T10:30:00',
-                end: '2014-06-12T12:30:00'
-            },
-            {
-                title: 'Lunch',
-                start: '2014-06-12T12:00:00'
-            },
-            {
-                title: 'Birthday Party',
-                start: '2014-06-13T07:00:00'
-            },
-            {
-                title: 'Click for Google',
-                url: 'http://google.com/',
-                start: '2014-06-28'
-            }
-        ]
-    });
+   $('.datatype').dataTable({
+      "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+      "sPaginationType": "bootstrap",
+      "bSort": true, 
+      "oLanguage": {
+        "sLengthMenu": "_MENU_ 每页"
+      }
+   });
 }
-
-$.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
-    return {
-        "iStart": oSettings._iDisplayStart,
-        "iEnd": oSettings.fnDisplayEnd(),
-        "iLength": oSettings._iDisplayLength,
-        "iTotal": oSettings.fnRecordsTotal(),
-        "iFilteredTotal": oSettings.fnRecordsDisplay(),
-        "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
-        "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
-    };
-}
-$.extend($.fn.dataTableExt.oPagination, {
-    "bootstrap": {
-        "fnInit": function (oSettings, nPaging, fnDraw) {
-            var oLang = oSettings.oLanguage.oPaginate;
-            var fnClickHandler = function (e) {
-                e.preventDefault();
-                if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
-                    fnDraw(oSettings);
-                }
-                $(check_first).attr("checked", false);
-            };
-
-            $(nPaging).addClass('pagination').append(
-                '<ul class="pagination">' +
-                    '<li class="prev disabled"><a href="#">&larr; ' + oLang.sPrevious + '</a></li>' +
-                    '<li class="next disabled"><a href="#">' + oLang.sNext + ' &rarr; </a></li>' +
-                    '</ul>'
-            );
-            var els = $('a', nPaging);
-            $(els[0]).bind('click.DT', { action: "previous" }, fnClickHandler);
-            $(els[1]).bind('click.DT', { action: "next" }, fnClickHandler);
-        },
-
-        "fnUpdate": function (oSettings, fnDraw) {
-            var iListLength = 5;
-            var oPaging = oSettings.oInstance.fnPagingInfo();
-            var an = oSettings.aanFeatures.p;
-            var i, j, sClass, iStart, iEnd, iHalf = Math.floor(iListLength / 2);
-
-            if (oPaging.iTotalPages < iListLength) {
-                iStart = 1;
-                iEnd = oPaging.iTotalPages;
-            }
-            else if (oPaging.iPage <= iHalf) {
-                iStart = 1;
-                iEnd = iListLength;
-            } else if (oPaging.iPage >= (oPaging.iTotalPages - iHalf)) {
-                iStart = oPaging.iTotalPages - iListLength + 1;
-                iEnd = oPaging.iTotalPages;
-            } else {
-                iStart = oPaging.iPage - iHalf + 1;
-                iEnd = iStart + iListLength - 1;
-            }
-
-            for (i = 0, iLen = an.length; i < iLen; i++) {
-                // remove the middle elements
-                $('li:gt(0)', an[i]).filter(':not(:last)').remove();
-
-                // add the new list items and their event handlers
-                for (j = iStart; j <= iEnd; j++) {
-                    sClass = (j == oPaging.iPage + 1) ? 'class="active"' : '';
-                    $('<li ' + sClass + '><a href="#">' + j + '</a></li>')
-                        .insertBefore($('li:last', an[i])[0])
-                        .bind('click', function (e) {
-                            e.preventDefault();
-                            oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
-                            fnDraw(oSettings);
-                            $(check_first).attr("checked", false);
-                        });
-                }
-
-                // add / remove disabled classes from the static elements
-                if (oPaging.iPage === 0) {
-                    $('li:first', an[i]).addClass('disabled');
-                } else {
-                    $('li:first', an[i]).removeClass('disabled');
-                }
-
-                if (oPaging.iPage === oPaging.iTotalPages - 1 || oPaging.iTotalPages === 0) {
-                    $('li:last', an[i]).addClass('disabled');
-                } else {
-                    $('li:last', an[i]).removeClass('disabled');
-                }
-            }
-        }
-    }
-});
