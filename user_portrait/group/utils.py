@@ -60,7 +60,7 @@ def submit_task(input_data):
 
 
 #search task by some condition -whether add download
-def search_task(task_name, submit_date, state):
+def search_task(task_name, submit_date, state, status):
     results = []
     query = []
     condition_num = 0
@@ -72,6 +72,9 @@ def search_task(task_name, submit_date, state):
         condition_num += 1
     if state:
         query.append({'wildcard':{'state': '*' + state + '*'}})
+        condition_num += 1
+    if status:
+        query.addpend({'match':{'status': status}})
         condition_num += 1
     if condition_num > 0:
         try:
@@ -112,13 +115,22 @@ def search_task(task_name, submit_date, state):
     return result
 
 #show group results
-def get_group_results(task_name):
-    result = {}
+def get_group_results(task_name, module):
+    result = []
     try:
-        result = es.get(index=index_name, doc_type=index_type, id=task_name)
+        es_result = es.get(index=index_name, doc_type=index_type, id=task_name)['_source']
         #print 'result:', result
     except:
         return None
+    #basic module: gender, count, verified
+    if module=='basic':
+        gender_dict = json.loads(es_result['gender'])
+        count = es_result['count']
+        verified = re_result['verified']
+        if verified:
+            verified_dict = json.loads(verified)
+        result = [gender_dict, count, verified]
+    print result
     return result
 
 # delete group results from es_user_portrait 'group_analysis'

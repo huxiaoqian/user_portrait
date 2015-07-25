@@ -50,7 +50,7 @@
 		<!-- 上面导航 -->
 		{% block header %}
 			<div id="header">
-		    	<h1 class="headtitle">XXXXXX</h1>
+                <a href="/index/"><h1 class="headtitle" style="color:#333;">XXXXXX</h1></a>
 		        <form class="search-form" id="" method="post" action="">
 		       	  	<span class="searchborder fleft">
 		  				<input type="text" id="keyword" value="" placeholder="请输入uid或昵称"/>
@@ -63,7 +63,7 @@
 				</form>
 				
 				<div class="fleft entrance">
-					<a title="" href="" class="link2portrait">XXXXXX入口</a>
+					<a title="" href="/profile/" target="_blank" class="link2portrait">XXXXXX入口</a>
 				</div>
 				
 		        <div class="fright userInfo">
@@ -77,18 +77,18 @@
 		{% block left %}
 			<div class="leftsidebar_box">
 				<dl class="Leftdl">
-                    <dt class="Leftdt">整体概览</dt>
+                    <dt class="Leftdt"><a href="/index/" style="color:white">整体概览</a></dt>
 				</dl>
 
 				<dl class="Leftdl">
                     <dt class="Leftdt" >出入库管理</dt>
-					<dd class="Leftdd"><a href="#">出库</a></dd>
-					<dd class="Leftdd"><a href="#">入库</a></dd>
+					<dd class="Leftdd"><a href="/index/recommend_out/">出库</a></dd>
+					<dd class="Leftdd"><a href="/index/recommend_in/">入库</a></dd>
 				</dl>
 				<dl class="Leftdl">
                     <dt class="Leftdt" >综合应用</dt>
-					<dd class="Leftdd"><a href="#">群体分析</a></dd>
-					<dd class="leftdd"><a href="#">影响力</a></dd>
+					<dd class="Leftdd"><a href="/index/">群体分析</a></dd>
+					<dd class="leftdd"><a href="/index/">影响力</a></dd>
 				</dl>
 			</div>	
 		{% endblock %}

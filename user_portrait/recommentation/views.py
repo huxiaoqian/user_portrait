@@ -82,13 +82,10 @@ def ajax_show_in_history():
 #show uid has not compute but have been identify in
 @mod.route('/show_compute/')
 def ajax_compute_show():
-    results = {}
+    results = []
     date = request.args.get('date','')
     if date:
         results = show_compute(date)
-    for item in results:
-        results[item] = json.loads(results[item])
-    print results
     return json.dumps(results)
 
 #identify the uid :list to compute

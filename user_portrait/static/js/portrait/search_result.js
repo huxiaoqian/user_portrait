@@ -33,7 +33,7 @@ Search_weibo_result.prototype = {
       user_url = user_url + item[0];
       html += '<tr>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ item[1] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
@@ -64,6 +64,7 @@ function compare_button(){
   }
   else{
     draw_table_compare_confirm(compare_uids, "#compare_comfirm");
+    $('#compare').modal();
   }
 }
 
@@ -73,7 +74,14 @@ function group_button(){
       group_uids.push($(this).attr('value'));
   })
   console.log(group_uids);
-  draw_table_group_confirm(group_uids, "#group_comfirm");
+  var len = group_uids.length;
+  if (len < 1){
+      alert("请选择至少1个用户!");
+  }
+  else{
+      draw_table_group_confirm(group_uids, "#group_comfirm");
+      $("#group").modal();
+  }
 }
 
 function delete_button(){
@@ -82,7 +90,14 @@ function delete_button(){
       delete_uids.push($(this).attr('value'));
   })
   console.log(delete_uids);
-  draw_table_delete_confirm(delete_uids, "#delete_comfirm");
+  var len = delete_uids.length;
+  if (len < 1){
+      alert("请选择至少1个用户!");
+  }
+  else{
+      draw_table_delete_confirm(delete_uids, "#delete_comfirm");
+      $('#delete').modal();
+  }
 }
 
 function choose_all(){
