@@ -24,10 +24,13 @@ def overview():
 def group_analysis():
 
     return render_template('portrait/group_analysis.html')
-
+@mod.route('/group_result/')
+def group_result():
+    
+        return render_template('portrait/group_result.html')
 @mod.route('/contrast/')
 def contrast():
-
+    
     return render_template('portrait/contrast.html')
 
 @mod.route('/personal/')
