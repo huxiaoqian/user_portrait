@@ -29,18 +29,21 @@ def ajax_show_task():
     task_name = request.args.get('task_name', '')
     submit_date = request.args.get('submit_date', '')
     state = request.args.get('state', '')
-    results = search_task(task_name, submit_date, state)
+    status = request.args.get('status', '')
+    results = search_task(task_name, submit_date, state, status)
     return json.dumps(results)
 
 
-# show the group analysis result
+# show the group analysis result---different module
 @mod.route('/show_group_result/')
-def ajax_show_group_result():
+def ajax_show_group_result_basic():
     results = {}
     task_name = request.args.get('task_name', '')
-    results = get_group_results(task_name)
+    module = request.args.get('module', 'basic')
+    results = get_group_results(task_name, module)
     print 'result:', results
     return json.dumps(results)
+
 
 # delete the group task
 @mod.route('/delete_group_task/')
