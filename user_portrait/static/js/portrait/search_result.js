@@ -55,6 +55,11 @@ draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_se
 
 
 function compare_button(){
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
+  global_choose_uids[global_pre_page] = cur_uids
   var compare_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -62,11 +67,6 @@ function compare_button(){
         compare_uids.push(temp_list[i]);
       }
   }
-  /*
-  $('input[name="search_result_option"]:checked').each(function(){
-      compare_uids.push($(this).attr('value'));
-  });
-  */
   
   console.log(compare_uids);
   var len = compare_uids.length;
@@ -80,6 +80,10 @@ function compare_button(){
 }
 
 function group_button(){
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
   var group_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -104,6 +108,10 @@ function group_button(){
 }
 
 function delete_button(){
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
   var delete_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
