@@ -18,36 +18,6 @@ Search_weibo_recommend.prototype = {
 
   Draw_table: function(data){
     //console.log(data);
-    var div = that.div
-    //console.log(div);
-    $(div).empty();
-    var user_url ;
-    //console.log(user_url);
-    html = '';
-    html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
-    var item = data;
-    html += '<tbody>';
-    for(var i in item){
-      user_url = window.location.href;
-      user_url = user_url + item[i];
-      html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i] + '" /></td>';
-      html += '</tr>';
-    }
-    html += '</tbody>';
-    html += '</table>';
-    $(div).append(html);
-  },
-  Re_Draw_table: function(data){
-    //console.log(data);
     var div = that.div;
     //console.log(div);
     $(div).empty();
@@ -55,21 +25,49 @@ Search_weibo_recommend.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>领域</th><th>影响力</th><th>重要度</th><th>活跃度</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
-      user_url = window.location.href;
-      user_url = user_url + item[i];
+      user_url = 'http://weibo.com/u/';
+      user_url = user_url + item[i][0];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+  },
+  Re_Draw_table: function(data){
+        //console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url ;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>领域</th><th>影响力</th><th>重要度</th><th>活跃度</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    var item = data;
+    html += '<tbody>';
+    for(var i in item){
+      user_url = 'http://weibo.com/u/';
+      user_url = user_url + item[i][0];
+      html += '<tr>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -112,13 +110,12 @@ Search_weibo_history.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>出库时间</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>领域</th><th>影响力</th><th>重要度</th><th>活跃度</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
-      var history_date;
-      user_url = window.location.href;
-      user_url = user_url + i;
+      user_url = 'http://weibo.com/u/';
+      user_url = user_url + item[i];
       html += '<tr>';
       html += '<td class="center"><a href='+ user_url+ '>'+ item[i] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
@@ -126,9 +123,7 @@ Search_weibo_history.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ history_date +'</td>';
-      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" id="' + i + '" value="' + history_date + '" /></td>';
+      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" id="' + item[i] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -136,31 +131,28 @@ Search_weibo_history.prototype = {
     $(div).append(html);
   },
   Re_Draw_table: function(data){
-    //console.log(data);
-    var div = that.div
+        //console.log(data);
+    var div = that.div;
     //console.log(div);
     $(div).empty();
     var user_url ;
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>出库时间</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>领域</th><th>影响力</th><th>重要度</th><th>活跃度</th><th>' + '<input name="history_all" id="history_all" type="checkbox" value="" onclick="history_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
-      var history_date;
-      user_url = window.location.href;
-      user_url = user_url + i;
+      user_url = 'http://weibo.com/u/';
+      user_url = user_url + item[i];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ 3211231 +'</td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ history_date +'</td>';
-      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" id="' + i + '" value="' + history_date + '" /></td>';
+      html += '<td class="center"><input name="history_status" class="history_status" type="checkbox" id="' + item[i] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -175,14 +167,6 @@ Search_weibo_history.prototype = {
     });
   }
 }
-
-var url_recommend = '/recommentation/show_out/?date=2013-09-07';
-draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
-draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Draw_table);
-
-var url_history = '/recommentation/history_delete/?date=2013-09-07';
-draw_table_history = new Search_weibo_history(url_history, '#history');
-draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Draw_table);
 
 function confirm(data){
   console.log(data);
@@ -206,41 +190,52 @@ function recommend_button(){
   var recommend_confirm_url = '/recommentation/identify_out/?data=' + uids_trans;
   console.log(recommend_confirm_url);
   draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm);
-  self.location.reload();
+  var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val() + '&fields=uname,domain,influence,importance,activeness';
+  //console.log(url_recommend_new);
+  draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
+  draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
 }
 
 function history_button(){
-  var history_dates = [];
+  var history_dates = $("#history_date_select").val();
   var history_uids = [];
   $('input[name="history_status"]:checked').each(function(){
       $(this).attr('disabled',true);
-      history_dates.push($(this).attr('value'));
       history_uids.push($(this).attr('id'));
   })
   //console.log(history_dates);
   //console.log(history_uids);
   var uids_history = '';
-  var dates_history = '';
   for(var i in history_uids){
       uids_history += history_uids[i];
       if(i<(history_uids.length-1))
         uids_history += ',';
   }
-  for(var j in history_dates){
-      dates_history += history_dates[j];
-      if(j<(history_dates.length-1))
-        dates_history += ',';
-  }
-  var history_confirm_url = '/recommentation/history_delete/?date=' + dates_history + '&data=' + uids_history;
+  var history_confirm_url = '/recommentation/cancel_delete/?date=' + history_dates + '&data=' + uids_history;
   console.log(history_confirm_url);
   draw_table_history.call_sync_ajax_request(history_confirm_url, draw_table_history.ajax_method, confirm);
-  self.location.reload();  
+  var url_history_new = '/recommentation/history_delete/?date=' + history_dates;
+  //console.log(url_history_new);
+  draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
+  draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);  
 }
 
-var tomorrow = new Date(2013,8,8);
+var tomorrow = new Date();
+var now = tomorrow.getFullYear()+"-"+((tomorrow.getMonth()+1)<10?"0":"")+(tomorrow.getMonth()+1)+"-"+((tomorrow.getDate())<10?"0":"")+(tomorrow.getDate());
+
+var url_recommend = '/recommentation/show_out/?date=' + now + '&fields=uname,domain,influence,importance,activeness';
+console.log(url_recommend);
+draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
+draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Draw_table);
+
+var url_history = '/recommentation/history_delete/?date=' + now;
+console.log(url_history);
+draw_table_history = new Search_weibo_history(url_history, '#history');
+draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Draw_table);
+
 var recommend_date = [];
 for(var i=0;i<7;i++){
-  var today = new Date(tomorrow-24*60*60*1000*(7-i));
+  var today = new Date(tomorrow-24*60*60*1000*(6-i));
   recommend_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
 }
 $("#recommend_date").empty();
@@ -258,7 +253,7 @@ $("#recommend_date").append(recommend_date_html);
 
 var history_date = [];
 for(var i=0;i<7;i++){
-  var today = new Date(tomorrow-24*60*60*1000*(7-i));
+  var today = new Date(tomorrow-24*60*60*1000*(6-i));
   history_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
 }
 $("#history_date").empty();
@@ -276,7 +271,7 @@ $("#history_date").append(history_date_html);
 
 $('#recommend_date_button').click(function(){
   console.log($("#recommend_date_select").val());
-  var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val();
+  var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val() + '&fields=uname,domain,influence,importance,activeness';
   //console.log(url_recommend_new);
   draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
   draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
@@ -297,3 +292,4 @@ function recommend_all(){
 function history_all(){
   $('input[name="history_status"]:not(:disabled)').prop('checked', $("#history_all").prop('checked'));
 }
+
