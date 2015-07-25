@@ -246,7 +246,7 @@
                         <th style="text-align:center">好友数</th>
                         <th style="text-align:center">粉丝数</th>
                         <th style="text-align:center">微博数</th>
-                        <th style="text-align:center;style='width:60px'">全选<input type="checkbox" onclick="selectAll()" ></th>
+                        <th style="text-align:center;style='width:60px'">全选<input id="choose_all" type="checkbox" onclick="selectAll()" ></th>
                         <!-- <th style="text-align:center">创建时间</th> -->
                     </tr>
                 </thead>
@@ -260,7 +260,7 @@
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.fansnum }}</td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.statusnum }}</td>
                     <!-- <td class="center" style="text-align:center">{{ tsfmt(item._source.create_at) }}</td> -->
-                    <td class="center" style="text-align:center;vertical-align:middle;"><input type="checkbox" id='{{ item._id }}' ></td>
+                    <td class="center" style="text-align:center;vertical-align:middle;"><input name="profile_result_option" type="checkbox" value='{{ item._id }}' ></td>
                 </tr>
                     {% endfor %}
                 </tbody>
@@ -344,12 +344,30 @@
         window.location.href = download_url;
   });
 
-  var check_first = $('input[type=checkbox]').eq(0);
+var global_pre_page = 1;
+var global_choose_uids = new Array();
+
 function selectAll(){
-  $('input[type=checkbox]').prop('checked', $(check_first).prop('checked'));
+    console.log('chooseall');
+  $('input[name="profile_result_option"]').prop('checked', $('#choose_all').prop('checked'));
 }
 
 function export_selected(file){
+    // fix begin
+    var cur_list = [];
+    $('input[name="profile_result_option"]:checked').each(function(){
+        cur_list.push($(this).attr('value'));
+    });
+    var exported_list = [];
+    for (var key in global_choose_uids){
+        var temp_list = global_choose_uids[key];
+        for (var i = 0;i < temp_list.length;i++){
+            exported_list.push(temp_list[i]);
+        }
+    }
+    console.log('chosen');
+    console.log(exported_list);
+    // fix end
   var obj = $('input[type=checkbox]').eq(0);
   var q = 1;
   var ids = '';

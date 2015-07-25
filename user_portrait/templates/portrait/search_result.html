@@ -101,3 +101,7 @@
 </script>
 <script type="text/javascript" src="/static/js/portrait/search_result.js"></script> 
 {% endblock Own_js%}
+{% block end_js %}
+{{ super() }}
+<script src="/static/js/portrait/result_table.js"></script>
+{% endblock end_js %}
