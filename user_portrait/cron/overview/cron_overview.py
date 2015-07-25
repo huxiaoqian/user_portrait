@@ -8,7 +8,7 @@ sys.path.append('../../')
 from global_utils import R_RECOMMENTATION as r
 from global_utils import es_user_portrait as es
 from global_utils import ES_DAILY_RANK as es_cluster
-from global_utils import es_user_portrait
+from global_utils import es_user_profile
 from global_utils import R_RECOMMENTATION as r_recomment
 from time_utils import ts2datetime, datetime2ts
 
@@ -20,6 +20,38 @@ compute_field = ['recomment_in_count', 'recomment_out', 'compute_count']
 
 index_name = 'user_portrait'
 index_type = 'user'
+
+#there have to add domain user top rank
+def get_domain_top_user(domain_top):
+    result = {}
+    domain_user = {}
+    index_name = 'weibo_user'
+    index_type = 'user'
+    #test user list
+    test_user_list = [['2300114493', '2374470543', '2635896591', '3183208410', '3051529851'], \
+                      ['1907226654', '1930756447', '2234766704', '3136175144', '2359312044'], \
+                      ['3164098804', '1800558761', '2345138531', '2207893564', '2776811373'], \
+                      ['2316351894', '1631925842', '3211675915', '2638131477', '2257652080'], \
+                      ['2862405162', '3192918572', '2029337133', '1056405943', '2340383723']]
+    count = 0
+    for item in domain_top:
+        domain = item[0]
+        #test
+        user_list = test_user_list[count]
+        result[domain] = []
+        profile_result = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':user_list})['docs']
+        for profile in profile_result:
+            uid = profile['_id']
+            try:
+                uname = profile['_source']['nick_name']
+                photo_url = profile['_source']['photo_url']
+            except:
+                uname = 'unknown'
+                photo_url = 'unknown'
+            result[domain].append([uid, uname, photo_url])
+        count += 1
+    return result
+
 
 def get_user_count():
     count = 0
@@ -223,6 +255,8 @@ def get_scan_results():
                     domain_top = {}
                 #print 'domain top:', domain_top
                 result_dict['domain_top'] = json.dumps(domain_top)
+                #test need to add domain top user
+                result_dict['domain_top_user'] = json.dumps(get_domain_top_user(domain_top))
                 return result_dict 
             except Exception, r:
                 #print Exception, r
