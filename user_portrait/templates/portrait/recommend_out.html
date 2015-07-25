@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="tab-pane" id="messages" style="margin-top:10px">
-            <span>推荐日期：</span><span id="history_date" style="margin-left:10px"></span>
+            <span>出库日期：</span><span id="history_date" style="margin-left:10px"></span>
             <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="history_date_button" title="确定日期选择">确定</button></span>
             <div id="history" style="margin-top:10px"></div>
             <div style="text-align:right">
@@ -34,5 +34,12 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/portrait/recommend_out.js"></script>
 {% endblock %}
+{% block Own_js %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/portrait/recommend_out.js"></script>
+{% endblock Own_js %}
+{% block end_js %}
+{{ super() }}
+<script src="/static/js/charima.js"></script>
+{% endblock end_js %}

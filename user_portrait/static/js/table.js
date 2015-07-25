@@ -1,4 +1,5 @@
  function Search_weibo(){
+  var check_first = $('input[type=checkbox]').eq(0);
   this.ajax_method = 'GET';
 }
 
@@ -40,7 +41,7 @@ Search_weibo.prototype = {
       html += '<td class="center" style="text-align:center;vertical-align:middle;width:72px">'+ item[i]['_source']['friendsnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['fansnum'] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i]['_source']['statusnum'] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle"><input type="checkbox" id="' +  item[i]['_source']['uid'] + '" ></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><input name="profile_result_option" type="checkbox" value="' +  item[i]['_source']['uid'] + '" ></td>';
       // html += '<td class="center" style="text-align:center">'+ new Date(parseInt(item[i]['_source']['create_at']) +'</td>';
       html += '</tr>';
     }
@@ -308,6 +309,10 @@ function toggle(target){
 var Search_weibo = new Search_weibo(); 
 
 function click_data(){
+  // for page control
+  global_pre_page = 1;
+  global_choose_uids = new Array();
+  // page control end
   weibo_url = '/profile/user/?';
   weibo_url += get_input_data();
   weibo_url = weibo_url.substring(0,weibo_url.length-1);

@@ -368,7 +368,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
                 }
-               $(check_first).attr("checked", false);
+                // $(check_first).attr("checked", false);
             };
 
             $(nPaging).addClass('pagination').append(
@@ -416,7 +416,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);
-                            $(check_first).attr("checked", false);
+                            // $(check_first).attr("checked", false);
                         });
                 }
 

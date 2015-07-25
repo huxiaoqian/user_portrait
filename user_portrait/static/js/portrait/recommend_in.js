@@ -25,21 +25,20 @@ Search_weibo_recommend.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>影响力</th><th>粉丝数</th><th>微博数</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>粉丝数</th><th>微博数</th><th>影响力</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       user_url = 'http://weibo.com/u/';
-      user_url = user_url + item[i];
+      user_url = user_url + item[i][0];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -47,7 +46,7 @@ Search_weibo_recommend.prototype = {
     $(div).append(html);
   },
   Re_Draw_table: function(data){
-    //console.log(data);
+        //console.log(data);
     var div = that.div;
     //console.log(div);
     $(div).empty();
@@ -55,21 +54,20 @@ Search_weibo_recommend.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>影响力</th><th>粉丝数</th><th>微博数</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>粉丝数</th><th>微博数</th><th>影响力</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       user_url = 'http://weibo.com/u/';
-      user_url = user_url + item[i];
+      user_url = user_url + item[i][0];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -108,40 +106,38 @@ Search_weibo_compute.prototype = {
     var div = that.div;
     //console.log(div);
     $(div).empty();
-    var user_url ;
+    var user_url;
     //console.log(user_url);
     html = '';
     html += '<table id="compute_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>入库时间</th><th>计算状态</th><th>' + '<input name="compute_all" id="compute_all" type="checkbox" value="" onclick="compute_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>粉丝数</th><th>微博数</th><th>影响力</th><th>入库时间</th><th>计算状态</th><th>' + '<input name="compute_all" id="compute_all" type="checkbox" value="" onclick="compute_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       user_url = 'http://weibo.com/u/';
-      user_url = user_url + i;
-      var compute_date = item[i][0];
+      user_url = user_url + item[i][0];
       var compute_status;
-      if(item[i][1]==2)
+      if(item[i][7]==2)
         compute_status = "正在计算";
-      else if(item[i][1]==1)
+      else if(item[i][7]==1)
         compute_status = "确定计算";
-      else if(item[i][1]==0)
+      else if(item[i][7]==0)
         compute_status = "未计算";
       else
         compute_status = "Error!";
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ i +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ compute_date +'</td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center" id="'+ i +'">'+ compute_status +'</td>';
-      if(item[i][1]==0)
-        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + i + '" value="' + compute_date + '" />' +'</td>';
-      else if(item[i][1]==1||item[i][1]==2)
-        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + i + '" value="' + compute_date + '" disabled="true" checked="true" />' +'</td>';
+      if(item[i][7]==0)
+        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + item[i][0] + '" value="' + item[i][6] + '" />' +'</td>';
+      else if(item[i][7]==1||item[i][7]==2)
+        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + item[i][0] + '" value="' + item[i][6] + '" disabled="true" checked="true" />' +'</td>';
       else
         html += '<td class="center">'+ 'Error!' +'</td>';
       html += '</tr>';
@@ -155,40 +151,38 @@ Search_weibo_compute.prototype = {
     var div = that.div;
     //console.log(div);
     $(div).empty();
-    var user_url ;
+    var user_url;
     //console.log(user_url);
     html = '';
     html += '<table id="compute_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>关注数</th><th>粉丝数</th><th>影响力</th><th>入库时间</th><th>计算状态</th><th>' + '<input name="compute_all" id="compute_all" type="checkbox" value="" onclick="compute_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>粉丝数</th><th>微博数</th><th>影响力</th><th>入库时间</th><th>计算状态</th><th>' + '<input name="compute_all" id="compute_all" type="checkbox" value="" onclick="compute_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       user_url = 'http://weibo.com/u/';
-      user_url = user_url + i;
-      var compute_date = item[i][0];
+      user_url = user_url + item[i][0];
       var compute_status;
-      if(item[i][1]==2)
+      if(item[i][7]==2)
         compute_status = "正在计算";
-      else if(item[i][1]==1)
+      else if(item[i][7]==1)
         compute_status = "确定计算";
-      else if(item[i][1]==0)
+      else if(item[i][7]==0)
         compute_status = "未计算";
       else
         compute_status = "Error!";
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ i +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ compute_date +'</td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center" id="'+ i +'">'+ compute_status +'</td>';
-      if(item[i][1]==0)
-        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + i + '" value="' + compute_date + '" />' +'</td>';
-      else if(item[i][1]==1||item[i][1]==2)
-        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + i + '" value="' + compute_date + '" disabled="true" checked="true" />' +'</td>';
+      if(item[i][7]==0)
+        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + item[i][0] + '" value="' + item[i][6] + '" />' +'</td>';
+      else if(item[i][7]==1||item[i][7]==2)
+        html += '<td class="center">'+ '<input name="compute_status" type="checkbox" id="' + item[i][0] + '" value="' + item[i][6] + '" disabled="true" checked="true" />' +'</td>';
       else
         html += '<td class="center">'+ 'Error!' +'</td>';
       html += '</tr>';
@@ -233,28 +227,27 @@ Search_weibo_history.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>影响力</th><th>粉丝数</th><th>微博数</th><th>入库状态</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>粉丝数</th><th>微博数</th><th>影响力</th><th>入库状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       user_url = 'http://weibo.com/u/';
-      user_url = user_url + i;
+      user_url = user_url + item[i][0];
       var in_status;
-      if(item[i]==1)
+      if(item[i][6]==1)
         in_status = "已入库";
-      else if(item[i]==0)
+      else if(item[i][6]==0)
         in_status = "未入库";
       else
         in_status = "Error!";
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ i +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center" id="'+ i +'">'+ in_status +'</td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center" id="'+ item[i][0] +'">'+ in_status +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -262,7 +255,7 @@ Search_weibo_history.prototype = {
     $(div).append(html);
   },
   Re_Draw_table: function(data){
-    //console.log(data);
+        //console.log(data);
     var div = that.div;
     //console.log(div);
     $(div).empty();
@@ -270,28 +263,27 @@ Search_weibo_history.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>影响力</th><th>粉丝数</th><th>微博数</th><th>入库状态</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>粉丝数</th><th>微博数</th><th>影响力</th><th>入库状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       user_url = 'http://weibo.com/u/';
-      user_url = user_url + i;
+      user_url = user_url + item[i][0];
       var in_status;
-      if(item[i]==1)
+      if(item[i][6]==1)
         in_status = "已入库";
-      else if(item[i]==0)
+      else if(item[i][6]==0)
         in_status = "未入库";
       else
         in_status = "Error!";
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ i +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center" id="'+ i +'">'+ in_status +'</td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center" id="'+ item[i][0] +'">'+ in_status +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -306,18 +298,6 @@ Search_weibo_history.prototype = {
     });
   }
 }
-
-var url_recommend = '/recommentation/show_in/?date=2013-09-07';
-draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
-draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Draw_table);
-
-var url_compute = '/recommentation/show_compute/?date=2013-09-07';
-draw_table_compute = new Search_weibo_compute(url_compute, '#compute');
-draw_table_compute.call_sync_ajax_request(url_compute, draw_table_compute.ajax_method, draw_table_compute.Draw_table);
-
-var url_history = '/recommentation/show_in_history/?date=2013-09-07';
-draw_table_history = new Search_weibo_history(url_history, '#history');
-draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Draw_table);
 
 function confirm(data){
   console.log(data);
@@ -345,6 +325,12 @@ function recommend_button(){
   var url_recommend_new = '/recommentation/show_in/?date=' + $("#recommend_date_select").val();
   draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
   draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
+  var url_compute_new = '/recommentation/show_compute/?date=' + now;
+  draw_table_compute_new = new Search_weibo_compute(url_compute_new, '#compute');
+  draw_table_compute_new.call_sync_ajax_request(url_compute_new, draw_table_compute_new.ajax_method, draw_table_compute_new.Re_Draw_table);
+  var url_history_new = '/recommentation/show_in_history/?date=' + $("#history_date_select").val();
+  draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
+  draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);
 }
 
 function compute_button(){
@@ -373,12 +359,27 @@ function compute_button(){
   var compute_confirm_url = '/recommentation/identify_compute/?date=' + dates_compute + '&uid_list=' + uids_compute;
   console.log(compute_confirm_url);
   draw_table_compute.call_sync_ajax_request(compute_confirm_url, draw_table_compute.ajax_method, confirm);
-  var url_compute_new = '/recommentation/show_compute/?date=2013-09-07';
+  var url_compute_new = '/recommentation/show_compute/?date=' + now;
   draw_table_compute_new = new Search_weibo_compute(url_compute_new, '#compute');
   draw_table_compute_new.call_sync_ajax_request(url_compute_new, draw_table_compute_new.ajax_method, draw_table_compute_new.Re_Draw_table);
 }
 
 var tomorrow = new Date(2013,8,8);
+var now_date = new Date(tomorrow-24*60*60*1000);
+var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
+
+var url_recommend = '/recommentation/show_in/?date=' + now;
+draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
+draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Draw_table);
+
+var url_compute = '/recommentation/show_compute/?date=' + now;
+draw_table_compute = new Search_weibo_compute(url_compute, '#compute');
+draw_table_compute.call_sync_ajax_request(url_compute, draw_table_compute.ajax_method, draw_table_compute.Draw_table);
+
+var url_history = '/recommentation/show_in_history/?date=' + now;
+draw_table_history = new Search_weibo_history(url_history, '#history');
+draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Draw_table);
+
 var recommend_date = [];
 for(var i=0;i<7;i++){
   var today = new Date(tomorrow-24*60*60*1000*(7-i));
