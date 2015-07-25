@@ -202,16 +202,16 @@ def decide_out_uid(date, data):
     if not_out_list:
         update_record_index(not_out_list)
     """
-    temp = hget("recommend_delete_list", date)
-    if temp:
-        current_date_list = json.loads(hget("recommend_delete_list", date))
-        new_list =  list(set(current_date_list).difference(set(uid_list)))
-        if new_list:
-            r_out.hset("recommend_delete_list", date, json.dumps(new_list))
+    temp = r_out.hget("recommend_delete_list", date)
+    uid_list = data.split(",")
+    current_date_list = json.loads(r_out.hget("recommend_delete_list", date))
+    new_list =  list(set(current_date_list).difference(set(uid_list)))
+    r_out.hset("recommend_delete_list", date, json.dumps(new_list))
 
     if uid_list:
-        exist_data = r_out.hget("history_delete_list", now_date)
-        if exist_data:
+        temp = r_out.hget("history_delete_list", now_date)
+        if temp:
+            exist_data = json.loads(r_out.hget("history_delete_list", now_date))
             uid_list.extend(exist_data)
         r_out.hset("history_delete_list", now_date, json.dumps(uid_list))
 
@@ -252,14 +252,16 @@ def search_history_delete(date):
 
     fields = ['uid','uname','domain','influence','importance','activeness']
     temp = r_out.hget("history_delete_list", now_date)
+    print temp
     if temp:
         history_uid_list = json.loads(r_out.hget("history_delete_list", now_date))
-        detail = es.mget(index="user_portrait", doc_type="user", body={"ids":history_uid_list}, _source=True)['docs']
-        for i in range(len(history_uid_list)):
-            detail_info = []
-            for item in fields:
-                detail_info.append(detail[i]['_source'][item])
-            return_list.append(detail_info)
+        if history_uid_list != []:
+            detail = es.mget(index="user_portrait", doc_type="user", body={"ids":history_uid_list}, _source=True)['docs']
+            for i in range(len(history_uid_list)):
+                detail_info = []
+                for item in fields:
+                    detail_info.append(detail[i]['_source'][item])
+                return_list.append(detail_info)
 
     return json.dumps(return_list)
 
