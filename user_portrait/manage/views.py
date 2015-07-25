@@ -50,24 +50,24 @@ def ajax_user_profile():
 @mod.route('/imagine/')
 def ajax_imagine():
     uid = request.args.get('uid', '') # uid
-    query_fields_dict = request.args.get('query_fields_dict','') # query dict and corresponding weight
-    keys_list = ['domain', 'topic', 'keywords', 'psycho_status', 'psycho_feature', 'activity_geo', 'hashtag']
-    weight_list = ['domain_weight', 'topic_weight', 'keywords_weight', 'psycho_status_weight', 'psycho_feature_weight', 'activity_geo_weight', 'hashtag_weight']
+    query_keywords = request.args.get('keywords','') # query dict and corresponding weight
+    keywords_list = query_keywords.split(',')
+    query_weight = request.args.get('weight','')
+    weight_list = query_weight.split(',')
+
+    if len(keywords_list) != len(weight_list):
+        return "not match"
+
     # 'field' control search order
     # order_list = ['importance', 'influence', 'activeness', 'default']
 
     query_fields_dict = {}
-    for i in range(7):
-        key = request.args.get(keys_list[i], '') # if not selected, key is set to ''
-        value = request.args.get(weight_list[i], '')
-        if key:
-            query_fields_dict[keys_list[i]] = int(value)
+    for i in range(len(keywords_list)):
+        query_fields_dict[keywords_list[i]] = int(weight_list[i])
     field = request.args.get('field', '')
     query_fields_dict['field'] = field
 
-    size = request.args.get('size', 10)
-    if size == "":
-        size = 10
+    size = request.args.get('size', 11)
     query_fields_dict['size'] = int(size)
 
     if uid and query_fields_dict:
@@ -75,4 +75,4 @@ def ajax_imagine():
     if result:
         return json.dumps(result)
 
-    return None
+    return 0

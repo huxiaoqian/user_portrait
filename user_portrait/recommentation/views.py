@@ -117,7 +117,8 @@ def ajax_recommentation_out():
     results = []
     date = request.args.get('date', '') # date 2013-09-01
     fields = request.args.get('fields','')
-    fields = fields.split(',')
+    if fields:
+        fields = fields.split(',')
     if date and fields:
         results = show_out_uid(date, fields)
     return json.dumps(results)

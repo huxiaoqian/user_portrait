@@ -19,13 +19,13 @@ from global_utils import ES_CLUSTER_FLOW1
 
 es = ES_CLUSTER_FLOW1
 # index_date is everyday active index
-index_date = "20130907"
+index_date = "20130902"
 index_date_doctype = "bci"
-index_destination = "user_index_profile" # record all active user index on the Internet
-index_destination_doctype = "manage"
+#index_destination = "user_index_profile" # record all active user index on the Internet
+#index_destination_doctype = "manage"
 
-index_copy_portrait = "this_is_a_copy_portrait_index" # record only portrait user index
-doctype_copy_portrait = "manage"
+index_destination = "this_is_a_copy_user_portrait" # record only portrait user index
+index_destination_doctype = "manage"
 
 def expand_update_action(data):
     _id = data['uid']
@@ -83,7 +83,6 @@ def co_search(es, user_list, bulk_action, count_index, tb):
         if count_index % 10000 == 0:
             ts = time.time()
             print "count_index %s per  %s  second"  %(count_index, ts-tb)
-            print "count_n : %s" % count_n
             tb = ts
 
     return bulk_action, count_index, tb
@@ -130,4 +129,3 @@ def main(index_date, index_date_doctype, index_destination, index_destination_do
 if __name__ == "__main__":
     # index_date = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
     main(index_date, index_date_doctype, index_destination, index_destination_doctype)
-    main(index_date, index_date_doctype, index_copy_portrait, doctype_copy_portrait)
