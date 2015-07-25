@@ -14,10 +14,8 @@ sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1, es_user_profile
 
 es = ES_CLUSTER_FLOW1
-#user_portrait = "user_portrait" # act as portrait database
-user_portrait = "20130901"
-#user_portrait_doctype = "user"
-user_portrait_doctype = "bci"
+user_portrait = "user_portrait" # act as portrait database
+user_portrait_doctype = "user"
 index_destination = "this_is_a_copy_user_portrait" # act as user all portrait user database
 index_destination_doctype = "manage"
 
@@ -29,7 +27,7 @@ def expand_index_action(data):
 def co_search(es, user_list, bulk_action, count_n, tb):
     search_list = []
     for item in user_list:
-        uid = item.get('user', '0') # obtain uid, notice "uid" or "user"
+        uid = item.get('uid', '0') # obtain uid, notice "uid" or "user"
         search_list.append(uid)
 
     search_result = es.mget(index=index_destination, doc_type=index_destination_doctype, body={"ids": search_list}, _source=False)["docs"]
@@ -56,7 +54,7 @@ def co_search(es, user_list, bulk_action, count_n, tb):
         if count_n % 10000 == 0:
             ts = time.time()
             print "count_n %s  per  %s  second"  %(count_n, ts-tb)
-            print "count : %s" % count 
+            print "count %s " % count
             tb = ts
 
     return bulk_action, count_n, tb
