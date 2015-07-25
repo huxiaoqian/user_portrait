@@ -34,5 +34,12 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/static/js/portrait/recommend_out.js"></script>
 {% endblock %}
+{% block Own_js %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/portrait/recommend_out.js"></script>
+{% endblock Own_js %}
+{% block end_js %}
+{{ super() }}
+<script src="/static/js/charima.js"></script>
+{% endblock end_js %}

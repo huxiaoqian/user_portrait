@@ -47,6 +47,8 @@ Search_weibo_result.prototype = {
   }
 }
 
+var global_pre_page = 1;
+var global_choose_uids = new Array();
 console.log(url_search_result);
 draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
@@ -54,9 +56,18 @@ draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_se
 
 function compare_button(){
   var compare_uids = [];
+  for (var key in global_choose_uids){
+      var temp_list = global_choose_uids[key];
+      for (var i = 0; i < temp_list.length; i++){
+        compare_uids.push(temp_list[i]);
+      }
+  }
+  /*
   $('input[name="search_result_option"]:checked').each(function(){
       compare_uids.push($(this).attr('value'));
-  })
+  });
+  */
+  
   console.log(compare_uids);
   var len = compare_uids.length;
   if(len>3 || len<2){
@@ -70,9 +81,17 @@ function compare_button(){
 
 function group_button(){
   var group_uids = [];
+  for (var key in global_choose_uids){
+      var temp_list = global_choose_uids[key];
+      for (var i = 0; i < temp_list.length; i++){
+        group_uids.push(temp_list[i]);
+      }
+  }
+  /*
   $('input[name="search_result_option"]:checked').each(function(){
       group_uids.push($(this).attr('value'));
-  })
+  });
+  */
   console.log(group_uids);
   var len = group_uids.length;
   if (len < 1){
@@ -86,9 +105,17 @@ function group_button(){
 
 function delete_button(){
   var delete_uids = [];
+  for (var key in global_choose_uids){
+      var temp_list = global_choose_uids[key];
+      for (var i = 0; i < temp_list.length; i++){
+        delete_uids.push(temp_list[i]);
+      }
+  }
+  /*
   $('input[name="search_result_option"]:checked').each(function(){
       delete_uids.push($(this).attr('value'));
-  })
+  });
+  */
   console.log(delete_uids);
   var len = delete_uids.length;
   if (len < 1){
