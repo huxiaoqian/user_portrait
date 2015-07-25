@@ -201,6 +201,7 @@ def search_portrait(condition_num, query, sort, size):
     index_type = 'user'
     if condition_num > 0:
         try:
+            print query
             result = es_user_portrait.search(index=index_name, doc_type=index_type, \
                     body={'query':{'bool':{'must':query}}, 'sort':sort, 'size':size})['hits']['hits']
         except Exception,e:

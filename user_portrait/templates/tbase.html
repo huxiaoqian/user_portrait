@@ -50,7 +50,7 @@
 		<!-- 上面导航 -->
 		{% block header %}
 			<div id="header">
-		    	<h1 class="headtitle">XXXXXX</h1>
+                <a href="/index/"><h1 class="headtitle" style="color:#333;">XXXXXX</h1></a>
 		        <form class="search-form" id="" method="post" action="">
 		       	  	<span class="searchborder fleft">
 		  				<input type="text" id="keyword" value="" placeholder="请输入uid或昵称"/>
@@ -63,7 +63,7 @@
 				</form>
 				
 				<div class="fleft entrance">
-					<a title="" href="" class="link2portrait">XXXXXX入口</a>
+					<a title="" href="/profile/" target="_blank" class="link2portrait">XXXXXX入口</a>
 				</div>
 				
 		        <div class="fright userInfo">
@@ -77,18 +77,18 @@
 		{% block left %}
 			<div class="leftsidebar_box">
 				<dl class="Leftdl">
-                    <dt class="Leftdt">整体概览</dt>
+                    <dt class="Leftdt"><a href="/index/" style="color:white">整体概览</a></dt>
 				</dl>
 
 				<dl class="Leftdl">
                     <dt class="Leftdt" >出入库管理</dt>
-					<dd class="Leftdd"><a href="#">出库</a></dd>
-					<dd class="Leftdd"><a href="#">入库</a></dd>
+					<dd class="Leftdd"><a href="/index/recommend_out/">出库</a></dd>
+					<dd class="Leftdd"><a href="/index/recommend_in/">入库</a></dd>
 				</dl>
 				<dl class="Leftdl">
                     <dt class="Leftdt" >综合应用</dt>
-					<dd class="Leftdd"><a href="#">群体分析</a></dd>
-					<dd class="leftdd"><a href="#">影响力</a></dd>
+					<dd class="Leftdd"><a href="/index/">群体分析</a></dd>
+					<dd class="leftdd"><a href="/index/">影响力</a></dd>
 				</dl>
 			</div>	
 		{% endblock %}
@@ -106,64 +106,64 @@
 		<div class="search-content">
 			<div class="cols">
 				<span class="fleft lineh42 mright23">uid</span>
-				<input class="inputbox fleft" type="text" value="" placeholder="请输入uid" />
+				<input name="uid" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入uid" />
 				<span class="fleft lineh42 mright13">用户名</span>
-				<input class="inputbox fleft" type="text" value="" placeholder="请输入用户名" />
+				<input name="uname" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入用户名" />
 				<span class="fleft lineh42 ">地点</span>
-				<input class="inputbox fleft" type="text" value="" placeholder="北京"/>
+				<input name="location" class="inputbox fleft ad-search" type="text" value="" placeholder="北京"/>
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 ">关键字</span>
-				<input class="inputbox fleft" type="text" value="" placeholder="请输入关键字" />
+				<input name="adkeyword" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入关键字" />
 				<span class="fleft lineh42 ">hashtag</span>
-				<input class="inputbox fleft" type="text" value="" placeholder="请输入hashtag" />
+				<input name="hashtag" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入hashtag" />
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20 ">领域</span>
-                    <label class="cols-label"><input class=" fleft chosebox " type="checkbox" value=""/><span class="font15">文化</span></label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
-					<label class="cols-label"><input class=" fleft chosebox " type="checkbox" value="" />娱乐</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />时尚</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />财经</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />媒体</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />科技</label>
+                    <label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="cul"/><span class="font15">文化</span></label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="edu" />教育</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="ent" />娱乐</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="fas" />时尚</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="fin" />财经</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="med" />媒体</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="phy" />体育</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="sci" />科技</label>
 				</form>
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20">话题</span>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />环境</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />教育</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />医药</label>
-					<label class="cols-label" ><input class="fleft chosebox" type="checkbox" value="" />军事</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />政治</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />交通</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />体育</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />社会</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />艺术</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />经济</label>
-					<label class="cols-label"><input class=" fleft chosebox" type="checkbox" value="" />计算机</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="env" />环境</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="edu" />教育</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="med" />医药</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="mil" />军事</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="pol" />政治</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="tra" />交通</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="phy" />体育</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="soc" />社会</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="art" />艺术</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="eco" />经济</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="com" />计算机</label>
 				</form>
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 mright30">心理状态</span>
-				<select name="" class="fleft select-box">
+				<select name="psycho_status" class="fleft select-box ad-search">
 					<option value="">不限</option>
-					<option value="">积极向上</option>
-					<option value="">消极失望</option>
-					<option value="">焦虑</option>
-					<option value="">生气</option>
-					<option value="">悲伤</option>
+					<option value="pos">积极向上</option>
+					<option value="neg">消极失望</option>
+					<option value="anx">焦虑</option>
+					<option value="ang">生气</option>
+					<option value="sad">悲伤</option>
 				</select>
 				<span class="fleft lineh42 mright17">心理特征</span>
-				<select name="" class="fleft select-box">
+				<select name="psycho_feature" class="fleft select-box ad-search">
 					<option value="">不限</option>
-					<option value="">胆汁质</option>
-					<option value="">多血质</option>
-					<option value="">黏液质</option>
-					<option value="">抑郁质</option>
+					<option value="dzz">胆汁质</option>
+					<option value="dxz">多血质</option>
+					<option value="nyz">黏液质</option>
+					<option value="yyz">抑郁质</option>
 				</select>
 			</div>
 		</div>
@@ -214,11 +214,6 @@
 					$("#supersearch").addClass("hidden");
 					return false;
 				});
-                $("#bluebtn").off("click").click(function(){
-                    $("#float-wrap").addClass("hidden");
-                    $("#supersearch").addClass("hidden");
-                    return false;
-                });
             </script>
             <script src="/static/js/portrait/tbase.js"></script>
 		{% endblock %}

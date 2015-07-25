@@ -14,6 +14,15 @@ from user_portrait.search_user_profile import es_get_source
 # use to test 13-09-08
 test_time = 1378569600
 
+item_dict = {'domain':{'cul':u'文化', 'edu':u'教育', 'ent':u'娱乐', 'fas':u'时尚',\
+                      'fin':u'财经', 'med':u'媒体', 'phy':u'体育', 'sci':u'科技'}, \
+             'topic':{'env':u'环境', 'edu':u'教育', 'med':u'医药', 'mil':u'军事',\
+                     'pol':u'政治', 'tra':u'交通', 'phy':u'体育', 'soc':u'社会',\
+                     'art':u'艺术', 'eco':u'经济', 'com':u'计算机'},\
+             'psycho_feature':{'dzz':u'胆汁质', 'dxz':u'多血质', 'nyz':u'粘液质', 'yyz':u'抑郁质'},\
+             'psycho_status':{'pos':u'积极', 'neg':u'消极', 'anx':u'焦虑', 'ang':u'生气', 'sad':u'悲伤'}}
+
+
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
 @mod.route('/portrait_attribute/')
@@ -43,8 +52,9 @@ def ajax_portrait_search():
                 condition_num += 1
     else:
         fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
-        select_item = ['gender', 'verified', 'topic', 'domain', 'psycho_feature', 'psycho_status']
+        select_item = ['gender', 'verified', 'psycho_feature', 'psycho_status']
         range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
+        multi_item = ['topic', 'domain']
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:
@@ -53,7 +63,11 @@ def ajax_portrait_search():
         for item in select_item:
             item_data = request.args.get(item, '')
             if item_data:
-                query.append({'match':{item: item_data}})
+                if item == 'psycho_feature' or item == 'psycho_status':
+                    match_dict = item_dict[item]
+                    query.append({'match':{item: match_dict[item_data]}})
+                else:
+                    query.append({'match':{item: item_data}})
                 condition_num += 1
         for item in range_item:
             item_data_low = request.args.get(item+'low', '')
@@ -68,6 +82,17 @@ def ajax_portrait_search():
                 item_data_up = float(item_data_up)
             query.append({'range':{item:{'from':item_data_low, 'to':item_data_up}}})
             condition_num += 1
+        for item in multi_item:
+            nest_body = {}
+            nest_body_list = []
+            match_dict = item_dict[item]
+            item_data = request.args.get(item, '')
+            if item_data:
+                term_list = item_data.split(',')
+                for term in term_list:
+                    nest_body_list.append({'match':{item: match_dict[term]}})
+                condition_num += 1
+                query.append({'bool':{'should':nest_body_list}})
     size = request.args.get('size', 100)
     sort = request.args.get('sort', 'statusnum')
     result = search_portrait(condition_num, query, sort, size)

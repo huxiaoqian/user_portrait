@@ -21,7 +21,8 @@ recommend_redis = R_RECOMMENTATION_OUT
 
 index_destination = "user_index_profile"
 index_destination_doctype = "manage"
-
+# index_destination = "user_portrait"
+# index_destination_doctype = "user"
 
 def transfer_str_to_list(value):
     uid_list = []

@@ -20,7 +20,7 @@ es = ES_CLUSTER_FLOW1
 recommend_redis = R_RECOMMENTATION_OUT
 
 threshould = 4
-index_destination = "user_index_profile"
+index_destination = "portrait_user_index_profile"
 index_destination_doctype = "manage"
 
 def search_low_number(low_range, index_name=index_destination, index_type=index_destination_doctype):

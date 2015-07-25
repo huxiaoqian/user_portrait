@@ -16,6 +16,8 @@ sys.path.append('../')
 from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_profile
+from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.time_utils import ts2datetime
 #test
 '''
@@ -27,20 +29,84 @@ def save_uid2compute(uid_list):
         value_string = [test_date, status]
         r.hset(hash_name, uid, json.dumps(value_string))
 '''
+
+#get user detail
+#output: uid, uname, location, fansnum, statusnum, influence
+def get_user_detail(date, input_result, status):
+    results = []
+    if status=='show_in':
+        uid_list = input_result
+    if status=='show_compute':
+        uid_list = input_result.keys()
+    if status=='show_in_history':
+        uid_list = input_result.keys()
+    index_name = ''.join(date.split('-'))
+    # test
+    index_name = '20130907'
+    index_type = 'bci'
+    user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
+    #print 'user_portrait_result:', user_portrait_result[0]
+    user_profile_result = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
+    #print 'user_profile_result:', user_profile_result
+    for i in range(0, len(uid_list)):
+        uid = uid_list[i]
+        bci_dict = user_bci_result[i]
+        profile_dict = user_profile_result[i]
+        try:
+            bci_source = bci_dict['_source']
+        except:
+            bci_source = None
+        if bci_source:
+            influence = bci_source['user_index']
+        else:
+            influence = ''
+        try:
+            profile_source = profile_dict['_source']
+        except:
+            profile_source = None
+        if profile_source:
+            uname = profile_source['nick_name'] 
+            location = profile_source['user_location']
+            fansnum = profile_source['fansnum']
+            statusnum = profile_source['statusnum']
+        else:
+            uname = ''
+            location = ''
+            fansnum = ''
+            statusnum = ''
+        if status == 'show_in':
+            results.append([uid, uname, location, fansnum, statusnum, influence])
+        if status == 'show_compute':
+            in_date = input_result[uid][0]
+            compute_status = input_result[uid][1]
+            results.append([uid, uname, location, fansnum, statusnum, influence, in_date, compute_status])
+        if status == 'show_in_history':
+            in_status = input_result[uid]
+            results.append([uid, uname, location, fansnum, statusnum, influence, in_status])
+
+    return results
+
+
 # show recommentation in uid
 def recommentation_in(input_ts):
     date = ts2datetime(input_ts)
     recomment_results = []
     # read from redis
+    results = []
     hash_name = 'recomment_'+str(date)
     results = r.hgetall(hash_name)
+    if not results:
+        return results
     # search from user_profile to rich th show information
     for item in results:
         status = results[item]
         if status=='0':
             recomment_results.append(item)
-
-    return recomment_results
+    if recomment_results:
+        results = get_user_detail(date, recomment_results, 'show_in')
+    else:
+        results = []
+    return results
 
 # identify uid to in user_portrait
 def identify_in(data):
@@ -63,16 +129,22 @@ def identify_in(data):
 def show_in_history(date):
     results = []
     hash_name = 'recomment_'+str(date)
-    results = r.hgetall(hash_name)
+    r_results = r.hgetall(hash_name)
+    if r_results:
+        results = get_user_detail(date, r_results, 'show_in_history')
     return results
 
 # show uid who have in but not compute
 def show_compute(date):
-    results = {}
+    results = []
     hash_name = 'compute'
-    results = r.hgetall(hash_name)
+    r_results = r.hgetall(hash_name)
     #search user profile to inrich information
-    return results
+    if r_results:
+        results = get_user_detail(date, r_results, 'show_compute')
+        return results
+    else:
+        return results
 
 # identify uid to start compute
 def identify_compute(data):
@@ -89,33 +161,26 @@ def identify_compute(data):
 
     return True
 
-def show_out_uid(date):
-    out_dict = {}
-    data = str(date).replace("-","")
-    uid_dict = r_out.hgetall("recommend_delete_list")
-    if not uid_dict:
-        return out_dict # no one is recommended to out
+def show_out_uid(date, fields):
+    out_list = []
+    date = str(date).replace("-","")
+    uid_list = r_out.hget("recommend_delete_list", date)
+    if not uid_list:
+        return out_list # no one is recommended to out
 
-    keys = r_out.hkeys("recommend_delete_list")
-
-    """
-    if data in set(keys):
-        out_dict[data] = json.dumps(r_out.hget("recommend_delete_list", data))
-
-    """
-    for iter_key in keys:
-        date_out_list = json.loads(r_out.hget("recommend_delete_list",iter_key))
-        detail_info = {}
-        if date_out_list:
-            #detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
-            detail_info = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
+    return_list = []
+    date_out_list = json.loads(r_out.hget("recommend_delete_list",date))
+    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
-        info = []
-        info.append(date_out_list)
-        info.append(detail_info)
-        out_dict[iter_key] = info
+    print detail
+    for i in range(len(date_out_list)):
+        detail_info = []
+        detail_info.append(date_out_list[i])
+        for item in fields:
+            detail_info.append(detail[i]['_source'][item])
+        return_list.append(detail_info)
 
-    return out_dict
+    return return_list
 
 def decide_out_uid(data):
     uid_list = []
@@ -144,6 +209,7 @@ def decide_out_uid(data):
 
     return 1
 
+"""
 def generate_date(former_date, later_date="21000101"):
     date_list = []
     date_list.append(former_date)
@@ -165,22 +231,22 @@ def generate_date(former_date, later_date="21000101"):
             break
 
     return date_list
+"""
 
 def search_history_delete(date):
-    history_uid_dict = {}
-    if date == []:
+    history_uid_list = []
+    if not date:
         now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
-        date_list = generate_date(now_date)
-
+    elif date:
+        now_date = date
     else:
-        date_list = generate_date(date[0].replace('-',''), date[1].replace('-',''))
+        pass
 
-    for key in date_list:
-        temp = r_out.hget("history_delete_list", key)
-        if temp:
-            history_uid_dict[key] = json.loads(r_out.hget("history_delete_list", key))
+    temp = r_out.hget("history_delete_list", now_date)
+    if temp:
+        history_uid_list = json.loads(r_out.hget("history_delete_list", now_date))
 
-    return json.dumps(history_uid_dict)
+    return json.dumps(history_uid_list)
 
 if __name__=='__main__':
     #test
