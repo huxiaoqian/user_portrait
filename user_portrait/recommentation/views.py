@@ -56,8 +56,8 @@ def ajax_identify_in():
         #date = '2013-09-07'
         for uid in uid_list:
             data.append([date, uid])
-            results = identify_in(data)
-            print 'results:', results
+        results = identify_in(data)
+        print 'results:', results
     else:
         results = None
     return json.dumps(results)
@@ -114,7 +114,8 @@ def ajax_recommentation_out():
     results = []
     date = request.args.get('date', '') # date 2013-09-01
     fields = request.args.get('fields','')
-    fields = fields.split(',')
+    if fields:
+        fields = fields.split(',')
     if date and fields:
         results = show_out_uid(date, fields)
     return json.dumps(results)

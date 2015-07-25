@@ -77,8 +77,8 @@ def get_user_detail(date, input_result, status):
         if status == 'show_in':
             results.append([uid, uname, location, fansnum, statusnum, influence])
         if status == 'show_compute':
-            in_date = input_result[uid][0]
-            compute_status = input_result[uid][1]
+            in_date = json.loads(input_result[uid])[0]
+            compute_status = json.loads(input_result[uid])[1]
             results.append([uid, uname, location, fansnum, statusnum, influence, in_date, compute_status])
         if status == 'show_in_history':
             in_status = input_result[uid]
@@ -161,7 +161,7 @@ def identify_compute(data):
 
     return True
 
-def show_out_uid(date, fields):
+def show_out_uid(date,fields):
     out_list = []
     date = str(date).replace("-","")
     uid_list = r_out.hget("recommend_delete_list", date)
@@ -172,40 +172,48 @@ def show_out_uid(date, fields):
     date_out_list = json.loads(r_out.hget("recommend_delete_list",date))
     detail = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
-    print detail
     for i in range(len(date_out_list)):
         detail_info = []
-        detail_info.append(date_out_list[i])
         for item in fields:
             detail_info.append(detail[i]['_source'][item])
         return_list.append(detail_info)
 
     return return_list
 
-def decide_out_uid(data):
+def decide_out_uid(date, data):
     uid_list = []
-    date = time.strftime("%Y%m%d", time.localtime(time.time()))
+    now_date = time.strftime("%Y%m%d", time.localtime(time.time()))
     if data:
         uid_list = data.split(",") # decide to delete uids
-        exist_data = r_out.hget("decide_delete_list", date)
+        exist_data = r_out.hget("decide_delete_list", now_date)
         if exist_data:
             uid_list.extend(json.loads(exist_data))
-        r_out.hset("decide_delete_list", date, json.dumps(uid_list))
+            uid_list = list(set(uid_list))
+        r_out.hset("decide_delete_list", now_date, json.dumps(uid_list))
 
+    """
     recommend_keys = r_out.hkeys("recommend_delete_list")
     recommend_uid_list = []
     for iter_key in recommend_keys:
         recommend_uid_list.extend(json.loads(r_out.hget("recommend_delete_list",iter_key)))
     not_out_list = list(set(recommend_uid_list).difference(set(uid_list))) # update user info in user_index_profile
+    
 
-    """
-    update user states
     if not_out_list:
         update_record_index(not_out_list)
     """
-    r_out.delete("recommend_delete_list")
+    temp = hget("recommend_delete_list", date)
+    if temp:
+        current_date_list = json.loads(hget("recommend_delete_list", date))
+        new_list =  list(set(current_date_list).difference(set(uid_list)))
+        if new_list:
+            r_out.hset("recommend_delete_list", date, json.dumps(new_list))
+
     if uid_list:
-        r_out.hset("history_delete_list", date, json.dumps(uid_list))
+        exist_data = r_out.hget("history_delete_list", now_date)
+        if exist_data:
+            uid_list.extend(exist_data)
+        r_out.hset("history_delete_list", now_date, json.dumps(uid_list))
 
     return 1
 
@@ -234,7 +242,7 @@ def generate_date(former_date, later_date="21000101"):
 """
 
 def search_history_delete(date):
-    history_uid_list = []
+    return_list = []
     if not date:
         now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
     elif date:
@@ -242,11 +250,18 @@ def search_history_delete(date):
     else:
         pass
 
+    fields = ['uid','uname','domain','influence','importance','activeness']
     temp = r_out.hget("history_delete_list", now_date)
     if temp:
         history_uid_list = json.loads(r_out.hget("history_delete_list", now_date))
+        detail = es.mget(index="user_portrait", doc_type="user", body={"ids":history_uid_list}, _source=True)['docs']
+        for i in range(len(history_uid_list)):
+            detail_info = []
+            for item in fields:
+                detail_info.append(detail[i]['_source'][item])
+            return_list.append(detail_info)
 
-    return json.dumps(history_uid_list)
+    return json.dumps(return_list)
 
 if __name__=='__main__':
     #test

@@ -60,7 +60,7 @@ def submit_task(input_data):
 
 
 #search task by some condition -whether add download
-def search_task(task_name, submit_date, state):
+def search_task(task_name, submit_date, state, status):
     results = []
     query = []
     condition_num = 0
@@ -72,6 +72,9 @@ def search_task(task_name, submit_date, state):
         condition_num += 1
     if state:
         query.append({'wildcard':{'state': '*' + state + '*'}})
+        condition_num += 1
+    if status:
+        query.addpend({'match':{'status': status}})
         condition_num += 1
     if condition_num > 0:
         try:
@@ -112,13 +115,84 @@ def search_task(task_name, submit_date, state):
     return result
 
 #show group results
-def get_group_results(task_name):
-    result = {}
+def get_group_results(task_name, module):
+    result = []
     try:
-        result = es.get(index=index_name, doc_type=index_type, id=task_name)
+        es_result = es.get(index=index_name, doc_type=index_type, id=task_name)['_source']
         #print 'result:', result
     except:
         return None
+    #basic module: gender, count, verified
+    if module=='overview':
+        task_name = es_result['task_name']
+        submit_date = es_result['submit_date']
+        state = es_result['state']
+        tightness = es_result['tightness']
+        activeness = es_result['activeness']
+        importance = es_result['importance']
+        influence = es_result['influence']
+        result = [task_name, submit_date, state, tightness, activeness, importance]
+    if module=='basic':
+        gender_dict = json.loads(es_result['gender'])
+        count = es_result['count']
+        verified = es_result['verified']
+        if verified:
+            verified_dict = json.loads(verified)
+        result = [gender_dict, count, verified]
+    if module=='activity':
+        activity_geo_dict = json.loads(es_result['activity_geo'])
+        sort_activity_geo = sorted(activity_geo_dict.items(), key=lambda x:x[1], reverse=True)
+        activity_geo = sort_activity_geo[:5]
+        activity_trend = json.loads(es_result['activity_trend'])
+        online_pattern_dict = json.loads(es_result['online_pattern'])
+        sort_online_pattern = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
+        online_pattern = sort_online_pattern[:5]
+        result = [activity_geo, activity_trend, online_pattern]
+    if module=='social':
+        degree_his = json.loads(es_result['degree_his'])
+        density = es_result['density']
+        retweet_weibo_count = es_result['retweet_weibo_count']
+        retweet_user_count = es_result['retweet_user_count']
+        result = [degree_his, density, retweet_weibo_count, retweet_user_count]
+    if module=='think':
+        domain_dict = json.loads(es_result['domain'])
+        topic_dict = json.loads(es_result['topic'])
+        psycho_status = json.loads(es_result['psycho_status'])
+        psycho_feature = json.loads(es_result['psycho_feature'])
+        result = [domain_dict, topic_dict, psycho_status, psycho_feature]
+    if module=='text':
+        hashtag_dict = json.loads(es_result['hashtag'])
+        sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
+        hashtag = sort_hashtag[:5]
+        emoticon_dict = json.loads(es_result['emoticon'])
+        sort_emoticon = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
+        emoticon = sort_emoticon[:5]
+        keyword_dict = json.loads(es_result['keywords'])
+        sort_keyword = sorted(keyword_dict.items(), key=lambda x:x[1], reverse=True)
+        keyword = sort_keyword[:20]
+        result = [hashtag, keyword, emoticon]
+    if module=='influence':
+        importance_dis = json.loads(es_result['importance_his'])
+        activeness_his = json.loads(es_result['activeness_his'])
+        influence_his = json.loads(es_result['influence_his'])
+        origin_max_retweeted_number =es_result['origin_max_retweeted_number']
+        origin_max_retweeted_id = es_result['origin_max_retweeted_id']
+        origin_max_retweeted_user = es_result['origin_max_retweeted_user']
+        origin_max_comment_number = es_result['origin_max_comment_number']
+        origin_max_comment_id = es_result['origin_max_comment_id']
+        origin_max_comment_user = es_result['origin_max_comment_user']
+        retweet_max_retweeted_number = es_result['retweet_max_retweeted_number']
+        retweet_max_retweeted_id = es_result['retweet_max_retweeted_id']
+        retweet_max_retweeted_user = es_result['retweet_max_retweeted_user']
+        retweet_max_comment_number = es_result['retweet_max_comment_number']
+        retweet_max_comment_id = es_result['retweet_max_comment_id']
+        retweet_max_comment_user = es_result['retweet_max_comment_user']
+        result = [importance_dis, activeness_his, influence_his, \
+                  origin_max_retweeted_number, origin_max_retweeted_id, origin_max_retweeted_user ,\
+                  origin_max_comment_number, origin_max_comment_id, origin_max_comment_user ,\
+                  retweet_max_retweeted_number, retweet_max_retweeted_id, retweet_max_retweeted_user ,\
+                  retweet_max_comment_number, retweet_max_comment_id, retweet_max_retweeted_user]
+    print result
     return result
 
 # delete group results from es_user_portrait 'group_analysis'
