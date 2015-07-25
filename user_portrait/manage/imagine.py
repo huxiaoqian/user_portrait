@@ -71,15 +71,16 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
     result = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
 
-    uid_list = []
+    field_list = ['uid','uname','importance', 'activeness', 'influence']
+    return_list = []
     for item in result:
-        info = {}
-        info = item
-        uid_list.append(info)
+        info = []
+        for field in field_list:
+            info.append(item['_source'][field])
+        info.append(item['_score'])
+        return_list.append(info)
 
-    uid_list.append(query_fields_dict)
-
-    return uid_list
+    return return_list
 
 
 
