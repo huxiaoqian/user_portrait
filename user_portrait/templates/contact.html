@@ -140,38 +140,10 @@
 </div>
 <script type="text/javascript">
     
-            
-    // var myChart = echarts.init(document.getElementById('echart'));
-    // myChart.setOption(option);
-    // require([
-    //         'echarts'
-    //     ],
-    //     function(ec){
-    //         var ecConfig = require('echarts/config');
-    //         function focus(param) {
-    //             var data = param.data;
-    //             var links = option.series[0].links;
-    //             var nodes = option.series[0].nodes;
-    //             if (
-    //                 data.source != null
-    //                 && data.target != null
-    //             ) { //点击的是边
-    //                 var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
-    //                 var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
-    //                 // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
-    //             } else { // 点击的是点
-    //             }
-    //         }
-    //             myChart.on(ecConfig.EVENT.CLICK, focus)
-
-    //             myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-    //                 console.log(myChart.chart.force.getPosition());
-    //             });
-    //         }
-    // )
 //draw function
 function Search_weibo(){
   this.ajax_method = 'GET';
+  this.data ;
 }
 
 Search_weibo.prototype = {
@@ -198,8 +170,8 @@ Search_weibo.prototype = {
         html += '<tbody>';
         for(var item in data){
             html += '<tr>';
-            for(var i =0; i < item.length; i++){                
-                html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i] +'</td>';
+            for(var i =0; i < data[item].length; i++){                
+                html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>';
             }
             html += '</tr>';
         }
@@ -211,9 +183,11 @@ Search_weibo.prototype = {
     Draw_picture: function(data){
         var Related_Node = new Array();
         var Related_Link = new Array();
-        for(var item in data){
-            Related_Node.push({'name':item[1], 'value':item[5], 'label':item[1]});
-            Related_Link.push({'source':'', 'target':item[1], 'weight':item[5]});
+        var user_name = data[0][1];
+        console.log(Related_Node);
+        for(var item =0; item < data.length; item++){
+            Related_Node.push({'name':data[item][1], 'value':data[item][5], 'label':data[item][1]});
+            Related_Link.push({'source':user_name, 'target':data[item][1], 'weight':data[item][5]});
         }
         var option = {
                 title : {
@@ -277,20 +251,49 @@ Search_weibo.prototype = {
                         gravity: 1.1,
                         scaling: 1.1,
                         roam: 'move',
-                        nodes:[
-                            { name: '乔布斯', value : 10, label: '乔布斯\n（主要）'},
-                        ],
-                        links : [
-                            {source : '丽萨-乔布斯', target : '乔布斯', weight : 1, name: '女儿'},
-                        ]
+                        nodes: Related_Node,
+                        links : Related_Link,
                     }
                 ]
-        };       
+        };  
+
+        var myChart = echarts.init(document.getElementById('echart'));
+        myChart.setOption(option);
+        //回调函数，添加监听事件
+        require([
+                'echarts'
+            ],
+            function(ec){
+                var ecConfig = require('echarts/config');
+                function focus(param) {
+                    var data = param.data;
+                    var links = option.series[0].links;
+                    var nodes = option.series[0].nodes;
+                    if (
+                        data.source != null
+                        && data.target != null
+                    ) { //点击的是边
+                        var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                        // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+                    } else { // 点击的是点
+                    }
+                }
+                    myChart.on(ecConfig.EVENT.CLICK, focus)
+
+                    myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                        console.log(myChart.chart.force.getPosition());
+                    });
+                }
+        )     
     }
 }
-// var Search_weibo = new Search_weibo(); 
-// var weibo_url = '/profile/user/?';
-// Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_table);
+
+var Search_weibo = new Search_weibo();
+$('.label-success').click(function(){
+    Search_weibo.call_sync_ajax_request(get_choose_data(), Search_weibo.ajax_method, Search_weibo.Draw_table);
+    Search_weibo.call_sync_ajax_request(get_choose_data(), Search_weibo.ajax_method, Search_weibo.Draw_picture);
+});
 
 $('.inline-checkbox').click(function(){
     if($(this).is(':checked')){
@@ -301,9 +304,9 @@ $('.inline-checkbox').click(function(){
         $(this).next().next().val('');
         $(this).next().next().attr('disabled',true);
     }
-    get_choose_data();
 });
 
+//获取选择的条件，把参数传出获取返回值
 function get_choose_data(){
     var url = '/manage/imagine/?uid=2001627641&keywords='
     var keywords = new Array();
@@ -321,7 +324,7 @@ function get_choose_data(){
         }
     });
     url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +filed ;
-    console.log(url);
+    return url;
 }
 
 </script>
