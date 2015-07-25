@@ -163,8 +163,8 @@ def get_attr_portrait(uid_list):
     result['emoticon'] = json.dumps(emoticon_ratio)
     result['keywords'] = json.dumps(keyword_ratio)
     result['hashtag'] = json.dumps(hashtag_ratio)
-    result['activity_geo'] = json.dumps(activity_geo)
-    result['impotance_his'] = json.dumps(importance_his)
+    result['activity_geo'] = json.dumps(activity_geo_ratio)
+    result['importance_his'] = json.dumps(importance_his)
     result['activeness_his'] = json.dumps(activeness_his)
     result['influence_his'] = json.dumps(influence_his)
     return result
@@ -377,6 +377,7 @@ def get_attr_bci(uid_list):
     influence_dict['retweeted_weibo_retweeted_top_number'] = retweeted_weibo_retweeted_top/len(uid_list)/7
     influence_dict['retweeted_weibo_comment_top_number'] = retweeted_weibo_comment_top/len(uid_list)/7
     influence_dict['fans_number'] = fans_number
+    influence_dict['total_weibo_number'] = total_weibo_number
 
     result['origin_max_retweeted_number'] = origin_max_retweeted_number
     result['origin_max_retweeted_id'] = origin_max_retweeted_id
@@ -463,7 +464,7 @@ def get_attr_importance(domain_dict, topic_dict, count, be_retweeted_count, be_r
                            importance_weight_dict['be_retweeted_out'] * math.log(be_retweeted_count + 1) +\
                            importance_weight_dict['be_retweeted_count_out'] * math.log(be_retweeted_weibo_count + 1)
 
-    print 'result:', result
+    #print 'result:', result
     return result
 
 def get_attr_tightness(density, retweet_weibo_count, retweet_user_count):
@@ -471,7 +472,7 @@ def get_attr_tightness(density, retweet_weibo_count, retweet_user_count):
     result['tightness'] = tightness_weight_dict['density'] * math.log(density + 1) +\
                           tightness_weight_dict['retweet_weibo_count'] * math.log(retweet_weibo_count + 1) +\
                           tightness_weight_dict['retweet_user_count'] * math.log(retweet_user_count + 1)
-    print 'tightness:', result
+    #print 'tightness:', result
     return result
 
 
@@ -504,11 +505,11 @@ def compute_group_task():
             results = dict(results, **attr_weibo_trend)
             attr_user_bci = get_attr_bci(uid_list)
             results = dict(results, **attr_user_bci)
-            attr_group_activeness = get_attr_activeness(json.loads(results['activity_trend']), results['total_weibo_❯
+            attr_group_activeness = get_attr_activeness(json.loads(results['activity_trend']), results['total_weibo_number'], json.loads(results['activity_geo']))
             results = dict(results, **attr_group_activeness)
-            attr_group_importance = get_attr_importance(json.loads(results['domain']), json.loads(results['topic']),❯
+            attr_group_importance = get_attr_importance(json.loads(results['domain']), json.loads(results['topic']), results['count'], results['be_retweeted_out'],results['be_retweeted_count_out'])
             results = dict(results , **attr_group_importance)
-            attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['r❯
+            attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['retweet_user_count'])
             results = dict(results, **attr_group_tightness)
             attr_group_influence = get_attr_influence(uid_list)
             results = dict(results, **attr_group_influence)
@@ -527,6 +528,7 @@ def compute_group_task():
     results['count'] = len(uid_list)
     # get attr from es_user_portrait
     attr_in_portrait = get_attr_portrait(uid_list)
+    print 'activity_geo:', attr_in_portrait['activity_geo']
     results['task_name'] = task_name
     results['uid_list'] = uid_list
     results['submit_date'] = submit_date
@@ -546,8 +548,8 @@ def compute_group_task():
     results = dict(results, **attr_group_tightness)
     #need to compute influence
     attr_group_influence = get_attr_influence(uid_list, influence_dict)
-    #results = dict(results, **attr_group_influence)
-    results['influence'] = 0.589
+    results = dict(results, **attr_group_influence)
+    #results['influence'] = 0.589
     #print 'results:', results
     results['status'] = 1
     save_group_results(results)
