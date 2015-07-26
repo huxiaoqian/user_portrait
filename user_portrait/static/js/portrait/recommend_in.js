@@ -298,7 +298,7 @@ var compute_pre_page = 1;
 
 var recommend_choose_uids = new Array();
 var compute_choose_uids = new Array();
-// page contro end
+// page control end
 
 var tomorrow = new Date(2013,8,8);
 var now_date = new Date(tomorrow-24*60*60*1000);
