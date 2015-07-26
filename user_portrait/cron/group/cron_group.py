@@ -242,7 +242,7 @@ def get_attr_trend(uid_list):
     timestamp = datetime2ts('2013-09-08')
     time_result = dict()
     segment_result = dict()
-    for i in range(0, 7):
+    for i in range(1, 8):
         ts = timestamp - i*24*3600
         r_result = r_cluster.hmget('activity_'+str(ts), uid_list)
         #print 'r_result:', r_result
@@ -259,7 +259,7 @@ def get_attr_trend(uid_list):
                     except:
                         segment_result[int(segment)/16*15*60*16] = item[segment]
     trend_list = []
-    for i in range(0, 7):
+    for i in range(1, 8):
         ts = timestamp - i*24*3600
         for j in range(0, 6):
             time_seg = ts + j*15*60*16
@@ -267,9 +267,11 @@ def get_attr_trend(uid_list):
                 trend_list.append((time_seg, time_result[time_seg]))
             else:
                 trend_list.append((time_seg, 0))
+    sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=False)
     #print 'time_result:', time_result
     #print 'trend_list:', trend_list
-    result['activity_trend'] = json.dumps(trend_list)
+    print 'sort_trend_list:', sort_trend_list
+    result['activity_trend'] = json.dumps(sort_trend_list)
     result['activity_time'] = json.dumps(segment_result)
     return result
 
