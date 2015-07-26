@@ -79,7 +79,7 @@ def search_task(task_name, submit_date, state, status):
             query.append({'wildcard':{'state': '*' + item + '*'}})
             condition_num += 1
     if status:
-        query.addpend({'match':{'status': status}})
+        query.append({'match':{'status': status}})
         condition_num += 1
     if condition_num > 0:
         try:
