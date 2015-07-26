@@ -43,6 +43,11 @@ def recommend_out():
 
     return render_template('portrait/recommend_out.html')
 
+@mod.route('/influence_rank/')
+def influence_rank():
+
+    return render_template('portrait/influence_rank.html')
+
 @mod.route('/search_result/')
 def search_result():
     stype = request.args.get('stype', 1)
