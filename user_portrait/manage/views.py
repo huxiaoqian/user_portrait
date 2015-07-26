@@ -13,7 +13,8 @@ mod = Blueprint('manage', __name__, url_prefix='/manage')
 # compare the attr in the es_user_portrait
 @mod.route('/compare_user_portrait/')
 def ajax_compare_user_portrait():
-    uid_list = request.args.get('uid_list', '') # uid_list = [uid1, uid2, uid3]
+    uid_string = request.args.get('uid_list', '') # uid_list = [uid1, uid2, uid3]
+    uid_list = uid_string.split(',')
     if uid_list:
         results = compare_user_portrait(uid_list)
     if results:
@@ -25,7 +26,8 @@ def ajax_compare_user_portrait():
 # output data: {user:[weibo_count]}, {user:[(date, weibo)]}, ts_list
 @mod.route('/compare_user_activity/')
 def ajax_compare_user_activity():
-    uid_list = request.args.get('uid_list', '') # uid_list = [uid1, uid2, uid3]
+    uid_string = request.args.get('uid_list', '') # uid_list = [uid1, uid2, uid3]
+    uid_list = uid_string.split(',')
     if uid_list:
         results = compare_user_activity(uid_list)
     if result:
@@ -38,7 +40,8 @@ def ajax_compare_user_activity():
 # output data: {user:{profile_information}}
 @mod.route('/compare_user_profile/')
 def ajax_user_profile():
-    uid_list = request.args.get('uid_list', '')
+    uid_string = request.args.get('uid_list', '')
+    uid_list = uid_string.split(',')
     if uid_list:
         results = compare_user_profile(uid_list)
     if result:
