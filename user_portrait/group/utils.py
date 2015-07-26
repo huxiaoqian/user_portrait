@@ -192,7 +192,7 @@ def get_group_results(task_name, module):
                   origin_max_comment_number, origin_max_comment_id, origin_max_comment_user ,\
                   retweet_max_retweeted_number, retweet_max_retweeted_id, retweet_max_retweeted_user ,\
                   retweet_max_comment_number, retweet_max_comment_id, retweet_max_retweeted_user]
-    print result
+    #print result
     return result
 
 # delete group results from es_user_portrait 'group_analysis'
@@ -205,7 +205,7 @@ def delete_group_results(task_name):
             }
         }
     result = es.delete_by_query(index=index_name, doc_type=index_type, body=query_body)
-    print 'result:', result
+    #print 'result:', result
     '''
     if result['_indices']['twitter']['_shards']['failed'] == 0:
         return True
@@ -227,4 +227,4 @@ if __name__=='__main__':
     #submit_task(input_data)
     test_task_name = 'test name'
     status = delete_group_results(test_task_name)
-    print 'status:', status
+    #print 'status:', status
