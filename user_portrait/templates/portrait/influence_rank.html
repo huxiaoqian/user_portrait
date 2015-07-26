@@ -10,20 +10,22 @@
 {% block main %}
 <h4 class="page-header">影响力排名</h4>
 <div class="box-content">
-    <ul class="nav nav-tabs" id="myTab">
+    <ul class="nav nav-tabs" id="myTab" style="margin-bottom:10px">
         <li class="active" title="整体排名"><a href="#info">整体排名</a></li>
         <li title="领域排名"><a href="#custom">领域排名</a></li>
         <li title="变动排名"><a href="#messages">变动排名</a></li>
     </ul>
 
     <div id="myTabContent" class="tab-content">
-        <div class="tab-pane active" id="info" style="margin-top:10px">
-            <h5>具体排名</h5>
+        <div class="tab-pane active" id="info" style="margin-top:20px">
+            <h5><font color="#0066CC">具体排名</font></h5>
+            <hr />
             <span>选择范围：</span><span id="range" style="margin-left:10px"></span>
             <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="range_button" title="确定范围选择">确定</button></span>
             <div id="total_rank" style="margin-top:10px"></div>
-            <h5>排名分布</h5>
-            <div id="rank_distribution" style="margin-top:10px"></div>
+            <h5><font color="#0066CC">影响力分布</font></h5>
+            <hr />
+            <div id="rank_distribution" style="margin-top:10px;height:500px"></div>
         </div>
         <div class="tab-pane" id="custom" style="margin-top:10px">
             <span>选择领域：</span><span id="domain" style="margin-left:10px"></span>
@@ -39,5 +41,10 @@
 
 {% block Own_js %}
 {{ super() }}
-
+<script type="text/javascript" src="/static/js/portrait/influence_rank.js"></script>
 {% endblock Own_js %}
+
+{% block end_js %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/charisma.js"></script>
+{% endblock end_js %}
