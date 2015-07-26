@@ -3,7 +3,6 @@
 }
 Group_result.prototype = {   //获取数据，重新画表
   call_sync_ajax_request:function(url, method, callback){
-    console.log(url);
     $.ajax({
       url: url,
       type: method,
@@ -30,12 +29,12 @@ Group_result.prototype = {   //获取数据，重新画表
 				html += '<td>'+item[i][j]+'</td>';
 			}
 		}
-		if(item[i][5]==1){
+		if(item[i][4]==1){
 			html += '<td>已完成</td>';
 		}else{
 			html += '<td>正在计算</td>';
 		}
-		html +='<td><a href="" id="del">删除</a></td>';
+		html +='<td><a href="javascript:void(0)" id="del">删除</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
