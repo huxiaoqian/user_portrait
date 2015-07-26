@@ -49,9 +49,138 @@ Search_weibo_result.prototype = {
 
 var global_pre_page = 1;
 var global_choose_uids = new Array();
+
+
 console.log(url_search_result);
 draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
+draw_conditions(draw_table_search_result);
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
+
+function deleteurl(that, parameter){
+    for (var i = 0;i < pars.length;i++){
+        var pname = parameter.substring(7, parameter.length);
+        if (pname == pars[i]){
+            values[i] = '';
+        }
+    }
+    draw_conditions(that);
+    url_search_result = '/attribute/portrait_search/?stype=2&' + par2url(pars, values);
+    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Draw_table);
+}
+function process_par(name, value){
+    var result = new Array();
+    if (name == 'uid'){
+        result[0] = '用户ID';
+        result[1] = value;
+    }
+    else if(name=='uname'){
+        result[0] = '昵称';
+        result[1] = value;
+    }
+    else if(name=='location'){
+        result[0] = '注册地';
+        result[1] = value;
+    }
+    else if(name=='keywords'){
+        result[0] = '关键词';
+        result[1] = value;
+    }
+    else if(name=='hashtag'){
+        result[0] = 'hashtag';
+        result[1] = value;
+    }
+    else if(name=='psycho_feature'){
+        result[0] = '心理特征';
+        switch(value){
+            case 'dzz': result[1] = '胆汁质';break;
+            case 'dxz': result[1] = '多血质';break;
+            case 'nyz': result[1] = '粘液质';break;
+            case 'yyz': result[1] = '抑郁质';break;
+        }
+    }
+    else if(name=='psycho_status'){
+        result[0] = '心理状态';
+        switch(value){
+            case 'pos': result[1] = '积极';break;
+            case 'neg': result[1] = '消极';break;
+            case 'anx': result[1] = '焦虑';break;
+            case 'ang': result[1] = '生气';break;
+            case 'sad': result[1] = '悲伤';break;
+        }
+    }
+    else if(name=='domain'){
+        result[0] = '领域';
+        result[1] = '';
+        var term_list = value.split(',');
+        for (var i = 0;i < term_list.length;i++){
+            switch(term_list[i]){
+                case 'cul': result[1] += '文化,';break;
+                case 'edu': result[1] += '教育,';break;
+                case 'ent': result[1] += '娱乐,';break;
+                case 'fas': result[1] += '时尚,';break;
+                case 'fin': result[1] += '财经,';break;
+                case 'med': result[1] += '媒体,';break;
+                case 'phy': result[1] += '体育,';break;
+                case 'sci': result[1] += '科技,';break;
+            }
+        }
+        result[1] = result[1].substring(0, result[1].length-1);
+    }
+    else if(name=='topic'){
+        result[0] = '话题';
+        result[1] = '';
+        var term_list = value.split(',');
+        for (var i = 0;i < term_list.length;i++){
+            switch(value){
+                case 'env': result[1] += '环境,';break;
+                case 'edu': result[1] += '教育,';break;
+                case 'med': result[1] += '医药,';break;
+                case 'mil': result[1] += '军事,';break;
+                case 'pol': result[1] += '政治,';break;
+                case 'tra': result[1] += '交通,';break;
+                case 'phy': result[1] += '体育,';break;
+                case 'soc': result[1] += '社会,';break;
+                case 'art': result[1] += '艺术,';break;
+                case 'eco': result[1] += '经济,';break;
+                case 'com': result[1] += '计算机,';break;
+            }
+        }
+        result[1] = result[1].substring(0, result[1].length-1);
+    }
+    else{
+        result[0] = '';
+        result[1] = '';
+    }
+    return result;
+}
+function draw_conditions(that){
+    if (stype == 1){
+        console.log('=1');
+        return;
+    }
+    else{
+        console.log('=2');
+        $('#conditions').empty();
+        var html = '';
+        for (var i = 0;i < pars.length;i++){
+            var pre_name = pars[i];
+            var pre_value = values[i];
+
+            var fix_result = process_par(pre_name, pre_value);
+            var fix_name = fix_result[0];
+            var fix_value = fix_result[1];
+            if (fix_value){
+                html += '<span class="mouse" id=choose_' + pre_name + ' style="margin-left:10px">'+ fix_name + ':'+ fix_value;
+                html += '&nbsp;<a class="cross" href="#">X</a></span>';
+            }
+        }
+        $('#conditions').html(html);
+        $('.mouse').click(function(){
+            deleteurl(that, $(this).attr("id"));
+        });
+        return;
+    }
+}
 
 
 function compare_button(){
