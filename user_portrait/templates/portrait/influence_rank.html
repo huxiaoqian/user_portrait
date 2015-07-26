@@ -1,0 +1,43 @@
+{% extends "tbase.html" %}
+{% block title %}影响力排名{% endblock title%}
+{% block css %}
+{{ super() }}
+<style>
+    .dataTables_filter{text-align:right;margin-bottom:5px;}
+    .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+</style>
+{% endblock css %}
+{% block main %}
+<h4 class="page-header">影响力排名</h4>
+<div class="box-content">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active" title="整体排名"><a href="#info">整体排名</a></li>
+        <li title="领域排名"><a href="#custom">领域排名</a></li>
+        <li title="变动排名"><a href="#messages">变动排名</a></li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane active" id="info" style="margin-top:10px">
+            <h5>具体排名</h5>
+            <span>选择范围：</span><span id="range" style="margin-left:10px"></span>
+            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="range_button" title="确定范围选择">确定</button></span>
+            <div id="total_rank" style="margin-top:10px"></div>
+            <h5>排名分布</h5>
+            <div id="rank_distribution" style="margin-top:10px"></div>
+        </div>
+        <div class="tab-pane" id="custom" style="margin-top:10px">
+            <span>选择领域：</span><span id="domain" style="margin-left:10px"></span>
+            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="domain_button" title="确定领域选择">确定</button></span>
+            <div id="domain_rank" style="margin-top:10px"></div>
+        </div>
+        <div class="tab-pane" id="messages" style="margin-top:10px">
+            <div id="change_rank" style="margin-top:10px"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block Own_js %}
+{{ super() }}
+
+{% endblock Own_js %}
