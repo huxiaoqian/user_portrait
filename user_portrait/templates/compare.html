@@ -1,0 +1,149 @@
+ {% extends "tbase.html" %}
+{% block main %}
+<script type="text/javascript" src='/static/js/esl.js'></script>
+<script type="text/javascript" src='/static/js/echarts-all.js'></script>
+<script type="text/javascript" src='/static/js/echarts.js'></script>
+    
+<div class="row">
+    <div class="box col-md-12" style='width:120%'>
+        <div class="box-inner">
+            <div class="box-content">
+                <table class="table table-bordered responsive" id='table_compare'>
+                    <thead>
+                    <tr>
+                        <th style="background: #fafafa;width:95px">Username</th>
+                        <th name='line1'>
+                            <div class="box-icon">
+                                <a href="#" name='line1' class="btn btn-round btn-default" style='border-radius:40px;font-size:12px;padding-top:4px'><i
+                                        class="glyphicon glyphicon-remove"></i></a>
+                            </div>
+                        </th>
+                        <th name='line2'> 
+                            <div class="box-icon">
+                                <a href="#" name='line2' class="btn btn-round btn-default" style='border-radius:40px;font-size:12px;padding-top:4px'><i
+                                        class="glyphicon glyphicon-remove"></i></a>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td colspan="5" name='list-3' class='cate_title' style="font-size:20px"><b>基本信息</b></td>
+                    </tr>
+                    <tr class='list-3'>
+                        <td class='cate_title' style='width:90px;text-align:right'>昵称</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-3'>
+                        <td class='cate_title' style='width:90px;text-align:right'>性别</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-3'>
+                        <td class='cate_title' style='width:90px;text-align:right'>注册地</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" name='list-4' class='cate_title' style="font-size:20px"><b>个体属性</b></td>
+                    </tr>
+                    <tr class='list-4'>
+                        <td class='cate_title' style='width:90px;text-align:right'>重要度</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-4'>
+                        <td class='cate_title' style='width:90px;text-align:right'>活跃度</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-4'>
+                        <td class='cate_title' style='width:90px;text-align:right'>影响力</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-4'>
+                        <td class='cate_title' style='width:90px;text-align:right'>活跃时间</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" name="list-2" class='cate_title' style="font-size:20px"><b>微博信息</b></td>
+                    </tr>
+                    <tr class="list-2">
+                        <td class='cate_title' style='width:90px;text-align:right'>好友数</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class="list-2">
+                        <td class='cate_title' style='width:90px;text-align:right'>微博数</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class="list-2">
+                        <td class='cate_title' style='width:90px;text-align:right'>粉丝数</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='table-title'>
+                        <td colspan="5" name='list-1' class='cate_title' style="font-size:20px"><b>行业信息</b></td>
+                    </tr>
+                    <tr class='list-1'>
+                        <td class='cate_title' style='width:90px;text-align:right'>领域</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-1'>
+                        <td class='cate_title' style='width:90px;text-align:right'>话题</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-1'>
+                        <td class='cate_title' style='width:90px;text-align:right'>关键词</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='table-title'>
+                        <td colspan="5" name='list-5' class='cate_title' style="font-size:20px"><b>个体心理</b></td>
+                    </tr>
+                    <tr class='list-5'>
+                        <td class='cate_title' style='width:90px;text-align:right'>心理状态</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    <tr class='list-5'>
+                        <td class='cate_title' style='width:90px;text-align:right'>心理特征</td>
+                        <td class="center" name='line1'>2012/03/01</td>
+                        <td class="center" name='line2'>Member</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--/span-->
+
+</div><!--/row-->
+<script>
+    $(function () {
+        $("#table_compare").fixedtableheader({ highlightrow: true, highlightclass: "", headerrowsize: 0});
+    });
+     $('.btn-round').click(function(){
+        console.log('ssss');
+        $('[name='+ $(this).attr("name") +']').remove();
+     });
+     $("td[name^='list-']").click(function(){
+        var name = $(this).attr('name');
+        $('.'+ name).each(function(){
+            if($(this).css('display') == 'table-row'){
+                $(this).css('display','none');
+            }
+            else{
+                $(this).css('display','table-row');
+            }
+        });
+     });
+</script>
+    {% endblock %}

@@ -13,7 +13,7 @@ from time_utils import ts2datetime, datetime2ts,ts2date
 '''
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
-from user_portrait.global_utils import es_user_portrait
+from user_portrait.global_utils import es_user_profile
 from user_portrait.time_utils import ts2datetime, datetime2ts
 
 # compare two or three user
@@ -23,8 +23,40 @@ def compare_user_portrait(uid_list):
     index_name = 'user_portrait'
     index_type = 'user'
     user_result = es.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
-    user_portrait_result = [item['_source'] for item in user_result]
+    #user_portrait_result = [item['_source'] for item in user_result]
     #print 'user_result:', user_portrait_result
+    for item in user_result:
+        uid = item['_id']
+        user_portrait_result[uid] = {}
+        try:
+            source = item['_source']
+        except:
+            next
+        try:
+            psycho_status = json.loads(source['psycho_status'])
+        except:
+            pasycho_status = {}
+        try:
+            psycho_feature = json.loads(source['psycho_feature'])
+        except:
+            psycho_feature = {}
+        user_portrait_result[uid] = {
+                'uname': source['uname'],
+                'gender': source['gender'],
+                'location':source['location'],
+                'importance': source['importance'],
+                'activeness': source['activeness'],
+                'influence': source['influence'],
+                'fansnum':source['fansnum'],
+                'statusnum':source['statusnum'],
+                'friendsnum': source['friendsnum'],
+                'domain': source['domain'],
+                'topic': json.loads(source['topic']),
+                'keywords': json.loads(source['keywords']),
+                'psycho_status': psycho_status,
+                'psycho_feature': psycho_feature
+                }
+    #print 'user_portrait_result:', user_portrait_result
     return user_portrait_result
 
 # compare user activity and activity time segment
@@ -72,7 +104,7 @@ def compare_user_activity(uid_list):
         segment_top = sort_segment[:3]
         user_timesegment_list[user] = segment_top
         user_dict = result[user]
-        for i in range(0, 43):
+        for i in range(0, 42):
             timestamp = ts + 15*60*16*i
             ts_list.append(timestamp)
             try:
@@ -83,24 +115,31 @@ def compare_user_activity(uid_list):
                 user_list[user].append(count)
             except:
                 user_list[user] = [count]
+    #print 'user_list, user_timesegment_list, ts_list:', user_list, user_timesegment_list, ts_list
     return user_list, user_timesegment_list, ts_list
 
 # compare the user profile
 def compare_user_profile(uid_list):
-    results = []
+    results = {}
     index_name = 'weibo_user'
     index_type = 'user'
     search_results = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
     #print 'results:', search_results
     for result in search_results:
-        item = result['_source']
-        results.append(item)
-    print 'results:', results
+        uid = result['_id']
+        results[uid] = []
+        try:
+            item = result['_source']
+        except:
+            next
+        photo_url = item['photo_url']
+        results[uid] = photo_url
+    #print 'results:', results
     return results
 
 if __name__=='__main__':
     #test
     uid_list = ['1642591402', '2948738352', '2803301701']
-    #compare_user_portrait(uid_list)
-    #compare_user_activity(uid_list)
+    compare_user_portrait(uid_list)
+    compare_user_activity(uid_list)
     compare_user_profile(uid_list)
