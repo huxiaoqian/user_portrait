@@ -84,3 +84,10 @@ def manage():
 def contact():
     
     return render_template('contact.html')
+
+
+@mod.route('/compare/')
+
+def compare():
+
+    return render_template('compare.html')
