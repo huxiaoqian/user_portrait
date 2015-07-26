@@ -3,24 +3,27 @@
 }
 Group_delete.prototype = {   //群组搜索
 call_sync_ajax_request:function(url, method, callback){
-	console.log(url);
     $.ajax({
       url: url,
       type: 'GET',
       dataType: 'json',
-      async: false,
+      async: true,
       success:callback
     });
+},
+del:function(data){
+	location.reload();
 }
 }
 
 function deleteGroup(that){
-	$('#del').off("click").click(function(){
+	$('a[id^="del"]').click(function(e){
 		var url = that.url;
 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		url = url + 'task_name=' + temp;
-		window.location.href = url;
-		alert(url);
+		//window.location.href = url;
+		that.call_sync_ajax_request(url,that.ajax_method,that.del);
+		console.log(url);
 	});
 }
 
