@@ -64,7 +64,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 	<div id="pageTitle">任务管理</div>
     <div id="float-wrap" class="hidden"></div>
 <div id="uploadFile"  class="hidden">
-	<h3 class="title">上传文件说明<a href="javascript:void(0)" id="close"></a></h3>
+	<h3 class="title">上传文件说明<a href="javascript:void(0)" id="close" class="close1"></a></h3>
 	<div class="decoration">
 		<ul class="clearfix">
 			<li><span class="p_title">群组名称：</span><input type="text"  class="input" name="task_name" placeholder="请输入群组名称"/></li>
@@ -74,7 +74,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 	</div>
 </div>
 <div id="SearchTab"  class="hidden">
-	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close"></a></h3>
+	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
 	<div class="decoration">
 		<ul class="">
 			<li><span class="p_title">群组名称：</span><input type="text"  id="groupName" class="input searchinput" name="task_name" placeholder="请输入群组名称"/></li>
@@ -152,7 +152,14 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		$("#SearchTab").removeClass("hidden");
 		return false;
 	});
-
+	$(".close1").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#uploadFile").addClass("hidden");
+	});
+	$(".close2").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#SearchTab").addClass("hidden");
+	});
   </script>
 <script src="../../static/js/portrait/group_result.js"></script>
 <script src="../../static/js/portrait/groupSearch.js"></script>
