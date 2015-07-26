@@ -13,7 +13,7 @@ from time_utils import ts2datetime, datetime2ts,ts2date
 '''
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
-from user_portrait.global_utils import es_user_portrait
+from user_portrait.global_utils import es_user_profile
 from user_portrait.time_utils import ts2datetime, datetime2ts
 
 # compare two or three user
@@ -140,6 +140,6 @@ def compare_user_profile(uid_list):
 if __name__=='__main__':
     #test
     uid_list = ['1642591402', '2948738352', '2803301701']
-    #compare_user_portrait(uid_list)
+    compare_user_portrait(uid_list)
     compare_user_activity(uid_list)
-    #compare_user_profile(uid_list)
+    compare_user_profile(uid_list)

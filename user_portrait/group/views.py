@@ -41,7 +41,7 @@ def ajax_show_group_result_basic():
     task_name = request.args.get('task_name', '')
     module = request.args.get('module', 'basic')
     results = get_group_results(task_name, module)
-    print 'result:', results
+    #print 'result:', results
     return json.dumps(results)
 
 
