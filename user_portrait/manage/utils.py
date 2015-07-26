@@ -106,7 +106,8 @@ def compare_user_activity(uid_list):
         user_dict = result[user]
         for i in range(0, 42):
             timestamp = ts + 15*60*16*i
-            ts_list.append(timestamp)
+            if len(ts_list)<42:
+                ts_list.append(timestamp)
             try:
                 count = user_dict[timestamp]
             except:
