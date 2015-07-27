@@ -7,6 +7,7 @@ from flask import Blueprint, url_for, render_template, request, abort, flash, se
 from utils import submit_task, search_task, get_group_results, delete_group_results
 
 from user_portrait.search_user_profile import es_get_source
+from user_portrait.time_utils import ts2datetime
 
 mod = Blueprint('group', __name__, url_prefix='/group')
 
@@ -22,7 +23,7 @@ def ajax_submit_task():
     input_data['state'] = request.args.get('state', '')
     """
     input_data = request.get_json()
-    #print input_data, type(input_data)
+    print input_data, type(input_data)
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     input_data['submit_date'] = now_date
