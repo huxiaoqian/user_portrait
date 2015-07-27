@@ -17,8 +17,9 @@ def loading():
 
 @mod.route('/group_analysis/')
 def group_analysis():
+    name = request.args.get('name', 'test_task')
 
-    return render_template('portrait/group_analysis.html')
+    return render_template('portrait/group_analysis.html', name=name)
 @mod.route('/group_result/')
 def group_result():
     

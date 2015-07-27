@@ -30,7 +30,7 @@ Group_result.prototype = {   //获取数据，重新画表
 			}
 		}
 		if(item[i][4]==1){
-			html += '<td><a href="/index/group_analysis/?name="' + item[i][0] +'" style="cursor:hand;">已完成</a></td>';
+			html += '<td><a style="cursor:hand;" href="/index/group_analysis/?name=' + item[i][0]+ '">已完成</a></td>';
 		}else{
 			html += '<td>正在计算</td>';
 		}
