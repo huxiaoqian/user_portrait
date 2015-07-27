@@ -264,6 +264,11 @@ def search_attribute_portrait(uid):
             emotion_result[emotion_mark_dict[word_type]] = word_list
     print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
+    #topic
+    if results and results['topic']:
+        topic_dict = json.loads(results['topic'])
+        sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+        results['topic'] = sort_topic_dict[:5]
     #domain
     if results and results['domain']:
         domain_string = results['domain']
