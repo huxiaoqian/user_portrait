@@ -14,7 +14,7 @@ from global_utils import ES_CLUSTER_FLOW1
 
 es = ES_CLUSTER_FLOW1
 vary_index = "vary"
-size = 100000
+size = 10000
 
 def uid_rank_change(index_name, doctype, size):
     query_body={
@@ -44,7 +44,7 @@ def bulk_function(es, uid_list, former_index_common_dict, later_index_common_dic
     for each in uid_list:
         rank_info = {}
         rank_info['uid'] = each
-        rank_info[later_index] = former_index_common_dict.get(each, size) - later_index_common_dict.get(each, size)
+        rank_info['vary'] = former_index_common_dict.get(each, size) - later_index_common_dict.get(each, size)
         xdata = expand_index_action(rank_info)
         bulk_action.extend([xdata[0], xdata[1]])
         count_n += 1
@@ -57,7 +57,7 @@ def bulk_function(es, uid_list, former_index_common_dict, later_index_common_dic
         es.bulk(bulk_action, index=vary_index, doc_type="bci", timeout=30)
 
 
-def main(former_index="20130902", later_index="20130903", size=100000):
+def main(former_index="20130902", later_index="20130903", size=10000):
 
     set_1 = uid_rank_change(former_index, "bci", size)
     set_2 = uid_rank_change(later_index, "bci", size)
@@ -77,7 +77,7 @@ def main(former_index="20130902", later_index="20130903", size=100000):
     for item in later_index_common:
         later_index_common_dict[item['_id']] = item['fields']['rank'][0]
 
-    bulk_function(es, list(common_set), former_index_common_dict, later_index_common_dict, later_index)
+    bulk_function(es, list(common_set), former_index_common_dict, later_index_common_dict, later_index, size)
 
     # first day active, but second day no
 
@@ -86,7 +86,7 @@ def main(former_index="20130902", later_index="20130903", size=100000):
     for item in former_index_alone:
         former_index_alone_dict[item['_id']] = item['fields']['rank'][0]
 
-    bulk_function(es, list(difference_set_12), former_index_alone_dict, {}, later_index)
+    bulk_function(es, list(difference_set_12), former_index_alone_dict, {}, later_index, size)
 
     # first day not active, second day active
 

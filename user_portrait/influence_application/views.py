@@ -7,7 +7,7 @@ import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from search_user_index_function import search_top_index, search_influence_detail, user_index_range_distribution,\
                                        search_max_single_field, search_portrait_history_active_info
-from rank_portrait_in_active_user import search_portrait_user_in_activity
+from rank_portrait_in_active_user import search_portrait_user_in_activity, portrait_user_vary
 from search_vary_index_function import query_vary_top_k
 
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
@@ -94,11 +94,36 @@ def ajax_user_index_distribution():
         results = 0
     else:
         index_name = date.replace('-','')
-        results = user_index_range_distribution(index_name)
+        results = user_index_range_distribution(index_name, "bci", "user_index")
 
     return json.dumps(results)
 
+@mod.route('/portrait_user_index_distribution/')
+def ajax_portrait_user_index_distribution():
+    date = request.args.get('date', '') # '2013-09-01'
+    former_date = "20130901" # test
+    date = str(date)
 
+    if not date:
+        results = 0
+    else:
+        date = date.replace('-','')
+        results = user_index_range_distribution("this_is_a_copy_user_portrait","manage", date)
+
+    return json.dumps(results)
+
+"""
+@mod.route('/portrait_user_domain_rank/')
+def ajax_portrait_user_domain_rank():
+    results = []
+    date = request.args.get('date', '')
+    domain = request.args.get('domain', '')
+    number = request.args.get('number', '')
+    if date and domain:
+        results = portrait_user_domain_rank(date, domain, number)
+
+    return json.dumps(results)
+"""
 @mod.route('/hot_origin_weibo/')
 def ajax_hot_origin_weibo():
     date = request.args.get('date', '') # '2013-09-01'
@@ -166,8 +191,9 @@ def ajax_portrait_history_active():
 
 @mod.route('/vary_top_k/')
 def ajax_vary_top_k():
+    results = []
     date = request.args.get('date', '')
-    number = request.args.get('number', 100) # "100"
+    number = request.args.get('number', 10) # "100"
     date = str(date)
     number = int(number)
     #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
@@ -188,8 +214,8 @@ def ajax_vary_top_k():
 
 @mod.route('/portrait_user_in_vary/')
 def ajax_portrait_user_in_vary():
-    number = request.args.get('number', 100) # "100"
-    results = search_portrait_user_in_activity(es, number, "vary", "bci", portrait_index, portrait_type, "vary")
+    number = request.args.get('number', 10) # "10"
+    results = portrait_user_vary(es, number, "vary", "bci", portrait_index, portrait_type, "vary")
 
     return json.dumps(results)
 
