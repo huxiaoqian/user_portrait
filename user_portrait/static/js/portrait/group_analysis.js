@@ -694,6 +694,7 @@ Draw_think_psycho: function(data){
         myChart.setOption(option); 
 },
 Draw_hashtag: function(data){
+    $('#hashtag').empty();
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
     html += '<table>';
@@ -998,7 +999,7 @@ $(document).ready(function(){
 	var downloadurl = window.location.host;
     weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" name + "&module=basic";
+    basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_verify);
