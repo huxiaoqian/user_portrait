@@ -29,8 +29,8 @@ Search_weibo_result.prototype = {
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
-      user_url = window.location.href;
-      user_url = user_url + item[0];
+      global_data[item[0]] = item; // make global data
+      user_url = '/index/personal/?uid=' + item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
@@ -61,7 +61,7 @@ function gender(num){
 }
 var global_pre_page = 1;
 var global_choose_uids = new Array();
-
+var global_data = new Array();
 
 console.log(url_search_result);
 draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
@@ -278,15 +278,15 @@ function draw_table_compare_confirm(uids, div){
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
-      var item_div = '#'+uids[i];
+      var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="compare_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ gender(item[2]) + '</td>';
+      html += '<td class="center">'+ item[3] + '</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
@@ -302,15 +302,15 @@ function draw_table_group_confirm(uids, div){
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
-      var item_div = '#'+uids[i];
+      var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="group_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ gender(item[2]) + '</td>';
+      html += '<td class="center">'+ item[3] + '</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
@@ -333,15 +333,15 @@ function draw_table_delete_confirm(uids, div){
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
-      var item_div = '#'+uids[i];
+      var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ gender(item[2]) + '</td>';
+      html += '<td class="center">'+ item[3] + '</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }

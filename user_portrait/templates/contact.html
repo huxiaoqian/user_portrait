@@ -289,10 +289,11 @@ Search_weibo.prototype = {
     }
 }
 
+var uid = "{{ uid }}";
 var Search_weibo = new Search_weibo();
 $('.label-success').click(function(){
-    Search_weibo.call_sync_ajax_request(get_choose_data(), Search_weibo.ajax_method, Search_weibo.Draw_table);
-    Search_weibo.call_sync_ajax_request(get_choose_data(), Search_weibo.ajax_method, Search_weibo.Draw_picture);
+    Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
+    Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_picture);
 });
 
 $('.inline-checkbox').click(function(){
@@ -307,8 +308,8 @@ $('.inline-checkbox').click(function(){
 });
 
 //获取选择的条件，把参数传出获取返回值
-function get_choose_data(){
-    var url = '/manage/imagine/?uid=2001627641&keywords='
+function get_choose_data(uid){
+    var url = '/manage/imagine/?uid=' + uid + '&keywords=';
     var keywords = new Array();
     var weight = new Array();
     var field ;
@@ -324,6 +325,7 @@ function get_choose_data(){
         }
     });
     url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +filed ;
+    console.log(url);
     return url;
 }
 
