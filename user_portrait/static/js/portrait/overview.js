@@ -53,9 +53,6 @@ Search_weibo.prototype = {
  
 var Search_weibo = new Search_weibo(); 
 
-this.ajax_url = function(date){
-    return "/overview/show/?date=2013-09-07";
-}
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
@@ -136,7 +133,6 @@ function draw_domian_portrait(data){
 }
 
 function draw_onlinepattern(data){
-    online_pattern_top = data['online_pattern_top'];
     $('#online_pattern').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -151,7 +147,6 @@ function draw_onlinepattern(data){
 }
 
 function draw_hastag(data){
-    online_pattern_top = data['hashtag_top'];
     $('#hashtag').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -166,21 +161,19 @@ function draw_hastag(data){
 }
 
 function draw_domain(data){
-    online_pattern_top = data['domain_top'];
     $('#domain').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">活跃地</th><th style="text-align:center">比重</th></tr>';
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 5; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['domain_top'][s]['0'] +  '</th><th style="text-align:center">' + data['domain_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['activity_geo_top'][s]['0'] +  '</th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#domain').append(html);                  
 }
 function draw_location(data){
-    online_pattern_top = data['location_top'];
     $('#location').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -195,7 +188,6 @@ function draw_location(data){
 }
 
 function draw_topic(data){
-    online_pattern_top = data['topic_top'];
     $('#topic').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
