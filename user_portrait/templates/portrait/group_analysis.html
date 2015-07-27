@@ -2,22 +2,8 @@
     {% block title %}群体分析{% endblock title%}
       {% block css %}
       {{ super() }}
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">	    
-    <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
-    <link href="/static/css/charisma-app.css" rel="stylesheet">
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
-    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
-    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
-    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
-    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
-    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
-    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
-    <link href='/static/css/uploadify.css' rel='stylesheet'>
-    <link href='/static/css/animate.min.css' rel='stylesheet'>
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
     body {
@@ -102,9 +88,9 @@
 
  {% block head_js %}
   {{ super() }}
-	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
+	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
+	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
   {% endblock head_js %}
 
 
@@ -113,38 +99,7 @@
          <div id="mainBubble">
         </div>
         <div id="content">
-        	<div style='height:180px;width:100%'>
-        	<div style='height:180px;width:250px;float:left'>
-			  <ul style='margin-top:-60px'>
-			    <li>
-			      <a href="#">
-			        <p style='font-size:16px'>名称</p>
-			        <p style='font-size:16px'>时间</p>
-			        <p style='font-size:16px'>描述</p>
-			      </a>
-			    </li>
-			  </ul>
-			 </div>
-		    <table style='height:150px;width:750px;float:right'>
-		    	<tr>
-		    		<td style="text-align:center;vertical-align:middle"><img src='/static/img/closeness.png'style='height:80px'></td>
-		    		<td style="text-align:center;vertical-align:middle"><img src='/static/img/activeness.png'style='height:80px'></td>
-		            <td style="text-align:center;vertical-align:middle"><img src='/static/img/importance.png'style='height:80px'></td>
-		            <td style="text-align:center;vertical-align:middle"><img src='/static/img/influence.png'style='height:80px'></td>
-		    	</tr>
-		    	<tr>
-		            <td style="text-align:center;vertical-align:middle">507</td>
-		            <td style="text-align:center;vertical-align:middle">507</td>
-		            <td style="text-align:center;vertical-align:middle">507</td>
-		            <td style="text-align:center;vertical-align:middle">507</td>
-		        </tr>
-		    	<tr>
-		            <td style="font-size:14px;text-align:center;vertical-align:middle">紧密度</td>
-		            <td style="font-size:14px;text-align:center;vertical-align:middle">活跃度</td>
-		            <td style="font-size:14px;text-align:center;vertical-align:middle">重要度</td>
-		            <td style="font-size:14px;text-align:center;vertical-align:middle">影响度</td>
-		        </tr>
-		    </table>
+        	<div style='height:180px;width:100%' id='overview'>        	
 			</div>
 
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -163,14 +118,9 @@
 			      <div class="panel-body">
 			        <div id='sex' style='float:left;width:300px;height:200px'></div>        
 			        <div id='vertify' style='float:right;width:300px;height:200px'></div>
-					    <div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:60px'>
-					        <a  title="" class="well top-block"  
-					        href="#" style='height:180px;width:180;border-radius:500px'>
-					            <i class="glyphicon glyphicon-user blue" style='margin-top:50px'></i>
-					            <div>群组总人数</div>
-					            <div>507</div>
-					        </a>
-					    </div>
+				    <div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:60px' id='totalnumber'>
+
+				    </div>
 			      </div>
 			    </div>
 			  </div>
@@ -187,69 +137,12 @@
 			    </div>
 			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 			      <div class="panel-body">
-
-		         <div id='table' style='overflow-x:hidden;width:180px;float:left'>
-		         		<div><span style='font-size:16px'>发布地区排名</div>
-		              <table>            
-		                <tr>
-		                    <th style="text-align:center">排名</th>
-		                    <th style="text-align:center">平台</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">1</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">2</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">3</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">4</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">5</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		            </table>
-		        </div>
-		     <div id='table' style='overflow-x:hidden;width:180px;float:right'>
-		     	<div style='font-size:16px'>发布平台排名</div>
-			              <table>            
-			                <tr>
-			                    <th style="text-align:center">排名</th>
-			                    <th style="text-align:center">地点</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">1</th>
-			                    <th style="text-align:center">北京</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">2</th>
-			                    <th style="text-align:center">上海</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">3</th>
-			                    <th style="text-align:center">广州</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">4</th>
-			                    <th style="text-align:center">深圳</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">5</th>
-			                    <th style="text-align:center">沈阳</th>                       
-			                </tr>
-			            </table>
+					<div id="line" style="height:300px;width:950px;float:left"></div>
+			         <div id='top_platform' style='overflow-x:hidden;width:450px;float:left'>
 			        </div>
-					<div id="line" style="height:300px;width:600px;float:left"></div>
-					<div id="trend" style="height:50px;width:950px;margin-top:300px">
-					该用户的活跃时间段为：<span class="">08:00-12:00</span>和<span class="">20:00-24:00</span>
-					</div>
+				     <div id='top_location' style='overflow-x:hidden;width:450px;float:right'>
+					 </div>
+
 			      </div>
 			    </div>
 			  </div>
@@ -266,37 +159,11 @@
 			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 			      <div class="panel-body">
 			      	<div id='social_line'style='width:700px;height:300px;float:left'></div>
-				     <div id='table' style='overflow-x:hidden;width:250px;float:right'>
-					              <table>            
-					                <tr>
-					                    <th style="text-align:center">群体内连接紧密度</th>
-					                    <th style="text-align:center">111</th>                       
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">群体内微博转发频率</th>
-					                    <th style="text-align:center">11</th>                       
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">群体内参与转发人数</th>
-					                    <th style="text-align:center">111</th>                       
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">群体内参与转发比例</th>
-					                    <th style="text-align:center">111</th>                       
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">群体内@次数</th>
-					                    <th style="text-align:center">111</th>                       
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">111</th>
-					                    <th style="text-align:center">1111</th>                       
-					                </tr>
-					            </table>
-					        </div>
-					      </div>
-					    </div>
-					  </div>
+				     <div id='group' style='overflow-x:hidden;width:250px;margin-top:100px;float:right'>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
 
 
 			  <div class="panel panel-default">
@@ -309,30 +176,11 @@
 			    </div>
 			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 			      <div class="panel-body">
-					<div>
-					  <h4 class="page-header"style='margin-top:10px'>他的标签</h4>
-					  <div id="character" style="height:50px;width:900px">
-						<table>
-						<tr>
-						<td class="center">
-							<span class="label-warning label label-default"style='font-size:16px'>狮子座</span>
-						</td>
-						<td class="center">
-							<span class="label-warning label label-default"style='font-size:16px'>90后</span>
-						</td>
-						<td class="center">
-							<span class="label-warning label label-default"style='font-size:16px'>摇滚</span>
-						</td>
-						<td class="center">
-							<span class="label-warning label label-default"style='font-size:16px'>游戏控</span>
-						</td>
-						</tr>
-						</table>
-					  </div>
-					</div>
 					<div><h4 class="page-header"style='margin-top:10px'>思想</h4>
-						<div id="radar_topic1" style="height:350px;width:450px;float:left"></div>
-						<div id="radar_topic2" style="height:350px;width:450px;float:right"></div>
+						<div id="radar_status" style="height:200px;width:230px;float:left"></div>
+						<div id="radar_topic" style="height:200px;width:230px;float:right"></div>
+						<div id="radar_psycho" style="height:200px;width:230px;float:left"></div>
+						<div id="radar_domain" style="height:200px;width:230px;float:right"></div>
 					</div>
 			      </div>
 			    </div>
@@ -351,63 +199,9 @@
 			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
 			      <div class="panel-body">
 
-					<div id='table' style='overflow-x:hidden;width:180px;float:left'>
-		         		<div style='font-size:16px'>Hashtag排名</div>
-		              <table>            
-		                <tr>
-		                    <th style="text-align:center">排名</th>
-		                    <th style="text-align:center">平台</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">1</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">2</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">3</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">4</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		                <tr>
-		                    <th style="text-align:center">5</th>
-		                    <th style="text-align:center">ipone6</th>                       
-		                </tr>
-		            </table>
-		        </div>
-		     <div id='table' style='overflow-x:hidden;width:180px;float:right'>
-		     	<div style='font-size:16px'>表情符号</div>
-			              <table>            
-			                <tr>
-			                    <th style="text-align:center">排名</th>
-			                    <th style="text-align:center">地点</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">1</th>
-			                    <th style="text-align:center">北京</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">2</th>
-			                    <th style="text-align:center">上海</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">3</th>
-			                    <th style="text-align:center">广州</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">4</th>
-			                    <th style="text-align:center">深圳</th>                       
-			                </tr>
-			                <tr>
-			                    <th style="text-align:center">5</th>
-			                    <th style="text-align:center">沈阳</th>                       
-			                </tr>
-			            </table>
+					<div id='hashtag' style='overflow-x:hidden;width:180px;float:left'>
+		        	</div>
+		     		<div id='emotion' style='overflow-x:hidden;width:180px;float:right'>		     	
 			        </div>
 					<div id="keywordcloud" style="height:300px;width:600px;float:left"></div>
 
@@ -427,28 +221,11 @@
 			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
 			      <div class="panel-body">
 
-			      	<div id='influence'style='width:700px;height:300px;float:left'></div>
-				     <div id='table' style='overflow-x:hidden;width:250px;float:right'>
-					              <table>            
-					                <tr>
-					                    <th style="text-align:center">点击查看转发量最高微博</th>
-					                                     
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">点击查看转发量最高微博</th>
-					                                        
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">点击查看评论量最高微博</th>
-					                                       
-					                </tr>
-					                <tr>
-					                    <th style="text-align:center">点击查看评论量最高微博</th>
-					                                        
-					                </tr>
-					            </table>
-					        </div>
-
+			      	<div id='importance'style='width:460px;height:300px;float:left'></div>
+			      	<div id='activeness'style='width:460px;height:300px;float:right'></div>
+			      	<div id='influence'style='width:460px;height:300px;float:left'></div>
+				     <div id='weibo' style='overflow-x:hidden;width:400px;margin-top:30px;float:right'>
+					 </div>
 			      </div>
 			    </div>
 			  </div>
@@ -463,634 +240,5 @@
 
     {% block Own_js %}
     {{ super() }}
-  <script>
-    $(document).ready(function(){
- 		draw_sex();
- 		draw_vertify();
- 		draw_line();
- 		social_line();
- 		drawradar_topic1();
- 		drawradar_topic2();
- 		draw_keyword();
- 		draw_influence();
- 	})
-  function draw_sex(){
-var myChart = echarts.init(document.getElementById('sex')); 
- 	var dataStyle = {
-    normal: {
-        label: {show:false},
-        labelLine: {show:false}
-    }
-};
-var placeHolderStyle = {
-    normal : {
-        color: 'rgba(0,0,0,0)',
-        label: {show:false},
-        labelLine: {show:false}
-    },
-    emphasis : {
-        color: 'rgba(0,0,0,0)'
-    }
-};
-option = {
-    title: {
-        text: '男女？',
-        subtext: 'From ExcelHome',
-        sublink: 'http://e.weibo.com/1341556070/AhQXtjbqh',
-        x: 'center',
-        y: 'center',
-        itemGap: 20,
-        textStyle : {
-            color : 'rgba(30,144,255,0.8)',
-            fontFamily : '微软雅黑',
-            fontSize : 15,
-            fontWeight : 'bolder'
-        }
-    },
-    tooltip : {
-        show: true,
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    legend: {
-        orient : 'vertical',
-        x : document.getElementById('main').offsetWidth / 2,
-        y : 45,
-        itemGap:12,
-        data:['68%的人表示过的不错','32%的人表示生活压力很大']
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-    },
-    series : [
-        {
-            name:'1',
-            type:'pie',
-            clockWise:false,
-            radius : [60, 80],
-            itemStyle : dataStyle,
-            data:[
-                {
-                    value:68,
-                    name:'68%的人表示过的不错'
-                },
-                {
-                    value:32,
-                    name:'invisible',
-                    itemStyle : placeHolderStyle
-                }
-            ]
-        },
-        {
-            name:'2',
-            type:'pie',
-            clockWise:false,
-            radius : [40, 60],
-            itemStyle : dataStyle,
-            data:[
-                {
-                    value:29, 
-                    name:'32%的人表示生活压力很大'
-                },
-                {
-                    value:71,
-                    name:'invisible',
-                    itemStyle : placeHolderStyle
-                }
-            ]
-        }
-    ]
-};
-                    
- 	 myChart.setOption(option);  
-	 	}
-
-function draw_vertify(){
- 	var myChart = echarts.init(document.getElementById('vertify')); 
- 	var dataStyle = {
-    normal: {
-        label: {show:false},
-        labelLine: {show:false}
-    }
-};
-var placeHolderStyle = {
-    normal : {
-        color: 'rgba(0,0,0,0)',
-        label: {show:false},
-        labelLine: {show:false}
-    },
-    emphasis : {
-        color: 'rgba(0,0,0,0)'
-    }
-};
-option = {
-    title: {
-        text: '你认证了吗？',
-        subtext: 'From ExcelHome',
-        sublink: 'http://e.weibo.com/1341556070/AhQXtjbqh',
-        x: 'center',
-        y: 'center',
-        itemGap: 20,
-        textStyle : {
-            color : 'rgba(30,144,255,0.8)',
-            fontFamily : '微软雅黑',
-            fontSize : 15,
-            fontWeight : 'bolder'
-        }
-    },
-    tooltip : {
-        show: true,
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    legend: {
-        orient : 'vertical',
-        x : document.getElementById('main').offsetWidth / 2,
-        y : 45,
-        itemGap:12,
-        data:['68%的人表示过的不错','32%的人表示生活压力很大']
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-    },
-    series : [
-        {
-            name:'1',
-            type:'pie',
-            clockWise:false,
-            radius : [60, 80],
-            itemStyle : dataStyle,
-            data:[
-                {
-                    value:68,
-                    name:'68%的人表示过的不错'
-                },
-                {
-                    value:32,
-                    name:'invisible',
-                    itemStyle : placeHolderStyle
-                }
-            ]
-        },
-        {
-            name:'2',
-            type:'pie',
-            clockWise:false,
-            radius : [40, 60],
-            itemStyle : dataStyle,
-            data:[
-                {
-                    value:29, 
-                    name:'32%的人表示生活压力很大'
-                },
-                {
-                    value:71,
-                    name:'invisible',
-                    itemStyle : placeHolderStyle
-                }
-            ]
-        }
-    ]
-};
-                    
- 	 myChart.setOption(option);  
-	 	}
-
-function draw_line(){
-	 	var myChart = echarts.init(document.getElementById('line')); 
-        
-        var option = {
-			title : {
-                        'text':'微博时间走势',
-						textStyle:{
-                        fontSize:20,
-                        fontFamily:'Microsoft YaHei UI',
-                        fontWeight:400,
-                    },
-            },
-            tooltip : {
-        		trigger: 'axis'
-    			},
-    		legend: {
-        				data:['原创','转发','评论']
-    			},
-    		calculable : false,
-    		xAxis : [
-        				{
-            				type : 'category',
-            				boundaryGap : false,
-            				data : ['周一','周二','周三','周四','周五','周六','周日']
-        				}
-   		 			],
-    		yAxis : [
-        				{
-            				type : 'value'
-       	 				}
-    				],
-    		series : [
-        				{
-            			name:'原创',
-            			type:'line',
-            			stack: '总量',
-            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            			data:[120, 132, 101, 134, 90, 230, 210]
-        				},
-        				{
-            			name:'转发',
-            			type:'line',
-            			stack: '总量',
-            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            			data:[220, 182, 191, 234, 290, 330, 310]
-        				},
-        				{
-            			name:'评论',
-            			type:'line',
-            			stack: '总量',
-            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            			data:[150, 232, 201, 154, 190, 330, 410]
-        				}
-    			]
-        };
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
-    }
-
-function social_line(){
-    $('#social_line').highcharts({
-        title: {
-            text: '个体重要度分布',
-            x: -20 //center
-        },
-        subtitle: {
-            text: '',
-            x: -20
-        },
-        xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        },
-        yAxis: {
-            title: {
-                text: 'Temperature (°C)'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        tooltip: {
-            valueSuffix: '°C'
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name: 'Tokyo',
-            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-        }, {
-            name: 'New York',
-            data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-        }, {
-            name: 'Berlin',
-            data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
-        }, {
-            name: 'London',
-            data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-        }]
-    });
-}
-
-        // 基于准备好的dom，初始化echarts图表
-    function drawradar_topic1(){
-        var myChart = echarts.init(document.getElementById('radar_topic1')); 
-        
-		var option = {
-	    title : {
-	        text: '',
-	        subtext: ''
-	    },
-	    tooltip : {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        x : 'center',
-	        data:['罗纳尔多']
-	    },
-	    toolbox: {
-	        show : true,
-	        feature : {
-	            mark : {show: true},
-	            dataView : {show: true, readOnly: false},
-	            restore : {show: true},
-	            saveAsImage : {show: true}
-	        }
-	    },
-	    calculable : true,
-	    polar : [
-	        {
-	            indicator : [
-	                {text : '进攻', max  : 100},
-	                {text : '防守', max  : 100},
-	                {text : '体能', max  : 100},
-	                {text : '速度', max  : 100},
-	                {text : '力量', max  : 100},
-	                {text : '技巧', max  : 100}
-	            ],
-	            radius : 100
-	        }
-	    ],
-	    series : [
-	        {
-	            name: '完全实况球员数据',
-	            type: 'radar',
-	            itemStyle: {
-	                normal: {
-	                    areaStyle: {
-	                        type: 'default'
-	                    }
-	                }
-	            },
-	            data : [
-	                {
-	                    value : [97, 32, 74, 95, 88, 92],
-	                    name : '罗纳尔多'
-	                }
-	            ]
-	        }
-	    ]
-	};                
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
-    }
-    function drawradar_topic2(){
-        var myChart = echarts.init(document.getElementById('radar_topic2')); 
-        
-		var option = {
-	    title : {
-	        text: '',
-	        subtext: ''
-	    },
-	    tooltip : {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        x : 'center',
-	        data:['罗纳尔多']
-	    },
-	    toolbox: {
-	        show : true,
-	        feature : {
-	            mark : {show: true},
-	            dataView : {show: true, readOnly: false},
-	            restore : {show: true},
-	            saveAsImage : {show: true}
-	        }
-	    },
-	    calculable : true,
-	    polar : [
-	        {
-	            indicator : [
-	                {text : '进攻', max  : 100},
-	                {text : '防守', max  : 100},
-	                {text : '体能', max  : 100},
-	                {text : '速度', max  : 100},
-	                {text : '力量', max  : 100},
-	                {text : '技巧', max  : 100}
-	            ],
-	            radius : 100
-	        }
-	    ],
-	    series : [
-	        {
-	            name: '完全实况球员数据',
-	            type: 'radar',
-	            itemStyle: {
-	                normal: {
-	                    areaStyle: {
-	                        type: 'default'
-	                    }
-	                }
-	            },
-	            data : [
-	                {
-	                    value : [97, 32, 74, 95, 88, 92],
-	                    name : '罗纳尔多'
-	                }
-	            ]
-	        }
-	    ]
-	};                
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
-    }
-
-
-function createRandomItemStyle() {
-  		
-    return {
-        normal: {
-            color: 'rgb(' + [
-                Math.round(Math.random() * 160),
-                Math.round(Math.random() * 160),
-                Math.round(Math.random() * 160)
-            ].join(',') + ')'
-        }
-    };
-}
-function draw_keyword(){
-	var myChart = echarts.init(document.getElementById('keywordcloud'));
-    var option = {
-    title: {
-        text: '',
-    },
-    tooltip: {
-        show: true
-    },
-    series: [{
-        name: '关键词',
-        type: 'wordCloud',
-        size: ['80%', '80%'],
-        textRotation : [0, 45, 90, -45],
-        textPadding: 0,
-        autoSize: {
-            enable: true,
-            minSize: 15
-        },
-        data: [
-            {
-                name: "去哪",
-                value: 10000,
-                itemStyle: {
-                    normal: {
-                        color: 'black'
-                    }
-                }
-            },
-            {
-                name: "基本",
-                value: 6181,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "社会",
-                value: 4386,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "网络",
-                value: 4055,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "安全",
-                value: 2467,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "现实",
-                value: 2244,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "卫生",
-                value: 1898,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "医疗",
-                value: 1484,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "健康",
-                value: 1112,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "贫困",
-                value: 965,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "暴力",
-                value: 847,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "恐怖",
-                value: 582,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "领导",
-                value: 555,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "非法",
-                value: 550,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "工资",
-                value: 462,
-                itemStyle: createRandomItemStyle()
-            }
-        ]
-    }]
-};
-                    
-			myChart.setOption(option); 
-                    
-  }
-
-function draw_influence(){
-	var myChart = echarts.init(document.getElementById('influence'));
-	var option = {
-    title : {
-        text: '某地区蒸发量和降水量',
-        subtext: '纯属虚构'
-    },
-    tooltip : {
-        trigger: 'axis'
-    },
-    legend: {
-        data:['蒸发量','降水量']
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            magicType : {show: true, type: ['line', 'bar']},
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-    },
-    calculable : true,
-    xAxis : [
-        {
-            type : 'category',
-            data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
-        }
-    ],
-    yAxis : [
-        {
-            type : 'value'
-        }
-    ],
-    series : [
-        {
-            name:'蒸发量',
-            type:'bar',
-            data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
-            markPoint : {
-                data : [
-                    {type : 'max', name: '最大值'},
-                    {type : 'min', name: '最小值'}
-                ]
-            },
-            markLine : {
-                data : [
-                    {type : 'average', name: '平均值'}
-                ]
-            }
-        },
-        {
-            name:'降水量',
-            type:'bar',
-            data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
-            markPoint : {
-                data : [
-                    {name : '年最高', value : 182.2, xAxis: 7, yAxis: 183, symbolSize:18},
-                    {name : '年最低', value : 2.3, xAxis: 11, yAxis: 3}
-                ]
-            },
-            markLine : {
-                data : [
-                    {type : 'average', name : '平均值'}
-                ]
-            }
-        }
-    ]
-};
-             myChart.setOption(option);        
-}
-
-  </script>
-
-{% endblock Own_js %}
+	{% endblock Own_js %}
 

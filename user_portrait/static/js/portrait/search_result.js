@@ -25,20 +25,21 @@ Search_weibo_result.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>用户名</th><th>性别</th><th>注册地</th><th>领域</th><th>话题</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
       user_url = window.location.href;
       user_url = user_url + item[0];
-      html += '<tr>';
+      html += '<tr id=' + item[0] +'>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center">'+ gender(item[2]) +'</td>';
+      html += '<td class="center">'+ item[3] +'</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) +'</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) +'</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) +'</td>';
+      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -47,6 +48,17 @@ Search_weibo_result.prototype = {
   }
 }
 
+function gender(num){
+    if (num == '1'){
+        return '男';
+    }
+    else if (num == '2'){
+        return '女';
+    }
+    else{
+        return '未知';
+    }
+}
 var global_pre_page = 1;
 var global_choose_uids = new Array();
 
@@ -188,7 +200,7 @@ function compare_button(){
   $('input[name="search_result_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
   });
-  global_choose_uids[global_pre_page] = cur_uids
+  global_choose_uids[global_pre_page] = cur_uids;
   var compare_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -196,7 +208,6 @@ function compare_button(){
         compare_uids.push(temp_list[i]);
       }
   }
-  
   console.log(compare_uids);
   var len = compare_uids.length;
   if(len>3 || len<2){
@@ -213,6 +224,7 @@ function group_button(){
   $('input[name="search_result_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
   });
+  global_choose_uids[global_pre_page] = cur_uids;
   var group_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -220,11 +232,6 @@ function group_button(){
         group_uids.push(temp_list[i]);
       }
   }
-  /*
-  $('input[name="search_result_option"]:checked').each(function(){
-      group_uids.push($(this).attr('value'));
-  });
-  */
   console.log(group_uids);
   var len = group_uids.length;
   if (len < 1){
@@ -241,6 +248,7 @@ function delete_button(){
   $('input[name="search_result_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
   });
+  global_choose_uids[global_pre_page] = cur_uids;
   var delete_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -248,11 +256,6 @@ function delete_button(){
         delete_uids.push(temp_list[i]);
       }
   }
-  /*
-  $('input[name="search_result_option"]:checked').each(function(){
-      delete_uids.push($(this).attr('value'));
-  });
-  */
   console.log(delete_uids);
   var len = delete_uids.length;
   if (len < 1){
@@ -272,16 +275,18 @@ function draw_table_compare_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>用户名</th><th>性别</th><th>注册地</th><th>领域</th><th>话题</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
+      var item_div = '#'+uids[i];
       html += '<tr>';
       html += '<td class="center" name="compare_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
@@ -294,16 +299,18 @@ function draw_table_group_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>用户名</th><th>性别</th><th>注册地</th><th>领域</th><th>话题</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
+      var item_div = '#'+uids[i];
       html += '<tr>';
       html += '<td class="center" name="group_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
@@ -316,16 +323,18 @@ function draw_table_delete_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>用户名</th><th>性别</th><th>注册地</th><th>领域</th><th>话题</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
+      var item_div = '#'+uids[i];
       html += '<tr>';
       html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
+      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
@@ -347,7 +356,9 @@ function compare_confirm_button(){
   $('[name="compare_confirm_uids"]').each(function(){
       compare_confirm_uids.push($(this).text());
   })
-  console.log(compare_confirm_uids);
+  var compare_url = '/index/contrast/?uids='+ compare_confirm_uids.join(',');
+  console.log(compare_url);
+  window.open(compare_url);
 }
 
 function group_confirm_button(){
@@ -356,6 +367,26 @@ function group_confirm_button(){
       group_confirm_uids.push($(this).text());
   })
   console.log(group_confirm_uids);
+  var group_ajax_url = '/group/submit_task/';
+  var group_url = '/index/group_result/';
+  var job = {"task_name":'ajaxtest', "uid_list":group_confirm_uids, "state":'ajaxtest'};
+  $.ajax({
+      type:'POST',
+      url: group_ajax_url,
+      contentType:"application/json",
+      data: JSON.stringify(job),
+      dataType: "json",
+      success: callback
+  });
+  function callback(data){
+      console.log(data);
+      if (data == '1'){
+          window.location.href = group_url;
+      }
+      else{
+          alert('fail');
+      }
+  }
 }
 
 function delete_confirm_button(){
@@ -364,13 +395,26 @@ function delete_confirm_button(){
       delete_confirm_uids.push($(this).text());
   })
   console.log(delete_confirm_uids);
-  self.location.reload();
+  if (confirm("确认要删除吗?")){
+      /*
+      var delete_url = '';
+      $.ajax({
+          type:'get',
+          url: delete_url,
+          dataType: "json",
+          success: callback
+      });
 
-  /*
-  $('[name="uids"]').each(function(){
-    for(var i in delete_confirm_uids)
-      if($(this).text()==delete_confirm_uids[i])
-        $(this).parent().remove();
-  })
-  */
+      function callback(data){
+           console.log(data);
+           if (data == '1'){
+               window.location.reload();
+           }
+           else{
+               alert('fail');
+           }
+      }
+      */
+  }
+
 }

@@ -52,8 +52,9 @@ def submit_task(input_data):
     if status != 0:
         r.lpush('group_task', json.dumps(input_data))
         input_data['status'] = 0 # mark the task not compute
-        count = len(input_data['uid_list'].split(','))
+        count = len(input_data['uid_list'])
         input_data['count'] = count
+        uid_list_string = json.dumps(input_data['uid_list'])
         es.index(index='group_result', doc_type='group', id=task_name, body=input_data)
     return status
 
