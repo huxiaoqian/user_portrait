@@ -5,8 +5,14 @@
 import sys
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
-
+#reload(sys)
+#sys.path.append('./../')
+#from global_utils import ES_CLUSTER_FLOW1 as es
+#from global_utils import es_user_profile as es_profile
+#from global_utils import es_user_portrait as es_portrait
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
+from user_portrait.global_utils import es_user_portrait as es_portrait
+from user_portrait.global_utils import es_user_profile as es_profile
 
 index_name = "20130901"
 
@@ -43,18 +49,32 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
     while 1:
         user_list = search_k(es, active_index, active_type, start, field, 100)
         start += 100
+        print user_list
         for item in user_list:
             if field == "vary":
                 uid = item.get('uid', '0') # obtain uid, notice "uid" or "user"
             else:
                 uid = item.get('user', '0')
-            search_list.append(uid)
+            search_list.append(uid) # uid list
 
-        search_result = es.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]
+        search_result = es_portrait.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]
+        profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
 
+        rank = 1
         for item in search_result:
             if item["found"]:
-                return_list.append(user_list[search_result.index(item)])
+                info = ['','','','','','']
+                info[0] = rank
+                index = search_result.index(item)
+
+                if profile_result[index]['found']:
+                    info[1] = profile_result[index]['_source'].get('photo_url','')
+                    info[3] = profile_result[index]['_source'].get('nick_name','')
+                info[2] = search_result[index].get('_id','')
+                info[4] = user_list[index]['user_index']
+                info[5] = "1"
+                return_list.append(info)
+                rank += 1
                 count_c += 1
 
                 if count_c >= number:

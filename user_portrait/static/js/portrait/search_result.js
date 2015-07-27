@@ -38,7 +38,7 @@ Search_weibo_result.prototype = {
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[i] + '" /></td>';
+      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -188,7 +188,7 @@ function compare_button(){
   $('input[name="search_result_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
   });
-  global_choose_uids[global_pre_page] = cur_uids
+  global_choose_uids[global_pre_page] = cur_uids;
   var compare_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -196,7 +196,6 @@ function compare_button(){
         compare_uids.push(temp_list[i]);
       }
   }
-  
   console.log(compare_uids);
   var len = compare_uids.length;
   if(len>3 || len<2){
@@ -213,6 +212,7 @@ function group_button(){
   $('input[name="search_result_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
   });
+  global_choose_uids[global_pre_page] = cur_uids;
   var group_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -220,11 +220,6 @@ function group_button(){
         group_uids.push(temp_list[i]);
       }
   }
-  /*
-  $('input[name="search_result_option"]:checked').each(function(){
-      group_uids.push($(this).attr('value'));
-  });
-  */
   console.log(group_uids);
   var len = group_uids.length;
   if (len < 1){
@@ -241,6 +236,7 @@ function delete_button(){
   $('input[name="search_result_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
   });
+  global_choose_uids[global_pre_page] = cur_uids;
   var delete_uids = [];
   for (var key in global_choose_uids){
       var temp_list = global_choose_uids[key];
@@ -248,11 +244,6 @@ function delete_button(){
         delete_uids.push(temp_list[i]);
       }
   }
-  /*
-  $('input[name="search_result_option"]:checked').each(function(){
-      delete_uids.push($(this).attr('value'));
-  });
-  */
   console.log(delete_uids);
   var len = delete_uids.length;
   if (len < 1){
@@ -347,7 +338,9 @@ function compare_confirm_button(){
   $('[name="compare_confirm_uids"]').each(function(){
       compare_confirm_uids.push($(this).text());
   })
-  console.log(compare_confirm_uids);
+  var compare_url = '/index/contrast/?uids='+ compare_confirm_uids.join(',');
+  console.log(compare_url);
+  window.open(compare_url);
 }
 
 function group_confirm_button(){
@@ -356,6 +349,21 @@ function group_confirm_button(){
       group_confirm_uids.push($(this).text());
   })
   console.log(group_confirm_uids);
+  var group_ajax_url = '/group/submit_task/';
+  var group_url = '/index/group_result/';
+  var job = {"task_name":'ajaxtest', "uid_list":group_confirm_uids, "state":'ajaxtest'};
+  $.ajax({
+      type:'POST',
+      url: group_ajax_url,
+      contentType:"application/json",
+      data: JSON.stringify(job),
+      dataType: "json",
+      success: function(data){
+          console.log(data);
+          window.open(group_url);
+      }
+  });
+
 }
 
 function delete_confirm_button(){

@@ -128,23 +128,23 @@ def get_attr_portrait(uid_list):
                 except:
                     psycho_feature_ratio[psycho_feature] = 1
         #attr13 activity geo ratio
-        activity_geo_string = user_dict['activity_geo']
+        activity_geo_string = user_dict['activity_geo_dict']
         if activity_geo_string:
-            activity_geo_list = activity_geo_string.split('&')
-            for activity_geo in activity_geo_list:
+            activity_geo_dict = json.loads(activity_geo_string)
+            for activity_geo in activity_geo_dict:
                 try:
-                    activity_geo_ratio[activity_geo] += 1
+                    activity_geo_ratio[activity_geo] += activity_geo_dict[activity_geo]
                 except:
-                    activity_geo_ratio[activity_geo] = 1
+                    activity_geo_ratio[activity_geo] = activity_geo_dict[activity_geo]
         #attr14 hashtag
-        hashtag_string = user_dict['hashtag']
+        hashtag_string = user_dict['hashtag_dict']
         if hashtag_string:
-            hashtag_list = hashtag_string.split(' ')
-            for hashtag in hashtag_list:
+            hashtag_dict = json.loads(hashtag_string)
+            for hashtag in hashtag_dict:
                 try:
-                    hashtag_ratio[hashtag] += 1
+                    hashtag_ratio[hashtag] += hashtag_dict[hashtag]
                 except:
-                    hashtag_ratio[hashtag] = 1
+                    hashtag_ratio[hashtag] = hashtag_dict[hashtag]
     #print 'importance_list:', importance_list
     p, t = np.histogram(importance_list, bins=5, normed=False)
     importance_his = [p.tolist(), t.tolist()]
