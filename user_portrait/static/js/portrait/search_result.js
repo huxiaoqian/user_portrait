@@ -370,7 +370,7 @@ function compare_confirm_button(){
   $('[name="compare_confirm_uids"]').each(function(){
       compare_confirm_uids.push($(this).text());
   })
-  var compare_url = '/index/contrast/?uids='+ compare_confirm_uids.join(',');
+  var compare_url = '/index/contrast/?uid_list='+ compare_confirm_uids.join(',');
   console.log(compare_url);
   window.open(compare_url);
 }
