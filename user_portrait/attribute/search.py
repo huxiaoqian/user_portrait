@@ -9,12 +9,12 @@ import time
 import json
 import redis
 sys.path.append('../../')
+
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
 from user_portrait.global_utils import es_user_portrait
 from user_portrait.search_user_profile import search_uid2uname
-
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
 #redis:{'retweet_'+uid:{ruid:count}}
 #return results: {ruid:[uname,count]}
@@ -219,6 +219,25 @@ def search_attribute_portrait(uid):
         results = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
     except:
         results = None
+    keyword_list = []
+    if results and results['keywords']:
+        keywords_dict = json.loads(results['keywords'])
+        sort_word_list = sorted(keyword_dict, key=lambda x:x[1], reverse=True)
+        results['keywords'] = sort_word_list[:20]
+    #print 'keywords:', results
+    geo_top = []
+    if results and results['activity_geo_dict']:
+        geo_dict = json.loads(results['activity_geo_dict'])
+        sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
+        geo_top = geo_top[:5]
+        results['activity_geo'] = geo_top
+    if results and results['hashtag_dict']:
+        hashtag_dict = json.loads(results['hashtag_dict'])
+        sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
+        results['hashtag_dict'] = sort_hashtag_dict[:5]
+    if results and results['emotion_words']:
+        emotion_words_dict = json.loads(results['emotion_words'])
+        results['emotion_words'] = emotion_words_dict
     return results
 
 #use to search user_portrait by lots of condition 
@@ -228,15 +247,18 @@ def search_portrait(condition_num, query, sort, size):
     index_type = 'user'
     if condition_num > 0:
         try:
-            print query
+            #print query
             result = es_user_portrait.search(index=index_name, doc_type=index_type, \
                     body={'query':{'bool':{'must':query}}, 'sort':sort, 'size':size})['hits']['hits']
+            #print 'result:', result
         except Exception,e:
             raise e
     else:
-        result = es_user_portrait.search(index=index_name, doc_type=index_type, \
-                body={'query':{'match_all':{}}, 'sort':[{'statusnum':{'order':'desc'}}],\
-                     'size':100})['hits']['hits']
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, \
+                    body={'query':{'match_all':{}},'size':size})['hits']['hits']
+        except Exception, e:
+            raise e
     if result:
         #print 'result:', result
         for item in result:
@@ -259,7 +281,8 @@ def delete_action(uid_list):
 if __name__=='__main__':
     uid = '1798289842'
     now_ts = 1377964800 + 3600 * 24 * 4
-    
+    search_attribute_portrait(uid)
+    '''
     results1 = search_attention(uid)
     print 'attention:', results1
     results2 = search_follower(uid)
@@ -270,5 +293,5 @@ if __name__=='__main__':
     print 'location:', results4
     results5 = search_activity(now_ts, uid)
     print 'activity:', results5
-
+    '''
     
