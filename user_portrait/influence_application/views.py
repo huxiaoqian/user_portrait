@@ -12,8 +12,8 @@ from search_vary_index_function import query_vary_top_k
 
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 
-portrait_index = "user_index_profile" # user_portrait_database
-portrait_type = "manage"
+portrait_index = "user_portrait" # user_portrait_database
+portrait_type = "user"
 
 mod = Blueprint('influence_application', __name__, url_prefix='/influence_application')
 
@@ -87,18 +87,13 @@ def ajax_specified_user_active():
 @mod.route('/user_index_distribution/')
 def ajax_user_index_distribution():
     date = request.args.get('date', '') # '2013-09-01'
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
     former_date = "20130901" # test
     date = str(date)
 
     if not date:
-        index_name = former_date
-    else:
-        index_name = date.replace('-','')
-
-    if index_name != former_date:
         results = 0
     else:
+        index_name = date.replace('-','')
         results = user_index_range_distribution(index_name)
 
     return json.dumps(results)
