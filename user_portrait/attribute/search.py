@@ -90,7 +90,10 @@ def search_mention(now_ts, uid):
     results = dict()
     for i in range(1,8):
         ts = ts - 24 * 3600
-        result_string = r_cluster.hget('at_' + str(ts), str(uid))
+        try:
+            result_string = r_cluster.hget('at_' + str(ts), str(uid))
+        except:
+            result_string = ''
         if not result_string:
             continue
         result_dict = json.loads(result_string)
@@ -112,7 +115,7 @@ def search_mention(now_ts, uid):
     if results:
         return results
     else:
-        return None
+        return False
 
 #search:now_ts, uid return 7day loaction list {location1:count1, location2:count2}
 #{'ip_'+str(Date_ts):{str(uid):'{city:count}'}
@@ -157,25 +160,51 @@ def search_activity(now_ts, uid):
     date = ts2datetime(now_ts)
     #print 'date:', date
     ts = datetime2ts(date)
+    timestamp = ts
     #print 'date-ts:', ts
+    activity_result = dict()
     results = dict()
+    segment_result = dict()
     for i in range(1, 8):
-        ts = ts - 24 * 3600
+        ts = timestamp - 24 * 3600*i
         #print 'for-ts:', ts
-        result_string = r_cluster.hget('activity_' + str(ts), str(uid))
+        try:
+            result_string = r_cluster.hget('activity_' + str(ts), str(uid))
+        except:
+            result_string = ''
         #print 'activity:', result_string
         if not result_string:
             continue
         result_dict = json.loads(result_string)
         for time_segment in result_dict:
             try:
-                results[time_segment] += result_dict[time_segment]
+                results[int(time_segment)/16*15*60*16+ts] += result_dict[time_segment]
             except:
-                results[time_segment] = result_dict[time_segment]
                 
-    description = active_time_description(results)
-    results['description'] = description
-    return results
+                results[int(time_segment)/16*15*60*16+ts] = result_dict[time_segment]
+            try:
+                segment_result[int(time_segment)/16*15*60*16] += result_dict[time_segment]
+            except:
+                segment_result[int(time_segment)/16*15*60*16] = result_dict[time_segment]
+
+
+    trend_list = []
+    for i in range(1,8):
+        ts = timestamp - i*26*3600
+        for j in range(0, 6):
+            time_seg = ts + j*15*60*16
+            if time_seg in results:
+                trend_list.append((time_seg, results[time_seg]))
+            else:
+                trend_list.append((time_seg, 0))
+    sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=False)
+    #print 'sort_trend_list:', sort_trend_list
+    activity_result['activity_trend'] = sort_trend_list
+    activity_result['activity_time'] = segment_result
+    print segment_result
+    description = active_time_description(segment_result)
+    activity_result['description'] = description
+    return activity_result
 
 # ip to city
 def ip2city(ip):

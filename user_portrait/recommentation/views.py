@@ -105,7 +105,7 @@ def ajax_compute_identify():
             uid = uid_list[i]
             input_data.append([date ,uid])
         print 'input_data:', input_data
-        #results = identify_compute(input_data)
+        results = identify_compute(input_data)
     return json.dumps(results)
 
 # show recommentaion out uid

@@ -27,6 +27,7 @@ def ajax_submit_task():
 def ajax_show_task():
     results = {}
     task_name = request.args.get('task_name', '')
+    #print 'task_name:', task_name
     submit_date = request.args.get('submit_date', '')
     state = request.args.get('state', '')
     status = request.args.get('status', '')
@@ -41,7 +42,7 @@ def ajax_show_group_result_basic():
     task_name = request.args.get('task_name', '')
     module = request.args.get('module', 'basic')
     results = get_group_results(task_name, module)
-    print 'result:', results
+    #print 'result:', results
     return json.dumps(results)
 
 

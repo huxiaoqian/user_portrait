@@ -123,10 +123,8 @@ def ajax_mention():
     # test
     now_ts = test_time
     results = search_mention(now_ts, uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+
+    return json.dumps(results)
 
 @mod.route('/activity/')
 def ajax_activity():

@@ -13,11 +13,6 @@ mod = Blueprint('portrait', __name__, url_prefix='/index')
 @mod.route('/')
 def loading():
 
-    return render_template('portrait/index.html')
-
-@mod.route('/overview/')
-def overview():
-
     return render_template('portrait/overview.html')
 
 @mod.route('/group_analysis/')
@@ -47,6 +42,11 @@ def recommend_in():
 def recommend_out():
 
     return render_template('portrait/recommend_out.html')
+
+@mod.route('/influence_rank/')
+def influence_rank():
+
+    return render_template('portrait/influence_rank.html')
 
 @mod.route('/search_result/')
 def search_result():
@@ -84,3 +84,10 @@ def manage():
 def contact():
     
     return render_template('contact.html')
+
+
+@mod.route('/compare/')
+
+def compare():
+
+    return render_template('compare.html')
