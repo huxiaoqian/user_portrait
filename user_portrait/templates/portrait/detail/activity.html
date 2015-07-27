@@ -2,21 +2,21 @@
 <div id="Activezh" style="height:300px;width:750px"></div>
 <div id ="Plocation">
 	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
-	<div class="LocationDetail">
+	<div class="LocationDetail" id="Top5">
 		<dl>
-			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" >北京</span></dt>
+			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1">北京</span></dt>
 		</dl>
 		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">上海</span></dt>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2">上海</span></dt>
 		</dl>
 		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">广州</span></dt>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3">广州</span></dt>
 		</dl>
 		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">深圳</span></dt>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4">深圳</span></dt>
 		</dl>
 		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft">杭州</span></dt>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5">杭州</span></dt>
 		</dl>
 	</div>
 </div>
@@ -44,19 +44,21 @@ Activity.prototype = {   //获取数据，重新画表
 
   active:function(data){
 	var item = data.activity_time;
-	var sum=[];
-	for(i in item){
-		sum[i] = item[i];
-	}
-	console.log(sum.length);
-	
+	//时间段处理
   }
  }
 var Activity = new Activity();
 url = '/attribute/activity/?uid=1642591402' 
 Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
-
-
+var location_geo = parent.personalData.activity_geo;
+//console.log(location_geo);
+$('#Top5').empty();
+var html = '';
+for (i=1;i<location_geo.length+1;i++){
+	//console.log(location_geo[i][0]); 
+	html += '<dl><dt><span class="LocationImg  fleft"></span><span class="Acity fleft" id="top1">'+location_geo[i-1][0]+'</span></dt></dl>'
+}
+$('#Top5').append(html);
 </script>
 <script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
