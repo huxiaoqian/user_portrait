@@ -318,7 +318,7 @@ def search_portrait(condition_num, query, sort, size):
         #print 'result:', result
         for item in result:
             user_dict = item['_source']
-            user_result.append([user_dict['uid'], user_dict['uname'], user_dict['fansnum'], user_dict['statusnum'], user_dict['friendsnum']])
+            user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
 
     return user_result
 
