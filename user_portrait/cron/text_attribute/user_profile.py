@@ -28,8 +28,18 @@ def get_profile_information(uid_list):
             try:
                 user_dict[field] = item['_source'][fields_dict[field]]
             except:
-                user_dict[field] = 'unknown'
+                if field=='statusnum':
+                    user_dict[field] = 0
+                elif field=='fansnum':
+                    user_dict[field] =0
+                elif field=='friendsnum':
+                    user_dict[field] = 0
+                elif field=='uname':
+                    user_dict[field] = u'unknown'
+                else:
+                    user_dict[field] = 'unknown'
         result_dict[item['_id']] = user_dict
+        #print 'uname type:', type(user_dict['uname'])
     #print 'result_dict:', result_dict
     #print 'len result_dict:', len(search_result)
     return result_dict

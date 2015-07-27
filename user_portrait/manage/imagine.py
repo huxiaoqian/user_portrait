@@ -2,7 +2,6 @@
 
 import sys
 from elasticsearch import Elasticsearch
-
 from user_portrait.global_utils import es_user_portrait as es
 
 def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
@@ -51,11 +50,9 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     query_body['query']['function_score']['field_value_factor'] = score_standard
 
     query_fields_dict.pop('field')
-
-
+    query_fields_dict['size'] = 10
     query_body['size'] = query_fields_dict['size']
     query_fields_dict.pop('size')
-
 
     for (k,v) in query_fields_dict.items():
 
@@ -86,5 +83,5 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
 
 if __name__ == '__main__':
-    print imagine(2001627641, {'topic':1, 'uname':2,'field':'default'}, index_name='user_portrait', doctype='user')
+    print imagine(2010832710, {'topic':1, 'uname':2,'field':'default'}, index_name='user_portrait', doctype='user')
 

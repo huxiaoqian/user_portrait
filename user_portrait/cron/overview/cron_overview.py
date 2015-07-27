@@ -119,14 +119,14 @@ def get_scan_results():
                     no_location_count += 1
                 # activity geo
                 try:
-                    activity_geo = scan_re['activity_geo']
+                    activity_geo = scan_re['activity_geo_dict']
                     if scan_re:
-                        activity_geo_list = activity_geo.split('&')
-                        for geo in activity_geo_list:
+                        activity_geo_dict = json.loads(activity_geo)
+                        for geo in activity_geo_dict:
                             try:
-                                activity_geo_result[geo] += 1
+                                activity_geo_result[geo] += activity_geo_dict[geo]
                             except:
-                                activity_geo_result[geo] = 1
+                                activity_geo_result[geo] = activity_geo_dict[geo]
                 except:
                     no_activity_geo_count += 1
                 # keywords
@@ -142,14 +142,13 @@ def get_scan_results():
                     no_keywords_count += 1
                 # hashtag top
                 try:
-                    hashtag = scan_re['hashtag']
-                    if hashtag:
-                        hashtag_list = hashtag.split(' ')
-                        for tag in hashtag_list:
+                    hashtag_dict = json.loads(scan_re['hashtag_dict'])
+                    if hashtag_dict:
+                        for tag in hashtag_dict:
                             try:
-                                hashtag_result[tag] += 1
+                                hashtag_result[tag] += hashtag_dict[tag]
                             except:
-                                hashtag_result[tag] = 1
+                                hashtag_result[tag] = hashtag_dict[tag]
                 except:
                     no_hashtag_count += 1
                 # topic top
