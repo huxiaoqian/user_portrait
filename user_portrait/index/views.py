@@ -17,8 +17,9 @@ def loading():
 
 @mod.route('/group_analysis/')
 def group_analysis():
+    name = request.args.get('name', 'test_task')
 
-    return render_template('portrait/group_analysis.html')
+    return render_template('portrait/group_analysis.html', name=name)
 @mod.route('/group_result/')
 def group_result():
     
@@ -30,8 +31,9 @@ def contrast():
 
 @mod.route('/personal/')
 def personal():
+    uid = request.args.get('uid', '1642591402')
 
-    return render_template('portrait/personal.html')
+    return render_template('portrait/personal.html', uid=uid)
 
 @mod.route('/recommend_in/')
 def recommend_in():
@@ -73,16 +75,10 @@ def search_result():
 def test():
 
     return render_template('portrait/stack.html')
-"""
-@mod.route('/manage/')
-def manage():
-    return render_template('index/manage.html')
-"""
-
 
 @mod.route('/contact/')
 def contact():
-    
-    return render_template('contact.html')
+    uid = request.args.get('uid', '2001627641')
+    return render_template('contact.html', uid=uid)
 
 

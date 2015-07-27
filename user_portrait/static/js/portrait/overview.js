@@ -53,9 +53,6 @@ Search_weibo.prototype = {
  
 var Search_weibo = new Search_weibo(); 
 
-this.ajax_url = function(date){
-    return "/overview/show/?date=2013-09-07";
-}
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
@@ -64,84 +61,29 @@ $(document).ready(function(){
 })
 
 function draw_domian_portrait(data){
-   $('#domain_portrait').empty();
+  $('#domain_portrait').empty();
+  for (key in data['domain_top_user']){  
    html = '';
    html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">文化</a></small></h1>';
+   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">' + key + '</a></small></h1>';
    html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-   for (i = 0; i<5; i++){
+   for (i = 0; i<data['domain_top_user'][key].length; i++){
       var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user']['domain'][s]['0'] +'" title="' + data['domain_top_user']['domain'][s]['1'] +'">';
-      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user']['domain'][s]['2'] + '" alt="' + data['domain_top_user']['domain'][s]['1'] +'"></div></a></li>';         
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user'][key][s]['0'] +'" title="' + data['domain_top_user'][key][s]['1'] +'">';
+      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user'][key][s]['2'] + '" alt="' + data['domain_top_user'][key][s]['1'] +'"></div></a></li>';         
    }
    html += '</ul></div></div>';
-
-   html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">律师</a></small></h1>';
-   html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
-   html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-   for (i = 0; i<5; i++){
-      var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user']['lawyer'][s]['0'] +'" title="' + data['domain_top_user']['lawyer'][s]['1'] +'">';
-      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user']['lawyer'][s]['2'] + '" alt="' + data['domain_top_user']['lawyer'][s]['1'] +'"></div></a></li>';         
-   }
-   html += '</ul></div></div>';
-
-      html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">教育</a></small></h1>';
-   html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
-   html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-   for (i = 0; i<5; i++){
-      var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user']['test'][s]['0'] +'" title="' + data['domain_top_user']['test'][s]['1'] +'">';
-      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user']['test'][s]['2'] + '" alt="' + data['domain_top_user']['test'][s]['1'] +'"></div></a></li>';         
-   }
-   html += '</ul></div></div>';
-
-   html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">文化</a></small></h1>';
-   html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
-   html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-   for (i = 0; i<5; i++){
-      var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user']['domain'][s]['0'] +'" title="' + data['domain_top_user']['domain'][s]['1'] +'">';
-      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user']['domain'][s]['2'] + '" alt="' + data['domain_top_user']['domain'][s]['1'] +'"></div></a></li>';         
-   }
-   html += '</ul></div></div>';
-
-   html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">律师</a></small></h1>';
-   html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
-   html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-   for (i = 0; i<5; i++){
-      var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user']['lawyer'][s]['0'] +'" title="' + data['domain_top_user']['lawyer'][s]['1'] +'">';
-      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user']['lawyer'][s]['2'] + '" alt="' + data['domain_top_user']['lawyer'][s]['1'] +'"></div></a></li>';         
-   }
-   html += '</ul></div></div>';
-
-      html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">教育</a></small></h1>';
-   html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
-   html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-   for (i = 0; i<5; i++){
-      var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user']['test'][s]['0'] +'" title="' + data['domain_top_user']['test'][s]['1'] +'">';
-      html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user']['test'][s]['2'] + '" alt="' + data['domain_top_user']['test'][s]['1'] +'"></div></a></li>';         
-   }
-   html += '</ul></div></div>';
-
    $('#domain_portrait').append(html);
+ }
 }
 
 function draw_onlinepattern(data){
-    online_pattern_top = data['online_pattern_top'];
     $('#online_pattern').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">比重</th></tr>';
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < data['online_pattern_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['online_pattern_top'][s]['0'] +  '</th><th style="text-align:center">' + data['online_pattern_top'][s]['1'] +  '</th></tr>';
@@ -151,12 +93,11 @@ function draw_onlinepattern(data){
 }
 
 function draw_hastag(data){
-    online_pattern_top = data['hashtag_top'];
     $('#hashtag').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">比重</th></tr>';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < data['hashtag_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['hashtag_top'][s]['0'] +  '</th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
@@ -166,41 +107,43 @@ function draw_hastag(data){
 }
 
 function draw_domain(data){
-    online_pattern_top = data['domain_top'];
     $('#domain').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">活跃地</th><th style="text-align:center">比重</th></tr>';
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < data['activity_geo_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['domain_top'][s]['0'] +  '</th><th style="text-align:center">' + data['domain_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['activity_geo_top'][s]['0'] +  '</th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#domain').append(html);                  
 }
 function draw_location(data){
-    online_pattern_top = data['location_top'];
     $('#location').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">注册地</th><th style="text-align:center">比重</th></tr>';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < data['location_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['location_top'][s]['0'] +  '</th><th style="text-align:center">' + data['location_top'][s]['1'] +  '</th></tr>';
+       if (data['location_top'][s]['0'] == 'unknown'){
+          user_location = '未知';
+       }else{
+          user_location = data['location_top'][s]['0'];
+       };
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + user_location +  '</th><th style="text-align:center">' + data['location_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#location').append(html);                  
 }
 
 function draw_topic(data){
-    online_pattern_top = data['topic_top'];
     $('#topic').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">比重</th></tr>';
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < data['topic_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['topic_top'][s]['0'] +  '</th><th style="text-align:center">' + data['topic_top'][s]['1'] +  '</th></tr>';
@@ -215,10 +158,15 @@ function draw_retweeted_user(data){
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">转发量</th></tr>';
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < data['top_retweeted_user'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="http://weibo.com/u/' + data['top_retweeted_user'][s]['0'] + '">' + data['top_retweeted_user'][s]['1'] + '</a></th><th style="text-align:center">' + data['top_retweeted_user'][s]['3'] +  '</th></tr>';
+       if (data['top_retweeted_user'][s]['1'] == 'unknown'){
+          top_retweeted = '未知';
+       }else{
+          top_retweeted = data['top_retweeted_user'][s]['1'];
+       };
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="http://weibo.com/u/' + data['top_retweeted_user'][s]['0'] + '">' + top_retweeted + '</a></th><th style="text-align:center">' + data['top_retweeted_user'][s]['3'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#retweeted_user').append(html);                  
