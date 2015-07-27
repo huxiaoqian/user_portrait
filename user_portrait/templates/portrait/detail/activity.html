@@ -25,9 +25,39 @@
 
 
 <div id="trend" style="height:50px;width:950px">
-该用户的活跃时间段为：<span class="">08:00-12:00</span>和<span class="">20:00-24:00</span>
+该用户的活跃时间段为：<span class="">08:00-12:00</span>
 </div>
+<script type="text/javascript">
+ function Activity(){
+  this.ajax_method = 'GET';
+}
+Activity.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
 
+  active:function(data){
+	var item = data.activity_time;
+	var sum=[];
+	for(i in item){
+		sum[i] = item[i];
+	}
+	console.log(sum.length);
+	
+  }
+ }
+var Activity = new Activity();
+url = '/attribute/activity/?uid=1642591402' 
+Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
+
+
+</script>
 <script type="text/javascript">
         // 基于准备好的dom，初始化echarts图表
         var myChart = echarts.init(document.getElementById('Activezh')); 

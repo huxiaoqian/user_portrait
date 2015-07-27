@@ -22,13 +22,13 @@
             <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="recommend_date_button" title="确定日期选择">确定</button></span>
             <div id="recommend" style="margin-top:10px"></div>
             <div style="text-align:right">
-                <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="recommend_button" id="recommend_button" onclick="recommend_button()">选择入库</button>
+                <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="recommend_button" id="recommend_button">选择入库</button>
             </div>
         </div>
         <div class="tab-pane" id="custom" style="margin-top:10px">
             <div id="compute" style="margin-top:10px"></div>
             <div style="text-align:right">
-                <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="compute_button" id="compute_button" onclick="compute_button()">进行计算</button>
+                <button class="btn btn-primary btn-sm" style="width:80px;height:40px" name="compute_button" id="compute_button">进行计算</button>
             </div>
         </div>
         <div class="tab-pane" id="messages" style="margin-top:10px">
@@ -42,9 +42,10 @@
 
 {% block Own_js %}
 {{ super() }}
+<script type="text/javascript" src="/static/js/portrait/in_extra.js"></script>
 <script type="text/javascript" src="/static/js/portrait/recommend_in.js"></script>
 {% endblock Own_js %}
 {% block end_js %}
 {{ super() }}
-<script src="/static/js/charisma.js"></script>
+<script src="/static/js/portrait/in_table.js"></script>
 {% endblock end_js %}

@@ -31,6 +31,12 @@ def load_one_words():
 single_word_whitelist = set(load_one_words())
 single_word_whitelist |= set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')
 
+BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black.txt'
+def load_black_words():
+    black_words = set([line.strip('\r\n') for line in file(BLACK_WORDS_PATH)])
+    return black_words
+
+black_words = load_black_words()
 
 def get_emoticon_dict():
     results = dict()
@@ -162,7 +168,7 @@ def attr_keywords(weibo_list):
             text = p.sub('', text)
         tks = [token for token
                in sw.participle(text)
-               if 3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist]
+               if (token[1] in cx_dict) and (token[1] not in black_words) and (3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist)]
         #print 'tks:', tks
         for tk in tks:
             word = tk[0].decode('utf-8')
@@ -191,6 +197,7 @@ def compute_text_attribute(user, weibo_list):
     result['online_pattern'] = json.dumps(attr_online_pattern(weibo_list))
     # text attr6: keywords
     result['keywords'] = json.dumps(attr_keywords(weibo_list))
+    #print 'result:', result['keywords']
     # test attr7: domain
     #result['domain'] = attr_domain(weibo_list)
     result['domain'] = 'test_domain'

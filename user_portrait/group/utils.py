@@ -65,16 +65,21 @@ def search_task(task_name, submit_date, state, status):
     query = []
     condition_num = 0
     if task_name:
-        query.append({'wildcard':{'task_name': '*' + task_name + '*'}})
-        condition_num += 1
+        task_name_list = task_name.split(' ')
+        for item in task_name_list:
+            #print 'item:', item
+            query.append({'wildcard':{'task_name': '*' + item + '*'}})
+            condition_num += 1
     if submit_date:
         query.append({'match':{'submit_date': submit_date}})
         condition_num += 1
     if state:
-        query.append({'wildcard':{'state': '*' + state + '*'}})
-        condition_num += 1
+        state_list = state.split(' ')
+        for item in state_list:
+            query.append({'wildcard':{'state': '*' + item + '*'}})
+            condition_num += 1
     if status:
-        query.addpend({'match':{'status': status}})
+        query.append({'match':{'status': status}})
         condition_num += 1
     if condition_num > 0:
         try:
@@ -218,13 +223,13 @@ def delete_group_results(task_name):
 if __name__=='__main__':
     #test group task
     input_data = {}
-    input_data['task_name'] = 'test_task'
-    input_data['uid_list'] = ['2010832710', '3482838791', '3697357313', '2496434537',\
+    input_data['task_name'] = 'testtesttest'
+    input_data['uid_list'] = json.dumps(['2010832710', '3482838791', '3697357313', '2496434537',\
                 '1642591402', '2074370833', '1640601392', '1773489534',\
-                '2722498861', '2803301701']
+                '2722498861', '2803301701'])
     input_data['submit_date'] = '2013-09-08'
     input_data['state'] = 'it is a test'
-    #submit_task(input_data)
-    test_task_name = 'test name'
-    status = delete_group_results(test_task_name)
+    submit_task(input_data)
+    test_task_name = 'testtesttest'
+    #status = delete_group_results(test_task_name)
     #print 'status:', status
