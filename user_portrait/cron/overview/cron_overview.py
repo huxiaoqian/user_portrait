@@ -32,6 +32,7 @@ def get_domain_top_user(domain_top):
                       ['1907226654', '1930756447', '2234766704', '3136175144', '2359312044'], \
                       ['3164098804', '1800558761', '2345138531', '2207893564', '2776811373'], \
                       ['2316351894', '1631925842', '3211675915', '2638131477', '2257652080'], \
+                      ['2862405162', '3192918572', '2029337133', '1056405943', '2340383723'], \
                       ['2862405162', '3192918572', '2029337133', '1056405943', '2340383723']]
     count = 0
     for item in domain_top:
@@ -87,15 +88,17 @@ def get_scan_results():
     no_location_count = 0
     no_activity_geo_count = 0
     no_keywords_count = 0
-    no_hashtage_count = 0
+    no_hashtag_count = 0
     no_topic_count = 0
     no_online_pattern_count = 0
     no_domain_count = 0
     s_re = scan(es, query={'query':{'match_all':{}}, 'size':100}, index=index_name, doc_type=index_type)
+    print 's_re:', s_re
     while True:
         while True:
             try:
                 scan_re = s_re.next()['_source']
+                #print 'scan_re:', scan_re
                 # gender ratio count
                 try:
                     gender_result[str(scan_re['gender'])] += 1
@@ -195,7 +198,10 @@ def get_scan_results():
                 result_dict['gender_ratio'] = json.dumps(gender_ratio)
                 # verified ratio count
                 count = sum(verified_result.values())
-                verified_ratio = {'yes':float(verified_result['yes']) / count, 'no':float(verified_result['no'])/count}
+                if count==0:
+                    verified_ratio = {'yes':0.5, 'no':0.5}
+                else:
+                    verified_ratio = {'yes':float(verified_result['yes']) / count, 'no':float(verified_result['no'])/count}
                 #print 'verified ratio:', verified_ratio
                 result_dict['verified_ratio'] = json.dumps(verified_ratio)
                 # location top
@@ -225,7 +231,7 @@ def get_scan_results():
                 # hashtag top
                 if hashtag_result:
                     sort_hashtag = sorted(hashtag_result.items(), key=lambda x:x[1], reverse=True)
-                    hashtag_top = sort_hashtag[:50]
+                    hashtag_top = sort_hashtag[:5]
                 else:
                     hashtag_top = {}
                 #print 'hashtag top:', hashtag_top
@@ -250,6 +256,8 @@ def get_scan_results():
                 if domain_result:
                     sort_domain = sorted(domain_result.items(), key=lambda x:x[1], reverse=True)
                     domain_top = sort_domain[:5]
+                    #test:
+                    domain_top = [('education',50), ('art', 40), ('lawyer', 30), ('student', 20), ('media', 10), ('oversea',1)]
                 else:
                     domain_top = {}
                 #print 'domain top:', domain_top
@@ -258,7 +266,7 @@ def get_scan_results():
                 result_dict['domain_top_user'] = json.dumps(get_domain_top_user(domain_top))
                 return result_dict 
             except Exception, r:
-                #print Exception, r
+                print Exception, r
                 return result_dict
     return result_dict
 
@@ -312,15 +320,21 @@ def get_operate_information():
     result = dict()
     now_ts = time.time()
     date = ts2datetime(now_ts - 24*3600)
+    #test
+    date = '2013-09-07'
     delete_date = ''.join(date.split('-'))
+    #test
+    delete_date = '20150727'
     result['in_count'] = len(r_recomment.hkeys('recomment_'+str(date)))
     out_count_list = r_recomment.hget('recommend_delete_list', delete_date)
+    print 'out_count_list:', out_count_list
     if out_count_list:
-        result['out_count'] = len(out_count_list)
+        result['out_count'] = len(json.loads(out_count_list))
     else:
         result['out_count'] = 0
-    #result['out_count'] = len(json.loads(r_recomment.hget('recommend_delete_list', str(delete_date))))
-    result['compute'] = len(r_recomment.hkeys('compute'))
+    compute_list = r_recomment.hkeys('compute')
+    if compute_list:
+        result['compute'] = len(compute_list)
     #print 'operate compute:', result
     return result
 
@@ -336,6 +350,7 @@ def compute_overview():
     results['user_count'] = get_user_count()
     #results['total_status'] = get_total_status()
     scan_result = get_scan_results()
+    #print 'scan_result:', scan_result
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
     results = dict(results, **retweeted_top)

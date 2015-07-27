@@ -34,6 +34,9 @@ single_word_whitelist |= set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx
 BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black.txt'
 def load_black_words():
     black_words = set([line.strip('\r\n') for line in file(BLACK_WORDS_PATH)])
+    a = list(black_words)[0]
+    print 'a, type:', a , type(a)
+    print 'len_black_word:', len(black_words)
     return black_words
 
 black_words = load_black_words()
@@ -166,10 +169,21 @@ def attr_keywords(weibo_list):
         for i in pattern_list:
             p = re.compile(i)
             text = p.sub('', text)
+        '''
         tks = [token for token
                in sw.participle(text)
                if (token[1] in cx_dict) and (token[1] not in black_words) and (3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist)]
-        #print 'tks:', tks
+        '''
+        tks = []
+        for token in sw.participle(text):
+            if 3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist:
+                if token[1] in cx_dict:
+                    if (token[0] not in black_words):
+                        tks.append(token)
+                    else:
+                        print 'delete:', token[0]
+
+        #print 'tks:', tks[0][0], type(tks[0][0])
         for tk in tks:
             word = tk[0].decode('utf-8')
             try:
@@ -272,5 +286,6 @@ def main():
     return True # save by bulk
     
 if __name__=='__main__':
+    print 'test'
     bulk_action = main()
-    print 'bulk_action:', bulk_action
+    #print 'bulk_action:', bulk_action
