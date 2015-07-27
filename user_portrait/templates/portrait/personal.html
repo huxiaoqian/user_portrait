@@ -84,9 +84,10 @@ call_sync_ajax_request:function(url, method, callback){
 		
 	}
 }
+var uid = "{{ uid }}";
 var Personal = new Personal();
 var personalData;
-url = "/attribute/portrait_attribute/?uid=1642591402";
+url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
 var img = document.getElementById('portraitImg');
 img.src = personalData.photo_url;

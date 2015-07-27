@@ -31,8 +31,9 @@ def contrast():
 
 @mod.route('/personal/')
 def personal():
+    uid = request.args.get('uid', '1642591402')
 
-    return render_template('portrait/personal.html')
+    return render_template('portrait/personal.html', uid=uid)
 
 @mod.route('/recommend_in/')
 def recommend_in():

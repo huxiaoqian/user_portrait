@@ -30,8 +30,7 @@ Search_weibo_result.prototype = {
     for(var i = 0; i<data.length;i++){
       var item = data[i];
       global_data[item[0]] = item; // make global data
-      user_url = window.location.href;
-      user_url = user_url + item[0];
+      user_url = '/index/personal/?uid=' + item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
