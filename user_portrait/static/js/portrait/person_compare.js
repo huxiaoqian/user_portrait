@@ -606,8 +606,19 @@ for(var key in y_data){
 
 }
  $('.btn-round').click(function(){
+    
+    var cell = $('#table_compare').find('th').prevAll().length;
+    $('#table_compare').css('table-layout', 'fixed');
+    console.log($('#table_compare').css('table-layout'));
     $('[name='+ $(this).attr("name") +']').remove();
+    $('#table_compare').css('table-layout', 'auto');
+
+    if(cell == 1){
+        $('#table_compare').css('table-layout', 'fixed');
+    }
+
  });
+
 $("td[name^='list-']").click(function(){
     var name = $(this).attr('name');
     if($(this).children('a').children('i').attr('class')=='glyphicon glyphicon-chevron-up'){
