@@ -386,11 +386,16 @@ function group_confirm_button(){
   var group_name = $('input[name="group_name"]').val();
   var remark = $('input[name="remark"]').val();
   console.log(group_name, remark);
-  if(group_name.indexOf(' ')>=0){
-    alert('群体名称或备注有空格！');
+  if (group_name.length == 0){
+      alert('群体名称不能为空');
+      return;
   }
 
-  var job = {"task_name":'ajaxtest', "uid_list":group_confirm_uids, "state":'ajaxtest'};
+  if(group_name.indexOf(' ')>=0){
+    alert('群体名称不能有空格,请重新输入!');
+    return;
+  }
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
   $.ajax({
       type:'POST',
       url: group_ajax_url,
@@ -405,7 +410,7 @@ function group_confirm_button(){
           window.location.href = group_url;
       }
       else{
-          alert('fail');
+          alert('已存在相同名称的群体分析任务,请重试一次!');
       }
   }
 }
