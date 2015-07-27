@@ -75,16 +75,10 @@ def search_result():
 def test():
 
     return render_template('portrait/stack.html')
-"""
-@mod.route('/manage/')
-def manage():
-    return render_template('index/manage.html')
-"""
-
 
 @mod.route('/contact/')
 def contact():
-    
-    return render_template('contact.html')
+    uid = request.args.get('uid', '2001627641')
+    return render_template('contact.html', uid=uid)
 
 
