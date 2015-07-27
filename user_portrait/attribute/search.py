@@ -262,7 +262,37 @@ def search_attribute_portrait(uid):
             except:
                 word_list = []
             emotion_result[emotion_mark_dict[word_type]] = word_list
+    print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
+    #topic
+    if results and results['topic']:
+        topic_dict = json.loads(results['topic'])
+        sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+        results['topic'] = sort_topic_dict[:5]
+    #domain
+    if results and results['domain']:
+        domain_string = results['domain']
+        domain_list = domain_string.split('_')
+        results['domain'] = domain_list
+    #emoticon
+    if results and results['emoticon']:
+        emoticon_dict = json.loads(results['emoticon'])
+        sort_emoticon_dict = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
+        results['emoticon'] = sort_emoticon_dict[:5]
+    #online_pattern
+    if results and results['online_pattern']:
+        online_pattern_dict = json.loads(results['online_pattern'])
+        sort_online_pattern_dict = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
+        results['online_pattern'] = sort_online_pattern_dict[:5]
+    #psycho_status
+    if results and results['psycho_status']:
+        psycho_status_dict = json.loads(results['psycho_status'])
+        sort_psycho_status_dict = sorted(psycho_status_dict.items(), key=lambda x:x[1], reverse=True)
+        results['psycho_status'] = sort_psycho_status_dict[:5]
+    #psycho_feature
+    if results and results['psycho_feature']:
+        psycho_feature_list = results['psycho_feature'].split('_')
+        results['psycho_feature'] = psycho_feature_list
     return results
 
 #use to search user_portrait by lots of condition 
