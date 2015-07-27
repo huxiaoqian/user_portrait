@@ -209,11 +209,11 @@ Search_weibo_change.prototype = {
   }
 }
 
-var url_total = '/influence_application/all_active_rank/?date=2013-09-07';
+var url_total = '/influence_application/all_active_rank/?date=' + $("#total_date_select").val();
 draw_table_total = new Search_weibo_total(url_total, '#total_rank');
 draw_table_total.call_sync_ajax_request(url_total, draw_table_total.ajax_method, draw_table_total.Draw_table);
 
-var url_domain = '/influence_application/domain_rank/?date=2013-09-07';
+var url_domain = '/influence_application/domain_rank/?date=' + $("#domain_date_select").val();
 draw_table_domain = new Search_weibo_domain(url_domain, '#domain_rank');
 draw_table_domain.call_sync_ajax_request(url_domain, draw_table_domain.ajax_method, draw_table_domain.Draw_table);
 
@@ -223,10 +223,8 @@ draw_table_change.call_sync_ajax_request(url_change, draw_table_change.ajax_meth
 
 $("#range").empty();
 var range_html = '';
-range_html += '<select id="range_select">';
-range_html += '<option value="0" selected="selected">全网</option>';
-range_html += '<option value="1">人物库</option>';
-range_html += '</select>';
+range_html += '<input type="radio" name="range_select" checked value="0" /> 全网    ';
+range_html += '<input type="radio" name="range_select" value="1" /> 人物库';
 $("#range").append(range_html);
 
 $("#domain").empty();
@@ -243,22 +241,70 @@ domain_html += '<option value="7">科技</option>';
 domain_html += '</select>';
 $("#domain").append(domain_html);
 
-$('#range_button').click(function(){
-  var select_range = $("#range_select").val();
+$('input[name="range_select"]').click(function(){
+  var select_range = $('input[name="range_select"]:checked').val();
   var url_total_new = '';
+  var select_total_date = $("#total_date_select").val()
   if(select_range==0)
-    url_total_new = '/influence_application/all_active_rank/?date=2013-09-07';
+    url_total_new = '/influence_application/all_active_rank/?date=' + select_total_date;
   else
-    url_total_new = '/influence_application/portrait_user_in_active/?date=2013-09-07';
-
+    url_total_new = '/influence_application/portrait_user_in_active/?date=' + select_total_date;
+  console.log(url_total_new);
   draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Re_Draw_table);
 });
 
 $('#domain_button').click(function(){
-  url_domain_new = '/influence_application/domain_rank/?date=2013-09-07&domain=' + $("#domain_select").val();
+  var url_domain_new = '/influence_application/domain_rank/?date=' + $("#domain_date_select").val() + '&domain=' + $("#domain_select").val();
   draw_table_domain_new = new Search_weibo_domain(url_domain_new, '#domain_rank');
   draw_table_domain_new.call_sync_ajax_request(url_domain_new, draw_table_domain_new.ajax_method, draw_table_domain_new.Re_Draw_table);
+});
+
+var tomorrow = new Date(2013,8,8);
+var now_date = new Date(tomorrow-24*60*60*1000);
+var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
+
+var total_date = [];
+for(var i=0;i<7;i++){
+  var today = new Date(tomorrow-24*60*60*1000*(7-i));
+  total_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
+}
+$("#total_date").empty();
+var total_date_html = '';
+total_date_html += '<select id="total_date_select">';
+total_date_html += '<option value="' + total_date[0] + '">' + total_date[0] + '</option>';
+total_date_html += '<option value="' + total_date[1] + '">' + total_date[1] + '</option>';
+total_date_html += '<option value="' + total_date[2] + '">' + total_date[2] + '</option>';
+total_date_html += '<option value="' + total_date[3] + '">' + total_date[3] + '</option>';
+total_date_html += '<option value="' + total_date[4] + '">' + total_date[4] + '</option>';
+total_date_html += '<option value="' + total_date[5] + '">' + total_date[5] + '</option>';
+total_date_html += '<option value="' + total_date[6] + '" selected="selected">' + total_date[6] + '</option>';
+total_date_html += '</select>';
+$("#total_date").append(total_date_html);
+
+var domain_date = [];
+for(var i=0;i<7;i++){
+  var today = new Date(tomorrow-24*60*60*1000*(7-i));
+  domain_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
+}
+$("#domain_date").empty();
+var domain_date_html = '';
+domain_date_html += '<select id="domain_date_select">';
+domain_date_html += '<option value="' + domain_date[0] + '">' + domain_date[0] + '</option>';
+domain_date_html += '<option value="' + domain_date[1] + '">' + domain_date[1] + '</option>';
+domain_date_html += '<option value="' + domain_date[2] + '">' + domain_date[2] + '</option>';
+domain_date_html += '<option value="' + domain_date[3] + '">' + domain_date[3] + '</option>';
+domain_date_html += '<option value="' + domain_date[4] + '">' + domain_date[4] + '</option>';
+domain_date_html += '<option value="' + domain_date[5] + '">' + domain_date[5] + '</option>';
+domain_date_html += '<option value="' + domain_date[6] + '" selected="selected">' + domain_date[6] + '</option>';
+domain_date_html += '</select>';
+$("#domain_date").append(domain_date_html);
+
+$('#total_date_button').click(function(){
+  //console.log($("#total_date_select").val());
+  var url_total_new = '/influence_application/all_active_rank/?date=' + $("#total_date_select").val();
+  draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
+  draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Re_Draw_table);
 });
 
 option = {
