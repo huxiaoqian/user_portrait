@@ -351,14 +351,17 @@ function group_confirm_button(){
   console.log(group_confirm_uids);
   var group_ajax_url = '/group/submit_task/';
   var group_url = '/index/group_result/';
-  var job = {"task_name":'', "uid_list":[], 'submit_data':'', "state":''};
+  var job = {"task_name":'ajaxtest', "uid_list":group_confirm_uids, "state":'ajaxtest'};
   $.ajax({
       type:'POST',
       url: group_ajax_url,
       contentType:"application/json",
       data: JSON.stringify(job),
       dataType: "json",
-      success: function(data){console.log(data);}
+      success: function(data){
+          console.log(data);
+          window.open(group_url);
+      }
   });
 
 }
