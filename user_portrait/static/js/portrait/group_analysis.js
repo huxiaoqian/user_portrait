@@ -902,28 +902,28 @@ function createRandomItemStyle() {
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
-    // weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=overview";
+    // weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name +"&module=overview";
     // Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    // basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=basic";
+    // basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
     // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
-    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=activity";
+    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
     // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
     // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_location);
     // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_platform);
-    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=social";
+    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
     // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
     // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_group);
-    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=think";
+    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
     // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_status);
     // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_domain);
     // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_topic);
     // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_psycho);
-    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=text";
+    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
     // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_hashtag);
     // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_emotion);
     // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=influence";
+    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_importance);
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_activeness);
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_influence);

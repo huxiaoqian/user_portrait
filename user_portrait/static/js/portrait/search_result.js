@@ -29,8 +29,8 @@ Search_weibo_result.prototype = {
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
-      user_url = window.location.href;
-      user_url = user_url + item[0];
+      global_data[item[0]] = item; // make global data
+      user_url = '/index/personal/?uid=' + item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
@@ -61,7 +61,7 @@ function gender(num){
 }
 var global_pre_page = 1;
 var global_choose_uids = new Array();
-
+var global_data = new Array();
 
 console.log(url_search_result);
 draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
@@ -278,15 +278,15 @@ function draw_table_compare_confirm(uids, div){
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
-      var item_div = '#'+uids[i];
+      var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="compare_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ gender(item[2]) + '</td>';
+      html += '<td class="center">'+ item[3] + '</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
@@ -298,49 +298,63 @@ function draw_table_compare_confirm(uids, div){
 function draw_table_group_confirm(uids, div){
   $(div).empty();
     var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table id="group_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
-      var item_div = '#'+uids[i];
+      var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="group_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ gender(item[2]) + '</td>';
+      html += '<td class="center">'+ item[3] + '</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+    $('#group_confirm_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
 }
 
 function draw_table_delete_confirm(uids, div){
   $(div).empty();
     var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table id="delete_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
-      var item_div = '#'+uids[i];
+      var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(1)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(2)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(3)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(4)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(5)').html() + '</td>';
-      html += '<td class="center">'+ $(item_div).children('td:eq(6)').html() + '</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ gender(item[2]) + '</td>';
+      html += '<td class="center">'+ item[3] + '</td>';
+      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
+      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
       html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+    $('#delete_confirm_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
 }
 
 function delRow(obj){
@@ -369,6 +383,13 @@ function group_confirm_button(){
   console.log(group_confirm_uids);
   var group_ajax_url = '/group/submit_task/';
   var group_url = '/index/group_result/';
+  var group_name = $('input[name="group_name"]').val();
+  var remark = $('input[name="remark"]').val();
+  console.log(group_name, remark);
+  if(group_name.indexOf(' ')>=0){
+    alert('群体名称或备注有空格！');
+  }
+
   var job = {"task_name":'ajaxtest', "uid_list":group_confirm_uids, "state":'ajaxtest'};
   $.ajax({
       type:'POST',
@@ -390,14 +411,22 @@ function group_confirm_button(){
 }
 
 function delete_confirm_button(){
+  var now_date = new Date();
+  var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
   var delete_confirm_uids = [];
   $('[name="delete_confirm_uids"]').each(function(){
       delete_confirm_uids.push($(this).text());
   })
   console.log(delete_confirm_uids);
-  if (confirm("确认要删除吗?")){
-      /*
-      var delete_url = '';
+  var delete_uid_list = '';
+  for(var i in delete_confirm_uids){
+      delete_uid_list += delete_confirm_uids[i];
+      if(i<(delete_confirm_uids.length-1))
+        delete_uid_list += ',';
+  }
+  if(confirm("确认要删除吗?")){
+      var delete_url = '/recommentation/identify_out/?date=' + now + '&data=' + delete_uid_list;
+      console.log(delete_url);
       $.ajax({
           type:'get',
           url: delete_url,
@@ -408,13 +437,11 @@ function delete_confirm_button(){
       function callback(data){
            console.log(data);
            if (data == '1'){
-               window.location.reload();
+               alert('出库成功！');
            }
            else{
                alert('fail');
            }
       }
-      */
   }
-
 }
