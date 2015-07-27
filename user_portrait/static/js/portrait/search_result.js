@@ -25,7 +25,7 @@ Search_weibo_result.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>uid</th><th>用户名</th><th>性别</th><th>注册地</th><th>领域</th><th>话题</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
@@ -34,9 +34,10 @@ Search_weibo_result.prototype = {
       html += '<tr>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
-      html += '<td class="center">'+ '' +'</td>';
+      html += '<td class="center">'+ item[2] +'</td>';
+      html += '<td class="center">'+ item[3] +'</td>';
+      html += '<td class="center">'+ item[4] +'</td>';
+      html += '<td class="center">'+ item[5] +'</td>';
       html += '<td class="center">'+ '' +'</td>';
       html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
       html += '</tr>';
@@ -358,12 +359,17 @@ function group_confirm_button(){
       contentType:"application/json",
       data: JSON.stringify(job),
       dataType: "json",
-      success: function(data){
-          console.log(data);
-          window.open(group_url);
-      }
+      success: callback
   });
-
+  function callback(data){
+      console.log(data);
+      if (data == '1'){
+          window.location.href = group_url;
+      }
+      else{
+          alert('fail');
+      }
+  }
 }
 
 function delete_confirm_button(){
