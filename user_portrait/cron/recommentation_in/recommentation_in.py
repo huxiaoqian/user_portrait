@@ -34,7 +34,7 @@ def search_from_es(date):
     user_set = []
     user_set = [user_dict['_id'] for user_dict in result]
     print 'len user_set:',len(user_set)
-    return set(user_set)
+    return set(user_set), result
 
 def filter_in(top_user_set):
     results = []
@@ -60,14 +60,12 @@ def filter_rules(candidate_results):
     return results
 
 
-def write_recommentation(date, re_user, results):
+def write_recommentation(date, results, user_dict):
     f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/recommentation_list.csv', 'wb')
     writer = csv.writer(f)
     status = False
-    after_filter_results = [[user_dict['_id'], user_dict['_source']['user_index']] for user_dict in results if user_dict['_id'] in re_user]
-    sort_results = sorted(after_filter_results, key=lambda x:x[1], reverse=True)
-    for item in sort_results:
-        writer.writerow(item)
+    for item in results:
+        writer.writerow([item])
     return True
 
 def save_recommentation2redis(date, user_set):
@@ -107,7 +105,7 @@ def main():
     now_ts = datetime2ts('2013-09-08')
     date = ts2datetime(now_ts - 3600*24)
     #step1: read from top es_daily_rank
-    top_user_set = search_from_es(date)
+    top_user_set, user_dict = search_from_es(date)
     #step2: filter black_uid
     black_user_set = read_black_user()
     print 'black_user_set:', len(black_user_set)
@@ -126,7 +124,9 @@ def main():
     results = set(results)
     print 'end:', len(results)
     #step6: write to recommentation csv/redis
-    status = save_recommentation2redis(date, results)
+    #status = save_recommentation2redis(date, results)
+    status = True
+    write_recommentation(date, results, user_dict)
     if status==True:
         print 'date:%s recommentation done' % date
 

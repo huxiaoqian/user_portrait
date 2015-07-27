@@ -2,22 +2,10 @@
     {% block title %}群体分析{% endblock title%}
       {% block css %}
       {{ super() }}
-    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">	    
-    <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
-    <link href="/static/css/charisma-app.css" rel="stylesheet">
+   
+ 
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
-    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
-    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
-    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
-    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
-    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
-    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
-    <link href='/static/css/uploadify.css' rel='stylesheet'>
-    <link href='/static/css/animate.min.css' rel='stylesheet'>
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
     .hidden{display:none;}
@@ -52,19 +40,11 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
  	</style>
  {% endblock css %}
 
- {% block head_js %}
-  {{ super() }}
-	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
-	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
-  {% endblock head_js %}
-
-
     {% block main %}
 	<div id="pageTitle">任务管理</div>
     <div id="float-wrap" class="hidden"></div>
 <div id="uploadFile"  class="hidden">
-	<h3 class="title">上传文件说明<a href="javascript:void(0)" id="close"></a></h3>
+	<h3 class="title">上传文件说明<a href="javascript:void(0)" id="close" class="close1"></a></h3>
 	<div class="decoration">
 		<ul class="clearfix">
 			<li><span class="p_title">群组名称：</span><input type="text"  class="input" name="task_name" placeholder="请输入群组名称"/></li>
@@ -74,7 +54,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 	</div>
 </div>
 <div id="SearchTab"  class="hidden">
-	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close"></a></h3>
+	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
 	<div class="decoration">
 		<ul class="">
 			<li><span class="p_title">群组名称：</span><input type="text"  id="groupName" class="input searchinput" name="task_name" placeholder="请输入群组名称"/></li>
@@ -110,85 +90,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 </div>
 <a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">表单搜索</a>
                 <div class="box-content" id="Grouptable" >
-                    <table class="table table-bordered table-striped table-condensed datatable" id="">
-                        <thead>  
-							<tr style="text-align:center;">	
-								<th>群组名称    </th>
-								<th>时间</th>
-								<th>群组人数</th>
-								<th>备注</th>
-								<th>状态</th>
-								<th>操作</th>
-							</tr>
-                        </thead>
-                        <tbody>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center"><a href="">已完成</a></td>
-								<td><a href="" id="del"><a href="" id="del">删除</a></a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center"><a href="">已完成</a></td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center">正在计算</td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center">正在计算</td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center">正在计算</td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center"><a href="">已完成</a></td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center">正在计算</td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-							<tr>
-								<td name="task_name">David R</td>
-								<td class="center">2012/01/01</td>
-								<td class="center">50</td>
-								<td class="center">啊啊啊啊啊啊啊 啊啊啊啊啊</td>
-								<td class="center">正在计算</td>
-								<td><a href="" id="del">删除</a></td>
-							</tr>
-				
-                        </tbody>
-                    </table>
+                    
                 </div>
             </div>
         </div>
@@ -230,7 +132,14 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		$("#SearchTab").removeClass("hidden");
 		return false;
 	});
-
+	$(".close1").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#uploadFile").addClass("hidden");
+	});
+	$(".close2").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#SearchTab").addClass("hidden");
+	});
   </script>
 <script src="../../static/js/portrait/group_result.js"></script>
 <script src="../../static/js/portrait/groupSearch.js"></script>

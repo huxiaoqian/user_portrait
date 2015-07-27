@@ -30,3 +30,7 @@ def ts2HourlyTime(ts, interval):
 
 def ts2datetime_full(ts):
     return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(ts))
+
+if __name__=='__main__':
+    result = ts2date(int('1377964800'))
+    print 'result:', result

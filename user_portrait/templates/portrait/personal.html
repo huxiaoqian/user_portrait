@@ -50,20 +50,57 @@ $(function(){
 	
 });
 </script>
+
 {% endblock head_js %}
 
 {% block main %}
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
-	<div class="PortraitImg"><img src="http://tp2.sinaimg.cn/2192015873/50/0/1" alt="" class="img-circle"></div>
-	<div class="nickname">互助小喇叭</div>
+	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
+	<div class="nickname" id="nickname">互助小喇叭</div>
 	<div class="power">
-		<span class="importantPower lightw">重要度：</span><span class="IPnum red">100</span>
-		<span class="activePower lightw">活跃度：</span><span class="APnum red">100</span>
-		<span class="influencePower lightw">影响力：</span><span class="FPnum red">100</span>
+		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>
+		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>
+		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>
 	</div>
-	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
+	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
 </div>
-
+<script type="text/javascript">
+ function Personal(){
+	this.ajax_method = 'GET';
+}
+Personal.prototype = {   //群组搜索
+call_sync_ajax_request:function(url, method, callback){
+	$.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+	},
+	personData:function(data){
+		personalData = data ;
+		console.log(personalData);
+		
+	}
+}
+var Personal = new Personal();
+var personalData;
+url = "/attribute/portrait_attribute/?uid=1642591402";
+Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
+var img = document.getElementById('portraitImg');
+img.src = personalData.photo_url;
+var influencePower = document.getElementById('FPnum');
+influencePower.innerHTML = personalData.influence;
+var importantPower = document.getElementById('IPnum');
+importantPower.innerHTML = personalData.importance;
+var activePower = document.getElementById('APnum');
+activePower.innerHTML = personalData.activeness;
+var nickName = document.getElementById('nickname');
+nickName.innerHTML = personalData.uname;
+var detailPortrait = document.getElementById('portraitDetail');
+detailPortrait.innerHTML = personalData.uname;
+</script>
 <div class="soft_function">
 
 	<div class="soft_con_icon">
@@ -103,4 +140,5 @@ $(function(){
 	</div>
 	
 </div>
+
 {% endblock main %}
