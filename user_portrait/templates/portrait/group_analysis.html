@@ -102,9 +102,9 @@
  {% block head_js %}
   {{ super() }}
 	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
+	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
   {% endblock head_js %}
 
 
@@ -254,5 +254,10 @@
 
     {% block Own_js %}
     {{ super() }}
+    <script>
+        var name = "{{ name }}";
+        console.log(name);
+    </script>
+	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	{% endblock Own_js %}
 

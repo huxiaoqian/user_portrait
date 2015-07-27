@@ -111,78 +111,11 @@
             }
         }
     </script>
+<script src="/static/js/portrait/language.js"></script>
 <script type="text/javascript">
 var textlength = document.getElementById('TLnum');
-textlength.innerHTML = parent.personalData.text_len;
+textlength.innerHTML = parent.personalData.text_len.toFixed(2);
 var linklength = document.getElementById('LLnum');
-linklength.innerHTML = parent.personalData.link;
-var keywordsCloud = parent.personalData.keywords;
-//console.log(keywordsCloud);
- var str = unescape(keywordsCloud.replace(/\\u/g, "%u"));
- console.log(str);
-for (var key in str){
-	console.log(str[key]);
-}
-function createRandomItemStyle() {						//关键词云
-    return {
-        normal: {
-            color: 'rgb(' + [
-                Math.round(Math.random() * 160),
-                Math.round(Math.random() * 160),
-                Math.round(Math.random() * 160)
-            ].join(',') + ')'
-        }
-    };
-}
-var myChart = echarts.init(document.getElementById('Language')); 
-var option = {
-    title: {
-        text: '关键词',
-    },
-    tooltip: {
-        show: true
-    },
-	
-    series: [{
-        name: 'Amy',
-        type: 'wordCloud',
-        size: ['80%', '80%'],
-        textRotation : [0, 45, 90, -45],
-        textPadding: 0,
-        autoSize: {
-            enable: true,
-            minSize: 14
-        },
-        data: [
-            {
-                name: "Break",
-                value: 10000,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "C",
-                value: 6181,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "D",
-                value: 4386,
-                itemStyle: createRandomItemStyle()
-            },
-            {
-                name: "E",
-                value: 4055,
-                itemStyle: createRandomItemStyle()
-            },
-            
-            {
-                name: "Point",
-                value: 265,
-                itemStyle: createRandomItemStyle()
-            }
-        ]
-    }]
-};
-   myChart.setOption(option); 
-    </script>
+linklength.innerHTML = parent.personalData.link.toFixed(2);               
+</script>
                     
