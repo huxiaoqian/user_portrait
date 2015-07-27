@@ -12,13 +12,17 @@ mod = Blueprint('group', __name__, url_prefix='/group')
 
 # submit group analysis task and save to redis as lists
 # submit group task: task name should be unique
-@mod.route('/submit_task/')
+@mod.route('/submit_task/',methods=['GET', 'POST'])
 def ajax_submit_task():
     input_data = dict()
+    """
     input_data['task_name'] = request.args.get('task_name', '')
     input_data['uid_list'] = request.args.get('uid_list', '') # uid_list=[uid1, uid2]
     input_data['submit_date'] = request.args.get('submit_date', '')
     input_data['state'] = request.args.get('state', '')
+    """
+    input_data = request.get_json()
+    print input_data
     status = submit_task(input_data)
     return json.dumps(status)
 
