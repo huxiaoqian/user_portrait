@@ -19,7 +19,7 @@ manage = "manage"
 based on user_index, search users in different range
 
 """
-def count_es(es, index_name,range_1=0, range_2=3000):
+def count_es(es, index_name,doctype, sort_order="user_index",range_1=0, range_2=3000):
     query_body = {
         "query":{
             "filtered": {
@@ -28,7 +28,7 @@ def count_es(es, index_name,range_1=0, range_2=3000):
                 },
                 "filter": {
                     "range": {
-                        "user_index": {
+                        sort_order: {
                             "gte": range_1,
                             "lt": range_2
                         }
@@ -39,22 +39,22 @@ def count_es(es, index_name,range_1=0, range_2=3000):
     }
 
 
-    result = es.count(index=index_name, doc_type="bci", body=query_body)['count']
+    result = es.count(index=index_name, doc_type=doctype, body=query_body)['count']
 
     return result
 
-def user_index_range_distribution(index_name,doctype="bci"):
+def user_index_range_distribution(index_name,doctype, sort_order):
 
     return_list = []
     distribute_range = []
-    top_index = search_top_index(index_name=index_name,top_k=1, top=True)
+    top_index = search_top_index(index_name=index_name,index_type=doctype, top_k=1, top=True,sort_order=sort_order)
     max_score = int(math.ceil(top_index/100.0)) * 100
 
     # devide active user based on active degree
 
     score_range = [0, 100, 200, 500, 700, 900, 1100, 1300, 1500, max_score]
     for i in range(len(score_range)-1):
-        temp_number = count_es(es, index_name, score_range[i], score_range[i+1])
+        temp_number = count_es(es, index_name, doctype, sort_order, score_range[i], score_range[i+1])
         distribute_range.append(temp_number)
     return_list.append(score_range)
     return_list.append(distribute_range)
@@ -97,17 +97,17 @@ def query_brust(index_name,field_name, range_1=0, range_2=50000, count=0):
 
 # search user_index top_k
 
-def search_top_index(index_name, top_k=1, index_type="bci", top=False):
+def search_top_index(index_name, top_k=1, index_type="bci", top=False, sort_order="user_index"):
     query_body = {
         "query": {
             "match_all": {}
         },
         "size": top_k,
-        "sort": [{"user_index": {"order": "desc"}}]
+        "sort": [{sort_order: {"order": "desc"}}]
     }
 
     if top:
-        result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits'][0]['_source']['user_index']
+        result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits'][0]['_source'][sort_order]
     else:
         search_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
 
