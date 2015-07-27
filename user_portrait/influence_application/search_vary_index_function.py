@@ -7,7 +7,8 @@ import sys
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from user_portrait.global_utils import ES_CLUSTER_FLOW1
-
+from user_portrait.global_utils import es_user_profile as es_profile
+from user_portrait.global_utils import es_user_portrait as es_portrait
 
 es = ES_CLUSTER_FLOW1
 index_name = "vary"
@@ -25,6 +26,7 @@ def generate_date(former_date, later_date="21000101"):
 
     next_timestamp = former_timestamp
     while 1:
+        print next_timestamp, later_timestamp
         next_timestamp += 86400
         if next_timestamp <= later_timestamp:
             date_list.append(time.strftime('%Y%m%d',time.localtime(next_timestamp)))
@@ -63,13 +65,23 @@ def query_vary_top_k(index_name, doctype, top_k, sort_index="vary"):
     }
 
     result = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
+    uid_list = []
+    for item in result:
+        uid_list.append(item['_id'])
+
+    #portrait_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids":uid_list}, _source=True)['docs']
+    profile_result = es_profile.mget(index="weibo_user",doc_type="user", body={"ids":uid_list}, _source=True)['docs']
 
     return_list = []
     rank = 1
-    for item in result:
-        info = {}
-        info[item['_id']] = item['_source']
-        info['rank'] = rank
+    for i in range(len(result)):
+        info = ['','','','','']
+        info[0] = rank
+        if profile_result[i]['found']:
+            info[1] = profile_result[i]['_source'].get('photo_url','')
+            info[3] = profile_result[i]['_source'].get('nick_name','')
+        info[2] = result[i].get('_id','')
+        info[4] = result[i]['_source']['vary']
         return_list.append(info)
         rank += 1
 
