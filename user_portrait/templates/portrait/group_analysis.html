@@ -1,9 +1,22 @@
 {% extends "tbase.html" %}
     {% block title %}群体分析{% endblock title%}
       {% block css %}
-      {{ super() }}
+      {{ super() }}	    
+    <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="/static/css/charisma-app.css" rel="stylesheet">
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
+    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
+    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='/static/css/uploadify.css' rel='stylesheet'>
+    <link href='/static/css/animate.min.css' rel='stylesheet'>
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
     body {
@@ -88,7 +101,9 @@
 
  {% block head_js %}
   {{ super() }}
+	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
+	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
   {% endblock head_js %}
 
@@ -116,7 +131,7 @@
 			    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 			      <div class="panel-body">
 			        <div id='sex' style='float:left;width:300px;height:200px'></div>        
-			        <div id='vertify' style='float:right;width:300px;height:200px'></div>
+			        <div id='verify' style='float:right;width:300px;height:200px'></div>
 				    <div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:60px' id='totalnumber'>
 
 				    </div>

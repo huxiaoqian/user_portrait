@@ -19,15 +19,15 @@ Search_weibo.prototype = {
     $('#overview').empty();
     html = '';
     html += '<div style="height:180px;width:250px;float:left"><ul style="margin-top:-60px"><li><a href="#">';
-    html += '<p style="font-size:16px">名称:' + data['0'] +'</p><p style="font-size:16px">时间:' + data['1'] +'</p><p style="font-size:16px">描述:' + data['2'] +'</p>';
+    html += '<p style="font-size:16px">名称:' + data[0] +'</p><p style="font-size:16px">时间:' + data[1] +'</p><p style="font-size:16px">描述:' + data[2] +'</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle">' + data['3'].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data['4'].toFixed(2) + '</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data['5'].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data['6'].toFixed(2) + '</td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '</td>';
+    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度</b></td>';
@@ -37,7 +37,6 @@ Search_weibo.prototype = {
 },
 
 Draw_basic: function(data){
-    console.log(data);
     var myChart = echarts.init(document.getElementById('sex')); 
         var dataStyle = {
         normal: {
@@ -119,6 +118,101 @@ Draw_basic: function(data){
                     {
                         value:data['0']['2'], 
                         name:'女'
+                    },
+                    {
+                        value:data['0']['1'],
+                        name:'invisible',
+                        itemStyle : placeHolderStyle
+                    }
+                ]
+            }
+        ]
+    };
+                        
+         myChart.setOption(option);  
+    },
+Draw_verify: function(data){
+    var myChart = echarts.init(document.getElementById('verify')); 
+        var dataStyle = {
+        normal: {
+            label: {show:false},
+            labelLine: {show:false}
+        }
+    };
+    var placeHolderStyle = {
+        normal : {
+            color: 'rgba(0,0,0,0)',
+            label: {show:false},
+            labelLine: {show:false}
+        },
+        emphasis : {
+            color: 'rgba(0,0,0,0)'
+        }
+    };
+    option = {
+        title: {
+            text: '你认证了吗？',
+            subtext: '',
+            sublink: '',
+            x: 'center',
+            y: 'center',
+            itemGap: 20,
+            textStyle : {
+                color : 'rgba(30,144,255,0.8)',
+                fontFamily : '微软雅黑',
+                fontSize : 15,
+                fontWeight : 'bolder'
+            }
+        },
+        tooltip : {
+            show: true,
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : document.getElementById('main').offsetWidth / 2,
+            y : 45,
+            itemGap:12,
+            data:['已认证','未认证']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        series : [
+            {
+                name:'已认证',
+                type:'pie',
+                clockWise:false,
+                radius : [60, 80],
+                itemStyle : dataStyle,
+                data:[
+                    {
+                        value:data['0']['1'],
+                        name:'已认证'
+                    },
+                    {
+                        value:data['0']['2'],
+                        name:'invisible',
+                        itemStyle : placeHolderStyle
+                    }
+                ]
+            },
+            {
+                name:'未认证',
+                type:'pie',
+                clockWise:false,
+                radius : [40, 60],
+                itemStyle : dataStyle,
+                data:[
+                    {
+                        value:data['0']['2'], 
+                        name:'未认证'
                     },
                     {
                         value:data['0']['1'],
@@ -902,27 +996,28 @@ function createRandomItemStyle() {
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
-    // weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name +"&module=overview";
-    // Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    // basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
-    // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
-    // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
-    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_location);
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_platform);
-    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
-    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_group);
-    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_status);
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_domain);
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_topic);
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_psycho);
-    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_hashtag);
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_emotion);
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
+    weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
+    Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
+    basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" name + "&module=basic";
+    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
+    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
+    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_verify);
+    activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_location);
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_platform);
+    social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
+    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_group);
+    think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_status);
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_domain);
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_topic);
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_psycho);
+    text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_hashtag);
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_emotion);
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
     influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_importance);
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_activeness);
