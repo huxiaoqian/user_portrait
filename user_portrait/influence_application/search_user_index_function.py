@@ -6,9 +6,10 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from search_vary_index_function import generate_date
 
-from user_portrait.global_utils import ES_CLUSTER_FLOW1
+from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
+from user_portrait.global_utils import es_user_profile as es_profile # user profile es
+from user_portrait.global_utils import es_user_portrait as es_portrait # user portrait es
 
-es = ES_CLUSTER_FLOW1
 index_name = "20130901"
 index_portrait_user = "user_index_profile" # record all users' activity
 user_index_profile = "user_index_profile"
@@ -109,15 +110,31 @@ def search_top_index(index_name, top_k=1, index_type="bci", top=False):
         result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits'][0]['_source']['user_index']
     else:
         search_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+
+        uid_list = []
+        for item in search_result:
+            uid_list.append(item['_id'])
+        profile_result = es_profile.mget(index="weibo_user",doc_type="user", body={"ids":uid_list}, _source=True)['docs']
+        portrait_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids":uid_list}, _source=True)['docs']
+
         result = []
         rank = 1
-        for item in search_result:
-            info = {}
-            info['uid'] = item['_id']
-            info['user_index'] = item['_source']['user_index']
-            info['rank'] = rank
+        for i in range(len(search_result)):
+            info = ['','','','','','']
+            info[0] = rank
+            if profile_result[i]['found']:
+                info[1] = profile_result[i]['_source'].get('photo_url','')
+                info[3] = profile_result[i]['_source'].get('nick_name','')
+
+            info[2] = search_result[i].get('_id','')
+            info[4] = search_result[i]['_source']['user_index']
+            if portrait_result[i]['found']:
+                info[5] = "1"
+            else:
+                info[5] = "0"
             rank += 1
             result.append(info)
+
     return result
 
 """

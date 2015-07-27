@@ -8,6 +8,7 @@ import csv
 import time
 import json
 import redis
+from description import active_geo_description, active_time_description, hashtag_description
 sys.path.append('../../')
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
@@ -143,6 +144,9 @@ def search_location(now_ts, uid):
             except:
                 results[city] = {ip: stat_results[ip]}
                 
+
+    description = active_geo_description(results)
+    results['description'] = description
     print 'location results:', results
     return results
 
@@ -169,6 +173,8 @@ def search_activity(now_ts, uid):
             except:
                 results[time_segment] = result_dict[time_segment]
                 
+    description = active_time_description(results)
+    results['description'] = description
     return results
 
 # ip to city
