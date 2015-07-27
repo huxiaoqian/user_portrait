@@ -16,6 +16,12 @@ from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
 from user_portrait.global_utils import es_user_portrait
 from user_portrait.search_user_profile import search_uid2uname
+
+
+emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
+
+
+
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
 #redis:{'retweet_'+uid:{ruid:count}}
 #return results: {ruid:[uname,count]}
@@ -230,22 +236,33 @@ def search_attribute_portrait(uid):
     keyword_list = []
     if results and results['keywords']:
         keywords_dict = json.loads(results['keywords'])
-        sort_word_list = sorted(keyword_dict, key=lambda x:x[1], reverse=True)
+        sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
+        print 'sort_word_list:', sort_word_list
         results['keywords'] = sort_word_list[:20]
     #print 'keywords:', results
     geo_top = []
     if results and results['activity_geo_dict']:
         geo_dict = json.loads(results['activity_geo_dict'])
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
-        geo_top = geo_top[:5]
+        geo_top = sort_geo_dict[:5]
         results['activity_geo'] = geo_top
     if results and results['hashtag_dict']:
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
+    emotion_result = {}
     if results and results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
-        results['emotion_words'] = emotion_words_dict
+        for word_type in emotion_mark_dict:
+            try:
+                word_dict = emotion_words_dict[word_type]
+                sort_word_dict = sorted(word_dict.items(), key=lambda x:x[1], reverse=True)
+                print 'sort_word_dict:', sort_word_dict
+                word_list = sort_word_dict[:5]
+            except:
+                word_list = []
+            emotion_result[emotion_mark_dict[word_type]] = word_list
+    results['emotion_words'] = emotion_result
     return results
 
 #use to search user_portrait by lots of condition 
