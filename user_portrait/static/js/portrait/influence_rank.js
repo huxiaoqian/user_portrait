@@ -29,15 +29,22 @@ Search_weibo_total.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      var status = '';
+      if(item[i][5]==0)
+        status = '未入库';
+      else if(item[i][5]==1)
+        status = '已入库';
+      else
+        status = 'error!'
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][2];
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '>'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center">'+ status +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -57,15 +64,22 @@ Search_weibo_total.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      var status = '';
+      if(item[i][5]==0)
+        status = '未入库';
+      else if(item[i][5]==1)
+        status = '已入库';
+      else
+        status = 'error!'
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][2];
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '>'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center">'+ status +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -116,7 +130,7 @@ Search_weibo_domain.prototype = {
       user_url = user_url + item[i][2];
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '>'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
@@ -143,7 +157,7 @@ Search_weibo_domain.prototype = {
       user_url = user_url + item[i][2];
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '>'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
@@ -197,7 +211,7 @@ Search_weibo_change.prototype = {
       user_url = user_url + item[i][2];
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center">'+ item[i][1] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '>'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
@@ -206,6 +220,40 @@ Search_weibo_change.prototype = {
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+  },
+  Re_Draw_table: function(data){
+    //console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="change_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>影响力变动</th></tr></thead>';
+    var item = data;
+    html += '<tbody>';
+    for(var i in item){
+      user_url = 'http://weibo.com/u/';
+      user_url = user_url + item[i][2];
+      html += '<tr>';
+      html += '<td class="center">'+ item[i][0] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+    $('#change_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
   }
 }
 
@@ -217,15 +265,21 @@ var url_domain = '/influence_application/domain_rank/?date=' + $("#domain_date_s
 draw_table_domain = new Search_weibo_domain(url_domain, '#domain_rank');
 draw_table_domain.call_sync_ajax_request(url_domain, draw_table_domain.ajax_method, draw_table_domain.Draw_table);
 
-var url_change = '/influence_application/portrait_user_in_vary/';
+var url_change = '/influence_application/vary_top_k/';
 draw_table_change = new Search_weibo_change(url_change, '#change_rank');
 draw_table_change.call_sync_ajax_request(url_change, draw_table_change.ajax_method, draw_table_change.Draw_table);
 
 $("#range").empty();
 var range_html = '';
-range_html += '<input type="radio" name="range_select" checked value="0" /> 全网    ';
-range_html += '<input type="radio" name="range_select" value="1" /> 人物库';
+range_html += '<input type="radio" name="range_select" checked value="0" /> 全网';
+range_html += '<input type="radio" name="range_select" value="1" style="margin-left:5px" /> 人物库';
 $("#range").append(range_html);
+
+$("#change").empty();
+var change_html = '';
+change_html += '<input type="radio" name="change_select" checked value="0" /> 全网';
+change_html += '<input type="radio" name="change_select" value="1" style="margin-left:5px" /> 人物库';
+$("#change").append(change_html);
 
 $("#domain").empty();
 var domain_html = '';
@@ -252,6 +306,18 @@ $('input[name="range_select"]').click(function(){
   console.log(url_total_new);
   draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Re_Draw_table);
+});
+
+$('input[name="change_select"]').click(function(){
+  var select_change = $('input[name="change_select"]:checked').val();
+  var url_change_new = '';
+  if(select_change==0)
+    url_change_new = '/influence_application/vary_top_k/';
+  else
+    url_change_new = '/influence_application/portrait_user_in_vary/';
+  console.log(url_change_new);
+  draw_table_change_new = new Search_weibo_change(url_change_new, '#change_rank');
+  draw_table_change_new.call_sync_ajax_request(url_change_new, draw_table_change_new.ajax_method, draw_table_change_new.Re_Draw_table);
 });
 
 $('#domain_button').click(function(){
@@ -307,10 +373,11 @@ $('#total_date_button').click(function(){
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Re_Draw_table);
 });
 
-option = {
+function draw_rank_distribution(axis, data1, data2, div, remark){
+  var option = {
     title : {
         text: '用户影响力得分分布',
-        subtext: '来自微博'
+        subtext: '影响力低于200的人数：' + remark
     },
     tooltip : {
         trigger: 'axis'
@@ -332,7 +399,7 @@ option = {
     xAxis : [
         {
             type : 'category',
-            data : ['0','200','400','600','800','1000','1200','1400','1600','1800','2000']
+            data : axis
         }
     ],
     yAxis : [
@@ -344,7 +411,7 @@ option = {
         {
             name:'全网',
             type:'bar',
-            data:[100, 200, 400, 500, 800, 1000, 700, 550, 300, 150],
+            data:data1,
             markPoint : {
                 data : [
                     {type : 'max', name: '最大值'},
@@ -360,7 +427,7 @@ option = {
         {
             name:'画像库',
             type:'bar',
-            data:[10, 20, 40, 50, 80, 100, 70, 55, 30, 10],
+            data:data2,
             markPoint : {
                 data : [
                     {type : 'max', name: '最大值'},
@@ -374,7 +441,25 @@ option = {
             }
         }
     ]
-};
+  };
+  var draw_init = echarts.init(document.getElementById(div));
+  draw_init.setOption(option);
+}
 
-var rank_distribution = echarts.init(document.getElementById('rank_distribution'));
-rank_distribution.setOption(option);
+var url_rank_distribution = '/influence_application/user_index_distribution/?date=' + $("#total_date_select").val();
+rank_distribution = new Search_weibo_total(url_rank_distribution, '');
+rank_distribution.call_sync_ajax_request(url_rank_distribution, rank_distribution.ajax_method, rank_distribution_analysis);
+
+function rank_distribution_analysis(data){
+  var new_axis = [];
+  for(var i=2;i<data[0].length;i++)
+    new_axis.push(data[0][i]+'');
+  var lower200 = data[1][0]+data[1][1];
+  var new_data = [];
+  for(var j=2;j<data[1].length;j++)
+    new_data.push(data[1][j]+'');
+  var new_data1 = new_data;
+  var new_data2 = new_data;
+  console.log(new_axis, new_data1);
+  draw_rank_distribution(new_axis, new_data1, new_data2, 'rank_distribution', lower200);
+}

@@ -20,7 +20,7 @@
 } 
 .pt_title {
   float: left;
-  width: 60px;
+  width: 100px;
   white-space: nowrap;
   overflow: hidden;
   font-weight: normal;
