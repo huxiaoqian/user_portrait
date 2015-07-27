@@ -42,16 +42,18 @@ def ajax_portrait_search():
     result = {}
     query_data = {}
     query = []
+    query_list = []
     condition_num = 0
     if stype == '1':
         fuzz_item = ['uid', 'uname']
-        #item_data = request.args.get('term', '')
+        item_data = request.args.get('term', '')
         #if item_data:
         for item in fuzz_item:
-            item_data = request.args.get(item, '')
+            #item_data = request.args.get(item, '')
             if item_data:
-                query.append({'wildcard':{item:'*'+item_data+'*'}})
+                query_list.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1
+        query.append({'bool':{'should':query_list}})
     else:
         fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
         select_item = ['gender', 'verified', 'psycho_feature', 'psycho_status']
@@ -85,6 +87,7 @@ def ajax_portrait_search():
                 item_data_up = float(item_data_up)
             query.append({'range':{item:{'from':item_data_low, 'to':item_data_up}}})
             condition_num += 1
+        
         for item in multi_item:
             nest_body = {}
             nest_body_list = []
@@ -96,6 +99,7 @@ def ajax_portrait_search():
                     nest_body_list.append({'match':{item: match_dict[term]}})
                 condition_num += 1
                 query.append({'bool':{'should':nest_body_list}})
+        
     size = request.args.get('size', 100)
     size = int(size)
     sort = request.args.get('sort', 'statusnum')

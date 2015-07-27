@@ -2,30 +2,43 @@
 <div id="Pdetail">
     <div class="m-wrap" style="margin-top:30px;">
 		<ul class="clearfix">
-			<li class="li_1">
+            <li class="li_1">
 				<span class="pt_title">UID :</span>
-				<span class="pt_detail">1234567890</span>
+				<span class="pt_detail" id="userId" >1234567890</span>
 			</li>
 			<li class="li_1">
 				<span class="pt_title">注册地 :</span>
-				<span class="pt_detail">北京</span>
+				<span class="pt_detail" id="userLocation" >北京</span>
 			</li>
 			<li class="li_1">
 				<span class="pt_title">性别 :</span>
-				<span class="pt_detail">男</span>
+				<span class="pt_detail" id="userGender" >男</span>
 			</li>
 			<li class="li_1">
 				<span class="pt_title">粉丝数 :</span>
-				<span class="pt_detail">123456</span>
+				<span class="pt_detail" id="userFans" >123456</span>
 			</li>
 			<li class="li_1">
 				<span class="pt_title">关注数 :</span>
-				<span class="pt_detail">123490</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">收藏数 :</span>
-				<span class="pt_detail">12390</span>
+				<span class="pt_detail" id="userFriend" >123490</span>
 			</li>
 		</ul>
 	</div>
 </div>
+<script type="text/javascript">
+    var uid = document.getElementById('userId');
+    uid.innerHTML = parent.personalData.uid;
+    var userlocation = document.getElementById('userLocation');
+    userlocation.innerHTML = parent.personalData.location;
+    var gender = document.getElementById('userGender');
+    gendernum = parent.personalData.gender;
+    if (gendernum==1){
+        gender.innerHTML = '男';
+    }else{
+        gender.innerHTML = '女';
+    }
+    var fans = document.getElementById('userFans');
+    fans.innerHTML = parent.personalData.fansnum;
+    var friends = document.getElementById('userFriend');
+    friends.innerHTML = parent.personalData.friendsnum;
+</script>
