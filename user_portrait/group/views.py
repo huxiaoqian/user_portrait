@@ -22,7 +22,10 @@ def ajax_submit_task():
     input_data['state'] = request.args.get('state', '')
     """
     input_data = request.get_json()
-    print input_data
+    #print input_data, type(input_data)
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    input_data['submit_date'] = now_date
     status = submit_task(input_data)
     return json.dumps(status)
 
