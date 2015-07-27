@@ -298,7 +298,7 @@ function draw_table_compare_confirm(uids, div){
 function draw_table_group_confirm(uids, div){
   $(div).empty();
     var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table id="group_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
@@ -317,12 +317,19 @@ function draw_table_group_confirm(uids, div){
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+    $('#group_confirm_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
 }
 
 function draw_table_delete_confirm(uids, div){
   $(div).empty();
     var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table id="delete_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
@@ -341,6 +348,13 @@ function draw_table_delete_confirm(uids, div){
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+    $('#delete_confirm_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
 }
 
 function delRow(obj){
@@ -369,6 +383,13 @@ function group_confirm_button(){
   console.log(group_confirm_uids);
   var group_ajax_url = '/group/submit_task/';
   var group_url = '/index/group_result/';
+  var group_name = $('input[name="group_name"]').val();
+  var remark = $('input[name="remark"]').val();
+  console.log(group_name, remark);
+  if(group_name.indexOf(' ')>=0){
+    alert('群体名称或备注有空格！');
+  }
+
   var job = {"task_name":'ajaxtest', "uid_list":group_confirm_uids, "state":'ajaxtest'};
   $.ajax({
       type:'POST',
@@ -390,14 +411,22 @@ function group_confirm_button(){
 }
 
 function delete_confirm_button(){
+  var now_date = new Date();
+  var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
   var delete_confirm_uids = [];
   $('[name="delete_confirm_uids"]').each(function(){
       delete_confirm_uids.push($(this).text());
   })
   console.log(delete_confirm_uids);
-  if (confirm("确认要删除吗?")){
-      /*
-      var delete_url = '';
+  var delete_uid_list = '';
+  for(var i in delete_confirm_uids){
+      delete_uid_list += delete_confirm_uids[i];
+      if(i<(delete_confirm_uids.length-1))
+        delete_uid_list += ',';
+  }
+  if(confirm("确认要删除吗?")){
+      var delete_url = '/recommentation/identify_out/?date=' + now + '&data=' + delete_uid_list;
+      console.log(delete_url);
       $.ajax({
           type:'get',
           url: delete_url,
@@ -408,13 +437,11 @@ function delete_confirm_button(){
       function callback(data){
            console.log(data);
            if (data == '1'){
-               window.location.reload();
+               alert('出库成功！');
            }
            else{
                alert('fail');
            }
       }
-      */
   }
-
 }
