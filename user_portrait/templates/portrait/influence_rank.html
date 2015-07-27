@@ -5,6 +5,26 @@
 <style>
     .dataTables_filter{text-align:right;margin-bottom:5px;}
     .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+    .box-header {
+    border: none;
+    padding-top: 5px;
+    border-bottom: 1px solid #DEDEDE;
+    border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    height: 35px;
+    min-height: 35px !important;
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: 16px;
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(0, 0, 0, 0.1)));
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#1a000000', GradientType=0);
+    }
 </style>
 {% endblock css %}
 {% block main %}
@@ -17,19 +37,25 @@
     </ul>
 
     <div id="myTabContent" class="tab-content">
-        <div class="tab-pane active" id="info" style="margin-top:20px">
-            <h5><font color="#0066CC">具体排名</font></h5>
-            <hr />
-            <span>选择范围：</span><span id="range" style="margin-left:10px"></span>
-            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="range_button" title="确定范围选择">确定</button></span>
+        <div class="tab-pane active" id="info" style="margin-top:10px">
+            <span>选择日期：</span><span id="total_date" style="margin-left:10px"></span>
+            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="total_date_button" title="确定日期选择">确定</button></span>
+            <div class="box-header well" style="margin-top:20px;margin-bottom:10px">
+                <h5><i class="glyphicon glyphicon-info-sign"></i> 具体排名</h5>
+            </div>
+            <span>排名范围：</span><span id="range" style="margin-left:10px"></span>
             <div id="total_rank" style="margin-top:10px"></div>
-            <h5><font color="#0066CC">影响力分布</font></h5>
-            <hr />
+
+            <div class="box-header well" style="margin-top:20px;margin-bottom:10px">
+                <h5><i class="glyphicon glyphicon-info-sign"></i> 影响力分布</h5>
+            </div>
             <div id="rank_distribution" style="margin-top:10px;height:500px"></div>
         </div>
+
         <div class="tab-pane" id="custom" style="margin-top:10px">
-            <span>选择领域：</span><span id="domain" style="margin-left:10px"></span>
-            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="domain_button" title="确定领域选择">确定</button></span>
+            <span>选择日期：</span><span id="domain_date" style="margin-left:10px"></span>
+            <span style="margin-left:15px">选择领域：</span><span id="domain" style="margin-left:10px"></span>
+            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="domain_button" title="确定选择">确定</button></span>
             <div id="domain_rank" style="margin-top:10px"></div>
         </div>
         <div class="tab-pane" id="messages" style="margin-top:10px">

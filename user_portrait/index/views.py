@@ -26,7 +26,7 @@ def group_result():
 @mod.route('/contrast/')
 def contrast():
     
-    return render_template('portrait/contrast.html')
+    return render_template('compare.html')
 
 @mod.route('/personal/')
 def personal():
@@ -86,8 +86,3 @@ def contact():
     return render_template('contact.html')
 
 
-@mod.route('/compare/')
-
-def compare():
-
-    return render_template('compare.html')

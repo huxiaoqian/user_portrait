@@ -7,18 +7,26 @@ from flask import Blueprint, url_for, render_template, request, abort, flash, se
 from utils import submit_task, search_task, get_group_results, delete_group_results
 
 from user_portrait.search_user_profile import es_get_source
+from user_portrait.time_utils import ts2datetime
 
 mod = Blueprint('group', __name__, url_prefix='/group')
 
 # submit group analysis task and save to redis as lists
 # submit group task: task name should be unique
-@mod.route('/submit_task/')
+@mod.route('/submit_task/',methods=['GET', 'POST'])
 def ajax_submit_task():
     input_data = dict()
+    """
     input_data['task_name'] = request.args.get('task_name', '')
     input_data['uid_list'] = request.args.get('uid_list', '') # uid_list=[uid1, uid2]
     input_data['submit_date'] = request.args.get('submit_date', '')
     input_data['state'] = request.args.get('state', '')
+    """
+    input_data = request.get_json()
+    print input_data, type(input_data)
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    input_data['submit_date'] = now_date
     status = submit_task(input_data)
     return json.dumps(status)
 
