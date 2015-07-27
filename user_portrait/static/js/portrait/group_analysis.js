@@ -694,6 +694,7 @@ Draw_think_psycho: function(data){
         myChart.setOption(option); 
 },
 Draw_hashtag: function(data){
+    $('#hashtag').empty();
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
     html += '<table>';
