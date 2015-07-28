@@ -101,10 +101,10 @@
 
  {% block head_js %}
   {{ super() }}
-	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../static/js/profile_table.js"></script>
   {% endblock head_js %}
 
 
@@ -117,9 +117,6 @@
 			</div>
 
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-
-
 			  <div class="panel panel-default">
 			    <div class="panel-heading" role="tab" id="headingOne">
 			      <h4 class="panel-title">
@@ -244,6 +241,21 @@
 			    </div>
 			  </div>
 
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document" style="height:850px">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">群组成员</h4>
+				      </div>
+				      <div class="modal-body" id='group_user'>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
 
 
 			</div>
