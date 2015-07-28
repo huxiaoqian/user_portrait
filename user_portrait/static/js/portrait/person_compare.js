@@ -307,7 +307,7 @@ function Compare(){
         html += '</th>';
     }
     html += '</tr></thead><tbody>';
-    html += '<tr><td colspan="'+ (num +1) +'" name="list-1" class="cate_title" style="font-size:20px"><a href="#" class="btn btn-minimize  btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a><b>基本信息</b></td></tr>';
+    html += '<tr><td colspan="'+ (num +1) +'" name="list-1" class="cate_title" style="font-size:20px"><a href="#" class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>基本信息</b></td></tr>';
     j = 0;
     html += '<tr class="list-1"><td class="cate_title" style="width:90px;text-align:right">昵称</td>';
     for(var k in portrait){
@@ -338,7 +338,7 @@ function Compare(){
     }
     html += '</tr>';
     j = 0;
-    html += '<tr><td colspan="'+ (num+1) +'" name="list-2" class="cate_title" style="font-size:20px"><b>个体属性</b></td></tr>';
+    html += '<tr><td colspan="'+ (num+1) +'" name="list-2" class="cate_title" style="font-size:20px"><a href="#" class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>个体属性</b></td></tr>';
     html += '<tr class="list-2"><td class="cate_title" style="width:90px;text-align:right">重要度</td>';
     for(var k in portrait){
         j += 1;
@@ -367,7 +367,7 @@ function Compare(){
     }
     html += '</tr>';
     j = 0;
-    html += '<tr><td colspan="'+ (num+1) +'" name="list-3" class="cate_title" style="font-size:20px"><b>微博信息</b></td></tr>';
+    html += '<tr><td colspan="'+ (num+1) +'" name="list-3" class="cate_title" style="font-size:20px"><a href="#" class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>微博信息</b></td></tr>';
     html += '<tr class="list-3"><td class="cate_title" style="width:90px;text-align:right">好友数</td>';
     for(var k in portrait){
         j += 1;
@@ -389,7 +389,7 @@ function Compare(){
     }
     html += '</tr>';
     j = 0;
-    html += '<tr><td colspan="'+ (num+1) +'" name="list-4" class="cate_title" style="font-size:20px"><b>行业信息</b></td></tr>';
+    html += '<tr><td colspan="'+ (num+1) +'" name="list-4" class="cate_title" style="font-size:20px"><a href="#" class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>行业信息</b></td></tr>';
     html += '<tr class="list-4"><td class="cate_title" style="width:90px;text-align:right">领域</td>';
     for(var k in portrait){
         j += 1;
@@ -412,7 +412,7 @@ function Compare(){
     }
     html += '</tr>';
     j = 0;
-    html += '<tr><td colspan="'+ (num+1) +'" name="list-5" class="cate_title" style="font-size:20px"><b>个体心理</b></td></tr>';
+    html += '<tr><td colspan="'+ (num+1) +'" name="list-5" class="cate_title" style="font-size:20px"><a href="#" class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>个体心理</b></td></tr>';
     html += '<tr class="list-5"><td class="cate_title" style="width:90px;text-align:right">心理状态</td>';
     for(var k in portrait){
         j += 1;
@@ -606,8 +606,19 @@ for(var key in y_data){
 
 }
  $('.btn-round').click(function(){
+    
+    var cell = $('#table_compare').find('th').prevAll().length;
+    $('#table_compare').css('table-layout', 'fixed');
+    console.log($('#table_compare').css('table-layout'));
     $('[name='+ $(this).attr("name") +']').remove();
+    $('#table_compare').css('table-layout', 'auto');
+
+    if(cell == 1){
+        $('#table_compare').css('table-layout', 'fixed');
+    }
+
  });
+
 $("td[name^='list-']").click(function(){
     var name = $(this).attr('name');
     if($(this).children('a').children('i').attr('class')=='glyphicon glyphicon-chevron-up'){

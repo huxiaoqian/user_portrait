@@ -17,6 +17,7 @@ from user_portrait.global_utils import R_DICT
 from user_portrait.global_utils import es_user_portrait
 from user_portrait.global_utils import es_user_profile
 from user_portrait.search_user_profile import search_uid2uname
+from user_portrait.filter_uid import all_delete_uid
 
 
 emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
@@ -333,7 +334,11 @@ def search_portrait(condition_num, query, sort, size):
         #print 'result:', result
         for item in result:
             user_dict = item['_source']
-            user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
+
+            #yuankun revise
+            filter_set = all_delete_uid() # filter_uids_set
+            if not user_dict['uid'] in filter_set:
+                user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
 
     return user_result
 

@@ -47,11 +47,11 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
     count_s = 0
     count_c = 0
     start = 0
-    search_list = []
+    rank = 1
     while 1:
+        search_list = []
         user_list = search_k(es, active_index, active_type, start, field, 100)
         start += 100
-        print user_list
         for item in user_list:
             if field == "vary":
                 uid = item.get('uid', '0') # obtain uid, notice "uid" or "user"
@@ -62,7 +62,6 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
         search_result = es_portrait.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]
         profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
 
-        rank = 1
         for item in search_result:
             if item["found"]:
                 info = ['','','','','','']
@@ -75,11 +74,17 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
                 info[2] = search_result[index].get('_id','')
                 info[4] = user_list[index]['user_index']
                 info[5] = "1"
+                if field == 'origin_weibo_retweeted_brust_average':
+                    info.append(user_list[index]['origin_weibo_retweeted_brust_average'])
+                elif field == 'origin_weibo_comment_brust_average':
+                    info.append(user_list[index]['origin_weibo_comment_brust_average'])
+                else:
+                    pass
                 return_list.append(info)
                 rank += 1
                 count_c += 1
 
-                if count_c >= number:
+                if count_c >= int(number):
                     return return_list
 
 def portrait_user_vary(es, number, active_index, active_type, portrait_index, portrait_type, field="vary"):
