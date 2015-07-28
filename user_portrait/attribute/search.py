@@ -257,7 +257,7 @@ def search_attribute_portrait(uid):
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
-        description = hashtag_description(sort_hashtag_dict[:5])
+        description = hashtag_description(hashtag_dict)
         results['description'] = description
     emotion_result = {}
     if results['emotion_words']:
