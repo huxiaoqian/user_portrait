@@ -15,6 +15,7 @@ from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
 from user_portrait.global_utils import es_user_portrait
+from user_portrait.global_utils import es_user_profile
 from user_portrait.search_user_profile import search_uid2uname
 
 
@@ -48,10 +49,12 @@ def search_attention(uid):
         
         count = stat_results[ruid]
         results[ruid] = [uname, count]
-    if results:    
-        return results
+    if results: 
+        sort_results_list = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
+        print 'sort_results_list:', sort_results_list
+        return [sort_results_list[:20], len(results)]
     else:
-        return None
+        return [None, 0]
 
 #search:'be_retweet_' + str(uid) return followers {br_uid1:count1, br_uid2:count2}
 #redis:{'be_retweet_'+uid:{br_uid:count}}
@@ -81,9 +84,10 @@ def search_follower(uid):
         count = stat_results[br_uid]
         results[br_uid] = [uname, count]
     if results:
-        return results
+        sort_results = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
+        return [sort_results[:20], len(results)]
     else:
-        return None
+        return [None, 0]
 
 #search:now_ts , uid return 7day at uid list  {uid1:count1, uid2:count2}
 #{'at_'+Date:{str(uid):'{at_uid:count}'}}
@@ -119,9 +123,10 @@ def search_mention(now_ts, uid):
         count = stat_results[at_uid]
         results[at_uid] = [uname, count]
     if results:
-        return results
+        sort_results = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
+        return [sort_results[:20], len(results)]
     else:
-        return False
+        return [None, 0]
 
 #search:now_ts, uid return 7day loaction list {location1:count1, location2:count2}
 #{'ip_'+str(Date_ts):{str(uid):'{city:count}'}
@@ -156,7 +161,7 @@ def search_location(now_ts, uid):
 
     description = active_geo_description(results)
     results['description'] = description
-    print 'location results:', results
+    #print 'location results:', results
     return results
 
 #search: now_ts, uid return 7day activity trend list {time_segment:weibo_count}
@@ -206,8 +211,9 @@ def search_activity(now_ts, uid):
     sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=False)
     #print 'sort_trend_list:', sort_trend_list
     activity_result['activity_trend'] = sort_trend_list
-    activity_result['activity_time'] = segment_result
-    print segment_result
+    sort_segment_list = sorted(segment_result.items(), key=lambda x:x[1], reverse=True)
+    activity_result['activity_time'] = sort_segment_list[:2]
+    #print segment_result
     description = active_time_description(segment_result)
     activity_result['description'] = description
     return activity_result
@@ -237,7 +243,7 @@ def search_attribute_portrait(uid):
     if results and results['keywords']:
         keywords_dict = json.loads(results['keywords'])
         sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
-        print 'sort_word_list:', sort_word_list
+        #print 'sort_word_list:', sort_word_list
         results['keywords'] = sort_word_list[:20]
     #print 'keywords:', results
     geo_top = []
@@ -257,12 +263,12 @@ def search_attribute_portrait(uid):
             try:
                 word_dict = emotion_words_dict[word_type]
                 sort_word_dict = sorted(word_dict.items(), key=lambda x:x[1], reverse=True)
-                print 'sort_word_dict:', sort_word_dict
+                #print 'sort_word_dict:', sort_word_dict
                 word_list = sort_word_dict[:5]
             except:
                 word_list = []
             emotion_result[emotion_mark_dict[word_type]] = word_list
-    print 'emotion_words:', type(emotion_result)
+    #print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
     #topic
     if results and results['topic']:
@@ -293,6 +299,15 @@ def search_attribute_portrait(uid):
     if results and results['psycho_feature']:
         psycho_feature_list = results['psycho_feature'].split('_')
         results['psycho_feature'] = psycho_feature_list
+    #state
+    if results and results['uid']:
+        uid = results['uid']
+        profile_result = es_user_profile.get(index='weibo_user', doc_type='user', id=uid)
+        try:
+            user_state = profile_result['_source']['description']
+            results['description'] = user_state
+        except:
+            results['description'] = ''
     return results
 
 #use to search user_portrait by lots of condition 

@@ -165,7 +165,6 @@ def ajax_follower():
     else:
         return None
 
-
 @mod.route('/delete/')
 def ajax_delete():
     uid_list = request.args.get('uids', '') # uids = [uid1, uid2]
