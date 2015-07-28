@@ -2,6 +2,7 @@
 import sys
 import time
 import json
+from mid2weibolink import weiboinfo2url
 #test
 '''
 reload(sys)
@@ -137,7 +138,7 @@ def get_group_results(task_name, module):
         activeness = es_result['activeness']
         importance = es_result['importance']
         influence = es_result['influence']
-        result = [task_name, submit_date, state, tightness, activeness, importance]
+        result = [task_name, submit_date, state, tightness, activeness, importance, influence]
     if module=='basic':
         gender_dict = json.loads(es_result['gender'])
         count = es_result['count']
@@ -184,20 +185,40 @@ def get_group_results(task_name, module):
         origin_max_retweeted_number =es_result['origin_max_retweeted_number']
         origin_max_retweeted_id = es_result['origin_max_retweeted_id']
         origin_max_retweeted_user = es_result['origin_max_retweeted_user']
+        if origin_max_retweeted_id != 0 and origin_max_retweeted_user != 0:
+            origin_max_retweeted_weibolink = weiboinfo2url(origin_max_retweeted_user, origin_max_retweeted_id)
+        else:
+            origin_max_retweeted_weibolink = None
+
         origin_max_comment_number = es_result['origin_max_comment_number']
         origin_max_comment_id = es_result['origin_max_comment_id']
         origin_max_comment_user = es_result['origin_max_comment_user']
+        if origin_max_comment_id !=0 and origin_max_comment_user != 0:
+            origin_max_comment_weibolink = weiboinfo2url(origin_max_comment_user, origin_max_comment_id)
+        else:
+            origin_max_comment_weibolink = None
+        
         retweet_max_retweeted_number = es_result['retweet_max_retweeted_number']
         retweet_max_retweeted_id = es_result['retweet_max_retweeted_id']
         retweet_max_retweeted_user = es_result['retweet_max_retweeted_user']
+        if retweet_max_retweeted_id != 0 and retweet_max_retweeted_user != 0:
+            retweet_max_retweeted_weibolink = weiboinfo2url(retweet_max_retweeted_user, retweet_max_retweeted_id)
+        else:
+            retweet_max_retweeted_weibolink = None
+
         retweet_max_comment_number = es_result['retweet_max_comment_number']
         retweet_max_comment_id = es_result['retweet_max_comment_id']
         retweet_max_comment_user = es_result['retweet_max_comment_user']
+        if retweet_max_comment_id != 0 and retweet_max_comment_user != 0:
+            retweet_max_comment_weibolink = weiboinfo2url(retweet_max_comment_user, retweet_max_comment_id)
+        else:
+            retweet_max_comment_weibolink = None
+
         result = [importance_dis, activeness_his, influence_his, \
-                  origin_max_retweeted_number, origin_max_retweeted_id, origin_max_retweeted_user ,\
-                  origin_max_comment_number, origin_max_comment_id, origin_max_comment_user ,\
-                  retweet_max_retweeted_number, retweet_max_retweeted_id, retweet_max_retweeted_user ,\
-                  retweet_max_comment_number, retweet_max_comment_id, retweet_max_retweeted_user]
+                  origin_max_retweeted_number, origin_max_retweeted_id, origin_max_retweeted_user, origin_max_retweeted_weibolink, \
+                  origin_max_comment_number, origin_max_comment_id, origin_max_comment_user , origin_max_comment_weibolink, \
+                  retweet_max_retweeted_number, retweet_max_retweeted_id, retweet_max_retweeted_user , retweet_max_retweeted_weibolink, \
+                  retweet_max_comment_number, retweet_max_comment_id, retweet_max_retweeted_user, retweet_max_retweeted_weibolink]
     #print result
     return result
 
