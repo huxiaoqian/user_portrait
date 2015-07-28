@@ -190,3 +190,22 @@ def ajax_search_delete():
 
     return json.dumps(1)
 
+@mod.route('/cancel_recommend_out/')
+def ajax_cancel_recommend_out():
+    date = request.args.get('date', '') # date, 2013-09-01
+    uid_list = request.args.get('uid_list', '') # uid_list, 12345,123456,
+
+    if not date or not uid_list:
+        return "no define date or uid_list"
+    else:
+        date = str(date).replace('-')
+        uid_list = str(uid_list).split(',')
+
+        recommend_list = r_out.hget('recommend_delete_list',date)
+        revise_list = list(set(recommend_list).difference(set(uid_list)))
+        r_out.hset('recommend_delete_list',date, json.dumps(revise_list))
+
+        update_record_index(uid_list)
+
+    return json.dumps(1)
+
