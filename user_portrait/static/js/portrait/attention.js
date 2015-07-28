@@ -14,7 +14,13 @@ Attention.prototype = {   //获取数据，重新画表
 Draw_attention:function(data){
 	var UserID = parent.personalData.uid;
 	var UserName = parent.personalData.uname;
-	attention(data,UserID,UserName);	
+	var items = data[0];
+	if(items==null){
+		var say = document.getElementById('test3');
+		say.innerHTML = '该用户暂无此数据';
+	}else{
+		attention(items,UserID,UserName);
+	}	
 }
 }
 var Attention = new Attention();
@@ -25,11 +31,11 @@ function attention(data,UserID,UserName){
 	uids = [];
 	unames = [];
 	values = [];
-	for (var key in data){
-		uids.push(key);
-		unames.push(data[key][0]);
-		values.push(data[key][1]);
-	}
+	for(i=0;i<data.length;i++){
+        uids.push(data[i][0]);
+        unames.push(data[i][1][0]);
+        values.push(data[i][1][1]);
+    }
 	var nod = {};
 	nodeContent = []
 	nod['category'] = 0;
@@ -54,7 +60,7 @@ function attention(data,UserID,UserName){
 	var myChart3 = echarts.init(document.getElementById('test3'));
 	var option = {
             title : {
-                text: '互动',
+                text: '关注',
                 x:'left',
                 y:'top'
             },
@@ -114,5 +120,6 @@ function attention(data,UserID,UserName){
                 }
             ]
     };  
-	myChart3.setOption(option); 
+	myChart3.setOption(option);	
 }
+

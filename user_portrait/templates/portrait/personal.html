@@ -58,9 +58,9 @@ $(function(){
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
     <div class="nickname" id="nickname">互助小喇叭</div>
 	<div class="power">
-		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>
-		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>
-		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>
+		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（排名<span id="IPrank">20%</span>）
+		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（排名<span id="APrank">10%</span>）
+		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（排名<span id="FPrank">30%</span>）
 	</div>
 	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
     <div style="float:right;"><a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
@@ -103,7 +103,13 @@ activePower.innerHTML = personalData.activeness.toFixed(2);
 var nickName = document.getElementById('nickname');
 nickName.innerHTML = personalData.uname;
 var detailPortrait = document.getElementById('portraitDetail');
-detailPortrait.innerHTML = personalData.uname;
+detailPortrait.innerHTML = personalData.description;
+var I_rank = document.getElementById('IPrank');
+I_rank.innerHTML = personalData.importance_rank;
+var A_rank = document.getElementById('APrank');
+A_rank.innerHTML = personalData.activeness_rank;
+var F_rank = document.getElementById('FPrank');
+F_rank.innerHTML = personalData.influence_rank;
 var contact_url = '/index/contact/?uid=' + uid;
 $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
