@@ -9,6 +9,7 @@ from utils import recommentation_in, identify_in, show_in_history, show_compute,
 from utils import show_out_uid,decide_out_uid, search_history_delete
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.time_utils import datetime2ts
+from update_activeness_record import update_record_index
 
 # use to test 13-09-08
 test_time = 1378569600
@@ -159,4 +160,52 @@ def ajax_cancel_delete():
         revise_list = list(set(delete_list).difference(set(uid_list)))
         r_out.hset('history_delete_list',date, json.dumps(revise_list))
 
+        #update_record_index(uid_list) temporary 
+
     return json.dumps(1)
+
+@mod.route('/search_delete/')
+def ajax_search_delete():
+    date = request.args.get('date', '') # date, 2013-09-01
+    uid_list = request.args.get('uid_list', '') # uid_list, 12345,123456,
+
+    if not date or not uid_list:
+        return "no define date or uid_list"
+    else:
+        date = str(date).replace('-')
+        remove_list = str(uid_list).split(',')
+
+        temp = r_out.hget('decide_delete_list', date)
+        if temp:
+            exist_data = json.loads(r_out.hget('decide_delete_list',date))
+            remove_list.extend(exist_data)
+        r_out.hset('decide_delete_list', date, json.dumps(remove_list))
+
+        delte_list = str(uid_list).split(',')
+        temp = r_out.hget('history_delete_list', date)
+        if temp:
+            exist_data = json.loads(r_out.hget('history_delete_list',date))
+            delete_list.extend(exist_data)
+        r_out.hset('history_delete_list',date, json.dumps(delete_list))
+
+    return json.dumps(1)
+
+@mod.route('/cancel_recommend_out/')
+def ajax_cancel_recommend_out():
+    date = request.args.get('date', '') # date, 2013-09-01
+    uid_list = request.args.get('uid_list', '') # uid_list, 12345,123456,
+
+    if not date or not uid_list:
+        return "no define date or uid_list"
+    else:
+        date = str(date).replace('-')
+        uid_list = str(uid_list).split(',')
+
+        recommend_list = r_out.hget('recommend_delete_list',date)
+        revise_list = list(set(recommend_list).difference(set(uid_list)))
+        r_out.hset('recommend_delete_list',date, json.dumps(revise_list))
+
+        update_record_index(uid_list)
+
+    return json.dumps(1)
+

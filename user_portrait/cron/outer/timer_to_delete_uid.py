@@ -56,10 +56,16 @@ def main():
         item_timestamp = time.mktime(time_struct.timetuple())
         print item_timestamp
 
-        #if ts - item_timestamp > 7 * 86400:
-        if ts - item_timestamp > 0:
+        if ts - item_timestamp > 7 * 86400:
+        #if ts - item_timestamp > 0:
+
+            temp = recommend_redis.hget("decide_delete_list", item)
+            if not temp:
+                continue
             temp_list = json.loads(recommend_redis.hget("decide_delete_list", item))
-            if not temp_list:
+            hdel("decide_delete_list", item)
+
+            if temp_list == []:
                 continue
 
             for uid in temp_list:
