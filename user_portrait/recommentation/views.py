@@ -21,7 +21,7 @@ mod = Blueprint('recommentation', __name__, url_prefix='/recommentation')
 def ajax_recommentation_in():
     date = request.args.get('date', '') # '2013-09-01'
     # test
-    date = test_date 
+    #date = test_date 
     input_ts = datetime2ts(date)
     now_ts = time.time()
     now_ts = test_time
