@@ -257,6 +257,8 @@ def search_attribute_portrait(uid):
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
+        description = hashtag_description(sort_hashtag_dict[:5])
+        results['description'] = description
     emotion_result = {}
     if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
@@ -386,11 +388,10 @@ def search_portrait(condition_num, query, sort, size):
             raise e
     if result:
         #print 'result:', result
+        filter_set = all_delete_uid() # filter_uids_set
         for item in result:
             user_dict = item['_source']
 
-            #yuankun revise
-            filter_set = all_delete_uid() # filter_uids_set
             if not user_dict['uid'] in filter_set:
                 user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
 
