@@ -29,10 +29,15 @@ Search_weibo_recommend.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
-      user_url = 'http://weibo.com/u/';
+      item[i] = replace_space(item[i]);
+      for(var j=3;j<6;j++){
+        if(item[i][j]!='未知')
+          item[i][j] = item[i][j].toFixed(2)
+      }
+      user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][0];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
       html += '<td class="center">'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
@@ -89,10 +94,15 @@ Search_weibo_history.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      item[i] = replace_space(item[i]);
+      for(var j=3;j<6;j++){
+        if(item[i][j]!='未知')
+          item[i][j] = item[i][j].toFixed(2)
+      }
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
       html += '<td class="center">'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
@@ -273,4 +283,13 @@ function recommend_all(){
 
 function history_all(){
   $('input[name="history_status"]:not(:disabled)').prop('checked', $("#history_all").prop('checked'));
+}
+
+function replace_space(data){
+  for(var i in data){
+    if(data[i]===""||data[i]==="unknown"){
+      data[i] = "未知";
+    }
+  }
+  return data;
 }

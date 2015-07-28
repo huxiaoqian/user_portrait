@@ -29,16 +29,21 @@ Search_weibo_result.prototype = {
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
+      item = replace_space(item);
+      for(var j=4;j<7;j++){
+        if(item[j]!='未知')
+          item[j] = item[j].toFixed(2);
+      }
       global_data[item[0]] = item; // make global data
       user_url = '/index/personal/?uid=' + item[0];
       html += '<tr id=' + item[0] +'>';
-      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
+      html += '<td class="center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
       html += '<td class="center">'+ gender(item[2]) +'</td>';
       html += '<td class="center">'+ item[3] +'</td>';
-      html += '<td class="center">'+ item[4].toFixed(2) +'</td>';
-      html += '<td class="center">'+ item[5].toFixed(2) +'</td>';
-      html += '<td class="center">'+ item[6].toFixed(2) +'</td>';
+      html += '<td class="center" style="width:100px">'+ item[4] +'</td>';
+      html += '<td class="center" style="width:100px">'+ item[5] +'</td>';
+      html += '<td class="center" style="width:100px">'+ item[6] +'</td>';
       html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
       html += '</tr>';
     }
@@ -284,10 +289,10 @@ function draw_table_compare_confirm(uids, div){
       html += '<td class="center">'+ item[1] + '</td>';
       html += '<td class="center">'+ gender(item[2]) + '</td>';
       html += '<td class="center">'+ item[3] + '</td>';
-      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
-      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
-      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
-      html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '<td class="center" style="width:100px">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -308,10 +313,10 @@ function draw_table_group_confirm(uids, div){
       html += '<td class="center">'+ item[1] + '</td>';
       html += '<td class="center">'+ gender(item[2]) + '</td>';
       html += '<td class="center">'+ item[3] + '</td>';
-      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
-      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
-      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
-      html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '<td class="center" style="width:100px">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -339,10 +344,10 @@ function draw_table_delete_confirm(uids, div){
       html += '<td class="center">'+ item[1] + '</td>';
       html += '<td class="center">'+ gender(item[2]) + '</td>';
       html += '<td class="center">'+ item[3] + '</td>';
-      html += '<td class="center">'+ item[4].toFixed(2) + '</td>';
-      html += '<td class="center">'+ item[5].toFixed(2) + '</td>';
-      html += '<td class="center">'+ item[6].toFixed(2) + '</td>';
-      html += '<td class="center"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '<td class="center" style="width:100px">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -430,7 +435,7 @@ function delete_confirm_button(){
         delete_uid_list += ',';
   }
   if(confirm("确认要删除吗?")){
-      var delete_url = '/recommentation/identify_out/?date=' + now + '&data=' + delete_uid_list;
+      var delete_url = '/recommentation/search_delete/?date=' + now + '&uid_list=' + delete_uid_list;
       console.log(delete_url);
       $.ajax({
           type:'get',
@@ -449,4 +454,13 @@ function delete_confirm_button(){
            }
       }
   }
+}
+
+function replace_space(data){
+  for(var i in data){
+    if(data[i]===""||data[i]==="unknown"){
+      data[i] = "未知";
+    }
+  }
+  return data;
 }
