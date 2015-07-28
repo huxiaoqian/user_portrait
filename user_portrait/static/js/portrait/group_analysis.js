@@ -91,7 +91,7 @@ Draw_basic: function(data){
         },
         series : [
             {
-                name:'男',
+                name:'',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -109,7 +109,7 @@ Draw_basic: function(data){
                 ]
             },
             {
-                name:'女',
+                name:'',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -239,7 +239,7 @@ Draw_activity: function(data){
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
         var s = i.toString();
-        value_x = new Date(parseInt(data['1'][s]['0']) * 1000).toLocaleString();
+        value_x = new Date(parseInt(data['1'][s]['0']) * 1000).toLocaleString().replace('上午','');
         value_y = data['1'][s]['1'];
         data_x.push(value_x);
         data_y.push(value_y);
@@ -253,12 +253,20 @@ Draw_activity: function(data){
                 fontFamily: 'Microsoft YaHei'
             }},
         title: {
-            text: '',
+            text: '微博时间走势图',
             x: -20 //center
         },
         subtitle: {
             text: '',
             x: -20
+        },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
         },
         xAxis: {
             categories: data_x,
@@ -298,7 +306,7 @@ Draw_top_location: function(data){
     $('#top_location').empty();
     html = '';
     html += '<div style="font-size:16px">发布地点排名</div>';
-    html += '<table style="width:400px;font-size:14px">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
@@ -312,7 +320,7 @@ Draw_top_platform: function(data){
     $('#top_platform').empty();
     html = '';
     html += '<div style="font-size:16px">发布平台排名</div>';
-    html += '<table style="width:400px;font-size:14px">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 1; i++) {
        var s = i.toString();
@@ -347,8 +355,16 @@ Draw_social_line: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '分布'
     },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
     xAxis: {
         categories: y_data,
         labels: {
@@ -358,7 +374,7 @@ Draw_social_line: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -416,9 +432,6 @@ Draw_think_status: function(data){
         indicate.push(indicator);
         status_value.push(data['2'][key]);
     }
-    console.log(indicate);
-
-
     var myChart = echarts.init(document.getElementById('radar_status')); 
         
         var option = {
@@ -697,7 +710,7 @@ Draw_hashtag: function(data){
     $('#hashtag').empty();
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
-    html += '<table>';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
@@ -708,11 +721,10 @@ Draw_hashtag: function(data){
     $('#hashtag').append(html);    
 },
 Draw_emotion: function(data){
-    console.log(data);
     $('#emotion').empty();
     html = '';
-    html += '<div style="font-size:16px"表情符号排名</div>';
-    html += '<table>';
+    html += '<div style="font-size:16px">表情符号排名</div>';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
@@ -767,7 +779,7 @@ Draw_importance: function(data){
     };
     for (var i = 0; i < data['0']['1'].length; i++) {
        var s = i.toString();
-       y_value = data['0']['1'][s];
+       y_value = data['0']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
 
@@ -777,8 +789,16 @@ Draw_importance: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '重要度分布'
     },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
     xAxis: {
         categories: y_data,
         labels: {
@@ -789,7 +809,7 @@ Draw_importance: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -804,7 +824,7 @@ Draw_importance: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:59//柱子之间的距离值
            }
        },
     series: [{
@@ -812,7 +832,7 @@ Draw_importance: function(data){
         data: x_data ,
         dataLabels: {
             enabled: true,
-            rotation: -90,
+            rotation: 0,
             color: '#FFFFFF',
             align: 'right',
             x: 4,
@@ -836,7 +856,7 @@ Draw_activeness: function(data){
     };
     for (var i = 0; i < data['1']['1'].length; i++) {
        var s = i.toString();
-       y_value = data['1']['1'][s];
+       y_value = data['1']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
 
@@ -846,7 +866,15 @@ Draw_activeness: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '活跃度分布'
+    },
+    lang: {
+        printChart: "打印",
+        downloadJPEG: "下载JPEG 图片",
+        downloadPDF: "下载PDF文档",
+        downloadPNG: "下载PNG 图片",
+        downloadSVG: "下载SVG 矢量图",
+        exportButtonTitle: "导出图片"
     },
     xAxis: {
         categories: y_data,
@@ -858,7 +886,7 @@ Draw_activeness: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -873,7 +901,7 @@ Draw_activeness: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:59//柱子之间的距离值
            }
        },
     series: [{
@@ -881,7 +909,7 @@ Draw_activeness: function(data){
         data: x_data ,
         dataLabels: {
             enabled: true,
-            rotation: -90,
+            rotation: 0,
             color: '#FFFFFF',
             align: 'right',
             x: 4,
@@ -905,18 +933,25 @@ Draw_influence: function(data){
     };
     for (var i = 0; i < data['2']['1'].length; i++) {
        var s = i.toString();
-       y_value = data['2']['1'][s];
+       y_value = data['2']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
-    console.log(data);
     $('#influence').highcharts({
         chart: {
         type: 'column',
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '影响力分布'
     },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
     xAxis: {
         categories: y_data,
         labels: {
@@ -927,7 +962,7 @@ Draw_influence: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -942,7 +977,7 @@ Draw_influence: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:59//柱子之间的距离值
            }
        },
     series: [{
@@ -950,7 +985,7 @@ Draw_influence: function(data){
         data: x_data ,
         dataLabels: {
             enabled: true,
-            rotation: -90,
+            rotation: 0,
             color: '#FFFFFF',
             align: 'right',
             x: 4,
