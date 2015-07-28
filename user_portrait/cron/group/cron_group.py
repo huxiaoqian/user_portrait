@@ -488,6 +488,7 @@ def compute_group_task():
         else:
             #print 'task:', task
             task = json.loads(task)
+            #uid_list should be keep list type to save in es
             uid_list = task['uid_list']
             task_name = task['task_name']
             submit_date = task['submit_date']

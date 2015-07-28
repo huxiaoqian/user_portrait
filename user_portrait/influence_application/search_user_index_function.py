@@ -195,8 +195,8 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
                 info[2] = search_result[i].get('_id','')
 
                 if profile_result[i]['found']:
-                    info[3] = profile_result[i]['_source'].get('photo_url','')
-                    info[1] = profile_result[i]['_source'].get('nick_name','')
+                    info[1] = profile_result[i]['_source'].get('photo_url','')
+                    info[3] = profile_result[i]['_source'].get('nick_name','')
 
                 if 'retweeted' in field:
                     info[4] = user_list[i]['origin_weibo_top_retweeted_id']
