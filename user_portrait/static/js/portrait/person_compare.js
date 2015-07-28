@@ -48,7 +48,7 @@ Search_weibo.prototype = {
         $('#table').empty();
         var html = '';
         html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive" >';
-        html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th></tr></thead>';
+        html += '<thead ><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th></tr></thead>';
         html += '<tbody>';
         for(var item in data){
             html += '<tr>';
@@ -250,14 +250,12 @@ Search_weibo.prototype = {
                     ) { //点击的是边
                         var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
                         var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
-                        // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
                     } else { // 点击的是点
                     }
                 }
                     myChart.on(ecConfig.EVENT.CLICK, focus)
 
                     myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-                        console.log(myChart.chart.force.getPosition());
                     });
                 }
         )     
@@ -285,22 +283,21 @@ function Compare(){
     for(var k in url_photo){
         num += 1;
     }
-    html += '<thead>';
-    html += '<tr style="background: #fafafa;"><th style="width:100px;font-size:20px;vertical-align:middle; text-align:center;"><b>用户图像</b></th>';
+    html += '<thead id="head_id">';
+    html += '<tr style="background: #fafafa;"><th style="width:100px;font-size:20px;vertical-align:middle; text-align:center;"><b>用户头像</b></th>';
     var i =0;
     var person_url = "http://"+window.location.host+"/index/personal/?uid=";
     for(var k in url_photo){
         person_url = person_url + k;
-        console.log(person_url);
         i += 1;
-        html += '<th name="line'+ i +'">';
+        html += '<th name="line'+ i +'" id='+k +' value='+i+'>';
         html += '<div class="panel-heading text-center">';
-        html += '<div class="col-md-9">';
+        html += '<div class="col-md-12">';
         html += '<a href="'+ person_url +'" target="_blank">';
         html += '<img src='+url_photo[k]+' alt="" class="img-circle">';
         html += '</a>';
         html += '</div>';
-        html += '<div class="col-md-3">';
+        html += '<div style="float:right;margin-top:-66px">';
         html += '<a href="#" name="line'+i+'" class="btn btn-round btn-default" style="border-radius:40px;font-size:12px;padding-top:4px"><i class="glyphicon glyphicon-remove"></i></a>';
         html += '</div>'
         html += '</div>';
@@ -609,12 +606,21 @@ for(var key in y_data){
     
     var cell = $('#table_compare').find('th').prevAll().length;
     $('#table_compare').css('table-layout', 'fixed');
-    console.log($('#table_compare').css('table-layout'));
     $('[name='+ $(this).attr("name") +']').remove();
     $('#table_compare').css('table-layout', 'auto');
 
     if(cell == 1){
         $('#table_compare').css('table-layout', 'fixed');
+    }
+    var length = $("#head_id").find('th').length;
+    for(var i = 1; i < length; i++){
+        var obj = $("#head_id").find('th').eq(i);
+        var uid = obj.attr('id');
+        var value = obj.attr("value");
+        var div = 'activity'+ value;
+        var cloud_div = 'line'+value;
+        Search_weibo.Draw_line(x_data, y_data[uid],div);
+        Search_weibo.Draw_cloud_keywords(portrait[uid],cloud_div);
     }
 
  });

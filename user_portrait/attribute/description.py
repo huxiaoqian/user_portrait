@@ -69,17 +69,17 @@ def hashtag_description(result):
         definition = ','.join(v_list)
 
     if count_hashtag == 0:
-        description = '该用户不喜欢参与话题讨论，讨论数为0'
+        description = u'该用户不喜欢参与话题讨论，讨论数为0'
     elif count_hashtag >3:
-        description = '该用户热衷于参与话题讨论,热衷的话题是%s' % definition
+        description = u'该用户热衷于参与话题讨论,热衷的话题是%s' % definition
     else:
-        description = '该用户不太热衷于参与话题讨论, 参与的话题是%s' % definition
+        description = u'该用户不太热衷于参与话题讨论, 参与的话题是%s' % definition
 
     return description
 
 if __name__ == "__main__":
     c = {'beijing':{'219.224.135.1': 5}}
-    b = {'0':2, "14400":1,"28800":3, "43200":5, "57600":2, "72000":3}
+    b = {0:2, 14400:1,28800:3, 43200:5, 57600:2, 72000:3}
     a = {'花千骨':4}
     k = active_time_description(b)
     m = active_geo_description(c)

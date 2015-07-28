@@ -14,12 +14,18 @@ Mention.prototype = {   //获取数据，重新画表
 Draw_Mention:function(data){
 	var UserID = parent.personalData.uid;
 	var UserName = parent.personalData.uname;
-	console.log(UserID);
-	mention(data,UserID,UserName);	
+	var items = data[0];
+	html = '';
+	if(items==null){
+		var say = document.getElementById('test2');
+		say.innerHTML = '该用户暂无此数据';
+	}else{
+			mention(items,UserID,UserName);	
+	}
 }
 }
 var Mention = new Mention();
-url = '/attribute/mention/?uid=1928890491' ;
+url = '/attribute/mention/?uid=1642591402' ;
 Mention.call_sync_ajax_request(url, Mention.ajax_method, Mention.Draw_Mention);
 
 function mention(data,UserID,UserName){
@@ -27,11 +33,11 @@ function mention(data,UserID,UserName){
 	unames = [];
 	values = [];
 	
-	for (var key in data){
-		uids.push(key);
-		unames.push(data[key][0]);
-		values.push(data[key][1]);
-	}
+	for(i=0;i<data.length;i++){
+        uids.push(data[i][0]);
+        unames.push(data[i][1][0]);
+        values.push(data[i][1][1]);
+    }
 	//console.log(uids);
 	
 	var nod = {};
@@ -60,7 +66,7 @@ function mention(data,UserID,UserName){
 	var myChart2 = echarts.init(document.getElementById('test2'));
 	var option = {
             title : {
-                text: '关注',
+                text: '@互动',
                 x:'left',
                 y:'top'
             },
@@ -120,6 +126,5 @@ function mention(data,UserID,UserName){
                 }
             ]
     };  
-	myChart2.setOption(option); 
-	
+	myChart2.setOption(option); 	
 }

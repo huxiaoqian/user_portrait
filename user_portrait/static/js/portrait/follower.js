@@ -14,8 +14,13 @@ Follower.prototype = {   //获取数据，重新画表
 Draw_Follower:function(data){
 	var UserID = parent.personalData.uid;
 	var UserName = parent.personalData.uname;
-	//console.log(UserID);
-	follower(data,UserID,UserName);	
+	var items = data[0]
+	if(items==null){
+		var say = document.getElementById('test1');
+		say.innerHTML = '该用户暂无此数据';
+	}else{
+		follower(items,UserID,UserName);		
+	}	
 }
 }
 var Follower = new Follower();
@@ -27,11 +32,11 @@ function follower(data,UserID,UserName){
 	unames = [];
 	values = [];
 	
-	for (var key in data){
-		uids.push(key);
-		unames.push(data[key][0]);
-		values.push(data[key][1]);
-	}
+	for(i=0;i<data.length;i++){
+        uids.push(data[i][0]);
+        unames.push(data[i][1][0]);
+        values.push(data[i][1][1]);
+    }
 //console.log(uids);
 	
 	var nod = {};

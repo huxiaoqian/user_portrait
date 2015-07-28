@@ -28,15 +28,18 @@ Search_weibo_recommend.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][5]!='未知')
+        item[i][5] = item[i][5].toFixed(2)
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
       html += '<td class="center">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center" style="width:100px">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="width:100px">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="width:100px">'+ item[i][5] +'</td>';
       html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
@@ -87,6 +90,9 @@ Search_weibo_compute.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][5]!='未知')
+        item[i][5] = item[i][5].toFixed(2)
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var compute_status;
@@ -99,12 +105,12 @@ Search_weibo_compute.prototype = {
       else
         compute_status = "Error!";
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
       html += '<td class="center">'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
       html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center" id="'+ i +'">'+ compute_status +'</td>';
       if(item[i][7]==0)
@@ -162,6 +168,9 @@ Search_weibo_history.prototype = {
     var item = data;
     html += '<tbody>';
     for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][5]!='未知')
+        item[i][5] = item[i][5].toFixed(2)
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var in_status;
@@ -172,12 +181,12 @@ Search_weibo_history.prototype = {
       else
         in_status = "Error!";
       html += '<tr>';
-      html += '<td class="center"><a href='+ user_url+ '>'+ item[i][0] +'</td>';
+      html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
       html += '<td class="center">'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ Math.round(item[i][5]) +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
       html += '<td class="center" id="'+ item[i][0] +'">'+ in_status +'</td>';
       html += '</tr>';
     }
@@ -360,4 +369,13 @@ function recommend_all(){
 
 function compute_all(){
   $('input[name="compute_status"]:not(:disabled)').prop('checked', $("#compute_all").prop('checked'));
+}
+
+function replace_space(data){
+  for(var i in data){
+    if(data[i]===""){
+      data[i] = "未知";
+    }
+  }
+  return data;
 }
