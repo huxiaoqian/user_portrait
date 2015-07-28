@@ -16,6 +16,18 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
     personal_info = es.get(index="user_portrait", doc_type="user", id=uid, _source=True)['_source']
 
+    keys_list = query_fields_dict.keys()
+    keys_list.remove('field')
+    keys_list.remove('size')
+
+    for iter_key in keys_list:
+        if personal_info[iter_key] == '':
+            query_fields_dict.pop(iter_key)
+            keys_list.remove(iter_key)
+
+    if len(keys_list) == 0:
+        return 0
+
     query_body = {
         'query':{
             'function_score':{
@@ -50,7 +62,6 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     query_body['query']['function_score']['field_value_factor'] = score_standard
 
     query_fields_dict.pop('field')
-    query_fields_dict['size'] = 10
     query_body['size'] = query_fields_dict['size']
     query_fields_dict.pop('size')
 
