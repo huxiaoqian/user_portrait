@@ -65,50 +65,6 @@ $(function(){
 	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
     <div style="float:right;"><a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
 </div>
-<div class="soft_function">
-
-	<div class="soft_con_icon">
-		<ul>
-			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/basic.png"/><p style="color:#008dd9">注册属性</p></a></li>
-            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/activity.png"/><p>活动属性</p></a></li>
-            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
-			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
-		</ul>
-	</div> 
-
-	<div class="soft_con1" style="background:url(/static/personal/images/line_select_001.gif);"></div>
-
-	<div class="soft_con">
-
-		<div id="xzgl" class="soft_con2">
-            {% include "portrait/detail/basic.html"%}
-        </div>
-	
-		<div id="crm" class="soft_con2" style="display:none">
-            {% include "portrait/detail/activity.html"%}
-        </div>
-	
-		<div id="xmgl" class="soft_con2" style="display:none">
-            {% include "portrait/detail/thought.html"%}
-		</div>
-	
-		<div id="zsgl" class="soft_con2" style="display:none">
-            {% include "portrait/detail/language.html"%}
-		</div>
-	
-		<div id="ydbg" class="soft_con2" style="display:none">
-            {% include "portrait/detail/social.html"%}
-		</div>
-	
-	</div>
-	
-</div>
-
-{% endblock main %}
-
-{% block Own_js %}
-{{ super() }}
 <script type="text/javascript">
  function Personal(){
 	this.ajax_method = 'GET';
@@ -153,4 +109,49 @@ $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
 $('#homepage').attr('href', homepage_url)
 </script>
+<div class="soft_function">
+
+	<div class="soft_con_icon">
+		<ul>
+			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/basic.png"/><p style="color:#008dd9">注册属性</p></a></li>
+            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/activity.png"/><p>活动属性</p></a></li>
+            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
+			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
+		</ul>
+	</div> 
+
+	<div class="soft_con1" style="background:url(/static/personal/images/line_select_001.gif);"></div>
+
+	<div class="soft_con">
+
+		<div id="xzgl" class="soft_con2">
+            {% include "portrait/detail/basic.html"%}
+        </div>
+	
+		<div id="crm" class="soft_con2" style="display:none">
+            {% include "portrait/detail/activity.html"%}
+        </div>
+	
+		<div id="xmgl" class="soft_con2" style="display:none">
+            {% include "portrait/detail/thought.html"%}
+		</div>
+	
+		<div id="zsgl" class="soft_con2" style="display:none">
+            {% include "portrait/detail/language.html"%}
+		</div>
+	
+		<div id="ydbg" class="soft_con2" style="display:none">
+            {% include "portrait/detail/social.html"%}
+		</div>
+	
+	</div>
+	
+</div>
+
+{% endblock main %}
+
+{% block Own_js %}
+{{ super() }}
+
 {% endblock Own_js%}
