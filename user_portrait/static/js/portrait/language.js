@@ -33,13 +33,12 @@ function Draw_keyword(data){
 	var myChart = echarts.init(document.getElementById('Language')); 
 	var option = {
     title: {
-        text: '关键字',
+        text: '关键词',
     },
     tooltip: {
         show: true
     },
     series: [{
-        name: 'Google Trends',
         type: 'wordCloud',
         size: ['80%', '80%'],
         textRotation : [0, 45, 90, -45],
@@ -63,8 +62,12 @@ $('#con1').empty();
 html1 += '<div class="Litem-list fleft">';
 html1 += '<ul class="Litem">';
 html1 += '<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>';
-for(i=0;i<positive.length;i++){
-   html1 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+positive[i][0]+'</span></li>';
+if(positive.length==0){
+		 html1 += '<li> <span class="fleft range">无此数据</span></li>';
+}else{
+	for(i=0;i<positive.length;i++){
+		html1 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+positive[i][0]+'</span></li>';
+	}
 }
 html1 += '</ul>';
 html1 += '</div> ';
@@ -75,8 +78,12 @@ $('#con2').empty();
 html2 += '<div class="Litem-list fleft">';
 html2 += '<ul class="Litem">';
 html2 += '<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>';
-for(i=0;i<negative.length;i++){
-   html2 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+negative[i][0]+'</span></li>';
+if(negative.length==0){
+	html2 += '<li> <span class="fleft range">无此数据</span></li>';
+}else{
+	for(i=0;i<negative.length;i++){
+		html2 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+negative[i][0]+'</span></li>';
+	}
 }
 html2 += '</ul>';
 html2 += '</div> ';
@@ -87,8 +94,12 @@ $('#con3').empty();
 html3 += '<div class="Litem-list fleft">';
 html3 += '<ul class="Litem">';
 html3 += '<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>';
-for(i=0;i<anxiety.length;i++){
-   html3 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+anxiety[i][0]+'</span></li>';
+if(anxiety.length==0){
+	html3 += '<li> <span class="fleft range">无此数据</span></li>';
+}else{
+	for(i=0;i<anxiety.length;i++){
+		html3 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+anxiety[i][0]+'</span></li>';
+	}
 }
 html3 += '</ul>';
 html3 += '</div> ';
@@ -99,8 +110,12 @@ $('#con4').empty();
 html4 += '<div class="Litem-list fleft">';
 html4 += '<ul class="Litem">';
 html4 += '<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>';
-for(i=0;i<angry.length;i++){
-   html4 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+angry[i][0]+'</span></li>';
+if(angry.length==0){
+	html4 += '<li> <span class="fleft range">无此数据</span></li>';
+}else{
+	for(i=0;i<angry.length;i++){
+		html4 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+angry[i][0]+'</span></li>';
+	}
 }
 html4 += '</ul>';
 html4 += '</div> ';
@@ -111,8 +126,12 @@ $('#con5').empty();
 html5 += '<div class="Litem-list fleft">';
 html5 += '<ul class="Litem">';
 html5 += '<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>';
-for (i=0;i<emoticon.length;i++){
-   html5 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+emoticon[i][0]+'</span></li>';
+if(emoticon.length==0){
+	html5 += '<li> <span class="fleft range">无此数据</span></li>';
+}else{
+	for(i=0;i<emoticon.length;i++){
+		html5 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+emoticon[i][0]+'</span></li>';
+	}
 }
 html5 += '</ul>';
 html5 += '</div> ';
@@ -123,8 +142,12 @@ $('#con6').empty();
 html6 += '<div class="Litem-list fleft">';
 html6 += '<ul class="Litem">';
 html6 += '<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>';
-for (i=0;i<hashtag.length;i++){
-   html6 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+hashtag[i][0]+'</span></li>';
+if(hashtag.length==0){
+	html6 += '<li> <span class="fleft range">无此数据</span></li>';
+}else{
+	for(i=0;i<hashtag.length;i++){
+		html6 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+hashtag[i][0]+'</span></li>';
+	}
 }
 html6 += '</ul>';
 html6 += '</div> ';
