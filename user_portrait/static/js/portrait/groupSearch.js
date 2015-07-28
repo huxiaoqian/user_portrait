@@ -26,12 +26,15 @@ searchResult:function(data){
 			}else{
 				html += '<td>'+item[i][j]+'</td>';
 			}
+
 		}
-		if(item[i][5]==1){
-			html += '<td>已完成</td>';
+		
+		if(item[i][4]==1){
+			html += '<td><a style="cursor:hand;" href="/index/group_analysis/?name=' + item[i][0]+ '">已完成</a></td>';
 		}else{
 			html += '<td>正在计算</td>';
 		}
+		
 		html +='<td><a href="javascript:void(0)" id="del">删除</a></td>';
 		html += '</tr>';
 	}
