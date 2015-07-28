@@ -170,10 +170,10 @@ def search_location(now_ts, uid):
 # return :{time_segment:count}
 def search_activity(now_ts, uid):
     date = ts2datetime(now_ts)
-    #print 'date:', date
+    print 'date:', date
     ts = datetime2ts(date)
     timestamp = ts
-    #print 'date-ts:', ts
+    print 'date-timestamp:', ts
     activity_result = dict()
     results = dict()
     segment_result = dict()
@@ -202,7 +202,7 @@ def search_activity(now_ts, uid):
 
     trend_list = []
     for i in range(1,8):
-        ts = timestamp - i*26*3600
+        ts = timestamp - i*24*3600
         for j in range(0, 6):
             time_seg = ts + j*15*60*16
             if time_seg in results:
@@ -241,24 +241,24 @@ def search_attribute_portrait(uid):
     except:
         results = None
     keyword_list = []
-    if results and results['keywords']:
+    if results['keywords']:
         keywords_dict = json.loads(results['keywords'])
         sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
         #print 'sort_word_list:', sort_word_list
         results['keywords'] = sort_word_list[:20]
     #print 'keywords:', results
     geo_top = []
-    if results and results['activity_geo_dict']:
+    if results['activity_geo_dict']:
         geo_dict = json.loads(results['activity_geo_dict'])
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
         geo_top = sort_geo_dict[:5]
         results['activity_geo'] = geo_top
-    if results and results['hashtag_dict']:
+    if results['hashtag_dict']:
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
     emotion_result = {}
-    if results and results['emotion_words']:
+    if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
         for word_type in emotion_mark_dict:
             try:
@@ -272,36 +272,36 @@ def search_attribute_portrait(uid):
     #print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
     #topic
-    if results and results['topic']:
+    if results['topic']:
         topic_dict = json.loads(results['topic'])
         sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
         results['topic'] = sort_topic_dict[:5]
     #domain
-    if results and results['domain']:
+    if results['domain']:
         domain_string = results['domain']
         domain_list = domain_string.split('_')
         results['domain'] = domain_list
     #emoticon
-    if results and results['emoticon']:
+    if results['emoticon']:
         emoticon_dict = json.loads(results['emoticon'])
         sort_emoticon_dict = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
         results['emoticon'] = sort_emoticon_dict[:5]
     #online_pattern
-    if results and results['online_pattern']:
+    if results['online_pattern']:
         online_pattern_dict = json.loads(results['online_pattern'])
         sort_online_pattern_dict = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
         results['online_pattern'] = sort_online_pattern_dict[:5]
     #psycho_status
-    if results and results['psycho_status']:
+    if results['psycho_status']:
         psycho_status_dict = json.loads(results['psycho_status'])
         sort_psycho_status_dict = sorted(psycho_status_dict.items(), key=lambda x:x[1], reverse=True)
         results['psycho_status'] = sort_psycho_status_dict[:5]
     #psycho_feature
-    if results and results['psycho_feature']:
+    if results['psycho_feature']:
         psycho_feature_list = results['psycho_feature'].split('_')
         results['psycho_feature'] = psycho_feature_list
     #state
-    if results and results['uid']:
+    if results['uid']:
         uid = results['uid']
         profile_result = es_user_profile.get(index='weibo_user', doc_type='user', id=uid)
         try:
@@ -309,6 +309,60 @@ def search_attribute_portrait(uid):
             results['description'] = user_state
         except:
             results['description'] = ''
+    
+    if results['importance']:
+        #print results['importance']
+        query_body = {
+                'query':{
+                    "range":{
+                        "importance":{
+                        "from": results['importance'],
+                        "to": 1000000
+                        }
+                        }
+                    }
+                }
+        importance_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        if importance_rank['_shards']['successful'] != 0:
+            #print 'importance_rank:', importance_rank
+            results['importance_rank'] = importance_rank['count']
+        else:
+            print 'es_importance_rank error'
+            results['importance_rank'] = 0
+    if results['activeness']:
+        query_body = {
+                'query':{
+                    "range":{
+                        "activeness":{
+                            "from":results['activeness'],
+                            "to": 1000000
+                            }
+                        }
+                    }
+                }
+        activeness_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        if activeness_rank['_shards']['successful'] != 0:
+            results['activeness_rank'] = activeness_rank['count']
+        else:
+            print 'es_activess_rank error'
+            results['activeness_rank'] = 0
+    if results['influence']:
+        query_body = {
+                'query':{
+                    'range':{
+                        'influence':{
+                            'from':results['influence'],
+                            'to': 1000000
+                            }
+                        }
+                    }
+                }
+        influence_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        if influence_rank['_shards']['successful'] != 0:
+            results['influence_rank'] = influence_rank['count']
+        else:
+            print 'es_influence_rank error'
+            results['influence_rank'] = 0
     return results
 
 #use to search user_portrait by lots of condition 
