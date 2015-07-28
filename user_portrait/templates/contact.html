@@ -162,7 +162,11 @@ Search_weibo.prototype = {
         return data;
     },
         
-    Draw_table: function(data){
+Draw_table: function(data){
+        if(data==0){
+            alert("没有相关人物推荐");
+            return false;
+        }
         $('#table').empty();
         var html = '';
         var height = 39 * (data.length+1);
@@ -171,17 +175,22 @@ Search_weibo.prototype = {
         html += '<tbody>';
         for(var item in data){
             html += '<tr>';
+            var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
             for(var i =0; i < data[item].length; i++){  
                 if(data[item][i] == 'unknown'){
                     data[item][i] = '未知'
                 }
-                if(i > 2) {
+                if(i >= 2) {
                     html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i].toFixed(2) +'</td>';
                 }
                 else{
+                if(i == 0){
+                   var user_url = personal_url + data[item][0];
+                    html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+user_url +' target="_blank">'+ data[item][i] +'</a></td>';
+                }else{
                    html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>'; 
+                }
                 }            
-               
             }
             html += '</tr>';
         }
@@ -191,19 +200,23 @@ Search_weibo.prototype = {
         $('#table').append(html);
     },
 
-    Draw_picture: function(data){
+Draw_picture: function(data){
+        if(data==0){
+            alert("");
+            return false;
+        }
         var Related_Node = new Array();
         var Related_Link = new Array();
-        var user_name = data[0][1];
-        console.log(Related_Node);
+        var user_name = data[0][0];
+         var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
         for(var item =0; item < data.length; item++){
             if(data[item][1]=='unknown'){
                 Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
                 Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5]});
             }
             else{
-                Related_Node.push({'name':data[item][1], 'value':data[item][5], 'label':data[item][1]});
-                Related_Link.push({'source':user_name, 'target':data[item][1], 'weight':data[item][5]});
+                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5]});
             }
         }
         var option = {
@@ -288,14 +301,14 @@ Search_weibo.prototype = {
                     ) { //点击的是边
                         var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
                         var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
-                        // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
-                    } else { // 点击的是点
+                        } else {
+                        var node_url = personal_url + data.name;
+                        window.open(node_url);
                     }
                 }
                     myChart.on(ecConfig.EVENT.CLICK, focus)
 
                     myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-                        console.log(myChart.chart.force.getPosition());
                     });
                 }
         )     
@@ -338,7 +351,6 @@ function get_choose_data(uid){
         }
     });
     url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +filed ;
-    console.log(url);
     return url;
 }
 

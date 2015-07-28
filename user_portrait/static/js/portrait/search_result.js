@@ -50,6 +50,45 @@ Search_weibo_result.prototype = {
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+  },
+  Re_Draw_table: function(data){
+    //console.log(data);
+    var div = that.div
+    //console.log(div);
+    $(div).empty();
+    var user_url ;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="result_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
+    html += '<tbody>';
+    for(var key in data){
+      var item = data[key];
+      if (item != ''){ // remain in global_data
+          user_url = '/index/personal/?uid=' + item[0];
+          html += '<tr id=' + item[0] +'>';
+          html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
+          html += '<td class="center">'+ item[1] +'</td>';
+          html += '<td class="center">'+ gender(item[2]) +'</td>';
+          html += '<td class="center">'+ item[3] +'</td>';
+          html += '<td class="center">'+ item[4].toFixed(2) +'</td>';
+          html += '<td class="center">'+ item[5].toFixed(2) +'</td>';
+          html += '<td class="center">'+ item[6].toFixed(2) +'</td>';
+          html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
+          html += '</tr>';
+      }
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+    //datatable
+    $('#result_table_new').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
   }
 }
 
@@ -69,20 +108,37 @@ var global_choose_uids = new Array();
 var global_data = new Array();
 
 console.log(url_search_result);
-draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
+var draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
 draw_conditions(draw_table_search_result);
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
 
 function deleteurl(that, parameter){
-    for (var i = 0;i < pars.length;i++){
-        var pname = parameter.substring(7, parameter.length);
-        if (pname == pars[i]){
-            values[i] = '';
+    var pname = parameter.substring(7, parameter.length);
+    if (pname.indexOf('_') >= 0){
+        var pindex = pname.charAt(pname.length-1);
+        pname = pname.substring(0, pname.length-2);
+        console.log(pname);
+        console.log(pindex);
+        for (var i = 0;i < pars.length;i++){
+            if (pname == pars[i]){
+                var term_list = values[i].split(',');
+                term_list.splice(pindex, 1);
+                console.log(term_list);
+                values[i] = term_list.join(',');
+            }
+        }
+    }
+    else{
+        for (var i = 0;i < pars.length;i++){
+            if (pname == pars[i]){
+                values[i] = '';
+            }
         }
     }
     draw_conditions(that);
     url_search_result = '/attribute/portrait_search/?stype=2&' + par2url(pars, values);
-    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Draw_table);
+    console.log(url_search_result);
+    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Re_Draw_table);
 }
 function process_par(name, value){
     var result = new Array();
@@ -187,8 +243,17 @@ function draw_conditions(that){
             var fix_name = fix_result[0];
             var fix_value = fix_result[1];
             if (fix_value){
-                html += '<span class="mouse" id=choose_' + pre_name + ' style="margin-left:10px">'+ fix_name + ':'+ fix_value;
-                html += '&nbsp;<a class="cross" href="#">X</a></span>';
+                if (fix_value.indexOf(',') >= 0){
+                    var term_list = fix_value.split(',');
+                    for (var j = 0; j < term_list.length;j++){
+                        html += '<span class="mouse" id=choose_' + pre_name + '_' + j +' style="margin-left:10px">'+ fix_name + ':'+ term_list[j];
+                        html += '&nbsp;<a class="cross" href="#">X</a></span>';
+                    }
+                }
+                else{
+                    html += '<span class="mouse" id=choose_' + pre_name + ' style="margin-left:10px">'+ fix_name + ':'+ fix_value;
+                    html += '&nbsp;<a class="cross" href="#">X</a></span>';
+                }
             }
         }
         $('#conditions').html(html);
@@ -219,8 +284,8 @@ function compare_button(){
     alert("请选择2至3个用户！");
   }
   else{
-    draw_table_compare_confirm(compare_uids, "#compare_comfirm");
-    $('#compare').modal();
+      draw_table_compare_confirm(compare_uids, "#compare_comfirm");
+      $('#compare').modal();
   }
 }
 
@@ -279,12 +344,12 @@ function choose_all(){
 function draw_table_compare_confirm(uids, div){
   $(div).empty();
     var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table id="compare_cofirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
-      html += '<tr>';
+      html += '<tr">';
       html += '<td class="center" name="compare_confirm_uids">'+ uids[i] +'</td>';
       html += '<td class="center">'+ item[1] + '</td>';
       html += '<td class="center">'+ gender(item[2]) + '</td>';
@@ -322,13 +387,6 @@ function draw_table_group_confirm(uids, div){
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
-    $('#group_confirm_table').dataTable({
-        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-        "sPaginationType": "bootstrap",
-        "oLanguage": {
-            "sLengthMenu": "_MENU_ 每页"
-        }
-    });
 }
 
 function draw_table_delete_confirm(uids, div){
@@ -339,7 +397,7 @@ function draw_table_delete_confirm(uids, div){
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
-      html += '<tr>';
+      html += '<tr id=' + uids[1] +'>';
       html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
       html += '<td class="center">'+ item[1] + '</td>';
       html += '<td class="center">'+ gender(item[2]) + '</td>';
@@ -353,13 +411,6 @@ function draw_table_delete_confirm(uids, div){
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
-    $('#delete_confirm_table').dataTable({
-        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-        "sPaginationType": "bootstrap",
-        "oLanguage": {
-            "sLengthMenu": "_MENU_ 每页"
-        }
-    });
 }
 
 function delRow(obj){
@@ -375,6 +426,10 @@ function compare_confirm_button(){
   $('[name="compare_confirm_uids"]').each(function(){
       compare_confirm_uids.push($(this).text());
   })
+  if (compare_confirm_uids.length == 1){
+      alert('对比的用户至少需要2名!');
+      return;
+  }
   var compare_url = '/index/contrast/?uid_list='+ compare_confirm_uids.join(',');
   console.log(compare_url);
   window.open(compare_url);
@@ -443,11 +498,14 @@ function delete_confirm_button(){
           dataType: "json",
           success: callback
       });
-
       function callback(data){
            console.log(data);
            if (data == '1'){
+               for (var i = 0; i < delete_confirm_uids.length; i++){
+                   global_data[delete_confirm_uids[i]] = '';
+               }
                alert('出库成功！');
+               draw_table_search_result.Re_Draw_table(global_data);
            }
            else{
                alert('fail');
