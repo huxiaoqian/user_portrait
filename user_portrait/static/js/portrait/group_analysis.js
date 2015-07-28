@@ -1,3 +1,24 @@
+// Date format
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
  function Search_weibo(){
   this.ajax_method = 'GET';
 }
@@ -19,7 +40,7 @@ Search_weibo.prototype = {
     $('#overview').empty();
     html = '';
     html += '<div style="height:180px;width:250px;float:left"><ul style="margin-top:-60px"><li><a href="#">';
-    html += '<p style="font-size:16px">名称:' + data[0] +'</p><p style="font-size:16px">时间:' + data[1] +'</p><p style="font-size:16px">描述:' + data[2] +'</p>';
+    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -27,7 +48,7 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
     html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td></tr>';
+    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度</b></td>';
@@ -239,7 +260,7 @@ Draw_activity: function(data){
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
         var s = i.toString();
-        value_x = new Date(parseInt(data['1'][s]['0']) * 1000).toLocaleString().replace('上午','');
+        value_x = new Date(parseInt(data['1'][s]['0'])*1000).format("yyyy年MM月dd日 hh:mm:ss");
         value_y = data['1'][s]['1'];
         data_x.push(value_x);
         data_y.push(value_y);
@@ -308,7 +329,7 @@ Draw_top_location: function(data){
     html += '<div style="font-size:16px">发布地点排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">权重</th></tr>';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i <  data['0'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
@@ -322,7 +343,7 @@ Draw_top_platform: function(data){
     html += '<div style="font-size:16px">发布平台排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">权重</th></tr>';
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '</th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
@@ -343,11 +364,10 @@ Draw_social_line: function(data){
        y_value = data['0']['1'][s];
        y_data.push(y_value);
     };
-    // xdata = [];
-    // for (i = 0; i< y_data.length-1; i++){
-    //     xdata.push(y_data[i] + '-' + y_data[i+1])
-    // }
-    // console.log(xdata);
+    xdata = [];
+    for (i = 0; i< y_data.length-1; i++){
+        xdata.push(y_data[i] + '-' + y_data[i+1])
+    }
 
     $('#social_line').highcharts({
         chart: {
@@ -355,7 +375,7 @@ Draw_social_line: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: '分布'
+        text: '个体节点度分布'
     },
     lang: {
             printChart: "打印",
@@ -366,8 +386,9 @@ Draw_social_line: function(data){
             exportButtonTitle: "导出图片"
         },
     xAxis: {
-        categories: y_data,
+        categories: xdata,
         labels: {
+            rotation: -45,
             align: 'right'
         }
     },
@@ -396,7 +417,7 @@ Draw_social_line: function(data){
         name: '',
         data: x_data ,
         dataLabels: {
-            enabled: true,
+            // enabled: true,
             rotation: -90,
             color: '#FFFFFF',
             align: 'right',
@@ -449,9 +470,6 @@ Draw_think_status: function(data){
         toolbox: {
             show : true,
             feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                restore : {show: true},
                 saveAsImage : {show: true}
             }
         },
@@ -520,9 +538,6 @@ Draw_think_domain: function(data){
         toolbox: {
             show : true,
             feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                restore : {show: true},
                 saveAsImage : {show: true}
             }
         },
@@ -593,9 +608,6 @@ Draw_think_topic: function(data){
         toolbox: {
             show : true,
             feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                restore : {show: true},
                 saveAsImage : {show: true}
             }
         },
@@ -664,9 +676,6 @@ Draw_think_psycho: function(data){
         toolbox: {
             show : true,
             feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                restore : {show: true},
                 saveAsImage : {show: true}
             }
         },
@@ -710,9 +719,9 @@ Draw_hashtag: function(data){
     $('#hashtag').empty();
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">权重</th></tr>';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < data['0'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
@@ -724,9 +733,9 @@ Draw_emotion: function(data){
     $('#emotion').empty();
     html = '';
     html += '<div style="font-size:16px">表情符号排名</div>';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">权重</th></tr>';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i <  data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '</th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
@@ -782,6 +791,9 @@ Draw_importance: function(data){
        y_value = data['0']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
+    for (i = 0; i< y_data.length-1; i++){
+    xdata.push(y_data[i] + '-' + y_data[i+1])
+    }
 
     $('#importance').highcharts({
         chart: {
@@ -800,7 +812,7 @@ Draw_importance: function(data){
             exportButtonTitle: "导出图片"
         },
     xAxis: {
-        categories: y_data,
+        categories: xdata,
         labels: {
             rotation: -45,
             align: 'right'
@@ -824,14 +836,14 @@ Draw_importance: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:59//柱子之间的距离值
+               pointWidth:64//柱子之间的距离值
            }
        },
     series: [{
         name: '',
         data: x_data ,
         dataLabels: {
-            enabled: true,
+            // enabled: true,
             rotation: 0,
             color: '#FFFFFF',
             align: 'right',
@@ -859,6 +871,9 @@ Draw_activeness: function(data){
        y_value = data['1']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
+    for (i = 0; i< y_data.length-1; i++){
+        xdata.push(y_data[i] + '-' + y_data[i+1])
+    }
 
     $('#activeness').highcharts({
         chart: {
@@ -877,7 +892,7 @@ Draw_activeness: function(data){
         exportButtonTitle: "导出图片"
     },
     xAxis: {
-        categories: y_data,
+        categories: xdata,
         labels: {
             rotation: -45,
             align: 'right'
@@ -901,14 +916,14 @@ Draw_activeness: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:59//柱子之间的距离值
+               pointWidth:64//柱子之间的距离值
            }
        },
     series: [{
         name: '',
         data: x_data ,
         dataLabels: {
-            enabled: true,
+            // enabled: true,
             rotation: 0,
             color: '#FFFFFF',
             align: 'right',
@@ -936,6 +951,9 @@ Draw_influence: function(data){
        y_value = data['2']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
+    for (i = 0; i< y_data.length-1; i++){
+        xdata.push(y_data[i] + '-' + y_data[i+1])
+    }
     $('#influence').highcharts({
         chart: {
         type: 'column',
@@ -953,7 +971,7 @@ Draw_influence: function(data){
             exportButtonTitle: "导出图片"
         },
     xAxis: {
-        categories: y_data,
+        categories: xdata,
         labels: {
             rotation: -45,
             align: 'right'
@@ -977,14 +995,14 @@ Draw_influence: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:59//柱子之间的距离值
+               pointWidth:64//柱子之间的距离值
            }
        },
     series: [{
         name: '',
         data: x_data ,
         dataLabels: {
-            enabled: true,
+            // enabled: true,
             rotation: 0,
             color: '#FFFFFF',
             align: 'right',
@@ -1000,14 +1018,34 @@ Draw_influence: function(data){
 });
 },
 Draw_weibo: function(data){
+    if(data['3'] == 0){
+        text1 = '该微博原创微博为空';
+    }else{
+        text1 = '<a href="' + data['6'] + '">点击查看该微博</a>';
+    };
+    if(data['7'] == 0){
+        text2 = '该微博原创微博为空';
+    }else{
+        text2 = '<a href="' + data['10'] + '">点击查看该微博</a>';
+    };
+    if(data['11'] == 0){
+        text3 = '该微博原创微博为空';
+    }else{
+        text3 = '<a href="' + data['14'] + '">点击查看该微博</a>';
+    };
+    if(data['15'] == 0){
+        text4 = '该微博原创微博为空';
+    }else{
+        text4 = '<a href="' + data['18'] + '">点击查看该微博</a>';
+    };
     $('#weibo').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px">'; 
     html += '<tr><th>微博用户UID</th><th>最大条数</th><th style="text-align:center">微博查看</th></tr>';
-    html += '<tr><th>' + data['5'] + '</th><th>最大原创微博转发数(' + data['3'] + ')</th><th style="text-align:center">点击查看该微博</th></tr>';
-    html += '<tr><th>' + data['8'] + '</th><th>最大原创微博评论数(' + data['6'] + ')</th><th style="text-align:center">点击查看该微博</th></tr>';
-    html += '<tr><th>' + data['11'] + '</th><th>最大转发微博转发数(' + data['9'] + ')</th><th style="text-align:center">点击查看该微博</th></tr>';
-    html += '<tr><th>' + data['14'] + '</th><th>最大转发微博评论数(' + data['12'] + ')</th><th style="text-align:center">点击查看该微博</th></tr>'
+    html += '<tr><th>' + data['5'] + '</th><th>原创微博最大转发数(' + data['3'] + ')</th><th style="text-align:center">' +  text1 + '</th></tr>';
+    html += '<tr><th>' + data['9'] + '</th><th>原创微博最大评论数(' + data['7'] + ')</th><th style="text-align:center">' +  text2 +  '</th></tr>';
+    html += '<tr><th>' + data['13'] + '</th><th>转发微博最大转发数(' + data['11'] + ')</th><th style="text-align:center">' +  text3 +  '</th></tr>';
+    html += '<tr><th>' + data['17'] + '</th><th>转发微博最大评论数(' + data['15'] + ')</th><th style="text-align:center">' +  text4 +  '</th></tr>'
     html += '</table>';
     $('#weibo').append(html);                                
 }
