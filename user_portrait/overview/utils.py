@@ -14,7 +14,7 @@ def get_attr(date):
         if isinstance(value, str):
             value = json.loads(value)
         results[item] = value
-    print 'overview result:', results
+    #print 'overview result:', results
     return results
 
 
