@@ -27,7 +27,7 @@ def group_result():
 @mod.route('/contrast/')
 def contrast():
     
-    return render_template('compare.html')
+    return render_template('portrait/compare.html')
 
 @mod.route('/personal/')
 def personal():
@@ -79,6 +79,6 @@ def test():
 @mod.route('/contact/')
 def contact():
     uid = request.args.get('uid', '2001627641')
-    return render_template('contact.html', uid=uid)
+    return render_template('portrait/contact.html', uid=uid)
 
 
