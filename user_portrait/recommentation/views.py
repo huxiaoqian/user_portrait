@@ -172,7 +172,7 @@ def ajax_search_delete():
     if not date or not uid_list:
         return "no define date or uid_list"
     else:
-        date = str(date).replace('-')
+        date = str(date).replace('-','')
         remove_list = str(uid_list).split(',')
 
         temp = r_out.hget('decide_delete_list', date)
@@ -181,7 +181,7 @@ def ajax_search_delete():
             remove_list.extend(exist_data)
         r_out.hset('decide_delete_list', date, json.dumps(remove_list))
 
-        delte_list = str(uid_list).split(',')
+        delete_list = str(uid_list).split(',')
         temp = r_out.hget('history_delete_list', date)
         if temp:
             exist_data = json.loads(r_out.hget('history_delete_list',date))

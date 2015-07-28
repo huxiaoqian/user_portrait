@@ -16,7 +16,8 @@ from global_utils import ES_CLUSTER_FLOW1, es_user_profile
 es = ES_CLUSTER_FLOW1
 user_portrait = "user_portrait" # act as portrait database
 user_portrait_doctype = "user"
-index_destination = "this_is_a_copy_user_portrait" # act as user all portrait user database
+index_destination = 'test'
+#index_destination = "this_is_a_copy_user_portrait" # act as user all portrait user database
 index_destination_doctype = "manage"
 
 def expand_index_action(data):
@@ -41,21 +42,21 @@ def co_search(es, user_list, bulk_action, count_n, tb):
             xdata = expand_index_action(user_info)
             bulk_action.extend([xdata[0], xdata[1]])
             count_n += 1
-        if count_n % 1000 == 0:
-            while True:
-                try:
-                    es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
-                    bulk_action = []
-                    break
-                except:
-                    es = ES_CLUSTER_FLOW1
-            print count_n
+            if count_n % 1000 == 0:
+                while True:
+                    try:
+                        es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
+                        bulk_action = []
+                        break
+                    except:
+                        es = ES_CLUSTER_FLOW1
+                print count_n
 
-        if count_n % 10000 == 0:
-            ts = time.time()
-            print "count_n %s  per  %s  second"  %(count_n, ts-tb)
-            print "count %s " % count
-            tb = ts
+            if count_n % 10000 == 0:
+                ts = time.time()
+                print "count_n %s  per  %s  second"  %(count_n, ts-tb)
+                print "count %s " % count
+                tb = ts
 
     return bulk_action, count_n, tb
 

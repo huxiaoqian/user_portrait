@@ -70,7 +70,7 @@ function draw_domian_portrait(data){
    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
    for (i = 0; i<data['domain_top_user'][key].length; i++){
       var s = i.toString();
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a href="http://weibo.com/u/' + data['domain_top_user'][key][s]['0'] +'" title="' + data['domain_top_user'][key][s]['1'] +'">';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0'] +'" title="' + data['domain_top_user'][key][s]['1'] +'">';
       html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + data['domain_top_user'][key][s]['2'] + '" alt="' + data['domain_top_user'][key][s]['1'] +'"></div></a></li>';         
    }
    html += '</ul></div></div>';
@@ -166,7 +166,7 @@ function draw_retweeted_user(data){
        }else{
           top_retweeted = data['top_retweeted_user'][s]['1'];
        };
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="http://weibo.com/u/' + data['top_retweeted_user'][s]['0'] + '">' + top_retweeted + '</a></th><th style="text-align:center">' + data['top_retweeted_user'][s]['3'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_retweeted_user'][s]['0'] + '">' + top_retweeted + '</a></th><th style="text-align:center">' + data['top_retweeted_user'][s]['3'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#retweeted_user').append(html);                  
