@@ -1,9 +1,22 @@
 {% extends "tbase.html" %}
     {% block title %}群体分析{% endblock title%}
       {% block css %}
-      {{ super() }}
+      {{ super() }}	    
+    <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="/static/css/charisma-app.css" rel="stylesheet">
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
+    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
+    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='/static/css/uploadify.css' rel='stylesheet'>
+    <link href='/static/css/animate.min.css' rel='stylesheet'>
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
     body {
@@ -88,6 +101,7 @@
 
  {% block head_js %}
   {{ super() }}
+	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
@@ -117,7 +131,7 @@
 			    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 			      <div class="panel-body">
 			        <div id='sex' style='float:left;width:300px;height:200px'></div>        
-			        <div id='vertify' style='float:right;width:300px;height:200px'></div>
+			        <div id='verify' style='float:right;width:300px;height:200px'></div>
 				    <div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:60px' id='totalnumber'>
 
 				    </div>
@@ -176,7 +190,7 @@
 			    </div>
 			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 			      <div class="panel-body">
-					<div><h4 class="page-header"style='margin-top:10px'>思想</h4>
+					<div>
 						<div id="radar_status" style="height:200px;width:230px;float:left"></div>
 						<div id="radar_topic" style="height:200px;width:230px;float:right"></div>
 						<div id="radar_psycho" style="height:200px;width:230px;float:left"></div>
@@ -199,11 +213,11 @@
 			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
 			      <div class="panel-body">
 
-					<div id='hashtag' style='overflow-x:hidden;width:180px;float:left'>
+					<div id='hashtag' style='overflow-x:hidden;width:300px;height:300;float:left'>
 		        	</div>
-		     		<div id='emotion' style='overflow-x:hidden;width:180px;float:right'>		     	
+		     		<div id='emotion' style='overflow-x:hidden;width:200px;height:300;float:right'>		     	
 			        </div>
-					<div id="keywordcloud" style="height:300px;width:600px;float:left"></div>
+					<div id="keywordcloud" style="height:300px;width:450px;height:300;float:left"></div>
 
 			      </div>
 			    </div>
@@ -224,7 +238,7 @@
 			      	<div id='importance'style='width:460px;height:300px;float:left'></div>
 			      	<div id='activeness'style='width:460px;height:300px;float:right'></div>
 			      	<div id='influence'style='width:460px;height:300px;float:left'></div>
-				     <div id='weibo' style='overflow-x:hidden;width:400px;margin-top:30px;float:right'>
+				     <div id='weibo' style='overflow-x:hidden;width:480px;margin-top:30px;float:right'>
 					 </div>
 			      </div>
 			    </div>
@@ -240,5 +254,10 @@
 
     {% block Own_js %}
     {{ super() }}
+    <script>
+        var name = "{{ name }}";
+        console.log(name);
+    </script>
+	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	{% endblock Own_js %}
 

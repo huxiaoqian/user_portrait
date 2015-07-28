@@ -19,15 +19,15 @@ Search_weibo.prototype = {
     $('#overview').empty();
     html = '';
     html += '<div style="height:180px;width:250px;float:left"><ul style="margin-top:-60px"><li><a href="#">';
-    html += '<p style="font-size:16px">名称:' + data['0'] +'</p><p style="font-size:16px">时间:' + data['1'] +'</p><p style="font-size:16px">描述:' + data['2'] +'</p>';
+    html += '<p style="font-size:16px">名称:' + data[0] +'</p><p style="font-size:16px">时间:' + data[1] +'</p><p style="font-size:16px">描述:' + data[2] +'</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle">' + data['3'].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data['4'].toFixed(2) + '</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data['5'].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data['6'].toFixed(2) + '</td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '</td>';
+    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度</b></td>';
@@ -37,7 +37,6 @@ Search_weibo.prototype = {
 },
 
 Draw_basic: function(data){
-    console.log(data);
     var myChart = echarts.init(document.getElementById('sex')); 
         var dataStyle = {
         normal: {
@@ -92,7 +91,7 @@ Draw_basic: function(data){
         },
         series : [
             {
-                name:'男',
+                name:'',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -110,7 +109,7 @@ Draw_basic: function(data){
                 ]
             },
             {
-                name:'女',
+                name:'',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -119,6 +118,101 @@ Draw_basic: function(data){
                     {
                         value:data['0']['2'], 
                         name:'女'
+                    },
+                    {
+                        value:data['0']['1'],
+                        name:'invisible',
+                        itemStyle : placeHolderStyle
+                    }
+                ]
+            }
+        ]
+    };
+                        
+         myChart.setOption(option);  
+    },
+Draw_verify: function(data){
+    var myChart = echarts.init(document.getElementById('verify')); 
+        var dataStyle = {
+        normal: {
+            label: {show:false},
+            labelLine: {show:false}
+        }
+    };
+    var placeHolderStyle = {
+        normal : {
+            color: 'rgba(0,0,0,0)',
+            label: {show:false},
+            labelLine: {show:false}
+        },
+        emphasis : {
+            color: 'rgba(0,0,0,0)'
+        }
+    };
+    option = {
+        title: {
+            text: '你认证了吗？',
+            subtext: '',
+            sublink: '',
+            x: 'center',
+            y: 'center',
+            itemGap: 20,
+            textStyle : {
+                color : 'rgba(30,144,255,0.8)',
+                fontFamily : '微软雅黑',
+                fontSize : 15,
+                fontWeight : 'bolder'
+            }
+        },
+        tooltip : {
+            show: true,
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : document.getElementById('main').offsetWidth / 2,
+            y : 45,
+            itemGap:12,
+            data:['已认证','未认证']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        series : [
+            {
+                name:'已认证',
+                type:'pie',
+                clockWise:false,
+                radius : [60, 80],
+                itemStyle : dataStyle,
+                data:[
+                    {
+                        value:data['0']['1'],
+                        name:'已认证'
+                    },
+                    {
+                        value:data['0']['2'],
+                        name:'invisible',
+                        itemStyle : placeHolderStyle
+                    }
+                ]
+            },
+            {
+                name:'未认证',
+                type:'pie',
+                clockWise:false,
+                radius : [40, 60],
+                itemStyle : dataStyle,
+                data:[
+                    {
+                        value:data['0']['2'], 
+                        name:'未认证'
                     },
                     {
                         value:data['0']['1'],
@@ -145,7 +239,7 @@ Draw_activity: function(data){
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
         var s = i.toString();
-        value_x = new Date(parseInt(data['1'][s]['0']) * 1000).toLocaleString();
+        value_x = new Date(parseInt(data['1'][s]['0']) * 1000).toLocaleString().replace('上午','');
         value_y = data['1'][s]['1'];
         data_x.push(value_x);
         data_y.push(value_y);
@@ -159,12 +253,20 @@ Draw_activity: function(data){
                 fontFamily: 'Microsoft YaHei'
             }},
         title: {
-            text: '',
+            text: '微博时间走势图',
             x: -20 //center
         },
         subtitle: {
             text: '',
             x: -20
+        },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
         },
         xAxis: {
             categories: data_x,
@@ -204,7 +306,7 @@ Draw_top_location: function(data){
     $('#top_location').empty();
     html = '';
     html += '<div style="font-size:16px">发布地点排名</div>';
-    html += '<table style="width:400px;font-size:14px">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
@@ -218,7 +320,7 @@ Draw_top_platform: function(data){
     $('#top_platform').empty();
     html = '';
     html += '<div style="font-size:16px">发布平台排名</div>';
-    html += '<table style="width:400px;font-size:14px">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 1; i++) {
        var s = i.toString();
@@ -253,8 +355,16 @@ Draw_social_line: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '分布'
     },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
     xAxis: {
         categories: y_data,
         labels: {
@@ -264,7 +374,7 @@ Draw_social_line: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -322,9 +432,6 @@ Draw_think_status: function(data){
         indicate.push(indicator);
         status_value.push(data['2'][key]);
     }
-    console.log(indicate);
-
-
     var myChart = echarts.init(document.getElementById('radar_status')); 
         
         var option = {
@@ -600,9 +707,10 @@ Draw_think_psycho: function(data){
         myChart.setOption(option); 
 },
 Draw_hashtag: function(data){
+    $('#hashtag').empty();
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
-    html += '<table>';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
@@ -613,11 +721,10 @@ Draw_hashtag: function(data){
     $('#hashtag').append(html);    
 },
 Draw_emotion: function(data){
-    console.log(data);
     $('#emotion').empty();
     html = '';
-    html += '<div style="font-size:16px"表情符号排名</div>';
-    html += '<table>';
+    html += '<div style="font-size:16px">表情符号排名</div>';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
@@ -672,7 +779,7 @@ Draw_importance: function(data){
     };
     for (var i = 0; i < data['0']['1'].length; i++) {
        var s = i.toString();
-       y_value = data['0']['1'][s];
+       y_value = data['0']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
 
@@ -682,8 +789,16 @@ Draw_importance: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '重要度分布'
     },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
     xAxis: {
         categories: y_data,
         labels: {
@@ -694,7 +809,7 @@ Draw_importance: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -709,7 +824,7 @@ Draw_importance: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:59//柱子之间的距离值
            }
        },
     series: [{
@@ -717,7 +832,7 @@ Draw_importance: function(data){
         data: x_data ,
         dataLabels: {
             enabled: true,
-            rotation: -90,
+            rotation: 0,
             color: '#FFFFFF',
             align: 'right',
             x: 4,
@@ -741,7 +856,7 @@ Draw_activeness: function(data){
     };
     for (var i = 0; i < data['1']['1'].length; i++) {
        var s = i.toString();
-       y_value = data['1']['1'][s];
+       y_value = data['1']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
 
@@ -751,7 +866,15 @@ Draw_activeness: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '活跃度分布'
+    },
+    lang: {
+        printChart: "打印",
+        downloadJPEG: "下载JPEG 图片",
+        downloadPDF: "下载PDF文档",
+        downloadPNG: "下载PNG 图片",
+        downloadSVG: "下载SVG 矢量图",
+        exportButtonTitle: "导出图片"
     },
     xAxis: {
         categories: y_data,
@@ -763,7 +886,7 @@ Draw_activeness: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -778,7 +901,7 @@ Draw_activeness: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:59//柱子之间的距离值
            }
        },
     series: [{
@@ -786,7 +909,7 @@ Draw_activeness: function(data){
         data: x_data ,
         dataLabels: {
             enabled: true,
-            rotation: -90,
+            rotation: 0,
             color: '#FFFFFF',
             align: 'right',
             x: 4,
@@ -810,18 +933,25 @@ Draw_influence: function(data){
     };
     for (var i = 0; i < data['2']['1'].length; i++) {
        var s = i.toString();
-       y_value = data['2']['1'][s];
+       y_value = data['2']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
-    console.log(data);
     $('#influence').highcharts({
         chart: {
         type: 'column',
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: ''
+        text: '影响力分布'
     },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
     xAxis: {
         categories: y_data,
         labels: {
@@ -832,7 +962,7 @@ Draw_influence: function(data){
     yAxis: {
         min: 0,
         title: {
-            text: '人 (次)'
+            text: '数量 (人)'
         }
     },
     legend: {
@@ -847,7 +977,7 @@ Draw_influence: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:59//柱子之间的距离值
            }
        },
     series: [{
@@ -855,7 +985,7 @@ Draw_influence: function(data){
         data: x_data ,
         dataLabels: {
             enabled: true,
-            rotation: -90,
+            rotation: 0,
             color: '#FFFFFF',
             align: 'right',
             x: 4,
@@ -902,28 +1032,29 @@ function createRandomItemStyle() {
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
-    // weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=overview";
-    // Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    // basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=basic";
-    // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
-    // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
-    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=activity";
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_location);
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_platform);
-    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=social";
-    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_group);
-    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=think";
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_status);
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_domain);
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_topic);
-    // Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_psycho);
-    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=text";
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_hashtag);
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_emotion);
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=test_task&module=influence";
+    weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
+    Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
+    basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
+    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
+    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
+    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_verify);
+    activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_location);
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_top_platform);
+    social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
+    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_group);
+    think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_status);
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_domain);
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_topic);
+    Search_weibo.call_sync_ajax_request(think_url, Search_weibo.ajax_method, Search_weibo.Draw_think_psycho);
+    text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_hashtag);
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_emotion);
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
+    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_importance);
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_activeness);
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_influence);

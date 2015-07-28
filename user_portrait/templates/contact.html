@@ -123,7 +123,7 @@
             <div id='txt'>
                 <div class="main col-sm-9 col-md-10">
                     <div class="col-sm-12">
-                        <div class="panel panel-default" style="width:1000px; height:400px;margin-left:-30px" id='table'>
+                        <div class="panel panel-default" style="width:1000px; height:429px;margin-left:-30px" id='table'>
                         </div>
                     </div>
                 </div>
@@ -165,18 +165,29 @@ Search_weibo.prototype = {
     Draw_table: function(data){
         $('#table').empty();
         var html = '';
+        var height = 39 * (data.length+1);
         html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
         html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th></tr></thead>';
         html += '<tbody>';
         for(var item in data){
             html += '<tr>';
-            for(var i =0; i < data[item].length; i++){                
-                html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>';
+            for(var i =0; i < data[item].length; i++){  
+                if(data[item][i] == 'unknown'){
+                    data[item][i] = '未知'
+                }
+                if(i > 2) {
+                    html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i].toFixed(2) +'</td>';
+                }
+                else{
+                   html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>'; 
+                }            
+               
             }
             html += '</tr>';
         }
         html += '</tbody>';
         html += '</table>';
+        $('#table').css('height',height);
         $('#table').append(html);
     },
 
@@ -186,8 +197,14 @@ Search_weibo.prototype = {
         var user_name = data[0][1];
         console.log(Related_Node);
         for(var item =0; item < data.length; item++){
-            Related_Node.push({'name':data[item][1], 'value':data[item][5], 'label':data[item][1]});
-            Related_Link.push({'source':user_name, 'target':data[item][1], 'weight':data[item][5]});
+            if(data[item][1]=='unknown'){
+                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5]});
+            }
+            else{
+                Related_Node.push({'name':data[item][1], 'value':data[item][5], 'label':data[item][1]});
+                Related_Link.push({'source':user_name, 'target':data[item][1], 'weight':data[item][5]});
+            }
         }
         var option = {
                 title : {
@@ -207,10 +224,6 @@ Search_weibo.prototype = {
                         magicType: {show: true, type: ['force', 'chord']},
                         saveAsImage : {show: true}
                     }
-                },
-                legend: {
-                    x: 'left',
-                    data:['家人']
                 },
                 series : [
                     {
@@ -289,10 +302,11 @@ Search_weibo.prototype = {
     }
 }
 
+var uid = "{{ uid }}";
 var Search_weibo = new Search_weibo();
 $('.label-success').click(function(){
-    Search_weibo.call_sync_ajax_request(get_choose_data(), Search_weibo.ajax_method, Search_weibo.Draw_table);
-    Search_weibo.call_sync_ajax_request(get_choose_data(), Search_weibo.ajax_method, Search_weibo.Draw_picture);
+    Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
+    Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_picture);
 });
 
 $('.inline-checkbox').click(function(){
@@ -307,8 +321,8 @@ $('.inline-checkbox').click(function(){
 });
 
 //获取选择的条件，把参数传出获取返回值
-function get_choose_data(){
-    var url = '/manage/imagine/?uid=2001627641&keywords='
+function get_choose_data(uid){
+    var url = '/manage/imagine/?uid=' + uid + '&keywords=';
     var keywords = new Array();
     var weight = new Array();
     var field ;
@@ -324,6 +338,7 @@ function get_choose_data(){
         }
     });
     url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +filed ;
+    console.log(url);
     return url;
 }
 

@@ -10,15 +10,15 @@
   <div class="carousel-inner" role="listbox">
     <div class="item active">
      <div id ='test1' style='height:600px;width:880px'></div>
-     <div class="carousel-caption">标题 1</div>
+     <div class="carousel-caption">粉丝</div>
     </div>
     <div class="item">
       <div id ='test2' style='height:600px;width:880px'></div>
-      <div class="carousel-caption">标题 2</div>
+      <div class="carousel-caption">关注</div>
     </div>
    <div class="item">
       <div id ='test3' style='height:600px;width:880px'></div>
-      <div class="carousel-caption">标题 3</div>
+      <div class="carousel-caption">互动</div>
     </div>
   </div>
 
@@ -36,25 +36,18 @@
   </a>
   </div>
 </div>
+
 <script>
     option = {
             title : {
-                text: '人物关系：乔布斯',
+                text: '关注',
                 subtext: '数据来自人立方',
-                x:'right',
-                y:'bottom'
+                x:'left',
+                y:'top'
             },
             tooltip : {
                 trigger: 'item',
                 formatter: '{a} : {b}'
-            },
-            toolbox: {
-                show : true,
-                feature : {
-                    restore : {show: true},
-                    magicType: {show: true, type: ['force', 'chord']},
-                    saveAsImage : {show: true}
-                }
             },
             legend: {
                 x: 'left',
@@ -156,6 +149,9 @@
    var myChart3 = echarts.init(document.getElementById('test3'));
    myChart3.setOption(option);
 </script>
+	<script src="/static/js/portrait/attention.js"></script>
+	<!-- <script src="/static/js/portrait/follower.js"></script> -->
+	<script src="/static/js/portrait/mention.js"></script>
    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
