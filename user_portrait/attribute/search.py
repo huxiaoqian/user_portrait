@@ -15,7 +15,9 @@ from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
 from user_portrait.global_utils import es_user_portrait
+from user_portrait.global_utils import es_user_profile
 from user_portrait.search_user_profile import search_uid2uname
+from user_portrait.filter_uid import all_delete_uid
 
 
 emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
@@ -48,10 +50,12 @@ def search_attention(uid):
         
         count = stat_results[ruid]
         results[ruid] = [uname, count]
-    if results:    
-        return results
+    if results: 
+        sort_results_list = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
+        print 'sort_results_list:', sort_results_list
+        return [sort_results_list[:20], len(results)]
     else:
-        return None
+        return [None, 0]
 
 #search:'be_retweet_' + str(uid) return followers {br_uid1:count1, br_uid2:count2}
 #redis:{'be_retweet_'+uid:{br_uid:count}}
@@ -81,9 +85,10 @@ def search_follower(uid):
         count = stat_results[br_uid]
         results[br_uid] = [uname, count]
     if results:
-        return results
+        sort_results = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
+        return [sort_results[:20], len(results)]
     else:
-        return None
+        return [None, 0]
 
 #search:now_ts , uid return 7day at uid list  {uid1:count1, uid2:count2}
 #{'at_'+Date:{str(uid):'{at_uid:count}'}}
@@ -119,9 +124,10 @@ def search_mention(now_ts, uid):
         count = stat_results[at_uid]
         results[at_uid] = [uname, count]
     if results:
-        return results
+        sort_results = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
+        return [sort_results[:20], len(results)]
     else:
-        return False
+        return [None, 0]
 
 #search:now_ts, uid return 7day loaction list {location1:count1, location2:count2}
 #{'ip_'+str(Date_ts):{str(uid):'{city:count}'}
@@ -156,7 +162,7 @@ def search_location(now_ts, uid):
 
     description = active_geo_description(results)
     results['description'] = description
-    print 'location results:', results
+    #print 'location results:', results
     return results
 
 #search: now_ts, uid return 7day activity trend list {time_segment:weibo_count}
@@ -164,10 +170,10 @@ def search_location(now_ts, uid):
 # return :{time_segment:count}
 def search_activity(now_ts, uid):
     date = ts2datetime(now_ts)
-    #print 'date:', date
+    print 'date:', date
     ts = datetime2ts(date)
     timestamp = ts
-    #print 'date-ts:', ts
+    print 'date-timestamp:', ts
     activity_result = dict()
     results = dict()
     segment_result = dict()
@@ -196,7 +202,7 @@ def search_activity(now_ts, uid):
 
     trend_list = []
     for i in range(1,8):
-        ts = timestamp - i*26*3600
+        ts = timestamp - i*24*3600
         for j in range(0, 6):
             time_seg = ts + j*15*60*16
             if time_seg in results:
@@ -206,8 +212,9 @@ def search_activity(now_ts, uid):
     sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=False)
     #print 'sort_trend_list:', sort_trend_list
     activity_result['activity_trend'] = sort_trend_list
-    activity_result['activity_time'] = segment_result
-    print segment_result
+    sort_segment_list = sorted(segment_result.items(), key=lambda x:x[1], reverse=True)
+    activity_result['activity_time'] = sort_segment_list[:2]
+    #print segment_result
     description = active_time_description(segment_result)
     activity_result['description'] = description
     return activity_result
@@ -234,65 +241,128 @@ def search_attribute_portrait(uid):
     except:
         results = None
     keyword_list = []
-    if results and results['keywords']:
+    if results['keywords']:
         keywords_dict = json.loads(results['keywords'])
         sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
-        print 'sort_word_list:', sort_word_list
+        #print 'sort_word_list:', sort_word_list
         results['keywords'] = sort_word_list[:20]
     #print 'keywords:', results
     geo_top = []
-    if results and results['activity_geo_dict']:
+    if results['activity_geo_dict']:
         geo_dict = json.loads(results['activity_geo_dict'])
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
         geo_top = sort_geo_dict[:5]
         results['activity_geo'] = geo_top
-    if results and results['hashtag_dict']:
+    if results['hashtag_dict']:
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
     emotion_result = {}
-    if results and results['emotion_words']:
+    if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
         for word_type in emotion_mark_dict:
             try:
                 word_dict = emotion_words_dict[word_type]
                 sort_word_dict = sorted(word_dict.items(), key=lambda x:x[1], reverse=True)
-                print 'sort_word_dict:', sort_word_dict
+                #print 'sort_word_dict:', sort_word_dict
                 word_list = sort_word_dict[:5]
             except:
                 word_list = []
             emotion_result[emotion_mark_dict[word_type]] = word_list
-    print 'emotion_words:', type(emotion_result)
+    #print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
     #topic
-    if results and results['topic']:
+    if results['topic']:
         topic_dict = json.loads(results['topic'])
         sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
         results['topic'] = sort_topic_dict[:5]
     #domain
-    if results and results['domain']:
+    if results['domain']:
         domain_string = results['domain']
         domain_list = domain_string.split('_')
         results['domain'] = domain_list
     #emoticon
-    if results and results['emoticon']:
+    if results['emoticon']:
         emoticon_dict = json.loads(results['emoticon'])
         sort_emoticon_dict = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
         results['emoticon'] = sort_emoticon_dict[:5]
     #online_pattern
-    if results and results['online_pattern']:
+    if results['online_pattern']:
         online_pattern_dict = json.loads(results['online_pattern'])
         sort_online_pattern_dict = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
         results['online_pattern'] = sort_online_pattern_dict[:5]
     #psycho_status
-    if results and results['psycho_status']:
+    if results['psycho_status']:
         psycho_status_dict = json.loads(results['psycho_status'])
         sort_psycho_status_dict = sorted(psycho_status_dict.items(), key=lambda x:x[1], reverse=True)
         results['psycho_status'] = sort_psycho_status_dict[:5]
     #psycho_feature
-    if results and results['psycho_feature']:
+    if results['psycho_feature']:
         psycho_feature_list = results['psycho_feature'].split('_')
         results['psycho_feature'] = psycho_feature_list
+    #state
+    if results['uid']:
+        uid = results['uid']
+        profile_result = es_user_profile.get(index='weibo_user', doc_type='user', id=uid)
+        try:
+            user_state = profile_result['_source']['description']
+            results['description'] = user_state
+        except:
+            results['description'] = ''
+    
+    if results['importance']:
+        #print results['importance']
+        query_body = {
+                'query':{
+                    "range":{
+                        "importance":{
+                        "from": results['importance'],
+                        "to": 1000000
+                        }
+                        }
+                    }
+                }
+        importance_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        if importance_rank['_shards']['successful'] != 0:
+            #print 'importance_rank:', importance_rank
+            results['importance_rank'] = importance_rank['count']
+        else:
+            print 'es_importance_rank error'
+            results['importance_rank'] = 0
+    if results['activeness']:
+        query_body = {
+                'query':{
+                    "range":{
+                        "activeness":{
+                            "from":results['activeness'],
+                            "to": 1000000
+                            }
+                        }
+                    }
+                }
+        activeness_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        if activeness_rank['_shards']['successful'] != 0:
+            results['activeness_rank'] = activeness_rank['count']
+        else:
+            print 'es_activess_rank error'
+            results['activeness_rank'] = 0
+    if results['influence']:
+        query_body = {
+                'query':{
+                    'range':{
+                        'influence':{
+                            'from':results['influence'],
+                            'to': 1000000
+                            }
+                        }
+                    }
+                }
+        influence_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        if influence_rank['_shards']['successful'] != 0:
+            results['influence_rank'] = influence_rank['count']
+        else:
+            print 'es_influence_rank error'
+            results['influence_rank'] = 0
     return results
 
 #use to search user_portrait by lots of condition 
@@ -318,7 +388,11 @@ def search_portrait(condition_num, query, sort, size):
         #print 'result:', result
         for item in result:
             user_dict = item['_source']
-            user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
+
+            #yuankun revise
+            filter_set = all_delete_uid() # filter_uids_set
+            if not user_dict['uid'] in filter_set:
+                user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
 
     return user_result
 
