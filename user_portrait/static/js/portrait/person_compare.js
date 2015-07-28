@@ -284,7 +284,7 @@ function Compare(){
         num += 1;
     }
     html += '<thead id="head_id">';
-    html += '<tr style="background: #fafafa;"><th style="width:100px;font-size:20px;vertical-align:middle; text-align:center;"><b>用户头像</b></th>';
+    html += '<tr style="background: #fafafa;"><th style="width:100px;font-size:20px;vertical-align:middle; text-align:center;"></th>';
     var i =0;
     var person_url = "http://"+window.location.host+"/index/personal/?uid=";
     for(var k in url_photo){
@@ -353,7 +353,7 @@ function Compare(){
     html += '<tr class="list-2"><td class="cate_title" style="width:90px;text-align:right">影响力</td>';
     for(var k in portrait){
         j += 1;
-        html += '<td class="center" name="line'+ j +'">'+ portrait[k]['influence'] +'</td>';
+        html += '<td class="center" name="line'+ j +'">'+ portrait[k]['influence'].toFixed(2) +'</td>';
     }
     html += '</tr>';
     j = 0;
