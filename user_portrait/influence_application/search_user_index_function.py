@@ -1,10 +1,12 @@
 # -*- coding = utf-8 -*-
 import math
 import time
+import datetime
 import sys
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from search_vary_index_function import generate_date
+from rank_portrait_in_active_user import search_k
 
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 from user_portrait.global_utils import es_user_profile as es_profile # user profile es
@@ -52,7 +54,7 @@ def user_index_range_distribution(index_name,doctype, sort_order):
 
     # devide active user based on active degree
 
-    score_range = [0, 100, 200, 500, 700, 900, 1100, 1300, 1500, max_score]
+    score_range = [0,100,200,500,600, 700,800, 900, 1100, 1300, 1500, max_score]
     for i in range(len(score_range)-1):
         temp_number = count_es(es, index_name, doctype, sort_order, score_range[i], score_range[i+1])
         distribute_range.append(temp_number)
@@ -169,36 +171,67 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
         "size": top_k
     }
 
-    result = es.search(index=index_name, doc_type=doctype, body=query_body, _source=False, \
-            fields=["origin_weibo_top_retweeted_id", "origin_weibo_top_comment_id"])['hits']['hits']
+    
+    return_list = []
+    rank = 1
+    count_c = 0
+    start = 0
 
-    return_dict = {}
-    rank = 0
+    while 1:
+        search_list = []
+        user_list = search_k(es, index_name, doctype, start, field, 100)
+        start += 100
+        for item in user_list:
+            uid = item.get('user','0')
+            search_list.append(uid) # uid list
 
-    if field == 'origin_weibo_retweeted_top_number':
-        for item in result:
-            user_dict = {}
-            rank += 1
-            user_dict[field] = item['sort'][0]
-            user_dict["origin_weibo_top_retweeted_id"] = item['fields']["origin_weibo_top_retweeted_id"][0]
-            user_dict['rank'] = rank
-            return_dict[item['_id']] = user_dict
+        search_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
+        profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
 
-    if field == 'origin_weibo_comment_top_number':
-        for item in result:
-            user_dict = {}
-            rank += 1
-            user_dict[field] = item['sort'][0]
-            user_dict["origin_weibo_top_comment_id"] = item['fields']['origin_weibo_top_comment_id'][0]
-            user_dict['rank'] = rank
-            return_dict[item['_id']] = user_dict
+        for i in range(len(search_result)):
+            if search_result[i]['found']:
+                info = ['','','','','','','1']
+                info[0] = rank
+                info[2] = search_result[i].get('_id','')
 
-    return return_dict
+                if profile_result[i]['found']:
+                    info[3] = profile_result[i]['_source'].get('photo_url','')
+                    info[1] = profile_result[i]['_source'].get('nick_name','')
 
+                if 'retweeted' in field:
+                    info[4] = user_list[i]['origin_weibo_top_retweeted_id']
+                    info[5] = user_list[i]['origin_weibo_retweeted_top_number']
+                else:
+                    info[4] = user_list[i]['origin_weibo_top_comment_id']
+                    info[5] = user_list[i]['origin_weibo_comment_top_number']
 
-def search_portrait_history_active_info(uid, start_date, end_date, index_name=user_index_profile, doctype=manage):
+                rank += 1
+                return_list.append(info)
+
+                if rank >= int(top_k)+1:
+                    return return_list
+
+def time_series(date):
+    date_list = []
+    date_list.append(date)
+    time_struct = datetime.date(int(date[0:4]), int(date[4:6]), int(date[6:]))
+    timestamp = time.mktime(time_struct.timetuple())
+
+    i =1
+    next_timestamp = timestamp
+    while 1:
+        next_timestamp -= 86400
+        if i == 7:
+            break
+        else:
+            date_list.append(time.strftime('%Y%m%d',time.localtime(next_timestamp)))
+            i += 1
+    print date_list
+    return date_list
+
+def search_portrait_history_active_info(uid, date, index_name=user_index_profile, doctype=manage):
     # date.formate: 20130901
-    date_list = generate_date(start_date, end_date)
+    date_list = time_series(date)
 
     try:
         result = es.get(index=index_name, doc_type=doctype, id=uid, _source=True)['_source']
@@ -211,7 +244,10 @@ def search_portrait_history_active_info(uid, start_date, end_date, index_name=us
     for item in date_list:
         return_dict[item] = result.get(item, 0)
 
-    return return_dict
+    in_list = []
+    for item in sorted(date_list):
+        in_list.append(return_dict[item])
+    return in_list, return_dict
 
 
 if __name__ == "__main__":

@@ -23,16 +23,10 @@ def ajax_all_active_rank():
     number = request.args.get('number', 100) # "100"
     date = str(date)
     number = int(number)
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
-    former_date = "20130901" # test
     if not date:
-        index_name = former_date
+        results = []
     else:
         index_name = date.replace('-','')
-
-    if index_name != former_date: # search date is not the record activity date
-        results = 0
-    else:
         results = search_top_index(index_name, number)
 
     return json.dumps(results)
@@ -41,19 +35,13 @@ def ajax_all_active_rank():
 @mod.route('/portrait_user_in_active/')
 def ajax_portrait_user_in_active():
     date = request.args.get('date', '') # '2013-09-01'
-    number = request.args.get('number', 100) # "100"
+    number = request.args.get('number', 10) # "100"
     date = str(date)
     number = int(number)
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
-    former_date = "20130901" # test
     if not date:
-        index_name = former_date
+        results = []
     else:
         index_name = date.replace('-','')
-
-    if index_name != former_date:
-        results = 0
-    else:
         results = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type)
 
     return json.dumps(results)
@@ -63,21 +51,14 @@ def ajax_portrait_user_in_active():
 def ajax_specified_user_active():
     date = request.args.get('date', '') # '2013-09-01'
     uid_list = request.args.get('uid_list', '') # 123456,123456
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
-    former_date = "20130901" # test
     date = str(date)
 
-    if not date:
-        index_name = former_date
+    if not date or not uid_list:
+        results = []
     else:
         index_name = date.replace('-','')
-
-    list_1 = []
-    uid_list = [item for item in uid_list.split(',')]
-
-    if index_name != former_date or uid_list == ['']:
-        results = 0
-    else:
+        list_1 = []
+        uid_list = [item for item in uid_list.split(',')]
         results = search_influence_detail(uid_list, index_name, "bci") 
 
     return json.dumps(results)
@@ -87,11 +68,10 @@ def ajax_specified_user_active():
 @mod.route('/user_index_distribution/')
 def ajax_user_index_distribution():
     date = request.args.get('date', '') # '2013-09-01'
-    former_date = "20130901" # test
     date = str(date)
 
     if not date:
-        results = 0
+        results = []
     else:
         index_name = date.replace('-','')
         results = user_index_range_distribution(index_name, "bci", "user_index")
@@ -101,11 +81,10 @@ def ajax_user_index_distribution():
 @mod.route('/portrait_user_index_distribution/')
 def ajax_portrait_user_index_distribution():
     date = request.args.get('date', '') # '2013-09-01'
-    former_date = "20130901" # test
     date = str(date)
 
     if not date:
-        results = 0
+        results = []
     else:
         date = date.replace('-','')
         results = user_index_range_distribution("this_is_a_copy_user_portrait","manage", date)
@@ -128,22 +107,16 @@ def ajax_portrait_user_domain_rank():
 def ajax_hot_origin_weibo():
     date = request.args.get('date', '') # '2013-09-01'
     number = request.args.get('number', 3) # default
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
-    former_date = "20130901" # test
     date = str(date)
+    number= int(number)
 
-    if not date:
-        index_name = former_date
-    else:
+    results = []
+    if date:
         index_name = date.replace('-','')
-    if index_name != former_date:
-        results = 0
-    else:
-        results = {}
         dict_1 = search_max_single_field("origin_weibo_retweeted_top_number", index_name, "bci", number)
         dict_2 = search_max_single_field("origin_weibo_comment_top_number", index_name, "bci", number)
-        results['origin_weibo_retweeted'] = dict_1
-        results['origin_weibo_comment'] = dict_2
+        results.append(dict_1)
+        results.append(dict_2)
 
     return json.dumps(results)
 
@@ -151,62 +124,43 @@ def ajax_hot_origin_weibo():
 def ajax_hot_origin_weibo_brust():
     date = request.args.get('date', '') # '2013-09-01'
     number = request.args.get('number', 3) # default
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
-    former_date = "20130901" # test
     date = str(date)
+    number = int(number)
 
     if not date:
-        index_name = former_date
+        results = []
     else:
         index_name = date.replace('-','')
 
-    if index_name != former_date:
-        results = 0
-    else:
-        results = {}
+        results = []
         dict_1 = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_retweeted_brust_average")
         dict_2 = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_comment_brust_average")
-        results['origin_weibo_retweeted_brust'] = dict_1
-        results['origin_weibo_comment_brust'] = dict_2
+        results.append(dict_1)
+        results.append(dict_2)
 
     return json.dumps(results)
 
 
-@mod.route('/portrait_history_active')
+@mod.route('/portrait_history_active/')
 def ajax_portrait_history_active():
-    start_date = request.args.get('start_date', '')# 2013-09-01
-    start_date = str(start_date).replace('-',"")
-
-    end_date = request.args.get('end_date', '')
-    end_date = str(end_date).replace('-','')
-
+    date = request.args.get('date', '')# 2013-09-01
     uid = request.args.get('uid', '')
 
-    if not uid or not start_date or not end_date:
-        results = 0
+    if not uid or not date:
+        results = []
     else:
-        results = search_portrait_history_active_info(uid, start_date, end_date)
+        date = str(date).replace('-','')
+        results = search_portrait_history_active_info(uid, date)
 
     return json.dumps(results)
 
 @mod.route('/vary_top_k/')
 def ajax_vary_top_k():
     results = []
-    date = request.args.get('date', '')
     number = request.args.get('number', 10) # "100"
-    date = str(date)
     number = int(number)
-    #former_date = time.strftime('%Y%m%d',time.localtime(time.time()-86400))
-    former_date = "20130901" # test
-    if not date:
-        index_name = former_date
-    else:
-        index_name = date.replace('-','')
 
-    if index_name != former_date:
-        results = 0
-    else:
-        results = query_vary_top_k("vary", "bci", number)
+    results = query_vary_top_k("vary", "bci", number)
 
     return json.dumps(results)
 

@@ -170,6 +170,8 @@ def show_out_uid(date,fields):
 
     return_list = []
     date_out_list = json.loads(r_out.hget("recommend_delete_list",date))
+    if date_out_list == []:
+        return return_list
     detail = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
     for i in range(len(date_out_list)):
@@ -186,23 +188,16 @@ def decide_out_uid(date, data):
     if data:
         uid_list = data.split(",") # decide to delete uids
         exist_data = r_out.hget("decide_delete_list", now_date)
-        if exist_data:
+        if exist_data and exist_data != []:
             uid_list.extend(json.loads(exist_data))
             uid_list = list(set(uid_list))
         r_out.hset("decide_delete_list", now_date, json.dumps(uid_list))
 
     """
-    recommend_keys = r_out.hkeys("recommend_delete_list")
-    recommend_uid_list = []
-    for iter_key in recommend_keys:
-        recommend_uid_list.extend(json.loads(r_out.hget("recommend_delete_list",iter_key)))
-    not_out_list = list(set(recommend_uid_list).difference(set(uid_list))) # update user info in user_index_profile
-    
-
-    if not_out_list:
+    if uid_list and uid_list != []:
         update_record_index(not_out_list)
     """
-    temp = r_out.hget("recommend_delete_list", date)
+
     uid_list = data.split(",")
     current_date_list = json.loads(r_out.hget("recommend_delete_list", date))
     new_list =  list(set(current_date_list).difference(set(uid_list)))
