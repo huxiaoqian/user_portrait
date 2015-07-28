@@ -74,6 +74,7 @@ def ajax_portrait_search():
                 else:
                     query.append({'match':{item: item_data}})
                 condition_num += 1
+        '''
         for item in range_item:
             item_data_low = request.args.get(item+'low', '')
             item_data_up = request.args.get(item+'up', '')
@@ -87,7 +88,7 @@ def ajax_portrait_search():
                 item_data_up = float(item_data_up)
             query.append({'range':{item:{'from':item_data_low, 'to':item_data_up}}})
             condition_num += 1
-        
+        '''
         for item in multi_item:
             nest_body = {}
             nest_body_list = []
@@ -100,9 +101,10 @@ def ajax_portrait_search():
                 condition_num += 1
                 query.append({'bool':{'should':nest_body_list}})
         
-    size = request.args.get('size', 100)
-    size = int(size)
-    sort = request.args.get('sort', 'statusnum')
+    #size = request.args.get('size', 1000)
+    size = 1000
+    sort = 'influence'
+    #sort = request.args.get('sort', 'influence')
     print 'condition_num, query:', condition_num, query
     result = search_portrait(condition_num, query, sort, size)
     return json.dumps(result)

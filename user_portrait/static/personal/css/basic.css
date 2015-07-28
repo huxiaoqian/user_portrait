@@ -4,15 +4,16 @@
 #Pdetail .m-wrap {
   margin: -6px 0;
   overflow: hidden;
-  padding-left: 400px;
 }
 .clearfix {
   display: block;
 }
 .li_1 {
-  float: left;
-  width: 100%;
   line-height:42px;
+  border-bottom:solid 1px #999;
+  float:left;
+  margin-left:350px;
+  width:30%;
 }
 .m-wrap li {
   line-height: 42px;
@@ -20,7 +21,7 @@
 } 
 .pt_title {
   float: left;
-  width: 100px;
+  width: 130px;
   white-space: nowrap;
   overflow: hidden;
   font-weight: normal;

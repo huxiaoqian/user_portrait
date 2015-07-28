@@ -69,7 +69,9 @@ a#showBtn.webpage:hover{
 .fright {
 	float: right;
 }
-
+.mright5{
+margin-right:5px;
+}
 .search
 {
 	width:100px;

@@ -25,9 +25,37 @@
 
 
 <div id="trend" style="height:50px;width:950px">
-该用户的活跃时间段为：<span class="">08:00-12:00</span>
+该用户的活跃时间段为：<span id="time1">08:00-12:00</span>和<span id="time2">08:00-12:00</span>
 </div>
+<div id="trend" style="height:50px;width:950px">
+<span id="location_description">08:00-12:00</span>
+</div>
+<script src="/static/js/highstock.js" charset="utf-8"></script>
+<script src="/static/js/exporting.js" charset="utf-8"></script>
+<script src="/static/js/portrait/location.js" charset="utf-8"></script>
 <script type="text/javascript">
+// Date format
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
+
  function Activity(){
   this.ajax_method = 'GET';
 }
@@ -44,9 +72,93 @@ Activity.prototype = {   //获取数据，重新画表
 
   active:function(data){
 	var item = data.activity_time;
-	//时间段处理
+        for (i=0;i<item.length;i++){
+           var date = item[i][0]/(15*60*16);
+           switch(date)
+		   {
+				case 1: x = "00:00-04:00";break;
+				case 2: x = "04:00-08:00";break;
+				case 3: x = "08:00-12:00";break;
+				case 4: x = "12:00-16:00";break;
+				case 5: x = "16:00-20:00";break;
+				case 6: x = "20:00-24:00";break;
+		   }
+		   var str ="time"+(i+1);
+		   time = document.getElementById(str);
+		   time.innerHTML = x;
+        }
+    var trend = data.activity_trend;
+	var data_count=[];
+	var data_time = [];
+    for(i=0;i<trend.length;i++){
+        var time = getDate(trend[i][0]);
+        var count = trend[i][1];
+		data_time.push(time);
+		data_count.push(count);
+    }
+	//Draw_trend:
+	 $('#Activezh').highcharts({
+        chart: {
+            type: 'spline',// line,
+            animation: Highcharts.svg, // don't animate in old IE
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Microsoft YaHei'
+            }},
+        title: {
+            text: '微博时间走势图',
+            x: -20 //center
+        },
+        subtitle: {
+            text: '',
+            x: -20
+        },
+    lang: {
+            printChart: "打印",
+            downloadJPEG: "下载JPEG 图片",
+            downloadPDF: "下载PDF文档",
+            downloadPNG: "下载PNG 图片",
+            downloadSVG: "下载SVG 矢量图",
+            exportButtonTitle: "导出图片"
+        },
+        xAxis: {
+            categories: data_time,
+            labels:{
+              rotation: -45,
+              step: 6
+            }
+        },
+        yAxis: {
+            title: {
+                text: '微博总量 (条)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '条',
+            xDateFormat: '%Y-%m-%d %H:%M:%S'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name:'微博量',
+            data: data_count
+        }]
+    });
   }
- }
+}
+function getDate(tm){
+    var tt = new Date(parseInt(tm)*1000).format("yyyy年MM月dd日 hh:mm:ss");
+    return tt;
+}
 var Activity = new Activity();
 url = '/attribute/activity/?uid=1642591402' 
 Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
@@ -60,63 +172,3 @@ for (i=1;i<location_geo.length+1;i++){
 }
 $('#Top5').append(html);
 </script>
-<script type="text/javascript">
-        // 基于准备好的dom，初始化echarts图表
-        var myChart = echarts.init(document.getElementById('Activezh')); 
-        
-        var option = {
-			title : {
-                        'text':'微博时间走势',
-						textStyle:{
-                        fontSize:20,
-                        fontFamily:'Microsoft YaHei UI',
-                        fontWeight:400,
-                    },
-            },
-            tooltip : {
-        		trigger: 'axis'
-    			},
-    		legend: {
-        				data:['原创','转发','评论']
-    			},
-    		calculable : false,
-    		xAxis : [
-        				{
-            				type : 'category',
-            				boundaryGap : false,
-            				data : ['周一','周二','周三','周四','周五','周六','周日']
-        				}
-   		 			],
-    		yAxis : [
-        				{
-            				type : 'value'
-       	 				}
-    				],
-    		series : [
-        				{
-            			name:'原创',
-            			type:'line',
-            			stack: '总量',
-            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            			data:[120, 132, 101, 134, 90, 230, 210]
-        				},
-        				{
-            			name:'转发',
-            			type:'line',
-            			stack: '总量',
-            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            			data:[220, 182, 191, 234, 290, 330, 310]
-        				},
-        				{
-            			name:'评论',
-            			type:'line',
-            			stack: '总量',
-            			itemStyle: {normal: {areaStyle: {type: 'default'}}},
-            			data:[150, 232, 201, 154, 190, 330, 410]
-        				}
-    			]
-        };
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
-    </script>
-

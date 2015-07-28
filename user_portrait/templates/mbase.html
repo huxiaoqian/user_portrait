@@ -5,6 +5,7 @@
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     		<meta charset="utf-8">
     		<meta name="viewport" content="width=device-width, initial-scale=1">
+    		<title>{% block title %}XXXXXX{% endblock title %}</title>
 		{% endblock %}
 
 		{% block css %}
@@ -71,7 +72,7 @@
 				<div id='content' class='col-lg-10 col-sm-10'>
 					<!-- start main -->
 					{% block main %}
-					{% endblock %}
+					{% endblock main%}
 					<!-- end main -->
 				</div>
 			</div>
@@ -87,6 +88,9 @@
 			{% endblock %}
 			<!-- end foot -->		
 		</footer>
+		{% block Own_js %}
+
+		{% endblock %}
 		
 		{% block end_js %}
 			<script src="../../static/bower_components/bootstrap/css_js/js/bootstrap.min.js"></script>

@@ -257,7 +257,7 @@ def search_attribute_portrait(uid):
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
-        description = hashtag_description(sort_hashtag_dict[:5])
+        description = hashtag_description(hashtag_dict)
         results['description'] = description
     emotion_result = {}
     if results['emotion_words']:
@@ -383,7 +383,7 @@ def search_portrait(condition_num, query, sort, size):
     else:
         try:
             result = es_user_portrait.search(index=index_name, doc_type=index_type, \
-                    body={'query':{'match_all':{}},'size':size})['hits']['hits']
+                    body={'query':{'match_all':{}}, 'sort':[{sort:{"order":"desc"}}], 'size':size})['hits']['hits']
         except Exception, e:
             raise e
     if result:
