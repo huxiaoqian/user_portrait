@@ -35,12 +35,19 @@ Search_weibo.prototype = {
       success:callback
     });
   },
-
+  Draw_model: function(data){
+    $('#group_user').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th></tr></thead>';
+    html += '</table>';
+    $('#group_user').append(html);
+  },
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
     html += '<div style="height:180px;width:250px;float:left"><ul style="margin-top:-60px"><li><a href="#">';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p>';
+    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px" data-toggle="modal" data-target="#myModal">群组成员</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -1069,9 +1076,18 @@ function createRandomItemStyle() {
 
 
 $(document).ready(function(){
+       $('.datatype').dataTable({
+      "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+      "sPaginationType": "bootstrap",
+      "bSort": true, 
+      "oLanguage": {
+        "sLengthMenu": "_MENU_ 每页"
+      }
+    });
 	var downloadurl = window.location.host;
     weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
+    Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
     basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
