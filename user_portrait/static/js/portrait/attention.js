@@ -14,6 +14,8 @@ Attention.prototype = {   //获取数据，重新画表
 Draw_attention:function(data){
 	var UserID = parent.personalData.uid;
 	var UserName = parent.personalData.uname;
+    var Anumber = document.getElementById('attentionNumber');
+    Anumber.innerHTML = data[1];
 	var items = data[0];
 	if(items==null){
 		var say = document.getElementById('test3');
@@ -24,7 +26,7 @@ Draw_attention:function(data){
 }
 }
 var Attention = new Attention();
-url = '/attribute/attention/?uid=1642591402' ;
+url = '/attribute/attention/?uid='+parent.personalData.uid ;
 Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
 
 function attention(data,UserID,UserName){
