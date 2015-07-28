@@ -160,7 +160,7 @@ function getDate(tm){
     return tt;
 }
 var Activity = new Activity();
-url = '/attribute/activity/?uid=1642591402' 
+url = '/attribute/activity/?uid='+parent.personalData.uid;
 Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
 var location_geo = parent.personalData.activity_geo;
 //console.log(location_geo);
