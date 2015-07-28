@@ -108,16 +108,32 @@ draw_conditions(draw_table_search_result);
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
 
 function deleteurl(that, parameter){
-    for (var i = 0;i < pars.length;i++){
-        var pname = parameter.substring(7, parameter.length);
-        if (pname == pars[i]){
-            values[i] = '';
+    var pname = parameter.substring(7, parameter.length);
+    if (pname.indexOf('_') >= 0){
+        var pindex = pname.charAt(pname.length-1);
+        pname = pname.substring(0, pname.length-2);
+        console.log(pname);
+        console.log(pindex);
+        for (var i = 0;i < pars.length;i++){
+            if (pname == pars[i]){
+                var term_list = values[i].split(',');
+                term_list.splice(pindex, 1);
+                console.log(term_list);
+                values[i] = term_list.join(',');
+            }
+        }
+    }
+    else{
+        for (var i = 0;i < pars.length;i++){
+            if (pname == pars[i]){
+                values[i] = '';
+            }
         }
     }
     draw_conditions(that);
     url_search_result = '/attribute/portrait_search/?stype=2&' + par2url(pars, values);
     console.log(url_search_result);
-    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Draw_table);
+    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Re_Draw_table);
 }
 function process_par(name, value){
     var result = new Array();
@@ -222,8 +238,17 @@ function draw_conditions(that){
             var fix_name = fix_result[0];
             var fix_value = fix_result[1];
             if (fix_value){
-                html += '<span class="mouse" id=choose_' + pre_name + ' style="margin-left:10px">'+ fix_name + ':'+ fix_value;
-                html += '&nbsp;<a class="cross" href="#">X</a></span>';
+                if (fix_value.indexOf(',') >= 0){
+                    var term_list = fix_value.split(',');
+                    for (var j = 0; j < term_list.length;j++){
+                        html += '<span class="mouse" id=choose_' + pre_name + '_' + j +' style="margin-left:10px">'+ fix_name + ':'+ term_list[j];
+                        html += '&nbsp;<a class="cross" href="#">X</a></span>';
+                    }
+                }
+                else{
+                    html += '<span class="mouse" id=choose_' + pre_name + ' style="margin-left:10px">'+ fix_name + ':'+ fix_value;
+                    html += '&nbsp;<a class="cross" href="#">X</a></span>';
+                }
             }
         }
         $('#conditions').html(html);
