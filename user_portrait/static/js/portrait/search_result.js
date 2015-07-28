@@ -117,8 +117,8 @@ function deleteurl(that, parameter){
     if (pname.indexOf('_') >= 0){
         var pindex = pname.charAt(pname.length-1);
         pname = pname.substring(0, pname.length-2);
-        console.log(pname);
-        console.log(pindex);
+        // console.log(pname);
+        // console.log(pindex);
         for (var i = 0;i < pars.length;i++){
             if (pname == pars[i]){
                 var term_list = values[i].split(',');
@@ -169,6 +169,7 @@ function process_par(name, value){
             case 'dxz': result[1] = '多血质';break;
             case 'nyz': result[1] = '粘液质';break;
             case 'yyz': result[1] = '抑郁质';break;
+            default: result[1] = '';break;
         }
     }
     else if(name=='psycho_status'){
@@ -179,6 +180,7 @@ function process_par(name, value){
             case 'anx': result[1] = '焦虑';break;
             case 'ang': result[1] = '生气';break;
             case 'sad': result[1] = '悲伤';break;
+            default: result[1] = '';break;
         }
     }
     else if(name=='domain'){
@@ -204,7 +206,7 @@ function process_par(name, value){
         result[1] = '';
         var term_list = value.split(',');
         for (var i = 0;i < term_list.length;i++){
-            switch(value){
+            switch(term_list[i]){
                 case 'env': result[1] += '环境,';break;
                 case 'edu': result[1] += '教育,';break;
                 case 'med': result[1] += '医药,';break;
@@ -242,6 +244,8 @@ function draw_conditions(that){
             var fix_result = process_par(pre_name, pre_value);
             var fix_name = fix_result[0];
             var fix_value = fix_result[1];
+            // console.log(fix_name);
+            // console.log(fix_value);
             if (fix_value){
                 if (fix_value.indexOf(',') >= 0){
                     var term_list = fix_value.split(',');
