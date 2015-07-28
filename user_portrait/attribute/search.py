@@ -383,7 +383,7 @@ def search_portrait(condition_num, query, sort, size):
     else:
         try:
             result = es_user_portrait.search(index=index_name, doc_type=index_type, \
-                    body={'query':{'match_all':{}},'size':size})['hits']['hits']
+                    body={'query':{'match_all':{}}, 'sort':[{sort:{"order":"desc"}}], 'size':size})['hits']['hits']
         except Exception, e:
             raise e
     if result:
