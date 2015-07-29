@@ -175,8 +175,14 @@ Draw_picture: function(data){
 
 var Search_weibo = new Search_weibo();
 $('.label-success').click(function(){
-    Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
-    Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_picture);
+    var url = get_choose_data(uid);
+    if(url == ''){
+        return false;
+    }
+    else{
+    Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_table);
+    Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_picture);
+    }
 });
 
 $('.inline-checkbox').click(function(){
@@ -196,10 +202,16 @@ function get_choose_data(uid){
     var keywords = new Array();
     var weight = new Array();
     var field ;
+    var isflag = 1;
     $('.inline-checkbox').each(function(){
         if($(this).is(':checked')){
             keywords.push($(this).next().attr('id'));
-            weight.push($(this).next().next().val());
+            if($(this).next().next().val() > 10 || $(this).next().next().val < 0 ){
+                alert("请输入0到10之间的权重");
+                isflag = 0;
+            }else{
+                weight.push($(this).next().next().val());
+            }
         }
     });
     $('[type="radio"]').each(function(){
@@ -207,7 +219,12 @@ function get_choose_data(uid){
             filed = $(this).attr('id');
         }
     });
+    if(isflag == 1){
     url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +filed ;
+    }
+    else{
+        url = '';
+    }
     console.log(url);
     return url;
 }
