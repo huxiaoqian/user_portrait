@@ -179,7 +179,7 @@
 	            linkSymbol: 'arrow',
 	            steps: 10,
 	            coolDown: 0.9,
-	            size:'95%',
+	            size:'90%',
 	            //preventOverlap: true,
 	            nodes:[
 	                {
@@ -347,7 +347,7 @@
 
 	            ],
 	            links : [
-	                {source : '{{ user.description }}', target : '邮箱是:{{ user_email(user.user_email) }}',  
+	                {source : '{{ user.description }}', target : '邮箱是{{ user_email(user.user_email) }}',  
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
@@ -359,7 +359,7 @@
 	                        width: 2
 	                    }
 	                }},
-	                {source : '{{ user.description }}', target : '出生于:{{ user_birth(user.user_birth) }}',
+	                {source : '{{ user.description }}', target : '出生于{{ user_birth(user.user_birth) }}',
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
@@ -402,7 +402,7 @@
 	                        width: 2
 	                    }
 	                }},
-	                {source : '{{ user.description }}', target : '信息来源于:{{ weibo_source(user.sp_type) }}',
+	                {source : '{{ user.description }}', target : '信息来源于{{ weibo_source(user.sp_type) }}',
 	                itemStyle: {
 	                    normal: {
 	                        width: 2

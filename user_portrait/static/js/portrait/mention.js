@@ -137,6 +137,7 @@ function mention(data,UserID,UserName){
             var ecConfig = require('echarts/config');
             function focus(param) {
                 var data = param.data;
+                
                 var links = option.series[0].links;
                 var nodes = option.series[0].nodes;
                 if (
@@ -146,8 +147,29 @@ function mention(data,UserID,UserName){
                     var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
                     var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
                     } else {
+                    console.log(data.category);
                     var node_url = personal_url + data.name;
-                    window.open(node_url);
+                    var weibo_url = 'http://weibo.com/u/'+ data.name;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                    }  
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
                 }
             }
                 myChart2.on(ecConfig.EVENT.CLICK, focus)
