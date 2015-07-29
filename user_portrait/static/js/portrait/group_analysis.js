@@ -229,7 +229,7 @@ Draw_verify: function(data){
         },
         series : [
             {
-                name:'已认证',
+                name:'',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -247,7 +247,7 @@ Draw_verify: function(data){
                 ]
             },
             {
-                name:'未认证',
+                name:'',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -777,7 +777,7 @@ Draw_keyword: function(data){
     var myChart = echarts.init(document.getElementById('keywordcloud'));
     var option = {
     title: {
-        text: '',
+        text: '关键词',
     },
     tooltip: {
         show: true
@@ -1063,11 +1063,11 @@ Draw_weibo: function(data){
     $('#weibo').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px">'; 
-    html += '<tr><th>微博用户UID</th><th>最大条数</th><th style="text-align:center">微博查看</th></tr>';
-    html += '<tr><th>' + data['5'] + '</th><th>原创微博最大转发数(' + data['3'] + ')</th><th style="text-align:center">' +  text1 + '</th></tr>';
-    html += '<tr><th>' + data['9'] + '</th><th>原创微博最大评论数(' + data['7'] + ')</th><th style="text-align:center">' +  text2 +  '</th></tr>';
-    html += '<tr><th>' + data['13'] + '</th><th>转发微博最大转发数(' + data['11'] + ')</th><th style="text-align:center">' +  text3 +  '</th></tr>';
-    html += '<tr><th>' + data['17'] + '</th><th>转发微博最大评论数(' + data['15'] + ')</th><th style="text-align:center">' +  text4 +  '</th></tr>'
+    html += '<tr><th style="text-align:center">微博用户UID</th><th style="text-align:center">备注</th><th style="text-align:center">微博查看</th></tr>';
+    html += '<tr><th style="text-align:center">' + data['5'] + '</th><th style="text-align:center">原创微博最大转发数(' + data['3'] + ')</th><th style="text-align:center">' +  text1 + '</th></tr>';
+    html += '<tr><th style="text-align:center">' + data['9'] + '</th><th style="text-align:center">原创微博最大评论数(' + data['7'] + ')</th><th style="text-align:center">' +  text2 +  '</th></tr>';
+    html += '<tr><th style="text-align:center">' + data['13'] + '</th><th style="text-align:center">转发微博最大转发数(' + data['11'] + ')</th><th style="text-align:center">' +  text3 +  '</th></tr>';
+    html += '<tr><th style="text-align:center">' + data['17'] + '</th><th style="text-align:center">转发微博最大评论数(' + data['15'] + ')</th><th style="text-align:center">' +  text4 +  '</th></tr>'
     html += '</table>';
     $('#weibo').append(html);                                
 }
