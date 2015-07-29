@@ -24,6 +24,16 @@ emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129'
 
 
 
+def search_identify_uid(uid):
+    result = 0
+    try:
+        user_dict = es_user_portrait.get(index='user_portrait', doc_type='user', id=uid)
+        #print 'user_dict:', user_dict
+        result = 1
+    except:
+        result = 0
+    return result
+
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
 #redis:{'retweet_'+uid:{ruid:count}}
 #return results: {ruid:[uname,count]}
