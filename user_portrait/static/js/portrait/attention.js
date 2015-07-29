@@ -38,6 +38,7 @@ function attention(data,UserID,UserName){
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
+    var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
 	nod['category'] = 0;
@@ -63,7 +64,7 @@ function attention(data,UserID,UserName){
 	var option = {
             title : {
                 text: '关注',
-                x:'left',
+                x:'150',
                 y:'top'
             },
             legend: {
@@ -123,5 +124,31 @@ function attention(data,UserID,UserName){
             ]
     };  
 	myChart3.setOption(option);	
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    } else {
+                    var node_url = personal_url + data.name;
+                    window.open(node_url);
+                }
+            }
+                myChart3.on(ecConfig.EVENT.CLICK, focus)
+
+                myChart3.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                });
+            }
+    )   
 }
 
