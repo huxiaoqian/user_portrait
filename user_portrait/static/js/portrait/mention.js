@@ -13,7 +13,9 @@ Mention.prototype = {   //获取数据，重新画表
   },
 Draw_Mention:function(data){
 	var UserID = parent.personalData.uid;
-	var UserName = parent.personalData.uname;
+    var UserName = parent.personalData.uname;
+    var Mnumber = document.getElementById('mentionNumber');
+    Mnumber.innerHTML = data[1];
 	var items = data[0];
 	html = '';
 	if(items==null){
@@ -25,7 +27,7 @@ Draw_Mention:function(data){
 }
 }
 var Mention = new Mention();
-url = '/attribute/mention/?uid=1642591402' ;
+url = '/attribute/mention/?uid='+parent.personalData.uid ;
 Mention.call_sync_ajax_request(url, Mention.ajax_method, Mention.Draw_Mention);
 
 function mention(data,UserID,UserName){

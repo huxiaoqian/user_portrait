@@ -13,7 +13,9 @@ Follower.prototype = {   //获取数据，重新画表
   },
 Draw_Follower:function(data){
 	var UserID = parent.personalData.uid;
-	var UserName = parent.personalData.uname;
+    var UserName = parent.personalData.uname;
+    var Fnumber = document.getElementById('fansNumber');
+    Fnumber.innerHTML = data[1];
 	var items = data[0]
 	if(items==null){
 		var say = document.getElementById('test1');
@@ -24,7 +26,7 @@ Draw_Follower:function(data){
 }
 }
 var Follower = new Follower();
-url = '/attribute/follower/?uid=1642591402' ;
+url = '/attribute/follower/?uid='+parent.personalData.uid ;
 Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
 
 function follower(data,UserID,UserName){
