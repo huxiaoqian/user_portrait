@@ -39,35 +39,73 @@
 </div>
 <script type="text/javascript">
     var uid = document.getElementById('userId');
-    uid.innerHTML = parent.personalData.uid;
-    var userlocation = document.getElementById('userLocation');
-    userlocation.innerHTML = parent.personalData.location;
-    var gender = document.getElementById('userGender');
-    gendernum = parent.personalData.gender;
-    if (gendernum==1){
-        gender.innerHTML = '男';
-    }else{
-        gender.innerHTML = '女';
-    }
-	var domain = document.getElementById('userDomain');
-	domain.innerHTML = parent.personalData.domain;
-	var topic = document.getElementById('userTopic');
-	topicdict = parent.personalData.topic;
-	var str = '';
-	for(i=0;i<topicdict.length;i++){
-		if (i == (topicdict.length -1)){
-			str += topicdict[i][0];
-		}else{
-			str = str + topicdict[i][0] +',';
-		}
-		
+	if(parent.personalData.uid){
+		uid.innerHTML = parent.personalData.uid;
+	}else{
+		uid.innerHTML = "无此数据";
 	}
-	topic.innerHTML = str;
+	
+    var userlocation = document.getElementById('userLocation');
+	if(parent.personalData.location){
+		userlocation.innerHTML = parent.personalData.location;
+	}else{
+		userlocation.innerHTML = "无此数据";
+	}
+    var gender = document.getElementById('userGender');
+	if(parent.personalData.gender){
+		gendernum = parent.personalData.gender;
+		if (gendernum==1){
+			gender.innerHTML = '男';
+		}else{
+			gender.innerHTML = '女';
+		}
+	}else{
+		gender.innerHTML = "无此数据";
+	}
+    
+	var domain = document.getElementById('userDomain');
+	if(parent.personalData.domain){
+		domain.innerHTML = parent.personalData.domain;
+	}else{
+		domain.innerHTML = "无此数据";
+	}
+	
+	var topic = document.getElementById('userTopic');
+	if(parent.personalData.topic){
+		topicdict = parent.personalData.topic;
+		var str = '';
+		for(i=0;i<topicdict.length;i++){
+			if (i == (topicdict.length -1)){
+				str += topicdict[i][0];
+			}else{
+				str = str + topicdict[i][0] +',';
+			}
+		
+		}
+		topic.innerHTML = str;
+	}else{
+		topic.innerHTML = "无此数据";
+	}
+	
     var fans = document.getElementById('userFans');
-    fans.innerHTML = parent.personalData.fansnum;
+	if(parent.personalData.fansnum){
+		fans.innerHTML = parent.personalData.fansnum;
+	}else{
+		fans.innerHTML = "无此数据";
+	}
+    
     var friends = document.getElementById('userFriend');
-    friends.innerHTML = parent.personalData.friendsnum;
+	if( parent.personalData.friendsnum){
+		friends.innerHTML = parent.personalData.friendsnum;
+	}else{
+		friends.innerHTML = "无此数据";
+	}
+    
 	var pattern = document.getElementById('userOnline');
-	//console.log(parent.personalData.online_pattern[0][0]);
-	pattern.innerHTML = parent.personalData.online_pattern[0][0];
+	if(parent.personalData.online_pattern[0][0]){
+		pattern.innerHTML = parent.personalData.online_pattern[0][0];
+	}elseP{
+		pattern.innerHTML = "无此数据";
+	}
+	
 </script>
