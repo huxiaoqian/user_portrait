@@ -456,8 +456,10 @@ function group_confirm_button(){
       return;
   }
 
-  if(group_name.indexOf(' ')>=0){
-    alert('群体名称不能有空格,请重新输入!');
+
+  var reg = "^[a-zA-Z0-9_u4e00-u9fa5]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
   var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
