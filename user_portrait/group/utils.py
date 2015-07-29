@@ -94,7 +94,8 @@ def search_task(task_name, submit_date, state, status):
                                 'must':query
                                 }
                             },
-                        'sort': [{'count':{'order': 'desc'}}]
+                        'sort': [{'count':{'order': 'desc'}}],
+                        'size': 10000
                         }
                     )
         except Exception as e:
@@ -106,7 +107,8 @@ def search_task(task_name, submit_date, state, status):
                 body = {
                     'query':{'match_all':{}
                         },
-                    'sort': [{'count': {'order': 'desc'}}]
+                    'sort': [{'count': {'order': 'desc'}}],
+                    'size': 10000
                     }
                 )
 
@@ -115,7 +117,7 @@ def search_task(task_name, submit_date, state, status):
     except:
         return None
     result = []
-    
+    print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:
         result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], task_dict['_source']['state'], task_dict['_source']['status']])
     
@@ -249,6 +251,7 @@ def get_group_list(task_name):
 
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):
+    '''
     query_body = {
         'query':{
             'term':{
@@ -256,7 +259,9 @@ def delete_group_results(task_name):
                 }
             }
         }
-    result = es.delete_by_query(index=index_name, doc_type=index_type, body=query_body)
+    '''
+    #result = es.delete_by_query(index=index_name, doc_type=index_type, body=query_body)
+    result = es.delete(index=index_name, doc_type=index_type, id=task_name)
     #print 'result:', result
     '''
     if result['_indices']['twitter']['_shards']['failed'] == 0:
