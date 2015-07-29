@@ -57,13 +57,13 @@ $(function(){
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
     <div class="nickname" id="nickname">互助小喇叭</div>
+    <div style="text-align:center;height:30px;"><a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
 	<div class="power">
 		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（排名<span id="IPrank">20%</span>）
 		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（排名<span id="APrank">10%</span>）
 		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（排名<span id="FPrank">30%</span>）
 	</div>
 	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
-    <div style="float:right;"><a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
 </div>
 <script type="text/javascript">
  function Personal(){
@@ -93,23 +93,59 @@ var personalData; // global data
 var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
 var img = document.getElementById('portraitImg');
-img.src = personalData.photo_url;
+if(personalData.photo_url){
+    img.src = personalData.photo_url;
+}else{
+    img.src = "http://tp2.sinaimg.cn/1878376757/50/0/1";
+}
 var influencePower = document.getElementById('FPnum');
-influencePower.innerHTML = personalData.influence.toFixed(2);
+if(personalData.influence){
+    influencePower.innerHTML = personalData.influence.toFixed(2);
+}else{
+    influencePower.innerHTML = "无此数据";
+}
 var importantPower = document.getElementById('IPnum');
-importantPower.innerHTML = personalData.importance.toFixed(2);
+if(personalData.importance){
+    importantPower.innerHTML = personalData.importance.toFixed(2);
+}else{
+    importantPower.innertHTML = "无此数据";
+}
 var activePower = document.getElementById('APnum');
-activePower.innerHTML = personalData.activeness.toFixed(2);
+if(personalData.activeness){
+    activePower.innerHTML = personalData.activeness.toFixed(2);
+}else{
+    activePower.innerHTML = "无此数据";
+}
 var nickName = document.getElementById('nickname');
-nickName.innerHTML = personalData.uname;
+if(personalData.uname){
+    nickName.innerHTML = personalData.uname;
+}else{
+    nickName.innerHTML = "无此数据";
+}
 var detailPortrait = document.getElementById('portraitDetail');
-detailPortrait.innerHTML = personalData.description;
+if(personalData.description){
+    detailPortrait.innerHTML = personalData.description;
+}else{
+    detailPortrait.innetHTML = "无此数据";
+}
 var I_rank = document.getElementById('IPrank');
-I_rank.innerHTML = personalData.importance_rank;
+if(personalData.importance_rank){
+    I_rank.innerHTML = personalData.importance_rank;
+}else{
+    I_rank.innerHTML = "无此数据";
+}
 var A_rank = document.getElementById('APrank');
-A_rank.innerHTML = personalData.activeness_rank;
+if(personalData.activeness_rank){
+    A_rank.innerHTML = personalData.activeness_rank;
+}else{
+    A_rank.innerHTML = "无此数据";
+}
 var F_rank = document.getElementById('FPrank');
-F_rank.innerHTML = personalData.influence_rank;
+if(personalData.influence_rank){
+    F_rank.innerHTML = personalData.influence_rank;
+}else{
+    F_rank.innerHTML = "无此数据";
+}
 var contact_url = '/index/contact/?uid=' + uid;
 $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
