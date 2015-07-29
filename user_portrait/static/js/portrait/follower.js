@@ -40,7 +40,7 @@ function follower(data,UserID,UserName){
         values.push(data[i][1][1]);
     }
 //console.log(uids);
-	
+	var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
 	nod['category'] = 0;
@@ -68,7 +68,7 @@ function follower(data,UserID,UserName){
 	var option = {
             title : {
                 text: '粉丝',
-                x:'left',
+                x:'150',
                 y:'top'
             },
             legend: {
@@ -128,5 +128,52 @@ function follower(data,UserID,UserName){
             ]
     };  
 	myChart1.setOption(option); 
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    } else {
+                    var node_url = personal_url + data.name;
+                         console.log(data.category);               
+                    var weibo_url = 'http://weibo.com/u/'+ data.name;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                    }  
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
+                }
+            }
+                myChart1.on(ecConfig.EVENT.CLICK, focus)
+
+                myChart1.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                });
+            }
+    )   
 	
 }

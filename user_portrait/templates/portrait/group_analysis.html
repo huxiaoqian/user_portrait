@@ -12,14 +12,14 @@
   font-family: '微软雅黑';
   font-size: 14px;
 	}
-	#stickynote ul,li{
+	ul,li{
 	  list-style:none;
 	}
-	#stickynote ul{
+	ul{
 	  overflow:hidden;
 	  padding:3em;
 	}
-    ul li a{
+	ul li a{
 	  text-decoration:none;
 	  color:#000;
 	  background:#ffc;
@@ -46,14 +46,6 @@
 	  -o-transform: rotate(-6deg);
 	  -moz-transform:rotate(-6deg);
 	}
-    #stickynote ul li:nth-child(even) a{
-	  -o-transform:rotate(4deg);
-	  -webkit-transform:rotate(4deg);
-	  -moz-transform:rotate(4deg);
-	  position:relative;
-	  top:5px;
-	  background:#cfc;
-	}
 	#stickynote ul li a:hover,ul li a:focus{
 	  box-shadow:10px 10px 7px rgba(0,0,0,.7);
 	  -moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);
@@ -66,6 +58,7 @@
 	}
 	.dataTables_filter{text-align:right;margin-bottom:5px;}
     .dataTables_paginate{margin-top:-50px;margin-bottom:-20px;}
+ 	a{TEXT-DECORATION:none}a:hover{TEXT-DECORATION:none}
  	</style>
  {% endblock css %}
 
@@ -202,10 +195,10 @@
 			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
 			      <div class="panel-body">
 
-			      	<div id='importance'style='width:460px;height:300px;float:left'></div>
-			      	<div id='activeness'style='width:460px;height:300px;float:right'></div>
-			      	<div id='influence'style='width:460px;height:300px;float:left'></div>
-				     <div id='weibo' style='overflow-x:hidden;width:480px;margin-top:30px;float:right'>
+			      	<div id='importance'style='width:480px;height:420px;float:left'></div>
+			      	<div id='activeness'style='width:480px;height:420px;float:right'></div>
+			      	<div id='influence'style='width:480px;height:420px;float:left'></div>
+				     <div id='weibo' style='overflow-x:hidden;width:480px;margin-top:100px;float:right'>
 					 </div>
 			      </div>
 			    </div>
@@ -219,9 +212,6 @@
 				        <h4 class="modal-title" id="myModalLabel">群组成员</h4>
 				      </div>
 				      <div class="modal-body" id='group_user'>
-				      </div>
-				      <div class="modal-footer" style='margin-top:-50px'>
-				        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
 				      </div>
 				    </div>
 				  </div>
