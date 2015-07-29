@@ -36,13 +36,28 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
+    console.log(data);
     $('#group_user').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">UID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
+    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th></tr></thead>';
+    html += '<tbody>';
+    for ( i=0 ; i<data.length; i++){
+        s = i.toString();
+        if (data[s]['2'] == 1){
+            sex = '男';
+        }else{
+            sex = '女';
+        }
+      html += '<tr><th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
+      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th></tr>';  
+    };
+    html += '</tbody>';
     html += '</table>';
     $('#group_user').append(html);
-  },
+
+      },
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
@@ -1076,18 +1091,19 @@ function createRandomItemStyle() {
 
 
 $(document).ready(function(){
-       $('.datatype').dataTable({
-      "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-      "sPaginationType": "bootstrap",
-      "bSort": true, 
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ 每页"
-      }
-    });
+    //    $('.datatable').dataTable({
+    //   "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+    //   "sPaginationType": "bootstrap",
+    //   "bSort": true, 
+    //   "oLanguage": {
+    //     "sLengthMenu": "_MENU_ 每页"
+    //   }
+    // });
 	var downloadurl = window.location.host;
     weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
+    model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
+    Search_weibo.call_sync_ajax_request(model_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
     basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
