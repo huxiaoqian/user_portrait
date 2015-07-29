@@ -246,6 +246,8 @@ def search_attribute_portrait(uid):
         sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
         #print 'sort_word_list:', sort_word_list
         results['keywords'] = sort_word_list[:20]
+    else:
+        results['keywords'] = []
     #print 'keywords:', results
     geo_top = []
     if results['activity_geo_dict']:
@@ -253,12 +255,19 @@ def search_attribute_portrait(uid):
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
         geo_top = sort_geo_dict[:5]
         results['activity_geo'] = geo_top
+    else:
+        results['activity_geo'] = []
     if results['hashtag_dict']:
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
         descriptions = hashtag_description(hashtag_dict)
         results['hashtag_description'] = descriptions
+        #description = hashtag_description(hashtag_dict)
+        #results['description'] = description
+    else:
+        results['hashtag_dict'] = []
+        results['hashtag_description'] = ''
     emotion_result = {}
     if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
@@ -278,30 +287,42 @@ def search_attribute_portrait(uid):
         topic_dict = json.loads(results['topic'])
         sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
         results['topic'] = sort_topic_dict[:5]
+    else:
+        results['topic'] = []
     #domain
     if results['domain']:
         domain_string = results['domain']
         domain_list = domain_string.split('_')
         results['domain'] = domain_list
+    else:
+        results['domain'] = []
     #emoticon
     if results['emoticon']:
         emoticon_dict = json.loads(results['emoticon'])
         sort_emoticon_dict = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
         results['emoticon'] = sort_emoticon_dict[:5]
+    else:
+        results['emoticon'] = []
     #online_pattern
     if results['online_pattern']:
         online_pattern_dict = json.loads(results['online_pattern'])
         sort_online_pattern_dict = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
         results['online_pattern'] = sort_online_pattern_dict[:5]
+    else:
+        results['online_pattern'] = []
     #psycho_status
     if results['psycho_status']:
         psycho_status_dict = json.loads(results['psycho_status'])
         sort_psycho_status_dict = sorted(psycho_status_dict.items(), key=lambda x:x[1], reverse=True)
         results['psycho_status'] = sort_psycho_status_dict[:5]
+    else:
+        results['psycho_status'] = []
     #psycho_feature
     if results['psycho_feature']:
         psycho_feature_list = results['psycho_feature'].split('_')
         results['psycho_feature'] = psycho_feature_list
+    else:
+        results['psycho_feature'] = []
     #state
     if results['uid']:
         uid = results['uid']
@@ -311,6 +332,9 @@ def search_attribute_portrait(uid):
             results['description'] = user_state
         except:
             results['description'] = ''
+    else:
+        results['uid'] = ''
+        results['description'] = ''
     
     if results['importance']:
         #print results['importance']
@@ -331,6 +355,8 @@ def search_attribute_portrait(uid):
         else:
             print 'es_importance_rank error'
             results['importance_rank'] = 0
+    else:
+        results['importance_rank'] = 0
     if results['activeness']:
         query_body = {
                 'query':{
