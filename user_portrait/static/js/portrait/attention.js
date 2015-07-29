@@ -141,7 +141,30 @@ function attention(data,UserID,UserName){
                     var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
                     } else {
                     var node_url = personal_url + data.name;
-                    window.open(node_url);
+                    var weibo_url = 'http://weibo.com/u/'+ data.name;
+                    var ajax_url ;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                    }                  
+                    console.log(ajax_url);
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
+                    
                 }
             }
                 myChart3.on(ecConfig.EVENT.CLICK, focus)
@@ -151,4 +174,3 @@ function attention(data,UserID,UserName){
             }
     )   
 }
-
