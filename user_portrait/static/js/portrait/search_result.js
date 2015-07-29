@@ -71,9 +71,9 @@ Search_weibo_result.prototype = {
           html += '<td class="center">'+ item[1] +'</td>';
           html += '<td class="center">'+ gender(item[2]) +'</td>';
           html += '<td class="center">'+ item[3] +'</td>';
-          html += '<td class="center">'+ item[4].toFixed(2) +'</td>';
-          html += '<td class="center">'+ item[5].toFixed(2) +'</td>';
-          html += '<td class="center">'+ item[6].toFixed(2) +'</td>';
+          html += '<td class="center">'+ item[4] +'</td>';
+          html += '<td class="center">'+ item[5] +'</td>';
+          html += '<td class="center">'+ item[6] +'</td>';
           html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
           html += '</tr>';
       }
