@@ -247,7 +247,7 @@ def search_portrait_history_active_info(uid, date, index_name=user_index_profile
     in_list = []
     for item in sorted(date_list):
         in_list.append(return_dict[item])
-    return in_list, return_dict
+    return in_list
 
 
 if __name__ == "__main__":
