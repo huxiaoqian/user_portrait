@@ -61,8 +61,8 @@ Search_weibo.prototype = {
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
-    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul style="margin-top:-60px"><li><a href="#">';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px" data-toggle="modal" data-target="#myModal">群组成员</p>';
+    html += '<div style="height:180px;width:250px;float:left"><ul style="margin-top:-50px"><li><a>';
+    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px;cursor:pointer;text-decoration:underline" data-toggle="modal" data-target="#myModal">群组成员</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -813,10 +813,10 @@ Draw_importance: function(data){
        y_value = data['0']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
+    xdata = [];
     for (i = 0; i< y_data.length-1; i++){
     xdata.push(y_data[i] + '-' + y_data[i+1])
-    }
-
+    };
     $('#importance').highcharts({
         chart: {
         type: 'column',
@@ -893,9 +893,10 @@ Draw_activeness: function(data){
        y_value = data['1']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
+    xdata = [];
     for (i = 0; i< y_data.length-1; i++){
         xdata.push(y_data[i] + '-' + y_data[i+1])
-    }
+    };
 
     $('#activeness').highcharts({
         chart: {
@@ -973,9 +974,10 @@ Draw_influence: function(data){
        y_value = data['2']['1'][s].toFixed(2);
        y_data.push(y_value);
     };
+    xdata = [];
     for (i = 0; i< y_data.length-1; i++){
         xdata.push(y_data[i] + '-' + y_data[i+1])
-    }
+    };
     $('#influence').highcharts({
         chart: {
         type: 'column',
