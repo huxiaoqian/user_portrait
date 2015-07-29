@@ -24,6 +24,16 @@ emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129'
 
 
 
+def search_identify_uid(uid):
+    result = 0
+    try:
+        user_dict = es_user_portrait.get(index='user_portrait', doc_type='user', id=uid)
+        #print 'user_dict:', user_dict
+        result = 1
+    except:
+        result = 0
+    return result
+
 #search:'retweet_'+uid return attention {r_uid1:count1, r_uid2:count2...}
 #redis:{'retweet_'+uid:{ruid:count}}
 #return results: {ruid:[uname,count]}
@@ -261,11 +271,21 @@ def search_attribute_portrait(uid):
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
         results['hashtag_dict'] = sort_hashtag_dict[:5]
+<<<<<<< HEAD
         description = hashtag_description(hashtag_dict)
         results['description'] = description
     else:
         results['hashtag_dict'] = []
         results['description'] = ''
+=======
+        descriptions = hashtag_description(hashtag_dict)
+        results['hashtag_description'] = descriptions
+        #description = hashtag_description(hashtag_dict)
+        #results['description'] = description
+    else:
+        results['hashtag_dict'] = []
+        results['hashtag_description'] = ''
+>>>>>>> c4703cfbbe90ce32c5f17a87cbe236efcb35d564
     emotion_result = {}
     if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
@@ -415,9 +435,10 @@ def search_portrait(condition_num, query, sort, size):
         filter_set = all_delete_uid() # filter_uids_set
         for item in result:
             user_dict = item['_source']
+            score = item['_score']
 
             if not user_dict['uid'] in filter_set:
-                user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
+                user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 
     return user_result
 
