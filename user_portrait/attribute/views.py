@@ -103,7 +103,7 @@ def ajax_portrait_search():
         
     #size = request.args.get('size', 1000)
     size = 1000
-    sort = 'influence'
+    sort = '_score'
     #sort = request.args.get('sort', 'influence')
     print 'condition_num, query:', condition_num, query
     result = search_portrait(condition_num, query, sort, size)
