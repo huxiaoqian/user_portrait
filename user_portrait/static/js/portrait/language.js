@@ -167,7 +167,10 @@ Hashtag.prototype = {   //获取数据，重新画表
     });
   },
 Draw_hashtag:function(data){
-	console.log(data);
+	//console.log(data);
+	var hashtag = document.getElementById('hashtagDes');
+	hashtag.innerHTML = data.hashtag_description;
+	//console.log(data.hashtag_description);
 	
 }
 }
