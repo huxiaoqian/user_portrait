@@ -152,3 +152,30 @@ if(hashtag.length==0){
 html6 += '</ul>';
 html6 += '</div> ';
 $('#con6').append(html6);
+
+function Hashtag(){
+  this.ajax_method = 'GET';
+}
+Hashtag.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+Draw_hashtag:function(data){
+	console.log(data);
+	
+}
+}
+var Hashtag = new Hashtag();
+url = '/attribute/portrait_attribute/?uid='+parent.personalData.uid ;
+Hashtag.call_sync_ajax_request(url, Hashtag.ajax_method, Hashtag.Draw_hashtag);
+
+
+
+
+
