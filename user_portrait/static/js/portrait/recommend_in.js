@@ -30,7 +30,7 @@ Search_weibo_recommend.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][5]!='未知')
-        item[i][5] = item[i][5].toFixed(2)
+        item[i][5] = item[i][5].toFixed(2);
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       html += '<tr>';
@@ -92,7 +92,7 @@ Search_weibo_compute.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][5]!='未知')
-        item[i][5] = item[i][5].toFixed(2)
+        item[i][5] = item[i][5].toFixed(2);
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var compute_status;
@@ -170,7 +170,7 @@ Search_weibo_history.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][5]!='未知')
-        item[i][5] = item[i][5].toFixed(2)
+        item[i][5] = item[i][5].toFixed(2);
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var in_status;
@@ -373,7 +373,7 @@ function compute_all(){
 
 function replace_space(data){
   for(var i in data){
-    if(data[i]===""){
+    if(data[i]===""||data[i]==="unknown"){
       data[i] = "未知";
     }
   }

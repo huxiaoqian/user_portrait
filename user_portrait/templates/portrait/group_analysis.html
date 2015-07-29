@@ -4,21 +4,10 @@
       {{ super() }}	    
     <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
     <link href="/static/css/charisma-app.css" rel="stylesheet">
-    <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
-    <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
-    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
-    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
-    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
-    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
-    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
-    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
-    <link href='/static/css/uploadify.css' rel='stylesheet'>
-    <link href='/static/css/animate.min.css' rel='stylesheet'>
+
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
+
     body {
   font-family: '微软雅黑';
   font-size: 14px;
@@ -30,22 +19,16 @@
 	  overflow:hidden;
 	  padding:3em;
 	}
-	ul li a{
+ul li a{
 	  text-decoration:none;
 	  color:#000;
 	  background:#ffc;
 	  display:block;
-	  height:10em;
-	  width:10em;
+/*	  height:10em;
+	  width:10em;*/
 	  padding:1em;
-	  -moz-box-shadow:5px 5px 7px rgba(33,33,33,1);
-	  -webkit-box-shadow: 5px 5px 7px rgba(33,33,33,.7);
-	  box-shadow: 5px 5px 7px rgba(33,33,33,.7);
-	  -moz-transition:-moz-transform .15s linear;
-	  -o-transition:-o-transform .15s linear;
-	  -webkit-transition:-webkit-transform .15s linear;
 	}
-	ul li{
+	/*ul li{
 	  margin:1em;
 	  float:left;
 	}
@@ -57,35 +40,35 @@
 	ul li p{
 	  font-family:"Reenie Beanie",arial,sans-serif;
 	  font-size:180%;
-	}
-	ul li a{
+	}*/
+/*	ul li a{
 	  -webkit-transform: rotate(-6deg);
 	  -o-transform: rotate(-6deg);
 	  -moz-transform:rotate(-6deg);
-	}
-	ul li:nth-child(even) a{
+	}*/
+/*	ul li:nth-child(even) a{
 	  -o-transform:rotate(4deg);
 	  -webkit-transform:rotate(4deg);
 	  -moz-transform:rotate(4deg);
 	  position:relative;
 	  top:5px;
 	  background:#cfc;
-	}
-	ul li:nth-child(3n) a{
+	}*/
+/*	ul li:nth-child(3n) a{
 	  -o-transform:rotate(-3deg);
 	  -webkit-transform:rotate(-3deg);
 	  -moz-transform:rotate(-3deg);
 	  position:relative;
-	  top:-5px;
+	  top:-0px;
 	  background:#ccf;
-	}
-	ul li:nth-child(5n) a{
+	}*/
+/*	ul li:nth-child(5n) a{
 	  -o-transform:rotate(5deg);
 	  -webkit-transform:rotate(5deg);
 	  -moz-transform:rotate(5deg);
 	  position:relative;
-	  top:-10px;
-	}
+	  top:-0px;
+	}*/
 	ul li a:hover,ul li a:focus{
 	  box-shadow:10px 10px 7px rgba(0,0,0,.7);
 	  -moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);
@@ -96,15 +79,17 @@
 	  position:relative;
 	  z-index:5;
 	}
+	.dataTables_filter{text-align:right;margin-bottom:5px;}
+    .dataTables_paginate{margin-top:-50px;margin-bottom:-20px;}
  	</style>
  {% endblock css %}
 
  {% block head_js %}
   {{ super() }}
-	<script type="text/javascript" src="/static/js/d3.v3.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
+	<script src='/static/js/jquery.dataTables.min.js'></script>
   {% endblock head_js %}
 
 
@@ -117,9 +102,6 @@
 			</div>
 
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-
-
 			  <div class="panel panel-default">
 			    <div class="panel-heading" role="tab" id="headingOne">
 			      <h4 class="panel-title">
@@ -244,10 +226,22 @@
 			    </div>
 			  </div>
 
-
-
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document" style="width:950px;margin-top:60px">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">群组成员</h4>
+				      </div>
+				      <div class="modal-body" id='group_user'>
+				      </div>
+				      <div class="modal-footer" style='margin-top:-50px'>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
 			</div>
-
         </div>
     </div>			
     {% endblock main %}
@@ -258,6 +252,9 @@
         var name = "{{ name }}";
         console.log(name);
     </script>
-	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
+	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_user.js"></script>
+
+
 	{% endblock Own_js %}
 

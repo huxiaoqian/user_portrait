@@ -222,6 +222,31 @@ def get_group_results(task_name, module):
     #print result
     return result
 
+# get grouop user list
+def get_group_list(task_name):
+    results = []
+    try:
+        es_results = es.get(index=index_name, doc_type=index_type, id=task_name)['_source']
+    except:
+        return results
+    #print 'es_result:', es_results['uid_list'], type(es_results['uid_list'])
+    uid_list = es_results['uid_list']
+    user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+    for item in user_portrait_attribute:
+        uid = item['_id']
+        try:
+            source = item['_source']
+            uname = source['uname']
+            gender = source['gender']
+            location = source['location']
+            importance = source['importance']
+            influence = source['influence']
+            results.append([uid, uname, gender, location, importance, influence])
+        except:
+            results.append([uid])
+    return results
+
+
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):
     query_body = {

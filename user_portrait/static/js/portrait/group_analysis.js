@@ -35,12 +35,34 @@ Search_weibo.prototype = {
       success:callback
     });
   },
+  Draw_model: function(data){
+    console.log(data);
+    $('#group_user').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">UID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
+    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th></tr></thead>';
+    html += '<tbody>';
+    for ( i=0 ; i<data.length; i++){
+        s = i.toString();
+        if (data[s]['2'] == 1){
+            sex = '男';
+        }else{
+            sex = '女';
+        }
+      html += '<tr><th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
+      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th></tr>';  
+    };
+    html += '</tbody>';
+    html += '</table>';
+    $('#group_user').append(html);
 
+      },
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
     html += '<div style="height:180px;width:250px;float:left"><ul style="margin-top:-60px"><li><a href="#">';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p>';
+    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px" data-toggle="modal" data-target="#myModal">群组成员</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -1069,9 +1091,19 @@ function createRandomItemStyle() {
 
 
 $(document).ready(function(){
+    //    $('.datatable').dataTable({
+    //   "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+    //   "sPaginationType": "bootstrap",
+    //   "bSort": true, 
+    //   "oLanguage": {
+    //     "sLengthMenu": "_MENU_ 每页"
+    //   }
+    // });
 	var downloadurl = window.location.host;
     weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
+    model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
+    Search_weibo.call_sync_ajax_request(model_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
     basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_totalnumber);
