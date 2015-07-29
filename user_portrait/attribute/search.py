@@ -415,9 +415,10 @@ def search_portrait(condition_num, query, sort, size):
         filter_set = all_delete_uid() # filter_uids_set
         for item in result:
             user_dict = item['_source']
+            score = item['_score']
 
             if not user_dict['uid'] in filter_set:
-                user_result.append([user_dict['uid'], user_dict['uname'], user_dict['gender'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence']])
+                user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 
     return user_result
 
