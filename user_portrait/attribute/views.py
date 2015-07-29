@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from search import search_attribute_portrait, search_location, search_mention, search_activity,\
                    search_attention, search_follower, search_portrait
-from search import delete_action
+from search import delete_action, search_identify_uid
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
@@ -166,6 +166,15 @@ def ajax_follower():
         return json.dumps(results)
     else:
         return None
+
+
+@mod.route('/identify_uid/')
+def ajax_identify_uid():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    results = search_identify_uid(uid)
+    return json.dumps(results)
+
 
 @mod.route('/delete/')
 def ajax_delete():
