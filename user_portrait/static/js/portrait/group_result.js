@@ -40,9 +40,11 @@ Group_result.prototype = {   //获取数据，重新画表
 	html += '</tbody>';
     html += '</table>';
 	$('#Grouptable').append(html);
+    
 }
 }
 var Group_result = new Group_result();
 url = '/group/show_task/' 
 Group_result.call_sync_ajax_request(url, Group_result.ajax_method, Group_result.Draw_resultTable);
+
 
