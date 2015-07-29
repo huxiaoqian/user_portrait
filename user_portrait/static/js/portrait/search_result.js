@@ -519,6 +519,10 @@ function group_confirm_button(){
     alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
+  if (!remark.match(reg)){
+    alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+    return;
+  }
   var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
   $.ajax({
       type:'POST',
