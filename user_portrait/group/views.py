@@ -40,6 +40,7 @@ def ajax_show_task():
     state = request.args.get('state', '')
     status = request.args.get('status', '')
     results = search_task(task_name, submit_date, state, status)
+    print 'lem results:', len(results)
     return json.dumps(results)
 
 

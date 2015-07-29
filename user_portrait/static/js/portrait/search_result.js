@@ -85,6 +85,7 @@ Search_weibo_result.prototype = {
     $('#result_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[7]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -455,8 +456,10 @@ function group_confirm_button(){
       return;
   }
 
-  if(group_name.indexOf(' ')>=0){
-    alert('群体名称不能有空格,请重新输入!');
+
+  var reg = "^[a-zA-Z0-9_u4e00-u9fa5]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
   var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
