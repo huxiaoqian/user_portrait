@@ -25,7 +25,7 @@ Search_weibo_total.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="total_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>影响力</th><th>入库状态</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">影响力</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -48,12 +48,12 @@ Search_weibo_total.prototype = {
       else
         status = 'error!'
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ status +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ status +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -69,7 +69,7 @@ Search_weibo_total.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="total_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>影响力</th><th>入库状态</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">影响力</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -92,12 +92,12 @@ Search_weibo_total.prototype = {
       else
         status = 'error!'
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ status +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ status +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -140,7 +140,7 @@ Search_weibo_domain.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="domain_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>影响力</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">影响力</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -152,11 +152,11 @@ Search_weibo_domain.prototype = {
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][2];
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -172,7 +172,7 @@ Search_weibo_domain.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="domain_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>影响力</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">影响力</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -184,11 +184,11 @@ Search_weibo_domain.prototype = {
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][2];
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -231,7 +231,7 @@ Search_weibo_change.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="change_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>变动名次</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">变动名次</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -252,11 +252,11 @@ Search_weibo_change.prototype = {
       else
         pic = '';
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'<img src="'+ pic +'" style="width:20px;height:25px"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'<img src="'+ pic +'" style="width:20px;height:25px"></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -272,7 +272,7 @@ Search_weibo_change.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="change_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>变动名次</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">变动名次</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -293,11 +293,11 @@ Search_weibo_change.prototype = {
       else
         pic = '';
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'<img src="'+ pic +'" style="width:20px;height:25px"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'<img src="'+ pic +'" style="width:20px;height:25px"></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -340,7 +340,7 @@ Search_weibo_detail_trans.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="detail_trans_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>转发量</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">微博ID</th><th style="text-align:center;vertical-align:middle">转发量</th></tr></thead>';
     var item = data[0];
     html += '<tbody>';
     for(var i in item){
@@ -350,12 +350,12 @@ Search_weibo_detail_trans.prototype = {
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][2];
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][5] +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -371,7 +371,7 @@ Search_weibo_detail_trans.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="detail_trans_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>转发量</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">微博ID</th><th style="text-align:center;vertical-align:middle">转发量</th></tr></thead>';
     var item = data[0];
     html += '<tbody>';
     for(var i in item){
@@ -381,12 +381,12 @@ Search_weibo_detail_trans.prototype = {
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][2];
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][5] +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -429,7 +429,7 @@ Search_weibo_detail_comment.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="detail_comment_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>评论量</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">微博ID</th><th style="text-align:center;vertical-align:middle">评论量</th></tr></thead>';
     var item = data[1];
     html += '<tbody>';
     for(var i in item){
@@ -439,12 +439,12 @@ Search_weibo_detail_comment.prototype = {
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][2];
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][5] +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -460,7 +460,7 @@ Search_weibo_detail_comment.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="detail_comment_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>评论量</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">微博ID</th><th style="text-align:center;vertical-align:middle">评论量</th></tr></thead>';
     var item = data[1];
     html += '<tbody>';
     for(var i in item){
@@ -470,12 +470,12 @@ Search_weibo_detail_comment.prototype = {
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][2];
       html += '<tr>';
-      html += '<td class="center">'+ item[i][0] +'</td>';
-      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
-      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][5] +'</td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -885,6 +885,7 @@ function draw_line_chart(xaxis, influence_data, div){
         },
     ]
   };
+  //$('#'+div).empty();
   var draw_init2 = echarts.init(document.getElementById(div));
   draw_init2.setOption(line_chart_option);
 }
@@ -954,16 +955,18 @@ function draw_hot_users(){
     }
     html += '</ul></div></div>';
     $('#hot_users').append(html);
+    $('.hot_users').click(function(){
+      var user_id_choose = $(this).attr('name');
+      console.log('choose'+user_id_choose);
+      draw_hot_users_details(user_id_choose);
+      prepare_line_chart(user_id_choose);
+    });
     draw_hot_users_details(data[0][2][2]);
+    console.log('11111');
     prepare_line_chart(data[0][2][2]);
+    console.log('22222');
   }
 }
 
 draw_hot_users();
 
-$('.hot_users').click(function(){
-  var user_id_choose = $(this).attr('name');
-  console.log('choose'+user_id_choose);
-  draw_hot_users_details(user_id_choose);
-  prepare_line_chart(user_id_choose);
-});
