@@ -164,7 +164,7 @@ function toggle(target){
         html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_nick_name">' + '昵称：' + nick_name + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_nick_name") class="cross">X</a></span>';
       }
 
-      user_location = $("#test").val();
+      user_location = $("#citySelect").val();
       if (user_location == ''){
         html += '';
       }
