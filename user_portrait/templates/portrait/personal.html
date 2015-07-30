@@ -94,7 +94,7 @@ var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
 var img = document.getElementById('portraitImg');
 //console.log(personalData.photo_url);
-if(personalData.photo_url == "unknow"){
+if(personalData.photo_url == "unknown"){
     img.src =  "http://tp2.sinaimg.cn/1878376757/50/0/1";
 }else{
     img.src = personalData.photo_url;
