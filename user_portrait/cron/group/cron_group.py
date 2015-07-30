@@ -304,6 +304,121 @@ def get_attr_trend(uid_list):
 
 
 def get_attr_bci(uid_list):
+    results = []
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts - 24*3600)
+    ts = datetime2ts(now_date)
+    #test
+    ts = datetime2ts('2013-09-07')
+    user_results = {} # {'uid':{'origin_max..':[], ''}}
+    total_weibo_number = 0
+    
+    fans_number = 0
+    origin_weibo_number = 0
+    retweeted_weibo_number = 0
+    origin_weibo_retweeted_total_number = 0
+    origin_weibo_comment_total_number = 0
+    retweeted_weibo_retweeted_total_number = 0
+    retweeted_weibo_comment_total_number = 0
+
+    origin_weibo_retweeted_top = 0
+    origin_weibo_comment_top = 0
+    retweeted_weibo_retweeted_top = 0
+    retweeted_weibo_comment_top = 0
+    influence_dict = {}
+
+    for i in range(0, 7):
+        timestamp = ts - i*24*3600
+        date = ts2datetime(timestamp)
+        hash_key = ''.join(date.split('-'))
+        es_user_results = es_cluster.mget(index=hash_key, doc_type='bci', body={'ids':uid_list})['docs']
+        for user_dict in es_user_results:
+            try:
+                user_item = user_dict['_source']
+            except:
+                next
+            uid = user_item['user']
+            total_weibo_number += user_item['origin_weibo_number']
+            total_weibo_number += user_item['retweeted_weibo_number']
+            
+            # yuankun revise
+            origin_weibo_number += user_item['origin_weibo_number']
+            retweeted_weibo_number += user_item['retweeted_weibo_number']
+            origin_weibo_retweeted_top += user_item['origin_weibo_retweeted_top_number']
+            origin_weibo_comment_top += user_item['origin_weibo_comment_top_number']
+            retweeted_weibo_retweeted_top += user_item['retweeted_weibo_retweeted_top_number']
+            retweeted_weibo_comment_top += user_item['retweeted_weibo_comment_top_number']
+            #print 'user_item:', user_item
+            if uid in user_results:
+                try:
+                    user_results[uid]['origin_weibo_retweeted_top'].append([user_item['origin_weibo_retweeted_top_number'], user_item['origin_weibo_top_retweeted_id']])
+                    user_results[uid]['origin_weibo_comment_top'].append([user_item['origin_weibo_comment_top_number'], user_item['origin_weibo_top_comment_id']])
+                    user_results[uid]['retweeted_weibo_retweeted_top'].append([user_item['retweeted_weibo_retweeted_top_number'], user_item['retweeted_weibo_top_retweeted_id']])
+                    user_results[uid]['retweeted_weibo_comment_top'].append([user_item['retweeted_weibo_comment_top_number'], user_item['retweeted_weibo_top_comment_id']])
+                except:
+                    user_results[uid]['origin_weibo_retweeted_top'] = [[user_item['origin_weibo_retweeted_top_number'], user_item['origin_weibo_top_retweeted_id']]]
+                    user_results[uid]['origin_weibo_comment_top'] = [[user_item['origin_weibo_comment_top_number'], user_item['origin_weibo_top_comment_id']]]
+                    user_results[uid]['retweeted_weibo_retweeted_top'] = [[user_item['retweeted_weibo_retweeted_top_number'], user_item['retweeted_weibo_top_retweeted_id']]]
+                    user_results[uid]['retweeted_weibo_comment_top'] = [[user_item['retweeted_weibo_comment_top_number'], user_item['retweeted_weibo_top_comment_id']]]
+            else:
+                #print 'user_item:', [[user_item['origin_weibo_retweeted_top_number'], user_item['origin_weibo_top_retweeted_id']]]
+                user_results[uid] = {'origin_weibo_retweeted_top':[[user_item['origin_weibo_retweeted_top_number'], user_item['origin_weibo_top_retweeted_id']]]}
+                user_results[uid] = {'origin_weibo_comment_top': [[user_item['origin_weibo_comment_top_number'], user_item['origin_weibo_top_comment_id']]]}
+                user_results[uid] = {'retweeted_weibo_retweeted_top': [[user_item['retweeted_weibo_retweeted_top_number'], user_item['retweeted_weibo_top_retweeted_id']]]}
+                user_results[uid] = {'retweeted_weibo_comment_top': [[user_item['retweeted_weibo_comment_top_number'], user_item['retweeted_weibo_top_comment_id']]]}
+            
+            # yuankun need
+            fans_number += user_item['user_fansnum']
+            origin_weibo_retweeted_total_number += user_item['origin_weibo_retweeted_total_number']
+            origin_weibo_comment_total_number += user_item['origin_weibo_comment_total_number']
+            retweeted_weibo_retweeted_total_number += user_item['retweeted_weibo_retweeted_total_number']
+            retweeted_weibo_comment_total_number += user_item['retweeted_weibo_comment_total_number']
+
+    user_portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+    #print 'user_portrait_result:', user_portrait_result[0]
+    for user_portrait in user_portrait_result:
+        #print 'user_portrait:', user_portrait
+        try:
+            user_portrait_dict = user_portrait['_source']
+            #print 'user_portrait_dict:', user_portrait_dict
+            uname = user_portrait_dict['uname']
+            importance = user_portrait_dict['importance']
+            activeness = user_portrait_dict['activeness']
+            influence = user_portrait_dict['influence']
+        except:
+            uname = ''
+            importance = ''
+            activeness = ''
+            influence = ''
+        #print 'user_portrait_dict:', user_portrait_dict
+        uid = user_portrait_dict['uid']
+        user_item_dict = user_results[uid]
+        origin_weibo_retweeted_top_item = sorted(user_item_dict['origin_weibo_retweeted_top'], key=lambda x:x[0], reverse=True)[0]
+        origin_weibo_comment_top_item = sorted(user_item_dict['origin_weibo_comment_top'], key=lambda x:x[0], reverse=True)[0]
+        retweeted_weibo_retweeted_top_item = sorted(user_item_dict['retweeted_weibo_retweeted_top'], key=lambda x:x[0], reverse=True)[0]
+        retweeted_weibo_comment_top_item = sorted(user_item_dict['retweeted_weibo_comment_top'], key=lambda x:x[0], reverse=True)[0]
+        
+        results.append([uid, uname, activeness, importance, influence, origin_weibo_retweeted_top_item ,\
+                        origin_weibo_comment_top_item, retweeted_weibo_retweeted_top_item, \
+                        retweeted_weibo_comment_top_item])
+
+    #yuankun need
+    influence_dict['origin_weibo_retweeted_average_number'] = origin_weibo_retweeted_total_number/origin_weibo_number/7
+    influence_dict['origin_weibo_comment_average_number'] = origin_weibo_comment_total_number/origin_weibo_number/7
+    influence_dict['retweeted_weibo_retweeted_average_number'] = retweeted_weibo_retweeted_total_number/retweeted_weibo_number/7
+    influence_dict['retweeted_weibo_comment_average_number'] = retweeted_weibo_comment_total_number/retweeted_weibo_number/7
+    influence_dict['origin_weibo_retweeted_top_number'] = origin_weibo_retweeted_top/len(uid_list)/7
+    influence_dict['origin_weibo_comment_top_number'] = origin_weibo_comment_top/len(uid_list)/7
+    influence_dict['retweeted_weibo_retweeted_top_number'] = retweeted_weibo_retweeted_top/len(uid_list)/7
+    influence_dict['retweeted_weibo_comment_top_number'] = retweeted_weibo_comment_top/len(uid_list)/7
+    influence_dict['fans_number'] = fans_number
+    influence_dict['total_weibo_number'] = total_weibo_number
+    #print 'results:', results
+    return {'user_influence_list': json.dumps(results), 'total_weibo_number': total_weibo_number}, influence_dict
+           
+
+'''
+def get_attr_bci(uid_list):
     result = dict()
     influence_dict = {}
     now_ts = time.time()
@@ -423,6 +538,7 @@ def get_attr_bci(uid_list):
     result['retweet_max_comment_user'] = retweet_max_comment_user
     #print 'result:', result
     return result,influence_dict
+'''
 
 # yuankun revise
 def get_attr_influence(uid_list, bci_dict):

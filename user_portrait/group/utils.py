@@ -184,6 +184,22 @@ def get_group_results(task_name, module):
         importance_dis = json.loads(es_result['importance_his'])
         activeness_his = json.loads(es_result['activeness_his'])
         influence_his = json.loads(es_result['influence_his'])
+        user_influence_list = json.loads(es_result['user_influence_list'])
+        user_influence_result = []
+        for user_item in user_influence_list:
+            uid = user_item[0]
+            result_item = user_item[:5]
+            for i in range(5,9):
+                item = user_item[i]
+                mid = item[1]
+                number = item[0]
+                if mid != 0 and uid:
+                    weibolink = weiboinfo2url(uid, mid)
+                else:
+                    weibolink = None
+                result_item.append((number, mid, weibolink))
+            user_influence_result.append(result_item)
+        '''
         origin_max_retweeted_number =es_result['origin_max_retweeted_number']
         origin_max_retweeted_id = es_result['origin_max_retweeted_id']
         origin_max_retweeted_user = es_result['origin_max_retweeted_user']
@@ -215,12 +231,8 @@ def get_group_results(task_name, module):
             retweet_max_comment_weibolink = weiboinfo2url(retweet_max_comment_user, retweet_max_comment_id)
         else:
             retweet_max_comment_weibolink = None
-
-        result = [importance_dis, activeness_his, influence_his, \
-                  origin_max_retweeted_number, origin_max_retweeted_id, origin_max_retweeted_user, origin_max_retweeted_weibolink, \
-                  origin_max_comment_number, origin_max_comment_id, origin_max_comment_user , origin_max_comment_weibolink, \
-                  retweet_max_retweeted_number, retweet_max_retweeted_id, retweet_max_retweeted_user , retweet_max_retweeted_weibolink, \
-                  retweet_max_comment_number, retweet_max_comment_id, retweet_max_retweeted_user, retweet_max_retweeted_weibolink]
+        '''
+        result = [importance_dis, activeness_his, influence_his, user_influence_result]
     #print result
     return result
 
