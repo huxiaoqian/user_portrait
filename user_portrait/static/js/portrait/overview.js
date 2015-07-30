@@ -64,8 +64,26 @@ function draw_domian_portrait(data){
   $('#domain_portrait').empty();
   for (key in data['domain_top_user']){  
    html = '';
+   if (key == 'art'){
+      key_domain = '艺术';
+   }
+  if (key == 'lawyer'){
+      key_domain = '律师';
+   }
+    if (key == 'media'){
+      key_domain = '媒体';
+   }
+    if (key == 'oversea'){
+      key_domain = '海外';
+   }
+    if (key == 'student'){
+      key_domain = '学生';
+   }
+    if (key == 'education'){
+      key_domain = '教育';
+   }
    html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">' + key + '</a></small></h1>';
+   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">' + key_domain + '</a></small></h1>';
    html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
    for (i = 0; i<data['domain_top_user'][key].length; i++){
