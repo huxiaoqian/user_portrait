@@ -62,6 +62,10 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
         search_result = es_portrait.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]
         profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
 
+        key_list = ["origin_weibo_retweeted_total_number", "origin_weibo_retweeted_average_number", "origin_weibo_retweeted_top_number", "origin_weibo_retweeted_brust_average", \
+                   "origin_weibo_comment_total_number", "origin_weibo_comment_average_number", "origin_weibo_comment_top_number", "origin_weibo_retweeted_brust_average", \
+                   "retweeted_weibo_retweeted_total_number", "retweeted_weibo_retweeted_average_number", "retweeted_weibo_retweeted_top_number", "retweeted_weibo_retweeted_brust_average", \
+                   "retweeted_weibo_comment_total_number", "retweeted_weibo_comment_average_number", "retweeted_weibo_comment_top_number", "retweeted_weibo_retweeted_brust_average"]
         for item in search_result:
             if item["found"]:
                 info = ['','','','','','']
@@ -76,8 +80,12 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
                 info[5] = "1"
                 if field == 'origin_weibo_retweeted_brust_average':
                     info.append(user_list[index]['origin_weibo_retweeted_brust_average'])
+                    for key in key_list:
+                        info.append(user_list[index][key])
                 elif field == 'origin_weibo_comment_brust_average':
                     info.append(user_list[index]['origin_weibo_comment_brust_average'])
+                    for key in key_list:
+                        info.append(user_list[index][key])
                 else:
                     pass
                 return_list.append(info)
