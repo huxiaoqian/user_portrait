@@ -48,9 +48,7 @@
  {% block head_js %}
   {{ super() }}
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
-	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
-	<script src='/static/js/jquery.dataTables.min.js'></script>
   {% endblock head_js %}
 
 
@@ -184,7 +182,7 @@
 			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
 			      	<div id='activeness'style='width:320px;height:420px;float:right'></div>
 			      	<div id='influence'style='width:320px;height:420px;float:left'></div>
-				     <div id='weibo' style='overflow-x:hidden;width:960px;float:left'>
+				     <div id='weibo' style='overflow-x:hidden;height:650px;width:960px;float:left;margin-top:10px;'>
 					 </div>
 			      </div>
 			    </div>
@@ -212,9 +210,10 @@
     <script>
         var name = "{{ name }}";;
     </script>
-   	<script type="text/javascript" src="/static/js/portrait/group_user.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
-
-
-	{% endblock Own_js %}
+    {% endblock Own_js %}
+    {% block end_js %}
+    {{ super() }}
+   	<script type="text/javascript" src="/static/js/portrait/group_table.js"></script>
+    {% endblock end_js %}
 
