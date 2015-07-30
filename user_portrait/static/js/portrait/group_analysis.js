@@ -67,8 +67,8 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '</td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '(连接紧密)</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '(一般活跃)</td>';
+    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '(影响较大)</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度</b></td>';
@@ -267,7 +267,7 @@ Draw_social_line: function(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: '个体节点度分布'
+        text: '群体节点度分布'
     },
     lang: {
             printChart: "打印",
@@ -278,6 +278,9 @@ Draw_social_line: function(data){
             exportButtonTitle: "导出图片"
         },
     xAxis: {
+        title: {
+                text: '节点度'
+            },
         categories: xdata,
         labels: {
             rotation: -45,
@@ -365,38 +368,21 @@ Draw_weibo: function(data){
     Draw_influence(data);
     Draw_importance(data);
     Draw_activeness(data);
-    if(data['3'] == 0){
-        text1 = '该微博原创微博为空';
-    }else{
-        text1 = '<a href="' + data['6'] + '">点击查看该微博</a>';
-    };
-    if(data['7'] == 0){
-        text2 = '该微博原创微博为空';
-    }else{
-        text2 = '<a href="' + data['10'] + '">点击查看该微博</a>';
-    };
-    if(data['11'] == 0){
-        text3 = '该微博原创微博为空';
-    }else{
-        text3 = '<a href="' + data['14'] + '">点击查看该微博</a>';
-    };
-    if(data['15'] == 0){
-        text4 = '该微博原创微博为空';
-    }else{
-        text4 = '<a href="' + data['18'] + '">点击查看该微博</a>';
-    };
+    console.log(data);
     $('#weibo').empty();
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px">'; 
-    html += '<tr><th style="text-align:center">微博用户UID</th><th style="text-align:center">备注</th><th style="text-align:center">微博查看</th></tr>';
-    html += '<tr><th style="text-align:center">' + data['5'] + '</th><th style="text-align:center">原创微博最大转发数(' + data['3'] + ')</th><th style="text-align:center">' +  text1 + '</th></tr>';
-    html += '<tr><th style="text-align:center">' + data['9'] + '</th><th style="text-align:center">原创微博最大评论数(' + data['7'] + ')</th><th style="text-align:center">' +  text2 +  '</th></tr>';
-    html += '<tr><th style="text-align:center">' + data['13'] + '</th><th style="text-align:center">转发微博最大转发数(' + data['11'] + ')</th><th style="text-align:center">' +  text3 +  '</th></tr>';
-    html += '<tr><th style="text-align:center">' + data['17'] + '</th><th style="text-align:center">转发微博最大评论数(' + data['15'] + ')</th><th style="text-align:center">' +  text4 +  '</th></tr>'
-    html += '</table>';
-    $('#weibo').append(html);                                
+    html += '<tr><th style="text-align:center">UID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th>';
+    html += '<th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">原创微博最大转发数</th>';
+    html += '<th style="text-align:center">原创微博最大评论数</th><th style="text-align:center">转发微博最大转发数</th><th style="text-align:center">转发微博最大评论数</th></tr>';
+    for ( var i = 0 ;i< data['3'].length;i++){
+        s = i.toString();
+        html += '<tr><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['3'][s]['0'] + '">' + data['3'][s]['0'] +'</a></th><th style="text-align:center">' +  data['3'][s]['1'] + '</th><th style="text-align:center">' +  data['3'][s]['2'].toFixed(2) + '</th>';
+        html += '<th style="text-align:center">' +  data['3'][s]['3'].toFixed(2) + '</th><th style="text-align:center">' +  data['3'][s]['4'].toFixed(2) + '</th><th style="text-align:center"><a target="_blank" href="' + data['3'][s]['5']['2'] + '">' +  data['3'][s]['5']['0'] + '</a></th>';
+        html += '<th style="text-align:center"><a href="' + data['3'][s]['6']['2'] + '">' + data['3'][s]['6']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['7']['2'] + '">' + data['3'][s]['7']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['8']['2'] + '">' + data['3'][s]['8']['0'] + '</a></th></tr>';
+    }
+    $('#weibo').append(html);
 }
-
 }
  
 var Search_weibo = new Search_weibo(); 
@@ -405,9 +391,9 @@ var Search_weibo = new Search_weibo();
 function Draw_group(data){
     $('#group').empty();
     html = '';
-    html += '<table><tr><th style="text-align:center">群体内连接紧密度</th><th style="text-align:center">'+  (Math.round(data['1'] * 10000)/100).toFixed(2) + '%' +'</th></tr>';
-    html += '<tr><th style="text-align:center">群体内微博转发频率</th><th style="text-align:center">'+ (Math.round(data['2'] * 10000)/100).toFixed(2) + '%' +'</th></tr>';
-    html += '<tr><th style="text-align:center">群体内参与转发比例</th><th style="text-align:center">'+ (Math.round(data['3'] * 10000)/100).toFixed(2) + '%' +'</th></tr>';
+    html += '<table><tr><th style="text-align:center">连接紧密度</th><th style="text-align:center">'+ data['1'].toFixed(2) +'(低于平均)</th></tr>';
+    html += '<tr><th style="text-align:center">微博转发频率</th><th style="text-align:center">'+ data['2'].toFixed(2) +'(高于平均)</th></tr>';
+    html += '<tr><th style="text-align:center">参与转发比例</th><th style="text-align:center">'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
     html += '</table>'; 
     $('#group').append(html);
 }
@@ -435,7 +421,7 @@ function Draw_importance(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: '重要度分布'
+        text: '重要度排名分布'
     },
     lang: {
             printChart: "打印",
@@ -446,6 +432,9 @@ function Draw_importance(data){
             exportButtonTitle: "导出图片"
         },
     xAxis: {
+        title: {
+                text: '排名'
+            },
         categories: xdata,
         labels: {
             rotation: -45,
@@ -470,7 +459,7 @@ function Draw_importance(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:64//柱子之间的距离值
+               pointWidth:38//柱子之间的距离值
            }
        },
     series: [{
@@ -517,7 +506,7 @@ function Draw_activeness(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: '活跃度分布'
+        text: '活跃度排名分布'
     },
     lang: {
         printChart: "打印",
@@ -528,6 +517,9 @@ function Draw_activeness(data){
         exportButtonTitle: "导出图片"
     },
     xAxis: {
+        title: {
+                text: '排名'
+            },
         categories: xdata,
         labels: {
             rotation: -45,
@@ -552,7 +544,7 @@ function Draw_activeness(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:64//柱子之间的距离值
+               pointWidth:38//柱子之间的距离值
            }
        },
     series: [{
@@ -599,7 +591,7 @@ function Draw_influence(data){
         margin: [ 50, 50, 100, 80]
     },
     title: {
-        text: '影响力分布'
+        text: '影响力排名分布'
     },
     lang: {
             printChart: "打印",
@@ -610,6 +602,9 @@ function Draw_influence(data){
             exportButtonTitle: "导出图片"
         },
     xAxis: {
+        title: {
+                text: '排名'
+            },
         categories: xdata,
         labels: {
             rotation: -45,
@@ -634,7 +629,7 @@ function Draw_influence(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:64//柱子之间的距离值
+               pointWidth:38//柱子之间的距离值
            }
        },
     series: [{
@@ -673,10 +668,9 @@ function createRandomItemStyle(){
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
-    Draw_think_status();
+    Draw_think_emotion();
     Draw_think_domain();
     Draw_think_topic();
-    Draw_think_psycho();
     weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
     model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
@@ -798,7 +792,88 @@ function Draw_totalnumber(data){
     html += '<div>' + data['1'] + '</div></a>';
     $('#totalnumber').append(html);
 }
-function Draw_think_domain(){
+
+function Draw_think_emotion(){
+    var myChart = echarts.init(document.getElementById('pie_emotion')); 
+    var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient : 'vertical',
+        x : 'left',
+        data:['积极','中性','消极','积极','中性','生气','悲伤','其他']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: false},
+            dataView : {show: false, readOnly: false},
+            magicType : {
+                show: false, 
+                type: ['pie', 'funnel']
+            },
+            restore : {show: false},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : false,
+    series : [
+        {
+            name:'',
+            type:'pie',
+            selectedMode: 'single',
+            radius : [0, 35],
+            
+            // for funnel
+            x: '20%',
+            width: '40%',
+            funnelAlign: 'right',
+            max: 1548,
+            
+            itemStyle : {
+                normal : {
+                    label : {
+                        position : 'inner'
+                    },
+                    labelLine : {
+                        show : false
+                    }
+                }
+            },
+            data:[
+                {value:5, name:'积极'},
+                {value:5, name:'中性'},
+                {value:12, name:'消极', selected:true}
+            ]
+        },
+        {
+            name:'',
+            type:'pie',
+            radius : [50, 70],
+            
+            // for funnel
+            x: '60%',
+            width: '35%',
+            funnelAlign: 'left',
+            max: 1048,
+            
+            data:[
+                {value:5, name:'积极'},
+                {value:5, name:'中性'},
+                {value:3, name:'生气'},
+                {value:4, name:'悲伤'},
+                {value:5, name:'其他'}
+            ]
+        }
+    ]
+}
+    myChart.setOption(option);  
+                    
+}
+
+function Draw_think_topic(){
     // domain_value = [];
     // domain_key = [];
     // indicate = [];
@@ -822,76 +897,6 @@ function Draw_think_domain(){
         },
         legend: {
             x : 'center',
-            data:['领域']
-        },
-        toolbox: {
-            show : true,
-            feature : {
-                saveAsImage : {show: true}
-            }
-        },
-        calculable : true,
-        polar : [
-            {
-            indicator : [
-                {text : '进攻', max  : 100},
-                {text : '防守', max  : 100},
-                {text : '体能', max  : 100},
-                {text : '速度', max  : 100},
-                {text : '力量', max  : 100},
-                {text : '技巧', max  : 100}],
-                radius : 80
-            }
-        ],
-        series : [
-            {
-                name: '',
-                type: 'radar',
-                itemStyle: {
-                    normal: {
-                        areaStyle: {
-                            type: 'default'
-                        }
-                    }
-                },
-                data : [
-                    {
-                        value : [97, 42, 88, 94, 90, 86],
-                        name : '领域'
-                    }
-                ]
-            }
-        ]
-    };                
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
-}
-function Draw_think_topic(){
-    // topic_value = [];
-    // topic_key = [];
-    // indicate = [];
-    // for ( key in data['2']){
-    //      indicator = {};
-    //     topic_key.push(key);
-    //     indicator['text'] = key;
-    //     indicator['max'] = 20;
-    //     indicate.push(indicator);
-    //     topic_value.push(data['2'][key]);
-    // }
-
-
-    var myChart = echarts.init(document.getElementById('radar_topic')); 
-        
-        var option = {
-        title : {
-            text: '',
-            subtext: ''
-        },
-        tooltip : {
-            trigger: 'axis'
-        },
-        legend: {
-            x : 'center',
             data:['话题']
         },
         toolbox: {
@@ -903,13 +908,13 @@ function Draw_think_topic(){
         calculable : true,
         polar : [
             {
-                indicator : [
-                {text : '进攻', max  : 100},
-                {text : '防守', max  : 100},
-                {text : '体能', max  : 100},
-                {text : '速度', max  : 100},
-                {text : '力量', max  : 100},
-                {text : '技巧', max  : 100}],
+            indicator : [
+                {text : '娱乐', max  : 100},
+                {text : '计算机', max  : 100},
+                {text : '经济', max  : 100},
+                {text : '教育', max  : 100},
+                {text : '自然', max  : 100},
+                {text : '健康', max  : 100}],
                 radius : 80
             }
         ],
@@ -936,19 +941,21 @@ function Draw_think_topic(){
         // 为echarts对象加载数据 
         myChart.setOption(option); 
 }
-function Draw_think_psycho(){
-    // psycho_value = [];
-    // psycho_key = [];
+function Draw_think_domain(){
+    // topic_value = [];
+    // topic_key = [];
     // indicate = [];
     // for ( key in data['2']){
-    //     indicator = {};
-    //     psycho_key.push(key);
+    //      indicator = {};
+    //     topic_key.push(key);
     //     indicator['text'] = key;
     //     indicator['max'] = 20;
     //     indicate.push(indicator);
-    //     psycho_value.push(data['2'][key]);
+    //     topic_value.push(data['2'][key]);
     // }
-    var myChart = echarts.init(document.getElementById('radar_psycho')); 
+
+
+    var myChart = echarts.init(document.getElementById('radar_topic')); 
         
         var option = {
         title : {
@@ -960,7 +967,7 @@ function Draw_think_psycho(){
         },
         legend: {
             x : 'center',
-            data:['心理']
+            data:['领域']
         },
         toolbox: {
             show : true,
@@ -972,12 +979,12 @@ function Draw_think_psycho(){
         polar : [
             {
                 indicator : [
-                {text : '进攻', max  : 100},
-                {text : '防守', max  : 100},
-                {text : '体能', max  : 100},
-                {text : '速度', max  : 100},
-                {text : '力量', max  : 100},
-                {text : '技巧', max  : 100}],
+                {text : '高校微博', max  : 100},
+                {text : '境内机构', max  : 100},
+                {text : '境外机构', max  : 100},
+                {text : '媒体', max  : 100},
+                {text : '律师', max  : 100},
+                {text : '草根', max  : 100}],
                 radius : 80
             }
         ],
@@ -994,8 +1001,8 @@ function Draw_think_psycho(){
                 },
                 data : [
                     {
-                        value : [97, 42, 88, 94, 90, 86],
-                        name : '心理'
+                        value : [97, 56, 28, 94, 45, 86],
+                        name : '领域'
                     }
                 ]
             }
@@ -1004,11 +1011,13 @@ function Draw_think_psycho(){
         // 为echarts对象加载数据 
         myChart.setOption(option); 
 }
+
+   
 function Draw_hashtag(data){
     $('#hashtag').empty();
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
+    html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">权重</th></tr>';
     for (var i = 0; i < data['0'].length; i++) {
        var s = i.toString();
@@ -1053,11 +1062,15 @@ function Draw_top_platform(data){
     html += '<div style="font-size:16px">发布平台排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">权重</th></tr>';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2']['0']['0'] + '</th><th style="text-align:center">' + data['2']['0']['1'] +  '</th></tr>';
     };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">9</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">7</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">6</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">4</th></tr>';
     html += '</table>'; 
     $('#top_platform').append(html);
 }
