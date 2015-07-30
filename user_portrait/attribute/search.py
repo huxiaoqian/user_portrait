@@ -337,7 +337,10 @@ def search_attribute_portrait(uid):
     #state
     if results['uid']:
         uid = results['uid']
-        profile_result = es_user_profile.get(index='weibo_user', doc_type='user', id=uid)
+        try:
+            profile_result = es_user_profile.get(index='weibo_user', doc_type='user', id=uid)
+        except:
+            profile_result = None
         try:
             user_state = profile_result['_source']['description']
             results['description'] = user_state
