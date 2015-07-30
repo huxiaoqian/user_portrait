@@ -648,7 +648,7 @@ function get_hot_users_details(){
 function draw_hot_users_details(uid){
     $('#hot_users_details').empty(); 
     var html_details = '';
-    html_details += '<div><span class="pt_title">用户ID： <a href="/index/personal/?uid='+ uid +'" target="_blank">'+ uid +'</a></span>';
+    html_details += '<div style="font-size:medium"><span class="pt_title">用户ID： <a href="/index/personal/?uid='+ uid +'" target="_blank">'+ uid +'</a></span>';
     html_details += '<span class="pt_title" style="margin-left:10px">昵称： '+ user_details[uid][0] +'</span>';
     html_details += '<span class="pt_title" style="margin-left:10px">影响力： '+ user_details[uid][1] +'</span>';
     html_details += '<span class="pt_title" style="margin-left:10px">爆发度： '+ user_details[uid][2] +'</span></div>';
