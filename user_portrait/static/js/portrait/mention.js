@@ -36,14 +36,15 @@ function mention(data,UserID,UserName){
 	values = [];
 	
 	for(i=0;i<data.length;i++){
-        uids.push(data[i][0]);
+        unames.push(data[i][0]);
         // if(data[i][1][0] == '未知'){
         //     data[i][1][0] = "未知("+ data[i][0] +")";
         // }
-        unames.push(data[i][1][0]);
+        uids.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
-	
+    console.log(uids);
+    console.log(unames);
     var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
@@ -51,7 +52,7 @@ function mention(data,UserID,UserName){
 	nod['name'] = UserName;
 	nod['value'] = 10;
 	nodeContent.push(nod);
-	for (i=0;i<uids.length;i++){
+	for (i=0;i<unames.length;i++){
 			nod = {};
 			nod['category'] = 1;
 			nod['name'] = uids[i];

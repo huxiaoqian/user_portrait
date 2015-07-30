@@ -125,10 +125,10 @@ if(personalData.uname){
 }
 var detailPortrait = document.getElementById('portraitDetail');
 console.log(personalData.description);
-if(personalData.description ==""){
+if(!personalData.description ){
     detailPortrait.innerHTML = "无此数据";
 }else{
-    detailPortrait.innetHTML = personalData.description;
+    detailPortrait.innerHTML = personalData.description;
 }
 var I_rank = document.getElementById('IPrank');
 if(personalData.importance_rank){
