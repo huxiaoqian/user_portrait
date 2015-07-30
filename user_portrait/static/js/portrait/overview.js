@@ -83,7 +83,7 @@ function draw_domian_portrait(data){
       key_domain = '教育';
    }
    html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777" class="ng-binding">' + key_domain + '</a></small></h1>';
+   html += '<h1 class="no-margin"><small><a style="color:#777;font-size:18px" class="ng-binding">' + key_domain + '</a></small></h1>';
    html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
    for (i = 0; i<data['domain_top_user'][key].length; i++){
