@@ -78,7 +78,7 @@
 
             <div id="hot_users" style="margin-top:10px;height:160px"></div>
             <div id="hot_users_details" style="margin-top:10px;text-align:center"></div>
-            <div id="hot_users_line_chart" style="margin-top:20px;height:400px"></div>
+            <div id="hot_users_line_chart" style="margin-top:20px;width:980px;height:400px"></div>
         </div>
     </div>
 </div>
@@ -86,10 +86,11 @@
 
 {% block Own_js %}
 {{ super() }}
+<script type="text/javascript" src="/static/js/portrait/rank_extra.js"></script>
 <script type="text/javascript" src="/static/js/portrait/influence_rank.js"></script>
 {% endblock Own_js %}
 
 {% block end_js %}
 {{ super() }}
-<script type="text/javascript" src="/static/js/charisma.js"></script>
+<script type="text/javascript" src="/static/js/portrait/rank_table.js"></script>
 {% endblock end_js %}
