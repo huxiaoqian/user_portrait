@@ -36,6 +36,9 @@ function follower(data,UserID,UserName){
 	
 	for(i=0;i<data.length;i++){
         uids.push(data[i][0]);
+        // if(data[i][1][0] == '未知'){
+        //     data[i][1][0] = "未知("+ data[i][0] +")";
+        // }
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
@@ -52,6 +55,7 @@ function follower(data,UserID,UserName){
 			nod['category'] = 1;
 			nod['name'] = uids[i];
 			nod['value'] = values[i];
+            nod['label'] = unames[i];
 			nodeContent.push(nod);
 	}
 	//console.log(nodeContent);
@@ -144,8 +148,33 @@ function follower(data,UserID,UserName){
                     var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
                     var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
                     } else {
-                    var node_url = personal_url + data.name;
-                    window.open(node_url);
+                    var node_url;
+                    var weibo_url ;
+                    var ajax_url ;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                        weibo_url = 'http://weibo.com/u/'+ UserID;
+                        node_url = personal_url + UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                        weibo_url = 'http://weibo.com/u/'+ data.name;
+                        node_url = personal_url + data.name;
+                    } 
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
                 }
             }
                 myChart1.on(ecConfig.EVENT.CLICK, focus)

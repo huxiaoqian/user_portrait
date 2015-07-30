@@ -21,7 +21,7 @@
 } 
 .pt_title {
   float: left;
-  width: 130px;
+  width: 90px;
   white-space: nowrap;
   overflow: hidden;
   font-weight: normal;
@@ -33,5 +33,5 @@
   display: block;
   margin-left: 60px;
   word-break: break-all;
-padding-left:5px;
+  padding-left:90px;
 }

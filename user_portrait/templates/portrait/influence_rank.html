@@ -25,7 +25,9 @@
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#1a000000', GradientType=0);
     }
+    .rank_number{text-align:center;color:red;font-size:16px;font-weight:bold;}
 </style>
+
 {% endblock css %}
 {% block main %}
 <h4 class="page-header">影响力排名</h4>
@@ -74,7 +76,10 @@
             <div class="box-header well" style="margin-top:40px;margin-bottom:10px">
                 <h5><i class="glyphicon glyphicon-info-sign"></i> 热门人物</h5>
             </div>
-            <div id="remenrenwu" style="margin-top:10px;height:500px"></div>
+
+            <div id="hot_users" style="margin-top:10px;height:160px"></div>
+            <div id="hot_users_details" style="margin-top:10px;text-align:center"></div>
+            <div id="hot_users_line_chart" style="margin-top:20px;height:400px"></div>
         </div>
     </div>
 </div>
