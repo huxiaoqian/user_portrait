@@ -250,6 +250,7 @@ def search_attribute_portrait(uid):
         results = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
     except:
         results = None
+        return None
     keyword_list = []
     if results['keywords']:
         keywords_dict = json.loads(results['keywords'])

@@ -18,6 +18,30 @@ from time_utils import ts2datetime, datetime2ts
 
 list_name = 'group_task'
 
+# compute index rank like importance/activeness/influence rank
+def get_index_rank(index_value, index_name):
+    result = 0
+    query_body = {
+            'query':{
+                'range':{
+                    index_name:{
+                        'from':index_value,
+                        'to': 100000
+                        }
+                    }
+                }
+            }
+    index_rank = es.count(index='user_portrait', doc_type='user', body=query_body)
+    if index_rank['_shards']['successful'] != 0:
+       result = index_rank['count']
+    else:
+        print 'es index rank error'
+        results = 0
+    return result
+
+
+
+
 # compute attr from es_user_portrait
 def get_attr_portrait(uid_list):
     result = {}
@@ -102,13 +126,16 @@ def get_attr_portrait(uid_list):
                     keyword_ratio[keyword] = keyword_dict[keyword]
         #attr8 importance distribution
         importance = user_dict['importance']
-        importance_list.append(int(importance))
+        importance_rank = get_index_rank(importance, 'importance')
+        importance_list.append(int(importance_rank))
         #attr9 activeness distribution
         activeness = user_dict['activeness']
-        activeness_list.append(int(activeness))
+        activeness_rank = get_index_rank(activeness, 'activeness')
+        activeness_list.append(int(activeness_rank))
         #attr10 influence distribution
         influence = user_dict['influence']
-        influence_list.append(int(influence))
+        influence_rank = get_index_rank(influence, 'influence')
+        influence_list.append(int(influence_rank))
         #attr11 psycho_status ratio
         psycho_status_string = user_dict['psycho_status']
         if psycho_status_string:
@@ -145,10 +172,10 @@ def get_attr_portrait(uid_list):
                     hashtag_ratio[hashtag] += hashtag_dict[hashtag]
                 except:
                     hashtag_ratio[hashtag] = hashtag_dict[hashtag]
-    #print 'importance_list:', importance_list
+    print 'importance_list:', importance_list
     p, t = np.histogram(importance_list, bins=5, normed=False)
     importance_his = [p.tolist(), t.tolist()]
-    #print 'importance_his:', importance_his
+    print 'importance_his:', importance_his
     p, t = np.histogram(activeness_list, bins=5, normed=False)
     activeness_his = [p.tolist(), t.tolist()]
     p, t = np.histogram(influence_list, bins=5, normed=False)
@@ -270,7 +297,7 @@ def get_attr_trend(uid_list):
     sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=False)
     #print 'time_result:', time_result
     #print 'trend_list:', trend_list
-    print 'sort_trend_list:', sort_trend_list
+    #print 'sort_trend_list:', sort_trend_list
     result['activity_trend'] = json.dumps(sort_trend_list)
     result['activity_time'] = json.dumps(segment_result)
     return result
@@ -394,7 +421,7 @@ def get_attr_bci(uid_list):
     result['origin_max_comment_user'] = origin_max_comment_user
     result['retweet_max_retweeted_user'] = retweet_max_retweeted_user
     result['retweet_max_comment_user'] = retweet_max_comment_user
-    print 'result:', result
+    #print 'result:', result
     return result,influence_dict
 
 # yuankun revise
