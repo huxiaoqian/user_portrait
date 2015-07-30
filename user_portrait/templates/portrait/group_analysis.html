@@ -6,7 +6,6 @@
     <link href="/static/css/charisma-app.css" rel="stylesheet">
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
-
     body {
   font-family: '微软雅黑';
   font-size: 14px;
@@ -49,9 +48,7 @@
  {% block head_js %}
   {{ super() }}
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
-	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
-	<script src='/static/js/jquery.dataTables.min.js'></script>
   {% endblock head_js %}
 
 
@@ -116,7 +113,7 @@
 			    </div>
 			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 			      <div class="panel-body">
-			      	<div id='social_line'style='width:700px;height:300px;float:left'></div>
+			      	<div id='social_line'style='width:700px;height:350px;float:left'></div>
 				     <div id='group' style='overflow-x:hidden;width:260px;margin-top:100px;float:right'>
 			        </div>
 			      </div>
@@ -135,10 +132,9 @@
 			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 			      <div class="panel-body">
 					<div>
-						<div id="radar_status" style="height:250px;width:230px;float:left"></div>
-						<div id="radar_topic" style="height:250px;width:230px;float:right"></div>
-						<div id="radar_psycho" style="height:250px;width:230px;float:left"></div>
-						<div id="radar_domain" style="height:250px;width:230px;float:right"></div>
+						<div id="radar_topic" style="height:350px;width:320px;float:left"></div>
+						<div id="radar_domain" style="height:350px;width:320px;float:right"></div>
+						<div id="pie_emotion" style="height:350px;width:320px;float:right"></div>
 					</div>
 			      </div>
 			    </div>
@@ -183,10 +179,10 @@
 			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
 			      <div class="panel-body">
 
-			      	<div id='importance'style='width:480px;height:420px;float:left'></div>
-			      	<div id='activeness'style='width:480px;height:420px;float:right'></div>
-			      	<div id='influence'style='width:480px;height:420px;float:left'></div>
-				     <div id='weibo' style='overflow-x:hidden;width:480px;margin-top:100px;float:right'>
+			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
+			      	<div id='activeness'style='width:320px;height:420px;float:right'></div>
+			      	<div id='influence'style='width:320px;height:420px;float:left'></div>
+				     <div id='weibo' style='overflow-x:hidden;height:650px;width:960px;float:left;margin-top:10px;'>
 					 </div>
 			      </div>
 			    </div>
@@ -212,12 +208,12 @@
     {% block Own_js %}
     {{ super() }}
     <script>
-        var name = "{{ name }}";
-        console.log(name);
+        var name = "{{ name }}";;
     </script>
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
-	<script type="text/javascript" src="/static/js/portrait/group_user.js"></script>
-
-
-	{% endblock Own_js %}
+    {% endblock Own_js %}
+    {% block end_js %}
+    {{ super() }}
+   	<script type="text/javascript" src="/static/js/portrait/group_table.js"></script>
+    {% endblock end_js %}
 

@@ -8,6 +8,7 @@ from elasticsearch.exceptions import NotFoundError
 from search_vary_index_function import generate_date
 from rank_portrait_in_active_user import search_k
 
+from mid2weibolink import weiboinfo2url
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 from user_portrait.global_utils import es_user_profile as es_profile # user profile es
 from user_portrait.global_utils import es_user_portrait as es_portrait # user portrait es
@@ -201,9 +202,11 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
                 if 'retweeted' in field:
                     info[4] = user_list[i]['origin_weibo_top_retweeted_id']
                     info[5] = user_list[i]['origin_weibo_retweeted_top_number']
+                    info.append(weiboinfo2url(info[2], info[4]))
                 else:
                     info[4] = user_list[i]['origin_weibo_top_comment_id']
                     info[5] = user_list[i]['origin_weibo_comment_top_number']
+                    info.append(weiboinfo2url(info[2], info[4]))
 
                 rank += 1
                 return_list.append(info)

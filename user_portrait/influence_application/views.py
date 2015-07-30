@@ -106,7 +106,7 @@ def ajax_portrait_user_domain_rank():
 @mod.route('/hot_origin_weibo/')
 def ajax_hot_origin_weibo():
     date = request.args.get('date', '') # '2013-09-01'
-    number = request.args.get('number', 3) # default
+    number = request.args.get('number', 10) # default
     date = str(date)
     number= int(number)
 
@@ -123,7 +123,7 @@ def ajax_hot_origin_weibo():
 @mod.route('/hot_origin_weibo_brust/')
 def ajax_hot_origin_weibo_brust():
     date = request.args.get('date', '') # '2013-09-01'
-    number = request.args.get('number', 3) # default
+    number = request.args.get('number', 10) # default
     date = str(date)
     number = int(number)
 
@@ -157,7 +157,7 @@ def ajax_portrait_history_active():
 @mod.route('/vary_top_k/')
 def ajax_vary_top_k():
     results = []
-    number = request.args.get('number', 10) # "100"
+    number = request.args.get('number', 100) # "100"
     number = int(number)
 
     results = query_vary_top_k("vary", "bci", number)
