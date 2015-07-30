@@ -202,11 +202,11 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
                 if 'retweeted' in field:
                     info[4] = user_list[i]['origin_weibo_top_retweeted_id']
                     info[5] = user_list[i]['origin_weibo_retweeted_top_number']
-                    info[7] = weiboinfo2url(info[2], info[4])
+                    info.append(weiboinfo2url(info[2], info[4]))
                 else:
                     info[4] = user_list[i]['origin_weibo_top_comment_id']
                     info[5] = user_list[i]['origin_weibo_comment_top_number']
-                    info[7] = weiboinfo2url(info[2], info[4])
+                    info.append(weiboinfo2url(info[2], info[4]))
 
                 rank += 1
                 return_list.append(info)
