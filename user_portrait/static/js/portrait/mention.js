@@ -13,7 +13,9 @@ Mention.prototype = {   //获取数据，重新画表
   },
 Draw_Mention:function(data){
 	var UserID = parent.personalData.uid;
-	var UserName = parent.personalData.uname;
+    var UserName = parent.personalData.uname;
+    var Mnumber = document.getElementById('mentionNumber');
+    Mnumber.innerHTML = data[1];
 	var items = data[0];
 	html = '';
 	if(items==null){
@@ -25,7 +27,7 @@ Draw_Mention:function(data){
 }
 }
 var Mention = new Mention();
-url = '/attribute/mention/?uid=1642591402' ;
+url = '/attribute/mention/?uid='+parent.personalData.uid ;
 Mention.call_sync_ajax_request(url, Mention.ajax_method, Mention.Draw_Mention);
 
 function mention(data,UserID,UserName){
@@ -35,11 +37,17 @@ function mention(data,UserID,UserName){
 	
 	for(i=0;i<data.length;i++){
         uids.push(data[i][0]);
+        // if(data[i][1][0] == '未知'){
+        //     data[i][1][0] = "未知("+ data[i][0] +")";
+        //     console.log(data[i][0]);
+        //     console.log(data[i][1][0]);
+        // }
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
 	//console.log(uids);
 	
+    var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
 	nod['category'] = 0;
@@ -51,6 +59,7 @@ function mention(data,UserID,UserName){
 			nod['category'] = 1;
 			nod['name'] = uids[i];
 			nod['value'] = values[i];
+            nod['label'] = unames[i];
 			nodeContent.push(nod);
 	}
 	//console.log(nodeContent);
@@ -62,12 +71,12 @@ function mention(data,UserID,UserName){
 		line['weight'] = 1;
 		linkline.push(line);
 	}
-	console.log(linkline);
+    console.log('ddddd');
 	var myChart2 = echarts.init(document.getElementById('test2'));
 	var option = {
             title : {
                 text: '@互动',
-                x:'left',
+                x:'150',
                 y:'top'
             },
             legend: {
@@ -126,5 +135,57 @@ function mention(data,UserID,UserName){
                 }
             ]
     };  
-	myChart2.setOption(option); 	
+	myChart2.setOption(option); 
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    } else {
+                    var node_url;
+                    var weibo_url ;
+                    var ajax_url ;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                        weibo_url = 'http://weibo.com/u/'+ UserID;
+                        node_url = personal_url + UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                        weibo_url = 'http://weibo.com/u/'+ data.name;
+                        node_url = personal_url + data.name;
+                    }  
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
+                }
+            }
+                myChart2.on(ecConfig.EVENT.CLICK, focus)
+
+                myChart2.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                });
+            }
+    )  	
 }

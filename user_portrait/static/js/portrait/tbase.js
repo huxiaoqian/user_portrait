@@ -19,6 +19,7 @@ function bindSearchFunc(that){
     $("#simple_search").click(function(){
         var term = $("#keyword").val();
         var simple_url = that.simple_search_url(term);
+        console.log(simple_url);
         window.location.href = simple_url;
     });
     $("#bluebtn").off("click").click(function(){

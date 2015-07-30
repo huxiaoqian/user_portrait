@@ -103,6 +103,7 @@
             options = $.extend(true, {
                 root : $(document.body),
                 position : "left",
+                top:200,
                 callback: {
                     item : {
                         enter : function(){

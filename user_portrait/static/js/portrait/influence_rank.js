@@ -244,12 +244,19 @@ Search_weibo_change.prototype = {
       else
         user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][2];
+      var pic = '';
+      if(item[i][4]>0)
+        pic = '/static/img/up.png';
+      else if(item[i][4]<0)
+        pic = '/static/img/down.png';
+      else
+        pic = '';
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
       html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'<img src="'+ pic +'" style="width:20px;height:25px"></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -278,12 +285,19 @@ Search_weibo_change.prototype = {
       else
         user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][2];
+      var pic = '';
+      if(item[i][4]>0)
+        pic = '/static/img/up.png';
+      else if(item[i][4]<0)
+        pic = '/static/img/down.png';
+      else
+        pic = '';
       html += '<tr>';
       html += '<td class="center">'+ item[i][0] +'</td>';
       html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
       html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
       html += '<td class="center">'+ item[i][3] +'</td>';
-      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'<img src="'+ pic +'" style="width:20px;height:25px"></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -299,6 +313,185 @@ Search_weibo_change.prototype = {
   }
 }
 
+function Search_weibo_detail_trans(url, div){
+  that = this;
+  this.ajax_method = 'GET';
+  this.url = url;
+  this.div = div;
+}
+
+Search_weibo_detail_trans.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+
+  Draw_table: function(data){
+    //console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="detail_trans_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>转发量</th></tr></thead>';
+    var item = data[0];
+    html += '<tbody>';
+    for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][1]=="未知")
+        item[i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      user_url = '/index/personal/?uid=';
+      user_url = user_url + item[i][2];
+      html += '<tr>';
+      html += '<td class="center">'+ item[i][0] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+  },
+  Re_Draw_table: function(data){
+    //console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="detail_trans_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>转发量</th></tr></thead>';
+    var item = data[0];
+    html += '<tbody>';
+    for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][1]=="未知")
+        item[i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      user_url = '/index/personal/?uid=';
+      user_url = user_url + item[i][2];
+      html += '<tr>';
+      html += '<td class="center">'+ item[i][0] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+    $('#detail_trans_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
+  }
+}
+
+function Search_weibo_detail_comment(url, div){
+  that = this;
+  this.ajax_method = 'GET';
+  this.url = url;
+  this.div = div;
+}
+
+Search_weibo_detail_comment.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+
+  Draw_table: function(data){
+    //console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="detail_comment_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>评论量</th></tr></thead>';
+    var item = data[1];
+    html += '<tbody>';
+    for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][1]=="未知")
+        item[i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      user_url = '/index/personal/?uid=';
+      user_url = user_url + item[i][2];
+      html += '<tr>';
+      html += '<td class="center">'+ item[i][0] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+  },
+  Re_Draw_table: function(data){
+    //console.log(data);
+    var div = that.div;
+    //console.log(div);
+    $(div).empty();
+    var user_url;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="detail_comment_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>排名</th><th>头像</th><th>用户ID</th><th>昵称</th><th>微博ID</th><th>评论量</th></tr></thead>';
+    var item = data[1];
+    html += '<tbody>';
+    for(var i in item){
+      item[i] = replace_space(item[i]);
+      if(item[i][1]=="未知")
+        item[i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      user_url = '/index/personal/?uid=';
+      user_url = user_url + item[i][2];
+      html += '<tr>';
+      html += '<td class="center">'+ item[i][0] +'</td>';
+      html += '<td class="center"><img src="'+ item[i][1] +'" class="img-circle"></td>';
+      html += '<td class="center"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">'+ item[i][4] +'</td>';
+      html += '<td class="center">'+ item[i][5] +'</td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+    $('#detail_comment_table').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
+  }
+}
+
+
 $("#range").empty();
 var range_html = '';
 range_html += '<input type="radio" name="range_select" checked value="0" /> 全网';
@@ -310,6 +503,12 @@ var change_html = '';
 change_html += '<input type="radio" name="change_select" checked value="0" /> 全网';
 change_html += '<input type="radio" name="change_select" value="1" style="margin-left:5px" /> 人物库';
 $("#change").append(change_html);
+
+$("#detail").empty();
+var detail_html = '';
+detail_html += '<input type="radio" name="detail_select" checked value="0" /> 转发量';
+detail_html += '<input type="radio" name="detail_select" value="1" style="margin-left:5px" /> 评论量';
+$("#detail").append(detail_html);
 
 $("#domain").empty();
 var domain_html = '';
@@ -333,7 +532,7 @@ $('input[name="range_select"]').click(function(){
     url_total_new = '/influence_application/all_active_rank/?date=' + select_total_date;
   else
     url_total_new = '/influence_application/portrait_user_in_active/?date=' + select_total_date;
-  console.log(url_total_new);
+  //console.log(url_total_new);
   draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Re_Draw_table);
 });
@@ -345,9 +544,22 @@ $('input[name="change_select"]').click(function(){
     url_change_new = '/influence_application/vary_top_k/';
   else
     url_change_new = '/influence_application/portrait_user_in_vary/';
-  console.log(url_change_new);
+  //console.log(url_change_new);
   draw_table_change_new = new Search_weibo_change(url_change_new, '#change_rank');
   draw_table_change_new.call_sync_ajax_request(url_change_new, draw_table_change_new.ajax_method, draw_table_change_new.Re_Draw_table);
+});
+
+$('input[name="detail_select"]').click(function(){
+  var url_detail_new = '/influence_application/hot_origin_weibo/?date=' + $("#detail_date_select").val() + '&number=10';
+  var detail_status = $('input[name="detail_select"]:checked').val();
+  if(detail_status==0){
+    draw_table_detail_trans_new = new Search_weibo_detail_trans(url_detail_new, '#detail_rank');
+    draw_table_detail_trans_new.call_sync_ajax_request(url_detail_new, draw_table_detail_trans_new.ajax_method, draw_table_detail_trans_new.Re_Draw_table);
+  }
+  else{
+    draw_table_detail_comment_new = new Search_weibo_detail_comment(url_detail_new, '#detail_rank');
+    draw_table_detail_comment_new.call_sync_ajax_request(url_detail_new, draw_table_detail_comment_new.ajax_method, draw_table_detail_comment_new.Re_Draw_table);
+  }
 });
 
 $('#domain_button').click(function(){
@@ -371,6 +583,10 @@ draw_table_domain.call_sync_ajax_request(url_domain, draw_table_domain.ajax_meth
 var url_change = '/influence_application/vary_top_k/';
 draw_table_change = new Search_weibo_change(url_change, '#change_rank');
 draw_table_change.call_sync_ajax_request(url_change, draw_table_change.ajax_method, draw_table_change.Draw_table);
+
+var url_detail = '/influence_application/hot_origin_weibo/?date=' + now + '&number=10';
+draw_table_detail_trans = new Search_weibo_detail_trans(url_detail, '#detail_rank');
+draw_table_detail_trans.call_sync_ajax_request(url_detail, draw_table_detail_trans.ajax_method, draw_table_detail_trans.Draw_table);
 
 var total_date = [];
 for(var i=0;i<7;i++){
@@ -408,12 +624,45 @@ domain_date_html += '<option value="' + domain_date[6] + '" selected="selected">
 domain_date_html += '</select>';
 $("#domain_date").append(domain_date_html);
 
+var detail_date = [];
+for(var i=0;i<7;i++){
+  var today = new Date(tomorrow-24*60*60*1000*(7-i));
+  detail_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
+}
+$("#detail_date").empty();
+var detail_date_html = '';
+detail_date_html += '<select id="detail_date_select">';
+detail_date_html += '<option value="' + detail_date[0] + '">' + detail_date[0] + '</option>';
+detail_date_html += '<option value="' + detail_date[1] + '">' + detail_date[1] + '</option>';
+detail_date_html += '<option value="' + detail_date[2] + '">' + detail_date[2] + '</option>';
+detail_date_html += '<option value="' + detail_date[3] + '">' + detail_date[3] + '</option>';
+detail_date_html += '<option value="' + detail_date[4] + '">' + detail_date[4] + '</option>';
+detail_date_html += '<option value="' + detail_date[5] + '">' + detail_date[5] + '</option>';
+detail_date_html += '<option value="' + detail_date[6] + '" selected="selected">' + detail_date[6] + '</option>';
+detail_date_html += '</select>';
+$("#detail_date").append(detail_date_html);
+
 $('#total_date_button').click(function(){
   //console.log($("#total_date_select").val());
   var url_total_new = '/influence_application/all_active_rank/?date=' + $("#total_date_select").val();
   draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Re_Draw_table);
   prepare_rank_distribution();
+});
+
+$('#detail_date_button').click(function(){
+  //console.log($("#total_date_select").val());
+  var url_detail_new = '/influence_application/hot_origin_weibo/?date=' + $("#detail_date_select").val() + '&number=10';
+  var detail_status = $('input[name="detail_select"]:checked').val();
+  if(detail_status==0){
+    draw_table_detail_trans_new = new Search_weibo_detail_trans(url_detail_new, '#detail_rank');
+    draw_table_detail_trans_new.call_sync_ajax_request(url_detail_new, draw_table_detail_trans_new.ajax_method, draw_table_detail_trans_new.Re_Draw_table);
+  }
+  else{
+    draw_table_detail_comment_new = new Search_weibo_detail_comment(url_detail_new, '#detail_rank');
+    draw_table_detail_comment_new.call_sync_ajax_request(url_detail_new, draw_table_detail_comment_new.ajax_method, draw_table_detail_comment_new.Re_Draw_table);
+  }
+  draw_hot_users();
 });
 
 function replace_space(data){
@@ -425,6 +674,9 @@ function replace_space(data){
   return data;
 }
 
+prepare_rank_distribution();
+
+//画柱状图
 function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
   var option = {
     title : {
@@ -498,6 +750,7 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
   draw_init.setOption(option);
 }
 
+//柱状图数据
 function prepare_rank_distribution(){
   var influence_bar_axis = [];
   var influence_bar_all = [];
@@ -537,8 +790,180 @@ function prepare_rank_distribution(){
       influence_bar_in.push(data2[1][k]);
   }
 
-  console.log(influence_bar_axis, influence_bar_all, influence_bar_in, low_number_all, low_number_in);
+  //console.log(influence_bar_axis, influence_bar_all, influence_bar_in, low_number_all, low_number_in);
   draw_rank_distribution(influence_bar_axis, influence_bar_all, influence_bar_in, 'rank_distribution', low_number_all, low_number_in);
 }
 
-prepare_rank_distribution();
+//热门人物信息
+function draw_hot_users_details(uid){
+  var url_hot_users = '/influence_application/hot_origin_weibo_brust/?date=' + $("#detail_date_select").val() + '&number=6';
+  $.ajax({
+    url: url_hot_users,
+    type: 'GET',
+    dataType: 'json',
+    async: false,
+    success:hot_users_details
+  }); 
+  function hot_users_details(data){
+    console.log(url_hot_users);
+    console.log(data);
+    var user_details = {};
+    for(var i=0;i<2;i++){
+      for(var j=0;j<6;j++){
+        var user_id = data[i][j][2];
+        var details = [];
+        if(data[i][j][3]=="")
+          data[i][j][3] = "未知";
+        details.push(data[i][j][3],data[i][j][4].toFixed(2),data[i][j][6].toFixed(2));
+        user_details[user_id] = details;
+      }
+    }
+    console.log('uid:'+uid);
+    console.log(user_details);
+    $('#hot_users_details').empty(); 
+    var html_details = '';
+    html_details += '<div><span class="pt_title">用户ID： <a href="/index/personal/?uid="'+ uid +' target="_blank">'+ uid +'</a></span>';
+    html_details += '<span class="pt_title" style="margin-left:10px">昵称： '+ user_details[uid][0] +'</span>'
+    html_details += '<span class="pt_title" style="margin-left:10px">影响力： '+ user_details[uid][1] +'</span>'
+    html_details += '<span class="pt_title" style="margin-left:10px">爆发度： '+ user_details[uid][2] +'</span></div>'
+    $('#hot_users_details').append(html_details);
+  }
+}
+
+//画折线图
+function draw_line_chart(xaxis, influence_data, div){
+  var line_chart_option = {
+    title : {
+        text: '用户影响力走势图',
+        subtext: '来自微博'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['影响力']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : xaxis,
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+        }
+    ],
+    series : [
+        {
+            name:'影响力',
+            type:'line',
+            data:influence_data,
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        },
+    ]
+  };
+  var draw_init2 = echarts.init(document.getElementById(div));
+  draw_init2.setOption(line_chart_option);
+}
+
+//折线图数据
+function prepare_line_chart(uid){
+  var url_line_chart = '/influence_application/portrait_history_active/?date=2013-09-07&uid=' + uid;
+  //console.log(url_line_chart);
+  $.ajax({
+    url: url_line_chart,
+    type: 'GET',
+    dataType: 'json',
+    async: false,
+    success:callback_line_chart
+  });
+  function callback_line_chart(data){
+    var line_chart_dates = [];
+    var line_chart_tomorrow = new Date();
+    for(var i=0;i<7;i++){
+      var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
+      line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
+    }
+    //console.log(line_chart_dates);
+    //console.log(data);
+    var line_chart_data = [];
+    for(var j=0;j<data.length;j++)
+        line_chart_data.push(parseFloat(data[j].toFixed(2)));
+    console.log(line_chart_data);
+    draw_line_chart(line_chart_dates, line_chart_data, 'hot_users_line_chart');
+  }
+}
+
+//画头像
+function draw_hot_users(){
+  var url_hot_users = '/influence_application/hot_origin_weibo_brust/?date=' + $("#detail_date_select").val() + '&number=6';
+  $.ajax({
+    url: url_hot_users,
+    type: 'GET',
+    dataType: 'json',
+    async: false,
+    success:hot_users_img
+  });
+  function hot_users_img(data){
+    $('#hot_users').empty(); 
+    var html = '';
+    html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope" style="width:480px"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
+    html += '<h3 class="no-margin" style="text-align:center"><small>转发量排序</small></h3>';
+    html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
+    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:80px" class="list-inline">';
+    for(var i in data[0]){
+      if(data[0][i][1]=="")
+        data[0][i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom:10px;margin-right:9px" class="index-small-photo-wrap no-padding ng-scope">';
+      html += '<div class="small-photo shadow-5"><img src="' + data[0][i][1] + '" alt="' + data[0][i][3] +'" title="' + data[0][i][3] +'" class="hot_users" name="' + data[0][i][2] + '"></div></li>';
+    }
+    html += '</ul></div></div>';
+
+    html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope" style="float:right;width:480px"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
+    html += '<h3 class="no-margin" style="text-align:center"><small>评论量排序</small></h3>';
+    html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
+    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:80px" class="list-inline">';
+    for(var j in data[1]){
+      if(data[1][j][1]=="")
+        data[1][j][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom:10px;margin-right:9px" class="index-small-photo-wrap no-padding ng-scope">';
+      html += '<div class="small-photo shadow-5"><img src="' + data[1][j][1] + '" alt="' + data[1][j][3] +'" title="' + data[1][j][3] +'" class="hot_users" name="' + data[1][j][2] + '"></div></li>';
+    }
+    html += '</ul></div></div>';
+    $('#hot_users').append(html);
+    draw_hot_users_details(data[0][2][2]);
+    prepare_line_chart(data[0][2][2]);
+  }
+}
+
+draw_hot_users();
+
+$('.hot_users').click(function(){
+  var user_id_choose = $(this).attr('name');
+  console.log('choose'+user_id_choose);
+  draw_hot_users_details(user_id_choose);
+  prepare_line_chart(user_id_choose);
+});

@@ -16,7 +16,6 @@ Search_weibo_recommend.prototype = {
     });
   },
   Re_Draw_table: function(data){
-        //console.log(data);
     var div = that.div;
     //console.log(div);
     $(div).empty();
@@ -30,7 +29,7 @@ Search_weibo_recommend.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][5]!='未知')
-        item[i][5] = item[i][5].toFixed(2)
+        item[i][5] = item[i][5].toFixed(2);
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       html += '<tr>';
@@ -49,8 +48,9 @@ Search_weibo_recommend.prototype = {
     $('#recommend_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "recommend_boot",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         "oLanguage": {
-            "sLengthMenu": "_MENU_ 每页"
+            "sLengthMenu": "_MENU_ 每页",
         }
     });
     // page control start
@@ -92,7 +92,7 @@ Search_weibo_compute.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][5]!='未知')
-        item[i][5] = item[i][5].toFixed(2)
+        item[i][5] = item[i][5].toFixed(2);
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var compute_status;
@@ -127,6 +127,7 @@ Search_weibo_compute.prototype = {
     $('#compute_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "compute_boot",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -170,7 +171,7 @@ Search_weibo_history.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][5]!='未知')
-        item[i][5] = item[i][5].toFixed(2)
+        item[i][5] = item[i][5].toFixed(2);
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var in_status;
@@ -196,6 +197,7 @@ Search_weibo_history.prototype = {
     $('#history_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "history_boot",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -324,15 +326,15 @@ draw_table_compute.call_sync_ajax_request(url_compute, draw_table_compute.ajax_m
 var url_history = '/recommentation/show_in_history/?date=' + now;
 draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Re_Draw_table);
+console.log('end');
 
 var recommend_date = [];
 for(var i=0;i<7;i++){
   var today = new Date(tomorrow-24*60*60*1000*(7-i));
   recommend_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
 }
-$("#recommend_date").empty();
+$("#recommend_date_select").empty();
 var recommend_date_html = '';
-recommend_date_html += '<select id="recommend_date_select">';
 recommend_date_html += '<option value="' + recommend_date[0] + '">' + recommend_date[0] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[1] + '">' + recommend_date[1] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[2] + '">' + recommend_date[2] + '</option>';
@@ -340,17 +342,15 @@ recommend_date_html += '<option value="' + recommend_date[3] + '">' + recommend_
 recommend_date_html += '<option value="' + recommend_date[4] + '">' + recommend_date[4] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[5] + '">' + recommend_date[5] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[6] + '" selected="selected">' + recommend_date[6] + '</option>';
-recommend_date_html += '</select>';
-$("#recommend_date").append(recommend_date_html);
+$("#recommend_date_select").append(recommend_date_html);
 
 var history_date = [];
 for(var i=0;i<7;i++){
   var today = new Date(tomorrow-24*60*60*1000*(7-i));
   history_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
 }
-$("#history_date").empty();
+$("#history_date_select").empty();
 var history_date_html = '';
-history_date_html += '<select id="history_date_select">';
 history_date_html += '<option value="' + history_date[0] + '">' + history_date[0] + '</option>';
 history_date_html += '<option value="' + history_date[1] + '">' + history_date[1] + '</option>';
 history_date_html += '<option value="' + history_date[2] + '">' + history_date[2] + '</option>';
@@ -358,8 +358,7 @@ history_date_html += '<option value="' + history_date[3] + '">' + history_date[3
 history_date_html += '<option value="' + history_date[4] + '">' + history_date[4] + '</option>';
 history_date_html += '<option value="' + history_date[5] + '">' + history_date[5] + '</option>';
 history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
-history_date_html += '</select>';
-$("#history_date").append(history_date_html);
+$("#history_date_select").append(history_date_html);
 
 bindOption();
 
@@ -373,7 +372,7 @@ function compute_all(){
 
 function replace_space(data){
   for(var i in data){
-    if(data[i]===""){
+    if(data[i]===""||data[i]==="unknown"){
       data[i] = "未知";
     }
   }

@@ -4,7 +4,7 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import submit_task, search_task, get_group_results, delete_group_results
+from utils import submit_task, search_task, get_group_results, get_group_list, delete_group_results
 
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.time_utils import ts2datetime
@@ -23,7 +23,7 @@ def ajax_submit_task():
     input_data['state'] = request.args.get('state', '')
     """
     input_data = request.get_json()
-    print input_data, type(input_data)
+    #print input_data, type(input_data)
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     input_data['submit_date'] = now_date
@@ -40,6 +40,7 @@ def ajax_show_task():
     state = request.args.get('state', '')
     status = request.args.get('status', '')
     results = search_task(task_name, submit_date, state, status)
+    print 'lem results:', len(results)
     return json.dumps(results)
 
 
@@ -53,6 +54,13 @@ def ajax_show_group_result_basic():
     #print 'result:', results
     return json.dumps(results)
 
+#show the group member list
+@mod.route('/show_group_list/')
+def sjax_show_group_list():
+    results = []
+    task_name = request.args.get('task_name', '')
+    results = get_group_list(task_name)
+    return json.dumps(results)
 
 # delete the group task
 @mod.route('/delete_group_task/')

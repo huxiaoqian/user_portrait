@@ -25,7 +25,9 @@
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#1a000000', GradientType=0);
     }
+    .rank_number{text-align:center;color:red;font-size:16px;font-weight:bold;}
 </style>
+
 {% endblock css %}
 {% block main %}
 <h4 class="page-header">影响力排名</h4>
@@ -34,6 +36,7 @@
         <li class="active" title="整体排名"><a href="#info">整体排名</a></li>
         <li title="领域排名"><a href="#custom">领域排名</a></li>
         <li title="变动排名"><a href="#messages">变动排名</a></li>
+        <li title="影响力详情"><a href="#details">影响力详情</a></li>
     </ul>
 
     <div id="myTabContent" class="tab-content">
@@ -61,6 +64,22 @@
         <div class="tab-pane" id="messages" style="margin-top:10px">
             <span>排名范围：</span><span id="change" style="margin-left:10px"></span>
             <div id="change_rank" style="margin-top:10px"></div>
+        </div>
+        <div class="tab-pane" id="details" style="margin-top:10px">
+            <span>选择日期：</span><span id="detail_date" style="margin-left:10px"></span>
+            <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="detail_date_button" title="确定日期选择">确定</button></span>
+            <div class="box-header well" style="margin-top:20px;margin-bottom:10px">
+                <h5><i class="glyphicon glyphicon-info-sign"></i> 热门原创微博用户</h5>
+            </div>
+            <span>排序方式：</span><span id="detail" style="margin-left:10px"></span>
+            <div id="detail_rank" style="margin-top:10px"></div>
+            <div class="box-header well" style="margin-top:40px;margin-bottom:10px">
+                <h5><i class="glyphicon glyphicon-info-sign"></i> 热门人物</h5>
+            </div>
+
+            <div id="hot_users" style="margin-top:10px;height:160px"></div>
+            <div id="hot_users_details" style="margin-top:10px;text-align:center"></div>
+            <div id="hot_users_line_chart" style="margin-top:20px;height:400px"></div>
         </div>
     </div>
 </div>

@@ -160,15 +160,19 @@ function getDate(tm){
     return tt;
 }
 var Activity = new Activity();
-url = '/attribute/activity/?uid=1642591402' 
+url = '/attribute/activity/?uid='+parent.personalData.uid;
 Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
 var location_geo = parent.personalData.activity_geo;
 //console.log(location_geo);
 $('#Top5').empty();
 var html = '';
-for (i=1;i<location_geo.length+1;i++){
+if(location_geo){
+	for (i=1;i<location_geo.length+1;i++){
 	//console.log(location_geo[i][0]); 
 	html += '<dl><dt><span class="LocationImg  fleft"></span><span class="Acity fleft" id="top1">'+location_geo[i-1][0]+'</span></dt></dl>'
+	}
+}else{
+	html += '<dl><dt><span class="LocationImg  fleft"></span><span class="Acity fleft" id="top1">暂时无此数据</span></dt></dl>'
 }
 $('#Top5').append(html);
 </script>

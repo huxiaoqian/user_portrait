@@ -52,6 +52,7 @@ Search_weibo_recommend.prototype = {
     $('#recommend_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "recommend_boot",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -117,6 +118,7 @@ Search_weibo_history.prototype = {
     $('#history_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "history_boot",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -244,9 +246,8 @@ for(var i=0;i<7;i++){
   var today = new Date(tomorrow-24*60*60*1000*(6-i));
   recommend_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
 }
-$("#recommend_date").empty();
+$("#recommend_date_select").empty();
 var recommend_date_html = '';
-recommend_date_html += '<select id="recommend_date_select">';
 recommend_date_html += '<option value="' + recommend_date[0] + '">' + recommend_date[0] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[1] + '">' + recommend_date[1] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[2] + '">' + recommend_date[2] + '</option>';
@@ -254,17 +255,15 @@ recommend_date_html += '<option value="' + recommend_date[3] + '">' + recommend_
 recommend_date_html += '<option value="' + recommend_date[4] + '">' + recommend_date[4] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[5] + '">' + recommend_date[5] + '</option>';
 recommend_date_html += '<option value="' + recommend_date[6] + '" selected="selected">' + recommend_date[6] + '</option>';
-recommend_date_html += '</select>';
-$("#recommend_date").append(recommend_date_html);
+$("#recommend_date_select").append(recommend_date_html);
 
 var history_date = [];
 for(var i=0;i<7;i++){
   var today = new Date(tomorrow-24*60*60*1000*(6-i));
   history_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
 }
-$("#history_date").empty();
+$("#history_date_select").empty();
 var history_date_html = '';
-history_date_html += '<select id="history_date_select">';
 history_date_html += '<option value="' + history_date[0] + '">' + history_date[0] + '</option>';
 history_date_html += '<option value="' + history_date[1] + '">' + history_date[1] + '</option>';
 history_date_html += '<option value="' + history_date[2] + '">' + history_date[2] + '</option>';
@@ -272,8 +271,7 @@ history_date_html += '<option value="' + history_date[3] + '">' + history_date[3
 history_date_html += '<option value="' + history_date[4] + '">' + history_date[4] + '</option>';
 history_date_html += '<option value="' + history_date[5] + '">' + history_date[5] + '</option>';
 history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
-history_date_html += '</select>';
-$("#history_date").append(history_date_html);
+$("#history_date_select").append(history_date_html);
 
 bindOption();
 

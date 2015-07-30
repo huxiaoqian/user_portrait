@@ -25,12 +25,12 @@ Search_weibo_result.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
       item = replace_space(item);
-      for(var j=4;j<7;j++){
+      for(var j=3;j<7;j++){
         if(item[j]!='未知')
           item[j] = item[j].toFixed(2);
       }
@@ -39,17 +39,61 @@ Search_weibo_result.prototype = {
       html += '<tr id=' + item[0] +'>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] +'</td>';
-      html += '<td class="center">'+ gender(item[2]) +'</td>';
-      html += '<td class="center">'+ item[3] +'</td>';
-      html += '<td class="center" style="width:100px">'+ item[4] +'</td>';
-      html += '<td class="center" style="width:100px">'+ item[5] +'</td>';
-      html += '<td class="center" style="width:100px">'+ item[6] +'</td>';
+      html += '<td class="center">'+ item[2] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[6] +'</td>';
       html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+  },
+  Dy_Draw_table: function(data){
+    //console.log(data);
+    var div = that.div
+    //console.log(div);
+    $(div).empty();
+    var user_url ;
+    //console.log(user_url);
+    html = '';
+    html += '<table id="result_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
+    html += '<tbody>';
+    for(var i = 0;i<data.length;i++){
+      var item = data[i];
+      item = replace_space(item);
+      for(var j=3;j<7;j++){
+        if(item[j]!='未知')
+          item[j] = item[j].toFixed(2);
+      }
+      global_data[item[0]] = item; // make global data
+      user_url = '/index/personal/?uid=' + item[0];
+      html += '<tr id=' + item[0] +'>';
+      html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
+      html += '<td class="center">'+ item[1] +'</td>';
+      html += '<td class="center">'+ item[2] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] +'</td>';
+      html += '<td class="center" style="width:100px;">'+ item[6] +'</td>';
+      html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+    //datatable
+    $('#result_table_new').dataTable({
+        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+        "sPaginationType": "bootstrap",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[7]}],
+        "oLanguage": {
+            "sLengthMenu": "_MENU_ 每页"
+        }
+    });
   },
   Re_Draw_table: function(data){
     //console.log(data);
@@ -60,7 +104,7 @@ Search_weibo_result.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="result_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th>' + '<input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
     for(var key in data){
       var item = data[key];
@@ -69,11 +113,11 @@ Search_weibo_result.prototype = {
           html += '<tr id=' + item[0] +'>';
           html += '<td class="center" name="uids"><a href='+ user_url+ '>'+ item[0] +'</td>';
           html += '<td class="center">'+ item[1] +'</td>';
-          html += '<td class="center">'+ gender(item[2]) +'</td>';
-          html += '<td class="center">'+ item[3] +'</td>';
-          html += '<td class="center">'+ item[4].toFixed(2) +'</td>';
-          html += '<td class="center">'+ item[5].toFixed(2) +'</td>';
-          html += '<td class="center">'+ item[6].toFixed(2) +'</td>';
+          html += '<td class="center">'+ item[2] +'</td>';
+          html += '<td class="center" style="width:100px;">'+ item[3] +'</td>';
+          html += '<td class="center" style="width:100px;">'+ item[4] +'</td>';
+          html += '<td class="center" style="width:100px;">'+ item[5] +'</td>';
+          html += '<td class="center" style="width:100px;">'+ item[6] +'</td>';
           html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
           html += '</tr>';
       }
@@ -85,6 +129,7 @@ Search_weibo_result.prototype = {
     $('#result_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[7]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
@@ -115,16 +160,25 @@ draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_se
 function deleteurl(that, parameter){
     var pname = parameter.substring(7, parameter.length);
     if (pname.indexOf('_') >= 0){
-        var pindex = pname.charAt(pname.length-1);
-        pname = pname.substring(0, pname.length-2);
-        console.log(pname);
-        console.log(pindex);
-        for (var i = 0;i < pars.length;i++){
-            if (pname == pars[i]){
-                var term_list = values[i].split(',');
-                term_list.splice(pindex, 1);
-                console.log(term_list);
-                values[i] = term_list.join(',');
+        if (pname.split('_')[0] != 'psycho'){
+            var pindex = pname.charAt(pname.length-1);
+            pname = pname.substring(0, pname.length-2);
+            // console.log(pname);
+            // console.log(pindex);
+            for (var i = 0;i < pars.length;i++){
+                if (pname == pars[i]){
+                    var term_list = values[i].split(',');
+                    term_list.splice(pindex, 1);
+                    console.log(term_list);
+                    values[i] = term_list.join(',');
+                }
+            }
+        }
+        else{
+            for (var i = 0;i < pars.length;i++){
+                if (pname == pars[i]){
+                    values[i] = '';
+                }
             }
         }
     }
@@ -138,7 +192,11 @@ function deleteurl(that, parameter){
     draw_conditions(that);
     url_search_result = '/attribute/portrait_search/?stype=2&' + par2url(pars, values);
     console.log(url_search_result);
-    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Re_Draw_table);
+    // reinitialize
+    var global_pre_page = 1;
+    var global_choose_uids = new Array();
+    var global_data = new Array();
+    that.call_sync_ajax_request(url_search_result, that.ajax_method, that.Dy_Draw_table);
 }
 function process_par(name, value){
     var result = new Array();
@@ -169,6 +227,7 @@ function process_par(name, value){
             case 'dxz': result[1] = '多血质';break;
             case 'nyz': result[1] = '粘液质';break;
             case 'yyz': result[1] = '抑郁质';break;
+            default: result[1] = '';break;
         }
     }
     else if(name=='psycho_status'){
@@ -179,6 +238,7 @@ function process_par(name, value){
             case 'anx': result[1] = '焦虑';break;
             case 'ang': result[1] = '生气';break;
             case 'sad': result[1] = '悲伤';break;
+            default: result[1] = '';break;
         }
     }
     else if(name=='domain'){
@@ -204,7 +264,7 @@ function process_par(name, value){
         result[1] = '';
         var term_list = value.split(',');
         for (var i = 0;i < term_list.length;i++){
-            switch(value){
+            switch(term_list[i]){
                 case 'env': result[1] += '环境,';break;
                 case 'edu': result[1] += '教育,';break;
                 case 'med': result[1] += '医药,';break;
@@ -242,6 +302,8 @@ function draw_conditions(that){
             var fix_result = process_par(pre_name, pre_value);
             var fix_name = fix_result[0];
             var fix_value = fix_result[1];
+            // console.log(fix_name);
+            // console.log(fix_value);
             if (fix_value){
                 if (fix_value.indexOf(',') >= 0){
                     var term_list = fix_value.split(',');
@@ -345,19 +407,19 @@ function draw_table_compare_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table id="compare_cofirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
       html += '<tr">';
       html += '<td class="center" name="compare_confirm_uids">'+ uids[i] +'</td>';
       html += '<td class="center">'+ item[1] + '</td>';
-      html += '<td class="center">'+ gender(item[2]) + '</td>';
-      html += '<td class="center">'+ item[3] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[4] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[5] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[6] + '</td>';
-      html += '<td class="center" style="width:80px"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '<td class="center">'+ item[2] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -369,19 +431,19 @@ function draw_table_group_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table id="group_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
       html += '<tr>';
       html += '<td class="center" name="group_confirm_uids">'+ uids[i] +'</td>';
       html += '<td class="center">'+ item[1] + '</td>';
-      html += '<td class="center">'+ gender(item[2]) + '</td>';
-      html += '<td class="center">'+ item[3] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[4] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[5] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[6] + '</td>';
-      html += '<td class="center" style="width:80px"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '<td class="center">'+ item[2] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -393,19 +455,19 @@ function draw_table_delete_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table id="delete_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>性别</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
       html += '<tr id=' + uids[1] +'>';
       html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
       html += '<td class="center">'+ item[1] + '</td>';
-      html += '<td class="center">'+ gender(item[2]) + '</td>';
-      html += '<td class="center">'+ item[3] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[4] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[5] + '</td>';
-      html += '<td class="center" style="width:100px">'+ item[6] + '</td>';
-      html += '<td class="center" style="width:80px"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '<td class="center">'+ item[2] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
       html += '</tr>';
     }
     html += '</tbody>';
@@ -451,8 +513,14 @@ function group_confirm_button(){
       return;
   }
 
-  if(group_name.indexOf(' ')>=0){
-    alert('群体名称不能有空格,请重新输入!');
+
+  var reg = "^[a-zA-Z0-9_u4e00-u9fa5]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+    return;
+  }
+  if (!remark.match(reg)){
+    alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
   var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};

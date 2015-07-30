@@ -14,6 +14,8 @@ Attention.prototype = {   //获取数据，重新画表
 Draw_attention:function(data){
 	var UserID = parent.personalData.uid;
 	var UserName = parent.personalData.uname;
+    var Anumber = document.getElementById('attentionNumber');
+    Anumber.innerHTML = data[1];
 	var items = data[0];
 	if(items==null){
 		var say = document.getElementById('test3');
@@ -24,7 +26,7 @@ Draw_attention:function(data){
 }
 }
 var Attention = new Attention();
-url = '/attribute/attention/?uid=1642591402' ;
+url = '/attribute/attention/?uid='+parent.personalData.uid ;
 Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
 
 function attention(data,UserID,UserName){
@@ -33,9 +35,15 @@ function attention(data,UserID,UserName){
 	values = [];
 	for(i=0;i<data.length;i++){
         uids.push(data[i][0]);
+        // if(data[i][1][0] == '未知'){
+        //     data[i][1][0] = "未知("+ data[i][0] +")";
+        //                 console.log(data[i][0]);
+        //     console.log(data[i][1][0]);
+        // }
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
+    var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
 	nod['category'] = 0;
@@ -47,6 +55,7 @@ function attention(data,UserID,UserName){
 			nod['category'] = 1;
 			nod['name'] = uids[i];
 			nod['value'] = values[i];
+            nod['label'] = unames[i];
 			nodeContent.push(nod);
 	}
 	var linkline =[];
@@ -61,7 +70,7 @@ function attention(data,UserID,UserName){
 	var option = {
             title : {
                 text: '关注',
-                x:'left',
+                x:'150',
                 y:'top'
             },
             legend: {
@@ -121,5 +130,57 @@ function attention(data,UserID,UserName){
             ]
     };  
 	myChart3.setOption(option);	
-}
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    } else {
+                    var node_url;
+                    var weibo_url ;
+                    var ajax_url ;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                        weibo_url = 'http://weibo.com/u/'+ UserID;
+                        node_url = personal_url + UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                        weibo_url = 'http://weibo.com/u/'+ data.name;
+                        node_url = personal_url + data.name;
+                    }                 
+                    console.log(ajax_url);
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
+                    
+                }
+            }
+                myChart3.on(ecConfig.EVENT.CLICK, focus)
 
+                myChart3.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                });
+            }
+    )   
+}

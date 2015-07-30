@@ -164,7 +164,7 @@ function toggle(target){
         html += '<span class="mouse" style="float:left;margin-left:10px;margin-bottom:10px"id="search_nick_name">' + '昵称：' + nick_name + '&nbsp;&nbsp;' + '<a title="Close" href="#" onclick=toggle("search_nick_name") class="cross">X</a></span>';
       }
 
-      user_location = $("#test").val();
+      user_location = $("#citySelect").val();
       if (user_location == ''){
         html += '';
       }
@@ -325,6 +325,7 @@ function click_data(){
    $('.datatype').dataTable({
       "sDom": "<'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
       "sPaginationType": "bootstrap",
+      "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
       "bSort": true, 
       "oLanguage": {
         "sLengthMenu": "_MENU_ 每页"

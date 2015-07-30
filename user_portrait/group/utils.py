@@ -94,7 +94,8 @@ def search_task(task_name, submit_date, state, status):
                                 'must':query
                                 }
                             },
-                        'sort': [{'count':{'order': 'desc'}}]
+                        'sort': [{'count':{'order': 'desc'}}],
+                        'size': 10000
                         }
                     )
         except Exception as e:
@@ -106,7 +107,8 @@ def search_task(task_name, submit_date, state, status):
                 body = {
                     'query':{'match_all':{}
                         },
-                    'sort': [{'count': {'order': 'desc'}}]
+                    'sort': [{'count': {'order': 'desc'}}],
+                    'size': 10000
                     }
                 )
 
@@ -115,7 +117,7 @@ def search_task(task_name, submit_date, state, status):
     except:
         return None
     result = []
-    
+    print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:
         result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], task_dict['_source']['state'], task_dict['_source']['status']])
     
@@ -222,8 +224,34 @@ def get_group_results(task_name, module):
     #print result
     return result
 
+# get grouop user list
+def get_group_list(task_name):
+    results = []
+    try:
+        es_results = es.get(index=index_name, doc_type=index_type, id=task_name)['_source']
+    except:
+        return results
+    #print 'es_result:', es_results['uid_list'], type(es_results['uid_list'])
+    uid_list = es_results['uid_list']
+    user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+    for item in user_portrait_attribute:
+        uid = item['_id']
+        try:
+            source = item['_source']
+            uname = source['uname']
+            gender = source['gender']
+            location = source['location']
+            importance = source['importance']
+            influence = source['influence']
+            results.append([uid, uname, gender, location, importance, influence])
+        except:
+            results.append([uid])
+    return results
+
+
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):
+    '''
     query_body = {
         'query':{
             'term':{
@@ -231,7 +259,9 @@ def delete_group_results(task_name):
                 }
             }
         }
-    result = es.delete_by_query(index=index_name, doc_type=index_type, body=query_body)
+    '''
+    #result = es.delete_by_query(index=index_name, doc_type=index_type, body=query_body)
+    result = es.delete(index=index_name, doc_type=index_type, id=task_name)
     #print 'result:', result
     '''
     if result['_indices']['twitter']['_shards']['failed'] == 0:

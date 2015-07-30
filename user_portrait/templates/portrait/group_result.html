@@ -12,10 +12,11 @@
 	#file-upload{margin-left:50px;border:1px solid #999;}
 	.fleft{float:left;}
 #uploadFile{position: fixed;margin-top: -200px;left: 50%;top: 50%;z-index: 1002;width: 620px;background: #FFF none repeat scroll 0% 0%;
-border: 1px solid #AA8BE8;height: 200px;margin-left: -300px;}
+border: 1px solid #AA8BE8;height: 230px;margin-left: -300px;}
 #float-wrap {position: fixed;top: 0px;left: 0px;opacity: 0.6;z-index: 1001;width: 100%;height: 100%; background: #000 none repeat scroll 0% 0%;}
 #uploadFile .title{color:black;border-bottom:1px solid #999;}
-.title{color:black;border-bottom:1px solid #999;}
+.title{color:black;border-bottom:1px solid #999;padding-left:20px;}
+.decoration ul{margin-top:30px;}
 li{list-style-type:none;}
 .decoration ul li{width:100%;float:left;margin-bottom:20px;}
 .p_title {float: left;width: 260px;white-space: nowrap;overflow: hidden; font-weight: normal;text-align: right;color: #808080;}
@@ -37,6 +38,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 #DataTables_Table_0_filter{display:none;}
 #DataTables_Table_0_length{display:none;}
 #del{color:black;}
+.lineh{line-height:30px;}
  	</style>
  {% endblock css %}
 
@@ -49,7 +51,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		<ul class="clearfix">
 			<li><span class="p_title">群组名称：</span><input type="text"  class="input" name="task_name" placeholder="请输入群组名称"/></li>
 			<li><span class="p_title">备注：</span><input type="text"  class="input" name="state" placeholder="请输入备注"/></li>
-			<li><input name="submit" type="submit" class="bluebtn" id="uploadbtn" value="确定"></li>
+			<li><input name="submit" type="submit" class="bluebtn lineh" id="uploadbtn" value="确定"></li>
 		</ul>
 	</div>
 </div>
@@ -88,6 +90,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		<input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
 	</form>
 </div>
+<a id="turnback" href="" style="float:right;margin-right:40px;margin-top:12px;">查看全表</a>
 <a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">表单搜索</a>
                 <div class="box-content" id="Grouptable" >
                     
@@ -139,10 +142,15 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 	$(".close2").off("click").click(function(){
 		$("#float-wrap").addClass("hidden");
 		$("#SearchTab").addClass("hidden");
-	});
-  </script>
+    });
+</script>
 <script src="../../static/js/portrait/group_result.js"></script>
 <script src="../../static/js/portrait/groupSearch.js"></script>
 <script src="../../static/js/portrait/groupDel.js"></script>
 {% endblock Own_js %}
+{% block end_js %}
+{{ super () }}
+<script src="../../static/js/charisma.js"></script>
+{% endblock end_js %}
+
 

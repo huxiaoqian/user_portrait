@@ -13,7 +13,9 @@ Follower.prototype = {   //获取数据，重新画表
   },
 Draw_Follower:function(data){
 	var UserID = parent.personalData.uid;
-	var UserName = parent.personalData.uname;
+    var UserName = parent.personalData.uname;
+    var Fnumber = document.getElementById('fansNumber');
+    Fnumber.innerHTML = data[1];
 	var items = data[0]
 	if(items==null){
 		var say = document.getElementById('test1');
@@ -24,7 +26,7 @@ Draw_Follower:function(data){
 }
 }
 var Follower = new Follower();
-url = '/attribute/follower/?uid=1642591402' ;
+url = '/attribute/follower/?uid='+parent.personalData.uid ;
 Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
 
 function follower(data,UserID,UserName){
@@ -34,11 +36,14 @@ function follower(data,UserID,UserName){
 	
 	for(i=0;i<data.length;i++){
         uids.push(data[i][0]);
+        // if(data[i][1][0] == '未知'){
+        //     data[i][1][0] = "未知("+ data[i][0] +")";
+        // }
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
 //console.log(uids);
-	
+	var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
 	nod['category'] = 0;
@@ -50,6 +55,7 @@ function follower(data,UserID,UserName){
 			nod['category'] = 1;
 			nod['name'] = uids[i];
 			nod['value'] = values[i];
+            nod['label'] = unames[i];
 			nodeContent.push(nod);
 	}
 	//console.log(nodeContent);
@@ -66,7 +72,7 @@ function follower(data,UserID,UserName){
 	var option = {
             title : {
                 text: '粉丝',
-                x:'left',
+                x:'150',
                 y:'top'
             },
             legend: {
@@ -126,5 +132,56 @@ function follower(data,UserID,UserName){
             ]
     };  
 	myChart1.setOption(option); 
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    } else {
+                    var node_url;
+                    var weibo_url ;
+                    var ajax_url ;
+                    if(data.category == 0){
+                        ajax_url = '/attribute/identify_uid/?uid='+UserID;
+                        weibo_url = 'http://weibo.com/u/'+ UserID;
+                        node_url = personal_url + UserID;
+                    }else{
+                        ajax_url = '/attribute/identify_uid/?uid='+data.name; 
+                        weibo_url = 'http://weibo.com/u/'+ data.name;
+                        node_url = personal_url + data.name;
+                    } 
+                    $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:function(data){
+                        console.log(data);
+                        if(data == 1){
+                            window.open(node_url);
+                        }
+                        else{
+                            window.open(weibo_url);
+                        }
+                      }
+                    });
+                }
+            }
+                myChart1.on(ecConfig.EVENT.CLICK, focus)
+
+                myChart1.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                });
+            }
+    )   
 	
 }
