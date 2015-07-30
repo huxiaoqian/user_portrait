@@ -37,8 +37,6 @@ function attention(data,UserID,UserName){
         uids.push(data[i][0]);
         // if(data[i][1][0] == '未知'){
         //     data[i][1][0] = "未知("+ data[i][0] +")";
-        //                 console.log(data[i][0]);
-        //     console.log(data[i][1][0]);
         // }
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
@@ -158,14 +156,12 @@ function attention(data,UserID,UserName){
                         weibo_url = 'http://weibo.com/u/'+ data.name;
                         node_url = personal_url + data.name;
                     }                 
-                    console.log(ajax_url);
                     $.ajax({
                       url: ajax_url,
                       type: 'GET',
                       dataType: 'json',
                       async: false,
                       success:function(data){
-                        console.log(data);
                         if(data == 1){
                             window.open(node_url);
                         }

@@ -225,6 +225,5 @@ function get_choose_data(uid){
     else{
         url = '';
     }
-    console.log(url);
     return url;
 }

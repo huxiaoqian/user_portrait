@@ -42,7 +42,6 @@ function follower(data,UserID,UserName){
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
-//console.log(uids);
 	var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []
@@ -58,7 +57,6 @@ function follower(data,UserID,UserName){
             nod['label'] = unames[i];
 			nodeContent.push(nod);
 	}
-	//console.log(nodeContent);
 	var linkline =[];
 	for (i=0;i<10;i++){
 		line ={};
@@ -67,7 +65,6 @@ function follower(data,UserID,UserName){
 		line['weight'] = 1;
 		linkline.push(line);
 	}
-//console.log(linkline);
 	var myChart1 = echarts.init(document.getElementById('test1'));
 	var option = {
             title : {
@@ -166,7 +163,6 @@ function follower(data,UserID,UserName){
                       dataType: 'json',
                       async: false,
                       success:function(data){
-                        console.log(data);
                         if(data == 1){
                             window.open(node_url);
                         }

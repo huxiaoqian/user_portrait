@@ -26,7 +26,7 @@ if __name__=='__main__':
                 '1642591402', '2074370833', '1640601392', '1773489534',\
                 '2722498861', '2803301701']
     results = {
-        'task_name': 'test name',
+        'task_name': 'test_name',
         'submit_date': '2013-09-07',
         'state': 'it is a test',
         'uid_list': json.dumps(uid_list),
