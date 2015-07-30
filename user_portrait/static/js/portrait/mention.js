@@ -39,13 +39,10 @@ function mention(data,UserID,UserName){
         uids.push(data[i][0]);
         // if(data[i][1][0] == '未知'){
         //     data[i][1][0] = "未知("+ data[i][0] +")";
-        //     console.log(data[i][0]);
-        //     console.log(data[i][1][0]);
         // }
         unames.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
-	//console.log(uids);
 	
     var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
@@ -62,7 +59,6 @@ function mention(data,UserID,UserName){
             nod['label'] = unames[i];
 			nodeContent.push(nod);
 	}
-	//console.log(nodeContent);
 	var linkline =[];
 	for (i=0;i<unames.length;i++){
 		line ={};
@@ -71,7 +67,6 @@ function mention(data,UserID,UserName){
 		line['weight'] = 1;
 		linkline.push(line);
 	}
-    console.log('ddddd');
 	var myChart2 = echarts.init(document.getElementById('test2'));
 	var option = {
             title : {
@@ -171,7 +166,6 @@ function mention(data,UserID,UserName){
                       dataType: 'json',
                       async: false,
                       success:function(data){
-                        console.log(data);
                         if(data == 1){
                             window.open(node_url);
                         }
