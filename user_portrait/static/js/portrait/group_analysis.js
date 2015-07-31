@@ -38,7 +38,7 @@ Search_weibo.prototype = {
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">UID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
+    html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
     html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th></tr></thead>';
     html += '<tbody>';
     for ( i=0 ; i<data.length; i++){
@@ -370,9 +370,17 @@ Draw_weibo: function(data){
     Draw_activeness(data);
     console.log(data);
     $('#weibo').empty();
+    if (data['3'].length > 9){
+        $('#weibo').css("height", "615px");
+    }
+    else{
+        var height = data['3'].length * 35 + 265;
+        $('#weibo').css("height", height+"px");
+    }
+
     html = '';
     html += '<table id="weibo_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive" style="font-size:14px">'; 
-    html += '<thead><tr><th style="text-align:center">UID</th><th style="text-align:center;width:180px">昵称</th><th style="text-align:center;width:80px">活跃度</th>';
+    html += '<thead><tr><th style="text-align:center">用户ID</th><th style="text-align:center;width:180px">昵称</th><th style="text-align:center;width:80px">活跃度</th>';
     html += '<th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">原创微博最大转发数</th>';
     html += '<th style="text-align:center">原创微博最大评论数</th><th style="text-align:center">转发微博最大转发数</th><th style="text-align:center">转发微博最大评论数</th></tr></thead>';
     html += '<tbody>';
@@ -1020,7 +1028,7 @@ function Draw_think_domain(){
 function Draw_hashtag(data){
     $('#hashtag').empty();
     html = '';
-    html += '<div style="font-size:16px">Hashtag排名</div>';
+    html += '<div style="font-size:16px;margin-bottom:20px;">Hashtag排名</div>';
     html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['0'].length; i++) {
@@ -1034,7 +1042,7 @@ function Draw_hashtag(data){
 function Draw_emotion(data){
     $('#emotion').empty();
     html = '';
-    html += '<div style="font-size:16px">表情符号排名</div>';
+    html += '<div style="font-size:16px;margin-bottom:20px;">表情符号排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  data['2'].length; i++) {
@@ -1049,7 +1057,7 @@ function Draw_emotion(data){
 function Draw_top_location(data){
     $('#top_location').empty();
     html = '';
-    html += '<div style="font-size:16px">发布地点排名</div>';
+    html += '<div style="font-size:16px;margin-bottom:20px;">发布地点排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  data['0'].length; i++) {
@@ -1063,7 +1071,7 @@ function Draw_top_location(data){
 function Draw_top_platform(data){
     $('#top_platform').empty();
     html = '';
-    html += '<div style="font-size:16px">发布平台排名</div>';
+    html += '<div style="font-size:16px;margin-bottom:20px;">发布平台排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['2'].length; i++) {
