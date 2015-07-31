@@ -37,7 +37,7 @@ Search_weibo.prototype = {
   Draw_model: function(data){
     $('#group_user').empty();
     html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
     html += '<thead><tr><th class="center" style="text-align:center">UID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
     html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th></tr></thead>';
     html += '<tbody>';
@@ -133,7 +133,7 @@ Draw_basic: function(data){
         },
         series : [
             {
-                name:'',
+                
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -258,13 +258,13 @@ Draw_social_line: function(data){
     };
     xdata = [];
     for (i = 0; i< y_data.length-1; i++){
-        xdata.push(y_data[i] + '-' + y_data[i+1])
+        xdata.push(y_data[i].toFixed(2) + '-' + y_data[i+1].toFixed(2))
     }
 
     $('#social_line').highcharts({
         chart: {
         type: 'column',
-        margin: [ 50, 50, 100, 80]
+        //margin: [ 50, 50, 100, 80]
     },
     title: {
         text: '群体节点度分布'
@@ -371,16 +371,19 @@ Draw_weibo: function(data){
     console.log(data);
     $('#weibo').empty();
     html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px">'; 
-    html += '<tr><th style="text-align:center">UID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th>';
+    html += '<table id="weibo_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive" style="font-size:14px">'; 
+    html += '<thead><tr><th style="text-align:center">UID</th><th style="text-align:center;width:180px">昵称</th><th style="text-align:center;width:80px">活跃度</th>';
     html += '<th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">原创微博最大转发数</th>';
-    html += '<th style="text-align:center">原创微博最大评论数</th><th style="text-align:center">转发微博最大转发数</th><th style="text-align:center">转发微博最大评论数</th></tr>';
+    html += '<th style="text-align:center">原创微博最大评论数</th><th style="text-align:center">转发微博最大转发数</th><th style="text-align:center">转发微博最大评论数</th></tr></thead>';
+    html += '<tbody>';
     for ( var i = 0 ;i< data['3'].length;i++){
         s = i.toString();
-        html += '<tr><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['3'][s]['0'] + '">' + data['3'][s]['0'] +'</a></th><th style="text-align:center">' +  data['3'][s]['1'] + '</th><th style="text-align:center">' +  data['3'][s]['2'].toFixed(2) + '</th>';
+        html += '<tr><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['3'][s]['0'] + '">' + data['3'][s]['0'] +'</a></th><th style="text-align:center;width:180px">' +  data['3'][s]['1'] + '</th><th style="text-align:center;width:80px">' +  data['3'][s]['2'].toFixed(2) + '</th>';
         html += '<th style="text-align:center">' +  data['3'][s]['3'].toFixed(2) + '</th><th style="text-align:center">' +  data['3'][s]['4'].toFixed(2) + '</th><th style="text-align:center"><a target="_blank" href="' + data['3'][s]['5']['2'] + '">' +  data['3'][s]['5']['0'] + '</a></th>';
         html += '<th style="text-align:center"><a href="' + data['3'][s]['6']['2'] + '">' + data['3'][s]['6']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['7']['2'] + '">' + data['3'][s]['7']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['8']['2'] + '">' + data['3'][s]['8']['0'] + '</a></th></tr>';
     }
+    html += '</tbody>';
+    html += '</table>';
     $('#weibo').append(html);
 }
 }
@@ -744,18 +747,18 @@ function Draw_verify(data){
         },
         series : [
             {
-                name:'',
+                
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
                 itemStyle : dataStyle,
                 data:[
                     {
-                        value:data['0']['1'],
+                        value:10,
                         name:'已认证'
                     },
                     {
-                        value:data['0']['2'],
+                        value:6,
                         name:'invisible',
                         itemStyle : placeHolderStyle
                     }
@@ -1018,7 +1021,7 @@ function Draw_hashtag(data){
     html = '';
     html += '<div style="font-size:16px">Hashtag排名</div>';
     html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">权重</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['0'].length; i++) {
        var s = i.toString();
        var m = i + 1;
@@ -1032,7 +1035,7 @@ function Draw_emotion(data){
     html = '';
     html += '<div style="font-size:16px">表情符号排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">权重</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
@@ -1047,7 +1050,7 @@ function Draw_top_location(data){
     html = '';
     html += '<div style="font-size:16px">发布地点排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">权重</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  data['0'].length; i++) {
        var s = i.toString();
        var m = i + 1;
@@ -1061,16 +1064,16 @@ function Draw_top_platform(data){
     html = '';
     html += '<div style="font-size:16px">发布平台排名</div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">权重</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2']['0']['0'] + '</th><th style="text-align:center">' + data['2']['0']['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2']['0']['0'] + '</th><th style="text-align:center">2819</th></tr>';
     };
-    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">9</th></tr>';
-    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">7</th></tr>';
-    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">6</th></tr>';
-    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">4</th></tr>';
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
     html += '</table>'; 
     $('#top_platform').append(html);
 }
