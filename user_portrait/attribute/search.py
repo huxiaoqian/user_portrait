@@ -45,10 +45,11 @@ def search_attention(uid):
         ruid_results = r.hgetall('retweet_'+str(uid))
         if ruid_results:
             for ruid in ruid_results:
-                try:
-                    stat_results[ruid] += ruid_results[ruid]
-                except:
-                    stat_results[ruid] = ruid_results[ruid]
+                if ruid != uid:
+                    try:
+                        stat_results[ruid] += ruid_results[ruid]
+                    except:
+                        stat_results[ruid] = ruid_results[ruid]
     # print 'results:', stat_results
     try:
         sort_state_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
@@ -82,10 +83,11 @@ def search_follower(uid):
         br_uid_results = r.hgetall('be_retweet_'+str(uid))
         if br_uid_results:
             for br_uid in br_uid_results:
-                try:
-                    stat_results[br_uid] += br_uid_results[br_uid]
-                except:
-                    stat_results[br_uid] = br_uid_results[br_uid]
+                if br_uid != uid:
+                    try:
+                        stat_results[br_uid] += br_uid_results[br_uid]
+                    except:
+                        stat_results[br_uid] = br_uid_results[br_uid]
     try:
         sort_stat_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
     except:
