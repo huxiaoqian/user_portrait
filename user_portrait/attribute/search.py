@@ -51,11 +51,13 @@ def search_attention(uid):
                     except:
                         stat_results[ruid] = ruid_results[ruid]
     # print 'results:', stat_results
+    if not results:
+        return [None, 0]
     try:
         sort_state_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
     except:
         return [None, 0]
-
+    print 'sort_state_results:', sort_state_results
     uid_list = [item[0] for item in sort_state_results]
     es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
     result_list = []
@@ -88,6 +90,8 @@ def search_follower(uid):
                         stat_results[br_uid] += br_uid_results[br_uid]
                     except:
                         stat_results[br_uid] = br_uid_results[br_uid]
+    if not stat_results:
+        return [None, 0]
     try:
         sort_stat_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
     except:
