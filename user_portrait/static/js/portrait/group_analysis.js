@@ -305,7 +305,7 @@ Draw_social_line: function(data){
                groupPadding: 0, //分组之间的距离值
                borderWidth: 0,
                shadow: false,
-               pointWidth:57//柱子之间的距离值
+               pointWidth:55//柱子之间的距离值
            }
        },
     series: [{
@@ -380,7 +380,7 @@ Draw_weibo: function(data){
         s = i.toString();
         html += '<tr><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['3'][s]['0'] + '">' + data['3'][s]['0'] +'</a></th><th style="text-align:center;width:180px">' +  data['3'][s]['1'] + '</th><th style="text-align:center;width:80px">' +  data['3'][s]['2'].toFixed(2) + '</th>';
         html += '<th style="text-align:center">' +  data['3'][s]['3'].toFixed(2) + '</th><th style="text-align:center">' +  data['3'][s]['4'].toFixed(2) + '</th><th style="text-align:center"><a target="_blank" href="' + data['3'][s]['5']['2'] + '">' +  data['3'][s]['5']['0'] + '</a></th>';
-        html += '<th style="text-align:center"><a href="' + data['3'][s]['6']['2'] + '">' + data['3'][s]['6']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['7']['2'] + '">' + data['3'][s]['7']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['8']['2'] + '">' + data['3'][s]['8']['0'] + '</a></th></tr>';
+        html += '<th style="text-align:center"><a target="_blank" href="' + data['3'][s]['6']['2'] + '">' + data['3'][s]['6']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['7']['2'] + '">' + data['3'][s]['7']['0'] + '</a></th><th style="text-align:center"><a href="' + data['3'][s]['8']['2'] + '">' + data['3'][s]['8']['0'] + '</a></th></tr>';
     }
     html += '</tbody>';
     html += '</table>';
@@ -394,9 +394,10 @@ var Search_weibo = new Search_weibo();
 function Draw_group(data){
     $('#group').empty();
     html = '';
-    html += '<table><tr><th style="text-align:center">连接紧密度</th><th style="text-align:center">'+ data['1'].toFixed(2) +'(低于平均)</th></tr>';
-    html += '<tr><th style="text-align:center">微博转发频率</th><th style="text-align:center">'+ data['2'].toFixed(2) +'(高于平均)</th></tr>';
-    html += '<tr><th style="text-align:center">参与转发比例</th><th style="text-align:center">'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
+    html += '<table><tr><th style="text-align:center">连接紧密度<i id="closeness_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="起止时间"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ data['1'].toFixed(2) +'(低于平均)</th></tr>';
+    html += '<tr><th style="text-align:center">微博转发频率<i id="weibo_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="起止时间"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ data['2'].toFixed(2) +'(高于平均)</th></tr>';
+    html += '<tr><th style="text-align:center">参与转发比例<i id="join_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="起止时间"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
+    html += '<tr><th style="text-align:center">平均节点度<i id="node_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="起止时间"></i>&nbsp;&nbsp;</th><th style="text-align:center">361425.68(高于平均)</th></tr>';
     html += '</table>'; 
     $('#group').append(html);
 }
