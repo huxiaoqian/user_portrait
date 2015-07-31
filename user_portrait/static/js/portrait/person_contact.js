@@ -1,7 +1,7 @@
 //draw function
 function Search_weibo(){
   this.ajax_method = 'GET';
-  this.data ;
+  that = this ;
 }
 
 Search_weibo.prototype = {
@@ -15,12 +15,12 @@ Search_weibo.prototype = {
         });
     },
 
-    Get_Callback_data:function(data){
-
+    
+    Return_data: function(data){
         return data;
     },
-        
-Draw_table: function(data){
+    Draw_table: function(data){
+        that.data = data;
         if(data==0){
             alert("没有相关人物推荐");
             return false;
@@ -69,6 +69,7 @@ Draw_picture: function(data){
          var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
         for(var item =0; item < data.length; item++){
             if(data[item][1]=='unknown'){
+                data[item][1] = '未知';
                 Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
                 Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5]});
             }
@@ -99,7 +100,7 @@ Draw_picture: function(data){
                 series : [
                     {
                         type:'force',
-                        name : "人物关系",
+                        name : "用户id：",
                         ribbonType: false,
                         itemStyle: {
                             normal: {
@@ -181,7 +182,8 @@ $('.label-success').click(function(){
     }
     else{
     Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_table);
-    Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_picture);
+    Search_weibo.Draw_picture(Search_weibo.data);
+    //Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_picture);
     }
 });
 
