@@ -502,7 +502,7 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
   var option = {
     title : {
         text: '用户影响力分布',
-        subtext: '影响力<500：全网' + number_all + '人，人物库' + number_in + '人'
+        subtext: '较低影响力(<500)的人数：全网' + number_all + '人，人物库' + number_in + '人'
     },
     tooltip : {
         trigger: 'axis'
@@ -626,7 +626,7 @@ function get_hot_users_details(){
     success:hot_users_details
   }); 
   function hot_users_details(data){
-    console.log(url_hot_users);
+    //console.log(url_hot_users);
     //console.log(data);
     for(var i=0;i<2;i++){
       for(var j=0;j<6;j++){
@@ -634,11 +634,11 @@ function get_hot_users_details(){
         var details = [];
         if(data[i][j][3]=="")
           data[i][j][3] = "未知";
-        details.push(data[i][j][3],data[i][j][4].toFixed(2),data[i][j][6].toFixed(2));
-        details.push(data[i][j][7],data[i][j][8].toFixed(2),data[i][j][9],data[i][j][10].toFixed(2));
-        details.push(data[i][j][11],data[i][j][12].toFixed(2),data[i][j][13],data[i][j][14].toFixed(2));
-        details.push(data[i][j][15],data[i][j][16].toFixed(2),data[i][j][17],data[i][j][18].toFixed(2));
-        details.push(data[i][j][19],data[i][j][20].toFixed(2),data[i][j][21],data[i][j][22].toFixed(2));
+        details.push(data[i][j][3],data[i][j][4].toFixed(0),data[i][j][6].toFixed(0));
+        details.push(data[i][j][7],data[i][j][8].toFixed(0),data[i][j][9],data[i][j][10].toFixed(0));
+        details.push(data[i][j][11],data[i][j][12].toFixed(0),data[i][j][13],data[i][j][14].toFixed(0));
+        details.push(data[i][j][15],data[i][j][16].toFixed(0),data[i][j][17],data[i][j][18].toFixed(0));
+        details.push(data[i][j][19],data[i][j][20].toFixed(0),data[i][j][21],data[i][j][22].toFixed(0));
         user_details[user_id] = details;
       }
     }
@@ -648,11 +648,7 @@ function get_hot_users_details(){
 function draw_hot_users_details(uid){
     $('#hot_users_details').empty(); 
     var html_details = '';
-<<<<<<< HEAD
-    html_details += '<div><span class="pt_title">用户ID： <a href="/index/personal/?uid='+ uid +'" target="_blank">'+ uid +'</a></span>';
-=======
     html_details += '<div style="font-size:medium"><span class="pt_title">用户ID： <a href="/index/personal/?uid='+ uid +'" target="_blank">'+ uid +'</a></span>';
->>>>>>> 2d53453532dbe4ea8e29d7a5083f6a1991f16e39
     html_details += '<span class="pt_title" style="margin-left:10px">昵称： '+ user_details[uid][0] +'</span>';
     html_details += '<span class="pt_title" style="margin-left:10px">影响力： '+ user_details[uid][1] +'</span>';
     html_details += '<span class="pt_title" style="margin-left:10px">爆发度： '+ user_details[uid][2] +'</span></div>';
@@ -774,7 +770,7 @@ function prepare_line_chart(uid){
   });
   function callback_line_chart(data){
     var line_chart_dates = [];
-    var line_chart_tomorrow = new Date();
+    var line_chart_tomorrow = new Date(2013,8,8);
     for(var i=0;i<7;i++){
       var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
       line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
@@ -811,6 +807,8 @@ function draw_hot_users(){
     for(var i in data[0]){
       if(data[0][i][1]=="")
         data[0][i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      if(data[0][i][3]=="")
+        data[0][i][3]="未知";
       html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom:10px;margin-right:9px" class="index-small-photo-wrap no-padding ng-scope">';
       html += '<div class="small-photo shadow-5"><img style="cursor:hand;" src="' + data[0][i][1] + '" alt="' + data[0][i][3] +'" title="' + data[0][i][3] +'" class="hot_users" name="' + data[0][i][2] + '"></div></li>';
     }
@@ -823,6 +821,8 @@ function draw_hot_users(){
     for(var j in data[1]){
       if(data[1][j][1]=="")
         data[1][j][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      if(data[0][j][3]=="")
+        data[0][j][3]="未知";
       html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom:10px;margin-right:9px" class="index-small-photo-wrap no-padding ng-scope">';
       html += '<div class="small-photo shadow-5"><img style="cursor:hand;" src="' + data[1][j][1] + '" alt="' + data[1][j][3] +'" title="' + data[1][j][3] +'" class="hot_users" name="' + data[1][j][2] + '"></div></li>';
     }
