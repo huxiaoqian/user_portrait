@@ -49,7 +49,7 @@ function follower(data,UserID,UserName){
 	nod['name'] = UserName;
 	nod['value'] = 10;
 	nodeContent.push(nod);
-	for (i=0;i<10;i++){
+	for (i=0;i<uids.length;i++){
 			nod = {};
 			nod['category'] = 1;
 			nod['name'] = uids[i];
@@ -58,7 +58,7 @@ function follower(data,UserID,UserName){
 			nodeContent.push(nod);
 	}
 	var linkline =[];
-	for (i=0;i<10;i++){
+	for (i=0;i<uids.length;i++){
 		line ={};
 		line['source'] = uids[i];
 		line['target'] = UserName;
