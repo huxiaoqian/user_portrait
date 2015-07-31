@@ -66,7 +66,11 @@
 					    		<tr>
 					    			<td><li class="list-group-item" style="width:240px">个人博客主页{{ user.blog_url }}</li></td>
 					    			<td><li class="list-group-item" style="width:240px">SP类型：{{ weibo_source(user.sp_type) }}</li></td>
+					    			{% if  user.favouritesnum %}
 					    			<td><li class="list-group-item" style="width:240px">用户收藏数：{{ user.favouritesnum }}</li></td>
+					    			{% else %}
+					    			<td><li class="list-group-item" style="width:240px">用户收藏数：未知</li></td>
+					    			{% endif %}
 					    		</tr>
 					    		<tr>	    			
 					    			<td colspan="3"><li class="list-group-item" style="width:100%">个人描述：{{ user.description }}</li></td>
@@ -90,7 +94,7 @@
 <script type="text/javascript">
 	var description;
 	try{
-		console.log('{{ user.description }}');
+		console.log('{{ user.favouritesnum }}');
 		description = '{{ user.description }}';
 	}catch(err){
 		alert('error name'+err.name);
@@ -331,7 +335,7 @@
 	                            }
 	                        }
 	                }},
-	                {category:2, name: '被{{ user.favouritesnum }}个用户收藏',value : 7,symbolSize: [60, 30],
+	                {category:2, name: '用户收藏数{{ user.favouritesnum }}',value : 7,symbolSize: [60, 30],
 		            itemStyle: {
 		                        normal: {
 		                        	color:'#FFC0CB',
@@ -408,7 +412,7 @@
 	                        width: 2
 	                    }
 	                }},
-	                {source : '{{ user.description }}', target : '被{{ user.favouritesnum }}个用户收藏',
+	                {source : '{{ user.description }}', target : '用户收藏数{{ user.favouritesnum }}',
 	                itemStyle: {
 	                    normal: {
 	                        width: 2
