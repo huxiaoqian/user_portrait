@@ -43,8 +43,7 @@ function mention(data,UserID,UserName){
         uids.push(data[i][1][0]);
         values.push(data[i][1][1]);
     }
-    console.log(uids);
-    console.log(unames);
+
     var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
 	nodeContent = []

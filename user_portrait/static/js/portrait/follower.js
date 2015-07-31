@@ -16,6 +16,7 @@ Draw_Follower:function(data){
     var UserName = parent.personalData.uname;
     var Fnumber = document.getElementById('fansNumber');
     Fnumber.innerHTML = data[1];
+    
 	var items = data[0]
 	if(items==null){
 		var say = document.getElementById('test1');
