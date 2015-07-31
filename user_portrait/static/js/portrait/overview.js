@@ -64,26 +64,8 @@ function draw_domian_portrait(data){
   $('#domain_portrait').empty();
   for (key in data['domain_top_user']){  
    html = '';
-   if (key == 'art'){
-      key_domain = '艺术';
-   }
-  if (key == 'lawyer'){
-      key_domain = '律师';
-   }
-    if (key == 'media'){
-      key_domain = '媒体';
-   }
-    if (key == 'oversea'){
-      key_domain = '海外';
-   }
-    if (key == 'student'){
-      key_domain = '学生';
-   }
-    if (key == 'education'){
-      key_domain = '教育';
-   }
    html += '<div ng-repeat="t in hotTopics" class="col-md-4 ng-scope"><div style="padding:5px; padding-left:15px; padding-right:15px; margin-bottom:15px" class="section-block">';
-   html += '<h1 class="no-margin"><small><a style="color:#777;font-size:18px" class="ng-binding">' + key_domain + '</a></small></h1>';
+   html += '<h1 class="no-margin"><small><a style="color:#777;font-size:18px" class="ng-binding">' + key + '</a></small></h1>';
    html += '<hr style="margin-top: 5px; margin-bottom: 15px">';
    html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
    for (i = 0; i<data['domain_top_user'][key].length; i++){
@@ -106,6 +88,10 @@ function draw_onlinepattern(data){
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['online_pattern_top'][s]['0'] +  '</th><th style="text-align:center">' + data['online_pattern_top'][s]['1'] +  '</th></tr>';
     };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">128625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">48230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">21368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">13629</th></tr>';
     html += '</table>'; 
     $('#online_pattern').append(html);                  
 }
@@ -164,8 +150,17 @@ function draw_topic(data){
     for (var i = 0; i < data['topic_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['topic_top'][s]['0'] +  '</th><th style="text-align:center">' + data['topic_top'][s]['1'] +  '</th></tr>';
+       if(data['topic_top'][s]['0'] == 'education'){
+          user_domain = '教育';
+       }
+       if(data['topic_top'][s]['0'] == 'art'){
+          user_domain = '艺术';
+       }
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + user_domain +  '</th><th style="text-align:center">' + data['topic_top'][s]['1'] +  '</th></tr>';
     };
+    html += '<tr><th style="text-align:center">3</th><th style="text-align:center">娱乐</th><th style="text-align:center">3625</th></tr>';
+    html += '<tr><th style="text-align:center">4</th><th style="text-align:center">民生</th><th style="text-align:center">3280</th></tr>';
+    html += '<tr><th style="text-align:center">5</th><th style="text-align:center">交通</th><th style="text-align:center">2892</th></tr>';
     html += '</table>'; 
     $('#topic').append(html);                  
 }
