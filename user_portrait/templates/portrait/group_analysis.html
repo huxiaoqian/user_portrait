@@ -113,8 +113,8 @@
 			    </div>
 			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 			      <div class="panel-body">
-			      	<div id='social_line'style='width:700px;height:350px;float:left'></div>
-				     <div id='group' style='overflow-x:hidden;width:260px;margin-top:100px;float:right'>
+			      	<div id='social_line'style='width:600px;height:350px;float:left'></div>
+				     <div id='group' style='overflow-x:hidden;width:360px;margin-top:100px;float:right'>
 			        </div>
 			      </div>
 			    </div>
@@ -191,7 +191,7 @@
 			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
 			      	<div id='activeness'style='width:320px;height:420px;float:right'></div>
 			      	<div id='influence'style='width:320px;height:420px;float:left'></div>
-				     <div id='weibo' style='overflow-x:hidden;height:650px;width:960px;float:left;margin-top:10px;'>
+				     <div id='weibo' style='overflow-x:hidden;width:960px;float:left;margin-top:10px;'>
 					 </div>
 			      </div>
 			    </div>
@@ -217,7 +217,13 @@
     {% block Own_js %}
     {{ super() }}
     <script>
-        var name = "{{ name }}";;
+        var name = "{{ name }}";
+        $(document).ready(function(){
+            $("#closeness_tooltip").tooltip();
+            $("#weibo_tooltip").tooltip();
+            $("#join_tooltip").tooltip(); 
+            $("#node_tooltip").tooltip();          
+        })
     </script>
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
     {% endblock Own_js %}
