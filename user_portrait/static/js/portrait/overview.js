@@ -202,21 +202,6 @@ function draw_sex(data){
       toolbox: {
           show : true,
           feature : {
-              mark : {show: true},
-              dataView : {show: true, readOnly: false},
-              magicType : {
-                  show: true, 
-                  type: ['pie', 'funnel'],
-                  option: {
-                      funnel: {
-                          x: '25%',
-                          width: '50%',
-                          funnelAlign: 'center',
-                          max: 1548
-                      }
-                  }
-              },
-              restore : {show: true},
               saveAsImage : {show: true}
           }
       },
@@ -272,21 +257,6 @@ function draw_vertify(data){
       toolbox: {
           show : true,
           feature : {
-              mark : {show: true},
-              dataView : {show: true, readOnly: false},
-              magicType : {
-                  show: true, 
-                  type: ['pie', 'funnel'],
-                  option: {
-                      funnel: {
-                          x: '25%',
-                          width: '50%',
-                          funnelAlign: 'center',
-                          max: 1548
-                      }
-                  }
-              },
-              restore : {show: true},
               saveAsImage : {show: true}
           }
       },
