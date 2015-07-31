@@ -50,22 +50,26 @@ def search_attention(uid):
                 except:
                     stat_results[ruid] = ruid_results[ruid]
     # print 'results:', stat_results
-    for ruid in stat_results:
-        # search uid
-        '''
-        uname = search_uid2uname(ruid)
-        if not uname:
-        '''
-        uname = '未知'
-        
-        count = stat_results[ruid]
-        results[ruid] = [uname, count]
-    if results: 
-        sort_results_list = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
-        print 'sort_results_list:', sort_results_list
-        return [sort_results_list[:20], len(results)]
-    else:
+    try:
+        sort_state_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
+    except:
         return [None, 0]
+
+    uid_list = [item[0] for item in sort_state_results]
+    es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
+    result_list = []
+    for item in es_profile_results:
+        uid = item['_id']
+        try:
+            source = item['_source']
+            uname = source['nick_name']
+        except:
+            uname = u'未知'
+
+        result_list.append([uid,[uname, stat_results[uid]]])
+       
+    return [result_list[:20], len(stat_results)]
+
 
 #search:'be_retweet_' + str(uid) return followers {br_uid1:count1, br_uid2:count2}
 #redis:{'be_retweet_'+uid:{br_uid:count}}
@@ -76,29 +80,29 @@ def search_follower(uid):
     for db_num in R_DICT:
         r = R_DICT[db_num]
         br_uid_results = r.hgetall('be_retweet_'+str(uid))
-        #print 'br_uid_results:', br_uid_results
         if br_uid_results:
             for br_uid in br_uid_results:
                 try:
                     stat_results[br_uid] += br_uid_results[br_uid]
                 except:
                     stat_results[br_uid] = br_uid_results[br_uid]
-    # print 'stat_results:', stat_results
-    for br_uid in stat_results:
-        # search uid
-        '''
-        uname = search_uid2uname(br_uid)
-        if not uname:
-        '''
-        uname = '未知'
-        
-        count = stat_results[br_uid]
-        results[br_uid] = [uname, count]
-    if results:
-        sort_results = sorted(results.items(), key=lambda x:x[1][1], reverse=True)
-        return [sort_results[:20], len(results)]
-    else:
+    try:
+        sort_stat_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
+    except:
         return [None, 0]
+
+    uid_list = [item[0] for item in sort_stat_results]
+    es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
+    result_list = []
+    for item in es_profile_results:
+        uid = item['_id']
+        try:
+            source = item['_source']
+            uname = source['nick_name']
+        except:
+            uname = u'未知'
+        result_list.append([uid,[uname, stat_results[uid]]])
+    return [result_list[:20], len(stat_results)]
 
 #search:now_ts , uid return 7day at uid list  {uid1:count1, uid2:count2}
 #{'at_'+Date:{str(uid):'{at_uid:count}'}}
