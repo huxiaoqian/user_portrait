@@ -11,12 +11,11 @@
 {% block main %}
 <h4 class="page-header" style='margin-top:0px;'>搜索结果</h4>
 <div class="box-content">
-        <span style="float:left;margin-top:0px">
         {% if stype=='2' %}
-            已选条件：
+            <span style="float:left;margin-top:0px">已选条件:</span>
+            <div id="conditions" style='float:left;margin-top:0px;'></div>
         {% endif %}
-        </span><div id="conditions" style='float:left;margin-top:0px;'></div>
-        <div id="search_result" style="margin-top:40px;"></div>
+        <div id="search_result" style="margin-top:0px;"></div>
         <div style="text-align:right">
             <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="compare_button" id="compare_button" title="选择2至3个用户对比"  onclick="compare_button();">个体对比</button>
             <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="group_button" id="group_button" onclick="group_button();">群体分析</button>
