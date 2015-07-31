@@ -502,7 +502,7 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
   var option = {
     title : {
         text: '用户影响力分布',
-        subtext: '较低影响力(<500)的人数：全网' + number_all + '人，人物库' + number_in + '人'
+        subtext: '较低影响力(<500)的人数：全网' + number_all + '人，人物库' + number_in + '人',
     },
     tooltip : {
         trigger: 'axis'
@@ -521,6 +521,9 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
         }
     },
     calculable : true,
+    grid:{
+        y:80,
+    },
     xAxis : [
         {
             type : 'category',
@@ -702,7 +705,7 @@ function draw_line_chart(xaxis, influence_data, div, uid){
   var line_chart_option = {
     title : {
         text: '用户影响力走势图',
-        subtext: ''
+        subtext: '',
     },
     tooltip : {
         trigger: 'axis'
@@ -731,6 +734,9 @@ function draw_line_chart(xaxis, influence_data, div, uid){
     yAxis : [
         {
             type : 'value',
+            max : 2000,
+            min : 0,
+            splitNumber : 4,
         }
     ],
     series : [
