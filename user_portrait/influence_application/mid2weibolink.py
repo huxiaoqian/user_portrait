@@ -2,7 +2,7 @@
 import os
 
 
-ALPHABET = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def base62_encode(num, alphabet=ALPHABET):
     if (num == 0):
@@ -22,7 +22,7 @@ def mid2str(mid):
     s1 = base62_encode(int(mid[:2]))
     s2 = base62_encode(int(mid[2:9]))
     try:
-        s3 = base62_encode(int(mid[6:16]))
+        s3 = base62_encode(int(mid[9:16]))
     except:
         s3 = ''
     return s1+s2+s3

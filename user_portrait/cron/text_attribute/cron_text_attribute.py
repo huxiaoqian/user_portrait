@@ -35,8 +35,8 @@ BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/te
 def load_black_words():
     black_words = set([line.strip('\r\n') for line in file(BLACK_WORDS_PATH)])
     a = list(black_words)[0]
-    print 'a, type:', a , type(a)
-    print 'len_black_word:', len(black_words)
+    #print 'a, type:', a , type(a)
+    #print 'len_black_word:', len(black_words)
     return black_words
 
 black_words = load_black_words()
@@ -260,8 +260,8 @@ def main():
     # get user weibo 7day {user:[weibos]}
     user_weibo_dict = read_user_weibo(uid_list)
     uid_list = user_weibo_dict.keys()
-    print 'uid_list:', len(uid_list)
-    print 'user weibo dict:', len(user_weibo_dict)
+    #print 'uid_list:', len(uid_list)
+    #print 'user weibo dict:', len(user_weibo_dict)
     flow_result = get_flow_information(uid_list)
     register_result = get_profile_information(uid_list)
     # compute text attribute
