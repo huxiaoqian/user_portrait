@@ -20,10 +20,10 @@ from global_utils import ES_CLUSTER_FLOW1
 
 es = ES_CLUSTER_FLOW1
 # index_date is everyday active index
-index_date = "20130908"
+index_date = "20130907"
 index_date_doctype = "bci"
-index_destination = "user_index_profile" # record all active user index on the Internet
-index_destination_doctype = "manage"
+index_destination = "copy_user_portrait" # record all active user index on the Internet
+index_destination_doctype = "user"
 
 #index_destination = "this_is_a_copy_user_portrait" # record only portrait user index
 #index_destination_doctype = "manage"
