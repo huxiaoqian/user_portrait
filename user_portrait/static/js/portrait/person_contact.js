@@ -208,7 +208,7 @@ function get_choose_data(uid){
     $('.inline-checkbox').each(function(){
         if($(this).is(':checked')){
             keywords.push($(this).next().attr('id'));
-            if($(this).next().next().val() > 10 || $(this).next().next().val < 0 ){
+            if($(this).next().next().val() > 10 || $(this).next().next().val < 1 ){
                 alert("请输入1到10之间的权重");
                 isflag = 0;
             }else{
