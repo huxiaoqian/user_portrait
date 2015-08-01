@@ -209,7 +209,7 @@ function get_choose_data(uid){
         if($(this).is(':checked')){
             keywords.push($(this).next().attr('id'));
             if($(this).next().next().val() > 10 || $(this).next().next().val < 0 ){
-                alert("请输入0到10之间的权重");
+                alert("请输入1到10之间的权重");
                 isflag = 0;
             }else{
                 weight.push($(this).next().next().val());
