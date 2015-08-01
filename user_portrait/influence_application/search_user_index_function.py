@@ -232,7 +232,7 @@ def time_series(date):
     print date_list
     return date_list
 
-def search_portrait_history_active_info(uid, date, index_name=user_index_profile, doctype=manage):
+def search_portrait_history_active_info(uid, date, index_name="copy_user_portrait", doctype="user"):
     # date.formate: 20130901
     date_list = time_series(date)
 
