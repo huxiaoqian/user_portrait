@@ -72,10 +72,6 @@ def search_result():
                 location=location, adkeyword=adkeyword, hashtag=hashtag, psycho_status=psycho_status,\
                 psycho_feature=psycho_feature, domain=domain, topic=topic)
 
-@mod.route('/test/')
-def test():
-
-    return render_template('portrait/stack.html')
 
 @mod.route('/contact/')
 def contact():
