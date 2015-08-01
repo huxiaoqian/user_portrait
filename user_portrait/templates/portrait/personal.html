@@ -57,7 +57,10 @@ $(function(){
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
     <div class="nickname" id="nickname"></div>
-    <div style="text-align:center;height:30px;"><a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;<a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
+    <div style="text-align:center;height:30px;">
+        <a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;
+        <a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;
+        <a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
 	<div class="power">
 		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（排名<span id="IPrank">20%</span>）
 		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（排名<span id="APrank">10%</span>）
@@ -132,6 +135,12 @@ var personalData; // global data
 
 var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
+
+var contact_url = '/index/contact/?uid=' + uid;
+$('#contact').attr('href', contact_url)
+var homepage_url = 'http://weibo.com/u/' + uid;
+$('#homepage').attr('href', homepage_url)
+
 var img = document.getElementById('portraitImg');
 //console.log(personalData.photo_url);
 if(personalData.photo_url == "unknown"){
@@ -187,11 +196,11 @@ if(personalData.influence_rank){
 }else{
     F_rank.innerHTML = "无此数据";
 }
-var uid = document.getElementById('userId');
-if(personalData.uid){
-	uid.innerHTML = personalData.uid;
+var uid_div = document.getElementById('userId');
+if(personalData.uid_div){
+	uid_div.innerHTML = personalData.uid_div;
 }else{
-	uid.innerHTML = "无此数据";
+	uid_div.innerHTML = "无此数据";
 }
 	
 var userlocation = document.getElementById('userLocation');
@@ -223,7 +232,7 @@ var topic = document.getElementById('userTopic');
 if(personalData.topic){
 	topicdict = personalData.topic;
 	var str = '';
-	for(i=0;i<topicdict.length;i++){
+    for(i=0;i<topicdict.length;i++){
 		if (i == (topicdict.length -1)){
 			str += topicdict[i][0];
 		}else{
@@ -256,10 +265,6 @@ if(personalData.online_pattern[0][0]){
 }else{
 	pattern.innerHTML = "无此数据";
 }
-var contact_url = '/index/contact/?uid=' + uid;
-$('#contact').attr('href', contact_url)
-var homepage_url = 'http://weibo.com/u/' + uid;
-$('#homepage').attr('href', homepage_url)
 </script>
 <script>
 	$("#basic_info").off("click").click(function(){
