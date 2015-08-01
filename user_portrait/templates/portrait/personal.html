@@ -56,14 +56,54 @@ $(function(){
 {% block main %}
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
-    <div class="nickname" id="nickname">互助小喇叭</div>
-    <div style="text-align:center;height:30px;"><a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
+    <div class="nickname" id="nickname"></div>
+    <div style="text-align:center;height:30px;"><a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;<a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;<a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
 	<div class="power">
 		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（排名<span id="IPrank">20%</span>）
 		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（排名<span id="APrank">10%</span>）
 		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（排名<span id="FPrank">30%</span>）
 	</div>
 	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
+</div>
+<div id="float-wrap" class="hidden"></div>
+<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 70%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
+	<h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本注册信息<a href="javascript:void(0)" class="Basicclose" id="close"></a></h3>
+	<div class="m-wrap" style="margin-top:30px;">
+		<ul class="clearfix">
+            <li class="li_1">
+				<span class="pt_title">用户ID</span>
+				<span class="pt_detail" id="userId" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">注册地</span>
+				<span class="pt_detail" id="userLocation" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">性别</span>
+				<span class="pt_detail" id="userGender" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">领域</span>
+				<span class="pt_detail" id="userDomain" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">话题</span>
+				<span class="pt_detail" id="userTopic" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">粉丝数</span>
+				<span class="pt_detail" id="userFans" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">关注数</span>
+				<span class="pt_detail" id="userFriend" ></span>
+			</li>
+			<li class="li_1">
+				<span class="pt_title">在线方式</span>
+				<span class="pt_detail" id="userOnline" ></span>
+			</li>
+		</ul>
+	</div>
 </div>
 <script type="text/javascript">
  function Personal(){
@@ -124,7 +164,6 @@ if(personalData.uname){
     nickName.innerHTML = "无此数据";
 }
 var detailPortrait = document.getElementById('portraitDetail');
-console.log(personalData.description);
 if(!personalData.description ){
     detailPortrait.innerHTML = "无此数据";
 }else{
@@ -148,20 +187,101 @@ if(personalData.influence_rank){
 }else{
     F_rank.innerHTML = "无此数据";
 }
+var uid = document.getElementById('userId');
+if(personalData.uid){
+	uid.innerHTML = personalData.uid;
+}else{
+	uid.innerHTML = "无此数据";
+}
+	
+var userlocation = document.getElementById('userLocation');
+if(personalData.location){
+	userlocation.innerHTML = personalData.location;
+}else{
+	userlocation.innerHTML = "无此数据";
+}
+var gender = document.getElementById('userGender');
+if(personalData.gender){
+	gendernum = personalData.gender;
+	if (gendernum==1){
+		gender.innerHTML = '男';
+	}else{
+		gender.innerHTML = '女';
+	}
+}else{
+	gender.innerHTML = "无此数据";
+}
+    
+var domain = document.getElementById('userDomain');
+if(personalData.domain){
+		domain.innerHTML = personalData.domain;
+}else{
+	domain.innerHTML = "无此数据";
+}
+	
+var topic = document.getElementById('userTopic');
+if(personalData.topic){
+	topicdict = personalData.topic;
+	var str = '';
+	for(i=0;i<topicdict.length;i++){
+		if (i == (topicdict.length -1)){
+			str += topicdict[i][0];
+		}else{
+			str = str + topicdict[i][0] +',';
+		}
+		
+	}
+	topic.innerHTML = str;
+}else{
+	topic.innerHTML = "无此数据";
+}
+	
+var fans = document.getElementById('userFans');
+if(personalData.fansnum){
+	fans.innerHTML = personalData.fansnum;
+}else{
+	fans.innerHTML = "无此数据";
+}
+    
+var friends = document.getElementById('userFriend');
+if( personalData.friendsnum){
+	friends.innerHTML = personalData.friendsnum;
+}else{
+	friends.innerHTML = "无此数据";
+}
+    
+var pattern = document.getElementById('userOnline');
+if(personalData.online_pattern[0][0]){
+	pattern.innerHTML = personalData.online_pattern[0][0];
+}else{
+	pattern.innerHTML = "无此数据";
+}
 var contact_url = '/index/contact/?uid=' + uid;
 $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
 $('#homepage').attr('href', homepage_url)
 </script>
+<script>
+	$("#basic_info").off("click").click(function(){
+		$("#float-wrap").removeClass("hidden");
+		$("#basicInfo").removeClass("hidden");
+		return false;
+	});
+	$(".Basicclose").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#basicInfo").addClass("hidden");
+		return false;
+	});
+</script>
 <div class="soft_function">
 
 	<div class="soft_con_icon">
 		<ul>
-			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/basic.png"/><p style="color:#008dd9">注册属性</p></a></li>
-            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/activity.png"/><p>活动属性</p></a></li>
-            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
-			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
+			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/activity.png"/><p style="color:#008dd9">活动属性</p></a></li>
+            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
+            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
+			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/basic.png"/><p>影响力属性</p></a></li>
 		</ul>
 	</div> 
 
@@ -170,23 +290,23 @@ $('#homepage').attr('href', homepage_url)
 	<div class="soft_con">
 
 		<div id="xzgl" class="soft_con2">
-            {% include "portrait/detail/basic.html"%}
-        </div>
-	
-		<div id="crm" class="soft_con2" style="display:none">
             {% include "portrait/detail/activity.html"%}
         </div>
 	
-		<div id="xmgl" class="soft_con2" style="display:none">
+		<div id="crm" class="soft_con2" style="display:none">
             {% include "portrait/detail/thought.html"%}
-		</div>
+        </div>
 	
-		<div id="zsgl" class="soft_con2" style="display:none">
+		<div id="xmgl" class="soft_con2" style="display:none">
             {% include "portrait/detail/language.html"%}
 		</div>
 	
-		<div id="ydbg" class="soft_con2" style="display:none">
+		<div id="zsgl" class="soft_con2" style="display:none">
             {% include "portrait/detail/social.html"%}
+		</div>
+	
+		<div id="ydbg" class="soft_con2" style="display:none">
+            {% include "portrait/detail/basic.html"%}
 		</div>
 	
 	</div>

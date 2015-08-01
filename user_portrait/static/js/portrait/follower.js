@@ -16,6 +16,7 @@ Draw_Follower:function(data){
     var UserName = parent.personalData.uname;
     var Fnumber = document.getElementById('fansNumber');
     Fnumber.innerHTML = data[1];
+    
 	var items = data[0]
 	if(items==null){
 		var say = document.getElementById('test1');
@@ -49,7 +50,7 @@ function follower(data,UserID,UserName){
 	nod['name'] = UserName;
 	nod['value'] = 10;
 	nodeContent.push(nod);
-	for (i=0;i<10;i++){
+	for (i=0;i<uids.length;i++){
 			nod = {};
 			nod['category'] = 1;
 			nod['name'] = uids[i];
@@ -58,7 +59,7 @@ function follower(data,UserID,UserName){
 			nodeContent.push(nod);
 	}
 	var linkline =[];
-	for (i=0;i<10;i++){
+	for (i=0;i<uids.length;i++){
 		line ={};
 		line['source'] = uids[i];
 		line['target'] = UserName;

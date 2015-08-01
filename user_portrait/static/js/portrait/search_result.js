@@ -293,6 +293,7 @@ function draw_conditions(that){
     }
     else{
         console.log('=2');
+        $("#search_result").css("margin-top", "40px");
         $('#conditions').empty();
         var html = '';
         for (var i = 0;i < pars.length;i++){

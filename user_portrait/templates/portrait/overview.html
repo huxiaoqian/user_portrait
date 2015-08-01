@@ -1,8 +1,7 @@
 {% extends "tbase.html" %}
     {% block title %}整体概览{% endblock title%}
       {% block css %}
-      {{ super() }}
-    
+      {{ super() }}    
 		<link href="/static/css/dashboard.css" rel="stylesheet">		    
     <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
@@ -47,8 +46,8 @@
         </div>
         <div>
         <h4 class="page-header" style='margin-top:0px'>基本信息</h4>
-        <div id='sex' style='float:left;width:300px;height:230px'></div>
-        
+        <div><span style='font-size:16px'>男女比例</span><span style="margin-left:300px;font-size:16px">关键词</span><span style="margin-left:290px;font-size:16px">认证比例</span></div>
+        <div id='sex' style='float:left;width:300px;height:230px'></div>       
         <div id='vertify' style='float:right;width:300px;height:230px'></div>
         <div id='keywordcloud' style='float:left;width:400px;height:230px'></div>
         </div>

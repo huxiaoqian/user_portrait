@@ -7,158 +7,183 @@
         border: solid #FFE4B5 1px;   
     }   
 </style>
-<div>
-  <h4 class="page-header"style='margin-top:10px'>他的标签</h4>
+<div style="width:998px;">
+  <h4 class="page-header"style='margin-top:10px'>他的领域</h4>
   <div id="character" style="height:50px;width:900px">
 	<table>
 	<tr>
 	<td class="center">
-		<span class="label-warning label label-default"style='font-size:16px'>狮子座</span>
-	</td>
-	<td class="center">
-		<span class="label-warning label label-default"style='font-size:16px'>90后</span>
-	</td>
-	<td class="center">
-		<span class="label-warning label label-default"style='font-size:16px'>摇滚</span>
-	</td>
-	<td class="center">
-		<span class="label-warning label label-default"style='font-size:16px'>游戏控</span>
+		<span class="label-warning label label-default"style='font-size:16px'>律师</span>
 	</td>
 	</tr>
 	</table>
   </div>
 </div>
-<div><h4 class="page-header"style='margin-top:10px'>思想</h4>
-	<div id="radar_topic1" style="height:350px;width:450px"></div>
-	<div id="radar_topic2" style="height:350px;width:450px;float:right"></div>
-	<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+<div style="width:998px;"><h4 class="page-header"style='margin-top:-10px'>参与话题和心理状态</h4>
+					<div>
+						<div style="height:380px;width:450px;float:left;margin-top:-20px">
+						<div style="font-size:16px">参与话题</div>
+						<div id="radar_domain" style="height:350px;width:450px;"></div>
+						</div>
+						<div style="height:380px;width:450px;float:right;margin-top:-20px">
+						<div style="font-size:16px">心理状态</div>
+						<div id="pie_emotion" style="height:350px;width:450px;"></div>
+						</div>
+					</div>	
 </div>
+<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
  <script type="text/javascript">
  	$(document).ready(function(){
- 		drawradar_topic1();
- 		drawradar_topic2();
+ 		Draw_think_topic();
+ 		Draw_think_emotion();
  	})
         // 基于准备好的dom，初始化echarts图表
-    function drawradar_topic1(){
-        var myChart = echarts.init(document.getElementById('radar_topic1')); 
+function Draw_think_topic(){
+    // domain_value = [];
+    // domain_key = [];
+    // indicate = [];
+    // for ( key in data['2']){
+    //      indicator = {};
+    //     domain_key.push(key);
+    //     indicator['text'] = key;
+    //     indicator['max'] = 20;
+    //     indicate.push(indicator);
+    //     domain_value.push(data['2'][key]);
+    // }
+    var myChart = echarts.init(document.getElementById('radar_domain')); 
         
-		var option = {
-	    title : {
-	        text: '',
-	        subtext: ''
-	    },
-	    tooltip : {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        x : 'center',
-	        data:['罗纳尔多']
-	    },
-	    toolbox: {
-	        show : true,
-	        feature : {
-	            mark : {show: true},
-	            dataView : {show: true, readOnly: false},
-	            restore : {show: true},
-	            saveAsImage : {show: true}
-	        }
-	    },
-	    calculable : true,
-	    polar : [
-	        {
-	            indicator : [
-	                {text : '进攻', max  : 100},
-	                {text : '防守', max  : 100},
-	                {text : '体能', max  : 100},
-	                {text : '速度', max  : 100},
-	                {text : '力量', max  : 100},
-	                {text : '技巧', max  : 100}
-	            ],
-	            radius : 100
-	        }
-	    ],
-	    series : [
-	        {
-	            name: '完全实况球员数据',
-	            type: 'radar',
-	            itemStyle: {
-	                normal: {
-	                    areaStyle: {
-	                        type: 'default'
-	                    }
-	                }
-	            },
-	            data : [
-	                {
-	                    value : [97, 32, 74, 95, 88, 92],
-	                    name : '罗纳尔多'
-	                }
-	            ]
-	        }
-	    ]
-	};                
+        var option = {
+        title : {
+            text: '',
+            subtext: ''
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            x : 'center',
+            data:['话题']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        polar : [
+            {
+            indicator : [
+                {text : '娱乐', max  : 100},
+                {text : '计算机', max  : 100},
+                {text : '经济', max  : 100},
+                {text : '教育', max  : 100},
+                {text : '自然', max  : 100},
+                {text : '健康', max  : 100}],
+                radius : 80
+            }
+        ],
+        series : [
+            {
+                name: '',
+                type: 'radar',
+                itemStyle: {
+                    normal: {
+                        areaStyle: {
+                            type: 'default'
+                        }
+                    }
+                },
+                data : [
+                    {
+                        value : [97, 42, 88, 94, 90, 86],
+                        name : '话题'
+                    }
+                ]
+            }
+        ]
+    };                
         // 为echarts对象加载数据 
         myChart.setOption(option); 
-    }
-    function drawradar_topic2(){
-        var myChart = echarts.init(document.getElementById('radar_topic2')); 
-        
-		var option = {
-	    title : {
-	        text: '',
-	        subtext: ''
-	    },
-	    tooltip : {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        x : 'center',
-	        data:['罗纳尔多']
-	    },
-	    toolbox: {
-	        show : true,
-	        feature : {
-	            mark : {show: true},
-	            dataView : {show: true, readOnly: false},
-	            restore : {show: true},
-	            saveAsImage : {show: true}
-	        }
-	    },
-	    calculable : true,
-	    polar : [
-	        {
-	            indicator : [
-	                {text : '进攻', max  : 100},
-	                {text : '防守', max  : 100},
-	                {text : '体能', max  : 100},
-	                {text : '速度', max  : 100},
-	                {text : '力量', max  : 100},
-	                {text : '技巧', max  : 100}
-	            ],
-	            radius : 100
-	        }
-	    ],
-	    series : [
-	        {
-	            name: '完全实况球员数据',
-	            type: 'radar',
-	            itemStyle: {
-	                normal: {
-	                    areaStyle: {
-	                        type: 'default'
-	                    }
-	                }
-	            },
-	            data : [
-	                {
-	                    value : [97, 32, 74, 95, 88, 92],
-	                    name : '罗纳尔多'
-	                }
-	            ]
-	        }
-	    ]
-	};                
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
-    }
+}
+function Draw_think_emotion(){
+    var myChart = echarts.init(document.getElementById('pie_emotion')); 
+    var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient : 'vertical',
+        x : 'left',
+        data:['积极','中性','消极','积极','中性','生气','悲伤','其他']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: false},
+            dataView : {show: false, readOnly: false},
+            magicType : {
+                show: false, 
+                type: ['pie', 'funnel']
+            },
+            restore : {show: false},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : false,
+    series : [
+        {
+            name:'',
+            type:'pie',
+            selectedMode: 'single',
+            radius : [0, 35],
+            
+            // for funnel
+            x: '20%',
+            width: '40%',
+            funnelAlign: 'right',
+            max: 1548,
+            
+            itemStyle : {
+                normal : {
+                    label : {
+                        position : 'inner'
+                    },
+                    labelLine : {
+                        show : false
+                    }
+                }
+            },
+            data:[
+                {value:5, name:'积极'},
+                {value:5, name:'中性'},
+                {value:12, name:'消极', selected:true}
+            ]
+        },
+        {
+            name:'',
+            type:'pie',
+            radius : [50, 70],
+            
+            // for funnel
+            x: '60%',
+            width: '35%',
+            funnelAlign: 'left',
+            max: 1048,
+            
+            data:[
+                {value:5, name:'积极'},
+                {value:5, name:'中性'},
+                {value:3, name:'生气'},
+                {value:4, name:'悲伤'},
+                {value:5, name:'其他'}
+            ]
+        }
+    ]
+}
+    myChart.setOption(option);  
+                    
+}
+
     </script>

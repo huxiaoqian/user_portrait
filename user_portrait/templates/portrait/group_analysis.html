@@ -17,7 +17,7 @@
 	  overflow:hidden;
 	  padding:3em;
 	}
-	ul li a{
+	#stickynote ul li a{
 	  text-decoration:none;
 	  color:#000;
 	  background:#ffc;
@@ -29,7 +29,7 @@
 	  -o-transform: rotate(-6deg);
 	  -moz-transform:rotate(-6deg);
 	}
-	#stickynote ul li a:hover,ul li a:focus{
+	#stickynote ul li a:hover, #stickynote ul li a:focus{
 	  box-shadow:10px 10px 7px rgba(0,0,0,.7);
 	  -moz-box-shadow:10px 10px 7px rgba(0,0,0,.7);
 	  -webkit-box-shadow: 10px 10px 7px rgba(0,0,0,.7);
@@ -48,9 +48,7 @@
  {% block head_js %}
   {{ super() }}
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
-	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script> 
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
-	<script src='/static/js/jquery.dataTables.min.js'></script>
   {% endblock head_js %}
 
 
@@ -115,8 +113,8 @@
 			    </div>
 			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 			      <div class="panel-body">
-			      	<div id='social_line'style='width:700px;height:350px;float:left'></div>
-				     <div id='group' style='overflow-x:hidden;width:260px;margin-top:100px;float:right'>
+			      	<div id='social_line'style='width:600px;height:350px;float:left'></div>
+				     <div id='group' style='overflow-x:hidden;width:360px;margin-top:100px;float:right'>
 			        </div>
 			      </div>
 			    </div>
@@ -134,15 +132,24 @@
 			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 			      <div class="panel-body">
 					<div>
-						<div id="radar_topic" style="height:350px;width:320px;float:left"></div>
-						<div id="radar_domain" style="height:350px;width:320px;float:right"></div>
-						<div id="pie_emotion" style="height:350px;width:320px;float:right"></div>
+						<div style="height:380px;width:320px;float:left">
+						<div style="font-size:16px;margin-bottom:20px;">领域划分</div>
+						<div id="radar_topic" style="height:350px;width:320px;"></div>
+						</div>
+
+						<div style="height:380px;width:320px;float:right">
+						<div style="font-size:16px;margin-bottom:20px;">话题划分</div>
+						<div id="radar_domain" style="height:350px;width:320px;"></div>
+						</div>
+
+						<div style="height:380px;width:320px;float:right">
+						<div style="font-size:16px;margin-bottom:20px;">心理状态划分</div>
+						<div id="pie_emotion" style="height:350px;width:320px;"></div>
+						</div>
 					</div>
 			      </div>
 			    </div>
 			  </div>
-
-
 
 			  <div class="panel panel-default">
 			    <div class="panel-heading" role="tab" id="headingFive">
@@ -159,9 +166,9 @@
 		        	</div>
 		     		<div id='emotion' style='overflow-x:hidden;width:200px;height:300;float:right'>		     	
 			        </div>
-						<div style="height:350px;width:450px;height:300;float:left">
-						<div style="font-size:16px">关键词</div>
-						<div id="keywordcloud" style="height:240px;width:450px;height:300"></div>
+						<div style="width:450px;height:300;float:left">
+						<div style="font-size:16px;margin-left:50px;">关键词</div>
+						<div id="keywordcloud" style="width:450px;height:300"></div>
 						</div>
 					
 
@@ -184,7 +191,7 @@
 			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
 			      	<div id='activeness'style='width:320px;height:420px;float:right'></div>
 			      	<div id='influence'style='width:320px;height:420px;float:left'></div>
-				     <div id='weibo' style='overflow-x:hidden;width:960px;float:left'>
+				     <div id='weibo' style='width:960px;float:left;margin-top:10px;'>
 					 </div>
 			      </div>
 			    </div>
@@ -210,11 +217,18 @@
     {% block Own_js %}
     {{ super() }}
     <script>
-        var name = "{{ name }}";;
+        var name = "{{ name }}";
+        $(document).ready(function(){
+            $("#closeness_tooltip").tooltip();
+            $("#weibo_tooltip").tooltip();
+            $("#join_tooltip").tooltip(); 
+            $("#node_tooltip").tooltip();          
+        })
     </script>
-   	<script type="text/javascript" src="/static/js/portrait/group_user.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
-
-
-	{% endblock Own_js %}
+    {% endblock Own_js %}
+    {% block end_js %}
+    {{ super() }}
+   	<script type="text/javascript" src="/static/js/portrait/group_table.js"></script>
+    {% endblock end_js %}
 

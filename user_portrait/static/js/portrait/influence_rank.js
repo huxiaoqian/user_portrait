@@ -235,9 +235,9 @@ Search_weibo_detail_trans.prototype = {
       html += '<tr>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url + ' target="_blank">'+ item[i][2] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ item[i][7] + ' target="_blank">'+ item[i][4] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][5] +'</td>';
       html += '</tr>';
     }
@@ -293,9 +293,9 @@ Search_weibo_detail_comment.prototype = {
       html += '<tr>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle"><img src="'+ item[i][1] +'" class="img-circle"></td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url+ '  target="_blank">'+ item[i][2] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ user_url + ' target="_blank">'+ item[i][2] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
-      html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
+      html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+ item[i][7] + ' target="_blank">'+ item[i][4] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][5] +'</td>';
       html += '</tr>';
     }
@@ -502,7 +502,7 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
   var option = {
     title : {
         text: '用户影响力分布',
-        subtext: '影响力<500：全网' + number_all + '人，人物库' + number_in + '人'
+        subtext: '较低影响力(<500)的人数：全网' + number_all + '人，人物库' + number_in + '人',
     },
     tooltip : {
         trigger: 'axis'
@@ -521,6 +521,9 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
         }
     },
     calculable : true,
+    grid:{
+        y:80,
+    },
     xAxis : [
         {
             type : 'category',
@@ -626,7 +629,7 @@ function get_hot_users_details(){
     success:hot_users_details
   }); 
   function hot_users_details(data){
-    console.log(url_hot_users);
+    //console.log(url_hot_users);
     //console.log(data);
     for(var i=0;i<2;i++){
       for(var j=0;j<6;j++){
@@ -634,7 +637,11 @@ function get_hot_users_details(){
         var details = [];
         if(data[i][j][3]=="")
           data[i][j][3] = "未知";
-        details.push(data[i][j][3],data[i][j][4].toFixed(2),data[i][j][6].toFixed(2));
+        details.push(data[i][j][3],data[i][j][4].toFixed(0),data[i][j][6].toFixed(0));
+        details.push(data[i][j][7],data[i][j][8].toFixed(0),data[i][j][9],data[i][j][10].toFixed(0));
+        details.push(data[i][j][11],data[i][j][12].toFixed(0),data[i][j][13],data[i][j][14].toFixed(0));
+        details.push(data[i][j][15],data[i][j][16].toFixed(0),data[i][j][17],data[i][j][18].toFixed(0));
+        details.push(data[i][j][19],data[i][j][20].toFixed(0),data[i][j][21],data[i][j][22].toFixed(0));
         user_details[user_id] = details;
       }
     }
@@ -644,25 +651,67 @@ function get_hot_users_details(){
 function draw_hot_users_details(uid){
     $('#hot_users_details').empty(); 
     var html_details = '';
-    html_details += '<div><span class="pt_title">用户ID： <a href="/index/personal/?uid="'+ uid +' target="_blank">'+ uid +'</a></span>';
-    html_details += '<span class="pt_title" style="margin-left:10px">昵称： '+ user_details[uid][0] +'</span>'
-    html_details += '<span class="pt_title" style="margin-left:10px">影响力： '+ user_details[uid][1] +'</span>'
-    html_details += '<span class="pt_title" style="margin-left:10px">爆发度： '+ user_details[uid][2] +'</span></div>'
+    html_details += '<div style="font-size:medium"><span class="pt_title">用户ID： <a href="/index/personal/?uid='+ uid +'" target="_blank">'+ uid +'</a></span>';
+    html_details += '<span class="pt_title" style="margin-left:10px">昵称： '+ user_details[uid][0] +'</span>';
+    html_details += '<span class="pt_title" style="margin-left:10px">影响力： '+ user_details[uid][1] +'</span>';
+    html_details += '<span class="pt_title" style="margin-left:10px">爆发度： '+ user_details[uid][2] +'</span></div>';
+    html_details += '<div style="margin-top:10px;margin-bottom:20px;margin-left:150px;width:700px">';
+    html_details += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html_details += '<thead><tr><th colspan="2"></th><th style="text-align:center;vertical-align:middle;width:110px">总数</th><th style="text-align:center;vertical-align:middle;width:110px">平均数</th><th style="text-align:center;vertical-align:middle;width:110px">最大值</th><th style="text-align:center;vertical-align:middle;width:110px">爆发度</th></tr></thead>';
+    html_details += '<tbody>';
+    html_details += '<tr>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle;width:100px" rowspan="2">原创微博</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle;width:80px">转发</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][3] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][4] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][5] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][6] +'</td>';
+    html_details += '</tr>';
+    html_details += '<tr>';
+    //html_details += '<td class="center" style="text-align:center;vertical-align:middle"></td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle;width:80px">评论</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][7] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][8] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][9] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][10] +'</td>';
+    html_details += '</tr>';
+    html_details += '<tr>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle;width:100px" rowspan="2">转发微博</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle;width:80px">转发</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][11] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][12] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][13] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][14] +'</td>';
+    html_details += '</tr>';
+    html_details += '<tr>';
+    //html_details += '<td class="center" style="text-align:center;vertical-align:middle"></td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">评论</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][15] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][16] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][17] +'</td>';
+    html_details += '<td class="center" style="text-align:center;vertical-align:middle">'+ user_details[uid][18] +'</td>';
+    html_details += '</tr>';
+    html_details += '</tbody>';
+    html_details += '</table>';
+    html_details += '</div>';
     $('#hot_users_details').append(html_details);
 }
 
 //画折线图
-function draw_line_chart(xaxis, influence_data, div){
+function draw_line_chart(xaxis, influence_data, div, uid){
+  var uname = user_details[uid][0];
+  //console.log(uname);
+  var uname_text = '"' + uname + '"的影响力';
   var line_chart_option = {
     title : {
         text: '用户影响力走势图',
-        subtext: ''
+        subtext: '',
     },
     tooltip : {
         trigger: 'axis'
     },
     legend: {
-        data:['影响力']
+        data:[uname_text]
     },
     toolbox: {
         show : true,
@@ -685,11 +734,14 @@ function draw_line_chart(xaxis, influence_data, div){
     yAxis : [
         {
             type : 'value',
+            max : 2000,
+            min : 0,
+            splitNumber : 4,
         }
     ],
     series : [
         {
-            name:'影响力',
+            name:uname_text,
             type:'line',
             data:influence_data,
             markPoint : {
@@ -724,7 +776,7 @@ function prepare_line_chart(uid){
   });
   function callback_line_chart(data){
     var line_chart_dates = [];
-    var line_chart_tomorrow = new Date();
+    var line_chart_tomorrow = new Date(2013,8,8);
     for(var i=0;i<7;i++){
       var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
       line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
@@ -737,7 +789,7 @@ function prepare_line_chart(uid){
             line_chart_data.push(parseFloat(data[j].toFixed(2)));
         //console.log(line_chart_data);
     }
-    draw_line_chart(line_chart_dates, line_chart_data, 'hot_users_line_chart');
+    draw_line_chart(line_chart_dates, line_chart_data, 'hot_users_line_chart', uid);
   }
 }
 
@@ -761,6 +813,8 @@ function draw_hot_users(){
     for(var i in data[0]){
       if(data[0][i][1]=="")
         data[0][i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      if(data[0][i][3]=="")
+        data[0][i][3]="未知";
       html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom:10px;margin-right:9px" class="index-small-photo-wrap no-padding ng-scope">';
       html += '<div class="small-photo shadow-5"><img style="cursor:hand;" src="' + data[0][i][1] + '" alt="' + data[0][i][3] +'" title="' + data[0][i][3] +'" class="hot_users" name="' + data[0][i][2] + '"></div></li>';
     }
@@ -773,6 +827,8 @@ function draw_hot_users(){
     for(var j in data[1]){
       if(data[1][j][1]=="")
         data[1][j][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+      if(data[0][j][3]=="")
+        data[0][j][3]="未知";
       html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom:10px;margin-right:9px" class="index-small-photo-wrap no-padding ng-scope">';
       html += '<div class="small-photo shadow-5"><img style="cursor:hand;" src="' + data[1][j][1] + '" alt="' + data[1][j][3] +'" title="' + data[1][j][3] +'" class="hot_users" name="' + data[1][j][2] + '"></div></li>';
     }
@@ -787,9 +843,10 @@ function draw_hot_users(){
 
     user_details = new Array();
     get_hot_users_details();
-    draw_hot_users_details(data[0][2][2]);
-    prepare_line_chart(data[0][2][2]);
+    draw_hot_users_details(data[0][0][2]);
+    prepare_line_chart(data[0][0][2]);
   }
 }
+
 var user_details;
 draw_hot_users();
