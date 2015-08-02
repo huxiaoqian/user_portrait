@@ -42,7 +42,8 @@
 	    	<script src="/static/js/jquery.min.js"></script>
 	    	<script src='/static/js/echarts-all.js'></script>
 	    	<script src="/static/js/jquery-ui.min.js"></script>
-			<script src="/static/js/jquery.sidebar.js"></script>
+			<script src="/static/js/jquery-1.4.2.min.js"></script>
+			<script src="/static/js/sidebar.js"></script>
 			<!-- data table plugin -->
 			<script src='/static/js/jquery.dataTables.min.js'></script>
 	    {% endblock %}
@@ -78,20 +79,21 @@
 		<!-- 左侧导航 -->
 		{% block left %}
 			<div class="leftsidebar_box">
-				<dl class="Leftdl">
-                    <dt class="Leftdt"><a href="/index/" style="color:white">整体概览</a></dt>
-				</dl>
-
-				<dl class="Leftdl">
-                    <dt class="Leftdt" >出入库管理</dt>
-					<dd class="Leftdd"><a href="/index/recommend_in/">入库管理</a></dd>
-					<dd class="Leftdd"><a href="/index/recommend_out/">出库管理</a></dd>
-				</dl>
-				<dl class="Leftdl">
-                    <dt class="Leftdt" >综合应用</dt>
-					<dd class="Leftdd"><a href="/index/group_result">群体分析</a></dd>
-					<dd class="leftdd"><a href="/index/influence_rank">影响力分析</a></dd>
-				</dl>
+				<ul class="ce" style="position:fixed;top:40%;">
+					<li> <a class="xz"  href="/index/">整体概览</a> </li>
+					<li> <a href="##">操作<img class="more fright" src="/static/img/more.png"/></a>
+						<ul class="er">
+							<li> <a  style="padding-left:50px;" href="/index/recommend_in/">出库</a></li>
+							<li> <a  style="padding-left:50px;" href="/index/recommend_out/">入库</a> </li>
+						</ul>
+					</li>
+					<li><a href="##">应用<img class="more fright" src="/static/img/more.png"/></a>
+						<ul class="er">
+							<li> <a  style="padding-left:50px;" href="/index/group_result/">群体分析</a> </li>
+							<li> <a  style="padding-left:50px;" href="/index/influence_rank/">影响力分析</a> </li>
+						</ul>
+					</li>
+				</ul>
 			</div>	
 		{% endblock %}
 		<!-- end 导航 -->
