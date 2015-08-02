@@ -61,6 +61,8 @@ if __name__=="__main__":
                 total_cost = 0
                 total_count, total_cost = send_weibo(sender, total_count, total_cost)
                 break
+            else:
+                pass
         else:
             if message == "PAUSE":
                 time.sleep(1)
