@@ -220,42 +220,22 @@ function process_par(name, value){
         result[0] = 'hashtag';
         result[1] = value;
     }
+    /*
     else if(name=='psycho_feature'){
         result[0] = '心理特征';
-        switch(value){
-            case 'dzz': result[1] = '胆汁质';break;
-            case 'dxz': result[1] = '多血质';break;
-            case 'nyz': result[1] = '粘液质';break;
-            case 'yyz': result[1] = '抑郁质';break;
-            default: result[1] = '';break;
-        }
+        result[1] = value;
     }
+    */
     else if(name=='psycho_status'){
         result[0] = '心理状态';
-        switch(value){
-            case 'pos': result[1] = '积极';break;
-            case 'neg': result[1] = '消极';break;
-            case 'anx': result[1] = '焦虑';break;
-            case 'ang': result[1] = '生气';break;
-            case 'sad': result[1] = '悲伤';break;
-            default: result[1] = '';break;
-        }
+        result[1] = value;
     }
     else if(name=='domain'){
         result[0] = '领域';
         result[1] = '';
         var term_list = value.split(',');
         for (var i = 0;i < term_list.length;i++){
-            switch(term_list[i]){
-                case 'cul': result[1] += '文化,';break;
-                case 'edu': result[1] += '教育,';break;
-                case 'ent': result[1] += '娱乐,';break;
-                case 'fas': result[1] += '时尚,';break;
-                case 'fin': result[1] += '财经,';break;
-                case 'med': result[1] += '媒体,';break;
-                case 'phy': result[1] += '体育,';break;
-                case 'sci': result[1] += '科技,';break;
-            }
+            result[1] += (term_list[i] + ',');
         }
         result[1] = result[1].substring(0, result[1].length-1);
     }
@@ -264,19 +244,7 @@ function process_par(name, value){
         result[1] = '';
         var term_list = value.split(',');
         for (var i = 0;i < term_list.length;i++){
-            switch(term_list[i]){
-                case 'env': result[1] += '环境,';break;
-                case 'edu': result[1] += '教育,';break;
-                case 'med': result[1] += '医药,';break;
-                case 'mil': result[1] += '军事,';break;
-                case 'pol': result[1] += '政治,';break;
-                case 'tra': result[1] += '交通,';break;
-                case 'phy': result[1] += '体育,';break;
-                case 'soc': result[1] += '社会,';break;
-                case 'art': result[1] += '艺术,';break;
-                case 'eco': result[1] += '经济,';break;
-                case 'com': result[1] += '计算机,';break;
-            }
+            result[1] += (term_list[i] + ',');
         }
         result[1] = result[1].substring(0, result[1].length-1);
     }
@@ -301,6 +269,7 @@ function draw_conditions(that){
             var pre_value = values[i];
 
             var fix_result = process_par(pre_name, pre_value);
+            //console.log(fix_result);
             var fix_name = fix_result[0];
             var fix_value = fix_result[1];
             // console.log(fix_name);
