@@ -42,7 +42,6 @@
 	    	<script src="/static/js/jquery.min.js"></script>
 	    	<script src='/static/js/echarts-all.js'></script>
 	    	<script src="/static/js/jquery-ui.min.js"></script>
-			<script src="/static/js/sidebar.js"></script>
 			<!-- data table plugin -->
 			<script src='/static/js/jquery.dataTables.min.js'></script>
 	    {% endblock %}
@@ -80,13 +79,13 @@
 			<div class="leftsidebar_box">
 				<ul class="ce" style="position:fixed;top:40%;">
 					<li> <a class=""  href="/index/">整体概览</a> </li>
-					<li> <a href="##">出入库管理<img class="more fright" src="/static/img/more.png"/></a>
+					<li> <a>出入库管理<img class="more fright" src="/static/img/more.png"/></a>
 						<ul class="er">
 							<li> <a  style="padding-left:50px;" href="/index/recommend_in/">入库管理</a></li>
 							<li> <a  style="padding-left:50px;" href="/index/recommend_out/">出库管理</a> </li>
 						</ul>
 					</li>
-					<li><a href="##">综合应用<img class="more fright" src="/static/img/more.png"/></a>
+					<li><a>综合应用<img class="more fright" src="/static/img/more.png"/></a>
 						<ul class="er">
 							<li> <a  style="padding-left:50px;" href="/index/group_result/">群体分析</a> </li>
 							<li> <a  style="padding-left:50px;" href="/index/influence_rank/">影响力分析</a> </li>
@@ -124,50 +123,58 @@
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20 ">领域</span>
-                    <label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="cul"/><span class="font15">文化</span></label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="edu" />教育</label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="ent" />娱乐</label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="fas" />时尚</label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="fin" />财经</label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="med" />媒体</label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="phy" />体育</label>
-					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="sci" />科技</label>
+                    <label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="高校微博" />高校微博</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="境内机构" />境内机构</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="境外机构" />境外机构</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="媒体" />媒体</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="媒体人士" />媒体人士</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="境外媒体" />境外媒体</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="律师" />律师</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="政府机构人士" />政府机构人士</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="商业人士" />商业人士</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="活跃人士" />活跃人士</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="草根" />草根</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="民间组织" />民间组织</label>
+					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="其他" />其他</label>
 				</form>
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20">话题</span>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="env" />环境</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="edu" />教育</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="med" />医药</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="mil" />军事</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="pol" />政治</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="tra" />交通</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="phy" />体育</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="soc" />社会</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="art" />艺术</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="eco" />经济</label>
-					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="com" />计算机</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="娱乐" />娱乐</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="计算机" />计算机</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="经济" />经济</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="教育" />教育</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="自然" />自然</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="健康" />健康</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="军事" />军事</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="政治" />政治</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="体育" />体育</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="交通" />交通</label>
+					<label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="民生" />民生</label>
+                    <label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="生活" />生活</label>
 				</form>
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 mright30">心理状态</span>
 				<select name="psycho_status" class="fleft select-box ad-search">
 					<option value="">不限</option>
-					<option value="pos">积极向上</option>
-					<option value="neg">消极失望</option>
-					<option value="anx">焦虑</option>
-					<option value="ang">生气</option>
-					<option value="sad">悲伤</option>
+					<option value="积极">积极</option>
+					<option value="焦虑">焦虑</option>
+					<option value="生气">生气</option>
+					<option value="悲伤">悲伤</option>
+					<option value="中性">中性</option>
 				</select>
-				<span class="fleft lineh42 mright17" style="display:none">心理特征</span>
+                <!--
+                <span class="fleft lineh42 mright17" style="display:none">心理特征</span>
 				<select name="psycho_feature" class="fleft select-box ad-search" style="display:none">
 					<option value="">不限</option>
 					<option value="dzz">胆汁质</option>
 					<option value="dxz">多血质</option>
 					<option value="nyz">黏液质</option>
 					<option value="yyz">抑郁质</option>
-				</select>
+                </select>
+                -->
 			</div>
 		</div>
 		<div class="clearfix lineh42">
@@ -188,6 +195,25 @@
 		<!-- DIY js -->
 		{% block Own_js %}
 			<script type="text/javascript">
+                $(".ce > li > a").click(function(){
+                     $(this).addClass("xz").parents().siblings().find("a").removeClass("xz");
+                     $(this).parents().siblings().find(".er").hide(300);
+                     $(this).siblings(".er").toggle(300);
+                     $(this).parents().siblings().find(".er > li > .thr").hide().parents().siblings().find(".thr_nr").hide();
+                    
+                })
+                
+                $(".er > li > a").click(function(){
+                    $(this).addClass("sen_x").parents().siblings().find("a").removeClass("sen_x");
+                    $(this).parents().siblings().find(".thr").hide(300);	
+                    $(this).siblings(".thr").toggle(300);	
+                })
+
+                $(".thr > li > a").click(function(){
+                     $(this).addClass("xuan").parents().siblings().find("a").removeClass("xuan");
+                     $(this).parents().siblings().find(".thr_nr").hide();	
+                     $(this).siblings(".thr_nr").toggle();
+                })
 				$("#showBtn").off("click").click(function(){
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
