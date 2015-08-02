@@ -520,7 +520,7 @@ function group_confirm_button(){
     alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
-  if (remark.length > 0) && (!remark.match(reg)){
+  if ((remark.length > 0) && (!remark.match(reg))){
     alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
