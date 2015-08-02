@@ -94,12 +94,14 @@ def get_scan_results():
     no_domain_count = 0
     s_re = scan(es, query={'query':{'match_all':{}}, 'size':100}, index=index_name, doc_type=index_type)
     print 's_re:', s_re
+    activity_count = 0
     while True:
         while True:
+            portrait_uid_list = []
             try:
                 scan_re = s_re.next()['_source']
-                #print 'scan_re:', scan_re
                 # gender ratio count
+                portrait_uid_list.append(scan_re['uid'])
                 try:
                     gender_result[str(scan_re['gender'])] += 1
                 except:
@@ -126,10 +128,13 @@ def get_scan_results():
                     if scan_re:
                         activity_geo_dict = json.loads(activity_geo)
                         for geo in activity_geo_dict:
-                            try:
-                                activity_geo_result[geo] += activity_geo_dict[geo]
-                            except:
-                                activity_geo_result[geo] = activity_geo_dict[geo]
+                            geo_list = geo.split('\t')
+                            if geo_list[0]==u'中国' and len(geo_list)>=2:
+                                province = geo_list[1]
+                                try:
+                                    activity_geo_result[province] += activity_geo_dict[geo]
+                                except:
+                                    activity_geo_result[province] = activity_geo_dict[geo]
                 except:
                     no_activity_geo_count += 1
                 # keywords
@@ -188,13 +193,14 @@ def get_scan_results():
                                 domain_result[item] = 1
                 except:
                     no_domain_count += 1
-                    
+                 
             except StopIteration:
                 print 'all done'
                 # gender ratio count
                 count = sum(gender_result.values())
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
                 #print 'gender ratio:', gender_ratio
+                result_dict['activity_count'] = activity_count / count
                 result_dict['gender_ratio'] = json.dumps(gender_ratio)
                 # verified ratio count
                 count = sum(verified_result.values())
@@ -215,10 +221,10 @@ def get_scan_results():
                 # activity geo top
                 if activity_geo_result:
                     sort_activity_geo = sorted(activity_geo_result.items(), key=lambda x:x[1], reverse=True)
-                    activity_geo_top = sort_activity_geo[:5]
+                    activity_geo_top = sort_activity_geo[:50]
                 else:
                     activity_geo_top = {}
-                #print 'activity_geo_top:', activity_geo_top
+                print 'activity_geo_top:', activity_geo_top
                 result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
                 # keywords top
                 if keywords_result:
@@ -231,7 +237,7 @@ def get_scan_results():
                 # hashtag top
                 if hashtag_result:
                     sort_hashtag = sorted(hashtag_result.items(), key=lambda x:x[1], reverse=True)
-                    hashtag_top = sort_hashtag[:5]
+                    hashtag_top = sort_hashtag[:50]
                 else:
                     hashtag_top = {}
                 #print 'hashtag top:', hashtag_top
@@ -239,7 +245,7 @@ def get_scan_results():
                 # topic top
                 if topic_result:
                     sort_topic = sorted(topic_result.items(), key=lambda x:x[1], reverse=True)
-                    topic_top = sort_topic[:5]
+                    topic_top = sort_topic[:50]
                 else:
                     topic_top = {}
                 #print 'topic top:', topic_top
@@ -247,7 +253,7 @@ def get_scan_results():
                 # online_pattern top
                 if online_pattern_result:
                     sort_online_pattern = sorted(online_pattern_result.items(), key=lambda x:x[1], reverse=True)
-                    online_pattern_top = sort_online_pattern[:5]
+                    online_pattern_top = sort_online_pattern[:50]
                 else:
                     online_pattern_top = {}
                 #print 'online pattern top:', online_pattern_top
@@ -255,7 +261,7 @@ def get_scan_results():
                 # domain top
                 if domain_result:
                     sort_domain = sorted(domain_result.items(), key=lambda x:x[1], reverse=True)
-                    domain_top = sort_domain[:5]
+                    domain_top = sort_domain[:20]
                     #test:
                     domain_top = [('education',50), ('art', 40), ('lawyer', 30), ('student', 20), ('media', 10), ('oversea',1)]
                 else:
@@ -269,6 +275,11 @@ def get_scan_results():
             except Exception, r:
                 print Exception, r
                 return result_dict
+        activity_result = es.mget(index='20130907', doc_type='bci', body={'ids':portrait_uid_list})['docs']
+        for activity_item in activity_result:
+            if activity_item['found']:
+                activity_count += 1
+
     return result_dict
 
 # origin retweeted number top 5 user and mid
@@ -295,7 +306,7 @@ def get_retweeted_top():
         return None
     #print 'result:', len(result)
     for item in result:
-        if count==5:
+        if count==100:
             break
         uid = item['_id']
         try:
@@ -316,6 +327,174 @@ def get_retweeted_top():
     #print 'retweeted top user:', top_results
     return {'top_retweeted_user':json.dumps(top_results)}
 
+# origin comment number top100 user and mid
+def get_comment_top():
+    top_results = []
+    k = 100000
+    count = 0
+    now_ts = time.time()
+    date = ts2datetime(now_ts - 3600*24)
+    index_time = ''.join(date.split('-'))
+    #test
+    index_time = '20130907'
+    index_type = 'bci'
+    query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size':k,
+            'sort':[{'origin_weibo_comment_top_number':{'order':'desc'}}]
+            }
+    try:
+        result = es_cluster.search(index=index_time, doc_type=index_type, body=query_body)['hits']['hits']
+        #print 'result:', result
+    except:
+        return None
+    for item in result:
+        if count == 100:
+            break
+        uid = item['_id']
+        try:
+            exist_result = es.get(index='user_portrait', doc_type='user', id=uid)
+            try:
+                source = exist_result['_source']
+                count += 1
+                uname = source['uname']
+                top_mid = item['_source']['origin_weibo_top_comment_id']
+                top_comment_number = item['_source']['origin_weibo_comment_top_number']
+                top_results.append([uid, uname, top_mid, top_comment_number])
+            except:
+                continue
+        except:
+            continue
+    #print 'top_results:', top_results
+    return {'top_comment_user':json.dumps(top_results)}
+
+# get activeness top 100
+def get_activeness_top():
+    result = []
+    index_name = 'user_portrait'
+    index_type = 'user'
+    query_body = {'query':{'match_all':{}}, 'sort':[{'activeness':{'order': 'desc'}}], 'size':100}
+    try:
+        es_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    if es_result:
+        for user_dict in es_result:
+            item = user_dict['_source']
+            activeness = item['activeness']
+            uname = item['uname']
+            uid = item['uid']
+            result.append([uid, uname, activeness])
+    else:
+        result = None
+    #print 'result:', result
+    return {'top_activeness': json.dumps(result)}
+
+# get importance top 100
+def get_importance_top():
+    result = []
+    index_name = 'user_portrait'
+    index_type = 'user'
+    query_body = {'query':{'match_all':{}}, 'sort':[{'importance':{'order':'desc'}}], 'size':100}
+    try:
+        es_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    if es_result:
+        for user_dict in es_result:
+            item = user_dict['_source']
+            importance = item['importance']
+            uname = item['uname']
+            uid = item['uid']
+            result.append([uid, uname, importance])
+    else:
+        result = None
+    #print 'result:', result
+    return {'top_importance': json.dumps(result)}
+
+# get influence top 100
+def get_influence_top():
+    result = []
+    index_name = 'user_portrait'
+    index_type = 'user'
+    query_body = {'query':{'match_all':{}}, 'sort':[{'influence':{'order':'desc'}}], 'size':100}
+    try:
+        es_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    if es_result:
+        for user_dict in es_result:
+            item = user_dict['_source']
+            influence = item['influence']
+            uname = item['uname']
+            uid = item['uid']
+            result.append([uid, uname, influence])
+    else:
+        result = None
+    #print 'result:', result
+    return {'top_influence': json.dumps(result)}
+
+# get inlfuence vary top
+def get_influence_vary_top():
+    result = []
+    query_body = {
+        'query':{
+            'match_all':{}
+            },
+        'size': 10000,
+        'sort':[{'vary':{'order': 'desc'}}]
+        }
+    try:
+        es_result =  es.search(index='vary', doc_type='bci', body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    uid_list = [user_dict['_id'] for user_dict in es_result]
+    #print 'uid_list:', uid_list
+    portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
+    #print 'portrait_result:', portrait_result
+    count = 0
+    for i in range(len(portrait_result)):
+        if count >=100:
+            break
+        #print 'portrait_result:', portrait_result
+        if portrait_result[i]['found']:
+            uid = portrait_result[i]['_source']['uid']
+            uname = portrait_result[i]['_source']['uname']
+            vary = es_result[i]['_source']['vary']
+            result.append([uid, uname, vary])
+            count += 1
+        else:
+            next
+    #print 'result:', result
+    return {'top_influence_vary': json.dumps(result)}
+
+# get influence top count
+def get_influence_top_count(top_threshold, user_count):
+    query_body = {
+            'query':{
+                'filtered':{
+                    'query':{
+                        'match_all':{}
+                        },
+                    'filter':{
+                        'range':{
+                            'influence':{
+                                'gte': top_threshold,
+                                'lt': 3000
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+    result = es.count(index='user_portrait', doc_type='user', body=query_body)['count']
+    #print 'result:', result
+    return {'top_influence_ratio':float(result)/user_count}
+
+
+
 # operate information: recomment in count , out count, compute count
 def get_operate_information():
     result = dict()
@@ -328,7 +507,7 @@ def get_operate_information():
     delete_date = '20150727'
     result['in_count'] = len(r_recomment.hkeys('recomment_'+str(date)))
     out_count_list = r_recomment.hget('recommend_delete_list', delete_date)
-    print 'out_count_list:', out_count_list
+    #print 'out_count_list:', out_count_list
     if out_count_list:
         result['out_count'] = len(json.loads(out_count_list))
     else:
@@ -355,6 +534,19 @@ def compute_overview():
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
     results = dict(results, **retweeted_top)
+    comment_top = get_comment_top()
+    results = dict(results, **comment_top)
+    activeness_top = get_activeness_top()
+    results = dict(results, **activeness_top)
+    importance_top = get_importance_top()
+    results = dict(results, **importance_top)
+    influence_top = get_influence_top()
+    results = dict(results, **influence_top)
+    influence_vary_top = get_influence_vary_top()
+    results = dict(results, **influence_vary_top)
+    top_threshold = 900 # it can be changed
+    top_influence_ratio = get_influence_top_count(top_threshold, results['user_count'])
+    results = dict(results, **top_influence_ratio)
     operate_result = get_operate_information()
     results = dict(results, **operate_result)
     #print 'results:', results
@@ -366,3 +558,9 @@ if __name__=='__main__':
     compute_overview()
     #get_retweeted_top()
     #get_operate_information()
+    #get_comment_top()
+    #get_activeness_top()
+    #get_importance_top()
+    #get_influence_top()
+    #get_influence_vary_top()
+    #get_influence_top_count(900, 3795)

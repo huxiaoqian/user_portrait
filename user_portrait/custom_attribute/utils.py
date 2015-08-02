@@ -96,6 +96,64 @@ def search_attribute(query_body, condition_num):
             result.append(source)
     return result
 
+# use to change attribtue
+def change_attribute(attribute_name, value, user, state):
+    status = False
+    # identify the attribute_name is in ES - custom attribute
+    try:
+        result =  es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
+    except:
+        result = None
+        return status
+    value_list = value.split('&')
+    result['value'] = json.dumps(value_list)
+    result['user'] = user
+    result['state'] = state
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    result['date'] = now_date
+    es.index(index=attribute_index_name, doc_type=attribute_index_type, body=result)
+    status = True
+    return status
+
+# use to delete attribute
+def delete_attribute(attribute_name):
+    status = False
+    try:
+        result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
+    except:
+        return status
+    es.delete(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)
+    status = True
+    return status
+
+# use to add attribute to user in es_user_portrait
+def add_attribute_portrait(uid, attribute_name, attribute_value, submit_user):
+    status = False
+    # identify the user exist
+    # identify the attribute exist
+    # add the attribute to user
+    try:
+        user_result = es.get(index=user_index_name, doc_type=user_index_type, id=uid)['_source']
+    except:
+        return 'no user'
+    try:
+        attribute_result = es.get(index=attribute_index_name, doc_type=user_index_type, id=attribute_name)['_source']
+    except:
+        return 'no attribute'
+    attribute_value_list = json.loads(attribute_result['value'])
+    if attribute_value not in attribute_value_list:
+        return 'no attribute value'
+    add_attribute_dict = {attribute_name: attribute_value}
+    try:
+        user_attribute_dict = json.loads(user_result['custom_attribute'])
+        body = dict(user_attribute_dict, **add_attribute_dict)
+    except:
+        body = {'custom_attribute':json.loads(add_attribute_dict)}
+    es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':body})
+    status = True
+    return status
+
 
 if __name__=='__main__':
     init_custom_attribute()
