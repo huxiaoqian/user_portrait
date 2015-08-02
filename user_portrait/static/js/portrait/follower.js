@@ -70,7 +70,7 @@ function follower(data,UserID,UserName){
 	var option = {
             title : {
                 text: '粉丝',
-                x:'150',
+                x:'left',
                 y:'top'
             },
             legend: {

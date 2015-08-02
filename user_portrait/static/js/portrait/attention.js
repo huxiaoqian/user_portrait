@@ -68,7 +68,7 @@ function attention(data,UserID,UserName){
 	var option = {
             title : {
                 text: '关注',
-                x:'150',
+                x:'left',
                 y:'top'
             },
             legend: {
