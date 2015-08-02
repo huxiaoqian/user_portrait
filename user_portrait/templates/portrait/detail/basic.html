@@ -1,111 +1,90 @@
 <link href="/static/personal/css/basic.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src='/static/js/esl.js'></script>
+
 <div id="Pdetail">
-    <div class="m-wrap" style="margin-top:30px;">
-		<ul class="clearfix">
-            <li class="li_1">
-				<span class="pt_title">用户ID</span>
-				<span class="pt_detail" id="userId" >1234567890</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">注册地</span>
-				<span class="pt_detail" id="userLocation" >北京</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">性别</span>
-				<span class="pt_detail" id="userGender" >男</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">领域</span>
-				<span class="pt_detail" id="userDomain" >文化</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">话题</span>
-				<span class="pt_detail" id="userTopic" >计算机</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">粉丝数</span>
-				<span class="pt_detail" id="userFans" >123456</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">关注数</span>
-				<span class="pt_detail" id="userFriend" >123490</span>
-			</li>
-			<li class="li_1">
-				<span class="pt_title">在线方式</span>
-				<span class="pt_detail" id="userOnline" >网络</span>
-			</li>
-		</ul>
-	</div>
+	
+	<div id="influence_chart" style="height:400px;width:1000px;"></div>
+	<div id="treeB" style="width:1000px;height:400px;"></div>
 </div>
 <script type="text/javascript">
-    var uid = document.getElementById('userId');
-	if(parent.personalData.uid){
-		uid.innerHTML = parent.personalData.uid;
-	}else{
-		uid.innerHTML = "无此数据";
+function Influence(){
+  this.ajax_method = 'GET';
+}
+Influence.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+  Draw_influence:function(data){
+	var dataFixed = [];
+	for(i=0;i<data.length;i++){
+		dataFixed.push(parseFloat(data[i].toFixed(2)));
 	}
-	
-    var userlocation = document.getElementById('userLocation');
-	if(parent.personalData.location){
-		userlocation.innerHTML = parent.personalData.location;
-	}else{
-		userlocation.innerHTML = "无此数据";
-	}
-    var gender = document.getElementById('userGender');
-	if(parent.personalData.gender){
-		gendernum = parent.personalData.gender;
-		if (gendernum==1){
-			gender.innerHTML = '男';
-		}else{
-			gender.innerHTML = '女';
-		}
-	}else{
-		gender.innerHTML = "无此数据";
-	}
-    
-	var domain = document.getElementById('userDomain');
-	if(parent.personalData.domain){
-		domain.innerHTML = parent.personalData.domain;
-	}else{
-		domain.innerHTML = "无此数据";
-	}
-	
-	var topic = document.getElementById('userTopic');
-	if(parent.personalData.topic){
-		topicdict = parent.personalData.topic;
-		var str = '';
-		for(i=0;i<topicdict.length;i++){
-			if (i == (topicdict.length -1)){
-				str += topicdict[i][0];
-			}else{
-				str = str + topicdict[i][0] +',';
-			}
-		
-		}
-		topic.innerHTML = str;
-	}else{
-		topic.innerHTML = "无此数据";
-	}
-	
-    var fans = document.getElementById('userFans');
-	if(parent.personalData.fansnum){
-		fans.innerHTML = parent.personalData.fansnum;
-	}else{
-		fans.innerHTML = "无此数据";
-	}
-    
-    var friends = document.getElementById('userFriend');
-	if( parent.personalData.friendsnum){
-		friends.innerHTML = parent.personalData.friendsnum;
-	}else{
-		friends.innerHTML = "无此数据";
-	}
-    
-	var pattern = document.getElementById('userOnline');
-	if(parent.personalData.online_pattern[0][0]){
-		pattern.innerHTML = parent.personalData.online_pattern[0][0];
-	}else{
-		pattern.innerHTML = "无此数据";
-	}
-	
+	var line_chart_dates = [];
+	var line_chart_tomorrow = new Date();
+    for(var i=0;i<7;i++){
+      var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
+      line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
+    }
+    var myChart = echarts.init(document.getElementById('influence_chart')); 
+        
+    var option = {
+        title : {
+            text: '影响力走势图',
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['影响力']
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : line_chart_dates
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+            }
+        ],
+        series : [
+            {
+                name:'影响力',
+                type:'line',
+                data:dataFixed,
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name: '平均值'}
+                    ]
+                }
+            },
+        ]
+    };
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+    }
+}
+
+var Influence = new Influence();
+var url = '/influence_application/portrait_history_active/?date=2013-09-07&uid='+parent.personalData.uid ;
+Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
 </script>
+<script src="/static/js/portrait/influence.js"></script>
+
+
+

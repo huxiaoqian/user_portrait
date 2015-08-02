@@ -69,7 +69,7 @@ def ajax_imagine():
 
     query_fields_dict = {}
     for i in range(len(keywords_list)):
-        query_fields_dict[keywords_list[i]] = int(weight_list[i])
+        query_fields_dict[str(keywords_list[i])] = int(weight_list[i])
     field = request.args.get('field', '')
     query_fields_dict['field'] = field
 
@@ -81,4 +81,4 @@ def ajax_imagine():
     if result:
         return json.dumps(result)
 
-    return 0
+    return "not"

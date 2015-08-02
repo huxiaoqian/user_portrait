@@ -1,10 +1,15 @@
 # -*- coding:utf-8 -*-
 
 import sys
+import json
 from elasticsearch import Elasticsearch
 from user_portrait.global_utils import es_user_portrait as es
-
-def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
+"""
+reload(sys)
+sys.path.append('./../')
+from global_utils import es_user_portrait as es
+"""
+def imagine(uid, query_fields_dict,index_name="test_user_portrait", doctype='user'):
 
     """
     uid: search users relate to uid
@@ -12,21 +17,26 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     fields: domain, topic, keywords, psycho_status, psycho_feature, activity_geo, hashtag
     for example: "domain": 2
 
+    domain, psycho_feature
     """
-
-    personal_info = es.get(index="user_portrait", doc_type="user", id=uid, _source=True)['_source']
+    personal_info = es.get(index="test_user_portrait", doc_type="user", id=uid, _source=True)['_source']
 
     keys_list = query_fields_dict.keys()
     keys_list.remove('field')
     keys_list.remove('size')
 
+    search_dict = {}
+
     for iter_key in keys_list:
         if personal_info[iter_key] == '':
             query_fields_dict.pop(iter_key)
             keys_list.remove(iter_key)
+        else:
+            temp = personal_info[iter_key]
+            search_dict[iter_key] = temp.split('&')
 
     if len(keys_list) == 0:
-        return 0
+        return []
 
     query_body = {
         'query':{
@@ -60,7 +70,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
         query_body['query']['function_score']['boost_mode'] = "sum"
 
     query_body['query']['function_score']['field_value_factor'] = score_standard
-
+    
     query_fields_dict.pop('field')
     query_body['size'] = query_fields_dict['size']
     query_fields_dict.pop('size')
@@ -68,13 +78,11 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     for (k,v) in query_fields_dict.items():
 
         temp = {}
-        if v == 1:
-            temp[k] = personal_info[k]
-        else:
-            temp[k] = {'query':personal_info[k],'boost':v}
+        temp_list = []
+        for iter_key in search_dict[k]:
+            temp_list.append({'wildcard':{k:{'wildcard':'*'+iter_key+'*','boost': v}}})
 
-        query_body['query']['function_score']['query']['bool']['must'].append({'match':temp})
-
+        query_body['query']['function_score']['query']['bool']['must'].append({'bool':{'should':temp_list}})
 
 
     result = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
@@ -94,5 +102,5 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
 
 if __name__ == '__main__':
-    print imagine(2010832710, {'topic':1, 'uname':2,'field':'default'}, index_name='user_portrait', doctype='user')
+    print imagine(2010832710, {'topic':1, 'keywords':2,'field':'default','size':11}, index_name='test_user_portrait', doctype='user')
 

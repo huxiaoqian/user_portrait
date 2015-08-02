@@ -42,7 +42,7 @@
 	    	<script src="/static/js/jquery.min.js"></script>
 	    	<script src='/static/js/echarts-all.js'></script>
 	    	<script src="/static/js/jquery-ui.min.js"></script>
-			<script src="/static/js/jquery.sidebar.js"></script>
+			<script src="/static/js/sidebar.js"></script>
 			<!-- data table plugin -->
 			<script src='/static/js/jquery.dataTables.min.js'></script>
 	    {% endblock %}
@@ -78,20 +78,21 @@
 		<!-- 左侧导航 -->
 		{% block left %}
 			<div class="leftsidebar_box">
-				<dl class="Leftdl">
-                    <dt class="Leftdt"><a href="/index/" style="color:white">整体概览</a></dt>
-				</dl>
-
-				<dl class="Leftdl">
-                    <dt class="Leftdt" >出入库管理</dt>
-					<dd class="Leftdd"><a href="/index/recommend_in/">入库管理</a></dd>
-					<dd class="Leftdd"><a href="/index/recommend_out/">出库管理</a></dd>
-				</dl>
-				<dl class="Leftdl">
-                    <dt class="Leftdt" >综合应用</dt>
-					<dd class="Leftdd"><a href="/index/group_result">群体分析</a></dd>
-					<dd class="leftdd"><a href="/index/influence_rank">影响力分析</a></dd>
-				</dl>
+				<ul class="ce" style="position:fixed;top:40%;">
+					<li> <a class=""  href="/index/">整体概览</a> </li>
+					<li> <a href="##">出入库管理<img class="more fright" src="/static/img/more.png"/></a>
+						<ul class="er">
+							<li> <a  style="padding-left:50px;" href="/index/recommend_in/">入库管理</a></li>
+							<li> <a  style="padding-left:50px;" href="/index/recommend_out/">出库管理</a> </li>
+						</ul>
+					</li>
+					<li><a href="##">综合应用<img class="more fright" src="/static/img/more.png"/></a>
+						<ul class="er">
+							<li> <a  style="padding-left:50px;" href="/index/group_result/">群体分析</a> </li>
+							<li> <a  style="padding-left:50px;" href="/index/influence_rank/">影响力分析</a> </li>
+						</ul>
+					</li>
+				</ul>
 			</div>	
 		{% endblock %}
 		<!-- end 导航 -->
@@ -107,7 +108,7 @@
 		</h3>
 		<div class="search-content">
 			<div class="cols">
-				<span class="fleft lineh42 mright23">uid</span>
+				<span class="fleft lineh42 mright38">uid</span>
 				<input name="uid" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入uid" />
 				<span class="fleft lineh42 mright13">用户名</span>
 				<input name="uname" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入用户名" />
@@ -115,10 +116,10 @@
 				<input name="location" class="inputbox fleft ad-search" type="text" value="" placeholder="北京"/>
 			</div>
 			<div class="cols">
-				<span class="fleft lineh42 ">关键字</span>
-				<input name="adkeyword" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入关键字" />
 				<span class="fleft lineh42 mright5 ">hashtag</span>
 				<input name="hashtag" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入hashtag" />
+				<span class="fleft lineh42 mright15 ">关键字</span>
+				<input name="adkeyword" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入关键字" />
 			</div>
 			<div class="cols">
 				<form action="" method="get">
@@ -159,8 +160,8 @@
 					<option value="ang">生气</option>
 					<option value="sad">悲伤</option>
 				</select>
-				<span class="fleft lineh42 mright17">心理特征</span>
-				<select name="psycho_feature" class="fleft select-box ad-search">
+				<span class="fleft lineh42 mright17" style="display:none">心理特征</span>
+				<select name="psycho_feature" class="fleft select-box ad-search" style="display:none">
 					<option value="">不限</option>
 					<option value="dzz">胆汁质</option>
 					<option value="dxz">多血质</option>
@@ -187,25 +188,6 @@
 		<!-- DIY js -->
 		{% block Own_js %}
 			<script type="text/javascript">
-				$("div.leftsidebar_box").sidebar();
-				$(".leftsidebar_box dt").css({"background-color":"#4f8fff"});
-				/* $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
-                */
-                $(function(){
-					$(".leftsidebar_box dd").hide();
-					$(".leftsidebar_box dt").click(function(){
-						$(".leftsidebar_box dt").css({"background-color":"#4f8fff"})
-						$(this).css({"background-color": "#317eb4"});
-						$(this).parent().find('dd').removeClass("menu_chioce");
-                        /*
-                        $(".leftsidebar_box dt img").attr("src","/static/img/images/left/select_xl01.png");
-						$(this).parent().find('img').attr("src","/static/img/images/left/select_xl.png");
-                        */
-                        $(".menu_chioce").slideUp(); 
-						$(this).parent().find('dd').slideToggle();
-						$(this).parent().find('dd').addClass("menu_chioce");
-					});
-                });
 				$("#showBtn").off("click").click(function(){
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");

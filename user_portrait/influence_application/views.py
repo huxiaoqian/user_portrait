@@ -12,7 +12,7 @@ from search_vary_index_function import query_vary_top_k
 
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 
-portrait_index = "user_portrait" # user_portrait_database
+portrait_index = "copy_user_portrait" # user_portrait_database
 portrait_type = "user"
 
 mod = Blueprint('influence_application', __name__, url_prefix='/influence_application')
@@ -87,7 +87,7 @@ def ajax_portrait_user_index_distribution():
         results = []
     else:
         date = date.replace('-','')
-        results = user_index_range_distribution("this_is_a_copy_user_portrait","manage", date)
+        results = user_index_range_distribution("copy_user_portrait","user", date)
 
     return json.dumps(results)
 
