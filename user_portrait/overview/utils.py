@@ -16,8 +16,10 @@ def get_attr(date):
         value = overview_result[item]
         if isinstance(value, str):
             value = json.loads(value)
+            '''
             if item in rank_field:
                 value = value[:5]
+            '''
         results[item] = value
     #print 'overview result:', results
     return results

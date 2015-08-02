@@ -50,15 +50,15 @@ def ajax_portrait_user_in_active():
 @mod.route('/specified_user_active/')
 def ajax_specified_user_active():
     date = request.args.get('date', '') # '2013-09-01'
-    uid_list = request.args.get('uid_list', '') # 123456,123456
+    uid = request.args.get('uid', '') # 123456,123456
     date = str(date)
 
-    if not date or not uid_list:
+    if not date or not uid:
         results = []
     else:
         index_name = date.replace('-','')
         list_1 = []
-        uid_list = [item for item in uid_list.split(',')]
+        uid_list = [item for item in uid.split(',')]
         results = search_influence_detail(uid_list, index_name, "bci") 
 
     return json.dumps(results)
