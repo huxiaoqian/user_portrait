@@ -4,7 +4,7 @@ import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import submit_attribute, search_attribute
+from utils import submit_attribute, search_attribute, change_attribute, delete_attribute
 
 from user_portrait.time_utils import ts2datetime
 
@@ -48,12 +48,20 @@ def ajax_search_attribute():
 @mod.route('/change_attribtue/')
 def ajax_change_attribtue():
     status = False
+    #need to identify the user have the power to change the attribute table
+    attribute_name = request.args.get('attribute_name', '')
+    attribute_value = request.args.get('value', '')
+    submit_user = request.args.get('user', '')
+    state = request.args.get('state', '')
+    status = change_attribute(attribute_name, attribute_value, submit_user, state)
     return json.dumps(status)
 
 # use to delete attribute table and user in portrait which have attribtue would be deleted meantime
 @mod.route('/delete_attribute/')
 def ajax_delete_attribute():
     status = False
+    attribute_name = request.args.get('attribtue_name', '')
+    status = delete_attribute(attribute_name)
     return json.dumps(status)
 
 # use to add attribute and value to user in portrait
