@@ -212,29 +212,6 @@ def decide_out_uid(date, data):
 
     return 1
 
-"""
-def generate_date(former_date, later_date="21000101"):
-    date_list = []
-    date_list.append(former_date)
-    former_struct = datetime.date(int(former_date[0:4]), int(former_date[4:6]), int(former_date[6:]))
-    later_struct = datetime.date(int(later_date[0:4]), int(later_date[4:6]), int(later_date[6:]))
-    former_timestamp = time.mktime(former_struct.timetuple())
-    later_timestamp = time.mktime(later_struct.timetuple())
-    i = 0
-
-    next_timestamp = former_timestamp
-    while 1:
-        next_timestamp += 86400
-        if next_timestamp <= later_timestamp:
-            date_list.append(time.strftime('%Y%m%d',time.localtime(next_timestamp)))
-            i += 1
-            if i == 7:
-                break
-        else:
-            break
-
-    return date_list
-"""
 
 def search_history_delete(date):
     return_list = []
@@ -245,7 +222,7 @@ def search_history_delete(date):
     else:
         pass
 
-    fields = ['uid','uname','domain','influence','importance','activeness']
+    fields = ['uid','uname','domain','topic','influence','importance','activeness']
     temp = r_out.hget("history_delete_list", now_date)
     print temp
     if temp:
