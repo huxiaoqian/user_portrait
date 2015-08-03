@@ -35,6 +35,7 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
+    console.log(data);
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
@@ -59,7 +60,7 @@ Search_weibo.prototype = {
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
-    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
+    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul style="margin-top:-50px"><li><a>';
     html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px;cursor:pointer;text-decoration:underline" data-toggle="modal" data-target="#myModal">群组成员</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
