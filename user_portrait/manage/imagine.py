@@ -72,6 +72,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     query_body['query']['function_score']['field_value_factor'] = score_standard
 
     query_fields_dict.pop('field')
+    number = es.count(index=index_name, doc_type=doctype, body=query_body)['count']
     query_body['size'] = query_fields_dict['size']
     query_fields_dict.pop('size')
 
@@ -86,7 +87,6 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
 
     result = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
-
     field_list = ['uid','uname','importance', 'activeness', 'influence']
     return_list = []
     for item in result:
@@ -96,6 +96,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
         info.append(item['_score'])
         return_list.append(info)
 
+    return_list.append(number)
     return return_list
 
 

@@ -79,7 +79,7 @@ def ajax_imagine():
     field = request.args.get('field', '')
     query_fields_dict['field'] = field
 
-    size = request.args.get('size', 11)
+    size = request.args.get('size', 15)
     query_fields_dict['size'] = int(size)
 
     if uid and query_fields_dict:

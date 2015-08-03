@@ -27,12 +27,12 @@ Search_weibo.prototype = {
         }
         $('#table').empty();
         var html = '';
-        var height = 39 * (data.length+1);
+        var height = 39 * data.length;
         html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
         html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th></tr></thead>';
         html += '<tbody>';
         for(var item in data){
-            html += '<tr>';
+            html += '<tr style="border-bottom:1px solid #ddd">';
             var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
             for(var i =0; i < data[item].length; i++){  
                 if(data[item][i] == 'unknown'){
@@ -59,6 +59,7 @@ Search_weibo.prototype = {
     },
 
 Draw_picture: function(data){
+        console.log(data);
         if(data==0){
             alert("");
             return false;
@@ -67,7 +68,7 @@ Draw_picture: function(data){
         var Related_Link = new Array();
         var user_name = data[0][0];
          var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
-        for(var item =0; item < data.length; item++){
+        for(var item =0; item < data.length-1; item++){
             if(data[item][1]=='unknown'){
                 data[item][1] = '未知';
                 Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
@@ -100,7 +101,7 @@ Draw_picture: function(data){
                 series : [
                     {
                         type:'force',
-                        name : "用户id：",
+                        name : "用户id",
                         ribbonType: false,
                         itemStyle: {
                             normal: {
