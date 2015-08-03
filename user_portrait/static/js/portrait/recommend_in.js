@@ -28,8 +28,18 @@ Search_weibo_recommend.prototype = {
     html += '<tbody>';
     for(var i in item){
       item[i] = replace_space(item[i]);
-      if(item[i][5]!='未知')
+      if(item[i][5]!='未知'){
         item[i][5] = item[i][5].toFixed(2);
+      }
+      else{
+          item[i][5] = '';
+      }
+      if (item[i][3] == '未知'){
+          item[i][3] = '';
+      }
+      if (item[i][4] == '未知'){
+          item[i][4] = '';
+      }
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       html += '<tr>';
@@ -91,8 +101,18 @@ Search_weibo_compute.prototype = {
     html += '<tbody>';
     for(var i in item){
       item[i] = replace_space(item[i]);
-      if(item[i][5]!='未知')
+      if(item[i][5]!='未知'){
         item[i][5] = item[i][5].toFixed(2);
+      }
+      else{
+          item[i][5] = '';
+      }
+      if (item[i][3] == '未知'){
+          item[i][3] = '';
+      }
+      if (item[i][4] == '未知'){
+          item[i][4] = '';
+      }
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var compute_status;
@@ -170,8 +190,18 @@ Search_weibo_history.prototype = {
     html += '<tbody>';
     for(var i in item){
       item[i] = replace_space(item[i]);
-      if(item[i][5]!='未知')
+      if(item[i][5]!='未知'){
         item[i][5] = item[i][5].toFixed(2);
+      }
+      else{
+        item[i][5] = '';
+      }
+      if (item[i][3] == '未知'){
+          item[i][3] = '';
+      }
+      if (item[i][4] == '未知'){
+          item[i][4] = '';
+      }
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var in_status;
