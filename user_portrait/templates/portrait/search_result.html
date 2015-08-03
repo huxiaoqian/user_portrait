@@ -103,6 +103,7 @@
         var uid = "{{ uid }}";
         var uname = "{{ uname }}";
         var mlocation = "{{ location }}";
+        var activity_geo = "{{ activity_geo }}";
         var adkeyword = "{{ adkeyword }}";
         var hashtag = "{{ hashtag }}";
         var psycho_feature = "{{ psycho_feature }}";
@@ -110,8 +111,8 @@
         var domain = "{{ domain }}";
         var topic = "{{ topic }}";
         var url_search_result = '/attribute/portrait_search/?stype='+stype+'&';
-        pars = ['uid', 'uname', 'location', 'keywords', 'hashtag', 'psycho_feature', 'psycho_status', 'domain', 'topic'];
-        values = [uid, uname, mlocation, adkeyword, hashtag, psycho_feature, psycho_status, domain, topic];
+        pars = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag', 'psycho_feature', 'psycho_status', 'domain', 'topic'];
+        values = [uid, uname, mlocation, activity_geo, adkeyword, hashtag, psycho_feature, psycho_status, domain, topic];
         url_search_result += par2url(pars, values);
     }
 </script>
