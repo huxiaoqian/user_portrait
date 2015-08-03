@@ -553,7 +553,7 @@ def get_operate_information():
     date = '2013-09-07'
     delete_date = ''.join(date.split('-'))
     #test
-    delete_date = '20150727'
+    #delete_date = '20150727'
     result['in_count'] = len(r_recomment.hkeys('recomment_'+str(date)))
     out_count_list = r_recomment.hget('recommend_delete_list', delete_date)
     #print 'out_count_list:', out_count_list
@@ -562,8 +562,10 @@ def get_operate_information():
     else:
         result['out_count'] = 0
     compute_list = r_recomment.hkeys('compute')
+    '''
     if compute_list:
         result['compute'] = len(compute_list)
+    '''
     #print 'operate compute:', result
     return result
 
