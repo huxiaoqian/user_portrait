@@ -244,7 +244,7 @@ def get_scan_results():
                 count = sum(gender_result.values())
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
                 #print 'gender ratio:', gender_ratio
-                result_dict['activity_count'] = activity_count / count
+                result_dict['activity_count'] = float(activity_count) / count
                 result_dict['gender_ratio'] = json.dumps(gender_ratio)
                 # verified ratio count
                 count = sum(verified_result.values())
