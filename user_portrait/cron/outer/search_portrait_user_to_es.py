@@ -17,7 +17,6 @@ es = ES_CLUSTER_FLOW1
 user_portrait = "user_portrait" # act as portrait database
 user_portrait_doctype = "user"
 index_destination = 'copy_user_portrait'
-#index_destination = "this_is_a_copy_user_portrait" # act as user all portrait user database
 index_destination_doctype = "user"
 
 def expand_index_action(data):
