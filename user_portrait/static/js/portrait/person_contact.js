@@ -59,7 +59,6 @@ Search_weibo.prototype = {
     },
 
 Draw_picture: function(data){
-        console.log(data);
         if(data==0){
             alert("");
             return false;
