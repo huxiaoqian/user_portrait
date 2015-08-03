@@ -274,12 +274,9 @@ class UserView(views.MethodView):
                 item_head = [key for key in source_content]
                 writer.writerow(item_head)
                 isflag = 0
-
             for key in source_content:
                 item_content.append(self.decode_item(source_content[key]))
-
-
-            writer.writerow(item_content)
+                writer.writerow(item_content)
         csvfile.close()
 
         return json.dumps(source)
