@@ -76,18 +76,19 @@ Activity.prototype = {   //获取数据，重新画表
            var date = item[i][0]/(15*60*16);
            switch(date)
 		   {
-				case 1: x = "00:00-04:00";break;
-				case 2: x = "04:00-08:00";break;
-				case 3: x = "08:00-12:00";break;
-				case 4: x = "12:00-16:00";break;
-				case 5: x = "16:00-20:00";break;
-				case 6: x = "20:00-24:00";break;
+				case 0: x = "00:00-04:00";break;
+				case 1: x = "04:00-08:00";break;
+				case 2: x = "08:00-12:00";break;
+				case 3: x = "12:00-16:00";break;
+				case 4: x = "16:00-20:00";break;
+				case 5: x = "20:00-24:00";break;
 		   }
 		   var str ="time"+(i+1);
 		   time = document.getElementById(str);
 		   time.innerHTML = x;
         }
     var trend = data.activity_trend;
+	console.log(trend);
 	var data_count=[];
 	var data_time = [];
     for(i=0;i<trend.length;i++){
@@ -163,7 +164,7 @@ var Activity = new Activity();
 url = '/attribute/activity/?uid='+parent.personalData.uid;
 Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
 var location_geo = parent.personalData.activity_geo;
-//console.log(location_geo);
+console.log(location_geo);
 $('#Top5').empty();
 var html = '';
 if(location_geo){

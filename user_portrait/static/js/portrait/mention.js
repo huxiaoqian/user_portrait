@@ -71,7 +71,7 @@ function mention(data,UserID,UserName){
 	var option = {
             title : {
                 text: '@互动',
-                x:'150',
+                x:'left',
                 y:'top'
             },
             legend: {
