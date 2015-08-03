@@ -33,7 +33,13 @@ def get_domain_top_user(domain_top):
                       ['1729736051', '1396715380', '2377610962', '1828183230', '2718018210'], \
                       ['1250748474', '3270699555', '1417037145', '1193111400', '1403915120'], \
                       ['1671342103', '1255849511', '1647497355', '1989660417', '1189729754'], \
-                      ['1182391231', '1670071920', '1689618340', '1494850741', '1708942053']]
+                      ['1182391231', '1670071920', '1689618340', '1494850741', '1708942053'],\
+                      ['3400918220', '2685504141', '2056115850', '1768001547', '3317008062'],\
+                      ['2001627641', '1773489534', '2458194884', '1822155333', '1799201635'],\
+                      ['1709157165', '2074370833', '2167425990', '3204839810', '3690518992'],\
+                      ['1664065962', '3299094722', '1942531237', '2799434700', '1784404677'],\
+                      ['1218353337', '1761179351', '3482911112', '1220291284', '2504433601'],\
+                      ['3682473195', '1627673351', '1779065471', '3316144700', '1896701827']]
     count = 0
     for item in domain_top:
         domain = item[0]
@@ -50,6 +56,44 @@ def get_domain_top_user(domain_top):
                 uname = 'unknown'
                 photo_url = 'unknown'
             result[domain].append([uid, uname, photo_url])
+        count += 1
+    return result
+
+# there have to add topic user top rank
+def get_top_top_user(topic_top):
+    result = {}
+    topic_user = {}
+    index_name = 'weibo_user'
+    index_type = 'user'
+    #test user list
+    test_user_list = [['1499104401', '1265965213', '3270699555', '2073915493', '1686474312'],\
+                      ['2803301701', '2105426467', '1665372775', '3716504593', '2892376557'],\
+                      ['1457530250', '1698513182', '2793591492', '2218894100', '1737961042'],\
+                      ['1656818110', '1660127070', '1890124610', '1182391230', '1243861100'],\
+                      ['1680430844', '2998045524', '2202896360', '1639498782', '3494698730'],\
+                      ['2587093162', '1677675054', '1871767009', '1193111400', '1672418622'],\
+                      ['1730726640', '1752502540', '1868725480', '1262486750', '1235733080'],\
+                      ['1250041100', '2275231150', '1268642530', '1658606270', '1857599860'],\
+                      ['1929496477', '2167425990', '1164667670', '2417139911', '1708853044'],\
+                      ['1993292930', '1645823930', '1890926610', '1641561810', '2023833990'],\
+                      ['2005471590', '1233628160', '2074684140', '1396715380', '1236762250'],\
+                      ['1423592890', '2612799560', '1926127090', '2684951180', '1760607220']]
+    count = 0
+    for item in topic_top:
+        topic = item[0]
+        #test
+        user_list = test_user_list[count]
+        result[topic] = []
+        profile_result = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':user_list})['docs']
+        for profile in profile_result:
+            uid = profile['_id']
+            try:
+                uname = profile['_source']['nick_name']
+                photo_url = profile['_source']['photo_url']
+            except:
+                uname = 'unknown'
+                photo_url = 'unknown'
+            result[topic].append([uid, uname, photo_url])
         count += 1
     return result
 
@@ -200,7 +244,7 @@ def get_scan_results():
                 count = sum(gender_result.values())
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
                 #print 'gender ratio:', gender_ratio
-                result_dict['activity_count'] = activity_count / count
+                result_dict['activity_count'] = float(activity_count) / count
                 result_dict['gender_ratio'] = json.dumps(gender_ratio)
                 # verified ratio count
                 count = sum(verified_result.values())
@@ -269,8 +313,12 @@ def get_scan_results():
                 #print 'domain top:', domain_top
                 result_dict['domain_top'] = json.dumps(domain_top)
                 #test need to add domain top user
-                domain_top = [[u'媒体',1],[u'法律人士',1], [u'政府机构人士',1], [u'活跃人士',1], [u'媒体人士',1], [u'商业人士',1]]
+                domain_top = [[u'媒体',1],[u'法律人士',1], [u'政府机构人士',1], [u'活跃人士',1], [u'媒体人士',1], [u'商业人士',1],\
+                              [u'高校微博', 1], [u'境内机构', 1], [u'境外机构', 1], [u'民间组织',1], [u'草根',1], [u'其他', 1]]
                 result_dict['domain_top_user'] = json.dumps(get_domain_top_user(domain_top))
+                #test need to add topic user
+                topic_top = [[u'军事', 1], [u'政治',1], [u'体育',1], [u'计算机',1], [u'民生',1], [u'生活',1],\
+                              [u'娱乐',1], [u'健康',1], [u'交通',1], [u'经济',1], [u'教育',1], [u'自然',1]]
                 return result_dict 
             except Exception, r:
                 print Exception, r
