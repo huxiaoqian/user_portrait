@@ -35,6 +35,7 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
+    console.log(data);
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
