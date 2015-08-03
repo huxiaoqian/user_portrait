@@ -60,7 +60,7 @@ def get_domain_top_user(domain_top):
     return result
 
 # there have to add topic user top rank
-def get_top_top_user(topic_top):
+def get_topic_top_user(topic_top):
     result = {}
     topic_user = {}
     index_name = 'weibo_user'
@@ -319,6 +319,7 @@ def get_scan_results():
                 #test need to add topic user
                 topic_top = [[u'军事', 1], [u'政治',1], [u'体育',1], [u'计算机',1], [u'民生',1], [u'生活',1],\
                               [u'娱乐',1], [u'健康',1], [u'交通',1], [u'经济',1], [u'教育',1], [u'自然',1]]
+                result_dict['topic_top_user'] = json.dumps(get_topic_top_user(topic_top))
                 return result_dict 
             except Exception, r:
                 print Exception, r
