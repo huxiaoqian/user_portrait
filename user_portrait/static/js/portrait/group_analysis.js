@@ -381,9 +381,9 @@ Draw_weibo: function(data){
 
     html = '';
     html += '<table id="weibo_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive" style="font-size:14px">'; 
-    html += '<thead><tr><th style="text-align:center">用户ID</th><th style="text-align:center;width:180px">昵称</th><th style="text-align:center;width:80px">活跃度</th>';
-    html += '<th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">原创微博最大转发数</th>';
-    html += '<th style="text-align:center">原创微博最大评论数</th><th style="text-align:center">转发微博最大转发数</th><th style="text-align:center">转发微博最大评论数</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle;width:180px">昵称</th><th style="text-align:center;vertical-align:middle;width:80px">活跃度</th>';
+    html += '<th style="text-align:center;vertical-align:middle;">重要度</th><th style="text-align:center;vertical-align:middle;">影响力</th><th style="text-align:center;vertical-align:middle;">原创微博最大转发数</th>';
+    html += '<th style="text-align:center;vertical-align:middle;">原创微博最大评论数</th><th style="text-align:center;vertical-align:middle;">转发微博最大转发数</th><th style="text-align:center;vertical-align:middle;">转发微博最大评论数</th></tr></thead>';
     html += '<tbody>';
     for ( var i = 0 ;i< data['3'].length;i++){
         s = i.toString();
