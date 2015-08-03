@@ -9,7 +9,7 @@ reload(sys)
 sys.path.append('./../')
 from global_utils import es_user_portrait as es
 """
-def imagine(uid, query_fields_dict,index_name="test_user_portrait", doctype='user'):
+def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
     """
     uid: search users relate to uid
@@ -19,7 +19,7 @@ def imagine(uid, query_fields_dict,index_name="test_user_portrait", doctype='use
 
     domain, psycho_feature
     """
-    personal_info = es.get(index="test_user_portrait", doc_type="user", id=uid, _source=True)['_source']
+    personal_info = es.get(index="user_portrait", doc_type="user", id=uid, _source=True)['_source']
 
     keys_list = query_fields_dict.keys()
     keys_list.remove('field')
@@ -70,7 +70,7 @@ def imagine(uid, query_fields_dict,index_name="test_user_portrait", doctype='use
         query_body['query']['function_score']['boost_mode'] = "sum"
 
     query_body['query']['function_score']['field_value_factor'] = score_standard
-    
+
     query_fields_dict.pop('field')
     query_body['size'] = query_fields_dict['size']
     query_fields_dict.pop('size')

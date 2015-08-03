@@ -12,87 +12,6 @@ Bubble.prototype = {   //获取数据，重新画表
     });
   },
 	Draw_bubble:function(data){
-		var item = data[0][0];
-		var origin = [];
-		for (i=7;i<15;i++){
-			origin.push(item[i]);
-		}
-		var origin_retwitter = [];
-		for (i=0;i<4;i++){
-			var content = {};
-			switch(i)
-			{
-				case 0:x="总数";break;
-				case 1:x="平均数";break;
-				case 2:x="最高数";break;
-				case 3:x="爆发度";break;
-			}
-			content['name'] = x;
-			var child =[];
-			child[0] = {};
-			child[0]['name'] = origin[i].toFixed(0);
-			content['children'] = child;
-			origin_retwitter.push(content);
-		}
-		//console.log(origin_retwitter);
-		var origin_comment = [];
-		for (i=4;i<8;i++){
-			var content = {};
-			switch(i)
-			{
-				case 4:x="总数";break;
-				case 5:x="平均数";break;
-				case 6:x="最高数";break;
-				case 7:x="爆发度";break;
-			}
-			content['name'] = x;
-			var child =[];
-			child[0] = {};
-			child[0]['name'] = origin[i].toFixed(0);
-			content['children'] = child;
-			origin_comment.push(content);
-		}
-		//console.log(origin_comment);
-		var retwitter = [];
-		for (i=15;i<item.length;i++){
-			retwitter.push(item[i]);			
-		}
-		var retwitter_retwitter = [];
-		for (i=0;i<4;i++){
-			var content = {};
-			switch(i)
-			{
-				case 0:x="总数";break;
-				case 1:x="平均数";break;
-				case 2:x="最高数";break;
-				case 3:x="爆发度";break;
-			}
-			content['name'] = x;
-			var child =[];
-			child[0] = {};
-			child[0]['name'] = retwitter[i].toFixed(0);
-			content['children'] = child;
-			retwitter_retwitter.push(content);
-		}
-		//console.log(retwitter_retwitter);
-		var retwitter_comment = [];
-		for (i=4;i<8;i++){
-			var content = {};
-			switch(i)
-			{
-				case 4:x="总数";break;
-				case 5:x="平均数";break;
-				case 6:x="最高数";break;
-				case 7:x="爆发度";break;
-			}
-			content['name'] = x;
-			var child =[];
-			child[0] = {};
-			child[0]['name'] = retwitter[i].toFixed(0);
-			content['children'] = child;
-			retwitter_comment.push(content);
-		}
-		//console.log(retwitter_comment);
 	var tree = echarts.init(document.getElementById('treeB')); 
 	var option = {
     title : {
@@ -156,12 +75,20 @@ Bubble.prototype = {   //获取数据，重新画表
                                 {
                                     name: '',//被转发
 									symbol:'image://../../static/img/share.jpg',
-									children:origin_retwitter
+									children:[{name:'总数',children:[{name:parseInt(data.origin_weibo_retweeted_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(data.origin_weibo_retweeted_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(data.origin_weibo_retweeted_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(data.origin_weibo_retweeted_brust_average.toFixed(0))}]}
+									]
                                 },
                                 {
                                     name: '',//被评论
 									symbol:'image://../../static/img/mss.jpg',
-									children:origin_comment
+									children:[{name:'总数',children:[{name:parseInt(data.origin_weibo_comment_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(data.origin_weibo_comment_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(data.origin_weibo_comment_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(data.origin_weibo_comment_brust_average.toFixed(0))}]}
+									]
                                 }
                             ]
                         },
@@ -171,12 +98,20 @@ Bubble.prototype = {   //获取数据，重新画表
 								{
 									name: '',//被转发
 									symbol:'image://../../static/img/share.jpg',
-									children:retwitter_retwitter
+									children:[{name:'总数',children:[{name:parseInt(data.retweeted_weibo_retweeted_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(data.retweeted_weibo_retweeted_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(data.retweeted_weibo_retweeted_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(data.retweeted_weibo_retweeted_brust_average.toFixed(0))}]}
+									]
 								},
 								{
                                     name: '',//被评论
 									symbol:'image://../../static/img/mss.jpg',
-									children:retwitter_comment
+									children:[{name:'总数',children:[{name:parseInt(data.retweeted_weibo_comment_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(data.retweeted_weibo_comment_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(data.retweeted_weibo_comment_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(data.retweeted_weibo_comment_brust_average.toFixed(0))}]}
+									]
                                 }
 							]
                         }
@@ -197,14 +132,14 @@ var mm = date.getMonth()+1;
 if(mm<10){
 	mm = '0'+mm.toString();
 }
+var dd = date.getDate();
 if(dd<10){
 	dd = '0'+dd.toString();
 }
-var dd = date.getDate();
 var dateStr = "";
-dateStr = yy.toString()+mm.toString()+dd.toString();
-
-url = '/influence_application/hot_origin_weibo_brust/?date='+'20130907'+'&uid='+parent.personalData.uid ;
+dateStr = yy.toString()+'-'+ mm.toString()+'-'+dd.toString();
+//console.log(dateStr);
+url = '/influence_application/specified_user_active/?date='+'2013-09-07'+'&uid='+parent.personalData.uid ;
 Bubble.call_sync_ajax_request(url, Bubble.ajax_method, Bubble.Draw_bubble);
 
 
