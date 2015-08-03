@@ -61,6 +61,7 @@ def search_result():
         uid = request.args.get('uid', '')
         uname = request.args.get('uname', '')
         location = request.args.get('location', '')
+        activity_geo = request.args.get('activity_geo', '')
         adkeyword = request.args.get('adkeyword', '')
         hashtag = request.args.get('hashtag', '')
         psycho_status = request.args.get('psycho_status', '')
@@ -69,7 +70,7 @@ def search_result():
         topic = request.args.get('topic', '')
 
         return render_template('portrait/search_result.html', stype=stype, uid=uid, uname=uname,\
-                location=location, adkeyword=adkeyword, hashtag=hashtag, psycho_status=psycho_status,\
+                location=location, activity_geo=activity_geo, adkeyword=adkeyword, hashtag=hashtag, psycho_status=psycho_status,\
                 psycho_feature=psycho_feature, domain=domain, topic=topic)
 
 

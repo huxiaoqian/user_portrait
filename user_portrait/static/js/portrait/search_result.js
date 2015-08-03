@@ -160,7 +160,8 @@ draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_se
 function deleteurl(that, parameter){
     var pname = parameter.substring(7, parameter.length);
     if (pname.indexOf('_') >= 0){
-        if (pname.split('_')[0] != 'psycho'){
+        var prefix = pname.split('_')[0];
+        if ((prefix != 'psycho') && (prefix != 'activity')){
             var pindex = pname.charAt(pname.length-1);
             pname = pname.substring(0, pname.length-2);
             // console.log(pname);
@@ -210,6 +211,10 @@ function process_par(name, value){
     }
     else if(name=='location'){
         result[0] = '注册地';
+        result[1] = value;
+    }
+    else if(name=='activity_geo'){
+        result[0] = '活跃地区';
         result[1] = value;
     }
     else if(name=='keywords'){
