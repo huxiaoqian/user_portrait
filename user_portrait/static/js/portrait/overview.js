@@ -23,15 +23,12 @@ Search_weibo.prototype = {
     out_count = data['out_count'];
     $('#user_num').empty();
     html = '';
-    html += '<div class="row"><div class="col-md-3 col-sm-3 col-xs-6"><a class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
+    html += '<div class="row"><div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:190px"><a href="/index/recommend_in" target="_blank"class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
     html += '<div>当日推荐入库人数</div>';
     html += '<div>' + in_count + '</div></a></div>';
-    html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
+    html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a href="/index/recommend_out" target="_blank"class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
     html += '<div>当日推荐出库人数</div>';
     html += '<div>' + out_count + '</div></a></div>';
-    html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
-    html += '<div>总计未启动计算人数</div>';
-    html += '<div>' + compute + '</div></a></div>';
     $('#user_num').append(html);
     draw_sex(data);
     draw_vertify(data);
