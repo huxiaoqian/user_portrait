@@ -43,6 +43,8 @@ def filter_in(top_user_set):
     except Exception as e:
         raise e
     filter_list = [item['_id'] for item in in_results['docs'] if item['found'] is True]
+    print 'before filter in:', len(top_user_set)
+    print 'filter_list:', len(filter_list)
     results = set(top_user_set) - set(filter_list)
     print 'after filter in:', len(results)
     return results
@@ -61,7 +63,7 @@ def filter_rules(candidate_results):
 
 
 def write_recommentation(date, results, user_dict):
-    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/recommentation_list.csv', 'wb')
+    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/recommentation_list_'+date+'.csv', 'wb')
     writer = csv.writer(f)
     status = False
     for item in results:
@@ -78,7 +80,7 @@ def save_recommentation2redis(date, user_set):
 
 def read_black_user():
     results = set()
-    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/blacklist.csv', 'rb')
+    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/blacklist_2.csv', 'rb')
     reader = csv.reader(f)
     for line in reader:
         uid = line[0]
@@ -96,13 +98,13 @@ def get_sensitive_user(date):
         user_list = results.keys()
     else:
         user_list = []
-    #results = filter_in(user_list)
+    results = filter_in(user_list)
     return results
 
 def main():
     now_ts = time.time()
     #test
-    now_ts = datetime2ts('2013-09-08')
+    now_ts = datetime2ts('2013-09-07')
     date = ts2datetime(now_ts - 3600*24)
     #step1: read from top es_daily_rank
     top_user_set, user_dict = search_from_es(date)
@@ -119,18 +121,33 @@ def main():
     results = filter_rules(candidate_results)
     print 'after filter:', len(results)
     #step5: get sensitive user
-    sensitive_user = get_sensitive_user(date)
-    list(results).extend(sensitive_user)
+    sensitive_user = list(get_sensitive_user(date))
+    print 'sensitive_user:', len(sensitive_user)
+    print 'sensitive_user_2:', sensitive_user[2]
+    print 'before extend results:', len(results), type(results)
+    results.extend(sensitive_user)
+    print 'after list extend:', len(results), type(results)
     results = set(results)
     print 'end:', len(results)
     #step6: write to recommentation csv/redis
-    #status = save_recommentation2redis(date, results)
+    '''
+    status = save_recommentation2redis(date, results)
     status = True
     write_recommentation(date, results, user_dict)
     if status==True:
         print 'date:%s recommentation done' % date
+    '''
+
+
+def write_sensitive_user(results):
+    csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/sensitive_user.csv', 'wb')
+    writer = csv.writer(csvfile)
+    for user in results:
+        writer.writerow([user])
+    return True
 
 if __name__=='__main__':
-    main()
-    #results = get_sensitive_user('2013-09-07')
-    #print 'sensitive_user:', len(results)
+    #main()
+    results = get_sensitive_user('2013-09-07')
+    print 'sensitive_user:', len(results)
+    write_sensitive_user(results)

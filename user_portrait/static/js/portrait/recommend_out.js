@@ -31,8 +31,12 @@ Search_weibo_recommend.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       for(var j=3;j<6;j++){
-        if(item[i][j]!='未知')
+        if(item[i][j]!='未知'){
           item[i][j] = item[i][j].toFixed(2)
+        }
+        else{
+            item[i][j] = '';
+        }
       }
       user_url = '/index/personal/?uid=';
       user_url = user_url + item[i][0];
@@ -97,8 +101,12 @@ Search_weibo_history.prototype = {
     for(var i in item){
       item[i] = replace_space(item[i]);
       for(var j=3;j<6;j++){
-        if(item[i][j]!='未知')
-          item[i][j] = item[i][j].toFixed(2)
+        if(item[i][j]!='未知'){
+          item[i][j] = item[i][j].toFixed(2);
+        }
+        else{
+            item[i][j] = '';
+        }
       }
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];

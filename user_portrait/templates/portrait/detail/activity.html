@@ -88,7 +88,6 @@ Activity.prototype = {   //获取数据，重新画表
 		   time.innerHTML = x;
         }
     var trend = data.activity_trend;
-	console.log(trend);
 	var data_count=[];
 	var data_time = [];
     for(i=0;i<trend.length;i++){
@@ -164,7 +163,6 @@ var Activity = new Activity();
 url = '/attribute/activity/?uid='+parent.personalData.uid;
 Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
 var location_geo = parent.personalData.activity_geo;
-console.log(location_geo);
 $('#Top5').empty();
 var html = '';
 if(location_geo){
