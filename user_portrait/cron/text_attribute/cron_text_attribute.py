@@ -190,7 +190,7 @@ def attr_keywords(weibo_list):
                 results[word] += 1
             except:
                 results[word] = 1
-        sort_results = sorted(results.items(), key=lambda x:[1], reverse=True)[:10]
+        sort_results = sorted(results.items(), key=lambda x:[1], reverse=True)[:50]
         keywords_results = {}
         for sort_item in sort_results:
             keywords_results[sort_item[0]] = sort_item[1]
