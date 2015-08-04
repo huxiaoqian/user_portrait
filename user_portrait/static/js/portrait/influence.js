@@ -18,9 +18,12 @@ Bubble.prototype = {   //获取数据，重新画表
         text: '微博统计指标'
     },
     tooltip : {
+        show: false,
+        /*
         trigger: 'item',
         formatter: "{b}: {c}",
 		backgroundColor:'rgba(0,0,0,0.7)'
+        */
     },
     toolbox: {
         show : true,
@@ -59,8 +62,15 @@ Bubble.prototype = {   //获取数据，重新画表
                     }
                 },
                 emphasis: {
+					color:'#add8e6',
                     label: {
-                        show: true
+                        show: true,
+                        position: 'inside',
+                        textStyle: {
+                            color: '#EE6A50',
+                            fontSize: 13,
+                            fontWeight:  'bolder'
+                        }
                     }
                 }
             },
