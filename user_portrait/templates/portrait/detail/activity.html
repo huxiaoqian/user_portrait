@@ -25,10 +25,10 @@
 
 
 <div id="trend" style="height:50px;width:950px">
-<h3>该用户的活跃时间段为：<span id="time1"></span>和<span id="time2"></span></h3>
+<h4>该用户的活跃时间段为：<span id="time1"></span>和<span id="time2"></span></h4>
 </div>
 <div id="trend" style="height:50px;width:950px">
-<h3><span id="location_description"></span></h3>
+<h4><span id="location_description"></span></h4>
 </div>
 <script src="/static/js/highstock.js" charset="utf-8"></script>
 <script src="/static/js/exporting.js" charset="utf-8"></script>
@@ -124,7 +124,7 @@ Activity.prototype = {   //获取数据，重新画表
         xAxis: {
             categories: data_time,
             labels:{
-              rotation: -45,
+              rotation: 0,
               step: 6
             }
         },
@@ -156,7 +156,7 @@ Activity.prototype = {   //获取数据，重新画表
   }
 }
 function getDate(tm){
-    var tt = new Date(parseInt(tm)*1000).format("yyyy年MM月dd日 hh:mm:ss");
+    var tt = new Date(parseInt(tm)*1000).format("MM-dd ");
     return tt;
 }
 var Activity = new Activity();
