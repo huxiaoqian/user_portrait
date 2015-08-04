@@ -33,8 +33,8 @@
 <div class="box-content">
     <ul class="nav nav-tabs" id="myTab" style="margin-bottom:10px">
         <li class="active" title="整体排名"><a href="#info">整体排名</a></li>
-        <li title="领域排名"><a href="#custom">领域排名</a></li>
         <li title="变动排名"><a href="#messages">变动排名</a></li>
+        <li title="领域排名"><a href="#custom">领域排名</a></li>
         <li title="影响力详情"><a href="#details">影响力详情</a></li>
     </ul>
 
@@ -54,16 +54,15 @@
             <div id="rank_distribution" style="margin-top:10px;height:500px"></div>
             <div style="text-align:center;vertical-align:middle">0-500：较低影响力；500-700：一般影响力；700-900：较高影响力；900-1100：高影响力；1100以上：极高影响力</div>
         </div>
-
+        <div class="tab-pane" id="messages" style="margin-top:10px">
+            <span>排名范围：</span><span id="change" style="margin-left:10px"></span>
+            <div id="change_rank" style="margin-top:10px"></div>
+        </div>
         <div class="tab-pane" id="custom" style="margin-top:10px">
             <span>选择日期：</span><span id="domain_date" style="margin-left:10px"></span>
             <span style="margin-left:15px">选择领域：</span><span id="domain" style="margin-left:10px"></span>
             <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="domain_button" title="确定选择">确定</button></span>
             <div id="domain_rank" style="margin-top:10px"></div>
-        </div>
-        <div class="tab-pane" id="messages" style="margin-top:10px">
-            <span>排名范围：</span><span id="change" style="margin-left:10px"></span>
-            <div id="change_rank" style="margin-top:10px"></div>
         </div>
         <div class="tab-pane" id="details" style="margin-top:10px">
             <span>选择日期：</span><span id="detail_date" style="margin-left:10px"></span>

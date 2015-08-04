@@ -1,4 +1,4 @@
-</<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<!-- html head 标签 -->
@@ -111,7 +111,7 @@
 				<input name="uid" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入uid" />
 				<span class="fleft lineh42 mright13">用户名</span>
 				<input name="uname" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入用户名" />
-				<span class="fleft lineh42 ">地点</span>
+				<span class="fleft lineh42 right30">地点</span>
 				<input name="location" class="inputbox fleft ad-search" type="text" value="" placeholder="北京"/>
 			</div>
 			<div class="cols">
@@ -119,6 +119,15 @@
 				<input name="hashtag" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入hashtag" />
 				<span class="fleft lineh42 mright15 ">关键字</span>
 				<input name="adkeyword" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入关键字" />
+				<span class="fleft lineh42 mright30">心理状态</span>
+				<select name="psycho_status" class="fleft select-box ad-search">
+					<option value="">不限</option>
+					<option value="积极">积极</option>
+					<option value="焦虑">焦虑</option>
+					<option value="生气">生气</option>
+					<option value="悲伤">悲伤</option>
+					<option value="中性">中性</option>
+				</select>
 			</div>
 			<div class="cols">
 				<form action="" method="get">
@@ -155,6 +164,7 @@
                     <label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="生活" />生活</label>
 				</form>
 			</div>
+			<!--
 			<div class="cols">
 				<span class="fleft lineh42 mright30">心理状态</span>
 				<select name="psycho_status" class="fleft select-box ad-search">
@@ -165,7 +175,8 @@
 					<option value="悲伤">悲伤</option>
 					<option value="中性">中性</option>
 				</select>
-                <!--
+				-->
+            <!--
                 <span class="fleft lineh42 mright17" style="display:none">心理特征</span>
 				<select name="psycho_feature" class="fleft select-box ad-search" style="display:none">
 					<option value="">不限</option>
@@ -174,8 +185,9 @@
 					<option value="nyz">黏液质</option>
 					<option value="yyz">抑郁质</option>
                 </select>
-                -->
+                
 			</div>
+			-->
 		</div>
 		<div class="clearfix lineh42">
 		  <input name="submit" type="submit" class="bluebtn" id="bluebtn" value="确定" />
