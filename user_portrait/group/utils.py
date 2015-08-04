@@ -163,7 +163,33 @@ def get_group_results(task_name, module):
         retweet_weibo_count = es_result['retweet_weibo_count']
         retweet_user_count = es_result['retweet_user_count']
         retweet_relation = json.loads(es_result['retweet_relation'])
-        result = [retweet_relation, density, retweet_weibo_count, retweet_user_count]
+        uid_list = []
+        for relation in retweet_relation:
+            uid_list.append(relation[0])
+            uid_list.append(relation[1])
+        es_portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+        es_count = 0
+        new_retweet_relation = []
+        for relation in retweet_relation:
+            source_uid = relation[0]
+            source_item = es_portrait_result[es_count]
+            try:
+                source = source_item['_source']
+                source_uname = source['uname']
+            except:
+                source_uname = ''
+            target_uid = relation[1]
+            es_count += 1
+            target_item = es_portrait_result[es_count]
+            try:
+                source = target_item['_source']
+                target_uname = source['uname']
+            except:
+                target_uname = ''
+
+            count = relation[2]
+            new_retweet_relation.append([source_uid, source_uname, target_uid, target_uname, count])
+        result = [new_retweet_relation, density, retweet_weibo_count, retweet_user_count]
     if module=='think':
         domain_dict = json.loads(es_result['domain'])
         topic_dict = json.loads(es_result['topic'])
