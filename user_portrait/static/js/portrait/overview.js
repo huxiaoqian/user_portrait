@@ -23,15 +23,12 @@ Search_weibo.prototype = {
     out_count = data['out_count'];
     $('#user_num').empty();
     html = '';
-    html += '<div class="row"><div class="col-md-3 col-sm-3 col-xs-6"><a class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
+    html += '<div class="row"><div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:190px"><a href="/index/recommend_in" target="_blank"class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
     html += '<div>当日推荐入库人数</div>';
     html += '<div>' + in_count + '</div></a></div>';
-    html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
+    html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a href="/index/recommend_out" target="_blank"class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
     html += '<div>当日推荐出库人数</div>';
     html += '<div>' + out_count + '</div></a></div>';
-    html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
-    html += '<div>总计未启动计算人数</div>';
-    html += '<div>' + compute + '</div></a></div>';
     $('#user_num').append(html);
     draw_sex(data);
     draw_vertify(data);
@@ -390,10 +387,10 @@ function draw_onlinepattern(data){
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['online_pattern_top'][s]['0'] +  '</th><th style="text-align:center">' + data['online_pattern_top'][s]['1'] +  '</th></tr>';
     };
-    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">128625</th></tr>';
-    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">48230</th></tr>';
-    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">21368</th></tr>';
-    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">13629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iPhone 6 Plus</th><th style="text-align:center">128625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">iPhone 6</th><th style="text-align:center">48230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">iPhone客户端</th><th style="text-align:center">21368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">360安全浏览器</th><th style="text-align:center">13629</th></tr>';
     html += '</table>'; 
     $('#online_pattern').append(html);                  
 }
