@@ -54,6 +54,17 @@ function Draw_keyword(data){
 	
 }
  
+function text2icon(text){
+    var icon = '';
+    for (var i = 0;i < emoticon_list.length;i++){
+        var item = emoticon_list[i];
+        if (item['value'] == text){
+            icon = item['icon'];
+            return icon;
+        }
+    }
+    return icon;
+}
 
 
 //positive
@@ -130,7 +141,7 @@ if(emoticon.length==0){
 	html5 += '<li> <span class="fleft range">无此数据</span></li>';
 }else{
 	for(i=0;i<emoticon.length;i++){
-		html5 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+emoticon[i][0]+'</span></li>';
+		html5 += '<li> <span class="fleft range">'+(i+1)+'</span><span class="items fleft Lkeywords">'+emoticon[i][0]+ '<img src=' + text2icon(emoticon[i][0]) + ' /></span></li>';
 	}
 }
 html5 += '</ul>';
