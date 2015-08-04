@@ -45,7 +45,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
     {% block main %}
 	<div id="pageTitle">任务管理</div>
     <div id="float-wrap" class="hidden"></div>
-<div id="uploadFile"  class="hidden">
+<div id="uploadFile" class="hidden" style=""  >
 	<h3 class="title">上传文件说明<a href="javascript:void(0)" id="close" class="close1"></a></h3>
 	<div class="decoration">
 		<ul class="clearfix">
@@ -82,10 +82,10 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
         <div class="box col-md-12">
             <div class="box-inner" style="width:980px;min-height:150px;">
                 <div class="box-header well" data-original-title="">
-                    <h2>任务管理列表</h2>
+                   <span class="TabTitle"  >任务管理列表</span>
                 </div>
 				<div class="fleft">
-	<form enctype="multipart/form-data" method="post" style="margin-bottom:10px;margin-top:10px;">
+	<form enctype="multipart/form-data" method="post" style="margin-bottom:10px;margin-top:10px;display:none; ">
 		<input type="file" name="fileUp" id="file-upload" class="fleft" />  
 		<input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
 	</form>

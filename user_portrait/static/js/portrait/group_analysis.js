@@ -60,7 +60,7 @@ Search_weibo.prototype = {
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
-    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
+    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul style="margin-top:-50px"><li><a>';
     html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px;cursor:pointer;text-decoration:underline" data-toggle="modal" data-target="#myModal">群组成员</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
@@ -68,12 +68,12 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '(连接紧密)</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '(一般活跃)</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '(影响较大)</td></tr>';
-    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响度</b></td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[3].toFixed(2) + '</font>(连接紧密)</td><td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[4].toFixed(2) + '</font>(一般活跃)</td>';
+    html += '<td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[5].toFixed(2) + '</font>(一般重要)</td><td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[6].toFixed(2) + '</font>(影响较大)</td></tr>';
+    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td></tr>';
     html += '</table>';
     $('#overview').append(html);
 },
@@ -126,15 +126,12 @@ Draw_basic: function(data){
         toolbox: {
             show : true,
             feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                restore : {show: true},
                 saveAsImage : {show: true}
             }
         },
         series : [
             {
-                
+                name:'男女比例',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -152,7 +149,7 @@ Draw_basic: function(data){
                 ]
             },
             {
-                name:'',
+                name:'男女比例',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -181,7 +178,7 @@ Draw_activity: function(data){
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
         var s = i.toString();
-        value_x = new Date(parseInt(data['1'][s]['0'])*1000).format("yyyy年MM月dd日 hh:mm:ss");
+        value_x = new Date(parseInt(data['1'][s]['0'])*1000).format("yyyy-MM-dd");
         value_y = data['1'][s]['1'];
         data_x.push(value_x);
         data_y.push(value_y);
@@ -213,7 +210,7 @@ Draw_activity: function(data){
         xAxis: {
             categories: data_x,
             labels:{
-              rotation: -45,
+              rotation: 0,
               step: 6
             }
         },
@@ -259,7 +256,7 @@ Draw_social_line: function(data){
     };
     xdata = [];
     for (i = 0; i< y_data.length-1; i++){
-        xdata.push(y_data[i].toFixed(2) + '-' + y_data[i+1].toFixed(2))
+        xdata.push(y_data[i].toFixed(0) + '-' + y_data[i+1].toFixed(0))
     }
 
     $('#social_line').highcharts({
@@ -749,33 +746,30 @@ function Draw_verify(data){
         toolbox: {
             show : true,
             feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                restore : {show: true},
                 saveAsImage : {show: true}
             }
         },
         series : [
             {
-                
+                name:'认证比例',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
                 itemStyle : dataStyle,
                 data:[
                     {
-                        value:10,
+                        value:data['0']['1'],
                         name:'已认证'
                     },
                     {
-                        value:6,
+                        value:data['0']['2'],
                         name:'invisible',
                         itemStyle : placeHolderStyle
                     }
                 ]
             },
             {
-                name:'',
+                name:'认证比例',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -812,11 +806,6 @@ function Draw_think_emotion(){
     tooltip : {
         trigger: 'item',
         formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    legend: {
-        orient : 'vertical',
-        x : 'left',
-        data:['积极','中性','消极','积极','中性','生气','悲伤','其他']
     },
     toolbox: {
         show : true,
