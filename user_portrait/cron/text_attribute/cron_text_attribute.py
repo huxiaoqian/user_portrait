@@ -210,20 +210,25 @@ def compute_text_attribute(user, weibo_list):
     # text attr5: online pattern
     result['online_pattern'] = json.dumps(attr_online_pattern(weibo_list))
     # text attr6: keywords
-    result['keywords'] = json.dumps(attr_keywords(weibo_list))
+    keywords_dict = attr_keywords(weibo_list)
+    result['keywords'] = json.dumps(keywords_dict)
+    result['keywords_string'] = '&'.join(keywords_dict.keys())
     #print 'result:', result['keywords']
     # test attr7: domain
     #result['domain'] = attr_domain(weibo_list)
     result['domain'] = 'test_domain'
     # test attr8: psycho_feature
     #result['psycho_feature'] = attr_psycho_feature(user, weibo_list)
-    result['psycho_feature'] = 'test psycho_feature'
+    result['psycho_feature'] = 'psycho_feature'
     # test attr9: psycho_status
     #result['psycho_status'] = attr_psycho_status(user, weibo_list)
-    result['psycho_status'] = json.dumps({'status1':1, 'status2':2})
+    result['psycho_status'] = json.dumps({'level1':{'status1':1, 'status2':2}, 'level2':{'status1':1, 'status2':2}})
+    result['psycho_status_string'] = 'status1&status2'
     # test atrr10: topic
     #result['topic'] = attr_topic(weibo_list)
     result['topic'] = json.dumps({'art':1, 'education':2})
+    #get top2 topic
+    result['topic_string'] = 'art&education'
     #test attr
     return result
 
