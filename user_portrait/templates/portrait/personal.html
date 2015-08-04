@@ -140,7 +140,12 @@ var contact_url = '/index/contact/?uid=' + uid;
 $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
 $('#homepage').attr('href', homepage_url)
-
+var APsum = document.getElementById('APsum');
+APsum.innerHTML = personalData.all_count;
+var IPsum = document.getElementById('IPsum');
+IPsum.innerHTML = personalData.all_count;
+var FPsum = document.getElementById('FPsum');
+FPsum.innerHTML = personalData.all_count;
 var img = document.getElementById('portraitImg');
 //console.log(personalData.photo_url);
 if(personalData.photo_url == "unknown"){
