@@ -1,4 +1,26 @@
 <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+$(function(){
+	
+	//首页大事记
+	$('.course_nr2 li').find('.shiji').slideDown(600);
+	
+});
+</script>
+<style>
+*{margin:0;padding:0;list-style-type:none;}
+a,img{border:0;}
+body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
+.font12{ font-weight:normal; font-size:12px;}
+.clearfix:after {content:".";display:block;height:0;clear:both;visibility:hidden;}
+/* 时间轴样式 */
+.course_nr{height:140px; background:url(/static/img/ico9.gif) repeat-x center;}
+.course_nr li{ float:left; padding-top:30px; width:100px; text-align:center; position:relative; }
+.shiji{ position:absolute; width:100%; left:0; top:-20px; display:none;}
+.ico{ height:67px; line-height:67px; color:#518dbb; font-weight:bold; background:url(/static/img/ico11.gif) no-repeat center top; margin-bottom:8px;}
+
+.ms{ width:100px;line-height:14px; color:#999;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+</style>
 <div id="Activezh" style="height:300px;width:750px"></div>
 <div id ="Plocation">
 	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
@@ -20,7 +42,53 @@
 		</dl>
 	</div>
 </div>
-
+<div style="text-align:center;width:80%">一周时间分布</div>
+<div class="clearfix course_nr" style="width:80%;">
+	<ul class="course_nr2">
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d1" >07-28</p>
+				<p class="ms">北京,北京,北京,北京,北京</p>
+			</div>
+		</li>
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d2">07-29</p>
+				<p class="ms">北京</p>
+			</div>
+		</li>
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d3">07-30</p>
+				<p class="ms">北京</p>
+			</div>
+		</li>
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d4">07-31</p>
+				<p class="ms">北京</p>
+			</div>
+		</li>
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d5">08-01</p>
+				<p class="ms">北京</p>
+			</div>
+		</li>
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d6">08-02</p>
+				<p class="ms">北京</p>
+			</div>
+		</li>
+		<li>
+			<div class="shiji">
+				<p class="font12 ico" id="d7">08-03</p>
+				<p class="ms">北京</p>
+			</div>
+		</li>
+	</ul>
+</div>
 
 
 
@@ -129,6 +197,7 @@ Activity.prototype = {   //获取数据，重新画表
             }
         },
         yAxis: {
+			min:0,
             title: {
                 text: '微博总量 (条)'
             },

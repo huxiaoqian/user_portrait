@@ -16,8 +16,9 @@ Draw_Follower:function(data){
     var UserName = parent.personalData.uname;
     var Fnumber = document.getElementById('fansNumber');
     Fnumber.innerHTML = data[1];
-    
+   
 	var items = data[0]
+    //console.log(data[0]);
 	if(items==null){
 		var say = document.getElementById('test1');
 		say.innerHTML = '该用户暂无此数据';
@@ -52,7 +53,12 @@ function follower(data,UserID,UserName){
 	nodeContent.push(nod);
 	for (i=0;i<uids.length;i++){
 			nod = {};
-			nod['category'] = 1;
+			//console.log(data[i][1][2]);
+			if(data[i][1][2]==0){
+				nod['category'] = 1;
+			}else{
+				nod['category'] = 2;
+			}
 			nod['name'] = uids[i];
 			nod['value'] = values[i];
             nod['label'] = unames[i];
@@ -75,7 +81,7 @@ function follower(data,UserID,UserName){
             },
             legend: {
                 x: 'right',
-                data:['用户','朋友']
+                data:['用户','朋友(画像库)','朋友(背景库)']
             },
             series : [
                 {
@@ -87,8 +93,11 @@ function follower(data,UserID,UserName){
                             name: '用户'
                         },
                         {
-                            name:'朋友'
-                        }
+                            name:'朋友(画像库)'
+                        },
+						{
+                            name:'朋友(背景库)'
+                        },
                     ],
                     itemStyle: {
                         normal: {
