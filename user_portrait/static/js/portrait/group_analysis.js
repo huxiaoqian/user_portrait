@@ -1029,6 +1029,18 @@ function Draw_hashtag(data){
     html += '</table>'; 
     $('#hashtag').append(html);    
 }
+function text2icon(text){
+    var icon = '';
+    for (var i = 0;i < emoticon_list.length;i++){
+        var item = emoticon_list[i];
+        if (item['value'] == text){
+            icon = item['icon'];
+            return icon;
+        }
+    }
+    return icon;
+}
+
 function Draw_emotion(data){
     $('#emotion').empty();
     html = '';
@@ -1038,7 +1050,7 @@ function Draw_emotion(data){
     for (var i = 0; i <  data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '</th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '<img src=' + text2icon(data['2'][s]['0']) + ' /></th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#emotion').append(html);    
