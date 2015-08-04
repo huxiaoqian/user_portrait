@@ -131,7 +131,7 @@ Draw_basic: function(data){
         },
         series : [
             {
-                
+                name:'男女比例',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -149,7 +149,7 @@ Draw_basic: function(data){
                 ]
             },
             {
-
+                name:'男女比例',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -751,7 +751,7 @@ function Draw_verify(data){
         },
         series : [
             {
-                
+                name:'认证比例',
                 type:'pie',
                 clockWise:false,
                 radius : [60, 80],
@@ -769,7 +769,7 @@ function Draw_verify(data){
                 ]
             },
             {
-             
+                name:'认证比例',
                 type:'pie',
                 clockWise:false,
                 radius : [40, 60],
@@ -806,11 +806,6 @@ function Draw_think_emotion(){
     tooltip : {
         trigger: 'item',
         formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    legend: {
-        orient : 'vertical',
-        x : 'left',
-        data:['积极','中性','消极','积极','中性','生气','悲伤','其他']
     },
     toolbox: {
         show : true,
