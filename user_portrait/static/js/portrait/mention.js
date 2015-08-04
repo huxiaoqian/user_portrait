@@ -53,7 +53,11 @@ function mention(data,UserID,UserName){
 	nodeContent.push(nod);
 	for (i=0;i<unames.length;i++){
 			nod = {};
-			nod['category'] = 1;
+			if(data[i][1][2]==0){
+				nod['category'] = 1;
+			}else{
+				nod['category'] = 2;
+			}
 			nod['name'] = uids[i];
 			nod['value'] = values[i];
             nod['label'] = unames[i];
@@ -76,7 +80,7 @@ function mention(data,UserID,UserName){
             },
             legend: {
                 x: 'right',
-                data:['用户','朋友']
+                data:['用户','朋友(画像库)','朋友(背景库)']
             },
             series : [
                 {
@@ -88,8 +92,11 @@ function mention(data,UserID,UserName){
                             name: '用户'
                         },
                         {
-                            name:'朋友'
-                        }
+                            name:'朋友(画像库)'
+                        },
+						{
+                            name:'朋友(背景库)'
+                        },
                     ],
                     itemStyle: {
                         normal: {

@@ -140,7 +140,12 @@ var contact_url = '/index/contact/?uid=' + uid;
 $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
 $('#homepage').attr('href', homepage_url)
-
+var APsum = document.getElementById('APsum');
+APsum.innerHTML = personalData.all_count;
+var IPsum = document.getElementById('IPsum');
+IPsum.innerHTML = personalData.all_count;
+var FPsum = document.getElementById('FPsum');
+FPsum.innerHTML = personalData.all_count;
 var img = document.getElementById('portraitImg');
 //console.log(personalData.photo_url);
 if(personalData.photo_url == "unknown"){
@@ -286,7 +291,7 @@ if(personalData.online_pattern[0][0]){
             <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
             <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
 			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/basic.png"/><p>影响力属性</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/basic.png"/><p>传播属性</p></a></li>
 		</ul>
 	</div> 
 
