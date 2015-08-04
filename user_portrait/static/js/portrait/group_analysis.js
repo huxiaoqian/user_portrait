@@ -378,9 +378,9 @@ Draw_weibo: function(data){
 
     html = '';
     html += '<table id="weibo_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive" style="font-size:14px">'; 
-    html += '<thead><tr><th style="text-align:center">用户ID</th><th style="text-align:center;width:180px">昵称</th><th style="text-align:center;width:80px">活跃度</th>';
-    html += '<th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">原创微博最大转发数</th>';
-    html += '<th style="text-align:center">原创微博最大评论数</th><th style="text-align:center">转发微博最大转发数</th><th style="text-align:center">转发微博最大评论数</th></tr></thead>';
+    html += '<thead><tr><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle;width:180px">昵称</th><th style="text-align:center;vertical-align:middle;width:80px">活跃度</th>';
+    html += '<th style="text-align:center;vertical-align:middle;">重要度</th><th style="text-align:center;vertical-align:middle;">影响力</th><th style="text-align:center;vertical-align:middle;">原创微博最大转发数</th>';
+    html += '<th style="text-align:center;vertical-align:middle;">原创微博最大评论数</th><th style="text-align:center;vertical-align:middle;">转发微博最大转发数</th><th style="text-align:center;vertical-align:middle;">转发微博最大评论数</th></tr></thead>';
     html += '<tbody>';
     for ( var i = 0 ;i< data['3'].length;i++){
         s = i.toString();
@@ -1029,6 +1029,18 @@ function Draw_hashtag(data){
     html += '</table>'; 
     $('#hashtag').append(html);    
 }
+function text2icon(text){
+    var icon = '';
+    for (var i = 0;i < emoticon_list.length;i++){
+        var item = emoticon_list[i];
+        if (item['value'] == text){
+            icon = item['icon'];
+            return icon;
+        }
+    }
+    return icon;
+}
+
 function Draw_emotion(data){
     $('#emotion').empty();
     html = '';
@@ -1038,7 +1050,7 @@ function Draw_emotion(data){
     for (var i = 0; i <  data['2'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '</th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '<img src=' + text2icon(data['2'][s]['0']) + ' /></th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#emotion').append(html);    

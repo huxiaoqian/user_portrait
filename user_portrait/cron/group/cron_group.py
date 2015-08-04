@@ -715,9 +715,11 @@ if __name__=='__main__':
     '''
     input_data['uid_list'] = ['1182391231', '1759168351', '1670071920', '1689618340', '1494850741', \
                               '1582488432', '1708942053', '1647678107']
+    input_data['task_name'] = u'商业人士'
     '''
     input_data['submit_date'] = '2013-09-08'
     input_data['state'] = u'关注的媒体'
+    #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)
     compute_group_task()
         

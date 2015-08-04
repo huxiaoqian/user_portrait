@@ -1,25 +1,11 @@
 {% extends "tbase.html" %}
     {% block title %}整体概览{% endblock title%}
       {% block css %}
-      {{ super() }}    
 		<link href="/static/css/dashboard.css" rel="stylesheet">		    
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.css' rel='stylesheet'>
     <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
-    <link href='/static/bower_components/chosen/chosen.min.css' rel='stylesheet'>
-    <link href='/static/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
-    <link href='/static/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
-    <link href='/static/bower_components/bootstrap-tour/css_js/css/bootstrap-tour.min.css' rel='stylesheet'>
-    <link href='/static/css/jquery.noty.css' rel='stylesheet'>
-    <link href='/static/css/noty_theme_default.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.min.css' rel='stylesheet'>
-    <link href='/static/css/elfinder.theme.css' rel='stylesheet'>
-    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
-    <link href='/static/css/uploadify.css' rel='stylesheet'>
-    <link href='/static/css/animate.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="/static/css/portrait.css">
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">   
-    <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
-    <link href="/static/css/charisma-app.css" rel="stylesheet">
+      {{ super() }}    
     <style type="text/css">
     body {
   font-family: '微软雅黑';
@@ -69,7 +55,7 @@
             <div id='user_emotion' style='float:left;width:340px;height:300px'></div>
         </div>
 
-        <div><h4 class="page-header"style='margin-top:20px'>人物信息</h4></div>
+        <div><h4 class="page-header"style='margin-top:320px'>人物信息</h4></div>
           <div class="box-content">
             <ul class="nav nav-tabs" id="myTab">
                 <li class="active" title="领域"><a href="#domain_vip">领域</a></li>
@@ -79,13 +65,13 @@
                 <div class="tab-pane active" id="domain_vip" style="margin-top:10px">
                     <div class="row category margin-bottom-20" id='domain_portrait'>
                     </div>
-                    <div style="float:left;cursor: pointer" type="button" data-toggle="modal" data-target="#more_domain"><u>查看更多</u></div>
+                    <div style="float:left;cursor: pointer" type="button" data-toggle="modal" data-target="#more_domain"><u>查看更多热门人物</u></div>
                     
                 </div>
                 <div class="tab-pane" id="topic_vip" style="margin-top:10px">
                     <div class="row category margin-bottom-20" id='topic_portrait'>
                     </div>
-                    <div style="float:left;cursor: pointer" type="button" data-toggle="modal" data-target="#more_topic"><u>查看更多</u></div>
+                    <div style="float:left;cursor: pointer" type="button" data-toggle="modal" data-target="#more_topic"><u>查看更多热门人物</u></div>
                 </div>          
             </div>
            </div>
