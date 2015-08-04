@@ -158,11 +158,12 @@ def get_group_results(task_name, module):
         online_pattern = sort_online_pattern[:5]
         result = [activity_geo, activity_trend, online_pattern]
     if module=='social':
-        degree_his = json.loads(es_result['degree_his'])
+        #degree_his = json.loads(es_result['degree_his'])
         density = es_result['density']
         retweet_weibo_count = es_result['retweet_weibo_count']
         retweet_user_count = es_result['retweet_user_count']
-        result = [degree_his, density, retweet_weibo_count, retweet_user_count]
+        retweet_relation = json.loads(es_result['retweet_relation'])
+        result = [retweet_relation, density, retweet_weibo_count, retweet_user_count]
     if module=='think':
         domain_dict = json.loads(es_result['domain'])
         topic_dict = json.loads(es_result['topic'])
