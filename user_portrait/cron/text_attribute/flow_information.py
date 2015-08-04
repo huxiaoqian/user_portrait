@@ -81,7 +81,14 @@ def get_flow_information(uid_list):
             ip_dict = user_ip_result[uid]
             geo_dict = ip2geo(ip_dict)
             geo_string = json.dumps(geo_dict)
-            geo_list = '&'.join(geo_dict.keys())
+            #geo_list = '&'.join(geo_dict.keys())
+            geo_dict_keys = geo_dict.keys()
+            geo_one_list = []
+            for key in geo_dict_keys:
+                key_list = key.split('\t')
+                n = len(key_list)
+                geo_one_list.append(key_list[n-1])
+            geo_list = '&'.join(geo_one_list)
         except KeyError:
             geo_string = ''
             geo_list = ''
