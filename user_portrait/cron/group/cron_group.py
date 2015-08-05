@@ -173,10 +173,10 @@ def get_attr_portrait(uid_list):
                     hashtag_ratio[hashtag] += hashtag_dict[hashtag]
                 except:
                     hashtag_ratio[hashtag] = hashtag_dict[hashtag]
-    print 'importance_list:', importance_list
+    #print 'importance_list:', importance_list
     p, t = np.histogram(importance_list, bins=5, normed=False)
     importance_his = [p.tolist(), t.tolist()]
-    print 'importance_his:', importance_his
+    #print 'importance_his:', importance_his
     p, t = np.histogram(activeness_list, bins=5, normed=False)
     activeness_his = [p.tolist(), t.tolist()]
     p, t = np.histogram(influence_list, bins=5, normed=False)
@@ -288,7 +288,7 @@ def get_attr_social(uid_list):
     result['out_beretweet_relation'] = json.dumps(sort_out_beretweet_relation)
     #print 'be_retweeted_out, be_retweeted_count_out:', be_retweeted_out, be_retweeted_count_out
     #print 'result:', result
-    print 'out_beretweet_relation:', sort_out_beretweet_relation
+    #print 'out_beretweet_relation:', sort_out_beretweet_relation
     return result
 
 def get_attr_trend(uid_list):
@@ -756,7 +756,7 @@ def compute_group_task():
     results['count'] = len(uid_list)
     # get attr from es_user_portrait
     attr_in_portrait = get_attr_portrait(uid_list)
-    print 'activity_geo:', attr_in_portrait['activity_geo']
+    #print 'activity_geo:', attr_in_portrait['activity_geo']
     results['task_name'] = task_name
     results['uid_list'] = uid_list
     results['submit_date'] = submit_date

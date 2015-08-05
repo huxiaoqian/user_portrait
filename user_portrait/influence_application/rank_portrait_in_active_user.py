@@ -123,7 +123,7 @@ def portrait_user_vary(es, number, active_index, active_type, portrait_index, po
             for item in search_result:
                 count_c += 1
                 if item["found"]:
-                    info = ['','','','','']
+                    info = ['','','','','','1']
                     info[0] = rank
                     index = search_result.index(item)
 

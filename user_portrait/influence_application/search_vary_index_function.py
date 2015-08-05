@@ -69,7 +69,7 @@ def query_vary_top_k(index_name, doctype, top_k, sort_index="vary"):
     for item in result:
         uid_list.append(item['_id'])
 
-    #portrait_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids":uid_list}, _source=True)['docs']
+    portrait_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids":uid_list}, _source=True)['docs']
     profile_result = es_profile.mget(index="weibo_user",doc_type="user", body={"ids":uid_list}, _source=True)['docs']
 
     return_list = []
@@ -82,6 +82,10 @@ def query_vary_top_k(index_name, doctype, top_k, sort_index="vary"):
             info[3] = profile_result[i]['_source'].get('nick_name','')
         info[2] = result[i].get('_id','')
         info[4] = result[i]['_source']['vary']
+        if portrait_result[i]['found']:
+            info.append('1')
+        else:
+            info.append('0')
         return_list.append(info)
         rank += 1
 
