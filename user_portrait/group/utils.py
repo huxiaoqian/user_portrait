@@ -151,11 +151,11 @@ def get_group_results(task_name, module):
     if module=='activity':
         activity_geo_dict = json.loads(es_result['activity_geo'])
         sort_activity_geo = sorted(activity_geo_dict.items(), key=lambda x:x[1], reverse=True)
-        activity_geo = sort_activity_geo[:5]
+        activity_geo = sort_activity_geo[:50]
         activity_trend = json.loads(es_result['activity_trend'])
         online_pattern_dict = json.loads(es_result['online_pattern'])
         sort_online_pattern = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
-        online_pattern = sort_online_pattern[:5]
+        online_pattern = sort_online_pattern[:50]
         geo_track = json.loads(es_result['geo_track'])
         result = [activity_geo, activity_trend, online_pattern, geo_track]
     if module=='social':
@@ -220,13 +220,13 @@ def get_group_results(task_name, module):
     if module=='text':
         hashtag_dict = json.loads(es_result['hashtag'])
         sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
-        hashtag = sort_hashtag[:5]
+        hashtag = sort_hashtag[:50]
         emoticon_dict = json.loads(es_result['emoticon'])
         sort_emoticon = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
         emoticon = sort_emoticon[:5]
         keyword_dict = json.loads(es_result['keywords'])
         sort_keyword = sorted(keyword_dict.items(), key=lambda x:x[1], reverse=True)
-        keyword = sort_keyword[:20]
+        keyword = sort_keyword[:50]
         result = [hashtag, keyword, emoticon]
     if module=='influence':
         importance_dis = json.loads(es_result['importance_his'])
