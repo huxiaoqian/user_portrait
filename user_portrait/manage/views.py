@@ -62,7 +62,7 @@ def ajax_imagine():
     weight_list = query_weight.split(',')
 
     if len(keywords_list) != len(weight_list):
-        return "not match"
+        return 0
 
     # 'field' control search order
     # order_list = ['importance', 'influence', 'activeness', 'default']
@@ -87,4 +87,4 @@ def ajax_imagine():
     if result:
         return json.dumps(result)
 
-    return "no one match"
+    return 0

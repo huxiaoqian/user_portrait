@@ -9,7 +9,7 @@ from search_user_index_function import search_top_index, search_influence_detail
                                        search_max_single_field, search_portrait_history_active_info
 from rank_portrait_in_active_user import search_portrait_user_in_activity, portrait_user_vary
 from search_vary_index_function import query_vary_top_k
-
+from search_tag_in_portrait import search_tag
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 
 portrait_index = "copy_user_portrait" # user_portrait_database
@@ -173,3 +173,22 @@ def ajax_portrait_user_in_vary():
 
     return json.dumps(results)
 
+
+@mod.route('/portrait_user_tag/')
+def ajax_portrait_user_tag():
+    number = int(request.args.get('number', 10)) # "10"
+    date = request.args.get('date', '') # 2013-09-01
+    date = date.replace('-','')
+
+    tag = request.args.get('tag', '') # topic
+    tag_value = request.args.get('tag_value', '') # education
+    search_dict = {}
+    search_dict[tag] = tag_value
+    print search_dict
+
+    if date and tag and tag_value:
+        results = search_tag(es, number, date, "bci", "user_portrait", "user", search_dict)
+        return json.dumps(results)
+
+    results = []
+    return json.dumps(results)

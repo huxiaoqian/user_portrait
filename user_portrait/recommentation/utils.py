@@ -19,6 +19,7 @@ from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_profile
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.time_utils import ts2datetime
+from user_portrait.filter_uid import all_delete_uid
 #test
 '''
 def save_uid2compute(uid_list):
@@ -161,20 +162,22 @@ def identify_compute(data):
 
     return True
 
-def show_out_uid(date,fields):
+def show_out_uid(fields):
     out_list = []
-    date = str(date).replace("-","")
-    uid_list = r_out.hget("recommend_delete_list", date)
-    if not uid_list:
+    recommend_dict = r_out.hgetall("recommend_delete_list")
+    recommend_keys = recommend_dict.keys()
+    for iter_key in recommend_keys:
+        out_list.extend(json.loads(r_out.hget("recommend_delete_list",iter_key)))
+    if not out_list:
         return out_list # no one is recommended to out
 
     return_list = []
-    date_out_list = json.loads(r_out.hget("recommend_delete_list",date))
-    if date_out_list == []:
-        return return_list
-    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
+    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
-    for i in range(len(date_out_list)):
+    filter_uid = all_delete_uid()
+    for i in range(len(out_list)):
+        if detail[i]['_source']['uid'] in filter_uid:
+            continue
         detail_info = []
         for item in fields:
             detail_info.append(detail[i]['_source'][item])
@@ -197,12 +200,14 @@ def decide_out_uid(date, data):
     if uid_list and uid_list != []:
         update_record_index(not_out_list)
     """
-
+    filter_uid = all_delete_uid()
     uid_list = data.split(",")
     current_date_list = json.loads(r_out.hget("recommend_delete_list", date))
     new_list =  list(set(current_date_list).difference(set(uid_list)))
+    new_list = list(set(new_list).difference(filter_uid))
     r_out.hset("recommend_delete_list", date, json.dumps(new_list))
 
+    """
     if uid_list:
         temp = r_out.hget("history_delete_list", now_date)
         if temp:
@@ -210,6 +215,7 @@ def decide_out_uid(date, data):
             uid_list.extend(exist_data)
         r_out.hset("history_delete_list", now_date, json.dumps(uid_list))
 
+    """
     return 1
 
 
@@ -223,10 +229,10 @@ def search_history_delete(date):
         pass
 
     fields = ['uid','uname','domain','topic','influence','importance','activeness']
-    temp = r_out.hget("history_delete_list", now_date)
+    temp = r_out.hget("decide_delete_list", now_date)
     print temp
     if temp:
-        history_uid_list = json.loads(r_out.hget("history_delete_list", now_date))
+        history_uid_list = json.loads(r_out.hget("decide_delete_list", now_date))
         if history_uid_list != []:
             detail = es.mget(index="user_portrait", doc_type="user", body={"ids":history_uid_list}, _source=True)['docs']
             for i in range(len(history_uid_list)):
@@ -236,6 +242,33 @@ def search_history_delete(date):
                 return_list.append(detail_info)
 
     return json.dumps(return_list)
+
+
+def show_all_out():
+    delete_dict = r_out.hgetall('decide_delete_list')
+    delete_keys_list = delete_dict.keys()
+
+    return_list = []
+    fields = ['uid','uname','domain','topic','influence','importance','activeness']
+    for iter_key in delete_keys_list:
+        temp_list = []
+        temp = json.loads(r_out.hget('decide_delete_list', iter_key))
+        if temp and temp != []:
+            temp_list.append(iter_key) # decide  delete date
+            detail = es.mget(index="user_portrait", doc_type="user", body={"ids":temp}, _source=True)['docs']
+            for i in range(len(temp)):
+                detail_info = []
+                for item in fields:
+                    print detail
+                    detail_info.append(detail[i]['_source'][item])
+                temp_list.append(detail_info)
+
+            return_list.append(temp_list)
+
+    return json.dumps(return_list)
+
+
+
 
 if __name__=='__main__':
     #test
