@@ -218,7 +218,7 @@ Search_weibo_history.prototype = {
       if(item[i][6]==0)
         in_status = "确定计算";
       else if(item[i][6]==1)
-        in_status = "正确计算";
+        in_status = "正在计算";
       else
         in_status = "计算完成";
       html += '<tr>';
@@ -297,7 +297,7 @@ function bindOption(){
                   draw_table_compute_new.call_sync_ajax_request(url_compute_new, draw_table_compute_new.ajax_method, draw_table_compute_new.Re_Draw_table);
                   */
 
-                  var url_history_new = '/recommentation/show_in_history/?date=' + $("#history_date_select").val();
+                  var url_history_new = '/recommentation/show_compute/?date=' + $("#history_date_select").val();
                   draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
                   draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);
               }
@@ -320,7 +320,7 @@ function bindOption(){
                 draw_table_compute_new.call_sync_ajax_request(url_compute_new, draw_table_compute_new.ajax_method, draw_table_compute_new.Re_Draw_table);
                 */
 
-                var url_history_new = '/recommentation/show_in_history/?date=' + $("#history_date_select").val();
+                var url_history_new = '/recommentation/show_compute/?date=' + $("#history_date_select").val();
                 draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
                 draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);
             }
@@ -377,7 +377,7 @@ function bindOption(){
       });
       $('#history_date_button').click(function(){
           //console.log($("#history_date_select").val());
-          var url_history_new = '/recommentation/show_in_history/?date=' + $("#history_date_select").val();
+          var url_history_new = '/recommentation/show_compute/?date=' + $("#history_date_select").val();
           //console.log(url_history_new);
           draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
           draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);
@@ -406,7 +406,7 @@ draw_table_compute = new Search_weibo_compute(url_compute, '#compute');
 draw_table_compute.call_sync_ajax_request(url_compute, draw_table_compute.ajax_method, draw_table_compute.Re_Draw_table);
 */
 
-var url_history = '/recommentation/show_in_history/?date=' + now;
+var url_history = '/recommentation/show_compute/?date=' + now;
 draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Re_Draw_table);
 console.log('end');
