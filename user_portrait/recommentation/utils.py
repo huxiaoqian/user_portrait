@@ -190,7 +190,10 @@ def show_out_uid(fields):
             continue
         detail_info = []
         for item in fields:
-            detail_info.append(detail[i]['_source'][item])
+            if item == "topic":
+                detail_info.append(','.join(detail[i]['_source']['topic_string'].split("&")))
+            else:
+                detail_info.append(detail[i]['_source'][item])
         return_list.append(detail_info)
 
     return return_list
@@ -238,9 +241,8 @@ def search_history_delete(date):
     else:
         pass
 
-    fields = ['uid','uname','domain','topic','influence','importance','activeness']
+    fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
     temp = r_out.hget("decide_delete_list", now_date)
-    print temp
     if temp:
         history_uid_list = json.loads(r_out.hget("decide_delete_list", now_date))
         if history_uid_list != []:
@@ -248,7 +250,10 @@ def search_history_delete(date):
             for i in range(len(history_uid_list)):
                 detail_info = []
                 for item in fields:
-                    detail_info.append(detail[i]['_source'][item])
+                    if item == "topic_string":
+                        detail_info.append(','.join(detail[i]['_source'][item].split("&")))
+                    else:
+                        detail_info.append(detail[i]['_source'][item])
                 return_list.append(detail_info)
 
     return json.dumps(return_list)
@@ -259,21 +264,21 @@ def show_all_out():
     delete_keys_list = delete_dict.keys()
 
     return_list = []
-    fields = ['uid','uname','domain','topic','influence','importance','activeness']
+    fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
     for iter_key in delete_keys_list:
         temp_list = []
         temp = json.loads(r_out.hget('decide_delete_list', iter_key))
         if temp and temp != []:
-            temp_list.append(iter_key) # decide  delete date
             detail = es.mget(index="user_portrait", doc_type="user", body={"ids":temp}, _source=True)['docs']
             for i in range(len(temp)):
                 detail_info = []
                 for item in fields:
-                    print detail
-                    detail_info.append(detail[i]['_source'][item])
-                temp_list.append(detail_info)
+                    if item == "topic_string":
+                        detail_info.append(','.join(detail[i]['_source'][item].split('&')))
+                    else:
+                        detail_info.append(detail[i]['_source'][item])
 
-            return_list.append(temp_list)
+                return_list.append(detail_info)
 
     return json.dumps(return_list)
 
