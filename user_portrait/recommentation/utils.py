@@ -190,7 +190,10 @@ def show_out_uid(fields):
             continue
         detail_info = []
         for item in fields:
-            detail_info.append(detail[i]['_source'][item])
+            if item == "topic":
+                detail_info.append(','.join(detail[i]['_source']['topic_string'].split("&")))
+            else:
+                detail_info.append(detail[i]['_source'][item])
         return_list.append(detail_info)
 
     return return_list
