@@ -305,8 +305,9 @@ def get_user_trend(uid):
             else:
                 trend_list.append((time_seg, 0))
     sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=True)
-    
-    return sort_trend_list
+    x_axis = [item[0] for item in sort_trend_list]
+    y_axis = [item[1] for item in sort_trend_list]
+    return [x_axis, y_axis]
 
 # get user hashtag
 def get_user_hashtag(uid):
