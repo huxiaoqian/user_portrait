@@ -15,13 +15,14 @@ from elasticsearch.helpers import scan
 reload(sys)
 sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1, R_RECOMMENTATION_OUT
+from filter_uid import all_delete_uid
 
 es = ES_CLUSTER_FLOW1
 recommend_redis = R_RECOMMENTATION_OUT
 
 threshould = 4
-index_destination = "portrait_user_index_profile"
-index_destination_doctype = "manage"
+index_destination = "copy_user_portrait"
+index_destination_doctype = "user"
 
 def search_low_number(low_range, index_name=index_destination, index_type=index_destination_doctype):
     query_body = {
@@ -38,8 +39,7 @@ def search_low_number(low_range, index_name=index_destination, index_type=index_
                     }
                 }
             }
-        },
-        "size": 10
+        }
     }
 
     results = es.search(index=index_name, doc_type=index_type, body=query_body)["hits"]["hits"]
@@ -52,10 +52,12 @@ def search_low_number(low_range, index_name=index_destination, index_type=index_
 
 
 def main():
+    filter_uid = all_delete_uid()
     record_time = time.strftime("%Y%m%d", time.localtime(time.time()))
     recommend_list = search_low_number(threshould) # recommended user to delete in portrait database
     print len(recommend_list)
     if recommend_list:
+        recommend_list = list(set(recommend_list).difference(filter_uid))
         recommend_redis.hset("recommend_delete_list", record_time, json.dumps(recommend_list)) # lpush uid into a redis
         return 1
     else:

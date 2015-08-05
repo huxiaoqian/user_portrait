@@ -59,11 +59,9 @@ def main():
         if ts - item_timestamp > 7 * 86400:
         #if ts - item_timestamp > 0:
 
-            temp = recommend_redis.hget("decide_delete_list", item)
-            if not temp:
-                continue
             temp_list = json.loads(recommend_redis.hget("decide_delete_list", item))
             hdel("decide_delete_list", item)
+            hdel("history_delete_list", item)
 
             if temp_list == []:
                 continue
