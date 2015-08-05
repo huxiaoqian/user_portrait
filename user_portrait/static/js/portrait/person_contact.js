@@ -59,24 +59,24 @@ Search_weibo.prototype = {
     },
 
 Draw_picture: function(data){
-        console.log(data);
         if(data==0){
             alert("");
             return false;
         }
         var Related_Node = new Array();
         var Related_Link = new Array();
+        Related_Node.push({'name':data[0][0],'value':data[0][5],'label':data[0][1],'category':0,'symbolSize':20*Math.sqrt(data[0][5]),'itemStyle':{'normal':{'color':'rgba(255,215,0,0.4)'}}});
         var user_name = data[0][0];
          var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
-        for(var item =0; item < data.length-1; item++){
+        for(var item =1; item < data.length-1; item++){
             if(data[item][1]=='unknown'){
                 data[item][1] = '未知';
-                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
-                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5]});
+                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':20*Math.sqrt(data[item][5])});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':2*data[item][5]}}});
             }
             else{
-                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1]});
-                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5]});
+                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':20*Math.sqrt(data[item][5])});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':2*data[item][5]}}});
             }
         }
         var option = {
@@ -86,6 +86,7 @@ Draw_picture: function(data){
                     x:'right',
                     y:'bottom'
                 },
+                color:['#B0E0E6','#FFC0CB'],
                 tooltip : {
                     trigger: 'item',
                     formatter: '{a} : {b}'
@@ -103,6 +104,16 @@ Draw_picture: function(data){
                         type:'force',
                         name : "用户id",
                         ribbonType: false,
+                        categories:[
+                            {
+                                name:'',
+                                symbol:'circle',
+                            },
+                            {
+                                name:'',
+                                symbol:'circle',
+                            },
+                        ],
                         itemStyle: {
                             normal: {
                                 label: {
@@ -134,6 +145,7 @@ Draw_picture: function(data){
                         useWorker: false,
                         minRadius : 15,
                         maxRadius : 25,
+                        linkSymbol:'arrow',
                         gravity: 1.1,
                         scaling: 1.1,
                         roam: 'move',

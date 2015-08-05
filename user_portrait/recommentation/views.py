@@ -5,8 +5,9 @@ import redis
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute
+<<<<<<< HEAD
 from utils import show_out_uid,decide_out_uid, search_history_delete, show_all_out
+from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute, recommentation_more_information
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.time_utils import datetime2ts
 from update_activeness_record import update_record_index
@@ -32,31 +33,31 @@ def ajax_recommentation_in():
 
     return json.dumps(results)
 
+# show more information
+@mod.route('/show_in_more/')
+def ajax_recommentation_in_more():
+    uid = request.args.get('uid', '')
+    result = recommentation_more_information(uid)
+    return json.dumps(result)
+
+
 
 # identify_in 
-# input:[(date, uid)]
+# input:[(date, uid, status)]
 # deal :write to compute
 @mod.route('/identify_in/')
 def ajax_identify_in():
     results = 0 # mark fail
-    '''
-    data = request.args.get('data','') # data '[(date, uid)]'
-    data = json.loads(data)
-    if data:
-        #test
-        # data = [('2013-09-07','1767905823')]
-        results = identify_in(data) # success:1
-        print 'results:', data
-    '''
     date = request.args.get('date', '') # date = '2013-09-07'
     uid_string = request.args.get('uid_list', '')
     uid_list = uid_string.split(',')
+    status = request.args.get('status', '') # 1 compute right now; 2 appointment
     data = []
     if date and uid_list:
         #test
         #date = '2013-09-07'
         for uid in uid_list:
-            data.append([date, uid])
+            data.append([date, uid, status])
         results = identify_in(data)
         print 'results:', results
     else:

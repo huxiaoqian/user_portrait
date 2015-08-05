@@ -9,8 +9,8 @@ index_info = {
         'number_of_replicas':0,
         },
     'mappings':{
-        'user':{
-            'propertites':{
+        'group':{
+            'properties':{
                 'task_name':{
                     'type':'string',
                     'index': 'not_analyzed'

@@ -3,6 +3,7 @@
 recommentation
 save uid list should be in
 '''
+import IP
 import sys
 import time
 import datetime
@@ -11,15 +12,15 @@ import redis
 from elasticsearch import Elasticsearch
 from update_activeness_record import update_record_index
 #from user_portrait.global_utils import R_RECOMMENTATION as r
-reload(sys)
-sys.path.append('../')
 from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
+from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_profile
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
-from user_portrait.time_utils import ts2datetime
 from user_portrait.filter_uid import all_delete_uid
+from user_portrait.time_utils import ts2datetime, datetime2ts
+
 #test
 '''
 def save_uid2compute(uid_list):
@@ -46,7 +47,7 @@ def get_user_detail(date, input_result, status):
     index_name = '20130907'
     index_type = 'bci'
     user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
-    #print 'user_portrait_result:', user_portrait_result[0]
+    #print 'user_portrait_result:', user_bci_result[0]
     user_profile_result = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
     #print 'user_profile_result:', user_profile_result
     for i in range(0, len(uid_list)):
@@ -78,8 +79,11 @@ def get_user_detail(date, input_result, status):
         if status == 'show_in':
             results.append([uid, uname, location, fansnum, statusnum, influence])
         if status == 'show_compute':
+            print 'input_result:', json.loads(input_result[uid])
             in_date = json.loads(input_result[uid])[0]
             compute_status = json.loads(input_result[uid])[1]
+            if compute_status == '1':
+                compute_status = '3'
             results.append([uid, uname, location, fansnum, statusnum, influence, in_date, compute_status])
         if status == 'show_in_history':
             in_status = input_result[uid]
@@ -119,9 +123,15 @@ def identify_in(data):
         date = item[0] # identify the date form '2013-09-01' with web
         in_hash_key = in_hash_name + str(date)
         uid = item[1]
+        status = item[2]
         value_string = []
         r.hset(in_hash_key, uid, in_status)
-        in_date = ts2datetime(time.time())
+        if status == '1':
+            in_date = ts2datetime(time.time())
+            compute_status = '1'
+        elif status == '2':
+            in_date = ts2datetime(time.time())
+            compute_status = '2'
         r.hset(compute_hash_name, uid, json.dumps([in_date, compute_status]))
     return True
 
@@ -269,10 +279,130 @@ def show_all_out():
 
 
 
+# get user time trend (7 day)
+def get_user_trend(uid):
+    activity_result = dict()
+    now_ts = time.time()
+    date = ts2datetime(now_ts-24*3600)
+    ts = datetime2ts(date)
+    #test
+    ts = datetime2ts('2013-09-08')
+    timestamp = ts
+    results = dict()
+    for i in range(1, 8):
+        ts = timestamp - 24*3600*i
+        try:
+            result_string = r_cluster.hget('activity_'+str(ts), str(uid))
+        except:
+            result_string = ''
+        if not result_string:
+            continue
+        result_dict = json.loads(result_string)
+        for time_segment in result_dict:
+            try:
+                results[int(time_segment)/16*15*60*16+ts] += result_dict[time_segment]
+            except:
+                results[int(time_segment)/16*15*60*16+ts] = result_dict[time_segment]
+    
+    trend_list = []
+    for i in range(1, 8):
+        ts = timestamp - i*24*3600
+        for j in range(0, 6):
+            time_seg = ts + j*15*60*16
+            if time_seg in results:
+                trend_list.append((time_seg, results[time_seg]))
+            else:
+                trend_list.append((time_seg, 0))
+    sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=True)
+    
+    return sort_trend_list
+
+# get user hashtag
+def get_user_hashtag(uid):
+    user_hashtag_result = {}
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    ts = datetime2ts(now_date)
+    #test
+    ts = datetime2ts('2013-09-08')
+    for i in range(1, 8):
+        ts = ts - 3600*24
+        results = r_cluster.hget('hashtag_'+str(ts), uid)
+        if results:
+            hashtag_dict = json.loads(results)
+            for hashtag in hashtag_dict:
+                try:
+                    user_hashtag_result[hashtag] += hashtag_dict[hashtag]
+                except:
+                    user_hashtag_result[hashtag] = hashtag_dict[hashtag]
+    sort_hashtag_dict = sorted(user_hashtag_result.items(), key=lambda x:x[1], reverse=True)
+
+    return sort_hashtag_dict
+
+# get user geo
+def get_user_geo(uid):
+    result = []
+    user_geo_result = {}
+    user_ip_dict = {}
+    user_ip_result = dict()
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    ts = datetime2ts(now_date)
+    #test
+    ts = datetime2ts('2013-09-08')
+    for i in range(1, 8):
+        ts = ts - 3600*24
+        results = r_cluster.hget('ip_'+str(ts), uid)
+        if results:
+            ip_dict = json.loads(results)
+            for ip in ip_dict:
+                try:
+                    user_ip_result[ip] += ip_dict[ip]
+                except:
+                    user_ip_result[ip] = ip_dict[ip]
+    #print 'user_ip_result:', user_ip_result
+    user_geo_dict = ip2geo(user_ip_result)
+    user_geo_result = sorted(user_geo_dict.items(), key=lambda x:x[1], reverse=True)
+
+    return user_geo_result
+
+def ip2geo(ip_dict):
+    city_set = set()
+    geo_dict = dict()
+    for ip in ip_dict:
+        try:
+            city = IP.find(str(ip))
+            if city:
+                city.encode('utf-8')
+            else:
+                city = ''
+        except Exception, e:
+            city = ''
+        if city:
+            len_city = len(city.split('\t'))
+            if len_city==4:
+                city = '\t'.join(city.split('\t')[:2])
+            try:
+                geo_dict[city] += ip_dict[ip]
+            except:
+                geo_dict[city] = ip_dict[ip]
+    return geo_dict
+
+
+# show more information in recommentation
+def recommentation_more_information(uid):
+    result = {}
+    result['time_trend'] = get_user_trend(uid)
+    result['hashtag'] = get_user_hashtag(uid)
+    result['activity_geo'] = get_user_geo(uid)
+    #print 'result:', result
+    return result
+
 
 if __name__=='__main__':
     #test
     test_uid_list = ['2101413011','1995786393','2132734472','2776631980','2128524603',\
                      '1792702427','2703153040','2787852095','1599102507','1726544024']
     #save_uid2compute(test_uid_list)
+    recommentation_more_information('2101413011')
 

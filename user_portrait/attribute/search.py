@@ -60,16 +60,25 @@ def search_attention(uid):
     print 'sort_state_results:', sort_state_results
     uid_list = [item[0] for item in sort_state_results]
     es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
+    es_portrait_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
     result_list = []
-    for item in es_profile_results:
+    for i in range(len(es_profile_results)):
+        item = es_profile_results[i]
         uid = item['_id']
         try:
             source = item['_source']
             uname = source['nick_name']
         except:
             uname = u'未知'
+        # identify uid is in the user_portrait
+        portrait_item = es_portrait_results[i]
+        try:
+            source = portrait_item[i]
+            in_status = 1
+        except:
+            in_status = 0
 
-        result_list.append([uid,[uname, stat_results[uid]]])
+        result_list.append([uid,[uname, stat_results[uid], in_status]])
        
     return [result_list[:20], len(stat_results)]
 
@@ -99,15 +108,24 @@ def search_follower(uid):
 
     uid_list = [item[0] for item in sort_stat_results]
     es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
+    es_portrait_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
     result_list = []
-    for item in es_profile_results:
+    for i in range(len(es_profile_results)):
+        item = es_profile_results[i]
         uid = item['_id']
         try:
             source = item['_source']
             uname = source['nick_name']
         except:
             uname = u'未知'
-        result_list.append([uid,[uname, stat_results[uid]]])
+
+        portrait_item = es_portrait_results[i]
+        try:
+            source = portrait_item['_source']
+            in_status = 1
+        except:
+            in_status = 0
+        result_list.append([uid,[uname, stat_results[uid], in_status]])
     return [result_list[:20], len(stat_results)]
 
 #search:now_ts , uid return 7day at uid list  {uid1:count1, uid2:count2}
@@ -415,6 +433,18 @@ def search_attribute_portrait(uid):
         else:
             print 'es_influence_rank error'
             results['influence_rank'] = 0
+    #total count in user_portrait
+    query_body ={
+            'query':{
+                'match_all':{}
+                }
+            }
+    all_count_results = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+    if all_count_results['_shards']['successful'] != 0:
+        results['all_count'] = all_count_results['count']
+    else:
+        print 'es_user_portrait error'
+        results['all_count'] = 0
     return results
 
 #use to search user_portrait by lots of condition 

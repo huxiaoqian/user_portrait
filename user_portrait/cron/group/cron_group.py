@@ -204,7 +204,6 @@ def get_attr_social(uid_list):
                 '2397686502', '1748065927', '2699434042', '1886419032', '1830325932']
     '''
     result = {}
-    degree_list = [] 
     union_dict = {}
     union_edge_count = 0
     union_weibo_count = 0
@@ -212,6 +211,8 @@ def get_attr_social(uid_list):
     group_user_set = set(uid_list)
     be_retweeted_out = 0
     be_retweeted_count_out = 0
+    retweet_relation = []
+    out_beretweet_relation = []
     for uid in uid_list:
         in_stat_results = dict()
         out_stat_results = dict()
@@ -233,10 +234,27 @@ def get_attr_social(uid_list):
                         out_stat_results[br_uid] += br_uid_results[br_uid]
                     except:
                         out_stat_results[br_uid] = br_uid_results[br_uid]
-        degree_list.append(len(in_stat_results) + len(out_stat_results))
+        # record the retweet relation in group uid
+        uid_retweet_relation = [[uid, user, int(in_stat_results[user])] for user in in_stat_results if user in uid_list and user != uid]
+        retweet_relation.extend(uid_retweet_relation)
+        
+        # record the be_retweet relation out group uid but in user_portrait
+        uid_beretweet_relation = []
+        uid_beretweet = [user for user in out_stat_results if user not in uid_list]
+        es_portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_beretweet})['docs']
+        for be_retweet_item in es_portrait_result:
+            br_uid = be_retweet_item['_id']
+            beretweet_count = int(out_stat_results[br_uid])
+            try:
+                be_retweet_source = be_retweet_item['_source']
+                if be_retweet_source['influence']>=900:
+                    uid_beretweet_relation.append([uid, br_uid, be_retweet_source['uname'], beretweet_count, be_retweet_source['influence']])
+            except:
+                next
+        out_beretweet_relation.extend(uid_beretweet_relation)
+
         retweet_user_set = set(in_stat_results.keys())
         union_set = retweet_user_set & (group_user_set - set([uid]))
-        #print 'len union set:', len(union_set), union_set, uid
         union_edge_count += len(union_set) # count the retweet edge number
         if union_set:
             for ruid in union_set:
@@ -251,15 +269,25 @@ def get_attr_social(uid_list):
         #print 'be_retweeted_count_out_list:', be_retweeted_count_out_list
         be_retweeted_count_out += sum(be_retweeted_count_out_list)
 
-    p, t = np.histogram(degree_list, bins=10, normed=False)
-    result['degree_his'] = json.dumps([p.tolist(), t.tolist()])
     result['density'] = float(union_edge_count) / (len(uid_list) * (len(uid_list)-1))
     result['retweet_weibo_count'] = float(union_weibo_count) / len(uid_list)
     result['retweet_user_count'] = float(len(union_user_set)) / len(uid_list)
     result['be_retweeted_count_out'] = be_retweeted_count_out
     result['be_retweeted_out'] = be_retweeted_out
+    if retweet_relation!=[]:
+        sort_retweet_relation = sorted(retweet_relation, key=lambda x:x[2], reverse=True)
+    else:
+        sort_retweet_relation = []
+    result['retweet_relation'] = json.dumps(sort_retweet_relation)
+    
+    if out_beretweet_relation!=[]:
+        sort_out_beretweet_relation = sorted(out_beretweet_relation, key=lambda x:x[4], reverse=True)
+    else:
+        sort_out_beretweet_relation = []
+    result['out_beretweet_relation'] = json.dumps(sort_out_beretweet_relation)
     #print 'be_retweeted_out, be_retweeted_count_out:', be_retweeted_out, be_retweeted_count_out
     #print 'result:', result
+    print 'out_beretweet_relation:', sort_out_beretweet_relation
     return result
 
 def get_attr_trend(uid_list):
@@ -715,9 +743,11 @@ if __name__=='__main__':
     '''
     input_data['uid_list'] = ['1182391231', '1759168351', '1670071920', '1689618340', '1494850741', \
                               '1582488432', '1708942053', '1647678107']
+    input_data['task_name'] = u'商业人士'
     '''
     input_data['submit_date'] = '2013-09-08'
     input_data['state'] = u'关注的媒体'
+    #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)
     compute_group_task()
         
