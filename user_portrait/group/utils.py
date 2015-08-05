@@ -151,12 +151,13 @@ def get_group_results(task_name, module):
     if module=='activity':
         activity_geo_dict = json.loads(es_result['activity_geo'])
         sort_activity_geo = sorted(activity_geo_dict.items(), key=lambda x:x[1], reverse=True)
-        activity_geo = sort_activity_geo[:5]
+        activity_geo = sort_activity_geo[:50]
         activity_trend = json.loads(es_result['activity_trend'])
         online_pattern_dict = json.loads(es_result['online_pattern'])
         sort_online_pattern = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
-        online_pattern = sort_online_pattern[:5]
-        result = [activity_geo, activity_trend, online_pattern]
+        online_pattern = sort_online_pattern[:50]
+        geo_track = json.loads(es_result['geo_track'])
+        result = [activity_geo, activity_trend, online_pattern, geo_track]
     if module=='social':
         #degree_his = json.loads(es_result['degree_his'])
         density = es_result['density']
@@ -189,7 +190,27 @@ def get_group_results(task_name, module):
 
             count = relation[2]
             new_retweet_relation.append([source_uid, source_uname, target_uid, target_uname, count])
-        result = [new_retweet_relation, density, retweet_weibo_count, retweet_user_count]
+        uid_list = []
+        out_beretweet_relation = json.loads(es_result['out_beretweet_relation'])
+        uid_list = []
+        uid_list = [item[0] for item in out_beretweet_relation]
+        es_portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+        es_count = 0
+        new_out_beretweet_relation = []
+        for i in range(len(uid_list)):
+            item = es_portrait_result[i]
+            uid = item['_id']
+            try:
+                source = item['_source']
+                uname = source['uname']
+            except:
+                uname = ''
+            out_relation_item = out_beretweet_relation[i][1:]
+            a = [uid, uname]
+            a.extend(out_relation_item)
+            #print 'add_item:', add_item
+            new_out_beretweet_relation.append(a)
+        result = [new_retweet_relation, density, retweet_weibo_count, retweet_user_count, new_out_beretweet_relation]
     if module=='think':
         domain_dict = json.loads(es_result['domain'])
         topic_dict = json.loads(es_result['topic'])
@@ -199,13 +220,13 @@ def get_group_results(task_name, module):
     if module=='text':
         hashtag_dict = json.loads(es_result['hashtag'])
         sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
-        hashtag = sort_hashtag[:5]
+        hashtag = sort_hashtag[:50]
         emoticon_dict = json.loads(es_result['emoticon'])
         sort_emoticon = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
         emoticon = sort_emoticon[:5]
         keyword_dict = json.loads(es_result['keywords'])
         sort_keyword = sorted(keyword_dict.items(), key=lambda x:x[1], reverse=True)
-        keyword = sort_keyword[:20]
+        keyword = sort_keyword[:50]
         result = [hashtag, keyword, emoticon]
     if module=='influence':
         importance_dis = json.loads(es_result['importance_his'])
