@@ -6,11 +6,13 @@ import sys
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 from elasticsearch import RequestError
-#reload(sys)
-#sys.path.append('./../')
-#from global_utils import ES_CLUSTER_FLOW1 as es
-#from global_utils import es_user_profile as es_profile
-#from global_utils import es_user_portrait as es_portrait
+"""
+reload(sys)
+sys.path.append('./../')
+from global_utils import ES_CLUSTER_FLOW1 as es
+from global_utils import es_user_profile as es_profile
+from global_utils import es_user_portrait as es_portrait
+"""
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 from user_portrait.global_utils import es_user_portrait as es_portrait
 from user_portrait.global_utils import es_user_profile as es_profile
