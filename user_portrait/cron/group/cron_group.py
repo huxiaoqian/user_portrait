@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import IP
 import sys
 import json
 import time
@@ -650,6 +651,57 @@ def get_attr_tightness(density, retweet_weibo_count, retweet_user_count):
     #print 'tightness:', result
     return result
 
+def get_attr_geo_track(uid_list):
+    date_results = {} # results = {'2013-09-01':[(geo1, count1), (geo2, track2)], '2013-09-02'...} 7day
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    #test
+    now_date = '2013-09-08'
+    ts = datetime2ts(now_date)
+    for i in range(7, 0, -1):
+        timestamp = ts - i*24*3600
+        #print 'timestamp:', ts2datetime(timestamp)
+        ip_dict = dict()
+        results = r_cluster.hmget('ip_'+str(timestamp), uid_list)
+        #print 'results:',results
+        for item in results:
+            if item:
+                item_dict = json.loads(item)
+                #print 'item_dict:', item_dict
+                for ip_item in item_dict:
+                    try:
+                        ip_dict[ip_item] += item_dict[ip_item]
+                    except:
+                        ip_dict[ip_item] = item_dict[ip_item]
+        geo_dict = ip2geo(ip_dict)
+        sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
+        date_key = ts2datetime(timestamp)
+        date_results[date_key] = sort_geo_dict[:2]
+    #print 'results:', date_results
+    return {'geo_track': json.dumps(date_results)}
+
+
+def ip2geo(ip_dict):
+    city_set = set()
+    geo_dict = dict()
+    for ip in ip_dict:
+        try:
+            city = IP.find(str(ip))
+            if city:
+                city.encode('utf-8')
+            else:
+                city = ''
+        except Exception, e:
+            city = ''
+        if city:
+            len_city = len(city.split('\t'))
+            if len_city==4:
+                city = '\t'.join(city.split('\t')[:2])
+            try:
+                geo_dict[city] += ip_dict[ip]
+            except:
+                geo_dict[city] = ip_dict[ip]
+    return geo_dict
 
 '''
 def compute_group_task():
@@ -712,6 +764,10 @@ def compute_group_task():
     results = dict(results, **attr_in_portrait)
     attr_in_social = get_attr_social(uid_list)
     results = dict(results, **attr_in_social)
+    #show activity geo track
+    attr_geo_track = get_attr_geo_track(uid_list)
+    results = dict(results, **attr_geo_track)
+
     attr_weibo_trend = get_attr_trend(uid_list)
     results = dict(results, **attr_weibo_trend)
     attr_user_bci, influence_dict = get_attr_bci(uid_list)
@@ -758,4 +814,5 @@ if __name__=='__main__':
     uid_list = ['1514608170', '2729648295', '3288875501', '1660612723', '1785934112',\
                 '2397686502', '1748065927', '2699434042', '1886419032', '1830325932']
     #get_attr_social(uid_list)
+    #get_attr_geo_track(uid_list)
 
