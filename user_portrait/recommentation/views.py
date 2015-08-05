@@ -197,14 +197,14 @@ def ajax_cancel_recommend_out():
     if not date or not uid_list:
         return "no define date or uid_list"
     else:
-        date = str(date).replace('-')
+        date = str(date).replace('-','')
         uid_list = str(uid_list).split(',')
 
-        recommend_list = r_out.hget('recommend_delete_list',date)
+        recommend_list = json.loads(r_out.hget('recommend_delete_list',date))
         revise_list = list(set(recommend_list).difference(set(uid_list)))
         r_out.hset('recommend_delete_list',date, json.dumps(revise_list))
 
-        update_record_index(uid_list)
+        #update_record_index(uid_list)
 
     return json.dumps(1)
 
