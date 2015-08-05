@@ -156,7 +156,8 @@ def get_group_results(task_name, module):
         online_pattern_dict = json.loads(es_result['online_pattern'])
         sort_online_pattern = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
         online_pattern = sort_online_pattern[:5]
-        result = [activity_geo, activity_trend, online_pattern]
+        geo_track = json.loads(es_result['geo_track'])
+        result = [activity_geo, activity_trend, online_pattern, geo_track]
     if module=='social':
         #degree_his = json.loads(es_result['degree_his'])
         density = es_result['density']

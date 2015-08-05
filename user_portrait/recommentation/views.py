@@ -5,7 +5,6 @@ import redis
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-<<<<<<< HEAD
 from utils import show_out_uid,decide_out_uid, search_history_delete, show_all_out
 from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute, recommentation_more_information
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
