@@ -68,8 +68,8 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[3].toFixed(2) + '</font>(连接紧密)</td><td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[4].toFixed(2) + '</font>(一般活跃)</td>';
-    html += '<td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[5].toFixed(2) + '</font>(一般重要)</td><td style="text-align:center;vertical-align:middle"><font color="#FF0000">' + data[6].toFixed(2) + '</font>(影响较大)</td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '(连接紧密)</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '(一般活跃)</td>';
+    html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '(影响较大)</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
@@ -174,6 +174,7 @@ Draw_basic: function(data){
 Draw_activity: function(data){
     Draw_top_location(data);
     Draw_top_platform(data);
+    active_geo();
     data_x = [];
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
@@ -215,6 +216,7 @@ Draw_activity: function(data){
             }
         },
         yAxis: {
+            min: 0,
             title: {
                 text: '微博总量 (条)'
             },
@@ -242,88 +244,11 @@ Draw_activity: function(data){
 },
 Draw_social_line: function(data){
     Draw_group(data);
-    x_data = [];
-    y_data = [];
-    for (var i = 0; i < data['0']['0'].length; i++) {
-       var s = i.toString();
-       x_value = data['0']['0'][s];
-       x_data.push(x_value);
-    };
-    for (var i = 0; i < data['0']['1'].length; i++) {
-       var s = i.toString();
-       y_value = data['0']['1'][s];
-       y_data.push(y_value);
-    };
-    xdata = [];
-    for (i = 0; i< y_data.length-1; i++){
-        xdata.push(y_data[i].toFixed(0) + '-' + y_data[i+1].toFixed(0))
-    }
-
-    $('#social_line').highcharts({
-        chart: {
-        type: 'column',
-        //margin: [ 50, 50, 100, 80]
-    },
-    title: {
-        text: '群体节点度分布'
-    },
-    lang: {
-            printChart: "打印",
-            downloadJPEG: "下载JPEG 图片",
-            downloadPDF: "下载PDF文档",
-            downloadPNG: "下载PNG 图片",
-            downloadSVG: "下载SVG 矢量图",
-            exportButtonTitle: "导出图片"
-        },
-    xAxis: {
-        title: {
-                text: '节点度'
-            },
-        categories: xdata,
-        labels: {
-            rotation: -45,
-            align: 'right'
-        }
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: '数量 (人)'
-        }
-    },
-    legend: {
-        enabled: false
-    },
-    tooltip: {
-        pointFormat: '<b>{point.y:.1f} 人</b>',
-    },
-    plotOptions: {
-           series: {
-               pointPadding: 0, //数据点之间的距离值
-               groupPadding: 0, //分组之间的距离值
-               borderWidth: 0,
-               shadow: false,
-               pointWidth:55//柱子之间的距离值
-           }
-       },
-    series: [{
-        name: '',
-        data: x_data ,
-        dataLabels: {
-            // enabled: true,
-            rotation: -90,
-            color: '#FFFFFF',
-            align: 'right',
-            x: 4,
-            y: 10,
-            style: {
-                fontSize: '13px',
-                fontFamily: '微软雅黑',
-                textShadow: '0 0 3px black'
-            }
-        }
-    }]
-});
+    draw_relation_picture(data);
+    draw_relation_table(data);
+    draw_group_out_table(data);
+    draw_more_group_out_table(data);
+    console.log(data);
 },
 Draw_keyword: function(data){
     Draw_emotion(data);
@@ -403,9 +328,195 @@ function Draw_group(data){
     html += '<table><tr><th style="text-align:center">连接紧密度<i id="closeness_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有节点之间实际存在的边数与所有可能边数之比"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ data['1'].toFixed(2) +'(低于平均)</th></tr>';
     html += '<tr><th style="text-align:center">微博转发频率<i id="weibo_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内单个节点转发群体微博的平均次数"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ data['2'].toFixed(2) +'(高于平均)</th></tr>';
     html += '<tr><th style="text-align:center">参与转发比例<i id="join_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有参与转发群体微博的人数占群体人数的比例"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
-    html += '<tr><th style="text-align:center">平均节点度<i id="node_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内单个节点平均对外被转发次数"></i>&nbsp;&nbsp;</th><th style="text-align:center">361425.68(高于平均)</th></tr>';
     html += '</table>'; 
     $('#group').append(html);
+}
+
+
+function active_geo(){
+    $('#top_active_geo').empty();
+    html = '';
+    html += '<div class="clearfix course_nr"><ul class="course_nr2">';
+    for (i=0;i<7;i++){
+        html += '<li><div class="shiji"><h1>1993</h1><p>辽宁 大连</p></div></li>';
+    }
+    html += '</ul></div>';   
+    $('#top_active_geo').append(html);
+}
+
+function draw_relation_picture(data){
+    console.log(data);
+    total_content = [];
+    source_content = []
+    for (i=0;i<data['0'].length;i++){
+        s=i.toString();
+        content = {};
+        content['category'] = 1;
+        content['name'] = data['0'][s]['1'];
+        content['id'] = data['0'][s]['0'];
+        content['value'] = 7;
+        content['draggable'] = true;
+        content['symbolSize'] = [60, 30];
+        total_content.push(content);
+        content = {};
+        content['category'] = 1;
+        content['name'] = data['0'][s]['3'];
+        content['id'] = data['0'][s]['2'];
+        content['value'] = 7;
+        content['draggable'] = true;
+        content['symbolSize'] = [60, 30];
+        total_content.push(content);
+
+        relation = {};
+        relation['source'] = data['0'][s]['1'];
+        relation['target'] = data['0'][s]['3'];
+        relation['weight'] = data['0'][s]['4'];
+        relation['name'] = data['0'][s]['4'];
+
+        width = data['0'][s]['4'];
+        normal = {'width':width};
+        itemStyle= {'normal':normal};
+        relation['itemStyle'] = itemStyle;
+
+        source_content.push(relation);
+    }
+    console.log(source_content);
+
+    var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: '{a} : {b}'
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            restore : {show: true},
+            magicType: {show: true, type: ['force', 'chord']},
+            saveAsImage : {show: true}
+        }
+    },
+    legend: {
+        x: 'left',
+        data:['']
+    },
+    series : [
+        {
+            type:'force',
+            name : "",
+            ribbonType: false,
+            categories : [
+                {
+                    name:'微博用户'
+                }
+            ],
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        textStyle: {
+                            color: '#333'
+                        }
+                    },
+                    nodeStyle : {
+                        brushType : 'both',
+                        borderColor : 'rgba(255,215,0,0.4)',
+                        borderWidth : 1
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: false
+                        // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                    },
+                    nodeStyle : {
+                        //r: 30
+                    },
+                    linkStyle : {}
+                }
+            },
+            minRadius : 15,
+            maxRadius : 25,
+            gravity: 1.1,
+            scaling: 1.2,
+            draggable: false,
+            linkSymbol: 'arrow',
+            steps: 10,
+            coolDown: 0.9,
+            //preventOverlap: true,
+            nodes:total_content,
+            links : source_content
+        }
+    ]
+};
+    var myChart = echarts.init(document.getElementById('relation_picture'));
+    myChart.setOption(option);
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+                } else{
+                        window.open("/index/personal/?uid=" + data.id);                 
+                }
+            }
+                myChart.on(ecConfig.EVENT.CLICK, focus)
+
+                myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                    console.log(myChart.chart.force.getPosition());
+                });
+            }
+    )
+}
+
+function draw_relation_table(data){
+    $('#relation_table').empty();
+    html = '';
+    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    for (i=0;i<data['0'].length;i++){
+        s =i.toString();
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['1'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['3'] +'</a></td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
+    };
+    html += '</table>';
+    $('#relation_table').append(html);
+}
+
+
+function draw_group_out_table(data){
+    $('#relation_active_table').empty();
+    html = '';
+    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td><td style="text-align:center">影响力</td></tr>';
+    for (i=0;i<5;i++){
+        s =i.toString();
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td></tr>';
+    };
+    html += '</table>';
+    $('#relation_active_table').append(html);
+}
+
+function draw_more_group_out_table(data){
+    $('#more_group_out_user').empty();
+    html = '';
+    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td><td style="text-align:center">影响力</td></tr>';
+    for (i=0;i<data['4'].length;i++){
+        s =i.toString();
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td></tr>';
+    };
+    html += '</table>';
+    $('#more_group_out_user').append(html);
 }
 
 function Draw_importance(data){
