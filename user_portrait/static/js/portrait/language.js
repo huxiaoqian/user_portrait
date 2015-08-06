@@ -203,6 +203,15 @@ Draw_hashtag:function(data){
     }else{
         link.innerHTML = data.link_conclusion;
     }
+	
+	var emotion = document.getElementById('emotionDes');
+    if(data.emotion_conclusion==""){
+        emotion.innerHTML = '';
+    }else{
+        emotion.innerHTML = data.emotion_conclusion;
+    }
+	
+	
 }
 }
 var Hashtag = new Hashtag();
