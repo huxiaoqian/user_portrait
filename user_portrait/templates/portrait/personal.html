@@ -56,15 +56,15 @@ $(function(){
 {% block main %}
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
-    <div class="nickname" id="nickname"></div>
+    <div class="nickname">来自<span id="userDomain" class="red" ></span>领域的<span  id="nickname" class="red"></span>，热衷参与<span id="userTopic" class="red"></span>话题</div>
     <div style="text-align:center;height:30px;">
         <a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;
         <a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;
         <a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
 	<div class="power">
-		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（排名<span id="APrank"></span>/总数<span id="APsum"></span>）
-		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（排名<span id="IPrank"></span>/总数<span id="IPsum"></span>）
-		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（排名<span id="FPrank"></span>/总数<span id="FPsum"></span>）
+		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（No.<span id="APrank"></span>/<span id="APsum"></span>）
+		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
+		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（No.<span id="FPrank"></span>/<span id="FPsum"></span>）
 	</div>
 	<div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
 </div>
@@ -85,6 +85,7 @@ $(function(){
 				<span class="pt_title">性别</span>
 				<span class="pt_detail" id="userGender" ></span>
 			</li>
+			<!--
 			<li class="li_1">
 				<span class="pt_title">领域</span>
 				<span class="pt_detail" id="userDomain" ></span>
@@ -93,6 +94,7 @@ $(function(){
 				<span class="pt_title">话题</span>
 				<span class="pt_detail" id="userTopic" ></span>
 			</li>
+			-->
 			<li class="li_1">
 				<span class="pt_title">粉丝数</span>
 				<span class="pt_detail" id="userFans" ></span>
@@ -128,14 +130,11 @@ call_sync_ajax_request:function(url, method, callback){
 		
 	}
 }
-
 var uid = "{{ uid }}";
 var Personal = new Personal();
 var personalData; // global data
-
 var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
-
 var contact_url = '/index/contact/?uid=' + uid;
 $('#contact').attr('href', contact_url)
 var homepage_url = 'http://weibo.com/u/' + uid;
@@ -228,7 +227,7 @@ if(personalData.gender){
     
 var domain = document.getElementById('userDomain');
 if(personalData.domain){
-		domain.innerHTML = personalData.domain;
+		domain.innerHTML = '媒体';
 }else{
 	domain.innerHTML = "无此数据";
 }
@@ -245,7 +244,8 @@ if(personalData.topic){
 		}
 		
 	}
-	topic.innerHTML = str;
+	//topic.innerHTML = str;
+	topic.innerHTML = '生活，娱乐';
 }else{
 	topic.innerHTML = "无此数据";
 }
@@ -291,7 +291,7 @@ if(personalData.online_pattern[0][0]){
             <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
             <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
 			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/basic.png"/><p>传播属性</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/basic.png"/><p>影响力属性</p></a></li>
 		</ul>
 	</div> 
 
