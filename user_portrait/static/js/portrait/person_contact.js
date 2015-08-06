@@ -206,6 +206,7 @@ $('.label-success').click(function(){
 });
 
 $('.inline-checkbox').click(function(){
+    console.log('dddd');
     if($(this).is(':checked')){
         $(this).next().next().val('1');
         $(this).next().next().attr('disabled',false);

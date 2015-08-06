@@ -1,4 +1,10 @@
 {% extends "tbase.html" %}
+{% block css %}
+{{ super() }}
+<link  type="text/css" href="/static/personal/css/style.css" rel="stylesheet"/>
+<link  type="text/css" href="/static/personal/css/basic.css" rel="stylesheet"/>
+{% endblock css %}
+
 {% block main %}
 <link href="/static/css/lanrenzhijia.css" type="text/css" rel="stylesheet" />
 <script src="/static/js/lanrenzhijia.js" type="text/javascript"></script>
@@ -10,6 +16,60 @@
         left: -16px;
     }
 </style>
+<div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
+    <div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
+    <div class="nickname" id="nickname"></div>
+    <div style="text-align:center;height:30px;">
+        <a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;
+        <a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;
+      </div>
+    <div class="power">
+        <span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（排名<span id="APrank"></span>/总数<span id="APsum"></span>）
+        <span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（排名<span id="IPrank"></span>/总数<span id="IPsum"></span>）
+        <span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（排名<span id="FPrank"></span>/总数<span id="FPsum"></span>）
+    </div>
+    <div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
+</div>
+<div id="float-wrap" class="hidden"></div>
+<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 70%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
+    <h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本注册信息<a href="javascript:void(0)" class="Basicclose" id="close"></a></h3>
+    <div class="m-wrap" style="margin-top:30px;">
+        <ul class="clearfix">
+            <li class="li_1">
+                <span class="pt_title">用户ID</span>
+                <span class="pt_detail" id="userId" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">注册地</span>
+                <span class="pt_detail" id="userLocation" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">性别</span>
+                <span class="pt_detail" id="userGender" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">领域</span>
+                <span class="pt_detail" id="userDomain" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">话题</span>
+                <span class="pt_detail" id="userTopic" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">粉丝数</span>
+                <span class="pt_detail" id="userFans" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">关注数</span>
+                <span class="pt_detail" id="userFriend" ></span>
+            </li>
+            <li class="li_1">
+                <span class="pt_title">在线方式</span>
+                <span class="pt_detail" id="userOnline" ></span>
+            </li>
+        </ul>
+    </div>
+</div>
 <div class='row'>
 <div class="box col-md-12" >
     <div class="box-inner">
@@ -179,6 +239,176 @@
         $('#photo').css('height', '700px');
     });
     var uid = "{{ uid }}";
+    function Personal(){
+        this.ajax_method = 'GET';
+    }
+    Personal.prototype = {   //群组搜索
+    call_sync_ajax_request:function(url, method, callback){
+        $.ajax({
+          url: url,
+          type: method,
+          dataType: 'json',
+          async: false,
+          success:callback
+        });
+        },
+        personData:function(data){
+            personalData = data ;
+           console.log(data);
+            
+        }
+    }
+    var Personal = new Personal();
+    var personalData; // global data
+
+    var url = "/attribute/portrait_attribute/?uid=" + uid;
+    Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
+
+    var contact_url = '/index/contact/?uid=' + uid;
+    $('#contact').attr('href', contact_url)
+    var homepage_url = 'http://weibo.com/u/' + uid;
+    $('#homepage').attr('href', homepage_url)
+    var APsum = document.getElementById('APsum');
+    APsum.innerHTML = personalData.all_count;
+    var IPsum = document.getElementById('IPsum');
+    IPsum.innerHTML = personalData.all_count;
+    var FPsum = document.getElementById('FPsum');
+    FPsum.innerHTML = personalData.all_count;
+    var img = document.getElementById('portraitImg');
+    //console.log(personalData.photo_url);
+    if(personalData.photo_url == "unknown"){
+        img.src =  "http://tp2.sinaimg.cn/1878376757/50/0/1";
+    }else{
+        img.src = personalData.photo_url;
+    }
+    var influencePower = document.getElementById('FPnum');
+    if(personalData.influence){
+        influencePower.innerHTML = personalData.influence.toFixed(2);
+    }else{
+        influencePower.innerHTML = "无此数据";
+    }
+    var importantPower = document.getElementById('IPnum');
+    if(personalData.importance){
+        importantPower.innerHTML = personalData.importance.toFixed(2);
+    }else{
+        importantPower.innertHTML = "无此数据";
+    }
+    var activePower = document.getElementById('APnum');
+    if(personalData.activeness){
+        activePower.innerHTML = personalData.activeness.toFixed(2);
+    }else{
+        activePower.innerHTML = "无此数据";
+    }
+    var nickName = document.getElementById('nickname');
+    if(personalData.uname){
+        nickName.innerHTML = personalData.uname;
+    }else{
+        nickName.innerHTML = "无此数据";
+    }
+    var detailPortrait = document.getElementById('portraitDetail');
+    if(!personalData.description ){
+        detailPortrait.innerHTML = "无此数据";
+    }else{
+        detailPortrait.innerHTML = personalData.description;
+    }
+    var I_rank = document.getElementById('IPrank');
+    if(personalData.importance_rank){
+        I_rank.innerHTML = personalData.importance_rank;
+    }else{
+        I_rank.innerHTML = "无此数据";
+    }
+    var A_rank = document.getElementById('APrank');
+    if(personalData.activeness_rank){
+        A_rank.innerHTML = personalData.activeness_rank;
+    }else{
+        A_rank.innerHTML = "无此数据";
+    }
+    var F_rank = document.getElementById('FPrank');
+    if(personalData.influence_rank){
+        F_rank.innerHTML = personalData.influence_rank;
+    }else{
+        F_rank.innerHTML = "无此数据";
+    }
+    var uid_div = document.getElementById('userId');
+    if(personalData.uid){
+        uid_div.innerHTML = personalData.uid;
+    }else{
+        uid_div.innerHTML = "无此数据";
+    }
+        
+    var userlocation = document.getElementById('userLocation');
+    if(personalData.location){
+        userlocation.innerHTML = personalData.location;
+    }else{
+        userlocation.innerHTML = "无此数据";
+    }
+    var gender = document.getElementById('userGender');
+    if(personalData.gender){
+        gendernum = personalData.gender;
+        if (gendernum==1){
+            gender.innerHTML = '男';
+        }else{
+            gender.innerHTML = '女';
+        }
+    }else{
+        gender.innerHTML = "无此数据";
+    }
+        
+    var domain = document.getElementById('userDomain');
+    if(personalData.domain){
+            domain.innerHTML = personalData.domain;
+    }else{
+        domain.innerHTML = "无此数据";
+    }
+        
+    var topic = document.getElementById('userTopic');
+    if(personalData.topic){
+        topicdict = personalData.topic;
+        var str = '';
+        for(i=0;i<topicdict.length;i++){
+            if (i == (topicdict.length -1)){
+                str += topicdict[i][0];
+            }else{
+                str = str + topicdict[i][0] +',';
+            }
+            
+        }
+        topic.innerHTML = str;
+    }else{
+        topic.innerHTML = "无此数据";
+    }
+        
+    var fans = document.getElementById('userFans');
+    if(personalData.fansnum){
+        fans.innerHTML = personalData.fansnum;
+    }else{
+        fans.innerHTML = "无此数据";
+    }
+        
+    var friends = document.getElementById('userFriend');
+    if( personalData.friendsnum){
+        friends.innerHTML = personalData.friendsnum;
+    }else{
+        friends.innerHTML = "无此数据";
+    }
+        
+    var pattern = document.getElementById('userOnline');
+    if(personalData.online_pattern[0][0]){
+        pattern.innerHTML = personalData.online_pattern[0][0];
+    }else{
+        pattern.innerHTML = "无此数据";
+    }
+
+    $("#basic_info").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#basicInfo").removeClass("hidden");
+        return false;
+    });
+    $(".Basicclose").off("click").click(function(){
+        $("#float-wrap").addClass("hidden");
+        $("#basicInfo").addClass("hidden");
+        return false;
+    });
 </script>
 <script type="text/javascript" src="/static/js/portrait/person_contact.js"></script>
 
