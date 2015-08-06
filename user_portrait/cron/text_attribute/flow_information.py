@@ -112,7 +112,7 @@ def ip2geo(ip_dict):
         if city:
             len_city = len(city.split('\t'))
             if len_city==4:
-                city = '\t'.join(city.split('\t')[:2])
+                city = '\t'.join(city.split('\t')[:3])
             try:
                 geo_dict[city] += ip_dict[ip]
             except:
