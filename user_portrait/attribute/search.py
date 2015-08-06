@@ -21,7 +21,7 @@ from user_portrait.filter_uid import all_delete_uid
 
 
 emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
-
+link_ratio_threshold = [0, 0.5, 1]
 
 
 def search_identify_uid(uid):
@@ -265,21 +265,26 @@ def ip2city(ip):
             city = city.encode('utf-8')
         else:
             return None
+        city_list = city.split('\t')
+        if len(city_list)==4:
+            city = '\t'.join(city_list[:3])
     except Exception,e:
         return None
     return city
 
 # show user geo track
 def get_geo_track(uid):
-    date_results = {} # {'2013-09-01':[(geo1, count1),(geo2, count2)], '2013-09-02'...}
+    date_results = [] # {'2013-09-01':[(geo1, count1),(geo2, count2)], '2013-09-02'...}
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     #test
     now_date = '2013-09-08'
     ts = datetime2ts(now_date)
+    city_list = []
+    city_set = set()
     for i in range(7, 0, -1):
         timestamp = ts - i*24*3600
-        print 'timestamp:', ts2datetime(timestamp)
+        #print 'timestamp:', ts2datetime(timestamp)
         ip_dict = dict()
         results = r_cluster.hget('ip_'+str(timestamp), uid)
         ip_dict = dict()
@@ -288,14 +293,37 @@ def get_geo_track(uid):
         if results:
             ip_dict = json.loads(results)
             geo_dict = ip_dict2geo(ip_dict)
-
+            city_list.extend(geo_dict.keys())
             sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
-            date_results[date_key] = sort_geo_dict[:2]
+            date_results.append([date_key, sort_geo_dict[:2]])
         else:
-            date_results[date_key] = []
+            date_results = [date_key, []]
 
     print 'results:', date_results
-    return date_results
+    city_set = set(city_list)
+    geo_conclusion = get_geo_conclusion(uid, city_set)
+    return [date_results, geo_conclusion]
+
+def get_geo_conclusion(uid, city_set):
+    conclusion = ''
+    mark = 0
+    user_portrait_result = es_user_portrait.get(index='user_portrait', doc_type='user', id=uid)
+    try:
+        source = user_portrait_result['_source']
+        location = source['location']
+        location_city_list = location.split('\t')
+        #print 'location_city:', location_city_list
+        for location_city in location_city_list:
+            if location_city in city_set:
+                mark += 1
+        if mark==0:
+            conclusion = u'该用户注册地与活跃地区不一致'
+        else:
+            conclusion = u'该用户注册地包括在活跃地区范围内'
+    except:
+        conclusion = ''
+    #print 'conclusion:', conclusion
+    return conclusion
 
 def ip_dict2geo(ip_dict):
     city_set = set()
@@ -312,7 +340,7 @@ def ip_dict2geo(ip_dict):
         if city:
             len_city = len(city.split('\t'))
             if len_city==4:
-                city = '\t'.join(city.split('\t')[:2])
+                city = '\t'.join(city.split('\t')[:3])
             new_len_city = len(city.split('\t'))
             city = city.split('\t')[new_len_city-1]
             try:
@@ -355,17 +383,18 @@ def search_attribute_portrait(uid):
         results['hashtag_dict'] = sort_hashtag_dict[:5]
         descriptions = hashtag_description(hashtag_dict)
         results['hashtag_description'] = descriptions
-        #description = hashtag_description(hashtag_dict)
-        #results['description'] = description
     else:
         results['hashtag_dict'] = []
         results['hashtag_description'] = ''
     emotion_result = {}
+    emotion_conclusion_dict = {}
     if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
         for word_type in emotion_mark_dict:
             try:
                 word_dict = emotion_words_dict[word_type]
+                if word_type=='126' or word_type=='127':
+                    emotion_conclusion_dict[word_type] = word_dict
                 sort_word_dict = sorted(word_dict.items(), key=lambda x:x[1], reverse=True)
                 #print 'sort_word_dict:', sort_word_dict
                 word_list = sort_word_dict[:5]
@@ -374,6 +403,8 @@ def search_attribute_portrait(uid):
             emotion_result[emotion_mark_dict[word_type]] = word_list
     #print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
+    #emotion_conclusion
+    results['emotion_conclusion'] = get_emotion_conclusion(emotion_conclusion_dict)
     #topic
     if results['topic']:
         topic_dict = json.loads(results['topic'])
@@ -498,7 +529,43 @@ def search_attribute_portrait(uid):
     else:
         print 'es_user_portrait error'
         results['all_count'] = 0
+    #link conclusion
+    link_ratio = results['link']
+    results['link_conclusion'] = get_link_conclusion(link_ratio)
     return results
+
+#get emotion conclusion
+def get_emotion_conclusion(emotion_dict):
+    positive_key = '126'
+    negative_key = '127'
+    emotion_conclusion = ''
+    if positive_key in emotion_dict:
+        positive_word_count = sum(emotion_dict[positive_key].values())
+    else:
+        positive_word_count = 0
+    if negative_key in emotion_dict:
+        negative_word_count = sum(emotion_dict[negative_key].values())
+    else:
+        negative_word_count = 0
+    if positive_word_count > negative_word_count:
+        emotion_conclusion = u'该用户发布微博中偏好使用正向情感词'
+    elif positive_word_count < negative_word_count:
+        emotion_conclusion = u'该用户发布微博中偏好使用负向情感词'
+    else:
+        emotion_conclusion = u'该用户发布微博中正向情感词和负向情感词使用均衡'
+    return emotion_conclusion
+
+#get link conclusion
+def get_link_conclusion(link_ratio):
+    conclusion = ''
+    if link_ratio >= link_ratio_threshold[2]: 
+        conclusion = u'该用户极易于将外部信息引入微博平台'
+    elif link_ratio < link_ratio_threshold[2] and link_ratio >= link_ratio_threshold[1]:
+        conclusion = u'该用户一般易于将外部信息引入微博平台'
+    elif link_ratio < link_ratio_threshold[1]:
+        conclusion = u'该用户不易于将外部信息引入微博平台'
+    return conclusion
+
 
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):

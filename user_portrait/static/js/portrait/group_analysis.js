@@ -35,7 +35,6 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
-    console.log(data);
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
@@ -174,7 +173,9 @@ Draw_basic: function(data){
 Draw_activity: function(data){
     Draw_top_location(data);
     Draw_top_platform(data);
-    active_geo();
+    Draw_more_top_location(data);
+    Draw_more_top_platform(data);
+    active_geo(data);
     data_x = [];
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
@@ -248,19 +249,24 @@ Draw_social_line: function(data){
     draw_relation_table(data);
     draw_group_out_table(data);
     draw_more_group_out_table(data);
-    console.log(data);
 },
 Draw_keyword: function(data){
+    console.log(data);
     Draw_emotion(data);
     Draw_hashtag(data);
+    Draw_more_emotion(data);
+    Draw_more_hashtag(data);
+    // Draw_more_keyword(data);
     keyword = [];
-    for (key in data['1']){
+    for (i=0;i<20;i++){
+      s=i.toString();
       word = {};
-      word['name'] = data['1'][key]['0'];
-      word['value'] = data['1'][key]['1']*10;
+      word['name'] = data['1'][s]['0'];
+      word['value'] = data['1'][s]['1']*60;
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }
+    console.log(keyword);
     var myChart = echarts.init(document.getElementById('keywordcloud'));
     var option = {
     title: {
@@ -291,7 +297,6 @@ Draw_weibo: function(data){
     Draw_influence(data);
     Draw_importance(data);
     Draw_activeness(data);
-    console.log(data);
     $('#weibo').empty();
     if (data['3'].length > 9){
         $('#weibo').css("height", "615px");
@@ -321,6 +326,21 @@ Draw_weibo: function(data){
  
 var Search_weibo = new Search_weibo(); 
 
+ // Draw_more_keyword(data){
+ //    $('#more_keyword').empty();
+ //    html = '';
+ //    html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
+ //    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">权重</th></tr>';
+ //    for (var i = 0; i < data['1'].length; i++) {
+ //       var s = i.toString();
+ //       var m = i + 1;
+ //       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['1'][s]['0'] + '</th><th style="text-align:center">' + data['1'][s]['1'] +  '</th></tr>';
+ //    };
+ //    html += '</table>'; 
+ //    $('#more_keyword').append(html);
+
+ // }
+
 
 function Draw_group(data){
     $('#group').empty();
@@ -333,19 +353,19 @@ function Draw_group(data){
 }
 
 
-function active_geo(){
+function active_geo(data){
     $('#top_active_geo').empty();
     html = '';
+    html += '<div style="font-size:16px">一周轨迹</div>';
     html += '<div class="clearfix course_nr"><ul class="course_nr2">';
-    for (i=0;i<7;i++){
-        html += '<li><div class="shiji"><h1>1993</h1><p>辽宁 大连</p></div></li>';
+    for (key in data['3']){
+        html += '<li><div class="shiji"><h1>' + key.substring(5, 10) + '</h1><p>' + data['3'][key]['0']['1'] + '</p><p>' + data['3'][key]['0']['0'] + '</p><p>' + data['3'][key]['1']['1'] + '</p><p>' + data['3'][key]['1']['0'] + '</p></div></li>';        
     }
     html += '</ul></div>';   
     $('#top_active_geo').append(html);
 }
 
 function draw_relation_picture(data){
-    console.log(data);
     total_content = [];
     source_content = []
     for (i=0;i<data['0'].length;i++){
@@ -380,7 +400,6 @@ function draw_relation_picture(data){
 
         source_content.push(relation);
     }
-    console.log(source_content);
 
     var option = {
     tooltip : {
@@ -483,10 +502,10 @@ function draw_relation_table(data){
     $('#relation_table').empty();
     html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (i=0;i<data['0'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['1'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['3'] +'</a></td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['3'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['1'] +'</a></td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
     $('#relation_table').append(html);
@@ -497,10 +516,10 @@ function draw_group_out_table(data){
     $('#relation_active_table').empty();
     html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td><td style="text-align:center">影响力</td></tr>';
+    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center"</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
     $('#relation_active_table').append(html);
@@ -510,10 +529,10 @@ function draw_more_group_out_table(data){
     $('#more_group_out_user').empty();
     html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td><td style="text-align:center">影响力</td></tr>';
+    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center"</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (i=0;i<data['4'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
     $('#more_group_out_user').append(html);
@@ -905,8 +924,9 @@ function Draw_verify(data){
 function Draw_totalnumber(data){
     $('#totalnumber').empty();
     html = '';
-    html += '<a class="well top-block" style="height:180px;width:180;border-radius:500px">';
-    html += '<i class="glyphicon glyphicon-user blue" style="margin-top:50px"></i><div>群组总人数</div>';
+    html += '<a class="well top-block" style="height:180px;width:180px;border-radius:400px;margin-top:10px">';
+    html += '<div><img src="/static/img/user_group.png" style="height:40px;margin-top:40px"></div>';
+    html += '<div>群组总人数</div>'
     html += '<div>' + data['1'] + '</div></a>';
     $('#totalnumber').append(html);
 }
@@ -987,17 +1007,6 @@ function Draw_think_emotion(){
 }
 
 function Draw_think_topic(){
-    // domain_value = [];
-    // domain_key = [];
-    // indicate = [];
-    // for ( key in data['2']){
-    //      indicator = {};
-    //     domain_key.push(key);
-    //     indicator['text'] = key;
-    //     indicator['max'] = 20;
-    //     indicate.push(indicator);
-    //     domain_value.push(data['2'][key]);
-    // }
     var myChart = echarts.init(document.getElementById('radar_domain')); 
         
         var option = {
@@ -1055,19 +1064,6 @@ function Draw_think_topic(){
         myChart.setOption(option); 
 }
 function Draw_think_domain(){
-    // topic_value = [];
-    // topic_key = [];
-    // indicate = [];
-    // for ( key in data['2']){
-    //      indicator = {};
-    //     topic_key.push(key);
-    //     indicator['text'] = key;
-    //     indicator['max'] = 20;
-    //     indicate.push(indicator);
-    //     topic_value.push(data['2'][key]);
-    // }
-
-
     var myChart = echarts.init(document.getElementById('radar_topic')); 
         
         var option = {
@@ -1129,7 +1125,21 @@ function Draw_think_domain(){
 function Draw_hashtag(data){
     $('#hashtag').empty();
     html = '';
-    html += '<div style="font-size:16px;margin-bottom:20px;">Hashtag排名</div>';
+    html += '<div><span style="font-size:16px;">hashtag排名</span><span style="font-size:16px;float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_hashtag"><u>查看更多</u></span></div>';
+    html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < 5; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#hashtag').append(html);    
+}
+
+function Draw_more_hashtag(data){
+    $('#more_hashtag').empty();
+    html = '';
     html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['0'].length; i++) {
@@ -1138,7 +1148,7 @@ function Draw_hashtag(data){
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
-    $('#hashtag').append(html);    
+    $('#more_hashtag').append(html);    
 }
 function text2icon(text){
     var icon = '';
@@ -1155,10 +1165,10 @@ function text2icon(text){
 function Draw_emotion(data){
     $('#emotion').empty();
     html = '';
-    html += '<div style="font-size:16px;margin-bottom:20px;">表情符号排名</div>';
+    html += '<div><span style="font-size:16px;">表情符号排名</span><span style="font-size:16px;float:right;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_emotion"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i <  data['2'].length; i++) {
+    for (var i = 0; i <  5; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '<img src=' + text2icon(data['2'][s]['0']) + ' /></th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
@@ -1167,13 +1177,27 @@ function Draw_emotion(data){
     $('#emotion').append(html);    
 }
 
+function Draw_more_emotion(data){
+    $('#more_emotion').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i <  data['2'].length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2'][s]['0'] + '<img src=' + text2icon(data['2'][s]['0']) + ' /></th><th style="text-align:center">' + data['2'][s]['1'] +  '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#more_emotion').append(html);    
+}
+
 function Draw_top_location(data){
     $('#top_location').empty();
     html = '';
-    html += '<div style="font-size:16px;margin-bottom:20px;">发布地点排名</div>';
+    html += '<div><span style="font-size:16px;">发布地点排名</span><span style="font-size:16px;margin-left:240px;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_geo"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i <  data['0'].length; i++) {
+    for (var i = 0; i <  5; i++) {
        var s = i.toString();
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
@@ -1181,10 +1205,24 @@ function Draw_top_location(data){
     html += '</table>'; 
     $('#top_location').append(html);
 }
+
+function Draw_more_top_location(data){
+    $('#top_more_location').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" font-size:14px">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i <  data['0'].length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#top_more_location').append(html);
+}
 function Draw_top_platform(data){
     $('#top_platform').empty();
     html = '';
-    html += '<div style="font-size:16px;margin-bottom:20px;">发布平台排名</div>';
+ html += '<div><span style="font-size:16px;">发布平台排名</span><span style="font-size:16px;margin-left:240px;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_platform"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['2'].length; i++) {
@@ -1200,18 +1238,25 @@ function Draw_top_platform(data){
     $('#top_platform').append(html);
 }
 
+function Draw_more_top_platform(data){
+    $('#top_more_platform').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" font-size:14px">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < data['2'].length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['2']['0']['0'] + '</th><th style="text-align:center">2819</th></tr>';
+    };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
+    html += '</table>'; 
+    $('#top_more_platform').append(html);
+}
+
 function Draw_think_status(){
-    // status_value = [];
-    // status_key = [];
-    // indicate = [];
-    // for ( key in data['2']){
-    //      indicator = {};
-    //     status_key.push(key);
-    //     indicator['text'] = key;
-    //     indicator['max'] = 20;
-    //     indicate.push(indicator);
-    //     status_value.push(data['2'][key]);
-    // }
     var myChart = echarts.init(document.getElementById('radar_status')); 
         
         var option = {
