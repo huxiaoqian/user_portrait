@@ -180,7 +180,7 @@ Draw_activity: function(data){
     data_y = [];
     for (var i = 0; i < data['1'].length; i++) {
         var s = i.toString();
-        value_x = new Date(parseInt(data['1'][s]['0'])*1000).format("yyyy-MM-dd");
+        value_x = new Date(parseInt(data['1'][s]['0'])*1000).format("MM-dd hh:mm");
         value_y = data['1'][s]['1'];
         data_x.push(value_x);
         data_y.push(value_y);
@@ -247,6 +247,7 @@ Draw_social_line: function(data){
     Draw_group(data);
     draw_relation_picture(data);
     draw_relation_table(data);
+    draw_more_relation_table(data);
     draw_group_out_table(data);
     draw_more_group_out_table(data);
 },
@@ -256,7 +257,7 @@ Draw_keyword: function(data){
     Draw_hashtag(data);
     Draw_more_emotion(data);
     Draw_more_hashtag(data);
-    // Draw_more_keyword(data);
+    Draw_more_keyword(data);
     keyword = [];
     for (i=0;i<20;i++){
       s=i.toString();
@@ -326,39 +327,41 @@ Draw_weibo: function(data){
  
 var Search_weibo = new Search_weibo(); 
 
- // Draw_more_keyword(data){
- //    $('#more_keyword').empty();
- //    html = '';
- //    html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
- //    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">权重</th></tr>';
- //    for (var i = 0; i < data['1'].length; i++) {
- //       var s = i.toString();
- //       var m = i + 1;
- //       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['1'][s]['0'] + '</th><th style="text-align:center">' + data['1'][s]['1'] +  '</th></tr>';
- //    };
- //    html += '</table>'; 
- //    $('#more_keyword').append(html);
+function Draw_more_keyword(data){
+    $('#more_keyword').empty();
+    html = '';
+    html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">权重</th></tr>';
+    for (var i = 0; i < data['1'].length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data['1'][s]['0'] +  '&psycho_status=&domain&topic" target="_blank">' + data['1'][s]['0'] +  '</a></th><th style="text-align:center">' + data['1'][s]['1'] +  '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#more_keyword').append(html);
 
- // }
+ }
 
 
 function Draw_group(data){
     $('#group').empty();
     html = '';
-    html += '<table><tr><th style="text-align:center">连接紧密度<i id="closeness_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有节点之间实际存在的边数与所有可能边数之比"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ data['1'].toFixed(2) +'(低于平均)</th></tr>';
-    html += '<tr><th style="text-align:center">微博转发频率<i id="weibo_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内单个节点转发群体微博的平均次数"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ data['2'].toFixed(2) +'(高于平均)</th></tr>';
-    html += '<tr><th style="text-align:center">参与转发比例<i id="join_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有参与转发群体微博的人数占群体人数的比例"></i>&nbsp;&nbsp;</th><th style="text-align:center">'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
+    html += '<table><tr><th style="text-align:center;width:300px">连接紧密度<i id="closeness_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有节点之间实际存在的边数与所有可能边数之比"></i>&nbsp;&nbsp;'+ data['1'].toFixed(2) +'(低于平均)</th>';
+    html += '<th style="text-align:center;width:300px">微博转发频率<i id="weibo_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内单个节点转发群体微博的平均次数"></i>&nbsp;&nbsp;'+ data['2'].toFixed(2) +'(高于平均)</th>';
+    html += '<th style="text-align:center;width:300px">参与转发比例<i id="join_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有参与转发群体微博的人数占群体人数的比例"></i>&nbsp;&nbsp;'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
     html += '</table>'; 
     $('#group').append(html);
 }
 
 
 function active_geo(data){
+    console.log(data);
     $('#top_active_geo').empty();
     html = '';
     html += '<div style="font-size:16px">一周轨迹</div>';
-    html += '<div class="clearfix course_nr"><ul class="course_nr2">';
+    html += '<div class="clearfix course_nr" style="margin-top:-50px"><ul class="course_nr2">';
     for (key in data['3']){
+        console.log(key);
         html += '<li><div class="shiji"><h1>' + key.substring(5, 10) + '</h1><p>' + data['3'][key]['0']['1'] + '</p><p>' + data['3'][key]['0']['0'] + '</p><p>' + data['3'][key]['1']['1'] + '</p><p>' + data['3'][key]['1']['0'] + '</p></div></li>';        
     }
     html += '</ul></div>';   
@@ -501,14 +504,28 @@ function draw_relation_picture(data){
 function draw_relation_table(data){
     $('#relation_table').empty();
     html = '';
-    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
-    for (i=0;i<data['0'].length;i++){
+    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="margin-top:40px">';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    for (i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['3'] +'</a></td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['1'] +'</a></td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['0'] +'</a></td><td style="text-align:center">' + data['0'][s]['1'] +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['2'] +'</a></td><td style="text-align:center">' + data['0'][s]['3'] +'</td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
+    html +='<div type="button" data-toggle="modal" data-target="#modal_group_in" style="font-size:16px;cursor:pointer;float:left"><u>查看更多</u></div>';
     $('#relation_table').append(html);
+}
+
+function draw_more_relation_table(data){
+    $('#more_group_in').empty();
+    html = '';
+    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    for (i=0;i<data['0'].length;i++){
+        s =i.toString();
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['0'] +'</a></td><td style="text-align:center">' + data['0'][s]['1'] +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['2'] +'</a></td><td style="text-align:center">' + data['0'][s]['3'] +'</td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
+    };
+    html += '</table>';
+    $('#more_group_in').append(html);
 }
 
 
@@ -516,10 +533,10 @@ function draw_group_out_table(data){
     $('#relation_active_table').empty();
     html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center"</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center"</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['2'] +'</a></td><td style="text-align:center">' + data['4'][s]['3'] +'</td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['0'] +'</a></td><td style="text-align:center">' + data['4'][s]['1'] +'</td><td style="text-align:center">' + data['4'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
     $('#relation_active_table').append(html);
@@ -529,10 +546,10 @@ function draw_more_group_out_table(data){
     $('#more_group_out_user').empty();
     html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center"</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center"</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (i=0;i<data['4'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['3'] +'</a></td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['1'] +'</a></td><td style="text-align:center">' + data['4'][s]['4'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['2'] + '">' + data['4'][s]['2'] +'</a></td><td style="text-align:center">' + data['4'][s]['3'] +'</td><td style="text-align:center">' + data['4'][s]['5'].toFixed(2) +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['4'][s]['0'] + '">' + data['4'][s]['0'] +'</a></td><td style="text-align:center">' + data['4'][s]['1'] +'</td><td style="text-align:center">' + data['4'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
     $('#more_group_out_user').append(html);
@@ -811,6 +828,7 @@ $(document).ready(function(){
     Draw_think_emotion();
     Draw_think_domain();
     Draw_think_topic();
+    Draw_think_tendency();
     weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
     model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
@@ -1007,7 +1025,7 @@ function Draw_think_emotion(){
 }
 
 function Draw_think_topic(){
-    var myChart = echarts.init(document.getElementById('radar_domain')); 
+    var myChart = echarts.init(document.getElementById('radar_topic')); 
         
         var option = {
         title : {
@@ -1063,8 +1081,67 @@ function Draw_think_topic(){
         // 为echarts对象加载数据 
         myChart.setOption(option); 
 }
+
+function Draw_think_tendency(){
+        var myChart = echarts.init(document.getElementById('radar_tendency')); 
+        
+        var option = {
+        title : {
+            text: '',
+            subtext: ''
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            x : 'center',
+            data:['倾向性']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        polar : [
+            {
+            indicator : [
+                {text : '九一八', max  : 100},
+                {text : '马航', max  : 100},
+                {text : '六四', max  : 100},
+                {text : 'APEC', max  : 100},
+                {text : '踩踏事件', max  : 100},
+                {text : '东盟博览会', max  : 100}],
+                radius : 80
+            }
+        ],
+        series : [
+            {
+                name: '',
+                type: 'radar',
+                itemStyle: {
+                    normal: {
+                        areaStyle: {
+                            type: 'default'
+                        }
+                    }
+                },
+                data : [
+                    {
+                        value : [97, 42, 88, 94, 90, 86],
+                        name : '倾向性'
+                    }
+                ]
+            }
+        ]
+    };                
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+}
+
 function Draw_think_domain(){
-    var myChart = echarts.init(document.getElementById('radar_topic')); 
+    var myChart = echarts.init(document.getElementById('radar_domain')); 
         
         var option = {
         title : {
@@ -1131,7 +1208,7 @@ function Draw_hashtag(data){
     for (var i = 0; i < 5; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['0'][s]['0'] +  '&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['0'][s]['0'] +  '</a></th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#hashtag').append(html);    
@@ -1145,7 +1222,7 @@ function Draw_more_hashtag(data){
     for (var i = 0; i < data['0'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['0'][s]['0'] +  '&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['0'][s]['0'] +  '</a></th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_hashtag').append(html);    
@@ -1200,7 +1277,7 @@ function Draw_top_location(data){
     for (var i = 0; i <  5; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['0'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['0'][s]['0'] +  '</a></th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#top_location').append(html);
@@ -1214,7 +1291,7 @@ function Draw_more_top_location(data){
     for (var i = 0; i <  data['0'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['0'][s]['0'] + '</th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['0'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['0'][s]['0'] +  '</a></th><th style="text-align:center">' + data['0'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#top_more_location').append(html);
