@@ -27,19 +27,17 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     keys_list.remove('size')
 
     search_dict = {}
-    print keys_list
+    iter_list = []
 
-    print personal_info['hashtag']
     for iter_key in keys_list:
-        print iter_key
         if personal_info[iter_key] == '' or not personal_info[iter_key]:
             query_fields_dict.pop(iter_key)
-            keys_list.remove(iter_key)
+            iter_list.append(iter_key)
         else:
             temp = personal_info[iter_key]
             search_dict[iter_key] = temp.split('&')
 
-    if len(keys_list) == 0:
+    if len(iter_list) == 0:
         return []
 
     query_body = {
@@ -85,7 +83,6 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
         temp = {}
         temp_list = []
-        print search_dict,k
         for iter_key in search_dict[k]:
             temp_list.append({'wildcard':{k:{'wildcard':'*'+iter_key+'*','boost': v}}})
 
