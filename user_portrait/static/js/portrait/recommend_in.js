@@ -49,20 +49,85 @@ Search_weibo_recommend.prototype = {
       html += '<td class="center" style="width:100px">'+ item[i][3] +'</td>';
       html += '<td class="center" style="width:100px">'+ item[i][4] +'</td>';
       html += '<td class="center" style="width:100px">'+ item[i][5] +'</td>';
-      html += '<td class="center" style="width:100px"><a name="details">详情</a></td>';
+      html += '<td class="center" style="width:100px"><a name="details" id="'+ item[i][0] +'" title="'+ item[i][1] +'">详情</a></td>';
       html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
     html += '</tbody>';
     html += '</table>';
     $(div).append(html);
+
     $('[name="details"]').click(function(){
-        $('#details').empty();
-        var detail_html = '';
-        detail_html += 'details';
-        $('#details').append(detail_html);
+      var detail_uid = $(this).attr('id');
+      var detail_uname = $(this).attr('title');
+      var detail_url = '/recommentation/show_in_more/?uid=' + detail_uid;
+      $.ajax({
+        url: detail_url,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success:show_details
+      });
+      function show_details(data){
+        $('#line_chart').empty();
+        if(data['time_trend'].length==0)
+          $('#line_chart').append('<div style="text-align:center">暂无数据！</div>');
+        else{
+          var line_chart_xaxis = [];
+          for(var k in data['time_trend'][0])
+            line_chart_xaxis.push(new Date(parseInt(data['time_trend'][0][k])*1000).format("MM-dd hh:mm"));
+          console.log(line_chart_xaxis);
+          var line_chart_yaxis = data['time_trend'][1];
+          draw_line_chart(line_chart_xaxis.reverse(), line_chart_yaxis.reverse(), 'line_chart', detail_uname);
+        }
+
+        $('#place').empty();
+        if(data['activity_geo'].length==0)
+          $('#place').append('<h4 style="text-align:center">活跃地点</h4><div style="text-align:center">暂无数据！</div>');
+        else{
+          var place_html = '';
+          place_html += '<h4 style="text-align:center">活跃地点</h4>';
+          place_html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+          place_html += '<thead><tr><th style="text-align:center;vertical-align:middle;width:80px">排名</th><th style="text-align:center;vertical-align:middle;width:200px">地点</th><th style="text-align:center;vertical-align:middle;width:80px">微博数</th></tr></thead>';
+          place_html += '<tbody>';
+          for(var m in data['activity_geo']){
+            place_html += '<tr>';
+            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(m)+1) +'</td>';
+            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][0] +'</td>';
+            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][1] +'</td>';
+            place_html += '</tr>';
+          }
+          place_html += '</tbody>';
+          place_html += '</table>';
+
+          $('#place').append(place_html);
+        }
+
+        $('#hashtag').empty();
+        if(data['hashtag'].length==0)
+          $('#hashtag').append('<h4 style="text-align:center">HashTag</h4><div style="text-align:center">暂无数据！</div>');
+        else{
+          var hashtag_html = '';
+          hashtag_html += '<h4 style="text-align:center">HashTag</h4>';
+          hashtag_html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+          hashtag_html += '<thead><tr><th style="text-align:center;vertical-align:middle;width:80px">排名</th><th style="text-align:center;vertical-align:middle;width:200px">HashTag</th><th style="text-align:center;vertical-align:middle;width:80px">微博数</th></tr></thead>';
+          hashtag_html += '<tbody>';
+          for(var n in data['hashtag']){
+            hashtag_html += '<tr>';
+            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(n)+1) +'</td>';
+            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][0] +'</td>';
+            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][1] +'</td>';
+            hashtag_html += '</tr>';
+          }
+          hashtag_html += '</tbody>';
+          hashtag_html += '</table>';
+          $('#hashtag').append(hashtag_html);
+        }
+
         $('#details_modal').modal();
+      }
     });
+
     $('#recommend_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "recommend_boot",
@@ -465,4 +530,88 @@ function replace_space(data){
     }
   }
   return data;
+}
+
+function draw_line_chart(xaxis, yaxis, div, uname){
+  var uname_text = '"' + uname + '"的微博数';
+  var line_chart_option = {
+    title : {
+        text: '用户微博走势图',
+        subtext: '',
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:[uname_text]
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            axisLabel:{
+              interval:5,
+            },
+            data : xaxis,
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+        }
+    ],
+    series : [
+        {
+            name:uname_text,
+            type:'line',
+            data:yaxis,
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+            markLine : {
+                data : [
+                    {type : 'average', name: '平均值'}
+                ]
+            }
+        },
+    ]
+  };
+  var draw_init2 = echarts.init(document.getElementById(div));
+  draw_init2.setOption(line_chart_option);
+}
+
+// Date format
+Date.prototype.format = function(format){
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
 }
