@@ -271,12 +271,14 @@ def ip2city(ip):
 
 # show user geo track
 def get_geo_track(uid):
-    date_results = {} # {'2013-09-01':[(geo1, count1),(geo2, count2)], '2013-09-02'...}
+    date_results = [] # {'2013-09-01':[(geo1, count1),(geo2, count2)], '2013-09-02'...}
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     #test
     now_date = '2013-09-08'
     ts = datetime2ts(now_date)
+    city_list = []
+    city_set = set()
     for i in range(7, 0, -1):
         timestamp = ts - i*24*3600
         print 'timestamp:', ts2datetime(timestamp)
@@ -288,14 +290,37 @@ def get_geo_track(uid):
         if results:
             ip_dict = json.loads(results)
             geo_dict = ip_dict2geo(ip_dict)
-
+            city_list.extend(geo_dict.keys())
             sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
-            date_results[date_key] = sort_geo_dict[:2]
+            date_results.append([date_key, sort_geo_dict[:2]])
         else:
-            date_results[date_key] = []
+            date_results = [date_key, []]
 
     print 'results:', date_results
-    return date_results
+    city_set = set(city_list)
+    geo_conclusion = get_geo_conclusion(uid, city_set)
+    return [date_results, geo_conclusion]
+
+def get_geo_conclusion(uid, city_set):
+    conclusion = ''
+    mark = 0
+    user_portrait_result = es_user_portrait.get(index='user_portrait', doc_type='user', id=uid)
+    try:
+        source = user_portrait_result['_source']
+        location = source['location']
+        location_city_list = location.split('\t')
+        #print 'location_city:', location_city_list
+        for location_city in location_city_list:
+            if location_city in city_set:
+                mark += 1
+        if mark==0:
+            conclusion = u'该用户注册地与活跃地区不一致'
+        else:
+            conclusion = u'该用户注册地包括在活跃地区范围内'
+    except:
+        conclusion = ''
+    #print 'conclusion:', conclusion
+    return conclusion
 
 def ip_dict2geo(ip_dict):
     city_set = set()
@@ -361,11 +386,14 @@ def search_attribute_portrait(uid):
         results['hashtag_dict'] = []
         results['hashtag_description'] = ''
     emotion_result = {}
+    emotion_conclusion_dict = {}
     if results['emotion_words']:
         emotion_words_dict = json.loads(results['emotion_words'])
         for word_type in emotion_mark_dict:
             try:
                 word_dict = emotion_words_dict[word_type]
+                if word_type=='126' or word_type=='127':
+                    emotion_conclusion_dict[word_type] = word_dict
                 sort_word_dict = sorted(word_dict.items(), key=lambda x:x[1], reverse=True)
                 #print 'sort_word_dict:', sort_word_dict
                 word_list = sort_word_dict[:5]
@@ -374,6 +402,8 @@ def search_attribute_portrait(uid):
             emotion_result[emotion_mark_dict[word_type]] = word_list
     #print 'emotion_words:', type(emotion_result)
     results['emotion_words'] = emotion_result
+    #emotion_conclusion
+    results['emotion_conclusion'] = get_emotion_conclusion(emotion_conclusion_dict)
     #topic
     if results['topic']:
         topic_dict = json.loads(results['topic'])
@@ -498,7 +528,15 @@ def search_attribute_portrait(uid):
     else:
         print 'es_user_portrait error'
         results['all_count'] = 0
+
     return results
+
+#get emotion conclusion
+def get_emotion_conlusion(emotion_dict):
+    positive_key = '126'
+    negative_key = '127'
+    emotion_conclusion = ''
+    return emotion_conclusion
 
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):
