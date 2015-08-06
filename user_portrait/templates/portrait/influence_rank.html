@@ -35,7 +35,7 @@
         <li class="active" title="整体排名"><a href="#info">整体排名</a></li>
         <li title="变动排名"><a href="#messages">变动排名</a></li>
         <li title="领域排名"><a href="#custom">领域排名</a></li>
-        <li title="影响力详情"><a href="#details">影响力详情</a></li>
+        <!-- <li title="影响力详情"><a href="#details">影响力详情</a></li> -->
     </ul>
 
     <div id="myTabContent" class="tab-content">
@@ -45,7 +45,12 @@
             <div class="box-header well" style="margin-top:20px;margin-bottom:10px">
                 <h5><i class="glyphicon glyphicon-info-sign"></i> 具体排名</h5>
             </div>
+            <div>
             <span>排名范围：</span><span id="range" style="margin-left:10px"></span>
+            </div>
+            <div style="margin-top:5px;margin-bottom:5px">
+            <span>排名指标：</span><span id="index" style="margin-left:10px"></span>
+            </div>
             <div id="total_rank" style="margin-top:10px"></div>
 
             <div class="box-header well" style="margin-top:40px;margin-bottom:10px">
@@ -64,6 +69,7 @@
             <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="domain_button" title="确定选择">确定</button></span>
             <div id="domain_rank" style="margin-top:10px"></div>
         </div>
+        <!--
         <div class="tab-pane" id="details" style="margin-top:10px">
             <span>选择日期：</span><span id="detail_date" style="margin-left:10px"></span>
             <span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="detail_date_button" title="确定日期选择">确定</button></span>
@@ -80,6 +86,7 @@
             <div id="hot_users_details" style="margin-top:10px;text-align:center"></div>
             <div id="hot_users_line_chart" style="margin-top:30px;width:980px;height:400px"></div>
         </div>
+        -->
     </div>
 </div>
 {% endblock %}
