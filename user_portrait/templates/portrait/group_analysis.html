@@ -4,7 +4,8 @@
       {{ super() }}	    
     <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
     <link href="/static/css/charisma-app.css" rel="stylesheet">
-    <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
+    <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/timeline.css" rel="stylesheet" type="text/css">
     <style type="text/css">
     body {
   font-family: '微软雅黑';
@@ -41,7 +42,7 @@
 	}
 	.dataTables_filter{text-align:right;margin-bottom:5px;}
     .dataTables_paginate{margin-top:-50px;margin-bottom:-20px;}
- 	a{TEXT-DECORATION:none}a:hover{TEXT-DECORATION:none}
+ /*	a{TEXT-DECORATION:none}a:hover{TEXT-DECORATION:none}*/
  	</style>
  {% endblock css %}
 
@@ -50,6 +51,10 @@
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/js/emoticon.js" charset="utf-8"></script>
+	<script type="text/javascript" src='/static/js/esl.js'></script>
+	<script type="text/javascript" src='/static/js/echarts-all.js'></script>
+	<script type="text/javascript" src='/static/js/echarts.js'></script>
+
   {% endblock head_js %}
 
 
@@ -75,12 +80,10 @@
 			        <div id='sex' style='float:left;width:300px;height:200px'></div>        
 			        <div id='verify' style='float:right;width:300px;height:200px'></div>
 				    <div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:80px' id='totalnumber'>
-
 				    </div>
 			      </div>
 			    </div>
 			  </div>
-
 
 
 			  <div class="panel panel-default">
@@ -98,69 +101,22 @@
 			        </div>
 				     <div id='top_location' style='overflow-x:hidden;width:450px;float:right'>
 					 </div>
-
+					 <div id="top_active_geo" style="height:200px;width:1000px;float:left"></div>
 			      </div>
 			    </div>
 			  </div>
+
 
 
 			  <div class="panel panel-default">
 			    <div class="panel-heading" role="tab" id="headingThree">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-			          社交特征
-			        </a>
-			      </h4>
-			    </div>
-			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-			      <div class="panel-body">
-			      	<div id='social_line'style='width:600px;height:350px;float:left'></div>
-				     <div id='group' style='overflow-x:hidden;width:360px;margin-top:100px;float:right'>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
-
-
-			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingFour">
-			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-			          思想属性
-			        </a>
-			      </h4>
-			    </div>
-			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-			      <div class="panel-body">
-					<div>
-						<div style="height:380px;width:320px;float:left">
-						<div style="font-size:16px;margin-bottom:20px;">领域划分</div>
-						<div id="radar_topic" style="height:350px;width:320px;"></div>
-						</div>
-
-						<div style="height:380px;width:320px;float:right">
-						<div style="font-size:16px;margin-bottom:20px;">话题划分</div>
-						<div id="radar_domain" style="height:350px;width:320px;"></div>
-						</div>
-
-						<div style="height:380px;width:320px;float:right">
-						<div style="font-size:16px;margin-bottom:20px;">心理状态划分</div>
-						<div id="pie_emotion" style="height:350px;width:320px;"></div>
-						</div>
-					</div>
-			      </div>
-			    </div>
-			  </div>
-
-			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingFive">
-			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
 			          语言属性
 			        </a>
 			      </h4>
 			    </div>
-			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 			      <div class="panel-body">
 
 					<div id='hashtag' style='overflow-x:hidden;width:300px;height:300;float:left'>
@@ -171,22 +127,19 @@
 						<div style="font-size:16px;margin-left:50px;">关键词</div>
 						<div id="keywordcloud" style="width:450px;height:300"></div>
 						</div>
-					
-
 			      </div>
 			    </div>
 			  </div>
 
-
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingSix">
+			    <div class="panel-heading" role="tab" id="headingFour">
 			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-			          影响力属性
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+			          传播属性
 			        </a>
 			      </h4>
 			    </div>
-			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 			      <div class="panel-body">
 
 			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
@@ -197,6 +150,73 @@
 			      </div>
 			    </div>
 			  </div>
+
+			  <div class="panel panel-default">
+			    <div class="panel-heading" role="tab" id="headingFive">
+			      <h4 class="panel-title">
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+			          标签属性
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+			      <div class="panel-body">
+						<div style="height:400px;width:450px;float:left">
+						<div style="font-size:16px;margin-bottom:20px;">领域划分</div>
+						<div id="radar_topic" style="height:380px;width:450px;"></div>
+						</div>
+						<div style="height:400px;width:450px;float:right">
+						<div style="font-size:16px;margin-bottom:20px;">话题划分</div>
+						<div id="radar_domain" style="height:380px;width:450px;"></div>
+						</div>
+			      </div>
+			    </div>
+			  </div>
+
+
+
+			  <div class="panel panel-default">
+			    <div class="panel-heading" role="tab" id="headingSix">
+			      <h4 class="panel-title">
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+			          社交属性
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+			      <div class="panel-body">
+			      	<div style="font-size:16px">群组内转发关系</div>
+			        <div id='relation_table'style='width:400px;height:400px;float:left'></div>
+			      	<div id='relation_picture'style='width:560px;height:400px;float:right'></div>
+			      	<div><span style="font-size:16px">群组外对该群组转发关系</span><span type="button"data-toggle="modal" data-target="#more_group_out" style="font-size:16px;margin-left:360px;cursor: pointer"><u>查看更多</u></span></div>
+			      	<div id='relation_active_table' style='overflow-x:hidden;width:600px;float:left'></div>	
+			      	<div id='group' style='overflow-x:hidden;width:300px;margin-top:50px;float:right'>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+
+
+			  <div class="panel panel-default">
+			    <div class="panel-heading" role="tab" id="headingSeven">
+			      <h4 class="panel-title">
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+			          思想属性
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+			      <div class="panel-body">
+					<div>
+						<div style="height:400px;width:450px;float:left">
+						<div style="font-size:16px;margin-bottom:20px;">心理状态划分</div>
+						<div id="pie_emotion" style="height:380px;width:450px;"></div>
+						</div>
+					</div>
+			      </div>
+			    </div>
+			  </div>
+
 
 				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				  <div class="modal-dialog" role="document" style="width:950px;margin-top:60px">
@@ -210,6 +230,21 @@
 				    </div>
 				  </div>
 				</div>
+
+				<div class="modal fade" id="more_group_out" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document" style="width:950px;margin-top:60px">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">群组外转发该群组微博数</h4>
+				      </div>
+				      <div class="modal-body" id='more_group_out_user'>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+
 			</div>
         </div>
     </div>			
@@ -225,6 +260,11 @@
             $("#join_tooltip").tooltip(); 
             $("#node_tooltip").tooltip();          
         })
+	$(function(){	
+		//首页大事记
+		$('.course_nr2 li').find('.shiji').slideDown(600);	
+	});
+	var myChart = echarts.init(document.getElementById('relation_picture'));
     </script>
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
     {% endblock Own_js %}
