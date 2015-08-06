@@ -27,18 +27,9 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     keys_list.remove('size')
 
     search_dict = {}
-<<<<<<< HEAD
-    print keys_list
-=======
     iter_list = []
->>>>>>> 50b43bdb7d73295bd11798182be41544538e3a65
 
-    print personal_info['hashtag']
     for iter_key in keys_list:
-<<<<<<< HEAD
-        print iter_key
-=======
->>>>>>> 50b43bdb7d73295bd11798182be41544538e3a65
         if personal_info[iter_key] == '' or not personal_info[iter_key]:
             query_fields_dict.pop(iter_key)
             iter_list.append(iter_key)

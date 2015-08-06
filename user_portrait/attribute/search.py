@@ -21,7 +21,7 @@ from user_portrait.filter_uid import all_delete_uid
 
 
 emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
-
+link_ratio_threshold = [0, 0.5, 1]
 
 
 def search_identify_uid(uid):
@@ -380,8 +380,6 @@ def search_attribute_portrait(uid):
         results['hashtag_dict'] = sort_hashtag_dict[:5]
         descriptions = hashtag_description(hashtag_dict)
         results['hashtag_description'] = descriptions
-        #description = hashtag_description(hashtag_dict)
-        #results['description'] = description
     else:
         results['hashtag_dict'] = []
         results['hashtag_description'] = ''
@@ -528,7 +526,9 @@ def search_attribute_portrait(uid):
     else:
         print 'es_user_portrait error'
         results['all_count'] = 0
-
+    #link conclusion
+    link_ratio = results['link']
+    results['link_conclusion'] = get_link_conclusion(link_ratio)
     return results
 
 #get emotion conclusion
@@ -536,8 +536,33 @@ def get_emotion_conclusion(emotion_dict):
     positive_key = '126'
     negative_key = '127'
     emotion_conclusion = ''
-    positive_weibo_count = ''
+    if positive_key in emotion_dict:
+        positive_word_count = sum(emotion_dict[positive_key].values())
+    else:
+        positive_word_count = 0
+    if negative_key in emotion_dict:
+        negative_word_count = sum(emotion_dict[negative_key].values())
+    else:
+        negative_word_count = 0
+    if positive_word_count > negative_word_count:
+        emotion_conclusion = u'该用户发布微博中偏好使用正向情感词'
+    elif positive_word_count < negative_word_count:
+        emotion_conclusion = u'该用户发布微博中偏好使用负向情感词'
+    else:
+        emotion_conclusion = u'该用户发布微博中正向情感词和负向情感词使用均衡'
     return emotion_conclusion
+
+#get link conclusion
+def get_link_conclusion(link_ratio):
+    conclusion = ''
+    if link_ratio >= link_ratio_threshold[2]: 
+        conclusion = u'该用户极易于将外部信息引入微博平台'
+    elif link_ratio < link_ratio_threshold[2] and link_ratio >= link_ratio_threshold[1]:
+        conclusion = u'该用户一般易于将外部信息引入微博平台'
+    elif link_ratio < link_ratio_threshold[1]:
+        conclusion = u'该用户不易于将外部信息引入微博平台'
+    return conclusion
+
 
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):
