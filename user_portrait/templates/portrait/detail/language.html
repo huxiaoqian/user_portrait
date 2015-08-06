@@ -1,8 +1,35 @@
 <link href="/static/personal/css/language.css" rel="stylesheet" type="text/css" />
+<style>
+#moreWords{
+  position: fixed;
+  margin-top: -200px;
+  left: 65%;
+  top: 40%;
+  z-index: 1002;
+  width: 500px;
+  background: #FFF none repeat scroll 0% 0%;
+  border: 1px solid #AA8BE8;
+  height: 600px;
+  margin-left: -460px;
+  font_family: "Microsoft YaHei UI";
+}
+.title{
+  font-size: 20px;
+  color: #3F3F3F;
+  border-bottom: 1px solid #E2E2E6;
+  padding-left: 10px;
+  font-family: "Microsoft YaHei UI";
+}
+#WordList{
+height:500px;
+overflow:scroll;
+}
+</style>
 <div id="Language" style="width:300px;height:300px;margin-left:80px;margin-top:30px;"></div>
-
+<div class="showmore" style="margin-top:50px;font-size:16px;"><a id="showmoreWords">更多</a></div>
 <div class="hotwords" style="width:550px;height:100%;margin-left:20px;padding-left:20px;">
 	<div id="TabContainer" >
+
 		<div class="Lsubtitle fleft" style="">
 			<ul class="tabTitle fleft">
 				<li id="tab1" class=""><a href="#" class="on" onclick="switchTab('tab1','con1');this.blur();return false;">
@@ -19,6 +46,7 @@
                 hashtag</a></li>
 			</ul>
 		</div>
+		
         <div id="con1" class="fleft">
  <div class="Litem-list fleft">
 			<ul class="Litem">
@@ -93,9 +121,23 @@
         </div>
     </div>
 </div>
-<div class="TextLength left180">平均文本长度：<span id="TLnum">85</span></div>
-<div class="LinkLength ">平均链接数：<span id="LLnum">2</span></div>
-<div id="" class="" style="width:100%;text-align:center;"><h4 id="hashtagDes"></h4></div>
+<div id="float-wrap" class="hidden"></div>
+<div id="moreWords" class="hidden">
+	<h3 class="title">关键词排名<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
+	<div id="WordList"></div>
+</div>
+<div id="trend" style="width:1000px;border:1px solid #999;">
+	<span class="fleft" style="width:48px;height:48px;background-image:url(/static/img/bell-icon.png)"></span>
+	<h4>平均文本长度：<span id="TLnum"></span></h4>
+	<h4>行链接微博比例：<span id="LLnum"></span>%</h4>
+	<h4 id="linkDes"></h4>
+	<h4 id="hashtagDes"></h4>
+</div>
+
+<div class="" id="trend"></div>
+<div class="" id="trend"></div>
+<div id="" class="" style="width:100%;text-align:center;"></div>
+<div id="" class="" style="width:100%;text-align:center;"></div>
 <script type="text/javascript">
         function switchTab(ProTag, ProBox) {
             for (i = 1; i < 7; i++) {
@@ -115,9 +157,20 @@
 <script src="/static/js/emoticon.js"></script>
 <script src="/static/js/portrait/language.js"></script>
 <script type="text/javascript">
+$(".closeList").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#moreWords").addClass("hidden");
+		return false;
+	});
+$("#showmoreWords").off("click").click(function(){
+		$("#float-wrap").removeClass("hidden");
+		$("#moreWords").removeClass("hidden");
+		return false;
+	});
 var textlength = document.getElementById('TLnum');
-textlength.innerHTML = parent.personalData.text_len.toFixed(2);
+textlength.innerHTML = parent.personalData.text_len.toFixed(0);
 var linklength = document.getElementById('LLnum');
-linklength.innerHTML = parent.personalData.link.toFixed(2);               
+var link = parent.personalData.link * 100;
+linklength.innerHTML = link.toFixed(2);               
 </script>
                     
