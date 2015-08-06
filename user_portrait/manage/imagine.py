@@ -17,7 +17,6 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     query_fields_dict: defined search field weight
     fields: domain, topic, keywords, psycho_status, psycho_feature, activity_geo, hashtag
     for example: "domain": 2
-    weeeeeeeeeeeeeee
     domain, psycho_feature
     """
     personal_info = es.get(index="user_portrait", doc_type="user", id=uid, _source=True)['_source']
