@@ -1,11 +1,10 @@
-# -*- coding = utf-8 -*-
+# -*- coding=utf-8 -*-
 import math
 import time
 import datetime
 import sys
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
-from search_vary_index_function import generate_date
 from rank_portrait_in_active_user import search_k
 
 from mid2weibolink import weiboinfo2url
@@ -194,13 +193,13 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
                     info[3] = profile_result[i]['_source'].get('nick_name','')
 
                 if 'retweeted' in field:
-                    info[4] = user_list[i]['origin_weibo_top_retweeted_id']
-                    info[5] = user_list[i]['origin_weibo_retweeted_top_number']
-                    info.append(weiboinfo2url(info[2], info[4]))
+                    temp_mid = user_list[i]['origin_weibo_top_retweeted_id']
+                    info[5] = weiboinfo2url(info[2], temp_mid)
+                    info[4] = user_list[i]['origin_weibo_retweeted_top_number']
                 else:
-                    info[4] = user_list[i]['origin_weibo_top_comment_id']
-                    info[5] = user_list[i]['origin_weibo_comment_top_number']
-                    info.append(weiboinfo2url(info[2], info[4]))
+                    temp_mid = user_list[i]['origin_weibo_top_comment_id']
+                    info[5] = weiboinfo2url(info[2], temp_mid)
+                    info[4] = user_list[i]['origin_weibo_comment_top_number']
 
                 rank += 1
                 return_list.append(info)
@@ -303,3 +302,5 @@ if __name__ == "__main__":
     print result
 
     """
+
+
