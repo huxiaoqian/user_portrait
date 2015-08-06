@@ -4,6 +4,7 @@
 <div id="Pdetail">
 	
 	<div id="influence_chart" style="height:300px;width:1000px;"></div>
+	<div id=""  style="height:48px;width:1000px;line-height:48px;font-size:18px;border:1px solid #999;font-family:"Microsoft YaHei UI";"><span class="fleft" style="width:48px;height:48px;background-image:url(/static/img/bell-icon.png)"></span><span id="saysth"></span><span class="red" id="sayimportant"></div>
 	<div id="treeB" style="width:1000px;height:400px;"></div>
 </div>
 <script type="text/javascript">
@@ -21,9 +22,16 @@ Influence.prototype = {   //获取数据，重新画表
     });
   },
   Draw_influence:function(data){
+	//console.log(data);
+	var item = data[0];
+	//console.log(item);
+	var conclusion = data[1];
+	console.log(conclusion);
+	document.getElementById('saysth').innerHTML = conclusion[0];
+	document.getElementById('sayimportant').innerHTML = conclusion[1];
 	var dataFixed = [];
-	for(i=0;i<data.length;i++){
-		dataFixed.push(parseFloat(data[i].toFixed(2)));
+	for(i=0;i<item.length;i++){
+		dataFixed.push(parseFloat(item[i].toFixed(2)));
 	}
 	var line_chart_dates = [];
 	var line_chart_tomorrow = new Date();
