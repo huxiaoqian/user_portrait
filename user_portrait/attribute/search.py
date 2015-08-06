@@ -265,6 +265,9 @@ def ip2city(ip):
             city = city.encode('utf-8')
         else:
             return None
+        city_list = city.split('\t')
+        if len(city_list)==4:
+            city = '\t'.join(city_list[:3])
     except Exception,e:
         return None
     return city
@@ -281,7 +284,7 @@ def get_geo_track(uid):
     city_set = set()
     for i in range(7, 0, -1):
         timestamp = ts - i*24*3600
-        print 'timestamp:', ts2datetime(timestamp)
+        #print 'timestamp:', ts2datetime(timestamp)
         ip_dict = dict()
         results = r_cluster.hget('ip_'+str(timestamp), uid)
         ip_dict = dict()
@@ -337,7 +340,7 @@ def ip_dict2geo(ip_dict):
         if city:
             len_city = len(city.split('\t'))
             if len_city==4:
-                city = '\t'.join(city.split('\t')[:2])
+                city = '\t'.join(city.split('\t')[:3])
             new_len_city = len(city.split('\t'))
             city = city.split('\t')[new_len_city-1]
             try:
