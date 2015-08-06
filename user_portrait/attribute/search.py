@@ -269,6 +269,56 @@ def ip2city(ip):
         return None
     return city
 
+# show user geo track
+def get_geo_track(uid):
+    date_results = {} # {'2013-09-01':[(geo1, count1),(geo2, count2)], '2013-09-02'...}
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    #test
+    now_date = '2013-09-08'
+    ts = datetime2ts(now_date)
+    for i in range(7, 0, -1):
+        timestamp = ts - i*24*3600
+        print 'timestamp:', ts2datetime(timestamp)
+        ip_dict = dict()
+        results = r_cluster.hget('ip_'+str(timestamp), uid)
+        ip_dict = dict()
+        date_key = ts2datetime(timestamp)
+        if results:
+            ip_dict = json.loads(results)
+            geo_dict = ip_dict2geo(ip_dict)
+
+            sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
+            date_results[date_key] = sort_geo_dict[:2]
+        else:
+            date_results[date_key] = []
+
+    print 'results:', date_results
+    return date_results
+
+def ip_dict2geo(ip_dict):
+    city_set = set()
+    geo_dict = dict()
+    for ip in ip_dict:
+        try:
+            city = IP.find(str(ip))
+            if city:
+                city.encode('utf-8')
+            else:
+                city = ''
+        except Exception, e:
+            city = ''
+        if city:
+            len_city = len(city.split('\t'))
+            if len_city==4:
+                city = '\t'.join(city.split('\t')[:2])
+            try:
+                geo_dict[city] += ip_dict[ip]
+            except:
+                geo_dict[city] = ip_dict[ip]
+    return geo_dict
+
+
 #use to search user_portrait to show the attribute saved in es_user_portrait
 def search_attribute_portrait(uid):
     results = dict()
@@ -477,6 +527,7 @@ def search_portrait(condition_num, query, sort, size):
                 user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 
     return user_result
+
 
 def delete_action(uid_list):
     index_name = 'user_portrait'

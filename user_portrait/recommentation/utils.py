@@ -18,6 +18,7 @@ from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_profile
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
+from user_portrait.filter_uid import all_delete_uid
 from user_portrait.time_utils import ts2datetime, datetime2ts
 
 #test
@@ -171,23 +172,28 @@ def identify_compute(data):
 
     return True
 
-def show_out_uid(date,fields):
+def show_out_uid(fields):
     out_list = []
-    date = str(date).replace("-","")
-    uid_list = r_out.hget("recommend_delete_list", date)
-    if not uid_list:
+    recommend_dict = r_out.hgetall("recommend_delete_list")
+    recommend_keys = recommend_dict.keys()
+    for iter_key in recommend_keys:
+        out_list.extend(json.loads(r_out.hget("recommend_delete_list",iter_key)))
+    if not out_list:
         return out_list # no one is recommended to out
 
     return_list = []
-    date_out_list = json.loads(r_out.hget("recommend_delete_list",date))
-    if date_out_list == []:
-        return return_list
-    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":date_out_list}, _source=True)['docs']
+    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
-    for i in range(len(date_out_list)):
+    filter_uid = all_delete_uid()
+    for i in range(len(out_list)):
+        if detail[i]['_source']['uid'] in filter_uid:
+            continue
         detail_info = []
         for item in fields:
-            detail_info.append(detail[i]['_source'][item])
+            if item == "topic":
+                detail_info.append(','.join(detail[i]['_source']['topic_string'].split("&")))
+            else:
+                detail_info.append(detail[i]['_source'][item])
         return_list.append(detail_info)
 
     return return_list
@@ -207,12 +213,14 @@ def decide_out_uid(date, data):
     if uid_list and uid_list != []:
         update_record_index(not_out_list)
     """
-
+    filter_uid = all_delete_uid()
     uid_list = data.split(",")
     current_date_list = json.loads(r_out.hget("recommend_delete_list", date))
     new_list =  list(set(current_date_list).difference(set(uid_list)))
+    new_list = list(set(new_list).difference(filter_uid))
     r_out.hset("recommend_delete_list", date, json.dumps(new_list))
 
+    """
     if uid_list:
         temp = r_out.hget("history_delete_list", now_date)
         if temp:
@@ -220,31 +228,9 @@ def decide_out_uid(date, data):
             uid_list.extend(exist_data)
         r_out.hset("history_delete_list", now_date, json.dumps(uid_list))
 
+    """
     return 1
 
-"""
-def generate_date(former_date, later_date="21000101"):
-    date_list = []
-    date_list.append(former_date)
-    former_struct = datetime.date(int(former_date[0:4]), int(former_date[4:6]), int(former_date[6:]))
-    later_struct = datetime.date(int(later_date[0:4]), int(later_date[4:6]), int(later_date[6:]))
-    former_timestamp = time.mktime(former_struct.timetuple())
-    later_timestamp = time.mktime(later_struct.timetuple())
-    i = 0
-
-    next_timestamp = former_timestamp
-    while 1:
-        next_timestamp += 86400
-        if next_timestamp <= later_timestamp:
-            date_list.append(time.strftime('%Y%m%d',time.localtime(next_timestamp)))
-            i += 1
-            if i == 7:
-                break
-        else:
-            break
-
-    return date_list
-"""
 
 def search_history_delete(date):
     return_list = []
@@ -255,20 +241,48 @@ def search_history_delete(date):
     else:
         pass
 
-    fields = ['uid','uname','domain','influence','importance','activeness']
-    temp = r_out.hget("history_delete_list", now_date)
-    print temp
+    fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
+    temp = r_out.hget("decide_delete_list", now_date)
     if temp:
-        history_uid_list = json.loads(r_out.hget("history_delete_list", now_date))
+        history_uid_list = json.loads(r_out.hget("decide_delete_list", now_date))
         if history_uid_list != []:
             detail = es.mget(index="user_portrait", doc_type="user", body={"ids":history_uid_list}, _source=True)['docs']
             for i in range(len(history_uid_list)):
                 detail_info = []
                 for item in fields:
-                    detail_info.append(detail[i]['_source'][item])
+                    if item == "topic_string":
+                        detail_info.append(','.join(detail[i]['_source'][item].split("&")))
+                    else:
+                        detail_info.append(detail[i]['_source'][item])
                 return_list.append(detail_info)
 
     return json.dumps(return_list)
+
+
+def show_all_out():
+    delete_dict = r_out.hgetall('decide_delete_list')
+    delete_keys_list = delete_dict.keys()
+
+    return_list = []
+    fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
+    for iter_key in delete_keys_list:
+        temp_list = []
+        temp = json.loads(r_out.hget('decide_delete_list', iter_key))
+        if temp and temp != []:
+            detail = es.mget(index="user_portrait", doc_type="user", body={"ids":temp}, _source=True)['docs']
+            for i in range(len(temp)):
+                detail_info = []
+                for item in fields:
+                    if item == "topic_string":
+                        detail_info.append(','.join(detail[i]['_source'][item].split('&')))
+                    else:
+                        detail_info.append(detail[i]['_source'][item])
+
+                return_list.append(detail_info)
+
+    return json.dumps(return_list)
+
+
 
 # get user time trend (7 day)
 def get_user_trend(uid):
@@ -305,8 +319,9 @@ def get_user_trend(uid):
             else:
                 trend_list.append((time_seg, 0))
     sort_trend_list = sorted(trend_list, key=lambda x:x[0], reverse=True)
-    
-    return sort_trend_list
+    x_axis = [item[0] for item in sort_trend_list]
+    y_axis = [item[1] for item in sort_trend_list]
+    return [x_axis, y_axis]
 
 # get user hashtag
 def get_user_hashtag(uid):

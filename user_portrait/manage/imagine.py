@@ -4,6 +4,7 @@ import sys
 import json
 from elasticsearch import Elasticsearch
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.filter_uid import all_delete_uid
 """
 reload(sys)
 sys.path.append('./../')
@@ -26,9 +27,12 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     keys_list.remove('size')
 
     search_dict = {}
+    print keys_list
 
+    print personal_info['hashtag']
     for iter_key in keys_list:
-        if personal_info[iter_key] == '':
+        print iter_key
+        if personal_info[iter_key] == '' or not personal_info[iter_key]:
             query_fields_dict.pop(iter_key)
             keys_list.remove(iter_key)
         else:
@@ -73,31 +77,52 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
     query_fields_dict.pop('field')
     number = es.count(index=index_name, doc_type=doctype, body=query_body)['count']
-    query_body['size'] = query_fields_dict['size']
+    query_body['size'] = 100 # default number
+    query_number = query_fields_dict['size'] #  required number
     query_fields_dict.pop('size')
 
     for (k,v) in query_fields_dict.items():
 
         temp = {}
         temp_list = []
+        print search_dict,k
         for iter_key in search_dict[k]:
             temp_list.append({'wildcard':{k:{'wildcard':'*'+iter_key+'*','boost': v}}})
 
         query_body['query']['function_score']['query']['bool']['must'].append({'bool':{'should':temp_list}})
 
+    filter_uid = all_delete_uid()
 
     result = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
     field_list = ['uid','uname','importance', 'activeness', 'influence']
     return_list = []
+    count = 0
     for item in result:
+        if uid == item['_id'] or uid in filter_uid:
+            score = item['_score']
+            continue
         info = []
         for field in field_list:
             info.append(item['_source'][field])
         info.append(item['_score'])
         return_list.append(info)
+        count += 1
+
+        if count == query_number:
+            break
 
     return_list.append(number)
-    return return_list
+
+    temp_list = []
+    for field in field_list:
+        temp_list.append(personal_info[field])
+
+    results = []
+    results.append(temp_list)
+    results.extend(return_list)
+
+
+    return results
 
 
 
