@@ -288,10 +288,11 @@ if(personalData.online_pattern[0][0]){
 	<div class="soft_con_icon">
 		<ul>
 			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/activity.png"/><p style="color:#008dd9">活动属性</p></a></li>
-            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
-            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
+            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/language.png"/><p>语言属性</p></a></li>
+            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/basic.png"/><p>传播属性</p></a></li>
 			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/social.png"/><p>社交属性</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/basic.png"/><p>影响力属性</p></a></li>
+			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/thought.png"/><p>思想属性</p></a></li>
+
 		</ul>
 	</div> 
 
@@ -304,11 +305,11 @@ if(personalData.online_pattern[0][0]){
         </div>
 	
 		<div id="crm" class="soft_con2" style="display:none">
-            {% include "portrait/detail/thought.html"%}
+            {% include "portrait/detail/language.html"%}
         </div>
 	
 		<div id="xmgl" class="soft_con2" style="display:none">
-            {% include "portrait/detail/language.html"%}
+            {% include "portrait/detail/basic.html"%}
 		</div>
 	
 		<div id="zsgl" class="soft_con2" style="display:none">
@@ -316,7 +317,7 @@ if(personalData.online_pattern[0][0]){
 		</div>
 	
 		<div id="ydbg" class="soft_con2" style="display:none">
-            {% include "portrait/detail/basic.html"%}
+            {% include "portrait/detail/thought.html"%}
 		</div>
 	
 	</div>
