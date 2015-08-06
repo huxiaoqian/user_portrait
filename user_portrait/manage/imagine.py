@@ -17,7 +17,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     query_fields_dict: defined search field weight
     fields: domain, topic, keywords, psycho_status, psycho_feature, activity_geo, hashtag
     for example: "domain": 2
-
+    weeeeeeeeeeeeeee
     domain, psycho_feature
     """
     personal_info = es.get(index="user_portrait", doc_type="user", id=uid, _source=True)['_source']
@@ -83,7 +83,6 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
         temp = {}
         temp_list = []
-        print search_dict,k
         for iter_key in search_dict[k]:
             temp_list.append({'wildcard':{k:{'wildcard':'*'+iter_key+'*','boost': v}}})
 

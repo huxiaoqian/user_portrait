@@ -185,6 +185,7 @@ function Search_weibo_detail_trans(url, div){
   this.div = div;
 }
 
+/*
 Search_weibo_detail_trans.prototype = {
   call_sync_ajax_request:function(url, method, callback){
     $.ajax({
@@ -293,7 +294,7 @@ Search_weibo_detail_comment.prototype = {
     });
   }
 }
-
+*/
 
 $("#range").empty();
 var range_html = '';
@@ -307,35 +308,58 @@ change_html += '<input type="radio" name="change_select" checked value="0" /> �
 change_html += '<input type="radio" name="change_select" value="1" style="margin-left:5px" /> 人物库';
 $("#change").append(change_html);
 
+$("#index").empty();
+var index_html = '';
+index_html += '<input type="radio" name="index_select" checked value="1" /> 影响力';
+index_html += '<input type="radio" name="index_select" value="2" style="margin-left:5px" /> 转发量';
+index_html += '<input type="radio" name="index_select" value="3" style="margin-left:5px" /> 评论量';
+index_html += '<input type="radio" name="index_select" value="4" style="margin-left:5px" /> 转发爆发度';
+index_html += '<input type="radio" name="index_select" value="5" style="margin-left:5px" /> 评论爆发度';
+$("#index").append(index_html);
+
+/*
 $("#detail").empty();
 var detail_html = '';
 detail_html += '<input type="radio" name="detail_select" checked value="0" /> 转发量';
 detail_html += '<input type="radio" name="detail_select" value="1" style="margin-left:5px" /> 评论量';
 $("#detail").append(detail_html);
+*/
 
 $("#domain").empty();
 var domain_html = '';
 domain_html += '<select id="domain_select">';
-domain_html += '<option value="0" selected="selected">文化</option>';
-domain_html += '<option value="1">教育</option>';
-domain_html += '<option value="2">娱乐</option>';
-domain_html += '<option value="3">时尚</option>';
-domain_html += '<option value="4">财经</option>';
-domain_html += '<option value="5">媒体</option>';
-domain_html += '<option value="6">体育</option>';
-domain_html += '<option value="7">科技</option>';
+domain_html += '<option value="1" selected="selected">高校微博</option>';
+domain_html += '<option value="2">境内机构</option>';
+domain_html += '<option value="3">境外机构</option>';
+domain_html += '<option value="4">媒体</option>';
+domain_html += '<option value="5">境外媒体</option>';
+domain_html += '<option value="6">民间组织</option>';
+domain_html += '<option value="7">律师</option>';
+domain_html += '<option value="8">政府机构人士</option>';
+domain_html += '<option value="9">媒体人士</option>';
+domain_html += '<option value="10">活跃人士</option>';
+domain_html += '<option value="11">草根</option>';
+domain_html += '<option value="12">商业人士</option>';
+domain_html += '<option value="13">其他</option>';
 domain_html += '</select>';
 $("#domain").append(domain_html);
 
 $('input[name="range_select"]').click(function(){
   var select_range = $('input[name="range_select"]:checked').val();
-  var url_total_new = '';
+  var select_index = $('input[name="index_select"]:checked').val();
   var select_total_date = $("#total_date_select").val()
-  if(select_range==0)
-    url_total_new = '/influence_application/all_active_rank/?date=' + select_total_date;
-  else
-    url_total_new = '/influence_application/portrait_user_in_active/?date=' + select_total_date;
-  //console.log(url_total_new);
+  var url_total_new = '';
+  url_total_new = '/influence_application/search_influence/?date=' + select_total_date + '&index=' + select_index + '&domain=' + select_range;
+  draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
+  draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Draw_table);
+});
+
+$('input[name="index_select"]').click(function(){
+  var select_range = $('input[name="range_select"]:checked').val();
+  var select_index = $('input[name="index_select"]:checked').val();
+  var select_total_date = $("#total_date_select").val()
+  var url_total_new = '';
+  url_total_new = '/influence_application/search_influence/?date=' + select_total_date + '&index=' + select_index + '&domain=' + select_range;
   draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Draw_table);
 });
@@ -352,6 +376,7 @@ $('input[name="change_select"]').click(function(){
   draw_table_change_new.call_sync_ajax_request(url_change_new, draw_table_change_new.ajax_method, draw_table_change_new.Draw_table);
 });
 
+/*
 $('input[name="detail_select"]').click(function(){
   var url_detail_new = '/influence_application/hot_origin_weibo/?date=' + $("#detail_date_select").val() + '&number=10';
   var detail_status = $('input[name="detail_select"]:checked').val();
@@ -364,32 +389,39 @@ $('input[name="detail_select"]').click(function(){
     draw_table_detail_comment_new.call_sync_ajax_request(url_detail_new, draw_table_detail_comment_new.ajax_method, draw_table_detail_comment_new.Draw_table);
   }
 });
+*/
 
+/*
 $('#domain_button').click(function(){
   var url_domain_new = '/influence_application/domain_rank/?date=' + $("#domain_date_select").val() + '&domain=' + $("#domain_select").val();
   draw_table_domain_new = new Search_weibo_domain(url_domain_new, '#domain_rank');
   draw_table_domain_new.call_sync_ajax_request(url_domain_new, draw_table_domain_new.ajax_method, draw_table_domain_new.Draw_table);
 });
+*/
 
 var tomorrow = new Date(2013,8,8);
 var now_date = new Date(tomorrow-24*60*60*1000);
 var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
 
-var url_total = '/influence_application/all_active_rank/?date=' + now;
+var url_total = '/influence_application/search_influence/?date=' + now;
 draw_table_total = new Search_weibo_total(url_total, '#total_rank');
 draw_table_total.call_sync_ajax_request(url_total, draw_table_total.ajax_method, draw_table_total.Draw_table);
 
+/*
 var url_domain = '/influence_application/domain_rank/?date=' + now;
 draw_table_domain = new Search_weibo_domain(url_domain, '#domain_rank');
 draw_table_domain.call_sync_ajax_request(url_domain, draw_table_domain.ajax_method, draw_table_domain.Draw_table);
+*/
 
 var url_change = '/influence_application/vary_top_k/';
 draw_table_change = new Search_weibo_change(url_change, '#change_rank');
 draw_table_change.call_sync_ajax_request(url_change, draw_table_change.ajax_method, draw_table_change.Draw_table);
 
+/*
 var url_detail = '/influence_application/hot_origin_weibo/?date=' + now + '&number=10';
 draw_table_detail_trans = new Search_weibo_detail_trans(url_detail, '#detail_rank');
 draw_table_detail_trans.call_sync_ajax_request(url_detail, draw_table_detail_trans.ajax_method, draw_table_detail_trans.Draw_table);
+*/
 
 function date_initial(){
   var total_date = [];
@@ -428,6 +460,7 @@ function date_initial(){
   domain_date_html += '</select>';
   $("#domain_date").append(domain_date_html);
 
+  /*
   var detail_date = [];
   for(var i=0;i<7;i++){
     var today = new Date(tomorrow-24*60*60*1000*(7-i));
@@ -445,18 +478,23 @@ function date_initial(){
   detail_date_html += '<option value="' + detail_date[6] + '" selected="selected">' + detail_date[6] + '</option>';
   detail_date_html += '</select>';
   $("#detail_date").append(detail_date_html);
+  */
 }
 
 date_initial();
 
 $('#total_date_button').click(function(){
-  //console.log($("#total_date_select").val());
-  var url_total_new = '/influence_application/all_active_rank/?date=' + $("#total_date_select").val();
+  var select_range = $('input[name="range_select"]:checked').val();
+  var select_index = $('input[name="index_select"]:checked').val();
+  var select_total_date = $("#total_date_select").val()
+  var url_total_new = '';
+  url_total_new = '/influence_application/search_influence/?date=' + select_total_date + '&index=' + select_index + '&domain=' + select_range;
   draw_table_total_new = new Search_weibo_total(url_total_new, '#total_rank');
   draw_table_total_new.call_sync_ajax_request(url_total_new, draw_table_total_new.ajax_method, draw_table_total_new.Draw_table);
   prepare_rank_distribution();
 });
 
+/*
 $('#detail_date_button').click(function(){
   //console.log($("#total_date_select").val());
   var url_detail_new = '/influence_application/hot_origin_weibo/?date=' + $("#detail_date_select").val() + '&number=10';
@@ -471,6 +509,7 @@ $('#detail_date_button').click(function(){
   }
   draw_hot_users();
 });
+*/
 
 function replace_space(data){
   for(var i in data){
@@ -594,6 +633,7 @@ function prepare_rank_distribution(){
   draw_rank_distribution(influence_bar_axis, influence_bar_all, influence_bar_in, 'rank_distribution', low_number_all, low_number_in);
 }
 
+/*
 //热门人物信息
 function get_hot_users_details(){
   var url_hot_users = '/influence_application/hot_origin_weibo_brust/?date=' + $("#detail_date_select").val() + '&number=6';
@@ -826,3 +866,4 @@ function draw_hot_users(){
 
 var user_details;
 draw_hot_users();
+*/

@@ -45,14 +45,17 @@
 </div>
 
 <div class="modal fade" id="details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document" style="width:850px;">
+  <div class="modal-dialog" role="document" style="width:820px;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">用户详情</h4>
       </div>
-      <div class="modal-body">
-        <div id="details" style="margin-top:20px"></div>
+      <div class="modal-body" style="height:700px;width:820px">
+        <h4 style="text-align:center">微博走势</h4>
+        <div id="line_chart" style="margin-top:0px;height:350px;width:780px"></div>
+        <span id="place" style="margin-top:0px;margin-left:20px;height:300px;width:340px;float:left"></span>
+        <span id="hashtag" style="margin-top:0px;margin-right:20px;height:300px;width:340px;float:right"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

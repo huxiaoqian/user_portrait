@@ -7,7 +7,7 @@ import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from search_user_index_function import search_top_index, search_influence_detail, user_index_range_distribution,\
                                        search_max_single_field, search_portrait_history_active_info
-from rank_portrait_in_active_user import search_portrait_user_in_activity, portrait_user_vary
+from rank_portrait_in_active_user import search_portrait_user, portrait_user_vary
 from search_vary_index_function import query_vary_top_k
 from search_tag_in_portrait import search_tag
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
@@ -36,7 +36,7 @@ def ajax_search_influence():
         if domain == 0:
             results = search_top_index(index_name, number)
         else:
-            results = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type)
+            results = search_portrait_user(es, number, index_name, "bci", portrait_index, portrait_type)
 
     elif index == 2:
         if domain == 0:
@@ -54,13 +54,13 @@ def ajax_search_influence():
         if domain == 0:
             results = search_top_index(index_name, number, "bci", False, "origin_weibo_retweeted_brust_average")
         else:
-            results = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_retweeted_brust_average")
+            results = search_portrait_user(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_retweeted_brust_average")
 
     elif index == 5:
         if domain == 0:
             results = search_top_index(index_name, number, "bci", False, "origin_weibo_comment_brust_average")
         else:
-            results = search_portrait_user_in_activity(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_comment_brust_average")
+            results = search_portrait_user(es, number, index_name, "bci", portrait_index, portrait_type, field="origin_weibo_comment_brust_average")
 
     else:
         results = []
