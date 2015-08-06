@@ -532,10 +532,11 @@ def search_attribute_portrait(uid):
     return results
 
 #get emotion conclusion
-def get_emotion_conlusion(emotion_dict):
+def get_emotion_conclusion(emotion_dict):
     positive_key = '126'
     negative_key = '127'
     emotion_conclusion = ''
+    positive_weibo_count = ''
     return emotion_conclusion
 
 #use to search user_portrait by lots of condition 
