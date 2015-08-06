@@ -283,7 +283,8 @@ def get_geo_track(uid):
         ip_dict = dict()
         results = r_cluster.hget('ip_'+str(timestamp), uid)
         ip_dict = dict()
-        date_key = ts2datetime(timestamp)
+        date = ts2datetime(timestamp)
+        date_key = '-'.join(date.split('-')[1:])
         if results:
             ip_dict = json.loads(results)
             geo_dict = ip_dict2geo(ip_dict)
@@ -312,6 +313,8 @@ def ip_dict2geo(ip_dict):
             len_city = len(city.split('\t'))
             if len_city==4:
                 city = '\t'.join(city.split('\t')[:2])
+            new_len_city = len(city.split('\t'))
+            city = city.split('\t')[new_len_city-1]
             try:
                 geo_dict[city] += ip_dict[ip]
             except:
@@ -334,7 +337,7 @@ def search_attribute_portrait(uid):
         keywords_dict = json.loads(results['keywords'])
         sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
         #print 'sort_word_list:', sort_word_list
-        results['keywords'] = sort_word_list[:20]
+        results['keywords'] = sort_word_list
     else:
         results['keywords'] = []
     #print 'keywords:', results
@@ -342,7 +345,7 @@ def search_attribute_portrait(uid):
     if results['activity_geo_dict']:
         geo_dict = json.loads(results['activity_geo_dict'])
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
-        geo_top = sort_geo_dict[:5]
+        geo_top = sort_geo_dict
         results['activity_geo'] = geo_top
     else:
         results['activity_geo'] = []
