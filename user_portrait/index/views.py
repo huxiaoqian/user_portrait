@@ -50,6 +50,10 @@ def influence_rank():
 
     return render_template('portrait/influence_rank.html')
 
+@mod.route('/contrast_analysis/')
+def contrast_analysis():
+    return render_template('portrait/contrast_analysis.html')
+
 @mod.route('/search_result/')
 def search_result():
     stype = request.args.get('stype', '1')

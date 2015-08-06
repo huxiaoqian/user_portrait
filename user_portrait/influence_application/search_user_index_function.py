@@ -1,8 +1,9 @@
-# -*- coding=utf-8 -*-
+# -*- coding: UTF-8 -*-
 import math
 import time
 import datetime
 import sys
+from numpy import *
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from rank_portrait_in_active_user import search_k
@@ -243,7 +244,24 @@ def search_portrait_history_active_info(uid, date, index_name="copy_user_portrai
     in_list = []
     for item in sorted(date_list):
         in_list.append(return_dict[item])
-    return in_list
+    #print 'in_list:', in_list
+    max_influence = max(in_list)
+    ave_influence = sum(in_list) / float(7)
+    min_influence = min(in_list)
+    if max_influence - min_influence <= 400 and ave_influence >= 900:
+        mark = u'平稳高影响力'
+    elif max_influence - min_influence > 400 and ave_influence >= 900:
+        mark = u'波动高影响力'
+    elif max_influence - min_influence <= 400 and ave_influence < 900 and ave_influence >= 500:
+        mark = u'平稳一般影响力'
+    elif max_influence - min_influence > 400 and ave_influence < 900 and ave_influence >= 500:
+        mark = u'波动一般影响力'
+    elif max_influence - min_influence <= 400 and ave_influence < 500:
+        mark = u'平稳低影响力'
+    else:
+        mark = u'波动低影响力'
+    description = [u'该用户为', mark]
+    return [in_list, description]
 
 
 if __name__ == "__main__":

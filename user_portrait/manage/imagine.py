@@ -83,6 +83,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
 
         temp = {}
         temp_list = []
+        print search_dict,k
         for iter_key in search_dict[k]:
             temp_list.append({'wildcard':{k:{'wildcard':'*'+iter_key+'*','boost': v}}})
 
