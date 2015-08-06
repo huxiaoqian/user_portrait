@@ -23,6 +23,7 @@ def ajax_compare_user_portrait():
     else:
         return None
 
+
 # compare the detail of activity attribute
 # output data: {user:[weibo_count]}, {user:[(date, weibo)]}, ts_list
 @mod.route('/compare_user_activity/')
