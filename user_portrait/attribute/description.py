@@ -18,14 +18,18 @@ def active_geo_description(result):
     city = active_city[0][0]
 
     if city_count == 1 and ip_count <= 4:
-        description = '%s为该用户的主要活动地，且较为固定在同一个地方登陆微博'  % city
+        description_text = '为该用户的主要活动地，且较为固定在同一个地方登陆微博'
+        description = [city, description_text]
     elif city_count >1 and ip_count <= 4:
-        description = '%s多为该用户的主要活动地，且经常出差，较为固定在%s城市登陆微博' % (city, city_count)
+        description_text1 = '多为该用户的主要活动地，且经常出差，较为固定在'
+        description_text2 = '个城市登陆微博'
+        description = [city, description_text1, city_count, description_text2]
     elif city_count == 1 and ip_count > 4:
-        description = '%s为该用户的主要活动地，且经常在该城市不同的地方登陆微博' % city
+        description_text = '为该用户的主要活动地，且经常在该城市不同的地方登陆微博'
+        description = [city, description_text]
     else:
-        description = '%s多为该用户的主要活动地，且经常出差，在不同的城市登陆微博' % city
-
+        description_text = '多为该用户的主要活动地，且经常出差，在不同的城市登陆微博'
+        description = [city, description_text]
     return description
 
 
