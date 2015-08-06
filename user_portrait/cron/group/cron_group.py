@@ -160,10 +160,12 @@ def get_attr_portrait(uid_list):
         if activity_geo_string:
             activity_geo_dict = json.loads(activity_geo_string)
             for activity_geo in activity_geo_dict:
+                city_list = activity_geo.split('\t')
+                city = city_list[len(city_list)-1]
                 try:
-                    activity_geo_ratio[activity_geo] += activity_geo_dict[activity_geo]
+                    activity_geo_ratio[city] += activity_geo_dict[activity_geo]
                 except:
-                    activity_geo_ratio[activity_geo] = activity_geo_dict[activity_geo]
+                    activity_geo_ratio[city] = activity_geo_dict[activity_geo]
         #attr14 hashtag
         hashtag_string = user_dict['hashtag_dict']
         if hashtag_string:
@@ -652,7 +654,7 @@ def get_attr_tightness(density, retweet_weibo_count, retweet_user_count):
     return result
 
 def get_attr_geo_track(uid_list):
-    date_results = {} # results = {'2013-09-01':[(geo1, count1), (geo2, track2)], '2013-09-02'...} 7day
+    date_results = [] # results = {'2013-09-01':[(geo1, count1), (geo2, track2)], '2013-09-02'...} 7day
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     #test
@@ -676,7 +678,7 @@ def get_attr_geo_track(uid_list):
         geo_dict = ip2geo(ip_dict)
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
         date_key = ts2datetime(timestamp)
-        date_results[date_key] = sort_geo_dict[:2]
+        date_results.append([date_key, sort_geo_dict[:2]])
     #print 'results:', date_results
     return {'geo_track': json.dumps(date_results)}
 
@@ -696,7 +698,9 @@ def ip2geo(ip_dict):
         if city:
             len_city = len(city.split('\t'))
             if len_city==4:
-                city = '\t'.join(city.split('\t')[:2])
+                city = '\t'.join(city.split('\t')[:3])
+            city_list = city.split('\t')
+            city = city_list[len(city_list)-1]
             try:
                 geo_dict[city] += ip_dict[ip]
             except:
