@@ -32,7 +32,25 @@ Bubble.prototype = {   //获取数据，重新画表
         }
     },
     calculable : false,
+	legend:{
+		show : true,
+		orient : 'horizontal',    //'horizontal' | 'vertical'
+		x : 'right',
+		y : 'top',
+		padding:30,
+		data :[
+			{
+				name :'被评论',
+				icon :'image://../../static/img/mss.jpg',
 
+			},
+			{
+				name :'被转发',
+				icon :'image://../../static/img/share.jpg',
+
+			}
+		]
+	},
     series : [
         {
             name:'树图',
