@@ -123,18 +123,36 @@ def search_top_index(index_name, top_k=1, index_type="bci", top=False, sort_orde
         result = []
         rank = 1
         for i in range(len(search_result)):
-            info = ['','','','','','']
+            info = ['','','','']
             info[0] = rank
             if profile_result[i]['found']:
                 info[1] = profile_result[i]['_source'].get('photo_url','')
                 info[3] = profile_result[i]['_source'].get('nick_name','')
 
             info[2] = search_result[i].get('_id','')
-            info[4] = search_result[i]['_source']['user_index']
-            if portrait_result[i]['found']:
-                info[5] = "1"
-            else:
-                info[5] = "0"
+            if sort_order in ["user_index","origin_weibo_retweeted_brust_average","origin_weibo_comment_brust_average"]:
+                info.append(search_result[i]['_source'][sort_order])
+                if portrait_result[i]['found']:
+                    info.append("1")
+                else:
+                    info.append("0")
+            elif sort_order == "origin_weibo_retweeted_top_number":
+               info.append(search_result[i]['_source']['origin_weibo_retweeted_top_number']) 
+               mid = search_result[i]['_source']['origin_weibo_top_retweeted_id']
+               info.append(weiboinfo2url(info[2],mid))
+               if portrait_result[i]['found']:
+                   info.append("1")
+               else:
+                   info.append("0")
+            elif sort_order == "origin_weibo_comment_top_number":
+                info.append(search_result[i]['_source']['origin_weibo_comment_top_number'])
+                mid = search_result[i]['_source']['origin_weibo_top_comment_id']
+                info.append(weiboinfo2url(info[2],mid))
+                if portrait_result[i]['found']:
+                    info.append("1")
+                else:
+                    info.append("0")
+
             rank += 1
             result.append(info)
 
