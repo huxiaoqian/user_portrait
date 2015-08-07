@@ -23,7 +23,7 @@ Search_weibo_recommend.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th style="width:100px">用户详情</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th style="width:140px">用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th style="width:100px">用户详情</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -91,11 +91,13 @@ Search_weibo_recommend.prototype = {
           place_html += '<thead><tr><th style="text-align:center;vertical-align:middle;width:80px">排名</th><th style="text-align:center;vertical-align:middle;width:200px">地点</th><th style="text-align:center;vertical-align:middle;width:80px">微博数</th></tr></thead>';
           place_html += '<tbody>';
           for(var m in data['activity_geo']){
-            place_html += '<tr>';
-            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(m)+1) +'</td>';
-            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][0] +'</td>';
-            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][1] +'</td>';
-            place_html += '</tr>';
+            if(parseInt(m)<5){
+              place_html += '<tr>';
+              place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(m)+1) +'</td>';
+              place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][0] +'</td>';
+              place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][1] +'</td>';
+              place_html += '</tr>';
+            }
           }
           place_html += '</tbody>';
           place_html += '</table>';
@@ -262,7 +264,7 @@ Search_weibo_history.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th>计算状态</th></tr></thead>';
+    html += '<thead><tr><th style="width:140px">用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th>计算状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -350,6 +352,10 @@ function bindOption(){
               var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
               if(sure==true){
                   console.log(compute_time);
+                  $('#recommend').empty();
+                  var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
+                  $('#recommend').append(waiting_html);
+
                   var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
                   console.log(recommend_confirm_url);
                   draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
@@ -371,8 +377,12 @@ function bindOption(){
             }
             else{
                 compute_time = '2';
-                alert('您默认选择了预约计算，系统将在三天后返回计算结果！');
+                alert('您选择了预约计算，系统将在今日24:00自动启动计算！');
                 console.log(compute_time);
+                $('#recommend').empty();
+                var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
+                $('#recommend').append(waiting_html);
+
                 var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
                 console.log(recommend_confirm_url);
                 draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
