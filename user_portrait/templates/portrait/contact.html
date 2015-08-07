@@ -1,16 +1,23 @@
 {% extends "tbase.html" %}
+{% block title %}关联分析{% endblock title%}
+
 {% block css %}
 {{ super() }}
 <link  type="text/css" href="/static/personal/css/style.css" rel="stylesheet"/>
 <link  type="text/css" href="/static/personal/css/basic.css" rel="stylesheet"/>
+<link href="/static/css/lanrenzhijia.css" type="text/css" rel="stylesheet" />
 {% endblock css %}
 
-{% block main %}
-<link href="/static/css/lanrenzhijia.css" type="text/css" rel="stylesheet" />
-<script src="/static/js/lanrenzhijia.js" type="text/javascript"></script>
+{% block head_js %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/lanrenzhijia.js"></script>
 <script type="text/javascript" src='/static/js/esl.js'></script>
 <script type="text/javascript" src='/static/js/echarts-all.js'></script>
 <script type="text/javascript" src='/static/js/echarts.js'></script>
+{% endblock %}
+
+{% block main %}
+
 <style>
     .caroufredsel_wrapper{
         left: -16px;
@@ -126,12 +133,12 @@
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" >无</span>
                         </div>
                         <div class='col-lg-3'>
-                            <input type='radio' id="importance" name="inlineRadioOptions" value='option1'>
-                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" >重要度</span>
-                        </div>
-                        <div class='col-lg-3'>
                             <input type='radio' id="activeness" name="inlineRadioOptions" value='option1'>
                             <span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" >活跃度</span>
+                        </div>
+                        <div class='col-lg-3'>
+                            <input type='radio' id="importance" name="inlineRadioOptions" value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" >重要度</span>
                         </div>
                         <div class='col-lg-3'>
                             <input type='radio' id="influence" name="inlineRadioOptions" value='option1'>
