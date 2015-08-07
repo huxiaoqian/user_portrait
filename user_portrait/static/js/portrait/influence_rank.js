@@ -20,17 +20,27 @@ Search_weibo_total.prototype = {
     //console.log(data);
     var div = that.div;
     //console.log(div);
+    var select_index = $('input[name="index_select"]:checked').val();
     $(div).empty();
     html = '';
     html += '<table id="total_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">影响力</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
+    if(select_index==1)
+      html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">影响力</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
+    else if(select_index==2)
+      html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">转发量</th><th style="text-align:center;vertical-align:middle">微博链接</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
+    else if(select_index==3)
+      html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">评论量</th><th style="text-align:center;vertical-align:middle">微博链接</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
+    else if(select_index==4)
+      html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">转发爆发度</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
+    else if(select_index==5)
+      html += '<thead><tr><th style="text-align:center;vertical-align:middle">排名</th><th style="text-align:center;vertical-align:middle">头像</th><th style="text-align:center;vertical-align:middle">用户ID</th><th style="text-align:center;vertical-align:middle">昵称</th><th style="text-align:center;vertical-align:middle">评论爆发度</th><th style="text-align:center;vertical-align:middle">入库状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
       item[i] = replace_space(item[i]);
       if(item[i][1]=="未知")
         item[i][1] = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
-      if(item[i][4]!='未知')
+      if(item[i][4]!='未知' && select_index!=2 && select_index!=3)
         item[i][4] = item[i][4].toFixed(2);
       html += '<tr>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][0] +'</td>';
@@ -38,10 +48,19 @@ Search_weibo_total.prototype = {
       html += '<td class="center" style="text-align:center;vertical-align:middle"><a href="http://weibo.com/u/'+ item[i][2] +'" target="_blank">'+ item[i][2] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][3] +'</td>';
       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ item[i][4] +'</td>';
-      if(item[i][5]==0)
-        html += '<td class="center" style="text-align:center;vertical-align:middle">未入库</td>';
-      else if(item[i][5]==1)
-        html += '<td class="center" style="text-align:center;vertical-align:middle"><a href="/index/personal/?uid='+ item[i][2] +'" target="_blank">已入库</a></td>';
+      if(select_index==2 || select_index==3){
+        html += '<td class="center" style="text-align:center;vertical-align:middle"><a href="'+ item[i][5] +'" target="_blank">查看微博</a></td>';
+        if(item[i][6]==0)
+          html += '<td class="center" style="text-align:center;vertical-align:middle">未入库</td>';
+        else if(item[i][6]==1)
+          html += '<td class="center" style="text-align:center;vertical-align:middle"><a href="/index/personal/?uid='+ item[i][2] +'" target="_blank">已入库</a></td>';
+      }
+      else{
+        if(item[i][5]==0)
+          html += '<td class="center" style="text-align:center;vertical-align:middle">未入库</td>';
+        else if(item[i][5]==1)
+          html += '<td class="center" style="text-align:center;vertical-align:middle"><a href="/index/personal/?uid='+ item[i][2] +'" target="_blank">已入库</a></td>';
+      }
       html += '</tr>';
     }
     html += '</tbody>';

@@ -76,7 +76,7 @@ Search_weibo_recommend.prototype = {
           var line_chart_xaxis = [];
           for(var k in data['time_trend'][0])
             line_chart_xaxis.push(new Date(parseInt(data['time_trend'][0][k])*1000).format("MM-dd hh:mm"));
-          console.log(line_chart_xaxis);
+          //console.log(line_chart_xaxis);
           var line_chart_yaxis = data['time_trend'][1];
           draw_line_chart(line_chart_xaxis.reverse(), line_chart_yaxis.reverse(), 'line_chart', detail_uname);
         }
