@@ -42,9 +42,14 @@ def get_user_detail(date, input_result, status):
         uid_list = input_result.keys()
     if status=='show_in_history':
         uid_list = input_result.keys()
-    index_name = ''.join(date.split('-'))
-    # test
-    index_name = '20130907'
+    if date!='all':
+        index_name = ''.join(date.split('-'))
+        #test
+        index_name = '20130907'
+    else:
+        now_ts = time.time()
+        now_date = ts2datetime(now_ts)
+        index_name = ''.join(now_date.split('-'))
     index_type = 'bci'
     user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
     #print 'user_portrait_result:', user_bci_result[0]
@@ -150,8 +155,20 @@ def show_compute(date):
     results = []
     hash_name = 'compute'
     r_results = r.hgetall(hash_name)
+    input_data = {}
     #search user profile to inrich information
-    if r_results:
+    if r_results and date!='all':
+        for user in r_results:
+            item = r_results[user]
+            in_date = json.loads(item)[0]
+            if in_date == date:
+                input_data[user] = item
+        if input_data:
+            results = get_user_detail(date, input_data, 'show_compute')
+        else:
+            results = []
+        return results
+    elif r_results and date=='all':
         results = get_user_detail(date, r_results, 'show_compute')
         return results
     else:
