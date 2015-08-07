@@ -27,11 +27,11 @@ Search_weibo.prototype = {
         }
         $('#table').empty();
         var html = '';
-        var height = 39 * data.length;
+        var height = 39 * (data.length-1);
         html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-        html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th></tr></thead>';
+        html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th><input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" /></th></tr></thead>';
         html += '<tbody>';
-        for(var item in data){
+        for(var item = 1; item < data.length-1; item++){
             html += '<tr style="border-bottom:1px solid #ddd">';
             var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
             for(var i =0; i < data[item].length; i++){  
@@ -50,6 +50,7 @@ Search_weibo.prototype = {
                 }
                 }            
             }
+            html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item + '" /></td>';
             html += '</tr>';
         }
         html += '</tbody>';
@@ -188,8 +189,12 @@ Draw_picture: function(data){
 }
 
 var Search_weibo = new Search_weibo();
+Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
+Search_weibo.Draw_picture(Search_weibo.data);
+var global_data = Search_weibo.data;
 $('.label-success').click(function(){
     var url = get_choose_data(uid);
+    console.log(url);
     if(url == ''){
         return false;
     }
@@ -201,6 +206,7 @@ $('.label-success').click(function(){
 });
 
 $('.inline-checkbox').click(function(){
+    console.log('dddd');
     if($(this).is(':checked')){
         $(this).next().next().val('1');
         $(this).next().next().attr('disabled',false);
@@ -241,4 +247,270 @@ function get_choose_data(uid){
         url = '';
     }
     return url;
+}
+
+
+function compare_button(){
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
+  // global_choose_uids[global_pre_page] = cur_uids;
+  var compare_uids = [];
+  // for (var key in cur_uids){
+      // var temp_list = global_choose_uids[key];
+  for (var i = 0; i < cur_uids.length; i++){
+    compare_uids.push(cur_uids[i]);
+  }
+  // }
+  console.log(compare_uids);
+  var len = compare_uids.length;
+  if(len>3 || len<2){
+    alert("请选择2至3个用户！");
+  }
+  else{
+      draw_table_compare_confirm(compare_uids, "#compare_comfirm");
+      $('#compare').modal();
+  }
+}
+
+function group_button(){
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
+  // global_choose_uids[global_pre_page] = cur_uids;
+  var group_uids = [];
+for (var i = 0; i < cur_uids.length; i++){
+    group_uids.push(cur_uids[i]);
+  }
+  // for (var key in global_choose_uids){
+  //     var temp_list = global_choose_uids[key];
+  //     for (var i = 0; i < temp_list.length; i++){
+  //       group_uids.push(temp_list[i]);
+  //     }
+  // }
+  console.log(group_uids);
+  var len = group_uids.length;
+  if (len < 1){
+      alert("请选择至少1个用户!");
+  }
+  else{
+      draw_table_group_confirm(group_uids, "#group_comfirm");
+      $("#group").modal();
+  }
+}
+
+function delete_button(){
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
+  global_choose_uids[global_pre_page] = cur_uids;
+  var delete_uids = [];
+  for (var key in global_choose_uids){
+      var temp_list = global_choose_uids[key];
+      for (var i = 0; i < temp_list.length; i++){
+        delete_uids.push(temp_list[i]);
+      }
+  }
+  console.log(delete_uids);
+  var len = delete_uids.length;
+  if (len < 1){
+      alert("请选择至少1个用户!");
+  }
+  else{
+      draw_table_delete_confirm(delete_uids, "#delete_comfirm");
+      $('#delete').modal();
+  }
+}
+
+function choose_all(){
+  $('input[name="search_result_option"]').prop('checked', $("#choose_all").prop('checked'));
+}
+
+function draw_table_compare_confirm(uids, div){
+  $(div).empty();
+    var html = '';
+    html += '<table id="compare_cofirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th></th></tr></thead>';
+    html += '<tbody>';
+    for(var i in uids){
+      var item = global_data[uids[i]];
+      html += '<tr">';
+      html += '<td class="center" name="compare_confirm_uids">'+ item[0] +'</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ item[2].toFixed(2) + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3].toFixed(2) + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+}
+
+function draw_table_group_confirm(uids, div){
+  $(div).empty();
+    var html = '';
+    html += '<table id="group_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th></th></tr></thead>';
+    html += '<tbody>';
+    for(var i in uids){
+      var item = global_data[uids[i]];
+      html += '<tr">';
+      html += '<td class="center" name="compare_confirm_uids">'+ item[0] +'</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ item[2].toFixed(2) + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3].toFixed(2) + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4].toFixed(2) + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+}
+
+function draw_table_delete_confirm(uids, div){
+  $(div).empty();
+    var html = '';
+    html += '<table id="delete_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th></th></tr></thead>';
+    html += '<tbody>';
+    for(var i in uids){
+      var item = global_data[uids[i]];
+      html += '<tr id=' + uids[1] +'>';
+      html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
+      html += '<td class="center">'+ item[1] + '</td>';
+      html += '<td class="center">'+ item[2] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[3] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[4] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
+      html += '<td class="center" style="width:100px;">'+ item[6] + '</td>';
+      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    html += '</table>';
+    $(div).append(html);
+}
+
+function delRow(obj){
+  var Row = obj.parentNode;
+  while(Row.tagName.toLowerCase()!="tr"){
+    Row = Row.parentNode;
+  }
+  Row.parentNode.removeChild(Row);
+}
+
+function compare_confirm_button(){
+  var compare_confirm_uids = [];
+  $('[name="compare_confirm_uids"]').each(function(){
+      compare_confirm_uids.push($(this).text());
+  })
+  if (compare_confirm_uids.length == 1){
+      alert('对比的用户至少需要2名!');
+      return;
+  }
+  var compare_url = '/index/contrast/?uid_list='+ compare_confirm_uids.join(',');
+  console.log(compare_url);
+  window.open(compare_url);
+}
+
+function group_confirm_button(){
+  var group_confirm_uids = [];
+  $('[name="group_confirm_uids"]').each(function(){
+      group_confirm_uids.push($(this).text());
+  })
+  console.log(group_confirm_uids);
+  var group_ajax_url = '/group/submit_task/';
+  var group_url = '/index/group_result/';
+  var group_name = $('input[name="group_name"]').val();
+  var remark = $('input[name="remark"]').val();
+  console.log(group_name, remark);
+  if (group_name.length == 0){
+      alert('群体名称不能为空');
+      return;
+  }
+
+
+  var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+    return;
+  }
+  if ((remark.length > 0) && (!remark.match(reg))){
+    alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+    return;
+  }
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
+  $.ajax({
+      type:'POST',
+      url: group_ajax_url,
+      contentType:"application/json",
+      data: JSON.stringify(job),
+      dataType: "json",
+      success: callback
+  });
+  function callback(data){
+      console.log(data);
+      if (data == '1'){
+          window.location.href = group_url;
+      }
+      else{
+          alert('已存在相同名称的群体分析任务,请重试一次!');
+      }
+  }
+}
+
+function delete_confirm_button(){
+  var now_date = new Date();
+  var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
+  var delete_confirm_uids = [];
+  $('[name="delete_confirm_uids"]').each(function(){
+      delete_confirm_uids.push($(this).text());
+  })
+  console.log(delete_confirm_uids);
+  var delete_uid_list = '';
+  for(var i in delete_confirm_uids){
+      delete_uid_list += delete_confirm_uids[i];
+      if(i<(delete_confirm_uids.length-1))
+        delete_uid_list += ',';
+  }
+  if(confirm("确认要删除吗?")){
+      var delete_url = '/recommentation/search_delete/?date=' + now + '&uid_list=' + delete_uid_list;
+      console.log(delete_url);
+      $.ajax({
+          type:'get',
+          url: delete_url,
+          dataType: "json",
+          success: callback
+      });
+      function callback(data){
+           console.log(data);
+           if (data == '1'){
+               for (var i = 0; i < delete_confirm_uids.length; i++){
+                   global_data[delete_confirm_uids[i]] = '';
+               }
+               alert('出库成功！');
+               draw_table_search_result.Re_Draw_table(global_data);
+           }
+           else{
+               alert('fail');
+           }
+      }
+  }
+}
+
+function replace_space(data){
+  for(var i in data){
+    if(data[i]===""||data[i]==="unknown"){
+      data[i] = "未知";
+    }
+  }
+  return data;
 }

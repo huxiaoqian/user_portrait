@@ -132,10 +132,12 @@ def identify_in(data):
         value_string = []
         r.hset(in_hash_key, uid, in_status)
         if status == '1':
-            in_date = ts2datetime(time.time())
+            #in_date = ts2datetime(time.time())
+            in_date = date
             compute_status = '1'
         elif status == '2':
-            in_date = ts2datetime(time.time())
+            #in_date = ts2datetime(time.time())
+            in_date = date
             compute_status = '2'
         r.hset(compute_hash_name, uid, json.dumps([in_date, compute_status]))
     return True

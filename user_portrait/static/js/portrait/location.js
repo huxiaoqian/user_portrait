@@ -13,8 +13,24 @@ Location.prototype = {   //获取数据，重新画表
   },
 
   location:function(data){
-	var description = document.getElementById('location_description');
-	description.innerHTML = data['description'];
+	
+	var description1 = document.getElementById('location_description1');
+	var description3 = document.getElementById('location_description3');
+	//description.innerHTML = data['description'];
+	var length =  data['description'].length;
+	if(length==2){
+		description1.style.color="red";
+		description1.innerHTML = data['description'][0];
+		document.getElementById('location_description2').innerHTML = data['description'][1];
+	}else{
+		description1.style.color="red";
+		description1.innerHTML = data['description'][0];
+		document.getElementById('location_description2').innerHTML = data['description'][1];
+		description3.style.color="red";
+		description3.innerHTML = data['description'][2];
+		document.getElementById('location_description4').innerHTML = data['description'][3];
+	}
+
   }
 }
  url ="/attribute/location/?uid="+parent.personalData.uid;

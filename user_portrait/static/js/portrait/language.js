@@ -22,8 +22,20 @@ function createRandomItemStyle() {
 }
 function Draw_keyword(data){
 	keyword = [];
+
+	$('#WordList').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered" style="width:480px;">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">频率</th></tr>';
+    for (var i = 0; i < data.length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1] + '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#WordList').append(html);
 	
-	for (i=0;i<data.length;i++){
+	for (i=0;i<20;i++){
 		var word = {};
 		word['name'] = data[i][0];
 		word['value'] =data[i][1]*100;
@@ -178,14 +190,22 @@ Hashtag.prototype = {   //获取数据，重新画表
     });
   },
 Draw_hashtag:function(data){
-	//console.log(data);
-	var hashtag = document.getElementById('hashtagDes');
-    if(data.hashtag_description==""){
-        hashtag.innerHTML = '';
+	
+	
+	var link = document.getElementById('linkDes');
+	if(data.link_conclusion==""){
+        link.innerHTML = '';
     }else{
-        hashtag.innerHTML = data.hashtag_description;
+        link.innerHTML = data.link_conclusion;
     }
-    //console.log(data.hashtag_description);
+	
+	var emotion = document.getElementById('emotionDes');
+    if(data.emotion_conclusion==""){
+        emotion.innerHTML = '';
+    }else{
+        emotion.innerHTML = data.emotion_conclusion;
+    }
+	
 	
 }
 }

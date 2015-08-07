@@ -97,6 +97,52 @@ def search_portrait_user_in_activity(es, number, active_index, active_type, port
                 if count_c >= int(number):
                     return return_list
 
+def search_portrait_user(es, number, active_index, active_type, portrait_index, portrait_type, field="user_index"):
+
+    return_list = []
+    index_exist = es.indices.exists(index=active_index)
+    if not index_exist:
+        return "no active_index exist"
+        sys.exit(0)
+
+    count_s = 0
+    count_c = 0
+    start = 0
+    rank = 1
+    while 1:
+        search_list = []
+        user_list = search_k(es, active_index, active_type, start, field, 100)
+        start += 100
+        for item in user_list:
+            if field == "vary":
+                uid = item.get('uid', '0') # obtain uid, notice "uid" or "user"
+            else:
+                uid = item.get('user', '0')
+            search_list.append(uid) # uid list
+
+        search_result = es_portrait.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]
+        profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
+
+        for item in search_result:
+            if item["found"]:
+                info = ['','','','','','']
+                info[0] = rank
+                index = search_result.index(item)
+
+                if profile_result[index]['found']:
+                    info[1] = profile_result[index]['_source'].get('photo_url','')
+                    info[3] = profile_result[index]['_source'].get('nick_name','')
+                info[2] = search_result[index].get('_id','')
+                info[4] = user_list[index][field]
+                info[5] = "1"
+                return_list.append(info)
+                rank += 1
+                count_c += 1
+
+                if count_c >= int(number):
+                    return return_list
+
+
 def portrait_user_vary(es, number, active_index, active_type, portrait_index, portrait_type, field="vary"):
 
     return_list = []

@@ -14,93 +14,149 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 .font12{ font-weight:normal; font-size:12px;}
 .clearfix:after {content:".";display:block;height:0;clear:both;visibility:hidden;}
 /* 时间轴样式 */
-.course_nr{height:140px; background:url(/static/img/ico9.gif) repeat-x center;}
-.course_nr li{ float:left; padding-top:30px; width:100px; text-align:center; position:relative; }
+.course_nr{height:70px; background:url(/static/img/ico9.gif) repeat-x center;}
+.course_nr li{ float:left; padding-top:30px; width:130px; text-align:center; position:relative; margin-left:5px;}
 .shiji{ position:absolute; width:100%; left:0; top:-20px; display:none;}
 .ico{ height:67px; line-height:67px; color:#518dbb; font-weight:bold; background:url(/static/img/ico11.gif) no-repeat center top; margin-bottom:8px;}
-
-.ms{ width:100px;line-height:14px; color:#999;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.ms{ width:100px;line-height:14px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin-left:18px;}
+#Alocation{height:auto;width:180px;margin-left:100px;margin-top:50px;}
 </style>
-<div id="Activezh" style="height:300px;width:750px"></div>
-<div id ="Plocation">
-	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
-	<div class="LocationDetail" id="Top5">
-		<dl>
-			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1">北京</span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2">上海</span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3">广州</span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4">深圳</span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5">杭州</span></dt>
-		</dl>
-	</div>
-</div>
-<div style="text-align:center;width:80%">一周时间分布</div>
-<div class="clearfix course_nr" style="width:80%;">
+<div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>
+<div class="clearfix course_nr" style="width:100%;">
 	<ul class="course_nr2">
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d1" >07-28</p>
-				<p class="ms">北京,北京,北京,北京,北京</p>
+				<p class="font12 ico" id="d1" ></p>
+				<p class="ms" id="city1"></p>
 			</div>
 		</li>
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d2">07-29</p>
-				<p class="ms">北京</p>
+				<p class="font12 ico" id="d2"></p>
+				<p class="ms" id="city2"></p>
 			</div>
 		</li>
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d3">07-30</p>
-				<p class="ms">北京</p>
+				<p class="font12 ico" id="d3"></p>
+				<p class="ms" id="city3"></p>
 			</div>
 		</li>
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d4">07-31</p>
-				<p class="ms">北京</p>
+				<p class="font12 ico" id="d4"></p>
+				<p class="ms" id="city4"></p>
 			</div>
 		</li>
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d5">08-01</p>
-				<p class="ms">北京</p>
+				<p class="font12 ico" id="d5"></p>
+				<p class="ms" id="city5"></p>
 			</div>
 		</li>
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d6">08-02</p>
-				<p class="ms">北京</p>
+				<p class="font12 ico" id="d6"></p>
+				<p class="ms" id="city6"></p>
 			</div>
 		</li>
 		<li>
 			<div class="shiji">
-				<p class="font12 ico" id="d7">08-03</p>
-				<p class="ms">北京</p>
+				<p class="font12 ico" id="d7"></p>
+				<p class="ms" id="city7"></p>
 			</div>
 		</li>
 	</ul>
 </div>
 
 
-
-<div id="trend" style="height:30px;width:950px">
-<h4>该用户的活跃时间段为：<span id="time1"></span>和<span id="time2"></span></h4>
+<div id="Activezh" style="height:300px;width:680px;margin-top:30px;" class="fleft"></div>
+<div id ="Alocation" class="">
+	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
+	<div class="LocationDetail" id="Top5">
+		<dl>
+			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1"></span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2"></span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3"></span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4"></span></dt>
+		</dl>
+		<dl>
+			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5"></span></dt>
+		</dl>
+	</div>
 </div>
-<div id="trend" style="height:30px;width:950px">
-<h4><span id="location_description"></span></h4>
+
+
+
+<div class="" style="width:1000px;">
+	<div id="" style="height:30px;width:950px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 >该用户的活跃时间段为：<span id="time1"></span> 和 <span id="time2"></span></h4>
+	</div>
+	<div id="" style="height:30px;width:950px">
+		<span class="fleft" style="margin-right:10px; width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;"><span id="saysay"></span></h4>
+	</div>
+	<div id="" style="height:30px;width:950px">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;"><span id="location_description1"></span><span id="location_description2"></span><span id="location_description3"></span><span id="location_description4"></span></h4>
+	</div>
 </div>
 <script src="/static/js/highstock.js" charset="utf-8"></script>
 <script src="/static/js/exporting.js" charset="utf-8"></script>
 <script src="/static/js/portrait/location.js" charset="utf-8"></script>
+<script>
+function Geo(){
+  this.ajax_method = 'GET';
+}
+Geo.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+geo:function(data){
+	
+	var geo_data = data[0]
+	//console.log(geo_data);
+	document.getElementById('saysay').innerHTML = data[1];
+	var date = [];
+	var citys = [];
+	for(var key in geo_data){
+		date.push(geo_data[key][0]);
+		citys.push(geo_data[key][1][0])
+	}
+	//console.log(citys);
+	//console.log(date);
+	for(i=0;i<date.length;i++){
+		document.getElementById('d'+(i+1)).innerHTML = date[i];
+	}
+	for(i=0;i<citys.length;i++){
+		if(citys[i][0][0]){
+			document.getElementById('city'+(i+1)).innerHTML = citys[i][0];
+		}else{
+			document.getElementById('city'+(i+1)).setAttribute('color','#999');
+			document.getElementById('city'+(i+1)).innerHTML = '未发布微博';
+		}
+		
+	}
+}
+}
+var Geo = new Geo();
+url = '/attribute/geo_track/?uid='+parent.personalData.uid ;
+Geo.call_sync_ajax_request(url, Geo.ajax_method, Geo.geo);
+
+</script>
 <script type="text/javascript">
 // Date format
 Date.prototype.format = function(format) {
@@ -123,7 +179,6 @@ Date.prototype.format = function(format) {
     }
     return format;
 }
-
  function Activity(){
   this.ajax_method = 'GET';
 }
@@ -137,7 +192,6 @@ Activity.prototype = {   //获取数据，重新画表
       success:callback
     });
   },
-
   active:function(data){
 	var item = data.activity_time;
         for (i=0;i<item.length;i++){
@@ -175,7 +229,8 @@ Activity.prototype = {   //获取数据，重新画表
             }},
         title: {
             text: '微博时间走势图',
-            x: -20 //center
+			align:'left',
+			fontSize:'20',
         },
         subtitle: {
             text: '',
@@ -209,7 +264,7 @@ Activity.prototype = {   //获取数据，重新画表
         },
         tooltip: {
             valueSuffix: '条',
-            xDateFormat: '%Y-%m-%d %H:%M:%S'
+            xDateFormat: '%H:%M:%S'
         },
         legend: {
             layout: 'vertical',
@@ -225,7 +280,7 @@ Activity.prototype = {   //获取数据，重新画表
   }
 }
 function getDate(tm){
-    var tt = new Date(parseInt(tm)*1000).format("MM-dd ");
+    var tt = new Date(parseInt(tm)*1000).format("MM-dd hh");
     return tt;
 }
 var Activity = new Activity();
@@ -244,3 +299,11 @@ if(location_geo){
 }
 $('#Top5').append(html);
 </script>
+
+
+
+
+
+
+
+

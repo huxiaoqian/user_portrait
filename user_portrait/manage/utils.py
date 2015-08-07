@@ -40,10 +40,25 @@ def compare_user_portrait(uid_list):
             psycho_feature = json.loads(source['psycho_feature'])
         except:
             psycho_feature = {}
+        try:
+            activity_geo_dict = json.loads(source['activity_geo_dict'])
+            sort_activity_geo = sorted(activity_geo_dict.items(), key=lambda x:x[1], reverse=True)
+            activity_geo_list = sort_activity_geo[:2]
+            activity_list = []
+            for item in activity_geo_list:
+                city_list = item[0].split('\t')
+                city = city_list[len(city_list)-1]
+                activity_list.append(city)
+        except:
+            activity_geo = []
+        try:
+            hashtag_dict = json.loads(source['hashtag_dict'])
+        except:
+            hashtag_dict = {}
         user_portrait_result[uid] = {
                 'uname': source['uname'],
                 'gender': source['gender'],
-                'location':source['location'],
+                'location': source['location'],
                 'importance': source['importance'],
                 'activeness': source['activeness'],
                 'influence': source['influence'],
@@ -54,8 +69,11 @@ def compare_user_portrait(uid_list):
                 'topic': json.loads(source['topic']),
                 'keywords': json.loads(source['keywords']),
                 'psycho_status': psycho_status,
-                'psycho_feature': psycho_feature
+                'psycho_feature': psycho_feature,
+                'activity_geo': activity_list,
+                'hashtag_dict': hashtag_dict
                 }
+
     #print 'user_portrait_result:', user_portrait_result
     return user_portrait_result
 

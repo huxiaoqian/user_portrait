@@ -96,12 +96,12 @@
 			    </div>
 			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 			      <div class="panel-body">
-					<div id="line" style="height:500px;width:950px;float:left"></div>
+					<div id="line" style="height:400px;width:950px;float:left"></div>
 			         <div id='top_platform' style='overflow-x:hidden;width:450px;float:left'>
 			        </div>
 				     <div id='top_location' style='overflow-x:hidden;width:450px;float:right'>
 					 </div>
-					 <div id="top_active_geo" style="height:300px;width:1000px;float:left"></div>
+					 <div id="top_active_geo" style="height:250px;width:1000px;float:left"></div>
 			      </div>
 			    </div>
 			  </div>
@@ -123,10 +123,10 @@
 		        	</div>
 		     		<div id='emotion' style='overflow-x:hidden;width:200px;height:300;float:right'>		     	
 			        </div>
-						<div style="width:450px;height:300;float:left">
-						<div style="font-size:16px;margin-left:50px;">hashtag关键词云</div>
-						<div id="keywordcloud" style="width:450px;height:300px"></div>
-						</div>
+					<div style="width:450px;height:300;float:left">
+					<div><span style="font-size:16px;margin-left:50px;">关键词云</span><span type="button"data-toggle="modal" data-target="#modal_keyword" style="font-size:16px;margin-left:200px;"><u>查看更多</u></span></div>
+					<div id="keywordcloud" style="width:450px;height:300px"></div>
+					</div>
 			      </div>
 			    </div>
 			  </div>
@@ -145,7 +145,7 @@
 			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
 			      	<div id='activeness'style='width:320px;height:420px;float:right'></div>
 			      	<div id='influence'style='width:320px;height:420px;float:left'></div>
-				     <div id='weibo' style='width:960px;float:left;margin-top:10px;'>
+				     <div id='weibo' style='width:960px;float:left;margin-top:10px;max-height:520px;'>
 					 </div>
 			      </div>
 			    </div>
@@ -163,11 +163,11 @@
 			      <div class="panel-body">
 						<div style="height:400px;width:450px;float:left">
 						<div style="font-size:16px;margin-bottom:20px;">领域划分</div>
-						<div id="radar_topic" style="height:380px;width:450px;"></div>
+						<div id="radar_domain" style="height:380px;width:450px;"></div>
 						</div>
 						<div style="height:400px;width:450px;float:right">
 						<div style="font-size:16px;margin-bottom:20px;">话题划分</div>
-						<div id="radar_domain" style="height:380px;width:450px;"></div>
+						<div id="radar_topic" style="height:380px;width:450px;"></div>
 						</div>
 			      </div>
 			    </div>
@@ -185,12 +185,29 @@
 			    </div>
 			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
 			      <div class="panel-body">
-			      	<div style="font-size:16px">群组内转发视图</div>
-			      	<div id='relation_picture'style='width:900px;height:400px'></div>
 			      
-			      	<div style="float:left"><span style="font-size:16px">群组内转发列表</span><span type="button"data-toggle="modal" data-target="#" style="font-size:16px;margin-left:375px;cursor: pointer"><u>查看更多</u></span></div>
-			      	<div id='relation_table'style='width:550px;height:280px;float:left'></div>
-			      	<div id='group' style='overflow-x:hidden;width:300px;margin-top:50px;float:right'></div>
+			      	<div id='group' style='overflow-x:hidden;'></div>
+
+
+
+			          <div class="box-content">
+			            <ul class="nav nav-tabs" id="myTab">
+			                <li class="active" title="群组内转发视图"><a href="#group_in_picture">群组内转发视图</a></li>
+			                <li title="群组内转发列表"><a href="#group_in_table">群组内转发列表</a></li>
+			            </ul>
+			            <div id="myTabContent" class="tab-content">
+			                <div class="tab-pane active" id="group_in_picture" style="margin-top:10px">
+			                    <div id='relation_picture'style='width:900px;height:350px'></div>                 
+			                </div>
+			                <div class="tab-pane" id="group_in_table" style="margin-top:10px">
+			                    <div id='relation_table' style='overflow-x:hidden;width:965px;height:350px'></div>
+			                </div>          
+			            </div>
+			           </div>
+
+					
+
+			      	
 			      	
 			      	<div style="float:left"><span style="font-size:16px">群组外对该群组转发关系</span><span type="button"data-toggle="modal" data-target="#more_group_out" style="font-size:16px;margin-left:725px;cursor: pointer"><u>查看更多</u></span></div>
 			      	<div id='relation_active_table' style='overflow-x:hidden;width:965px'></div>	 
@@ -213,6 +230,10 @@
 						<div style="height:400px;width:450px;float:left">
 						<div style="font-size:16px;margin-bottom:20px;">心理状态划分</div>
 						<div id="pie_emotion" style="height:380px;width:450px;"></div>
+						</div>
+						<div style="height:400px;width:450px;float:right">
+						<div style="font-size:16px;margin-bottom:20px;">倾向性划分</div>
+						<div id="radar_tendency" style="height:380px;width:450px;"></div>
 						</div>
 					</div>
 			      </div>
@@ -298,6 +319,32 @@
 				  </div>
 				</div>
 
+				<div class="modal fade" id="modal_keyword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document" style="width:950px;margin-top:60px">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">关键词</h4>
+				      </div>
+				      <div class="modal-body" id='more_keyword'>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<div class="modal fade" id="modal_group_in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document" style="width:950px;margin-top:60px">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">群组内转发列表</h4>
+				      </div>
+				      <div class="modal-body" id='more_group_in'>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
 			</div>
         </div>
     </div>			
@@ -306,6 +353,14 @@
     {% block Own_js %}
     {{ super() }}
     <script>
+      $(function () { 
+	    $('#myTab a:first').tab('show');//初始化显示哪个tab 
+	  
+	    $('#myTab a').click(function (e) { 
+	      e.preventDefault();//阻止a链接的跳转行为 
+	      $(this).tab('show');//显示当前选中的链接及关联的content 
+	    }) 
+	  }) 
         var name = "{{ name }}";
         $(document).ready(function(){
             $("#closeness_tooltip").tooltip();

@@ -23,6 +23,7 @@ def ajax_compare_user_portrait():
     else:
         return None
 
+
 # compare the detail of activity attribute
 # output data: {user:[weibo_count]}, {user:[(date, weibo)]}, ts_list
 @mod.route('/compare_user_activity/')
@@ -62,7 +63,7 @@ def ajax_imagine():
     weight_list = query_weight.split(',')
 
     if len(keywords_list) != len(weight_list):
-        return 0
+        return "0"
 
     # 'field' control search order
     # order_list = ['importance', 'influence', 'activeness', 'default']
@@ -87,4 +88,4 @@ def ajax_imagine():
     if result:
         return json.dumps(result)
 
-    return 0
+    return "0"
