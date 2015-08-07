@@ -280,7 +280,7 @@ Activity.prototype = {   //获取数据，重新画表
   }
 }
 function getDate(tm){
-    var tt = new Date(parseInt(tm)*1000).format("MM-dd hh");
+    var tt = new Date(parseInt(tm)*1000).format("MM-dd hh:mm");
     return tt;
 }
 var Activity = new Activity();
