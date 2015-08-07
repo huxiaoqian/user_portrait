@@ -113,11 +113,13 @@ Search_weibo_recommend.prototype = {
           hashtag_html += '<thead><tr><th style="text-align:center;vertical-align:middle;width:80px">排名</th><th style="text-align:center;vertical-align:middle;width:200px">HashTag</th><th style="text-align:center;vertical-align:middle;width:80px">微博数</th></tr></thead>';
           hashtag_html += '<tbody>';
           for(var n in data['hashtag']){
-            hashtag_html += '<tr>';
-            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(n)+1) +'</td>';
-            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][0] +'</td>';
-            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][1] +'</td>';
-            hashtag_html += '</tr>';
+            if(parseInt(n)<5){
+              hashtag_html += '<tr>';
+              hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(n)+1) +'</td>';
+              hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][0] +'</td>';
+              hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][1] +'</td>';
+              hashtag_html += '</tr>';
+            }
           }
           hashtag_html += '</tbody>';
           hashtag_html += '</table>';
@@ -280,9 +282,9 @@ Search_weibo_history.prototype = {
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var in_status;
-      if(item[i][6]==0)
-        in_status = "确定计算";
-      else if(item[i][6]==1)
+      if(item[i][7]==2)
+        in_status = "预约计算";
+      else if(item[i][7]==3)
         in_status = "正在计算";
       else
         in_status = "计算完成";
@@ -343,7 +345,7 @@ function bindOption(){
             alert("请选择至少一个用户！");
           else{
             var compute_time;
-            if($('input[name="instant"]').is(':checked')){
+            if($('input[name="instant"]:checked').val()==1){
               compute_time = '1';
               var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
               if(sure==true){
@@ -507,7 +509,7 @@ function date_initial(){
   history_date_html += '<option value="' + history_date[4] + '">' + history_date[4] + '</option>';
   history_date_html += '<option value="' + history_date[5] + '">' + history_date[5] + '</option>';
   history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
-  history_date_html += '<option value="all">选择全部</option>';
+  history_date_html += '<option value="all">全部</option>';
   $("#history_date_select").append(history_date_html);
 }
 
