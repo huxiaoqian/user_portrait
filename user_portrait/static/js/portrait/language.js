@@ -191,18 +191,22 @@ Hashtag.prototype = {   //获取数据，重新画表
   },
 Draw_hashtag:function(data){
 	
-	var hashtag = document.getElementById('hashtagDes');
-    if(data.hashtag_description==""){
-        hashtag.innerHTML = '';
-    }else{
-        hashtag.innerHTML = data.hashtag_description;
-    }
+	
 	var link = document.getElementById('linkDes');
 	if(data.link_conclusion==""){
         link.innerHTML = '';
     }else{
         link.innerHTML = data.link_conclusion;
     }
+	
+	var emotion = document.getElementById('emotionDes');
+    if(data.emotion_conclusion==""){
+        emotion.innerHTML = '';
+    }else{
+        emotion.innerHTML = data.emotion_conclusion;
+    }
+	
+	
 }
 }
 var Hashtag = new Hashtag();

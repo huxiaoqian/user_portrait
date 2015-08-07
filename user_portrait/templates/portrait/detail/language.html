@@ -1,4 +1,7 @@
 <link href="/static/personal/css/language.css" rel="stylesheet" type="text/css" />
+<link href="/static/personal/css/default.css" rel="stylesheet" type="text/css" />
+<link href="/static/personal/css/component.css" rel="stylesheet" type="text/css" />
+<script src="/static/js/modernizr.custom.js"></script>
 <style>
 #moreWords{
   position: fixed;
@@ -29,7 +32,7 @@ overflow:scroll;
 <div class="showmore" style="margin-top:50px;font-size:16px;"><a id="showmoreWords">更多</a></div>
 <div class="hotwords" style="width:550px;height:100%;margin-left:20px;padding-left:20px;">
 	<div id="TabContainer" >
-
+		<!--
 		<div class="Lsubtitle fleft" style="">
 			<ul class="tabTitle fleft">
 				<li id="tab1" class=""><a href="#" class="on" onclick="switchTab('tab1','con1');this.blur();return false;">
@@ -46,9 +49,10 @@ overflow:scroll;
                 hashtag</a></li>
 			</ul>
 		</div>
+		-->
 		
-        <div id="con1" class="fleft">
- <div class="Litem-list fleft">
+    	<div id="con1" class="fleft">
+			<div class="Litem-list fleft">
 			<ul class="Litem">
 				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
 				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
@@ -119,6 +123,22 @@ overflow:scroll;
 			</ul>
 			</div>           
         </div>
+		<div class="column">
+					<div id="dl-menu" class="dl-menuwrapper fright">
+						<button>Open Menu</button>
+						<ul class="dl-menu">
+							<li id="tab1" class=""><a href="#" class="on" onclick="switchTab('tab1','con1');this.blur();return false;">正面情感词</a></li>
+							<li id="tab2" class=""><a href="#" onclick="switchTab('tab2','con2');this.blur();return false;">负面情感词</a></li>
+							<li id="tab3" class=""><a href="#" onclick="switchTab('tab3','con3');this.blur();return false;">焦虑情感词</a></li>
+							<li id="tab4" class=""><a href="#" onclick="switchTab('tab4','con4');this.blur();return false;">生气情感词</a></li>
+							<li id="tab5" class=""><a href="#" onclick="switchTab('tab5','con5');this.blur();return false;">表情符号</a></li>
+							<li id="tab6" class=""><a href="#" onclick="switchTab('tab6','con6');this.blur();return false;">hashtag</a></li>
+						</ul>
+					</div><!-- /dl-menuwrapper -->
+					
+	
+			
+		</div>
     </div>
 </div>
 <div id="float-wrap" class="hidden"></div>
@@ -126,18 +146,25 @@ overflow:scroll;
 	<h3 class="title">关键词排名<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
 	<div id="WordList"></div>
 </div>
-<div id="trend" style="width:1000px;border:1px solid #999;">
-	<span class="fleft" style="width:48px;height:48px;background-image:url(/static/img/bell-icon.png)"></span>
-	<h4>平均文本长度：<span id="TLnum"></span></h4>
-	<h4>行链接微博比例：<span id="LLnum"></span>%</h4>
-	<h4 id="linkDes"></h4>
-	<h4 id="hashtagDes"></h4>
+<div id="" style="width:1000px;">
+	<div id="" style="height:30px;width:950px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;">平均文本长度：<span id="TLnum"></span></h4>
+	</div>
+	<div id="" style="height:30px;width:950px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;">行链接微博比例：<span id="LLnum"></span>%</h4>
+	</div>
+	<div id="" style="height:30px;width:950px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 id="linkDes" style="line-height:32px;"></h4>
+	</div>
+	
+	<div id="" style="height:30px;width:950px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 id="emotionDes" style="line-height:32px;"></h4>
+	</div>
 </div>
-
-<div class="" id="trend"></div>
-<div class="" id="trend"></div>
-<div id="" class="" style="width:100%;text-align:center;"></div>
-<div id="" class="" style="width:100%;text-align:center;"></div>
 <script type="text/javascript">
         function switchTab(ProTag, ProBox) {
             for (i = 1; i < 7; i++) {
@@ -155,8 +182,12 @@ overflow:scroll;
         }
     </script>
 <script src="/static/js/emoticon.js"></script>
+<script src="/static/js/jquery.dlmenu.js"></script>
 <script src="/static/js/portrait/language.js"></script>
 <script type="text/javascript">
+$(function() {
+		$( '#dl-menu' ).dlmenu();
+	});
 $(".closeList").off("click").click(function(){
 		$("#float-wrap").addClass("hidden");
 		$("#moreWords").addClass("hidden");

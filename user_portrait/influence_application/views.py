@@ -11,6 +11,7 @@ from rank_portrait_in_active_user import search_portrait_user, portrait_user_var
 from search_vary_index_function import query_vary_top_k
 from search_tag_in_portrait import search_tag
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
+from influence_description import influence_description
 
 portrait_index = "copy_user_portrait" # user_portrait_database
 portrait_type = "user"
@@ -75,13 +76,17 @@ def ajax_specified_user_active():
     uid = request.args.get('uid', '') # 123456,123456
     date = str(date)
 
-    if not date or not uid:
-        results = []
-    else:
+    results = []
+
+    if date and uid:
         index_name = date.replace('-','')
         list_1 = []
         uid_list = [item for item in uid.split(',')]
-        results = search_influence_detail(uid_list, index_name, "bci") 
+        result = search_influence_detail(uid_list, index_name, "bci") 
+
+        description = influence_description(result)
+        results.append(result)
+        results.append(description)
 
     return json.dumps(results)
 
