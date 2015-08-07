@@ -12,6 +12,11 @@ Bubble.prototype = {   //获取数据，重新画表
     });
   },
 	Draw_bubble:function(data){
+	
+	var item = data[0];
+	console.log(item);
+	console.log(data[1]);
+	document.getElementById('sayinfluence').innerHTML = data[1];
 	var tree = echarts.init(document.getElementById('treeB')); 
 	var option = {
     title : {
@@ -103,19 +108,19 @@ Bubble.prototype = {   //获取数据，重新画表
                                 {
                                     name: '',//被转发
 									symbol:'image://../../static/img/share.jpg',
-									children:[{name:'总数',children:[{name:parseInt(data.origin_weibo_retweeted_total_number.toFixed(0))}]},
-										{name:'平均数',children:[{name:parseInt(data.origin_weibo_retweeted_average_number.toFixed(0))}]},
-										{name:'最高数',children:[{name:parseInt(data.origin_weibo_retweeted_top_number.toFixed(0))}]},
-										{name:'爆发度',children:[{name:parseInt(data.origin_weibo_retweeted_brust_average.toFixed(0))}]}
+									children:[{name:'总数',children:[{name:parseInt(item.origin_weibo_retweeted_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(item.origin_weibo_retweeted_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(item.origin_weibo_retweeted_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(item.origin_weibo_retweeted_brust_average.toFixed(0))}]}
 									]
                                 },
                                 {
                                     name: '',//被评论
 									symbol:'image://../../static/img/mss.jpg',
-									children:[{name:'总数',children:[{name:parseInt(data.origin_weibo_comment_total_number.toFixed(0))}]},
-										{name:'平均数',children:[{name:parseInt(data.origin_weibo_comment_average_number.toFixed(0))}]},
-										{name:'最高数',children:[{name:parseInt(data.origin_weibo_comment_top_number.toFixed(0))}]},
-										{name:'爆发度',children:[{name:parseInt(data.origin_weibo_comment_brust_average.toFixed(0))}]}
+									children:[{name:'总数',children:[{name:parseInt(item.origin_weibo_comment_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(item.origin_weibo_comment_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(item.origin_weibo_comment_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(item.origin_weibo_comment_brust_average.toFixed(0))}]}
 									]
                                 }
                             ]
@@ -126,19 +131,19 @@ Bubble.prototype = {   //获取数据，重新画表
 								{
 									name: '',//被转发
 									symbol:'image://../../static/img/share.jpg',
-									children:[{name:'总数',children:[{name:parseInt(data.retweeted_weibo_retweeted_total_number.toFixed(0))}]},
-										{name:'平均数',children:[{name:parseInt(data.retweeted_weibo_retweeted_average_number.toFixed(0))}]},
-										{name:'最高数',children:[{name:parseInt(data.retweeted_weibo_retweeted_top_number.toFixed(0))}]},
-										{name:'爆发度',children:[{name:parseInt(data.retweeted_weibo_retweeted_brust_average.toFixed(0))}]}
+									children:[{name:'总数',children:[{name:parseInt(item.retweeted_weibo_retweeted_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(item.retweeted_weibo_retweeted_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(item.retweeted_weibo_retweeted_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(item.retweeted_weibo_retweeted_brust_average.toFixed(0))}]}
 									]
 								},
 								{
                                     name: '',//被评论
 									symbol:'image://../../static/img/mss.jpg',
-									children:[{name:'总数',children:[{name:parseInt(data.retweeted_weibo_comment_total_number.toFixed(0))}]},
-										{name:'平均数',children:[{name:parseInt(data.retweeted_weibo_comment_average_number.toFixed(0))}]},
-										{name:'最高数',children:[{name:parseInt(data.retweeted_weibo_comment_top_number.toFixed(0))}]},
-										{name:'爆发度',children:[{name:parseInt(data.retweeted_weibo_comment_brust_average.toFixed(0))}]}
+									children:[{name:'总数',children:[{name:parseInt(item.retweeted_weibo_comment_total_number.toFixed(0))}]},
+										{name:'平均数',children:[{name:parseInt(item.retweeted_weibo_comment_average_number.toFixed(0))}]},
+										{name:'最高数',children:[{name:parseInt(item.retweeted_weibo_comment_top_number.toFixed(0))}]},
+										{name:'爆发度',children:[{name:parseInt(item.retweeted_weibo_comment_brust_average.toFixed(0))}]}
 									]
                                 }
 							]
@@ -151,6 +156,7 @@ Bubble.prototype = {   //获取数据，重新画表
 };
      tree.setOption(option); 
 	}
+	
 }
 
 var Bubble = new Bubble();

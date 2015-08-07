@@ -21,15 +21,15 @@ Search_weibo.prototype = {
     },
     Draw_table: function(data){
         that.data = data;
-        if(data==0){
+        if(data=='0'){
             alert("没有相关人物推荐");
             return false;
         }
         $('#table').empty();
         var html = '';
         var height = 39 * (data.length-1);
-        html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-        html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th><input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" /></th></tr></thead>';
+        html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive" style="table-layout:fixed">';
+        html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center; ">活跃度</th><th class="center" style="text-align:center;">重要度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th style="width:40px"><input name="choose_all" id="choose_all" type="checkbox" value="" onclick="choose_all()" /></th></tr></thead>';
         html += '<tbody>';
         for(var item = 1; item < data.length-1; item++){
             html += '<tr style="border-bottom:1px solid #ddd">';
@@ -333,7 +333,7 @@ function draw_table_compare_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table id="compare_cofirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th></th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">活跃度</th><th class="center" style="text-align:center;width:72px">重要度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
@@ -356,7 +356,7 @@ function draw_table_group_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table id="group_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">活跃度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th></th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">用户id</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">活跃度</th><th class="center" style="text-align:center;width:72px">重要度</th><th class="center" style="text-align:center">影响力</th><th class="center" style="text-align:center">得分</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];
@@ -379,7 +379,7 @@ function draw_table_delete_confirm(uids, div){
   $(div).empty();
     var html = '';
     html += '<table id="delete_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>相关度</th><th></th></tr></thead>';
+    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>得分</th><th></th></tr></thead>';
     html += '<tbody>';
     for(var i in uids){
       var item = global_data[uids[i]];

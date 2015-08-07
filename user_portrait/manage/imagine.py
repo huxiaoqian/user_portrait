@@ -90,7 +90,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     filter_uid = all_delete_uid()
 
     result = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
-    field_list = ['uid','uname','importance', 'activeness', 'influence']
+    field_list = ['uid','uname', 'activeness','importance', 'influence']
     return_list = []
     count = 0
     for item in result:

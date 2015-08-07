@@ -69,10 +69,10 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
     html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3].toFixed(2) + '(连接紧密)</td><td style="text-align:center;vertical-align:middle">' + data[4].toFixed(2) + '(一般活跃)</td>';
     html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '(影响较大)</td></tr>';
-    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="说明"></i>&nbsp;&nbsp;</b></td></tr>';
+    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
     html += '</table>';
     $('#overview').append(html);
 },
@@ -252,7 +252,6 @@ Draw_social_line: function(data){
     draw_more_group_out_table(data);
 },
 Draw_keyword: function(data){
-    console.log(data);
     Draw_emotion(data);
     Draw_hashtag(data);
     Draw_more_emotion(data);
@@ -267,7 +266,6 @@ Draw_keyword: function(data){
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }
-    console.log(keyword);
     var myChart = echarts.init(document.getElementById('keywordcloud'));
     var option = {
     title: {
@@ -360,9 +358,9 @@ function active_geo(data){
     html = '';
     html += '<div style="font-size:16px">一周轨迹</div>';
     html += '<div class="clearfix course_nr" style="margin-top:-50px"><ul class="course_nr2">';
-    for (key in data['3']){
-        console.log(key);
-        html += '<li><div class="shiji"><h1>' + key.substring(5, 10) + '</h1><p>' + data['3'][key]['0']['1'] + '</p><p>' + data['3'][key]['0']['0'] + '</p><p>' + data['3'][key]['1']['1'] + '</p><p>' + data['3'][key]['1']['0'] + '</p></div></li>';        
+    for (i=0; i<data['3'].length;i++){
+        s = i.toString();
+        html += '<li><div class="shiji"><h1>' + data['3'][s]['0'].substring(5, 10) + '</h1><p><font color="#0000E3">' + data['3'][s]['1']['0']['1'] + '</font></p><p>' + data['3'][s]['1']['0']['0'] + '</p><p><font color="#0000E3">' + data['3'][s]['1']['1']['1'] + '</font></p><p>' + data['3'][s]['1']['1']['0'] + '</p></div></li>';        
     }
     html += '</ul></div>';   
     $('#top_active_geo').append(html);
