@@ -34,10 +34,13 @@ R_9 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=9)
 R_10 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=10)
 R_11 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=11)
 R_12 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=12)
-R_13 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=13)
 
 R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7,\
-          '8':R_8, '9':R_9, '10':R_10, '11':R_11, '12':R_12, '13':R_13}
+          '8':R_8, '9':R_9, '10':R_10, '11':R_11, '12':R_12}
+
+#use to record user comment who
+#date type: {uid:{comment_uid:count} }
+R_COMMENT = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=13)
 
 # use to write group task
 # two type data----group task;  group task members
@@ -60,7 +63,7 @@ R_ADMIN = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)
-es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 60)
+es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 
 
 
