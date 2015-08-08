@@ -58,6 +58,8 @@ def ajax_portrait_search():
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:
+                if item=='keywords':
+                    item = 'keywords_string'
                 #print 'item_data:', item_data, type(item_data)
                 query.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1

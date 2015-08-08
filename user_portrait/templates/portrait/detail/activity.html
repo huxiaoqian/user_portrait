@@ -20,6 +20,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 .ico{ height:67px; line-height:67px; color:#518dbb; font-weight:bold; background:url(/static/img/ico11.gif) no-repeat center top; margin-bottom:8px;}
 .ms{ width:100px;line-height:14px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin-left:18px;}
 #Alocation{height:auto;width:180px;margin-left:100px;margin-top:50px;}
+.gray{color:#999;}
 </style>
 <div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>
 <div class="clearfix course_nr" style="width:100%;">
@@ -97,7 +98,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 <div class="" style="width:1000px;">
 	<div id="" style="height:30px;width:950px;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 >该用户的活跃时间段为：<span id="time1"></span> 和 <span id="time2"></span></h4>
+		<h4 style="line-height:32px;" >该用户的活跃时间段为：<span id="time1"></span> 和 <span id="time2"></span></h4>
 	</div>
 	<div id="" style="height:30px;width:950px">
 		<span class="fleft" style="margin-right:10px; width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
@@ -128,7 +129,7 @@ Geo.prototype = {   //获取数据，重新画表
 geo:function(data){
 	
 	var geo_data = data[0]
-	//console.log(geo_data);
+	console.log(geo_data);
 	document.getElementById('saysay').innerHTML = data[1];
 	var date = [];
 	var citys = [];
@@ -141,11 +142,12 @@ geo:function(data){
 	for(i=0;i<date.length;i++){
 		document.getElementById('d'+(i+1)).innerHTML = date[i];
 	}
-	for(i=0;i<citys.length;i++){
-		if(citys[i][0][0]){
+    for(i=0;i<citys.length;i++){
+        console.log(citys[i]);
+		if(citys[i]){
 			document.getElementById('city'+(i+1)).innerHTML = citys[i][0];
 		}else{
-			document.getElementById('city'+(i+1)).setAttribute('color','#999');
+			$('#city'+(i+1)).addClass('gray');
 			document.getElementById('city'+(i+1)).innerHTML = '未发布微博';
 		}
 		
