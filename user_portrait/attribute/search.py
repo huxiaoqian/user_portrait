@@ -297,7 +297,7 @@ def get_geo_track(uid):
             sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
             date_results.append([date_key, sort_geo_dict[:2]])
         else:
-            date_results = [date_key, []]
+            date_results.append([date_key, []])
 
     print 'results:', date_results
     city_set = set(city_list)
@@ -602,6 +602,7 @@ def search_portrait(condition_num, query, sort, size):
 def delete_action(uid_list):
     index_name = 'user_portrait'
     index_type = 'user'
+    bulk_action = []
     for uid in uid_list:
         action = {'delete':{'_id': uid}}
         bulk_action.append(action)

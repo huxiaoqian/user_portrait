@@ -12,9 +12,9 @@ reload(sys)
 sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
+from global_utils import G_COMMENT
 from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
-from global_config import SENSITIVE_WORDS_PATH
 
 def cal_text_work(item):
     uid = item['uid']
