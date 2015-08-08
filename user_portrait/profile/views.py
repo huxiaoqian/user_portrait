@@ -67,17 +67,18 @@ class HomeView(views.MethodView):
         csvfile = file(file_location, 'wb')
         writer = csv.writer(csvfile)
         for key in source['hits']['hits']:
+            item_content = []
             source_content = key['_source']
             if isflag:
                 item_head = [key for key in source_content]
                 writer.writerow(item_head)
                 isflag = 0
-
+    
             for key in source_content:
-                item_content.append(self.decode_item(source_content[key]))
 
+                item_content.append(self.decode_item(source_content[key]))
             writer.writerow(item_content)
-        csvfile.close()
+
         return render_template(self.index_template, source=source, data=data)
 
     def decode_item(self, data):
@@ -167,7 +168,6 @@ class Testviews(views.MethodView):
 class UserView(views.MethodView):
     """user detail information"""
     def get(self):
-        item_content = []
         item_head = []
         fuzz_item = ['uid', 'nick_name', 'real_name', 'user_location', 'user_email', 'user_birth']
         range_item = ['statusnum', 'fansnum', 'friendsnum']
@@ -269,6 +269,7 @@ class UserView(views.MethodView):
         csvfile = file(file_location, 'wb')
         writer = csv.writer(csvfile)
         for key in source['hits']['hits']:
+            item_content = []
             source_content = key['_source']
             if isflag:
                 item_head = [key for key in source_content]
@@ -276,7 +277,7 @@ class UserView(views.MethodView):
                 isflag = 0
             for key in source_content:
                 item_content.append(self.decode_item(source_content[key]))
-                writer.writerow(item_content)
+            writer.writerow(item_content)
         csvfile.close()
 
         return json.dumps(source)
@@ -292,7 +293,6 @@ class DownloadView(views.MethodView):
 
     def get(self):
         user_id = request.args.get('id')
-        q = request.args.get('q')
         select_id = user_id.split(',')
         file_location = dirname(dirname(abspath(__file__)))+'/static/download/test.csv'
         isflag = 1
