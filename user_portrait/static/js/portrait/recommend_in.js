@@ -23,7 +23,7 @@ Search_weibo_recommend.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th style="width:100px">用户详情</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th style="width:140px">用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th style="width:100px">用户详情</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -76,7 +76,7 @@ Search_weibo_recommend.prototype = {
           var line_chart_xaxis = [];
           for(var k in data['time_trend'][0])
             line_chart_xaxis.push(new Date(parseInt(data['time_trend'][0][k])*1000).format("MM-dd hh:mm"));
-          console.log(line_chart_xaxis);
+          //console.log(line_chart_xaxis);
           var line_chart_yaxis = data['time_trend'][1];
           draw_line_chart(line_chart_xaxis.reverse(), line_chart_yaxis.reverse(), 'line_chart', detail_uname);
         }
@@ -91,11 +91,13 @@ Search_weibo_recommend.prototype = {
           place_html += '<thead><tr><th style="text-align:center;vertical-align:middle;width:80px">排名</th><th style="text-align:center;vertical-align:middle;width:200px">地点</th><th style="text-align:center;vertical-align:middle;width:80px">微博数</th></tr></thead>';
           place_html += '<tbody>';
           for(var m in data['activity_geo']){
-            place_html += '<tr>';
-            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(m)+1) +'</td>';
-            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][0] +'</td>';
-            place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][1] +'</td>';
-            place_html += '</tr>';
+            if(parseInt(m)<5){
+              place_html += '<tr>';
+              place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(m)+1) +'</td>';
+              place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][0] +'</td>';
+              place_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['activity_geo'][m][1] +'</td>';
+              place_html += '</tr>';
+            }
           }
           place_html += '</tbody>';
           place_html += '</table>';
@@ -113,11 +115,13 @@ Search_weibo_recommend.prototype = {
           hashtag_html += '<thead><tr><th style="text-align:center;vertical-align:middle;width:80px">排名</th><th style="text-align:center;vertical-align:middle;width:200px">HashTag</th><th style="text-align:center;vertical-align:middle;width:80px">微博数</th></tr></thead>';
           hashtag_html += '<tbody>';
           for(var n in data['hashtag']){
-            hashtag_html += '<tr>';
-            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(n)+1) +'</td>';
-            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][0] +'</td>';
-            hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][1] +'</td>';
-            hashtag_html += '</tr>';
+            if(parseInt(n)<5){
+              hashtag_html += '<tr>';
+              hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ (parseInt(n)+1) +'</td>';
+              hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][0] +'</td>';
+              hashtag_html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data['hashtag'][n][1] +'</td>';
+              hashtag_html += '</tr>';
+            }
           }
           hashtag_html += '</tbody>';
           hashtag_html += '</table>';
@@ -260,7 +264,7 @@ Search_weibo_history.prototype = {
     //console.log(user_url);
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th>计算状态</th></tr></thead>';
+    html += '<thead><tr><th style="width:140px">用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th>计算状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -280,9 +284,9 @@ Search_weibo_history.prototype = {
       user_url = 'http://weibo.com/u/';
       user_url = user_url + item[i][0];
       var in_status;
-      if(item[i][6]==0)
-        in_status = "确定计算";
-      else if(item[i][6]==1)
+      if(item[i][7]==2)
+        in_status = "预约计算";
+      else if(item[i][7]==3)
         in_status = "正在计算";
       else
         in_status = "计算完成";
@@ -343,11 +347,15 @@ function bindOption(){
             alert("请选择至少一个用户！");
           else{
             var compute_time;
-            if($('input[name="instant"]').is(':checked')){
+            if($('input[name="instant"]:checked').val()==1){
               compute_time = '1';
               var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
               if(sure==true){
                   console.log(compute_time);
+                  $('#recommend').empty();
+                  var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
+                  $('#recommend').append(waiting_html);
+
                   var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
                   console.log(recommend_confirm_url);
                   draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
@@ -369,8 +377,12 @@ function bindOption(){
             }
             else{
                 compute_time = '2';
-                alert('您默认选择了预约计算，系统将在三天后返回计算结果！');
+                alert('您选择了预约计算，系统将在今日24:00自动启动计算！');
                 console.log(compute_time);
+                $('#recommend').empty();
+                var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
+                $('#recommend').append(waiting_html);
+
                 var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
                 console.log(recommend_confirm_url);
                 draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
@@ -507,7 +519,7 @@ function date_initial(){
   history_date_html += '<option value="' + history_date[4] + '">' + history_date[4] + '</option>';
   history_date_html += '<option value="' + history_date[5] + '">' + history_date[5] + '</option>';
   history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
-  history_date_html += '<option value="all">选择全部</option>';
+  history_date_html += '<option value="all">全部</option>';
   $("#history_date_select").append(history_date_html);
 }
 

@@ -56,11 +56,13 @@ $(function(){
 {% block main %}
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
-    <div class="nickname">来自<span id="userDomain" class="red" ></span>领域的<span  id="nickname" class="red"></span>，热衷参与<span id="userTopic" class="red"></span>话题</div>
-    <div style="text-align:center;height:30px;">
-        <a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;
+	<div style="text-align:center;height:30px;">
+        <a id="basic_info" target='_blank' style="cursor:pointer;">ta的注册信息</a>&nbsp;&nbsp;
         <a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;
-        <a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a></div>
+        <a id="contact" target='_blank' style="cursor:hand;">跟ta相关的人</a>
+	</div>
+    <div class="nickname">来自<span id="userDomain" class="red" ></span>领域的<span  id="nickname" class="red"></span>，热衷参与<span id="userTopic" class="red"></span>话题</div>
+    
 	<div class="power">
 		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（No.<span id="APrank"></span>/<span id="APsum"></span>）
 		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
