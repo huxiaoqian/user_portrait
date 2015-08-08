@@ -373,55 +373,29 @@
   var global_choose_uids = new Array();
 
   function selectAll(){
-      console.log('chooseall');
     $('input[name="profile_result_option"]').prop('checked', $('#choose_all').prop('checked'));
   }
 
   function export_selected(file){
-      // fix begin
-      var cur_list = [];
+  var ids = '';
       $('input[name="profile_result_option"]:checked').each(function(){
-          cur_list.push($(this).attr('value'));
+        var select_id = $(this).attr('value');
+        if(select_id){
+          select_id = select_id + ',';
+          ids += select_id;
+        }
       });
-      var exported_list = [];
-      for (var key in global_choose_uids){
-          var temp_list = global_choose_uids[key];
-          for (var i = 0;i < temp_list.length;i++){
-              exported_list.push(temp_list[i]);
-          }
-      }
-      console.log('chosen');
-      console.log(exported_list);
-      // fix end
-    var obj = $('input[type=checkbox]').eq(0);
-    var q = 1;
-    var ids = '';
-    if (obj.is(":checked")){
-      var q = obj.attr('name');
-    }
-    if(q==0){
-    window.location.href = file
-    }
-    else{
-        $('input[type=checkbox]:checked').each(function(){
-          var select_id = $(this).attr('id');
-          if(select_id){
-            select_id = select_id + ',';
-            ids += select_id;
-          }
-        });
-        console.log(ids);
-        var downloadurl = window.location.host;
-        $.ajax({
-          url: 'http://' + downloadurl + '/profile/download/?q='+q+'&id='+ids,
-          type: "GET",
-          dataType: "json",
-          async: false,
-          success: function(data){
-             window.location.href = file;
-          }
-      });
-    }
+      console.log(ids);
+      var downloadurl = window.location.host;
+      $.ajax({
+        url: 'http://' + downloadurl + '/profile/download/?&id='+ids,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        success: function(data){
+           window.location.href = file;
+        }
+    });
   }
 var Vcity = {};
 Vcity._m = {

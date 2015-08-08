@@ -213,7 +213,8 @@ Draw_activity: function(data){
             categories: data_x,
             labels:{
               rotation: 0,
-              step: 6
+              step: 6,
+              y:25
             }
         },
         yAxis: {
@@ -356,7 +357,7 @@ function active_geo(data){
     console.log(data);
     $('#top_active_geo').empty();
     html = '';
-    html += '<div style="font-size:16px">一周轨迹</div>';
+    html += '<div style="font-size:17px">一周轨迹</div>';
     html += '<div class="clearfix course_nr" style="margin-top:-50px"><ul class="course_nr2">';
     for (i=0; i<data['3'].length;i++){
         s = i.toString();
@@ -1200,7 +1201,7 @@ function Draw_think_domain(){
 function Draw_hashtag(data){
     $('#hashtag').empty();
     html = '';
-    html += '<div><span style="font-size:16px;">hashtag排名</span><span style="font-size:16px;float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_hashtag"><u>查看更多</u></span></div>';
+    html += '<div><span style="font-size:17px;">hashtag排名</span><span style="font-size:17px;float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_hashtag"><u>查看更多</u></span></div>';
     html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < 5; i++) {
@@ -1240,7 +1241,7 @@ function text2icon(text){
 function Draw_emotion(data){
     $('#emotion').empty();
     html = '';
-    html += '<div><span style="font-size:16px;">表情符号排名</span><span style="font-size:16px;float:right;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_emotion"><u>查看更多</u></span></div>';
+    html += '<div><span style="font-size:17px;">表情符号排名</span><span style="font-size:17px;float:right;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_emotion"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  5; i++) {
@@ -1269,7 +1270,7 @@ function Draw_more_emotion(data){
 function Draw_top_location(data){
     $('#top_location').empty();
     html = '';
-    html += '<div><span style="font-size:16px;">发布地点排名</span><span style="font-size:16px;margin-left:240px;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_geo"><u>查看更多</u></span></div>';
+    html += '<div><span style="font-size:17px;">发布地点排名</span><span style="font-size:17px;margin-left:230px;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_geo"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  5; i++) {
@@ -1297,7 +1298,7 @@ function Draw_more_top_location(data){
 function Draw_top_platform(data){
     $('#top_platform').empty();
     html = '';
- html += '<div><span style="font-size:16px;">发布平台排名</span><span style="font-size:16px;margin-left:240px;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_platform"><u>查看更多</u></span></div>';
+ html += '<div><span style="font-size:17px;">发布平台排名</span><span style="font-size:17px;margin-left:230px;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_platform"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['2'].length; i++) {

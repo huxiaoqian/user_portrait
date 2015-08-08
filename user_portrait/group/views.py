@@ -69,3 +69,45 @@ def ajax_delete_group_task():
     task_name = request.args.get('task_name', '')
     results = delete_group_results(task_name)
     return json.dumps(results)
+
+'''
+below: track a group analysis result
+deal procession:
+work1: submit track a group analysis task
+work2: search the track task-----a table
+work3: look the track results
+work4: end a track task
+work5: delete a track task results
+add a field to mark the group analysis task is track or once
+add track group analysis information to overview
+'''
+
+# submit task to track a group analysis result
+@mod.route('/submit_track_task/')
+def ajax_submit_track_task():
+    results = {}
+    return json.dumps(results)
+
+# search track task
+@mod.route('/search_track_task/')
+def ajax_search_track_task():
+    results = {}
+    return json.dumps(results)
+
+# get the track results
+@mod.route('/track_track_results/')
+def ajax_get_track_results():
+    results = {}
+    return json.dumps()
+
+# end a track task
+@mod.route('/end_track_task/')
+def ajax_end_track_task():
+    results = {}
+    return json.dumps(results)
+
+# delete a track task results
+@mod.route('delete_track_results')
+def ajax_delete_track_tresults():
+    results = {}
+    return json.dumps(results)

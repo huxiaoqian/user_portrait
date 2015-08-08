@@ -1,10 +1,10 @@
 #-*- coding:utf-8 -*-
-
 import os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
-from utils import submit_attribute, search_attribute, change_attribute, delete_attribute
+from utils import submit_attribute, search_attribute, change_attribute, delete_attribute ,\
+                  add_attribute_portrait, change_attribute_portrait, delete_attribute_portrait
 
 from user_portrait.time_utils import ts2datetime
 
@@ -68,8 +68,30 @@ def ajax_delete_attribute():
 @mod.route('/add_attribute/')
 def ajax_add_attirbute():
     status = False
+    uid = request.args.get('uid', '')
+    attribute_name = request.args.get('attribute_name', '')
+    attribute_value = request.args.get('value', '')
+    submit_user = request.args.get('submit_user', '')
+    status = add_attribute_portrait(uid, attribute_name, attribute_value, submit_user)
     return json.dumps(status)
 
+# use to change attribute in user_portrait
+@mod.route('/change_attribute_portrait/')
+def ajax_change_attribute_portrait():
+    status = False
+    uid = request.args.get('uid', '')
+    attribute_name = request.args.get('attribute_name', '')
+    attribute_value = request.args.get('value', '')
+    submit_user = request.ags.get('submit_user', '')
+    status = change_attribute_portrait(uid, attribute_name, value, submit_user)
+    return json.dumps(status)
 
-
+# use to delete attribute in user_portrait
+def ajax_delete_attribute_portrait():
+    status = False
+    uid = request.args.get('uid', '')
+    attribute_name = request.args.get('attribute_name', '')
+    submit_user = request.args.get('submit_user', '')
+    status = delete_attribute_portrait(uid, attribute_name, submit_user)
+    return json.dumps(status)
 

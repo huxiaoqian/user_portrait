@@ -22,7 +22,7 @@ Search_weibo.prototype = {
     var user_url ='';
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th><th style="text-align:center;width:70px">全选<input type="checkbox" onclick="selectAll()" ></th></tr></thead>';
+    html += '<thead><tr><th class="center" style="text-align:center">头像</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center;width:72px">好友数</th><th class="center" style="text-align:center">粉丝数</th><th class="center" style="text-align:center">微博数</th><th style="text-align:center;width:70px">全选<input id="choose_all" type="checkbox" onclick="selectAll()" ></th></tr></thead>';
     var item = data['hits']['hits'];
     html += '<tbody>';
     for(var i = 0; i < item.length; i++){
@@ -48,7 +48,7 @@ Search_weibo.prototype = {
     html += '</tbody>';
     html += '</table>';
     html += '<input class="btn btn-primary" id="download_result" style="float:right;margin-top:-20px" type="submit" id="submit" value=全部导出>';
-    html += '<input class="btn btn-primary" style="float:right;margin-right:10px;margin-top:-20px" type="submit" onclick=export_file("/static/download/test.csv") name=0 value=选中导出>'; 
+    html += '<input class="btn btn-primary" style="float:right;margin-right:10px;margin-top:-20px" type="submit" onclick=export_selected("/static/download/test.csv") name=0 value=选中导出>'; 
     $('#table').append(html);
   //   if (data) {
   //     document.getElementById("loading").innerText ="加载完成！";
@@ -64,37 +64,37 @@ Search_weibo.prototype = {
   $('#search_information').append(html);
 }
 
-function export_file(file){
-  var obj = $('input[type=checkbox]').eq(0);
-  var q = 1;
-  var ids = '';
-  if (obj.is(":checked")){
-    var q = obj.attr('name');
-  }
-  if(q==0){
-  window.location.href = file
-  }
-  else{
-      $('input[type=checkbox]:checked').each(function(){
-        var select_id = $(this).attr('id');
-        if(select_id){
-          select_id = select_id + ',';
-          ids += select_id;
-        }
-      });
-      console.log(ids);
-      var downloadurl = window.location.host;
-      $.ajax({
-        url: 'http://' + downloadurl + '/profile/download/?q='+q+'&id='+ids,
-        type: "GET",
-        dataType: "json",
-        async: false,
-        success: function(data){
-           window.location.href = file;
-        }
-    });
-  }
-}
+// function export_file(file){
+//   var obj = $('input[type=checkbox]').eq(0);
+//   var q = 1;
+//   var ids = '';
+//   if (obj.is(":checked")){
+//     var q = obj.attr('name');
+//   }
+//   if(q==0){
+//   window.location.href = file
+//   }
+//   else{
+//       $('input[type=checkbox]:checked').each(function(){
+//         var select_id = $(this).attr('id');
+//         if(select_id){
+//           select_id = select_id + ',';
+//           ids += select_id;
+//         }
+//       });
+//       console.log(ids);
+//       var downloadurl = window.location.host;
+//       $.ajax({
+//         url: 'http://' + downloadurl + '/profile/download/?q='+q+'&id='+ids,
+//         type: "GET",
+//         dataType: "json",
+//         async: false,
+//         success: function(data){
+//            window.location.href = file;
+//         }
+//     });
+//   }
+// }
 
 function get_input_data(){
   var temp = '';

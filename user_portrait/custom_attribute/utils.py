@@ -123,7 +123,31 @@ def delete_attribute(attribute_name):
         result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
     except:
         return status
+    attribute_value = json.loads(result['value'])
     es.delete(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)
+    # delete attribute in user_portrait
+    query = []
+    for value in attribute_value:
+        query.append({'match':{attribute_name: value}})
+    try:
+        attribute_user_result = es.search(index=user_index_name, doc_type=user_index_type, \
+                                         body={'query':{'bool':{'must':query}}})['hits']['hits']
+    except:
+        attribute_user_result = []
+    if attribute_user_result==[]:
+        status = True
+        return status
+    bulk_action = []
+    for user_dict in attribute_user_result:
+        try:
+            user_item = user_dict['_source']
+        except:
+            next
+        user_item.pop(attribute)
+        user = user_item['uid']
+        action = {'index':{'_id':str(user)}}
+        bulk_action.extend([action, user_item])
+    es.bulk(bulk_action, index=user_index_name, doc_type=index_type)
     status = True
     return status
 
@@ -132,7 +156,9 @@ def add_attribute_portrait(uid, attribute_name, attribute_value, submit_user):
     status = False
     # identify the user exist
     # identify the attribute exist
-    # add the attribute to user
+    # identify the attribute exist in user_portrait
+    # add attribute in user_portrait
+    # submit user should has power to change???without
     try:
         user_result = es.get(index=user_index_name, doc_type=user_index_type, id=uid)['_source']
     except:
@@ -144,16 +170,56 @@ def add_attribute_portrait(uid, attribute_name, attribute_value, submit_user):
     attribute_value_list = json.loads(attribute_result['value'])
     if attribute_value not in attribute_value_list:
         return 'no attribute value'
+    if attribute_name in user_result:
+        return 'attribute exist'
     add_attribute_dict = {attribute_name: attribute_value}
-    try:
-        user_attribute_dict = json.loads(user_result['custom_attribute'])
-        body = dict(user_attribute_dict, **add_attribute_dict)
-    except:
-        body = {'custom_attribute':json.loads(add_attribute_dict)}
+    
     es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':body})
     status = True
     return status
 
+# use to change attribute of user in es_user_portrait
+def change_attribute_portrait(uid, attribute_name, attribute_value, submit_user):
+    status = False
+    #identify the user exist
+    #identify the attribute exist
+    #identify the attribute value exist
+    #identify the submit_user have been admitted----without 
+    try:
+        user_exist = es.get(index=user_index_name, doc_type=user_index_type, id=uid)['_source']
+    except:
+        return 'no user'
+    try:
+        attribute_result = es.get(index=attribute_index_name, doc_type=user_index_type, id=uid)['_source']
+    except:
+        return 'no attribute'
+    value_list = json.loads(attribute_result['value'])
+    if attribute_value not in value_list:
+        return 'no attribute value'
+    es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':body})
+    status = True
+    return status
+
+# use to delete attribute of user in es_user_portrait
+def delete_attribute_portrait(uid, attribute_name, submit_user):
+    status = False
+    #identify the user exist
+    #identify the attribute value exist in es_user_portrait
+    #identify the submit_user have been admitted---without
+    try:
+        user_exist = es.get(index=user_index_name, doc_type=user_index_type, id=uid)['_source']
+    except:
+        return 'no user'
+    if attribute_name not in user_exist:
+        return 'user have no attribtue'
+    try:
+        del_attribute_value = user_exist.pop(attribute)
+        es.index(index=user_index_name, doc_type=user_index_type, body=user_exist)
+        status = True
+    except Exception, e:
+        raise e
+
+    return status
 
 if __name__=='__main__':
     init_custom_attribute()

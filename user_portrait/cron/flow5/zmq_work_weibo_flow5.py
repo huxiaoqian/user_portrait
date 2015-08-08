@@ -11,18 +11,23 @@ from datetime import datetime
 reload(sys)
 sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
-from global_utils import R_CLUSTER_FLOW2 as r_cluster
+from global_utils import R_COMMENT  as r
 from global_utils import G_COMMENT
 from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 
+
+# data_type = {uid:{comment_uid:count}}
 def cal_text_work(item):
     uid = item['uid']
     timestamp = item['timestamp']
     date = ts2datetime(timestamp)
     ts = datetime2ts(date)
-    text = item['text']
-
+    root_uid = item['root_uid']
+    if root_uid:
+        r.hincrby('comment_'+str(uid), str(root_uid), 1)
+    else:
+        pass
 
 if __name__ == "__main__":
     """
