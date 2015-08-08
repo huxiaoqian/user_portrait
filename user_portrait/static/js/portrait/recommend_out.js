@@ -334,7 +334,7 @@ function date_initial(){
   history_date_html += '<option value="' + history_date[4] + '">' + history_date[4] + '</option>';
   history_date_html += '<option value="' + history_date[5] + '">' + history_date[5] + '</option>';
   history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
-  history_date_html += '<option value="all">选择全部</option>';
+  history_date_html += '<option value="all">全部</option>';
   $("#history_date_select").append(history_date_html);
 }
 
