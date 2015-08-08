@@ -49,7 +49,7 @@ Search_weibo_recommend.prototype = {
       html += '<td class="center" style="width:100px">'+ item[i][3] +'</td>';
       html += '<td class="center" style="width:100px">'+ item[i][4] +'</td>';
       html += '<td class="center" style="width:100px">'+ item[i][5] +'</td>';
-      html += '<td class="center" style="width:100px"><a name="details" id="'+ item[i][0] +'" title="'+ item[i][1] +'">详情</a></td>';
+      html += '<td class="center" style="width:100px"><a style="cursor:hand;" name="details" id="'+ item[i][0] +'" title="'+ item[i][1] +'">详情</a></td>';
       html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
@@ -69,14 +69,15 @@ Search_weibo_recommend.prototype = {
         success:show_details
       });
       function show_details(data){
-        $('#line_chart').empty();
-        if(data['time_trend'].length==0)
+        if(data['time_trend'].length==0){
+          $('#line_chart').empty();
           $('#line_chart').append('<div style="text-align:center">暂无数据！</div>');
+        }
         else{
+          //$('#line_chart').empty();
           var line_chart_xaxis = [];
           for(var k in data['time_trend'][0])
             line_chart_xaxis.push(new Date(parseInt(data['time_trend'][0][k])*1000).format("MM-dd hh:mm"));
-          //console.log(line_chart_xaxis);
           var line_chart_yaxis = data['time_trend'][1];
           draw_line_chart(line_chart_xaxis.reverse(), line_chart_yaxis.reverse(), 'line_chart', detail_uname);
         }
@@ -315,7 +316,7 @@ Search_weibo_history.prototype = {
 }
 
 function confirm_ok(data){
-  console.log(data);
+  //console.log(data);
   if(data)
     alert('操作成功！');
 }
@@ -335,8 +336,8 @@ function bindOption(){
               }
           }
           var recommend_date = $("#recommend_date_select").val()
-          console.log(recommend_date);
-          console.log(recommend_uids);
+          //console.log(recommend_date);
+          //console.log(recommend_uids);
           var uids_trans = '';
           for(var i in recommend_uids){
               uids_trans += recommend_uids[i];
@@ -351,13 +352,13 @@ function bindOption(){
               compute_time = '1';
               var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
               if(sure==true){
-                  console.log(compute_time);
+                  //console.log(compute_time);
                   $('#recommend').empty();
                   var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
                   $('#recommend').append(waiting_html);
 
                   var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
-                  console.log(recommend_confirm_url);
+                  //console.log(recommend_confirm_url);
                   draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
                   
                   var url_recommend_new = '/recommentation/show_in/?date=' + $("#recommend_date_select").val();
@@ -378,13 +379,13 @@ function bindOption(){
             else{
                 compute_time = '2';
                 alert('您选择了预约计算，系统将在今日24:00自动启动计算！');
-                console.log(compute_time);
+                //console.log(compute_time);
                 $('#recommend').empty();
                 var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
                 $('#recommend').append(waiting_html);
 
                 var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
-                console.log(recommend_confirm_url);
+                //console.log(recommend_confirm_url);
                 draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
                 
                 var url_recommend_new = '/recommentation/show_in/?date=' + $("#recommend_date_select").val();
@@ -486,7 +487,6 @@ draw_table_compute.call_sync_ajax_request(url_compute, draw_table_compute.ajax_m
 var url_history = '/recommentation/show_compute/?date=' + now;
 draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Re_Draw_table);
-console.log('end');
 
 function date_initial(){
   var recommend_date = [];
