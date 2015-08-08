@@ -49,7 +49,7 @@ Search_weibo_recommend.prototype = {
       html += '<td class="center" style="width:100px">'+ item[i][3] +'</td>';
       html += '<td class="center" style="width:100px">'+ item[i][4] +'</td>';
       html += '<td class="center" style="width:100px">'+ item[i][5] +'</td>';
-      html += '<td class="center" style="width:100px"><a style="cursor:hand;" name="details" id="'+ item[i][0] +'" title="'+ item[i][1] +'">详情</a></td>';
+      html += '<td class="center" style="width:100px"><a style="cursor:pointer;" name="details" id="'+ item[i][0] +'" title="'+ item[i][1] +'">详情</a></td>';
       html += '<td class="center"><input name="in_status" class="in_status" type="checkbox" value="' + item[i][0] + '" /></td>';
       html += '</tr>';
     }
