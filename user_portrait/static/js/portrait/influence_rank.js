@@ -546,7 +546,7 @@ function draw_rank_distribution(axis, data1, data2, div, number_all, number_in){
   var option = {
     title : {
         text: '用户影响力分布',
-        subtext: '较低影响力(<500)的人数：全网' + number_all + '人，人物库' + number_in + '人',
+        subtext: '较低影响力(<500)的人数：全网:' + number_all + '人，人物库:3034人',
     },
     tooltip : {
         trigger: 'axis'

@@ -26,7 +26,7 @@ function Draw_keyword(data){
 	$('#WordList').empty();
     html = '';
     html += '<table class="table table-striped table-bordered" style="width:480px;">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">频率</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
     for (var i = 0; i < data.length; i++) {
        var s = i.toString();
        var m = i + 1;
