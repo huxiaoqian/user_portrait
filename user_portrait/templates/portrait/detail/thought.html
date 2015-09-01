@@ -51,7 +51,7 @@ function Draw_think_topic(){
         },
         legend: {
             x : 'center',
-            data:['话题']
+            data:['倾向性']
         },
         toolbox: {
             show : true,
@@ -63,12 +63,10 @@ function Draw_think_topic(){
         polar : [
             {
             indicator : [
-                {text : '娱乐', max  : 100},
-                {text : '计算机', max  : 100},
-                {text : '经济', max  : 100},
-                {text : '教育', max  : 100},
-                {text : '自然', max  : 100},
-                {text : '健康', max  : 100}],
+                {text : '九一八', max  : 100},
+                {text : '博鳌论坛', max  : 100},
+                {text : 'APEC', max  : 100},
+                {text : '两会', max  : 100}],
                 radius : 80
             }
         ],
@@ -86,7 +84,7 @@ function Draw_think_topic(){
                 data : [
                     {
                         value : [97, 42, 88, 94, 90, 86],
-                        name : '话题'
+                        name : '倾向性'
                     }
                 ]
             }
