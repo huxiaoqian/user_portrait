@@ -9,8 +9,7 @@ import time
 import json
 import redis
 from description import active_geo_description, active_time_description, hashtag_description
-sys.path.append('../../')
-
+#sys.path.append('../../')
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
