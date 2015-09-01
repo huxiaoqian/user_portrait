@@ -43,8 +43,8 @@ Search_weibo_recommend.prototype = {
       html += '<tr>';
       html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
-      html += '<td class="center">'+ item[i][2] +'</td>';
-      html += '<td class="center">'+ item[i][3] +'</td>';
+      html += '<td class="center">媒体</td>';
+      html += '<td class="center">艺术,教育</td>';
       html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center">'+ item[i][5] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
@@ -334,7 +334,7 @@ function date_initial(){
   history_date_html += '<option value="' + history_date[4] + '">' + history_date[4] + '</option>';
   history_date_html += '<option value="' + history_date[5] + '">' + history_date[5] + '</option>';
   history_date_html += '<option value="' + history_date[6] + '" selected="selected">' + history_date[6] + '</option>';
-  history_date_html += '<option value="all">选择全部</option>';
+  history_date_html += '<option value="all">全部</option>';
   $("#history_date_select").append(history_date_html);
 }
 
