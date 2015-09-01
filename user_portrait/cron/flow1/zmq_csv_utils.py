@@ -41,37 +41,32 @@ def send_all(f, sender):
     weibo_list = []
     weibo_send = []
 
-    for line in f:
-        weibo_item = itemLine2Dict(line)
-        if weibo_item:
-            weibo_item_bin = csv2bin(weibo_item)
-            if int(weibo_item_bin['sp_type']) != 1:
-                continue
-            weibo_send.append(weibo_item_bin)
-            weibo_list.append([weibo_item_bin['mid'], weibo_item_bin['text'].encode('utf-8')])
-            count += 1
+    try:
+        for line in f:
+            weibo_item = itemLine2Dict(line)
+            if weibo_item:
+                weibo_item_bin = csv2bin(weibo_item)
+                if int(weibo_item_bin['sp_type']) != 1:
+                    continue
+                sender.send_json(weibo_item_bin)
+                count += 1
 
-        if count % 10000 == 0:
-            results_set = filter_ad(weibo_list)
-            count_send = send_filter(results_set, weibo_send, count_send, sender)
-            weibo_list = []
-            weibo_send = []
-            te = time.time()
-            print '[%s] read csv speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
-            print '[%s] total send filter weibo %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count_send, te - tb, count / (te - tb))
-            ts = te
-    if weibo_list:
-        results_set = filter_ad(weibo_list)
-        count_send = send_filter(results_set, weibo_send, count_send, sender)
-        total_cost = time.time() - tb
-    return count_send, total_cost
+            if count % 10000 == 0:
+                te = time.time()
+                print '[%s] read csv speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
+                print '[%s] total send filter weibo %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count_send, te - tb, count / (te - tb))
+                ts = te
+    except:
+        print "pass"
+    total_cost = time.time() - tb
+    return count, total_cost
 
 
 def send_weibo(sender, total_count=0, total_cost=0):
     """
     send weibo data to zmq_work
     """
-           
+
     if 1:
         file_list = set(os.listdir(BIN_FILE_PATH))
         print "total file is ", len(file_list)
