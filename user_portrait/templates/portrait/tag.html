@@ -53,9 +53,10 @@ tbody td{text-align:center;}
 	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
 	<div class="decoration">
 		<ul class="">
-			<li><span class="p_title">群组名称：</span><input type="text"  id="groupName" class="input searchinput" name="task_name" placeholder="请输入群组名称"/></li>
-			<li><span class="p_title">备注：</span><input type="text" id="groupState" class="input searchinput" name="state" placeholder="请输入备注"/></li>
+			<li><span class="p_title">标签类别:</span><input type="text"  id="groupName" class="input searchinput" name="tagClass" placeholder="请输入标签类别"/></li>
+			<li><span class="p_title">标签名:</span><input type="text" id="groupState" class="input searchinput" name="tagName" placeholder="请输入标签名"/></li>
 			<li><span class="p_title">时间：</span><input type="text" id="groupState" class="input searchinput" name="submit_date" placeholder="请输入时间2015-07-15"/></li>
+			<li><span class="p_title">创建者:</span><input type="text" id="groupState" class="input searchinput" name="creater" placeholder="aa"/></li>
 			<li><input name="submit" type="submit" class="bluebtn" id="searchbtn" value="确定"></li>
 		</ul>
 	</div>
@@ -91,22 +92,7 @@ tbody td{text-align:center;}
 								<td name="time">2013-09-01</td>
 								<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>
 							</tr>
-							<tr>
-								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
-								<td name="tagClass">重要</td>
-								<td name="tagName">一级，二级，三级</td>
-								<td name="creater">wjj</td>
-								<td name="time">2013-09-01</td>
-								<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>
-							</tr>
-							<tr>
-								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
-								<td name="tagClass">重要</td>
-								<td name="tagName">一级</td>
-								<td name="creater">wjj</td>
-								<td name="time">2013-09-01</td>
-								<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>
-							</tr>
+
 						</tbody>
 					</table>
 								
@@ -209,6 +195,7 @@ tbody td{text-align:center;}
 		$('#EDIT').append(html);
 	});
 </script>
+<script type="text/javascript" src="/static/js/portrait/tag.js"></script> 
 {% endblock Own_js %}
 {% block end_js %}
 {{ super () }}
