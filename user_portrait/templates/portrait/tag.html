@@ -1,0 +1,198 @@
+{% extends "tbase.html" %}
+    {% block title %}自定义标签{% endblock title%}
+      {% block css %}
+      {{ super() }}
+   
+ 
+
+    <style type="text/css">
+    .hidden{display:none;}
+	#file-upload{margin-left:50px;border:1px solid #999;}
+	.fleft{float:left;}
+#uploadFile{position: fixed;margin-top: -200px;left: 50%;top: 50%;z-index: 1002;width: 620px;background: #FFF none repeat scroll 0% 0%;
+border: 1px solid #AA8BE8;height: 230px;margin-left: -300px;}
+#float-wrap {position: fixed;top: 0px;left: 0px;opacity: 0.6;z-index: 1001;width: 100%;height: 100%; background: #000 none repeat scroll 0% 0%;}
+#uploadFile .title{color:black;border-bottom:1px solid #999;}
+.title{color:black;border-bottom:1px solid #999;padding-left:20px;}
+.decoration ul{margin-top:30px;}
+li{list-style-type:none;}
+.decoration ul li{width:100%;float:left;margin-bottom:20px;}
+.p_title {float: left;width: 260px;white-space: nowrap;overflow: hidden; font-weight: normal;text-align: right;color: #808080;}
+#searchbtn {
+  display: inline-block;
+  background: #4f8fff none repeat scroll 0% 0%;
+  color: #FFF;
+  border: 1px solid #334EE3;
+  border-radius: 2px;
+  width: 108px;
+  float: right;
+  margin-right: 10px;
+  height:30px;
+}
+#searchTable {float:right;margin-right:20px;}
+#SearchTab{position: fixed;margin-top: -200px;left: 50%;top: 50%;z-index: 1002;width: 620px;background: #FFF none repeat scroll 0% 0%;
+border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
+#pageTitle{font-size:20px;text-indent:20px;font-family:"Microsoft YaHei UI";}
+#DataTables_Table_0_filter{display:none;}
+#DataTables_Table_0_length{display:none;}
+#del{color:black;}
+.lineh{line-height:30px;}
+table th{text-align:center;}
+tbody td{text-align:center;}
+.tagCols{width:550px;margin:auto 0;  text-align: center;margin-bottom: 10px;height:50px;line-height: 45px;}
+.tagCols span{font-size:20px;}
+.addIcon{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
+.editAdd{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
+ </style>
+ {% endblock css %}
+
+    {% block main %}
+	<div id="pageTitle">标签管理</div>
+    <div id="float-wrap" class="hidden"></div>
+<div id="SearchTab"  class="hidden">
+	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
+	<div class="decoration">
+		<ul class="">
+			<li><span class="p_title">群组名称：</span><input type="text"  id="groupName" class="input searchinput" name="task_name" placeholder="请输入群组名称"/></li>
+			<li><span class="p_title">备注：</span><input type="text" id="groupState" class="input searchinput" name="state" placeholder="请输入备注"/></li>
+			<li><span class="p_title">时间：</span><input type="text" id="groupState" class="input searchinput" name="submit_date" placeholder="请输入时间2015-07-15"/></li>
+			<li><input name="submit" type="submit" class="bluebtn" id="searchbtn" value="确定"></li>
+		</ul>
+	</div>
+</div>
+<div class="ch-container" style="width:1000px;">
+
+    <div class="row">
+        <div id="content" class="col-lg-10 col-sm-10">
+            <!-- content starts -->
+			<div class="row">
+        <div class="box col-md-12">
+            <div class="box-inner" style="width:980px;min-height:150px;">
+                <div class="box-header well" data-original-title="" style="padding-top:5px;">
+                   <span class="TabTitle"  >标签管理列表</span>
+                </div>
+				<div class="fleft">
+</div>
+<a id="turnback" href="" style="float:right;margin-right:40px;margin-top:12px;">查看全部标签</a>
+<a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">表单搜索</a>
+<a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">删除</a>
+<a id="searchTable" href="javascript:void(0)" data-toggle="modal" data-target="#add" style="margin-bottom:10px;margin-top:12px;">添加</a>
+                <div class="box-content" id="Tagtable" >
+                    <table class="table table-bordered table-striped table-condensed datatable" >
+						<thead><tr style="text-align:center;">	
+							<th style="width:100px;">全选<input type="checkbox" style="margin-left:0px;width:30px;"></th><th>标签类别</th><th>标签名</th><th>创建者</th><th style="width:200px;">时间</th><th>操作</th></tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
+								<td name="tagClass">重要</td>
+								<td name="tagName">一级</td>
+								<td name="creater">wjj</td>
+								<td name="time">2013-09-01</td>
+								<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>
+							</tr>
+						</tbody>
+					</table>
+								
+						
+                </div>
+            </div>
+        </div>
+    </div><!--/span-->
+
+    <!-- content ends -->
+		</div><!--/#content.col-md-0-->
+	</div><!--/fluid-row-->
+
+
+</div><!--/.fluid-container-->
+
+
+<div class="modal fade" id="editor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
+      </div>
+      <div class="modal-body" id="EDIT">
+        <div class="tagCols"><span>标签类别</span><input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;"></div>
+		<div class="tagCols">
+			<span style="margin-left:35px;">标签名</span>
+			<input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
+			<span class="editAdd" ></span>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
+      </div>
+      <div class="modal-body" id="ADD">
+        <div class="tagCols"><span>标签类别</span><input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;"></div>
+		<div class="tagCols" >
+			<span style="margin-left:35px;">标签名</span>
+			<input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
+			<span class="addIcon" id="addTag"></span>
+		</div>
+		
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    {% endblock main %}
+
+    {% block Own_js %}
+    {{ super() }}
+  <script>
+
+	$("#uploadbtn1").off("click").click(function(){
+		$("#float-wrap").removeClass("hidden");
+		$("#uploadFile").removeClass("hidden");
+		return false;
+	});
+	$("#searchTable").off("click").click(function(){
+		$("#float-wrap").removeClass("hidden");
+		$("#SearchTab").removeClass("hidden");
+		return false;
+	});
+	$(".close1").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#uploadFile").addClass("hidden");
+	});
+	$(".close2").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#SearchTab").addClass("hidden");
+    });
+	$(".addIcon").off("click").click(function(){
+		var html = '';
+		html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+		$('#ADD').append(html);
+	});
+	$(".editAdd").off("click").click(function(){
+		var html = '';
+		html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+		$('#EDIT').append(html);
+	});
+</script>
+{% endblock Own_js %}
+{% block end_js %}
+{{ super () }}
+<script src="../../static/js/charisma.js"></script>
+{% endblock end_js %}
+
+

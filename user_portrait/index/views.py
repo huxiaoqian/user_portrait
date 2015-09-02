@@ -49,7 +49,10 @@ def recommend_out():
 def influence_rank():
 
     return render_template('portrait/influence_rank.html')
+@mod.route('/tag/')
+def tag():
 
+    return render_template('portrait/tag.html')
 @mod.route('/contrast_analysis/')
 def contrast_analysis():
     return render_template('portrait/contrast_analysis.html')
