@@ -80,9 +80,25 @@ tbody td{text-align:center;}
                 <div class="box-content" id="Tagtable" >
                     <table class="table table-bordered table-striped table-condensed datatable" >
 						<thead><tr style="text-align:center;">	
-							<th style="width:100px;">全选<input type="checkbox" style="margin-left:0px;width:30px;"></th><th>标签类别</th><th>标签名</th><th>创建者</th><th style="width:200px;">时间</th><th>操作</th></tr>
+							<th style="width:100px;">全选<input type="checkbox" style="margin-left:10px;"></th><th>标签类别</th><th>标签名</th><th>创建者</th><th>时间</th><th>操作</th></tr>
 						</thead>
 						<tbody>
+							<tr>
+								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
+								<td name="tagClass">重要</td>
+								<td name="tagName">一级，二级，三级，四级，五级，六级，七级，八级，九级，十级，一级，二级，三级，四级，五级，六级，七级，八级，九级，十级</td>
+								<td name="creater">wjj</td>
+								<td name="time">2013-09-01</td>
+								<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>
+							</tr>
+							<tr>
+								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
+								<td name="tagClass">重要</td>
+								<td name="tagName">一级，二级，三级</td>
+								<td name="creater">wjj</td>
+								<td name="time">2013-09-01</td>
+								<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>
+							</tr>
 							<tr>
 								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
 								<td name="tagClass">重要</td>
@@ -116,9 +132,9 @@ tbody td{text-align:center;}
         <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
       </div>
       <div class="modal-body" id="EDIT">
-        <div class="tagCols"><span>标签类别</span><input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;"></div>
+        <div class="tagCols"><span >标签类别</span><input name="tagclass" class="inputbox" type="text" value="" style="line-height:36px;cursor:not-allowed;background-color:#eee;"disabled></div>
 		<div class="tagCols">
-			<span style="margin-left:35px;">标签名</span>
+			<span style="margin-left:30px;">标签名</span>
 			<input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
 			<span class="editAdd" ></span>
 		</div>
@@ -138,11 +154,15 @@ tbody td{text-align:center;}
         <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
       </div>
       <div class="modal-body" id="ADD">
-        <div class="tagCols"><span>标签类别</span><input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;"></div>
+        <div class="tagCols">
+			<span  style="margin-left:55px;">标签类别</span>
+			<input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;">（危险）
+		</div>
 		<div class="tagCols" >
-			<span style="margin-left:35px;">标签名</span>
+			<span style="margin-left:95px;">标签名</span>
 			<input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
 			<span class="addIcon" id="addTag"></span>
+			（一级）
 		</div>
 		
       </div>
@@ -185,7 +205,7 @@ tbody td{text-align:center;}
 	});
 	$(".editAdd").off("click").click(function(){
 		var html = '';
-		html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+		html += '<div class="tagCols"><span  style="margin-left:10px;">标签名</span><input name="tagname" class="inputbox " type="text" value="" style="line-height:36px;"></div>';
 		$('#EDIT').append(html);
 	});
 </script>
