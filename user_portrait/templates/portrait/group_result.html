@@ -51,7 +51,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		<ul class="clearfix">
 			<li><span class="p_title">群组名称：</span><input type="text"  class="input" name="task_name" placeholder="请输入群组名称"/></li>
 			<li><span class="p_title">备注：</span><input type="text"  class="input" name="state" placeholder="请输入备注"/></li>
-			<li><input name="submit" type="submit" class="bluebtn lineh" id="uploadbtn" value="确定"></li>
+			<li><input name="submit" type="submit" class="bluebtn lineh" id="uploadbtn" value="确定" ></li>
 		</ul>
 	</div>
 </div>
@@ -85,7 +85,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
                    <span class="TabTitle"  >任务管理列表</span>
                 </div>
 				<div class="fleft">
-	<form enctype="multipart/form-data" method="post" style="margin-bottom:10px;margin-top:10px;display:none; ">
+	<form enctype="multipart/form-data" method="post" style="margin-bottom:10px;margin-top:10px;">
 		<input type="file" name="fileUp" id="file-upload" class="fleft" />  
 		<input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
 	</form>
@@ -113,18 +113,20 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 	var fileInput = document.getElementById('file-upload');
 	fileInput.addEventListener('change', function () {
     // 检查文件是否选择:
-    if (!fileInput.value) {
-        alert('没有选择文件');
-        return;
-    }
-    // 获取File引用:
-    var file = fileInput.value;
-	alert(file);
-    if (!file&&!(file.endsWith('.csv'))&&!(file.endsWith('.txt'))) {
-		alert('Can only upload image file.');
-        return false;
-    }
-});
+		if (!fileInput.value) {
+			alert('没有选择文件');
+			return;
+		}
+		// 获取File引用:
+		var file = fileInput.value;
+		//alert(file);
+		if ((file.endsWith('.csv')) || (file.endsWith('.txt'))) {
+			//alert('Can only upload csv or txt file.');
+			return false;
+		}else{
+			alert('Can only upload csv or txt file.');
+		}
+	});
 	$("#uploadbtn1").off("click").click(function(){
 		$("#float-wrap").removeClass("hidden");
 		$("#uploadFile").removeClass("hidden");
@@ -143,7 +145,9 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		$("#float-wrap").addClass("hidden");
 		$("#SearchTab").addClass("hidden");
     });
+	
 </script>
+
 <script src="../../static/js/portrait/group_result.js"></script>
 <script src="../../static/js/portrait/groupSearch.js"></script>
 <script src="../../static/js/portrait/groupDel.js"></script>
@@ -151,6 +155,40 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 {% block end_js %}
 {{ super () }}
 <script src="../../static/js/charisma.js"></script>
+<script src="../../static/js/ajaxfileupload.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#uploadbtn").click(function () {
+                ajaxFileUpload();
+            })
+        })
+        function ajaxFileUpload() {
+            $.ajaxFileUpload
+            (
+                {
+                    url: '/', //用于文件上传的服务器端请求地址,
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: 'file1', //文件上传域的ID
+                    dataType: 'json', //返回值类型 一般设置为json
+                    success: function (data, status)  //服务器成功响应处理函数
+                    {
+                        if (typeof (data.error) != 'undefined') {
+                            if (data.error != '') {
+                                alert(data.error);
+                            } else {
+                                alert(data.msg);
+                            }
+                        }
+                    },
+                    error: function (data, status, e)//服务器响应失败处理函数
+                    {
+                        alert(e);
+                    }
+                }
+            )
+            return false;
+        }
+    </script>
 {% endblock end_js %}
 
 
