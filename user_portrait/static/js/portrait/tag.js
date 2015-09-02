@@ -29,7 +29,7 @@ Draw_tag_table:function(data){
 		html += '<td name="tagName">'+item[i].attribute_value+'</td>';
 		html += '<td name="creater">'+item[i].user+'</td>';
 		html += '<td name="time">'+item[i].date+'</td>'
-		html += '<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" >编辑</a></td>';
+		html += '<td name="operate" style="cursor:pointer;" ><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" >编辑</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
