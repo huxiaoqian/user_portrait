@@ -10,50 +10,8 @@ attribute_index_type = 'attribute'
 user_index_name = 'user_portrait'
 user_index_type = 'user'
 
-attribute_dict_key = ['value', 'user', 'date', 'state']
+attribute_dict_key = ['attribute_value', 'attribute_user', 'date', 'user']
 
-# use to init the es of custom_attribute
-def init_custom_attribute():
-    index_info = {
-        'settings':{
-            'number_of_shards':5,
-            'number_of_replicas':0
-            },
-        'mappings':{
-            'user':{
-                'properties':{
-                    'attribute_name':{
-                        'type': 'string',
-                        'index': 'not_analyzed'
-                        },
-                    'attribute_value':{
-                        'type': 'string',
-                        'index': 'not_analyzed'
-                        },
-                    'date': {
-                        'type': 'string',
-                        'index': 'not_analyzed'
-                        },
-                    'user': {
-                        'type': 'string',
-                        'index': 'not_analyzed'
-                        },
-                    'state':{
-                        'type': 'string',
-                        'index': 'not_analyzed'
-                        }
-                    }
-                }
-            }
-            }
-    flag = es.indices.exists(index=attribute_index_name)
-    if flag:
-        es.indices.delete(index=attribute_index_name)
-    es.indices.create(
-        index=attribute_index_name,
-        body=attribute_index_name,
-        ignore = 400
-        )
 
 # use to submit attribute to es (custom_attribute, attribute)
 def submit_attribute(attribute_name, attribute_value, submit_user, state):
@@ -221,5 +179,3 @@ def delete_attribute_portrait(uid, attribute_name, submit_user):
 
     return status
 
-if __name__=='__main__':
-    init_custom_attribute()

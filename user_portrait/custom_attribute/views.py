@@ -18,8 +18,9 @@ def ajax_submit_attribute():
     attribute_name = request.args.get('custom_attribute', '') # my_attribute1
     attribute_value = request.args.get('attribute_value', '') # attribute_value =[ '1', '2' ,'3']
     submit_user = request.args.get('user_name', '')           # user_name = admin1
-    state = request.args.get('state', '')                     # state = ''
-    status = submit_attribute(attribute_name, attribute_value, submit_user, state) # mark success or fail
+    submit_date = request.args.get('submit_date', '')         # submit_date = 2013-09-08
+    #state = request.args.get('state', '')
+    status = submit_attribute(attribute_name, attribute_value, submit_user, submit_date) # mark success or fail
     return json.dumps(status)
 
 # use to search attribute table
