@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+#-*- coding:utf-8 -*-
 import json
 import time
 from user_portrait.global_utils import es_user_portrait as es
@@ -7,35 +7,37 @@ from user_portrait.time_utils import ts2datetime, datetime2ts
 attribute_index_name = 'custom_attribute'
 attribute_index_type = 'attribute'
 
-user_index_name = 'user_portrait'
+user_index_name = 'user_portrait2'
 user_index_type = 'user'
 
 attribute_dict_key = ['attribute_value', 'attribute_user', 'date', 'user']
 
 
 # use to submit attribute to es (custom_attribute, attribute)
-def submit_attribute(attribute_name, attribute_value, submit_user, state):
+def submit_attribute(attribute_name, attribute_value, submit_user, submit_date):
     status = False
     #maybe there have to identify the user admitted to submit attribute
-    attribute_exist = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['docs']
+    try:
+        attribute_exist = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['docs']
+    except:
+        attribute_exist = {}
     try:
         source = attribute_exist['_source']
     except:
         input_data = dict()
         now_ts = time.time()
         date = ts2datetime(now_ts)
-        input_data['name'] = attribute_name
-        input_data['value'] = json.dumps(attribute_value.split('&'))
+        input_data['attribute_name'] = attribute_name
+        input_data['attribute_value'] = '&'.join(attribute_value.split(','))
         input_data['user'] = submit_user
-        input_data['state'] = state
-        input_data['date'] = date
+        input_data['date'] = submit_date
         es.index(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name, body=input_data)
         status = True
     return status
 
 # use to search attribute table
 def search_attribute(query_body, condition_num):
-    result = []
+    item_list = []
     if condition_num==0:
         try:
             result = es.search(index=attribute_index_name, doc_type=attribute_index_type, \
@@ -50,9 +52,10 @@ def search_attribute(query_body, condition_num):
             raise e
     if result:
         for item in result:
+            print 'item:', item
             source = item['_source']
-            result.append(source)
-    return result
+            item_list.append(source)
+    return item_list
 
 # use to change attribtue
 def change_attribute(attribute_name, value, user, state):
@@ -63,14 +66,14 @@ def change_attribute(attribute_name, value, user, state):
     except:
         result = None
         return status
-    value_list = value.split('&')
-    result['value'] = json.dumps(value_list)
+    value_list = '&'.join(value.split(','))
+    result['attribute_name'] = attribute_name
+    result['attribute_value'] = value_list
     result['user'] = user
-    result['state'] = state
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     result['date'] = now_date
-    es.index(index=attribute_index_name, doc_type=attribute_index_type, body=result)
+    es.index(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name ,body=result)
     status = True
     return status
 
@@ -81,8 +84,8 @@ def delete_attribute(attribute_name):
         result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
     except:
         return status
-    attribute_value = json.loads(result['value'])
     es.delete(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)
+    '''
     # delete attribute in user_portrait
     query = []
     for value in attribute_value:
@@ -106,6 +109,7 @@ def delete_attribute(attribute_name):
         action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, user_item])
     es.bulk(bulk_action, index=user_index_name, doc_type=index_type)
+    '''
     status = True
     return status
 
@@ -122,17 +126,17 @@ def add_attribute_portrait(uid, attribute_name, attribute_value, submit_user):
     except:
         return 'no user'
     try:
-        attribute_result = es.get(index=attribute_index_name, doc_type=user_index_type, id=attribute_name)['_source']
+        attribute_result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
     except:
         return 'no attribute'
-    attribute_value_list = json.loads(attribute_result['value'])
+    attribute_value_list = attribute_result['attribute_value'].split('&')
     if attribute_value not in attribute_value_list:
         return 'no attribute value'
     if attribute_name in user_result:
         return 'attribute exist'
     add_attribute_dict = {attribute_name: attribute_value}
     
-    es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':body})
+    es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':add_attribute_dict})
     status = True
     return status
 
@@ -148,13 +152,14 @@ def change_attribute_portrait(uid, attribute_name, attribute_value, submit_user)
     except:
         return 'no user'
     try:
-        attribute_result = es.get(index=attribute_index_name, doc_type=user_index_type, id=uid)['_source']
+        attribute_result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
     except:
         return 'no attribute'
-    value_list = json.loads(attribute_result['value'])
+    value_list = attribute_result['attribute_value'].split('&')
     if attribute_value not in value_list:
         return 'no attribute value'
-    es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':body})
+    change_attribute_dict = {attribute_name: attribute_value}
+    es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc': change_attribute_dict})
     status = True
     return status
 
@@ -171,8 +176,8 @@ def delete_attribute_portrait(uid, attribute_name, submit_user):
     if attribute_name not in user_exist:
         return 'user have no attribtue'
     try:
-        del_attribute_value = user_exist.pop(attribute)
-        es.index(index=user_index_name, doc_type=user_index_type, body=user_exist)
+        del_attribute_value = user_exist.pop(attribute_name)
+        es.index(index=user_index_name, doc_type=user_index_type, id=uid, body=user_exist)
         status = True
     except Exception, e:
         raise e
