@@ -161,6 +161,10 @@
 			    </div>
 			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
 			      <div class="panel-body">
+						<div style="height:400px;width:900px;float:left">
+						<div style="font-size:17px;margin-bottom:20px;">标签划分</div>
+						<div id="lable" style="height:380px;width:900px;"></div>
+						</div>
 						<div style="height:400px;width:450px;float:left">
 						<div style="font-size:17px;margin-bottom:20px;">领域划分</div>
 						<div id="radar_domain" style="height:380px;width:450px;"></div>
@@ -246,7 +250,8 @@
 				    <div class="modal-content">
 				      <div class="modal-header">
 				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组成员</h4>
+				        <h4 class="modal-title" style="font-size:18px">群组成员</h4>
+				        <h5 class="modal-title" style="float:right;font-size:16px;margin-top:-10px;margin-right:20px;;cursor:pointer;text-decoration:underline" data-toggle="modal" data-target="#model_lable">查看自定义属性</h5>
 				      </div>
 				      <div class="modal-body" id='group_user'>
 				      </div>
@@ -340,6 +345,19 @@
 				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组内转发列表</h4>
 				      </div>
 				      <div class="modal-body" id='more_group_in'>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<div class="modal fade" id="model_lable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document" style="width:1000px">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组成员自定义属性</h4>
+				      </div>
+				      <div class="modal-body" id='user_lable'>
 				      </div>
 				    </div>
 				  </div>
