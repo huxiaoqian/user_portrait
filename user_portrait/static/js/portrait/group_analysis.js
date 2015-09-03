@@ -35,11 +35,13 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
+    draw_user_lable();
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
     html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
-    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th></tr></thead>';
+    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th>';
+    html += '</tr></thead>';
     html += '<tbody>';
     for ( i=0 ; i<data.length; i++){
         s = i.toString();
@@ -48,8 +50,9 @@ Search_weibo.prototype = {
         }else{
             sex = '女';
         }
-      html += '<tr><th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
-      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th></tr>';  
+      html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
+      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th>';  
+      html += '</tr>';
     };
     html += '</tbody>';
     html += '</table>';
@@ -325,6 +328,84 @@ Draw_weibo: function(data){
 }
  
 var Search_weibo = new Search_weibo(); 
+
+function recommend_all(){
+  $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
+}
+function draw_user_lable(){
+    $('#user_lable').empty();
+    html = '';
+    html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
+    html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
+    html += '</tr></thead>';
+    html += '<tbody>';
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>';
+    html += '</tbody>';
+    html += '</table>';
+     html += '<div style="font-size:18px;margin-top:-15px">增加标签</div>';
+     html += '<div><span>选择类别：</span><span id="" style="margin-left:10px">';
+     html += '<select id="">';
+     html += '<option value="">类别1</option>';
+      html += '<option value="">类别2</option>';
+      html += '<option value="">类别3</option>';
+      html += '<option value="">类别4</option>';
+      html += '<option value="">类别5</option>';
+      html += '<option value="">类别6</option>';
+      html += '<option value="" selected="selected">类别7</option>';
+      html += '</select></span>';
+      html += '<span>选择标签：</span><span id="" style="margin-left:10px">';
+      html += '<select id="">';
+      html += '<option value="">标签1</option>';
+      html += '<option value="">标签2</option>';
+      html += '<option value="">标签3</option>';
+      html += '<option value="">标签4</option>';
+      html += '<option value="">标签5</option>';
+      html += '<option value="">标签6</option>';
+      html += '<option value="" selected="selected">标签7</option>';
+      html += '</select></span>';
+      html += '<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择">确定</button></span></div>'
+    $('#user_lable').append(html);
+}
+
+
+$(function () {
+    $('#lable').highcharts({
+        title: {
+            text: '',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: ['标签1', '标签2', '标签3', '标签4', '标签5', '标签6', '标签7', '标签8']
+        },
+        yAxis: {
+            title: {
+                text: '人数(人)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '°C'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: '人数',
+            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5]
+        }]
+    });
+});
 
 function Draw_more_keyword(data){
     $('#more_keyword').empty();
@@ -834,15 +915,15 @@ $(document).ready(function(){
     Search_weibo.call_sync_ajax_request(model_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
     basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
-    activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
-    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
-    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
-    text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
-    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
-    Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
+    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
+    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
+    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
+    // influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
+    // Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
 
 })
 

@@ -20,6 +20,7 @@ Search_weibo.prototype = {
         return data;
     },
     Draw_table: function(data){
+        console.log(data);
         that.data = data;
         if(data=='0'){
             alert("没有相关人物推荐");
@@ -247,6 +248,13 @@ function get_choose_data(uid){
         url = '';
     }
     return url;
+}
+
+
+function diy_button(){
+  console.log('ddddd');
+  $('#Diymodal').modal();
+
 }
 
 

@@ -411,7 +411,7 @@ function Compare(){
     html += '</tr>';
     j = 0;
     html += '<tr><td colspan="'+ (num+1) +'" name="list-6" class="cate_title" style="font-size:20px"><a  class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>思想属性</b></td></tr>';
-    html += '<tr class="list-4"><td class="cate_title" style="width:90px;text-align:right">倾向</td>';
+    html += '<tr class="list-6"><td class="cate_title" style="width:90px;text-align:right">倾向</td>';
     for(var k in portrait){
         j += 1;
         html += '<td class="center" name="line'+ j +'"><div id="perfer'+ j +'" style="height:300px"></div></td>';
@@ -423,6 +423,15 @@ function Compare(){
     for(var k in portrait){
         j += 1;
         html += '<td class="center" name="line'+ j +'"><div id="emotion'+ j +'" style="height:300px"></div></td>';
+    }
+    html += '</tr>';
+
+    j = 0;
+    html += '<tr><td colspan="'+ (num+1) +'" name="list-7" class="cate_title" style="font-size:20px"><a  class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>自定义标签</b></td></tr>';
+    html += '<tr class="list-7"><td class="cate_title" style="width:90px;text-align:right">标签</td>';
+    for(var k in portrait){
+        j += 1;
+        html += '<td class="center" name="line'+ j +'">教育-老师</td>';
     }
     html += '</tr>';
 
