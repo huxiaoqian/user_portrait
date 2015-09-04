@@ -58,6 +58,7 @@ def create_app():
     app.config['DEBUG_TB_PROFILER_ENABLED'] = True
     # Enable the template editor, default to false
     app.config['DEBUG_TB_TEMPLATE_EDITOR_ENABLED'] = True
+    
     # debug toolbar
     # toolbar = DebugToolbarExtension(app)
     

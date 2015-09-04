@@ -3,16 +3,49 @@
 import os
 import time
 import json
-from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
+from werkzeug import secure_filename
+from flask import Blueprint, url_for, render_template, request,\
+                  abort, flash, session, redirect, send_from_directory
 from utils import submit_task, search_task, get_group_results, get_group_list, delete_group_results
-
+from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.time_utils import ts2datetime
 
 mod = Blueprint('group', __name__, url_prefix='/group')
 
+
+# use to upload user list for group task to limit file type
+def allowed_file(filename):
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+# use to upload file
+@mod.route('/upload_file/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            print 'upload file name:', file.filename
+            filename = secure_filename(file.filename)
+            print 'secure file name:', filename
+            exist_filenames = os.listdir(UPLOAD_FOLDER)
+            if filenmae in exist_filenames:
+                return 'filename exist'
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            return 'success'
+        elif not file:
+            return 'no file'
+        elif not allowed_file(file.filename):
+            return 'error postfix'
+
+    return 'error method'
+
+
 # submit group analysis task and save to redis as lists
 # submit group task: task name should be unique
+# input_data is dict ---two types
+# one type: {'submit_date':x, 'state': x, 'uid_list':[],'task_name':x}
+# two type: {'submit_date':x, 'state': x, 'task_name':x, 'uid_file':filename}
 @mod.route('/submit_task/',methods=['GET', 'POST'])
 def ajax_submit_task():
     input_data = dict()
