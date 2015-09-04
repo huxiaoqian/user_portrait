@@ -5,7 +5,7 @@ import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import submit_attribute, search_attribute, change_attribute, delete_attribute ,\
                   add_attribute_portrait, change_attribute_portrait, delete_attribute_portrait, \
-                  get_user_tag, add_tag2group, get_attribute_name, get_attribute_value
+                  get_user_tag, get_group_tag, add_tag2group, get_attribute_name, get_attribute_value
 
 from user_portrait.time_utils import ts2datetime
 
@@ -107,6 +107,15 @@ def ajax_show_user_tag():
     uid_list_string = request.args.get('uid_list', '') # uid_list = 'uid1,uid2'
     uid_list = uid_list_string.split(',')
     result = get_user_tag(uid_list)
+    return json.dumps(result)
+
+# use to show group tag statistic result
+@mod.route('/show_group_tag/')
+def ajax_show_group_tag():
+    result = {}
+    uid_list_string = request.args.get('uid_list', '') # uid_list = 'uid1,uid2'
+    uid_list = uid_list_string.split(',')
+    result = get_group_tag(uid_list)
     return json.dumps(result)
 
 # use to add tag to group
