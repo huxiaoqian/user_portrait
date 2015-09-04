@@ -4,7 +4,8 @@ import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import submit_attribute, search_attribute, change_attribute, delete_attribute ,\
-                  add_attribute_portrait, change_attribute_portrait, delete_attribute_portrait
+                  add_attribute_portrait, change_attribute_portrait, delete_attribute_portrait, \
+                  get_user_tag, add_tag2group, get_attribute_name, get_attribute_value
 
 from user_portrait.time_utils import ts2datetime
 
@@ -99,3 +100,38 @@ def ajax_delete_attribute_portrait():
     status = delete_attribute_portrait(uid, attribute_name, submit_user)
     return json.dumps(status)
 
+# use to show user tags(one/group)
+@mod.route('/show_user_tag/')
+def ajax_show_user_tag():
+    result = {}
+    uid_list_string = request.args.get('uid_list', '') # uid_list = 'uid1,uid2'
+    uid_list = uid_list_string.split(',')
+    result = get_user_tag(uid_list)
+    return json.dumps(result)
+
+# use to add tag to group
+@mod.route('/add_group_tag/')
+def ajax_aff_group_tag():
+    status = False
+    uid_list_string = request.args.get('uid_list', '')
+    uid_list = uid_list_string.split(',')
+    attribute_name = request.args.get('attribute_name', '')
+    attribute_value = request.args.get('attribute_value', '')
+    status = add_tag2group(uid_list, attribute_name, attribute_value)
+    return json.dumps(status)
+
+
+# use to show custom_attribtue_name in search conditon as drop_down_box
+@mod.route('/show_attribute_name/')
+def ajax_show_attribtue_name():
+    result = []
+    attribute_name_list = get_attribute_name()
+    return json.dumps(attribute_name_list)
+
+# use to show custom_attribtue_value in search condition as drop_down_box
+@mod.route('/show_attribute_value/')
+def ajax_show_attribute_value():
+    result = []
+    attribute_name = request.args.get('attribute_name', '')
+    attribute_value_list = get_attribute_value(attribute_name)
+    return json.dumps(attribute_value_list)

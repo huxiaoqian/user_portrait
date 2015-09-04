@@ -7,7 +7,7 @@ from user_portrait.time_utils import ts2datetime, datetime2ts
 attribute_index_name = 'custom_attribute'
 attribute_index_type = 'attribute'
 
-user_index_name = 'user_portrait2'
+user_index_name = 'test_user_portrait'
 user_index_type = 'user'
 
 attribute_dict_key = ['attribute_value', 'attribute_user', 'date', 'user']
@@ -85,9 +85,10 @@ def delete_attribute(attribute_name):
     except:
         return status
     es.delete(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)
-    '''
+    print 'yes delete attribute'
     # delete attribute in user_portrait
     query = []
+    attribute_value = result['attribute_value'].split('&')
     for value in attribute_value:
         query.append({'match':{attribute_name: value}})
     try:
@@ -104,12 +105,11 @@ def delete_attribute(attribute_name):
             user_item = user_dict['_source']
         except:
             next
-        user_item.pop(attribute)
+        user_item.pop(attribute_name)
         user = user_item['uid']
         action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, user_item])
     es.bulk(bulk_action, index=user_index_name, doc_type=index_type)
-    '''
     status = True
     return status
 
@@ -184,3 +184,81 @@ def delete_attribute_portrait(uid, attribute_name, submit_user):
 
     return status
 
+identify_attribute_list = ['emoticon','domain', 'psycho_status_string', 'uid', 'hashtag_dict', \
+                           'importance', 'online_pattern', 'influence', 'keywords_string', 'topic', \
+                           'activity_geo', 'link', 'hashtag', 'keywords', 'fansnum', 'psycho_status', \
+                           'text_len', 'photo_url', 'verified', 'uname', 'statusnum', 'gender', \
+                           'topic_string', 'activeness', 'location', 'activity_geo_dict', \
+                           'emotion_words', 'psycho_feature', 'friendsnum']
+
+# use to get user custom tag
+# return {uid:['attribute_name1:attribute_value1', 'attribute_name2:attribtue_value2']}
+def get_user_tag(uid_list):
+    result = {}
+    user_result = es.mget(index=user_index_name, doc_type=user_index_type, body={'ids':uid_list})['docs']
+    print 'user_result:', user_result
+    for user_item in user_result:
+        uid = user_item['_id']
+        result[uid] = []
+        try:
+            source = user_item['_source']
+        except:
+            source = {}
+        for key in source:
+            if key not in identify_attribute_list:
+                value = source[key]
+                tag_string = key+':'+value
+                result[uid].append(tag_string)
+
+    return result
+
+# use to add tag to group
+def add_tag2group(uid_list, attribute_name, attribute_value):
+    status = False
+    #identify the attribute exist
+    #for uid in uid_list
+    #identify the attribute not in this user
+    #add tag to this user
+    try:
+        attribute_exist = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
+    except:
+        return 'no attribute'
+    attribute_exist_value_list = attribute_exist['attribute_value'].split('&')
+    if attribute_value not in attribute_exist_value_list:
+        return 'no attribute value'
+    for uid in uid_list:
+        try:
+            user_exist = es.get(index=user_index_name, doc_type=user_index_type, id=uid)['_source']
+        except:
+            user_exist = {}
+        if user_exist and attribute_name not in user_exist:
+            add_attribute_dict = {attribute_name: attribute_value}
+            es.update(index=user_index_name, doc_type=user_index_type, id=uid, body={'doc':add_attribute_dict})
+    status = True
+    return status
+
+# use to show custom_attribute_name
+def get_attribute_name():
+    attribute_name_list = []
+    try:
+        attribute_result = es.search(index=attribute_index_name, doc_type=attribute_index_type, \
+                                     body={'query':{'match_all':{}}})['hits']['hits']
+    except Exception, e:
+        raise e
+    if attribute_result:
+        for item in attribute_result:
+            source = item['_source']
+            attribute_name_list.append(source['attribute_name'])
+    return attribute_name_list
+
+# use to show cutom_attribute_value
+def get_attribute_value(attribute_name):
+    attribute_value_list = []
+    try:
+        attribute_result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
+    except:
+        return 'no attribute'
+    print 'attribute_result:', attribute_result
+    attribute_value_string = attribute_result['attribute_value']
+    attribute_value_list = attribute_value_string.split('&')
+    return attribute_value_list

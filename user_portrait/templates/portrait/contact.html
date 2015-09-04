@@ -121,6 +121,12 @@
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
                              <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
                         </div>
+                        <div class='col-lg-3' >
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="diy">自定义属性</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -166,7 +172,8 @@
                         <div class="panel panel-default" style="width:1000px;margin-left:-30px" id='table'>
                         </div>
                     </div>
-                    <div style=" margin-left:816px">
+                    <div style=" margin-left:727px">
+                        <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="compare_button" id="compare_button" title="选择2至3个用户对比"  onclick="diy_button();">自定义属性</button>
                         <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="compare_button" id="compare_button" title="选择2至3个用户对比"  onclick="compare_button();">个体对比</button>
                         <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="group_button" id="group_button" onclick="group_button();">群体分析</button>
                     </div>
@@ -183,6 +190,28 @@
             </div>
         </div>
 </div>
+
+<div class="modal fade" id="Diymodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width:850px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">群体分析</h4>
+      </div>
+      <div class="modal-body">
+        <span>群体名称：</span><span style="margin-left:10px"><input type="text" name="group_name" style="width:270px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" /></span>
+        <span style="margin-left:10px;float:right"><input type="text" name="remark" style="width:400px" placeholder="（可选）仅包含汉字、英文、数字和下划线" /></span><span style="margin-left:10px;float:right">备注：</span>
+        <div id="group_comfirm" style="margin-top:30px"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_confirm_button()">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="modal fade" id="compare" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="width:850px;">
     <div class="modal-content">
