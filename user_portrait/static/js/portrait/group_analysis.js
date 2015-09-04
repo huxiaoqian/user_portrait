@@ -335,18 +335,7 @@ function recommend_all(){
 function draw_user_lable(){
     $('#user_lable').empty();
     html = '';
-    html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
-    html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
-    html += '</tr></thead>';
-    html += '<tbody>';
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>';
-    html += '</tbody>';
-    html += '</table>';
-     html += '<div style="font-size:18px;margin-top:-15px">增加标签</div>';
+    html += '<div style="font-size:18px;margin-top:-10px">增加标签</div>';
      html += '<div><span>选择类别：</span><span id="" style="margin-left:10px">';
      html += '<select id="">';
      html += '<option value="">类别1</option>';
@@ -368,6 +357,50 @@ function draw_user_lable(){
       html += '<option value="" selected="selected">标签7</option>';
       html += '</select></span>';
       html += '<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择">确定</button></span></div>'
+    html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
+    html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
+    html += '</tr></thead>';
+    html += '<tbody>';
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>';
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>'
+    html += '</tbody>';
+    html += '</table>';
+     
     $('#user_lable').append(html);
 }
 
@@ -392,7 +425,7 @@ $(function () {
             }]
         },
         tooltip: {
-            valueSuffix: '°C'
+            valueSuffix: '人'
         },
         legend: {
             layout: 'vertical',
@@ -402,7 +435,7 @@ $(function () {
         },
         series: [{
             name: '人数',
-            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5]
+            data: [7, 6, 9, 14, 18, 21, 25, 26]
         }]
     });
 });
