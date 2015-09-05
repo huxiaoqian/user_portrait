@@ -23,7 +23,8 @@ Date.prototype.format = function(format) {
   this.ajax_method = 'GET';
 }
 
-
+    save_id = [];
+    id_string = '';
 Search_weibo.prototype = {
   call_sync_ajax_request:function(url, method, callback){
     $.ajax({
@@ -35,7 +36,6 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
-    draw_user_lable();
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
@@ -50,6 +50,7 @@ Search_weibo.prototype = {
         }else{
             sex = '女';
         }
+      save_id.push(data[s]['0']); 
       html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
       html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th>';  
       html += '</tr>';
@@ -57,8 +58,53 @@ Search_weibo.prototype = {
     html += '</tbody>';
     html += '</table>';
     $('#group_user').append(html);
-
+    for (var i = 0; i < save_id.length; i++) {
+        s=i.toString();
+        id_string += save_id[s] + ',';
+    };
+    id_string=id_string.substring(0,id_string.length-1)
       },
+  Draw_attribute_name: function(data){
+    $('#attribute_name').empty();
+    html = '';
+    html += '<select id="select_attribute_name">';
+
+    for (var i = 0; i < data.length-1; i++) {
+            var s = i.toString();
+    html += '<option value="' + data[s] + '">' + data[s] + '</option>';
+}
+    var t = (data.length-1).toString();
+    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
+    $('#attribute_name').append(html);
+  },
+
+  Draw_attribute_value: function(data){
+    $('#attribute_value').empty();
+    html = '';
+    html += '';
+    html += '<select id="select_attribute_value">';
+    for (var i = 0; i < data.length-1; i++) {
+            var s = i.toString();
+    html += '<option value="' + data[s] + '">' + data[s] + '</option>';
+}
+    var t = (data.length-1).toString();
+    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
+    $('#attribute_value').append(html);
+  },
+  Draw_group_tag: function(data){
+    console.log(data);
+    $('#user_lable').empty();
+    user_lable_html = '';
+    user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    user_lable_html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
+    user_lable_html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
+    user_lable_html += '</tr></thead>';
+    user_lable_html += '<tbody>';
+    user_lable_html += '</tbody>';
+    user_lable_html += '</table>';     
+    $('#user_lable').append(user_lable_html);
+  },
+
   Draw_overview: function(data){
     $('#overview').empty();
     html = '';
@@ -332,78 +378,6 @@ var Search_weibo = new Search_weibo();
 function recommend_all(){
   $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
 }
-function draw_user_lable(){
-    $('#user_lable').empty();
-    html = '';
-    html += '<div style="font-size:18px;margin-top:-10px">增加标签</div>';
-     html += '<div><span>选择类别：</span><span id="" style="margin-left:10px">';
-     html += '<select id="">';
-     html += '<option value="">类别1</option>';
-      html += '<option value="">类别2</option>';
-      html += '<option value="">类别3</option>';
-      html += '<option value="">类别4</option>';
-      html += '<option value="">类别5</option>';
-      html += '<option value="">类别6</option>';
-      html += '<option value="" selected="selected">类别7</option>';
-      html += '</select></span>';
-      html += '<span>选择标签：</span><span id="" style="margin-left:10px">';
-      html += '<select id="">';
-      html += '<option value="">标签1</option>';
-      html += '<option value="">标签2</option>';
-      html += '<option value="">标签3</option>';
-      html += '<option value="">标签4</option>';
-      html += '<option value="">标签5</option>';
-      html += '<option value="">标签6</option>';
-      html += '<option value="" selected="selected">标签7</option>';
-      html += '</select></span>';
-      html += '<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择">确定</button></span></div>'
-    html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
-    html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
-    html += '</tr></thead>';
-    html += '<tbody>';
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>';
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
-    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
-    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
-    html += '</tr>'
-    html += '</tbody>';
-    html += '</table>';
-     
-    $('#user_lable').append(html);
-}
-
 
 $(function () {
     $('#lable').highcharts({
@@ -946,8 +920,16 @@ $(document).ready(function(){
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
     model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
     Search_weibo.call_sync_ajax_request(model_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
+    tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
+    Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
     basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
+    var select_attribute_name = $("#select_attribute_name").val()
+    var attribute_value_url = '';
+    attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
+    Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+    show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?uid_list=' + id_string;
+    Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
     // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
     // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
     // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
@@ -957,7 +939,12 @@ $(document).ready(function(){
     // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
     // influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
     // Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
-
+    $('#select_attribute_name').click(function(){
+      var select_attribute_name = $("#select_attribute_name").val()
+      var attribute_value_url = '';
+      attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
+      Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+    });
 })
 
 function Draw_verify(data){
