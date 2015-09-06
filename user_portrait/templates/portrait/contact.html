@@ -6,6 +6,15 @@
 <link  type="text/css" href="/static/personal/css/style.css" rel="stylesheet"/>
 <link  type="text/css" href="/static/personal/css/basic.css" rel="stylesheet"/>
 <link href="/static/css/lanrenzhijia.css" type="text/css" rel="stylesheet" />
+<style>
+    .caroufredsel_wrapper{
+        left: -16px;
+    }
+    .addIcon{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
+    .tagCols{width:550px;margin:auto 0;  text-align: center;margin-bottom: 10px;height:50px;line-height: 45px;}
+    .tagCols span{font-size:20px;}
+</style>
+
 {% endblock css %}
 
 {% block head_js %}
@@ -110,7 +119,7 @@
                              <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
                         </div>
                     </div>
-                    <div class='col-md-12'>
+                    <div class='col-md-12' id='tag'>
                         <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="activity_geo">地理特征</span>
@@ -192,20 +201,28 @@
 </div>
 
 <div class="modal fade" id="Diymodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document" style="width:850px;">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">群体分析</h4>
+        <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
       </div>
-      <div class="modal-body">
-        <span>群体名称：</span><span style="margin-left:10px"><input type="text" name="group_name" style="width:270px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" /></span>
-        <span style="margin-left:10px;float:right"><input type="text" name="remark" style="width:400px" placeholder="（可选）仅包含汉字、英文、数字和下划线" /></span><span style="margin-left:10px;float:right">备注：</span>
-        <div id="group_comfirm" style="margin-top:30px"></div>
+      <div class="modal-body" id="ADD">
+        <div class="tagCols">
+            <span  style="margin-left:55px;">标签类别</span>
+            <input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;">（危险）
+        </div>
+        <div class="tagCols" >
+            <span style="margin-left:95px;">标签名</span>
+            <input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
+            <span class="addIcon" id="addTag"></span>
+            （一级）
+        </div>
+        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_confirm_button()">确认</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary">添加</button>
       </div>
     </div>
   </div>
