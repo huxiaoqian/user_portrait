@@ -14,7 +14,7 @@ Tag.prototype = {   //获取数据，重新画表
 
 NewTag:function(data){
 	//console.log(data);
-   location.reload();
+   //location.reload();
   }
 }
 
@@ -45,7 +45,7 @@ function get_input_data(){
 	var value = '';
 	//console.log(tagnames);
 	for(i=4;i<tagnames.length;i++){
-		console.log(document.getElementsByName("attribute_value")[i].value);
+		//console.log(document.getElementsByName("attribute_value")[i].value);
 		if(document.getElementsByName("attribute_value")[i].value==undefined){
 			value += '';
 		}else{
