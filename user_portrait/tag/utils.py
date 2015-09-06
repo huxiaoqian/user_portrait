@@ -262,3 +262,27 @@ def get_attribute_value(attribute_name):
     attribute_value_string = attribute_result['attribute_value']
     attribute_value_list = attribute_value_string.split('&')
     return attribute_value_list
+
+# use to show group tag statistic result
+def get_group_tag(uid_list):
+    result = {}
+    try:
+        user_result = es.mget(index=user_index_name, doc_type=user_index_type, body={'ids':uid_list})['docs']
+    except Exception, e:
+        raise e
+    for user_item in user_result:
+        uid = user_item['_id']
+        try:
+            source = user_item['_source']
+        except:
+            source = {}
+        for key in source:
+            if key not in identify_attribute_list:
+                value = source[key]
+                tag_string = key + ':' + value
+                try:
+                    result[tag_string] += 1
+                except:
+                    result[tag_string] = 1
+
+    return result

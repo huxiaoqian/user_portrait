@@ -91,18 +91,82 @@ Search_weibo.prototype = {
     html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
     $('#attribute_value').append(html);
   },
-  Draw_group_tag: function(data){
+  Draw_user_tag: function(data){
     console.log(data);
     $('#user_lable').empty();
     user_lable_html = '';
     user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    user_lable_html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
-    user_lable_html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
+    user_lable_html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th>';
+    user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
     user_lable_html += '</tr></thead>';
     user_lable_html += '<tbody>';
+    for (key in data){
+     user_lable_html += '<tr>';
+     user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
+     user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
+     user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
+     user_lable_html += '</tr>';   
+    }    
     user_lable_html += '</tbody>';
     user_lable_html += '</table>';     
     $('#user_lable').append(user_lable_html);
+  },
+  Draw_add_group_tag: function(data){
+    $('input[name="in_status"]:checked').each(function(){
+        select_uids.push($(this).attr('value'));
+    })
+    console.log(select_uids);
+    for (var i = 0; i < select_uids.length; i++) {
+        s=i.toString();
+        select_uids_string += select_uids[s] + ',';
+    };
+    select_uids_string = select_uids_string.substring(0,select_uids_string.length-1);
+    console.log(select_uids_string);
+    var downloadurl = window.location.host;
+    alert('操作成功');
+    show_group_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
+    Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
+  },
+  Draw_group_tag: function(data){
+    console.log(data);
+    key_container = [];
+    value_container = [];
+    for (key in data){
+        key_container.push(key);
+        value_container.push(data[key]);
+    }
+    $('#lable').highcharts({
+        title: {
+            text: '',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: key_container
+        },
+        yAxis: {
+            title: {
+                text: '人数(人)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '人'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: '人数',
+            data: value_container
+        }]
+    });
   },
 
   Draw_overview: function(data){
@@ -379,40 +443,15 @@ function recommend_all(){
   $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
 }
 
-$(function () {
-    $('#lable').highcharts({
-        title: {
-            text: '',
-            x: -20 //center
-        },
-        xAxis: {
-            categories: ['标签1', '标签2', '标签3', '标签4', '标签5', '标签6', '标签7', '标签8']
-        },
-        yAxis: {
-            title: {
-                text: '人数(人)'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        tooltip: {
-            valueSuffix: '人'
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name: '人数',
-            data: [7, 6, 9, 14, 18, 21, 25, 26]
-        }]
-    });
-});
+select_uids = [];
+select_uids_string = '';
+
+function add_group_tag(){
+    add_tag_attribute_name = $("#select_attribute_name").val();
+    add_tag_attribute_value = $("#select_attribute_value").val();
+    add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
+    Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
+}
 
 function Draw_more_keyword(data){
     $('#more_keyword').empty();
@@ -928,8 +967,12 @@ $(document).ready(function(){
     var attribute_value_url = '';
     attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
     Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+    show_user_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
+    Search_weibo.call_sync_ajax_request(show_user_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
+
     show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?uid_list=' + id_string;
     Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
+
     // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
     // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
     // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
