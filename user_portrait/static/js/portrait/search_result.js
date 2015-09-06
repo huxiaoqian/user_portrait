@@ -253,6 +253,15 @@ function process_par(name, value){
         }
         result[1] = result[1].substring(0, result[1].length-1);
     }
+    else if(name=='tag'){
+        result[0] = '标签';
+        result[1] = '';
+        var term_list = value.split(',');
+        for (var i = 0;i < term_list.length;i++){
+            result[1] += (term_list[i].replace(':', '--') + ',');
+        }
+        result[1] = result[1].substring(0, result[1].length-1);
+    }
     else{
         result[0] = '';
         result[1] = '';
