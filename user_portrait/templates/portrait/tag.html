@@ -42,7 +42,7 @@ tbody td{text-align:center;}
 .tagCols{width:550px;margin:auto 0;  text-align: center;margin-bottom: 10px;height:50px;line-height: 45px;}
 .tagCols span{font-size:20px;}
 .addIcon{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
-.editAdd{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
+#editAdd{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
  </style>
  {% endblock css %}
 
@@ -53,10 +53,10 @@ tbody td{text-align:center;}
 	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
 	<div class="decoration">
 		<ul class="">
-			<li><span class="p_title">标签类别:</span><input type="text"  id="groupName" class="input searchinput" name="custom_attribute" placeholder="请输入标签类别"/></li>
+			<li><span class="p_title">标签类别:</span><input type="text"  id="groupName" class="input searchinput" name="attribute_name" placeholder="请输入标签类别"/></li>
 			<li><span class="p_title">标签名:</span><input type="text" id="groupState" class="input searchinput" name="attribute_value" placeholder="请输入标签名"/></li>
-			<li><span class="p_title">时间：</span><input type="text" id="groupState" class="input searchinput" name="submit_date" placeholder="请输入时间2015-07-15"/></li>
-			<li><span class="p_title">创建者:</span><input type="text" id="groupState" class="input searchinput" name="user_name" placeholder="aa"/></li>
+			<li><span class="p_title">时间：</span><input type="text" id="groupState" class="input searchinput" name="date" placeholder="请输入时间2015-07-15"/></li>
+			<li><span class="p_title">创建者:</span><input type="text" id="groupState" class="input searchinput" name="user" placeholder="aa"/></li>
 			<li><input name="submit" type="submit" class="bluebtn" id="searchbtn" value="确定"></li>
 		</ul>
 	</div>
@@ -76,27 +76,9 @@ tbody td{text-align:center;}
 </div>
 <a id="turnback" href="" style="float:right;margin-right:40px;margin-top:12px;">查看全部标签</a>
 <a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">表单搜索</a>
-<a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">删除</a>
-<a id="searchTable" href="javascript:void(0)" data-toggle="modal" data-target="#add" style="margin-bottom:10px;margin-top:12px;">添加</a>
+<a id="searchTable" href="" data-toggle="modal" data-target="#add" style="margin-bottom:10px;margin-top:12px;">添加</a>
                 <div class="box-content" id="Tagtable" >
-                    <table class="table table-bordered table-striped table-condensed datatable" >
-						<thead><tr style="text-align:center;">	
-							<th style="width:100px;">全选<input type="checkbox" style="margin-left:10px;"></th><th>标签类别</th><th>标签名</th><th>创建者</th><th>时间</th><th>操作</th></tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>
-								<td name="tagClass">重要</td>
-								<td name="tagName">一级，二级，三级，四级，五级，六级，七级，八级，九级，十级，一级，二级，三级，四级，五级，六级，七级，八级，九级，十级</td>
-								<td name="creater">wjj</td>
-								<td name="time">2013-09-01</td>
-								<td name="operate" style="cursor:pointer;" ><a id="currentEdit" href="" data-toggle="modal" data-target="#editor" >编辑</a></td>
-							</tr>
-
-						</tbody>
-					</table>
-								
-						
+                    
                 </div>
             </div>
         </div>
@@ -118,16 +100,16 @@ tbody td{text-align:center;}
         <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
       </div>
       <div class="modal-body" id="EDIT">
-        <div class="tagCols"><span >标签类别</span><input id="tagClass" name="tagclass" class="inputbox" type="text" value="" style="line-height:36px;cursor:not-allowed;background-color:#eee;"disabled></div>
+        <div class="tagCols"><span >标签类别</span><input id="tagClass" name="attribute_name" class="inputbox" type="text" value="" style="line-height:36px;cursor:not-allowed;background-color:#eee;"disabled></div>
 		<div class="tagCols" id="">
 			<span style="margin-left:30px;">标签名</span>
-			<input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
-			<span class="editAdd" ></span>
+			<input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
+			<span id="editAdd" ></span>
 		</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary">保存</button>
+        <button type="button" class="btn btn-primary" id="modifySave">保存</button>
       </div>
     </div>
   </div>
@@ -139,14 +121,14 @@ tbody td{text-align:center;}
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
       </div>
-      <div class="modal-body" id="ADD">
+      <div class="modal-body" id="ADDTAG">
         <div class="tagCols">
 			<span  style="margin-left:55px;">标签类别</span>
-			<input name="tagclass" class="inputbox  " type="text" value="" style="line-height:36px;">（危险）
+			<input name="attribute_name" id="tagClass" class="inputbox" type="text" value="" style="line-height:36px;">（危险）
 		</div>
 		<div class="tagCols" >
 			<span style="margin-left:95px;">标签名</span>
-			<input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
+			<input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;">
 			<span class="addIcon" id="addTag"></span>
 			（一级）
 		</div>
@@ -154,7 +136,7 @@ tbody td{text-align:center;}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary">添加</button>
+        <button type="button" class="btn btn-primary" id="newTag">添加</button>
       </div>
     </div>
   </div>
@@ -184,41 +166,45 @@ tbody td{text-align:center;}
 		$("#float-wrap").addClass("hidden");
 		$("#SearchTab").addClass("hidden");
     });
-	$(".addIcon").off("click").click(function(){
-		var html = '';
-		html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
-		$('#ADD').append(html);
-	});
+	
 	
 </script>
 <script type="text/javascript" src="/static/js/portrait/tag.js"></script> 
 <script type="text/javascript" src="/static/js/portrait/tag_search.js"></script> 
+<script type="text/javascript" src="/static/js/portrait/tag_add.js"></script> 
+<script type="text/javascript" src="/static/js/portrait/tag_del.js"></script> 
+ 
 <script>
-	$("#currentEdit").off("click").click(function(){
-		//console.log($(this).parent().prev().prev().prev().html());
-		//document.getElementById("tagClass").value = $(this).parent().prev().prev().prev().prev().html();
-		var tagNames =  $(this).parent().prev().prev().prev().html();
-		tagname = tagNames.split("&");
-		console.log(tagname);
+	$('a[id^="currentEdit"]').click(function(e){
+		var tagNames =  $(this).text();
+		tagname = tagNames.split('/');
 		$('#EDIT').empty();
 		var html = '';
-		html += '<div class="tagCols"><span >标签类别</span>';
-		html += '<input id="tagClass" name="tagclass" class="inputbox" type="text" value='+$(this).parent().prev().prev().prev().prev().html()+' style="line-height:36px;cursor:not-allowed;background-color:#eee;"disabled></div>';
-		html += '<div class="tagCols" id=""><span style="margin-left:30px;">标签名</span>';
-		html += '<input name="tagname" class="inputbox " type="text" value='+tagname[0]+' style="margin-left:35px;line-height:36px;">';
-		html += '<span class="editAdd" ></span>';
+		html += '<div class="tagCols"><span style="margin-left:30px;">标签类别</span>';
+		html += '<input id="tagClass" name="attribute_name" class="inputbox" type="text" value='+$(this).parent().prev().html()+' style="line-height:36px;cursor:not-allowed;background-color:#eee;"disabled></div>';
+		html += '<div class="tagCols" id=""><span style="margin-left:65px;">标签名</span>';
+		html += '<input name="attribute_value" class="inputbox " type="text" value='+tagname[0]+' style="margin-left:35px;line-height:36px;">';
+		html += '<span id="editAdd" ></span>';
 		html += '</div>';
 		for(i=0;i<tagname.length-1;i++){
 			html += '<div class="tagCols" id=""><span style="margin-left:30px;">标签名</span>';
-			html += '<input name="tagname" class="inputbox " type="text" value='+tagname[i+1]+' style="margin-left:35px;line-height:36px;">';
+			html += '<input name="attribute_value" class="inputbox " type="text" value='+tagname[i+1]+' style="margin-left:35px;line-height:36px;">';
 			html += '</div>';
 		}
 		$('#EDIT').append(html);
 	});
-	$(".editAdd").off("click").click(function(){
-		console.log('sdasd');
+	
+</script>
+<script type="text/javascript" src="/static/js/portrait/tag_change.js"></script>
+<script>
+$(".addIcon").off("click").click(function(){
 		var html = '';
-		html += '<div class="tagCols"><span  style="margin-left:10px;">标签名</span><input name="tagname" class="inputbox " type="text" value="" style="line-height:36px;"></div>';
+		html += '<div class="tagCols"><span >标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+		$('#ADDTAG').append(html);
+	});
+$("#editAdd").off("click").click(function(){
+		var html = '';
+		html += '<div class="tagCols"><span >标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
 		$('#EDIT').append(html);
 	});
 </script>
