@@ -123,11 +123,11 @@ function bindAddFunction(){
             $('#tags').append(html);
             chosen[check_str] = '1';
 
-            $('.mouse').click(function(){
-                var text = $(this).html();
+            $('.mouse>a').click(function(){
+                var text = $(this).parent().html();
                 text = text.split('&')[0];
                 delete chosen[text];
-                $(this).remove();
+                $(this).parent().remove();
             });
         }
 

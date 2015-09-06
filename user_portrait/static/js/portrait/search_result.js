@@ -303,8 +303,8 @@ function draw_conditions(that){
             }
         }
         $('#conditions').html(html);
-        $('.mouse').click(function(){
-            deleteurl(that, $(this).attr("id"));
+        $('.mouse>a').click(function(){
+            deleteurl(that, $(this).parent().attr("id"));
         });
         return;
     }
