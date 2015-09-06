@@ -973,15 +973,15 @@ $(document).ready(function(){
     show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?uid_list=' + id_string;
     Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
 
-    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
-    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
-    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
-    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
-    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    // influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
-    // Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
+    activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
+    social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
+    think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
+    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
+    Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
     $('#select_attribute_name').click(function(){
       var select_attribute_name = $("#select_attribute_name").val()
       var attribute_value_url = '';
