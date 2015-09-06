@@ -87,7 +87,7 @@ function getAttributeName(){
     base_call_ajax_request(attribute_name_url, draw_name_option);
     
     function draw_name_option(data){
-        console.log(data);
+        // console.log(data);
         $('[name=tag_type]').empty();
         var html = '';
         for (var i=0;i<data.length;i++){
@@ -100,7 +100,7 @@ function getAttributeName(){
         base_call_ajax_request(attribute_value_url, draw_value_option);
 
         $('[name=tag_type]').change(function(){
-            console.log($(this).val());
+            // console.log($(this).val());
             var attribute_value_url = '/tag/show_attribute_value/?attribute_name=';
             attribute_value_url += $(this).val();
             base_call_ajax_request(attribute_value_url, draw_value_option);
