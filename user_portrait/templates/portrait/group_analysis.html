@@ -161,15 +161,15 @@
 			    </div>
 			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
 			      <div class="panel-body">
-						<div style="height:400px;width:900px;float:left">
+						<div style="height:300px;width:900px;float:left">
 						<div style="font-size:17px;margin-bottom:20px;">标签划分</div>
-						<div id="lable" style="height:380px;width:900px;"></div>
+						<div id="lable" style="height:300px;width:900px;"></div>
 						</div>
-						<div style="height:400px;width:450px;float:left">
+						<div style="height:400px;width:450px;float:left;margin-top:20px">
 						<div style="font-size:17px;margin-bottom:20px;">领域划分</div>
 						<div id="radar_domain" style="height:380px;width:450px;"></div>
 						</div>
-						<div style="height:400px;width:450px;float:right">
+						<div style="height:400px;width:450px;float:right;margin-top:20px">
 						<div style="font-size:17px;margin-bottom:20px;">话题划分</div>
 						<div id="radar_topic" style="height:380px;width:450px;"></div>
 						</div>
@@ -357,7 +357,12 @@
 				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组成员自定义属性</h4>
 				      </div>
-				      <div class="modal-body" id='user_lable'>
+				      <div class="modal-body">
+			      	    <div style="font-size:18px;margin-top:-10px">增加标签</div>
+						<div>
+							<span>选择类别：</span><span id='attribute_name' style="margin-left:10px"></span>
+							<span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">确定</button></span>
+				      	<div id= "user_lable"></div>
 				      </div>
 				    </div>
 				  </div>
