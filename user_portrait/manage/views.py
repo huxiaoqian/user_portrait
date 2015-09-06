@@ -68,15 +68,9 @@ def ajax_imagine():
     # 'field' control search order
     # order_list = ['importance', 'influence', 'activeness', 'default']
 
-    search_field = {"domain":"domain", "hashtag":"hashtag","keywords":"keywords_string",\
-            "activity_geo":"activity_geo", "psycho_status":"psycho_status_string",\
-            "topic":"topic_string"}
-    re_keywords_list = []
-    for key in keywords_list:
-        re_keywords_list.append(search_field[key])
     query_fields_dict = {}
-    for i in range(len(re_keywords_list)):
-        query_fields_dict[str(re_keywords_list[i])] = int(weight_list[i])
+    for i in range(len(keywords_list)):
+        query_fields_dict[str(keywords_list[i])] = int(weight_list[i])
     field = request.args.get('field', '')
     query_fields_dict['field'] = field
 
