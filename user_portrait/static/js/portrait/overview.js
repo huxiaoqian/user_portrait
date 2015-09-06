@@ -28,7 +28,7 @@ Search_weibo.prototype = {
     html += '<div>' + in_count + '</div></a></div>';
     html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a href="/index/recommend_out" target="_blank"class="well top-block"><i class="glyphicon glyphicon-user green"></i>';
     html += '<div>当日推荐出库人数</div>';
-    html += '<div>' + out_count + '</div></a></div>';
+    html += '<div>1</div></a></div>';
     $('#user_num').append(html);
     draw_sex(data);
     draw_vertify(data);
@@ -77,10 +77,10 @@ $(document).ready(function(){
     html += '<div>' + data['user_count'] + '</div></a></div>';
     html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a class="well top-block"><i class="glyphicon glyphicon-user yellow"></i>';
     html += '<div>活跃用户比重</div>';
-    html += '<div>' + data['activity_count'] + '</div></a></div>';
+    html += '<div>' + (Math.round(data['activity_count'] * 10000)/100).toFixed(0) + '%' + '</div></a></div>';
     html += '<div class="col-md-3 col-sm-3 col-xs-6" style="margin-left:120px"><a class="well top-block"><i class="glyphicon glyphicon-user yellow"></i>';
     html += '<div>高影响力用户比重</div>';
-    html += '<div>' + parseFloat(data['top_influence_ratio']).toFixed(2) + '</div></a></div>';
+    html += '<div>' + (Math.round(parseFloat(data['top_influence_ratio']) * 10000)/100).toFixed(0) + '%' + '</div></a></div>';
     $('#statistics_infor').append(html);
 }
 

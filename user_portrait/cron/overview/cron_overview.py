@@ -140,12 +140,13 @@ def get_scan_results():
     print 's_re:', s_re
     activity_count = 0
     while True:
+        portrait_uid_list = []
         while True:
-            portrait_uid_list = []
             try:
                 scan_re = s_re.next()['_source']
                 # gender ratio count
                 portrait_uid_list.append(scan_re['uid'])
+                #print 'portrait_uid_list:', len(portrait_uid_list)
                 try:
                     gender_result[str(scan_re['gender'])] += 1
                 except:
@@ -244,6 +245,11 @@ def get_scan_results():
                 count = sum(gender_result.values())
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
                 #print 'gender ratio:', gender_ratio
+                activity_result = es.mget(index='20130907', doc_type='bci', body={'ids':portrait_uid_list})['docs']
+                for activity_item in activity_result:
+                    if activity_item['found']:
+                        activity_count += 1
+                #print 'activity_count:', activity_count
                 result_dict['activity_count'] = float(activity_count) / count
                 result_dict['gender_ratio'] = json.dumps(gender_ratio)
                 # verified ratio count
@@ -268,7 +274,7 @@ def get_scan_results():
                     activity_geo_top = sort_activity_geo[:50]
                 else:
                     activity_geo_top = {}
-                print 'activity_geo_top:', activity_geo_top
+                #print 'activity_geo_top:', activity_geo_top
                 result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
                 # keywords top
                 if keywords_result:
@@ -324,11 +330,11 @@ def get_scan_results():
             except Exception, r:
                 print Exception, r
                 return result_dict
+        #print 'portrait_uid_list:', len(portrait_uid_list)
         activity_result = es.mget(index='20130907', doc_type='bci', body={'ids':portrait_uid_list})['docs']
         for activity_item in activity_result:
             if activity_item['found']:
                 activity_count += 1
-
     return result_dict
 
 # origin retweeted number top 5 user and mid

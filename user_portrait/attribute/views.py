@@ -10,6 +10,7 @@ from search import delete_action, search_identify_uid
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
+from user_portrait.global_utils import es_user_portrait as es
 
 # use to test 13-09-08
 test_time = 1378569600
@@ -18,6 +19,24 @@ test_time = 1378569600
 item_dict = {'psycho_feature':{'dzz':u'胆汁质', 'dxz':u'多血质', 'nyz':u'粘液质', 'yyz':u'抑郁质'},\
              'psycho_status':{'pos':u'积极', 'neg':u'消极', 'anx':u'焦虑', 'ang':u'生气', 'sad':u'悲伤'}}
 """
+# custom_attribute
+attribute_index_name = 'custom_attribute'
+attribute_index_type = 'attribute'
+
+custom_attribute_list = []
+try:
+    custom_attribute_result = es.search(index=attribute_index_name, doc_type=attribute_index_type, \
+                                 body={'query':{'match_all':{}}})['hits']['hits']
+except Exception, e:
+    raise e
+if custom_attribute_result:
+    for item in custom_attribute_result:
+        source = item['_source']
+        try:
+            custom_attribute_list.append(source['attribute_name'])
+        except:
+            print 'custom_attribute error'
+
 
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
@@ -40,12 +59,11 @@ def ajax_portrait_search():
     query = []
     query_list = []
     condition_num = 0
+
     if stype == '1':
         fuzz_item = ['uid', 'uname']
         item_data = request.args.get('term', '')
-        #if item_data:
         for item in fuzz_item:
-            #item_data = request.args.get(item, '')
             if item_data:
                 query_list.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1
@@ -58,6 +76,8 @@ def ajax_portrait_search():
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:
+                if item=='keywords':
+                    item = 'keywords_string'
                 #print 'item_data:', item_data, type(item_data)
                 query.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1
@@ -66,21 +86,14 @@ def ajax_portrait_search():
             if item_data:
                 query.append({'match':{item: item_data}})
                 condition_num += 1
-        '''
-        for item in range_item:
-            item_data_low = request.args.get(item+'low', '')
-            item_data_up = request.args.get(item+'up', '')
-            if not item_data_low:
-                item_data_low = 0
-            else:
-                item_data_low = float(item_data_low)
-            if not item_data_up:
-                item_data_up = 10000000
-            else:
-                item_data_up = float(item_data_up)
-            query.append({'range':{item:{'from':item_data_low, 'to':item_data_up}}})
-            condition_num += 1
-        '''
+        # custom_attribute
+        if custom_attribute_list:
+            for custom_tag in custom_attribute_list:
+                item_data = request.args.get(custom_tag, '')
+                if item_data:
+                    query.append({'wildcard':{custom_tag:'*'+item_data+'*'}})
+                    condition_num += 1
+
         for item in multi_item:
             nest_body = {}
             nest_body_list = []
@@ -91,6 +104,7 @@ def ajax_portrait_search():
                     nest_body_list.append({'match':{item: term}})
                 condition_num += 1
                 query.append({'bool':{'should':nest_body_list}})
+        
         
     #size = request.args.get('size', 1000)
     size = 1000

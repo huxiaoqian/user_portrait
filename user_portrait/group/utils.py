@@ -11,6 +11,7 @@ from global_utils import R_GROUP as r
 from global_utils import es_user_portrait as es
 from time_utils import ts2datetime, datetime2ts
 '''
+from user_portrait.global_config import UPLOAD_FOLDER
 from user_portrait.global_utils import R_GROUP as r
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.time_utils import ts2datetime, datetime2ts
@@ -42,6 +43,29 @@ def submit_task(input_data):
     return True
 '''
 
+# read uid list from upload file
+def read_uid_file(filename):
+    uid_list = []
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    f = open(filepath+'.txt', 'r')
+    for line in f:
+        if len(line)==10:
+            uid_list.append(line)
+    return uid_list
+
+# delete uid list after save to redis and es
+def delete_uid_file(filename):
+    status = 0
+    filename += '.txt'
+    filenames = os.listdir(UPLOAD_FOLDER)
+    if filename in filenames:
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        os.remove(filepath)
+    else:
+        print 'there no this file'
+    return status
+
+
 #submit new task and identify the task name unique in es-group_result and save it to redis list
 def submit_task(input_data):
     status = 0 # mark it can not submit
@@ -50,13 +74,27 @@ def submit_task(input_data):
         result = es.get(index=index_name, doc_type=index_type, id=task_name)
     except:
         status = 1
-    if status != 0:
+    
+    if status != 0 and 'uid_file' not in input_data:
         r.lpush('group_task', json.dumps(input_data))
         input_data['status'] = 0 # mark the task not compute
         count = len(input_data['uid_list'])
         input_data['count'] = count
         uid_list_string = json.dumps(input_data['uid_list'])
         es.index(index='group_result', doc_type='group', id=task_name, body=input_data)
+    elif status != 0 and 'uid_file' in input_data:
+        input_data['status'] = 0 # mark the task not compute
+        uid_file = input_data['uid_file']
+        uid_list = read_uid_file(uid_file)
+        input_data['count'] = len(uid_list)
+        input_data['uid_list'] = json.dumps(uid_list)
+        r.lpush('group_task', json.dumps(input_data))
+        es.index(index='group_result', doc_type='group', id=task_name, body=input_data)
+        delete_status = delete_uid_file(uid_file)
+        if delete_status == 0:
+            print 'fail delete uid file'
+        elif delete_status == 1:
+            print 'success delete uid file'
     return status
 
 

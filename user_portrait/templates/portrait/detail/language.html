@@ -25,12 +25,12 @@
 }
 #WordList{
 height:500px;
-overflow:scroll;
+overflow-y:scroll;
 }
 </style>
 <div id="Language" style="width:300px;height:300px;margin-left:80px;margin-top:30px;"></div>
-<div class="showmore" style="margin-top:50px;font-size:16px;"><a id="showmoreWords">更多</a></div>
-<div class="hotwords" style="width:550px;height:100%;margin-left:20px;padding-left:20px;">
+<div class="showmore" style="margin-top:50px;font-size:16px;"><a style="cursor:pointer; "  id="showmoreWords">更多</a></div>
+<div class="hotwords" style="width:550px;height:300px;margin-left:20px;padding-left:20px;">
 	<div id="TabContainer" >
 		<!--
 		<div class="Lsubtitle fleft" style="">
@@ -50,81 +50,82 @@ overflow:scroll;
 			</ul>
 		</div>
 		-->
-		
-    	<div id="con1" class="fleft">
-			<div class="Litem-list fleft">
-			<ul class="Litem">
-				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">2</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">3</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">4</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">5</span><span class="items fleft Lkeywords">down...</span></li>
-			</ul>
-			</div>        
-        </div>
-        <div id="con2" class="fleft" style="display: none">
-           <div class="Litem-list fleft">
-			<ul class="Litem">
-				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">2</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">3</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">4</span><span class="items fleft Lkeywords">down...</span></li>
-				<li> <span class="fleft range">5</span><span class="items fleft Lkeywords">down...</span></li>
-			</ul>
-			</div>           
-        </div>
-        <div id="con3" class="fleft" style="display: none">
-           <div class="Litem-list fleft">
-			<ul class="Litem">
-				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">着急......</span></li>
-				<li> <span class="fleft range">2</span><span class="items fleft Lkeywords">着急...</span></li>
-				<li> <span class="fleft range">3</span><span class="items fleft Lkeywords">着急...</span></li>
-				<li> <span class="fleft range">4</span><span class="items fleft Lkeywords">着急...</span></li>
-				<li> <span class="fleft range">5</span><span class="items fleft Lkeywords">着急...</span></li>
-			</ul>
-			</div>           
-        </div>
-        <div id="con4" class="fleft" style="display: none">
-            <div class="Litem-list fleft">
-			<ul class="Litem">
-				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">愤怒...</span></li>
-				<li> <span class="fleft range">2</span><span class="items fleft Lkeywords">愤怒....</span></li>
-				<li> <span class="fleft range">3</span><span class="items fleft Lkeywords">愤怒...</span></li>
-				<li> <span class="fleft range">4</span><span class="items fleft Lkeywords">愤怒...</span></li>
-				<li> <span class="fleft range">5</span><span class="items fleft Lkeywords">愤怒...</span></li>
-			</ul>
-			</div>           
-        </div>
-		<div id="con5" class="fleft" style="display: none">
-            <div class="Litem-list fleft">
-			<ul class="Litem">
-				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">高兴...</span></li>
-				<li> <span class="fleft range">2</span><span class="items fleft Lkeywords">眦牙...</span></li>
-				<li> <span class="fleft range">3</span><span class="items fleft Lkeywords">害羞...</span></li>
-				<li> <span class="fleft range">4</span><span class="items fleft Lkeywords">哭泣...</span></li>
-				<li> <span class="fleft range">5</span><span class="items fleft Lkeywords">尴尬...</span></li>
-			</ul>
-			</div>           
-        </div>
-		<div id="con6" class="fleft" style="display: none">
-            <div class="Litem-list fleft">
-			<ul class="Litem">
-				<li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-				<li> <span class="fleft range">1</span><span class="items fleft Lkeywords">命运意儿...</span></li>
-				<li> <span class="fleft range">2</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
-				<li> <span class="fleft range">3</span><span class="items fleft Lkeywords">人生就是...</span></li>
-				<li> <span class="fleft range">4</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
-				<li> <span class="fleft range">5</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
-			</ul>
-			</div>           
+        <div class="column">
+            <div id="con1" class="fleft">
+                <div class="Litem-list fleft">
+                <ul class="Litem">
+                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
+                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">down...</span></li>
+                </ul>
+                </div>        
+            </div>
+            <div id="con2" class="fleft" style="display: none">
+               <div class="Litem-list fleft">
+                <ul class="Litem">
+                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
+                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">down...</span></li>
+                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">down...</span></li>
+                </ul>
+                </div>           
+            </div>
+            <div id="con3" class="fleft" style="display: none">
+               <div class="Litem-list fleft">
+                <ul class="Litem">
+                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
+                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">着急......</span></li>
+                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">着急...</span></li>
+                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">着急...</span></li>
+                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">着急...</span></li>
+                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">着急...</span></li>
+                </ul>
+                </div>           
+            </div>
+            <div id="con4" class="fleft" style="display: none">
+                <div class="Litem-list fleft">
+                <ul class="Litem">
+                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
+                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">愤怒...</span></li>
+                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">愤怒....</span></li>
+                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">愤怒...</span></li>
+                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">愤怒...</span></li>
+                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">愤怒...</span></li>
+                </ul>
+                </div>           
+            </div>
+            <div id="con5" class="fleft" style="display: none">
+                <div class="Litem-list fleft">
+                <ul class="Litem">
+                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
+                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">高兴...</span></li>
+                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">眦牙...</span></li>
+                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">害羞...</span></li>
+                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">哭泣...</span></li>
+                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">尴尬...</span></li>
+                </ul>
+                </div>           
+            </div>
+            <div id="con6" class="fleft" style="display: none">
+                <div class="Litem-list fleft">
+                <ul class="Litem">
+                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
+                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">命运意儿...</span></li>
+                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
+                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">人生就是...</span></li>
+                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
+                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
+                </ul>
+                </div>           
+            </div>
         </div>
 		<div class="column">
-					<div id="dl-menu" class="dl-menuwrapper fright">
+					<div id="dl-menu" class="dl-menuwrapper fright" style="margin-left:20px;width:170px;">
 						<button>Open Menu</button>
 						<ul class="dl-menu">
 							<li id="tab1" class=""><a href="#" class="on" onclick="switchTab('tab1','con1');this.blur();return false;">正面情感词</a></li>
@@ -153,7 +154,7 @@ overflow:scroll;
 	</div>
 	<div id="" style="height:30px;width:950px;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;">行链接微博比例：<span id="LLnum"></span>%</h4>
+		<h4 style="line-height:32px;">含链接微博比例：<span id="LLnum"></span>%</h4>
 	</div>
 	<div id="" style="height:30px;width:950px;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>

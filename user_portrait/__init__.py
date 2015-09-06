@@ -14,7 +14,7 @@ from user_portrait.overview.views import mod as overviewModule
 from user_portrait.influence_application.views import mod as influenceModule
 from user_portrait.login.views import mod as loginModule
 from user_portrait.group.views import mod as groupModule
-from user_portrait.custom_attribute.views import mod as customattributeModule
+from user_portrait.tag.views import mod as tagModule
 
 def create_app():
     app = Flask(__name__)
@@ -32,7 +32,7 @@ def create_app():
     app.register_blueprint(influenceModule)
     app.register_blueprint(loginModule)
     app.register_blueprint(groupModule)
-    app.register_blueprint(customattributeModule)
+    app.register_blueprint(tagModule)
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True
 
@@ -58,6 +58,7 @@ def create_app():
     app.config['DEBUG_TB_PROFILER_ENABLED'] = True
     # Enable the template editor, default to false
     app.config['DEBUG_TB_TEMPLATE_EDITOR_ENABLED'] = True
+    
     # debug toolbar
     # toolbar = DebugToolbarExtension(app)
     

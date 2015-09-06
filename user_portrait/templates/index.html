@@ -284,7 +284,7 @@
                         <th style="text-align:center">好友数</th>
                         <th style="text-align:center">粉丝数</th>
                         <th style="text-align:center">微博数</th>
-                        <th style="text-align:center;style='width:60px'">全选<input id="choose_all" type="checkbox" onclick="selectAll()" ></th>
+                        <th style="text-align:center;style='width:70px'">全选<input id="choose_all" type="checkbox" onclick="selectAll()" ></th>
                         <!-- <th style="text-align:center">创建时间</th> -->
                     </tr>
                 </thead>
@@ -294,7 +294,7 @@
                     <td class="center" style="text-align:center;vertical-align:middle"><a href="{{ url_for('profile.detail', id=item._id) }}"><img src="{{ item._source.photo_url }}" class="img-circle"></td>
                     <td class="center" style="text-align:center;vertical-align:middle"><a href="{{ url_for('profile.detail', id=item._id) }}">{{ item._source.nick_name }}</a><img src= '{{ gender(item._source.sex) }}' style='height:20px' ><img src= '/../../static/img/vertify.png' style='height:20px' ></td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.user_location }}</td>
-                    <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.friendsnum }}</td>
+                    <td class="center" style="text-align:center;vertical-align:middle;width:72px">{{ item._source.friendsnum }}</td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.fansnum }}</td>
                     <td class="center" style="text-align:center;vertical-align:middle">{{ item._source.statusnum }}</td>
                     <!-- <td class="center" style="text-align:center">{{ tsfmt(item._source.create_at) }}</td> -->
@@ -373,55 +373,29 @@
   var global_choose_uids = new Array();
 
   function selectAll(){
-      console.log('chooseall');
     $('input[name="profile_result_option"]').prop('checked', $('#choose_all').prop('checked'));
   }
 
   function export_selected(file){
-      // fix begin
-      var cur_list = [];
+  var ids = '';
       $('input[name="profile_result_option"]:checked').each(function(){
-          cur_list.push($(this).attr('value'));
+        var select_id = $(this).attr('value');
+        if(select_id){
+          select_id = select_id + ',';
+          ids += select_id;
+        }
       });
-      var exported_list = [];
-      for (var key in global_choose_uids){
-          var temp_list = global_choose_uids[key];
-          for (var i = 0;i < temp_list.length;i++){
-              exported_list.push(temp_list[i]);
-          }
-      }
-      console.log('chosen');
-      console.log(exported_list);
-      // fix end
-    var obj = $('input[type=checkbox]').eq(0);
-    var q = 1;
-    var ids = '';
-    if (obj.is(":checked")){
-      var q = obj.attr('name');
-    }
-    if(q==0){
-    window.location.href = file
-    }
-    else{
-        $('input[type=checkbox]:checked').each(function(){
-          var select_id = $(this).attr('id');
-          if(select_id){
-            select_id = select_id + ',';
-            ids += select_id;
-          }
-        });
-        console.log(ids);
-        var downloadurl = window.location.host;
-        $.ajax({
-          url: 'http://' + downloadurl + '/profile/download/?q='+q+'&id='+ids,
-          type: "GET",
-          dataType: "json",
-          async: false,
-          success: function(data){
-             window.location.href = file;
-          }
-      });
-    }
+      console.log(ids);
+      var downloadurl = window.location.host;
+      $.ajax({
+        url: 'http://' + downloadurl + '/profile/download/?&id='+ids,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        success: function(data){
+           window.location.href = file;
+        }
+    });
   }
 var Vcity = {};
 Vcity._m = {

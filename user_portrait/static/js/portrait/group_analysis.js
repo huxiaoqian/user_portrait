@@ -35,11 +35,13 @@ Search_weibo.prototype = {
     });
   },
   Draw_model: function(data){
+    draw_user_lable();
     $('#group_user').empty();
     html = '';
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
     html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
-    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th></tr></thead>';
+    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th>';
+    html += '</tr></thead>';
     html += '<tbody>';
     for ( i=0 ; i<data.length; i++){
         s = i.toString();
@@ -48,8 +50,9 @@ Search_weibo.prototype = {
         }else{
             sex = '女';
         }
-      html += '<tr><th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
-      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th></tr>';  
+      html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
+      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th>';  
+      html += '</tr>';
     };
     html += '</tbody>';
     html += '</table>';
@@ -71,8 +74,8 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle">' + data[5].toFixed(2) + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6].toFixed(2) + '(影响较大)</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
     html += '</table>';
     $('#overview').append(html);
 },
@@ -213,7 +216,8 @@ Draw_activity: function(data){
             categories: data_x,
             labels:{
               rotation: 0,
-              step: 6
+              step: 6,
+              y:25
             }
         },
         yAxis: {
@@ -325,6 +329,84 @@ Draw_weibo: function(data){
  
 var Search_weibo = new Search_weibo(); 
 
+function recommend_all(){
+  $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
+}
+function draw_user_lable(){
+    $('#user_lable').empty();
+    html = '';
+    html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+    html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">标签1</th><th class="center" style="text-align:center">标签2</th><th class="center" style="text-align:center">标签3</th>';
+    html += '<th class="center" style="text-align:center">标签4</th><th class="center" style="text-align:center">标签5</th>';
+    html += '</tr></thead>';
+    html += '<tbody>';
+    html += '<tr><th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value=""></th>';
+    html += '<th class="center" style="text-align:center">12345678</th><th class="center" style="text-align:center">张三</th><th class="center" style="text-align:center">学生</th><th class="center" style="text-align:center">媒体</th>';
+    html += '<th class="center" style="text-align:center">艺人</th><th class="center" style="text-align:center">小明星</th><th class="center" style="text-align:center">曝光度</th>';  
+    html += '</tr>';
+    html += '</tbody>';
+    html += '</table>';
+     html += '<div style="font-size:18px;margin-top:-15px">增加标签</div>';
+     html += '<div><span>选择类别：</span><span id="" style="margin-left:10px">';
+     html += '<select id="">';
+     html += '<option value="">类别1</option>';
+      html += '<option value="">类别2</option>';
+      html += '<option value="">类别3</option>';
+      html += '<option value="">类别4</option>';
+      html += '<option value="">类别5</option>';
+      html += '<option value="">类别6</option>';
+      html += '<option value="" selected="selected">类别7</option>';
+      html += '</select></span>';
+      html += '<span>选择标签：</span><span id="" style="margin-left:10px">';
+      html += '<select id="">';
+      html += '<option value="">标签1</option>';
+      html += '<option value="">标签2</option>';
+      html += '<option value="">标签3</option>';
+      html += '<option value="">标签4</option>';
+      html += '<option value="">标签5</option>';
+      html += '<option value="">标签6</option>';
+      html += '<option value="" selected="selected">标签7</option>';
+      html += '</select></span>';
+      html += '<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择">确定</button></span></div>'
+    $('#user_lable').append(html);
+}
+
+
+$(function () {
+    $('#lable').highcharts({
+        title: {
+            text: '',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: ['标签1', '标签2', '标签3', '标签4', '标签5', '标签6', '标签7', '标签8']
+        },
+        yAxis: {
+            title: {
+                text: '人数(人)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '°C'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: '人数',
+            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5]
+        }]
+    });
+});
+
 function Draw_more_keyword(data){
     $('#more_keyword').empty();
     html = '';
@@ -356,7 +438,7 @@ function active_geo(data){
     console.log(data);
     $('#top_active_geo').empty();
     html = '';
-    html += '<div style="font-size:16px">一周轨迹</div>';
+    html += '<div style="font-size:17px">一周轨迹</div>';
     html += '<div class="clearfix course_nr" style="margin-top:-50px"><ul class="course_nr2">';
     for (i=0; i<data['3'].length;i++){
         s = i.toString();
@@ -833,15 +915,15 @@ $(document).ready(function(){
     Search_weibo.call_sync_ajax_request(model_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
     basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
-    activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
-    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
-    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
-    text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
-    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
-    Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
+    // activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
+    // social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
+    // think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    // text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
+    // influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
+    // Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
 
 })
 
@@ -1200,7 +1282,7 @@ function Draw_think_domain(){
 function Draw_hashtag(data){
     $('#hashtag').empty();
     html = '';
-    html += '<div><span style="font-size:16px;">hashtag排名</span><span style="font-size:16px;float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_hashtag"><u>查看更多</u></span></div>';
+    html += '<div><span style="font-size:17px;">hashtag排名</span><span style="font-size:17px;float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_hashtag"><u>查看更多</u></span></div>';
     html += '<table id ="user_group" class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">hashtag</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < 5; i++) {
@@ -1240,7 +1322,7 @@ function text2icon(text){
 function Draw_emotion(data){
     $('#emotion').empty();
     html = '';
-    html += '<div><span style="font-size:16px;">表情符号排名</span><span style="font-size:16px;float:right;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_emotion"><u>查看更多</u></span></div>';
+    html += '<div><span style="font-size:17px;">表情符号排名</span><span style="font-size:17px;float:right;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_emotion"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">表情符号</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  5; i++) {
@@ -1269,7 +1351,7 @@ function Draw_more_emotion(data){
 function Draw_top_location(data){
     $('#top_location').empty();
     html = '';
-    html += '<div><span style="font-size:16px;">发布地点排名</span><span style="font-size:16px;margin-left:240px;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_geo"><u>查看更多</u></span></div>';
+    html += '<div><span style="font-size:17px;">发布地点排名</span><span style="font-size:17px;margin-left:230px;cursor: pointer" type="button"data-toggle="modal" data-target="#rank_geo"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i <  5; i++) {
@@ -1297,7 +1379,7 @@ function Draw_more_top_location(data){
 function Draw_top_platform(data){
     $('#top_platform').empty();
     html = '';
- html += '<div><span style="font-size:16px;">发布平台排名</span><span style="font-size:16px;margin-left:240px;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_platform"><u>查看更多</u></span></div>';
+ html += '<div><span style="font-size:17px;">发布平台排名</span><span style="font-size:17px;margin-left:230px;cursor:pointer" type="button"data-toggle="modal" data-target="#rank_platform"><u>查看更多</u></span></div>';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:400px;font-size:14px">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < data['2'].length; i++) {

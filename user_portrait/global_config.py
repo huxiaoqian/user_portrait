@@ -48,6 +48,10 @@ R_BEGIN_TIME = '2013-09-01'
 RECOMMENTATION_FILE_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/recommentaion_file'
 RECOMMENTATION_TOPK = 10000
 
+# use to upload the user list for group task
+UPLOAD_FOLDER = '/home/ubuntu8/huxiaoqian/user_portrait/cron/group/upload/'
+ALLOWED_EXTENSIONS = set(['txt'])
+
 # all weibo database
 WEIBO_API_HOST = ''
 WEIBO_API_PORT = ''
