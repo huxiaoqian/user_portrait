@@ -32,7 +32,10 @@ except Exception, e:
 if custom_attribute_result:
     for item in custom_attribute_result:
         source = item['_source']
-        custom_attribute_list.append(source['attribute_name'])
+        try:
+            custom_attribute_list.append(source['attribute_name'])
+        except:
+            print 'custom_attribute error'
 
 
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')

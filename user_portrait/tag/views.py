@@ -5,7 +5,8 @@ import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import submit_attribute, search_attribute, change_attribute, delete_attribute ,\
                   add_attribute_portrait, change_attribute_portrait, delete_attribute_portrait, \
-                  get_user_tag, get_group_tag, add_tag2group, get_attribute_name, get_attribute_value
+                  get_user_tag, get_group_tag, add_tag2group, get_attribute_name, get_attribute_value, \
+                  get_user_attribute_name
 
 from user_portrait.time_utils import ts2datetime
 
@@ -16,10 +17,10 @@ mod = Blueprint('tag', __name__, url_prefix='/tag')
 def ajax_submit_attribute():
     status = False
     # input cannont be None
-    attribute_name = request.args.get('custom_attribute', '') # my_attribute1
+    attribute_name = request.args.get('attribute_name', '') # my_attribute1
     attribute_value = request.args.get('attribute_value', '') # attribute_value ='tag1,tag2'
-    submit_user = request.args.get('user_name', '')           # user_name = admin1
-    submit_date = request.args.get('submit_date', '')         # submit_date = 2013-09-08
+    submit_user = request.args.get('user', '')           # user_name = admin1
+    submit_date = request.args.get('date', '')         # submit_date = 2013-09-08
     print 'attribute_name:', attribute_name
     status = submit_attribute(attribute_name, attribute_value, submit_user, submit_date) # mark success or fail
     return json.dumps(status)
@@ -74,8 +75,8 @@ def ajax_add_attirbute():
     uid = request.args.get('uid', '')
     attribute_name = request.args.get('attribute_name', '')
     attribute_value = request.args.get('attribute_value', '')
-    submit_user = request.args.get('submit_user', '')
-    submit_date = request.args.get('submit_date', '')
+    submit_user = request.args.get('user', '')
+    submit_date = request.args.get('date', '')
     status = add_attribute_portrait(uid, attribute_name, attribute_value, submit_user)
     return json.dumps(status)
 
@@ -86,7 +87,7 @@ def ajax_change_attribute_portrait():
     uid = request.args.get('uid', '')
     attribute_name = request.args.get('attribute_name', '')
     attribute_value = request.args.get('attribute_value', '')
-    submit_user = request.args.get('submit_user', '')
+    submit_user = request.args.get('user', '')
     status = change_attribute_portrait(uid, attribute_name, attribute_value, submit_user)
     return json.dumps(status)
 
@@ -96,7 +97,7 @@ def ajax_delete_attribute_portrait():
     status = False
     uid = request.args.get('uid', '')
     attribute_name = request.args.get('attribute_name', '')
-    submit_user = request.args.get('submit_user', '')
+    submit_user = request.args.get('user', '')
     status = delete_attribute_portrait(uid, attribute_name, submit_user)
     return json.dumps(status)
 
@@ -108,6 +109,16 @@ def ajax_show_user_tag():
     uid_list = uid_list_string.split(',')
     result = get_user_tag(uid_list)
     return json.dumps(result)
+
+
+# use to show user attribute_name for imagin deal
+@mod.route('/show_user_attribute_name/')
+def ajax_show_user_attribute_name():
+    result = []
+    uid = request.args.get('uid', '')
+    result = get_user_attribute_name(uid)
+    return json.dumps(result)
+
 
 # use to show group tag statistic result
 @mod.route('/show_group_tag/')
