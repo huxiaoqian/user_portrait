@@ -166,18 +166,13 @@
                     <label class="cols-label"><input name="topic" class=" fleft chosebox" type="checkbox" value="生活" />生活</label>
 				</form>
 			</div>
-			<!--
 			<div class="cols">
-				<span class="fleft lineh42 mright30">心理状态</span>
-				<select name="psycho_status" class="fleft select-box ad-search">
-					<option value="">不限</option>
-					<option value="积极">积极</option>
-					<option value="焦虑">焦虑</option>
-					<option value="生气">生气</option>
-					<option value="悲伤">悲伤</option>
-					<option value="中性">中性</option>
-				</select>
-				-->
+				<span class="fleft lineh42 mright30">标签</span>
+                <select name="tag_type" class="fleft select-box"></select>
+                <select name="tag_name" class="fleft select-box"></select>
+                <a id="tag_add" style="cursor:pointer;">添加</a>
+			</div>
+            <div id="tags" style="margin-left:52px;"></div>
             <!--
                 <span class="fleft lineh42 mright17" style="display:none">心理特征</span>
 				<select name="psycho_feature" class="fleft select-box ad-search" style="display:none">
@@ -188,7 +183,6 @@
 					<option value="yyz">抑郁质</option>
                 </select>
                 
-			</div>
 			-->
 		</div>
 		<div class="clearfix lineh42">
