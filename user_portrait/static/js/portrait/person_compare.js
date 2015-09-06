@@ -267,6 +267,7 @@ Search_weibo = new Search_weibo();
 var url_activity = '/manage/compare_user_activity/' + uid_list;
 var url_profile = '/manage/compare_user_profile/'+ uid_list;
 var url_portrait = '/manage/compare_user_portrait/' + uid_list;
+var user_tag = '/tag/show_user_tag/'+ uid_list;
 // var url_activity = '/manage/compare_user_activity/?uid_list=1642591402,2948738352';
 // var url_profile = '/manage/compare_user_profile/?uid_list=1642591402,2948738352';
 // var url_portrait = '/manage/compare_user_portrait/?uid_list=1642591402,2948738352';
@@ -276,10 +277,9 @@ Search_weibo.call_sync_ajax_request(url_activity, Search_weibo.ajax_method, Sear
 var activity = Search_weibo.Return_data();
 Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var portrait = Search_weibo.Return_data();
-console.log(portrait);
-for (var key in portrait){
-    console.log(portrait[key]['hashtag_dict']);
-}
+Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
+var tag_data = Search_weibo.Return_data();
+console.log(tag_data);
 function Compare(){
     var html = '';
     var num = 0;
@@ -429,9 +429,23 @@ function Compare(){
     j = 0;
     html += '<tr><td colspan="'+ (num+1) +'" name="list-7" class="cate_title" style="font-size:20px"><a  class="btn btn-minimize  btn-default" style="padding-top:0px;padding-bottom:0px;padding-left:0px; padding-right:0px"><i class="glyphicon glyphicon-chevron-up"></i></a><b>自定义标签</b></td></tr>';
     html += '<tr class="list-7"><td class="cate_title" style="width:90px;text-align:right">标签</td>';
-    for(var k in portrait){
+    for(var k in tag_data){
         j += 1;
-        html += '<td class="center" name="line'+ j +'">教育-老师</td>';
+        html += '<td class="center" name="line'+ j +'">';
+        if(tag_data[k].length == 0){
+        	// html += '<span class="input-group-addon" style="width:96px;border:1px solid white; border-radius: 8px;display:inline-block">'+ tag_data[k][i] +'</span>';
+        	 html += '';
+        }
+        else{
+        	for(var i = 0; i < tag_data[k].length; i++){
+        		if(i == tag_data[k].length -1){
+        			html += '<span class="input-group-addon" style="width:96px;border:1px solid white; border-radius: 8px;display:inline-block">'+ tag_data[k][i] +'</span>';
+        		}
+        		else{
+        			html += '<span class="input-group-addon" style="width:96px;border:1px solid white; border-radius: 8px;display:inline-block">'+ tag_data[k][i] +',</span>';
+        		}
+        	}
+        }
     }
     html += '</tr>';
 
