@@ -110,7 +110,6 @@ def delete_attribute(attribute_name):
         action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, user_item])
     es.bulk(bulk_action, index=user_index_name, doc_type=index_type)
-    
     status = True
     return status
 
