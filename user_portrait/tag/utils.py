@@ -287,3 +287,19 @@ def get_group_tag(uid_list):
                     result[tag_string] = 1
 
     return result
+
+# use to get user attribute name for imagin
+def get_user_attribute_name(uid):
+    result = []
+    user_result = es.get(index=user_index_name, doc_type=user_index_type, \
+                        id=uid)
+    print 'user_result:', user_result
+
+    try:
+        source = user_result['_source']
+    except:
+        source = {}
+    for key in source:
+        if key not in identify_attribute_list:
+            result.append(key)
+    return result
