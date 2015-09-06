@@ -190,27 +190,29 @@ Draw_picture: function(data){
 }
 
 var Search_weibo = new Search_weibo();
+//get tag
+var user_tag = '/tag/show_user_attribute_name/?uid='+ uid;
+Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Show_tag);
+
 Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
 Search_weibo.Draw_picture(Search_weibo.data);
 var global_data = Search_weibo.data;
-var user_tag = '/tag/show_user_tag/?'+ uid;
-Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Show_tag);
 
 function Show_tag(data){
     html = '';
-    for(var k in data){
-        if(data[k].length == 0){
-          return false
-        }
-        else{
-          for(var i = 0; i < data[k].length; i++){
-            html += '<input type="checkbox" class="inline-checkbox" value="option1">';
-            html += '<span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" id="keywords">'+ data[k][i] +'</span>'
-            html += '<input type="text" class="form-control" style="width:40%; display:inline-block;height:25px" disabled>';
-          }
-        }
+    if(data.length == 0){
+      return false;
     }
-    $('#tag').append(html);
+    else{
+      for(var i = 0; i < data.length; i++){
+        html += '<div class="col-lg-3" >';
+        html += '<input type="checkbox" class="inline-checkbox" value="option1">';
+        html += '<span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="'+ data[i] +'">'+ data[i] +'</span>';
+        html += '<input type="text" class="form-control" style="width:40%; display:inline;height:25px;margin-left:7px" disabled>';
+        html += '</div>';
+      }
+      $('#tag').append(html);
+    }
 }
 
 $('.label-success').click(function(){
