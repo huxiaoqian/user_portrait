@@ -193,6 +193,26 @@ var Search_weibo = new Search_weibo();
 Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
 Search_weibo.Draw_picture(Search_weibo.data);
 var global_data = Search_weibo.data;
+var user_tag = '/tag/show_user_tag/?'+ uid;
+Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Show_tag);
+
+function Show_tag(data){
+    html = '';
+    for(var k in data){
+        if(data[k].length == 0){
+          return false
+        }
+        else{
+          for(var i = 0; i < data[k].length; i++){
+            html += '<input type="checkbox" class="inline-checkbox" value="option1">';
+            html += '<span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" id="keywords">'+ data[k][i] +'</span>'
+            html += '<input type="text" class="form-control" style="width:40%; display:inline-block;height:25px" disabled>';
+          }
+        }
+    }
+    $('#tag').append(html);
+}
+
 $('.label-success').click(function(){
     var url = get_choose_data(uid);
     console.log(url);
@@ -250,10 +270,26 @@ function get_choose_data(uid){
     return url;
 }
 
+// 保留原有的html代码
+var origin_html = $('#ADD').html();
 
 function diy_button(){
-  console.log('ddddd');
-  $('#Diymodal').modal();
+ $('#ADD').html(origin_html);
+  var cur_uids = []
+  $('input[name="search_result_option"]:checked').each(function(){
+      cur_uids.push($(this).attr('value'));
+  });
+  if(cur_uids.length < 1){
+    alert('请选择至少1个用户');
+  }
+  else{
+      $('#Diymodal').modal();
+  }
+  $(".addIcon").off("click").click(function(){
+    var html = '';
+    html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+    $('#ADD').append(html);
+  });
 
 }
 
