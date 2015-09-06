@@ -33,7 +33,7 @@ def init_custom_attribute():
                             },
                         'attribute_value':{
                             'type': 'string',
-                            'index': 'my_analyzer'
+                            'analyzer': 'my_analyzer'
                             },
                         'date':{
                             'type': 'string',
