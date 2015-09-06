@@ -23,6 +23,7 @@ item_dict = {'psycho_feature':{'dzz':u'胆汁质', 'dxz':u'多血质', 'nyz':u'�
 attribute_index_name = 'custom_attribute'
 attribute_index_type = 'attribute'
 
+'''
 custom_attribute_list = []
 try:
     custom_attribute_result = es.search(index=attribute_index_name, doc_type=attribute_index_type, \
@@ -36,7 +37,7 @@ if custom_attribute_result:
             custom_attribute_list.append(source['attribute_name'])
         except:
             print 'custom_attribute error'
-
+'''
 
 mod = Blueprint('attribute', __name__, url_prefix='/attribute')
 
@@ -87,12 +88,23 @@ def ajax_portrait_search():
                 query.append({'match':{item: item_data}})
                 condition_num += 1
         # custom_attribute
+        '''
         if custom_attribute_list:
             for custom_tag in custom_attribute_list:
                 item_data = request.args.get(custom_tag, '')
                 if item_data:
                     query.append({'wildcard':{custom_tag:'*'+item_data+'*'}})
                     condition_num += 1
+        '''
+        tag_items = request.args.get('tag', '')
+        tag_item_list = tag_items.split(',')
+        for tag_item in tag_item_list:
+            attribute_name_value = tag_item.split(':')
+            attribute_name = attribute_name_value[0]
+            attribute_value = attribute_name_value[1]
+            if attribute_name and attribute_value:
+                query.append({'wildcard':{attribute_name:'*'+attribute_value+'*'}})
+                condition_num += 1
 
         for item in multi_item:
             nest_body = {}
