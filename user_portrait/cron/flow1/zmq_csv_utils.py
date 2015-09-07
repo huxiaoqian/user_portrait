@@ -12,12 +12,22 @@ from csv2json import itemLine2Dict, csv2bin
 reload(sys)
 sys.path.append('../../')
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1,\
-                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH, FIRST_FILE_PART
 sys.path.append('/home/ubuntu8/libsvm-3.17/python')
 from sta_ad import start
 
 def load_items_from_bin(bin_path):
     return open(bin_path, 'rb')
+
+def ordered_file_list(file_list):
+    rank_list = []
+    for item in file_list:
+        rank_list.append(int((item.split('.')[0]).split('NODE')[1]))
+    new_list = []
+    for i in sorted(rank_list):
+        new_list.append(first_part + str(i) + '.csv')
+
+    return new_list
 
 def filter_ad(item_list):
     results = start(item_list, 1234)
@@ -41,55 +51,48 @@ def send_all(f, sender):
     weibo_list = []
     weibo_send = []
 
-    for line in f:
-        weibo_item = itemLine2Dict(line)
-        if weibo_item:
-            weibo_item_bin = csv2bin(weibo_item)
-            if int(weibo_item_bin['sp_type']) != 1:
-                continue
-            weibo_send.append(weibo_item_bin)
-            weibo_list.append([weibo_item_bin['mid'], weibo_item_bin['text'].encode('utf-8')])
-            count += 1
+    try:
+        for line in f:
+            weibo_item = itemLine2Dict(line)
+            if weibo_item:
+                weibo_item_bin = csv2bin(weibo_item)
+                if int(weibo_item_bin['sp_type']) != 1:
+                    continue
+                sender.send_json(weibo_item_bin)
+                count += 1
 
-        if count % 10000 == 0:
-            results_set = filter_ad(weibo_list)
-            count_send = send_filter(results_set, weibo_send, count_send, sender)
-            weibo_list = []
-            weibo_send = []
-            te = time.time()
-            print '[%s] read csv speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
-            print '[%s] total send filter weibo %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count_send, te - tb, count / (te - tb))
-            ts = te
-    if weibo_list:
-        results_set = filter_ad(weibo_list)
-        count_send = send_filter(results_set, weibo_send, count_send, sender)
-        total_cost = time.time() - tb
-    return count_send, total_cost
+            if count % 10000 == 0:
+                te = time.time()
+                print '[%s] read csv speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
+                print '[%s] total send filter weibo %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count_send, te - tb, count / (te - tb))
+                ts = te
+    except:
+        print "pass"
+    total_cost = time.time() - tb
+    return count, total_cost
 
 
 def send_weibo(sender, total_count=0, total_cost=0):
     """
     send weibo data to zmq_work
     """
-           
-    if 1:
-        file_list = set(os.listdir(BIN_FILE_PATH))
-        print "total file is ", len(file_list)
-        for each in file_list:
-            if 'csv' in each:
-                filename = each.split('.')[0]
-                if '%s.csv' % filename in file_list and '%s_yes1.txt' % filename not in file_list:
-                    bin_input = load_items_from_bin(os.path.join(BIN_FILE_PATH, each))
-                    load_origin_data_func = bin_input
-                    tmp_count, tmp_cost = send_all(load_origin_data_func, sender)
-                    total_count += tmp_count
-                    total_cost += tmp_cost
 
-                    with open(os.path.join(BIN_FILE_PATH, '%s_yes1.txt' % filename), 'w') as fw:
-                        fw.write('finish reading' + '\n')
+    file_list = set(os.listdir(BIN_FILE_PATH))
+    print "total file is ", len(file_list)
+    ordered_list = ordered_file_list(file_list)
+    for each in ordered_list:
+        if 'csv' in each:
+            filename = each.split('.')[0]
+            if '%s.csv' % filename in file_list and '%s_yes1.txt' % filename not in file_list:
+                bin_input = load_items_from_bin(os.path.join(BIN_FILE_PATH, each))
+                load_origin_data_func = bin_input
+                tmp_count, tmp_cost = send_all(load_origin_data_func, sender)
+                total_count += tmp_count
+                total_cost += tmp_cost
 
-        print 'this scan total deliver %s, cost %s sec' % (total_count, total_cost)
-    #except Exception,e:
-    #    print Exception, ":", e
-   
+                with open(os.path.join(BIN_FILE_PATH, '%s_yes1.txt' % filename), 'w') as fw:
+                    fw.write('finish reading' + '\n')
+
+    print 'this scan total deliver %s, cost %s sec' % (total_count, total_cost)
+
     return total_count, total_cost
