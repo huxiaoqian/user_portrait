@@ -59,6 +59,9 @@ def main():
     if recommend_list:
         recommend_list = list(set(recommend_list).difference(filter_uid))
         recommend_redis.hset("recommend_delete_list", record_time, json.dumps(recommend_list)) # lpush uid into a redis
+
+        former_time = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
+        recommend_redis.hdel("recommend_delete_list", former_time)
         return 1
     else:
         print "no one to recommend"
