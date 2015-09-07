@@ -19,6 +19,35 @@ Search_weibo.prototype = {
     Return_data: function(data){
         return data;
     },
+
+    Draw_user_tag: function(data){
+      console.log(data);
+      $('#user_lable').empty();
+      user_lable_html = '';
+      user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+      user_lable_html += '<thead><tr><th class="center" style="text-align:center">用户ID</th>';
+      user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
+      user_lable_html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
+      user_lable_html += '</tr></thead>';
+      user_lable_html += '<tbody>';
+      for (key in data){
+       user_lable_html += '<tr>';
+       user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
+       user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
+       user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
+       user_lable_html += '</tr>';   
+      }    
+      user_lable_html += '</tbody>';
+      user_lable_html += '</table>';     
+      $('#user_lable').append(user_lable_html);
+    },
+
+    Draw_add_group_tag: function(data){
+      var downloadurl = window.location.host;
+      show_group_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
+      Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
+    },
+
     Draw_table: function(data){
         console.log(data);
         that.data = data;
@@ -45,6 +74,7 @@ Search_weibo.prototype = {
                 else{
                 if(i == 0){
                    var user_url = personal_url + data[item][0];
+                   save_id.push(data[item][0]);
                     html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+user_url +' target="_blank">'+ data[item][i] +'</a></td>';
                 }else{
                    html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>'; 
@@ -58,9 +88,42 @@ Search_weibo.prototype = {
         html += '</table>';
         $('#table').css('height',height);
         $('#table').append(html);
+        for (var i = 0; i < save_id.length; i++) {
+            s=i.toString();
+            id_string += save_id[s] + ',';
+        };
+        id_string=id_string.substring(0,id_string.length-1)
     },
 
-Draw_picture: function(data){
+  Draw_attribute_name: function(data){
+    $('#attribute_name').empty();
+    html = '';
+    html += '<select id="select_attribute_name">';
+
+    for (var i = 0; i < data.length-1; i++) {
+      var s = i.toString();
+      html += '<option value="' + data[s] + '">' + data[s] + '</option>';
+    }
+    var t = (data.length-1).toString();
+    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
+    $('#attribute_name').append(html);
+  },
+
+  Draw_attribute_value: function(data){
+    $('#attribute_value').empty();
+    html = '';
+    html += '';
+    html += '<select id="select_attribute_value">';
+    for (var i = 0; i < data.length-1; i++) {
+      var s = i.toString();
+      html += '<option value="' + data[s] + '">' + data[s] + '</option>';
+    }
+    var t = (data.length-1).toString();
+    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
+    $('#attribute_value').append(html);
+  },
+
+    Draw_picture: function(data){
         if(data==0){
             alert("");
             return false;
@@ -188,7 +251,10 @@ Draw_picture: function(data){
         )     
     }
 }
-
+var save_id = [];
+var id_string = '';
+var test_uids = [];
+var test_uids_string = '';
 var Search_weibo = new Search_weibo();
 //get tag
 var user_tag = '/tag/show_user_attribute_name/?uid='+ uid;
@@ -196,7 +262,20 @@ Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Show_tag
 
 Search_weibo.call_sync_ajax_request(get_choose_data(uid), Search_weibo.ajax_method, Search_weibo.Draw_table);
 Search_weibo.Draw_picture(Search_weibo.data);
+var show_user_tag_url = '/tag/show_user_tag/?uid_list=' + id_string;
+Search_weibo.call_sync_ajax_request(show_user_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
+var tag_url = "/tag/show_attribute_name/";
+Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
+var select_attribute_name = $("#select_attribute_name").val()
+var attribute_value_url = '';
+attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
+Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+
 var global_data = Search_weibo.data;
+
+function recommend_all(){
+  $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
+}
 
 function Show_tag(data){
     html = '';
@@ -213,6 +292,32 @@ function Show_tag(data){
       }
       $('#tag').append(html);
     }
+}
+
+function add_group_tag(){
+    select_uids = [];
+    select_uids_string = '';
+    $('input[name="in_status"]:checked').each(function(){
+        select_uids.push($(this).attr('value'));
+    })
+    console.log(select_uids);
+
+    for (var i = 0; i < test_uids.length; i++) {
+        t=i.toString();
+        test_uids_string += test_uids + ',';
+    };
+    console.log(test_uids);
+    for (var i = 0; i < select_uids.length; i++) {
+        s=i.toString();
+        select_uids_string += select_uids[s] + ',';
+    };
+    total_uids = select_uids_string + test_uids_string;
+    total_uids = total_uids.substring(0,total_uids.length-1);
+    console.log(total_uids);
+    add_tag_attribute_name = $("#select_attribute_name").val();
+    add_tag_attribute_value = $("#select_attribute_value").val();
+    add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
+    Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
 }
 
 $('.label-success').click(function(){
@@ -276,17 +381,17 @@ function get_choose_data(uid){
 var origin_html = $('#ADD').html();
 
 function diy_button(){
- $('#ADD').html(origin_html);
-  var cur_uids = []
-  $('input[name="search_result_option"]:checked').each(function(){
-      cur_uids.push($(this).attr('value'));
-  });
-  if(cur_uids.length < 1){
-    alert('请选择至少1个用户');
-  }
-  else{
+ // $('#ADD').html(origin_html);
+  // var cur_uids = []
+  // $('input[name="search_result_option"]:checked').each(function(){
+  //     cur_uids.push($(this).attr('value'));
+  // });
+  // if(cur_uids.length < 1){
+  //   alert('请选择至少1个用户');
+  // }
+  // else{
       $('#Diymodal').modal();
-  }
+  // }
   $(".addIcon").off("click").click(function(){
     var html = '';
     html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
@@ -458,7 +563,7 @@ function compare_confirm_button(){
   $('[name="compare_confirm_uids"]').each(function(){
       compare_confirm_uids.push($(this).text());
   })
-  if (compare_confirm_uids.length == 1){
+  if (compare_confirm_uids.length <= 1){
       alert('对比的用户至少需要2名!');
       return;
   }
@@ -492,6 +597,10 @@ function group_confirm_button(){
   if ((remark.length > 0) && (!remark.match(reg))){
     alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
+  }
+  if(group_confirm_uids.length <=1){
+    alert("请选择至少1个用户");
+    return ;
   }
   var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
   $.ajax({
