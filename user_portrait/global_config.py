@@ -36,7 +36,7 @@ ZMQ_CTRL_VENT_PORT_FLOW5 = '5589'
 '''
 BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yuankun'
 '''
-BIN_FILE_PATH = '/home/ubuntu8/data1309/20130902'
+BIN_FILE_PATH = '/home/ubuntu8/data1309/20130901'
 
 # first part of csv file
 FIRST_FILE_PART = 'MB_QL_9_2_NODE'
