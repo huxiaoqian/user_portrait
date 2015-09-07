@@ -21,13 +21,15 @@ def load_items_from_bin(bin_path):
 def ordered_file_list(file_list):
     rank_list = []
     for item in file_list:
-        rank_list.append(int((item.split('.')[0]).split('NODE')[1]))
+        if FIRST_FILE_PART in item and '.csv' in item:
+            rank_list.append(int((item.split('.')[0]).split('NODE')[1]))
     #print 'rank_list:', rank_list
     new_list = []
     for i in sorted(rank_list):
         new_list.append(FIRST_FILE_PART + str(i) + '.csv')
 
     return new_list
+
 def send_all(f, sender):
     count = 0
     tb = time.time()
