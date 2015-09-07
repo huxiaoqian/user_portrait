@@ -14,7 +14,7 @@ Tag.prototype = {   //获取数据，重新画表
 
 NewTag:function(data){
 	//console.log(data);
-   //location.reload();
+   location.reload();
   }
 }
 
