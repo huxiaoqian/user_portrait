@@ -82,7 +82,9 @@ def delete_attribute(attribute_name):
     status = False
     try:
         result = es.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
-    except:
+        print 'result:', result
+    except Exception, e:
+        raise e
         return status
     es.delete(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)
     print 'yes delete attribute'

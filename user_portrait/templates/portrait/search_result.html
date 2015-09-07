@@ -110,9 +110,10 @@
         var psycho_status = "{{ psycho_status }}";
         var domain = "{{ domain }}";
         var topic = "{{ topic }}";
+        var tag = "{{ tag }}";
         var url_search_result = '/attribute/portrait_search/?stype='+stype+'&';
-        pars = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag', 'psycho_feature', 'psycho_status', 'domain', 'topic'];
-        values = [uid, uname, mlocation, activity_geo, adkeyword, hashtag, psycho_feature, psycho_status, domain, topic];
+        pars = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag', 'psycho_feature', 'psycho_status', 'domain', 'topic', 'tag'];
+        values = [uid, uname, mlocation, activity_geo, adkeyword, hashtag, psycho_feature, psycho_status, domain, topic, tag];
         url_search_result += par2url(pars, values);
     }
 </script>
