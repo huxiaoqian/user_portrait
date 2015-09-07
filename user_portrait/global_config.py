@@ -26,6 +26,12 @@ ZMQ_CTRL_VENT_PORT_FLOW2 = '5586'
 ZMQ_VENT_PORT_FLOW3 = '6389'
 ZMQ_CTRL_VENT_PORT_FLOW3 = '5587'
 
+ZMQ_VENT_PORT_FLOW4 = '6390'
+ZMQ_CTRL_VENT_PORT_FLOW4 = '5588'
+
+ZMQ_VENT_PORT_FLOW5 = '6391'
+ZMQ_CTRL_VENT_PORT_FLOW5 = '5589'
+
 # csv file path
 '''
 BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yuankun'
@@ -48,9 +54,25 @@ R_BEGIN_TIME = '2013-09-01'
 RECOMMENTATION_FILE_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/recommentaion_file'
 RECOMMENTATION_TOPK = 10000
 
+# use to config leveldb
+DEFAULT_LEVELDBPATH = '/home/ubuntu8/huxiaoqian/user_portrait_leveldb'
+
 # use to upload the user list for group task
 UPLOAD_FOLDER = '/home/ubuntu8/huxiaoqian/user_portrait/cron/group/upload/'
 ALLOWED_EXTENSIONS = set(['txt'])
+
+# use to save user_portrait weibo 7day
+XAPIAN_DB_PATH = 'user_portrait_weibo'
+XAPIAN_DATA_DIR = '/home/ubuntu8/huxiaoqian/user_portrait_weibo_xapian/data/'
+XAPIAN_STUB_FILE_DIR = '/home/ubuntu8/huxiaoqian/user_portrait_weibo_xapian/stub/'
+
+XAPIAN_INDEX_SCHEMA_VERSION = 5
+XAPIAN_INDEX_LOCK_FILE = '/tmp/user_portrait_weibo_xapian'
+
+XAPIAN_SEARCH_DEFAULT_SCHEMA_VERSION = 5
+
+XAPIAN_ZMQ_POLL_TIMEOUT = 100000
+
 
 # all weibo database
 WEIBO_API_HOST = ''

@@ -31,7 +31,7 @@ def cal_propage_work(item):
     timestamp = item['timestamp']
     #r_uid = item['retweeted_uid']
     r_uid = item['root_uid']
-    #save_ruid(uid, r_uid, timestamp)
+    save_ruid(uid, r_uid, timestamp)
 
 
 if __name__ == "__main__":
@@ -57,7 +57,7 @@ if __name__ == "__main__":
         if not item:
             continue 
         
-        if item['sp_type'] == 1:
+        if item['sp_type'] == '1':
             try:
                 if item and item['message_type']==3:
                     cal_propage_work(item)
