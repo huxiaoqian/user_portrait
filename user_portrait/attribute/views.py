@@ -97,14 +97,16 @@ def ajax_portrait_search():
                     condition_num += 1
         '''
         tag_items = request.args.get('tag', '')
-        tag_item_list = tag_items.split(',')
-        for tag_item in tag_item_list:
-            attribute_name_value = tag_item.split(':')
-            attribute_name = attribute_name_value[0]
-            attribute_value = attribute_name_value[1]
-            if attribute_name and attribute_value:
-                query.append({'wildcard':{attribute_name:'*'+attribute_value+'*'}})
-                condition_num += 1
+        if tag_items != '':
+            tag_item_list = tag_items.split(',')
+            print 'tag_term_list:', tag_item_list
+            for tag_item in tag_item_list:
+                attribute_name_value = tag_item.split(':')
+                attribute_name = attribute_name_value[0]
+                attribute_value = attribute_name_value[1]
+                if attribute_name and attribute_value:
+                    query.append({'wildcard':{attribute_name:'*'+attribute_value+'*'}})
+                    condition_num += 1
 
         for item in multi_item:
             nest_body = {}
