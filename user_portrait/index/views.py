@@ -75,10 +75,11 @@ def search_result():
         psycho_feature = request.args.get('psycho_feature', '')
         domain = request.args.get('domain', '')
         topic = request.args.get('topic', '')
+        tag = request.args.get('tag', '')
 
         return render_template('portrait/search_result.html', stype=stype, uid=uid, uname=uname,\
                 location=location, activity_geo=activity_geo, adkeyword=adkeyword, hashtag=hashtag, psycho_status=psycho_status,\
-                psycho_feature=psycho_feature, domain=domain, topic=topic)
+                psycho_feature=psycho_feature, domain=domain, topic=topic, tag=tag)
 
 
 @mod.route('/contact/')

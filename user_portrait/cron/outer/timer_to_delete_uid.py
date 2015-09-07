@@ -19,10 +19,8 @@ from global_utils import R_RECOMMENTATION_OUT, ES_CLUSTER_FLOW1
 es = ES_CLUSTER_FLOW1
 recommend_redis = R_RECOMMENTATION_OUT
 
-index_destination = "user_index_profile"
-index_destination_doctype = "manage"
-# index_destination = "user_portrait"
-# index_destination_doctype = "user"
+index_destination = "user_portrait"
+index_destination_doctype = "user"
 
 def transfer_str_to_list(value):
     uid_list = []
@@ -36,7 +34,7 @@ def expand_delete_action(data, index_name=index_destination, doctype=index_desti
     action = {"delete": {"_index": index_name, "_type": doctype, "_id": data}}
     return action
 
-def main():
+def main(index_destination, index_destination_doctype):
     ts = time.time()
 
     date = recommend_redis.hgetall("decide_delete_list") # decide to delete uids 
@@ -80,4 +78,5 @@ def main():
         es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
 
 if __name__ == "__main__":
-    main()
+    main("user_portrait", "user")
+    main("copy_user_portrait", "user")

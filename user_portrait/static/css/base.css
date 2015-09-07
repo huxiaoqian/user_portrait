@@ -195,7 +195,7 @@ text-indent:40px;
 	width: 980px;
 	background: #FFF none repeat scroll 0% 0%;
 	border: 1px solid #AA8BE8;
-	height: 540px;
+	height: 560px;
 margin-left: -460px;
     font_family:"Microsoft YaHei UI";
 }
@@ -220,7 +220,7 @@ margin-left: -460px;
 }
 .search-content {
 width: 850px;
-height: 420px;
+height: 440px;
 margin: 0px auto;
 overflow: auto;
 }
