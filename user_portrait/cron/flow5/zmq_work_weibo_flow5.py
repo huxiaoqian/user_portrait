@@ -1,5 +1,5 @@
 # -*- coding=utf-8 -*-
-
+import os
 import re
 import sys
 import zmq
@@ -18,6 +18,7 @@ from global_config import ZMQ_VENT_PORT_FLOW5, ZMQ_CTRL_VENT_PORT_FLOW5,\
 
 # init a new leveldb by hour
 def init_leveldb(leveldb_folder):
+    print 'init leveldb:', leveldb_folder
     leveldb_bucket = leveldb.LevelDB(os.path.join(DEFAULT_LEVELDBPATH, leveldb_folder), block_cache_size=8*(2 << 25), write_buffer_size=8*(2 << 25))
     return leveldb_bucket
 
@@ -31,16 +32,18 @@ def delete_leveldb(date_timestamp, ts_segment):
     try:
         os.remove(os.path.join(DEFAULT_LEVELDBPATH, del_leveldb_folder))
     except:
-        print 'not need delete'
+        pass
 
 
 # write weibo to leveldb
 def write2leveldb(item, user_portrait_weibo_leveldb):
     uid = item['uid']
+    key_result = ''
     try:
         key_result = user_portrait_weibo_leveldb.Get(str(uid))
     except:
-        user_portrait_weibo_leveldb.Put(uid, json.dumps([item]))
+        #print 'item:', item
+        user_portrait_weibo_leveldb.Put(str(uid), json.dumps([item]))
     if key_result != '':
         weibo_list = json.loads(key_result)
         weibo_list.append(item)
@@ -63,8 +66,8 @@ if __name__ == "__main__":
     ts = tb
     
     #scan the suer_portrait user list
-    user_list = read_portrait2ram()
-    
+    user_list = set(read_portrait2ram())
+    print 'user_list:', len(user_list)
     #mark previous leveldb path
     pre_leveldb_folder = ''
     user_portrait_weibo_leveldb = leveldb.LevelDB(os.path.join(DEFAULT_LEVELDBPATH, 'default_db'), block_cache_size=8*(2 << 25), write_buffer_size=8*(2 << 25))
@@ -74,20 +77,25 @@ if __name__ == "__main__":
             item = receiver.recv_json()
         except Exception, e:
             print Exception, ":", e 
+        '''
         if not item:
             continue 
-        
-        if item['sp_type'] == '1' and item['uid'] in user_list:
-            weibo_timestamp = item['timestamp']
-            weibo_date = ts2datetime(weibo_timestamp)
-            date_timestamp = datetime2ts(weibo_date)
-            ts_segment = ((weibo_timestamp - date_timestamp) / 3600) % 24 + 1
-            leveldb_folder = weibo_date + str(ts_segment) # 201309011-2013090124
-            if leveldb_folder != pre_leveldb_folder:
-                user_portrait_weibo_leveldb = init_leveldb(leveldb_folder)
-                delete_leveldb(date_timestamp, ts_segment)
-                pre_leveldb_folder = leveldb_folder
-            write2leveldb(item, user_portrait_weibo_leveldb)
+        '''
+        if item['sp_type'] == '1':
+            #print  'sina'
+            if str(item['uid']) in user_list:
+                #print 'item:', item
+                weibo_timestamp = item['timestamp']
+                weibo_date = ts2datetime(weibo_timestamp)
+                date_timestamp = datetime2ts(weibo_date)
+                ts_segment = ((weibo_timestamp - date_timestamp) / 3600) % 24 + 1
+                leveldb_folder = weibo_date + str(ts_segment) # 201309011-2013090124
+                #print 'leveldb_folder:', leveldb_folder
+                if leveldb_folder != pre_leveldb_folder:
+                    user_portrait_weibo_leveldb = init_leveldb(leveldb_folder)
+                    delete_leveldb(date_timestamp, ts_segment)
+                    pre_leveldb_folder = leveldb_folder
+                write2leveldb(item, user_portrait_weibo_leveldb)
         
         count += 1
         if count % 10000 == 0:
