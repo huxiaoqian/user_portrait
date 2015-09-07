@@ -65,6 +65,7 @@ def ajax_change_attribtue():
 def ajax_delete_attribute():
     status = False
     attribute_name = request.args.get('attribute_name', '')
+    print 'attribute_name:', attribute_name
     status = delete_attribute(attribute_name)
     return json.dumps(status)
 

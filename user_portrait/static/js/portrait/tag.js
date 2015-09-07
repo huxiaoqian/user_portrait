@@ -19,17 +19,17 @@ Draw_tag_table:function(data){
     var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">';
-	html += '<th style="width:100px;">全选<input type="checkbox" style="margin-left:10px;"></th><th>标签类别</th><th>标签名</th><th>创建者</th><th>时间</th><th>操作</th></tr>';
+	html += '<th>标签类别</th><th>标签名</th><th>创建者</th><th>时间</th><th>操作</th></tr>';
 	html += '</thead>';
 	html += '<tbody>';
 	for(i=0;i<item.length;i++){
 		html += '<tr>'
-		html += '<td name="chose" style="text-align:center;"><input type="checkbox"></input></td>';
-		html += '<td name="tagClass">'+item[i].attribute_name+'</td>';
-		html += '<td name="tagName">'+item[i].attribute_value+'</td>';
+		html += '<td name="attribute_name">'+item[i].attribute_name+'</td>';
+		var item_value = item[i].attribute_value.split('&').join('/');
+		html += '<td name="attribute_value"><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" title="点击编辑">'+item_value+'</a></td>';
 		html += '<td name="creater">'+item[i].user+'</td>';
 		html += '<td name="time">'+item[i].date+'</td>'
-		html += '<td name="operate" style="cursor:pointer;" ><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" >编辑</a></td>';
+		html += '<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" id="delTag">删除</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
