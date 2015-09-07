@@ -96,15 +96,16 @@ Search_weibo.prototype = {
     $('#user_lable').empty();
     user_lable_html = '';
     user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    user_lable_html += '<thead><tr><th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th><th class="center" style="text-align:center">用户ID</th>';
+    user_lable_html += '<thead><tr><th class="center" style="text-align:center">用户ID</th>';
     user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
+    user_lable_html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
     user_lable_html += '</tr></thead>';
     user_lable_html += '<tbody>';
     for (key in data){
      user_lable_html += '<tr>';
-     user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
      user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
      user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
+     user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
      user_lable_html += '</tr>';   
     }    
     user_lable_html += '</tbody>';
@@ -112,18 +113,7 @@ Search_weibo.prototype = {
     $('#user_lable').append(user_lable_html);
   },
   Draw_add_group_tag: function(data){
-    $('input[name="in_status"]:checked').each(function(){
-        select_uids.push($(this).attr('value'));
-    })
-    console.log(select_uids);
-    for (var i = 0; i < select_uids.length; i++) {
-        s=i.toString();
-        select_uids_string += select_uids[s] + ',';
-    };
-    select_uids_string = select_uids_string.substring(0,select_uids_string.length-1);
-    console.log(select_uids_string);
     var downloadurl = window.location.host;
-    alert('操作成功');
     show_group_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
     Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
   },
@@ -443,10 +433,30 @@ function recommend_all(){
   $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
 }
 
-select_uids = [];
-select_uids_string = '';
-
+// page control start
+var test_uids = [];
+var test_uids_string = '';
+// page control end
 function add_group_tag(){
+    select_uids = [];
+    select_uids_string = '';
+    $('input[name="in_status"]:checked').each(function(){
+        select_uids.push($(this).attr('value'));
+    })
+    console.log(select_uids);
+
+    for (var i = 0; i < test_uids.length; i++) {
+        t=i.toString();
+        test_uids_string += test_uids + ',';
+    };
+    console.log(test_uids);
+    for (var i = 0; i < select_uids.length; i++) {
+        s=i.toString();
+        select_uids_string += select_uids[s] + ',';
+    };
+    total_uids = select_uids_string + test_uids_string;
+    total_uids = total_uids.substring(0,total_uids.length-1);
+    console.log(total_uids);
     add_tag_attribute_name = $("#select_attribute_name").val();
     add_tag_attribute_value = $("#select_attribute_value").val();
     add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
