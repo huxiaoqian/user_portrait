@@ -30,49 +30,38 @@ function input_data(){
 	var temp='';
     var input_value;
     var input_name;
-	var tagnames = document.getElementsByName("attribute_name");
 	//console.log(tagnames);
 	input_name = "attribute_name=";
-	input_value = document.getElementsByName("attribute_name")[tagnames.length-2].value+'&';
+	input_value = $('#attributeName').html()+'&';
 	temp += input_name;
     temp += input_value;
-	var tagnames = document.getElementsByName("attribute_value");
+
+	var tagnames = $('.tagName').length;
 	input_name = "attribute_value=";
 	var value = '';
-	var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
-	for(i=4;i<tagnames.length-1;i++){
-		/*
-		console.log(document.getElementsByName("attribute_value")[i].value);
-		if(!document.getElementsByName("attribute_value")[i].value.match(reg)){
-			alert('标签名只能包含英文、汉字、数字和下划线，请重新输入');
-			return;
-		}
-		*/
-		if(document.getElementsByName("attribute_value")[i].value==undefined){
-			value += '';
-		}else{
-			value += document.getElementsByName("attribute_value")[i].value;
-			value += ',';
-		}
-		
+	var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";	
+	for(i=0;i<tagnames;i++){
+		value += $(".tagName").eq(i).html()+',';
+		//console.log(value);
 	}
 	value = value.substring(0,value.length-1);
 	input_value = value+'&';
 	temp += input_name;
     temp += input_value;
+
 	input_name = "user=";
 	input_value ="admint&";
 	temp += input_name;
     temp += input_value;
 	input_name = "date=";
-	input_value =currentDate()+'&';
+	input_value =cDate()+'&';
 	temp += input_name;
     temp += input_value;
 	temp = temp.substring(0, temp.length-1);
 	console.log(temp);
 	return temp;
 }
-function currentDate(){
+function cDate(){
 	var myDate = new Date();
 	var yy = myDate.getFullYear();
 	var mm = myDate.getMonth() + 1;
@@ -86,7 +75,7 @@ function currentDate(){
 	}
 	
 	var date = yy.toString()+ '-' + mm.toString() + '-' + dd.toString();
-	console.log(date);
+	//console.log(date);
 	return date;
 }
 var TagChange = new TagChange();

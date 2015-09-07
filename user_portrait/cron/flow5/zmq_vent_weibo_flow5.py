@@ -13,7 +13,7 @@ from zmq_csv_utils import send_weibo
 
 reload(sys)
 sys.path.append('../../')
-from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+from global_config import ZMQ_VENT_PORT_FLOW5, ZMQ_CTRL_VENT_PORT_FLOW5,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 
 
@@ -29,11 +29,11 @@ if __name__=="__main__":
 
     # used for send weibo
     sender = context.socket(zmq.PUSH)
-    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW2))  
+    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW5))  
     
     # used for controlled by controllor
     controller = context.socket(zmq.SUB)
-    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW2))
+    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW5))
     controller.setsockopt(zmq.SUBSCRIBE, "")
 
     poller = zmq.Poller()

@@ -29,7 +29,7 @@ def extract_uname(text):
     return repost_chains
 
 def cal_propage_work(item):
-    '''
+    
     uid = item['uid']
     print 'uid:', uid
     
@@ -52,7 +52,7 @@ def cal_propage_work(item):
         save_at(uid, at_uname, timestamp)
     except:
         pass
-    '''
+    
 
 
 if __name__ == "__main__":
@@ -79,14 +79,15 @@ if __name__ == "__main__":
         if not item:
             continue 
         
-        if item['sp_type'] == 1:
-            print 'item:', item
+        if item['sp_type'] == '1':
+            #print 'item:', item
             try:
                 cal_propage_work(item)
             except:
                 pass
         
         count += 1
+
         if count % 10000 == 0:
             te = time.time()
             print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
