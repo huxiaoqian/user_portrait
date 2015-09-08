@@ -15,6 +15,7 @@ from user_portrait.influence_application.views import mod as influenceModule
 from user_portrait.login.views import mod as loginModule
 from user_portrait.group.views import mod as groupModule
 from user_portrait.tag.views import mod as tagModule
+from user_portrait.weibo.views import mod as weiboModule
 
 def create_app():
     app = Flask(__name__)
@@ -33,6 +34,7 @@ def create_app():
     app.register_blueprint(loginModule)
     app.register_blueprint(groupModule)
     app.register_blueprint(tagModule)
+    app.register_blueprint(weiboModule)
     # the debug toolbar is only enabled in debug mode
     app.config['DEBUG'] = True
 

@@ -10,6 +10,9 @@ attribute_index_type = 'attribute'
 user_index_name = 'test_user_portrait'
 user_index_type = 'user'
 
+group_index_name = 'group_result'
+group_index_type = 'group'
+
 attribute_dict_key = ['attribute_value', 'attribute_user', 'date', 'user']
 
 
@@ -267,6 +270,40 @@ def get_attribute_value(attribute_name):
     return attribute_value_list
 
 # use to show group tag statistic result
+def get_group_tag(group_name):
+    result = {}
+    #get group task uid list
+    #get user tag
+    #statistic tag
+    try:
+        group_task_result = es.get(index=group_index_name, doc_type=group_index_type, id=group_name)
+    except:
+        return 'no group task'
+    try:
+        uid_list = group_task_result['_source']['uid_list']
+    except:
+        return 'no user'
+    try:
+        user_result = es.mget(index=user_index_name, doc_type=user_index_type, body={'ids': uid_list})['docs']
+    except Exception, e:
+        raise e
+    for user_item in user_result:
+        uid = user_item['_id']
+        try:
+            source = user_item['_source']
+        except:
+            source = {}
+        for key in source:
+            if key not in identify_attribute_list:
+                value = source[key]
+                tag_string = key + ':' + value
+                try:
+                    result[tag_string] += 1
+                except:
+                    result[tag_string] = 1
+
+    return result
+'''
 def get_group_tag(uid_list):
     result = {}
     try:
@@ -289,6 +326,8 @@ def get_group_tag(uid_list):
                     result[tag_string] = 1
 
     return result
+'''
+
 
 # use to get user attribute name for imagin
 def get_user_attribute_name(uid):
