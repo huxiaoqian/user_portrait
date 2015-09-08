@@ -77,7 +77,7 @@ def ajax_add_attirbute():
     attribute_name = request.args.get('attribute_name', '')
     attribute_value = request.args.get('attribute_value', '')
     submit_user = request.args.get('user', '')
-    submit_date = request.args.get('date', '')
+    
     status = add_attribute_portrait(uid, attribute_name, attribute_value, submit_user)
     return json.dumps(status)
 
