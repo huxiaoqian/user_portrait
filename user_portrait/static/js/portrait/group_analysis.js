@@ -23,8 +23,9 @@ Date.prototype.format = function(format) {
   this.ajax_method = 'GET';
 }
 
-    save_id = [];
-    id_string = '';
+var global_pre_page = 1;
+var global_choose_uids = new Array();
+
 Search_weibo.prototype = {
   call_sync_ajax_request:function(url, method, callback){
     $.ajax({
@@ -35,37 +36,6 @@ Search_weibo.prototype = {
       success:callback
     });
   },
-  Draw_model: function(data){
-    $('#group_user').empty();
-    html = '';
-    html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
-    html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th>';
-    html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
-    html += '</tr></thead>';
-    html += '<tbody>';
-    for ( i=0 ; i<data.length; i++){
-        s = i.toString();
-        if (data[s]['2'] == 1){
-            sex = '男';
-        }else{
-            sex = '女';
-        }
-      save_id.push(data[s]['0']); 
-      html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '<img data-toggle="tooltip" data-placement="right" title="" id=' + data[s]['0'] + ' src="/static/img/tag.png" class="tag" onmouseover="show_personal_tag(' + data[s]['0'] + ')"; style="height:20px"></th><th class="center" style="text-align:center">' + sex+ '</th>';
-      html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th>';  
-      html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + data[s]['0'] + '"/></th>';
-      html += '</tr>';
-    };
-    html += '</tbody>';
-    html += '</table>';
-    $('#group_user').append(html);
-    for (var i = 0; i < save_id.length; i++) {
-        s=i.toString();
-        id_string += save_id[s] + ',';
-    };
-    id_string=id_string.substring(0,id_string.length-1)
-      },
   Draw_attribute_name: function(data){
     $('#attribute_name').empty();
     html = '';
@@ -116,6 +86,7 @@ Search_weibo.prototype = {
   // },
   Draw_add_group_tag: function(data){
     alert('操作成功');
+    $('#myModal').modal('hide');
   },
   Draw_group_tag: function(data){
     console.log(data);
@@ -170,7 +141,7 @@ Search_weibo.prototype = {
     $('#overview').empty();
     html = '';
     html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px;cursor:pointer;text-decoration:underline" data-toggle="modal" data-target="#myModal">群组成员</p>';
+    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -447,7 +418,7 @@ var Search_weibo = new Search_weibo();
 //         }
 
 function show_personal_tag(uid){
-    show_personal_tag_url = '/tag/show_user_tag/?uid_list=' + uid;
+    var show_personal_tag_url = '/tag/show_user_tag/?uid_list=' + uid;
     Search_weibo.call_sync_ajax_request(show_personal_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_personal_tag);
 }
 // function hide_personal_tag(uid){
@@ -459,11 +430,20 @@ function recommend_all(){
 }
 
 function add_group_tag(){
-    select_uids = [];
-    select_uids_string = '';
+    var cur_uids = []
     $('input[name="in_status"]:checked').each(function(){
-        select_uids.push($(this).attr('value'));
-    })
+        cur_uids.push($(this).attr('value'));
+    });
+    global_choose_uids[global_pre_page] = cur_uids;
+    var select_uids = [];
+    var select_uids_string = '';
+    for (var key in global_choose_uids){
+        var temp_list = global_choose_uids[key];
+        for (var i = 0; i < temp_list.length; i++){
+            select_uids.push(temp_list[i]);
+        }
+    }
+    console.log(select_uids);
 
     for (var i = 0; i < select_uids.length; i++) {
         s=i.toString();
@@ -969,7 +949,45 @@ function createRandomItemStyle(){
         }
     };
 }
-
+function show_members(){
+	var downloadurl = window.location.host;
+    var model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
+    base_call_ajax_request(model_url, Draw_model);
+    $("#myModal").modal();
+    function Draw_model(data){
+        $('#group_user').empty();
+        html = '';
+        html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+        html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
+        html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th>';
+        html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
+        html += '</tr></thead>';
+        html += '<tbody>';
+        for ( i=0 ; i<data.length; i++){
+            s = i.toString();
+            if (data[s]['2'] == 1){
+                sex = '男';
+            }else{
+                sex = '女';
+            }
+          html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '<img data-toggle="tooltip" data-placement="right" title="" id=' + data[s]['0'] + ' src="/static/img/tag.png" class="tag" onmouseover="show_personal_tag(' + data[s]['0'] + ')"; style="height:20px"></th><th class="center" style="text-align:center">' + sex+ '</th>';
+          html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th>';  
+          html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + data[s]['0'] + '"/></th>';
+          html += '</tr>';
+        };
+        html += '</tbody>';
+        html += '</table>';
+        $('#group_user').append(html);
+        $('#modal_table').dataTable({
+            "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+            "sPaginationType": "custom_bootstrap",
+            // "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ 每页"
+            }
+        });
+    }
+}
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
@@ -977,32 +995,28 @@ $(document).ready(function(){
     Draw_think_domain();
     Draw_think_topic();
     Draw_think_tendency();
-    weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
+    var weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
-    Search_weibo.call_sync_ajax_request(model_url, Search_weibo.ajax_method, Search_weibo.Draw_model);
-    tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
+    var tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
     Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
-    basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
+    var basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
     Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
     var select_attribute_name = $("#select_attribute_name").val()
     var attribute_value_url = '';
     attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
     Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
-    // show_user_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
-    // Search_weibo.call_sync_ajax_request(show_user_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
 
-    show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?uid_list=' + id_string;
+    var show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?task_name=' + name;
     Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
 
-    activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    var activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
     Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    var social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
     Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
-    text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    var think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    var text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
     Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
+    var influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
     Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
     $('#select_attribute_name').click(function(){
       var select_attribute_name = $("#select_attribute_name").val()
