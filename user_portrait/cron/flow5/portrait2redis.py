@@ -42,6 +42,7 @@ def read_portrait2ram():
     print 'len uid_list:', len(user_list)
     print 'one uid:', user_list[0], len(user_list[0]), type(user_list[0])
     '''
+    return user_list
 
 if __name__=='__main__':
     read_portrait2ram()

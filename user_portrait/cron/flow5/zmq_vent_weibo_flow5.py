@@ -44,9 +44,9 @@ if __name__=="__main__":
     message = "PAUSE" # default start
 
     while 1:
-        event = poller.poll(1)
+        event = poller.poll(0)
         if event:
-            socks = dict(poller.poll(1))
+            socks = dict(poller.poll(0))
         else:
             socks = None
         
@@ -54,14 +54,14 @@ if __name__=="__main__":
             item = controller.recv()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
-                time.sleep(10)
+                time.sleep(1)
                 continue
             elif item == "RESTART": # restart the vent work
                 message = "RESTART"
                 total_count, total_cost = send_weibo(sender, total_count, total_cost)
         else:
             if message == "PAUSE":
-                time.sleep(10)
+                time.sleep(1)
                 print message
                 continue
             else:

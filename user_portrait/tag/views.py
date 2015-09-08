@@ -77,7 +77,7 @@ def ajax_add_attirbute():
     attribute_name = request.args.get('attribute_name', '')
     attribute_value = request.args.get('attribute_value', '')
     submit_user = request.args.get('user', '')
-    submit_date = request.args.get('date', '')
+    
     status = add_attribute_portrait(uid, attribute_name, attribute_value, submit_user)
     return json.dumps(status)
 
@@ -125,9 +125,11 @@ def ajax_show_user_attribute_name():
 @mod.route('/show_group_tag/')
 def ajax_show_group_tag():
     result = {}
-    uid_list_string = request.args.get('uid_list', '') # uid_list = 'uid1,uid2'
-    uid_list = uid_list_string.split(',')
-    result = get_group_tag(uid_list)
+    #uid_list_string = request.args.get('uid_list', '') # uid_list = 'uid1,uid2'
+    #uid_list = uid_list_string.split(',')
+    #result = get_group_tag(uid_list)
+    group_task_name = request.args.get('task_name', '')
+    result = get_group_tag(group_task_name)
     return json.dumps(result)
 
 # use to add tag to group

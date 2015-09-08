@@ -118,7 +118,7 @@ function bindAddFunction(){
         }
         else{
             var html = '';
-            html += '<span class="mouse" style="margin-right:20px;">'+ check_str;
+            html += '<span class="mouse" style="margin-right:40px;">'+ check_str;
             html += '&nbsp;<a class="cross" href="#">X</a></span>';
             $('#tags').append(html);
             chosen[check_str] = '1';
