@@ -12,7 +12,7 @@ reload(sys)
 sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
-from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+from global_config import ZMQ_VENT_PORT_FLOW4, ZMQ_CTRL_VENT_PORT_FLOW4,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 from global_config import SENSITIVE_WORDS_PATH
 
@@ -110,10 +110,10 @@ if __name__ == "__main__":
     context = zmq.Context()
 
     receiver = context.socket(zmq.PULL)
-    receiver.connect('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW2))
+    receiver.connect('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW4))
 
     controller = context.socket(zmq.SUB)
-    controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW2))
+    controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW4)
 
     count = 0
     tb = time.time()

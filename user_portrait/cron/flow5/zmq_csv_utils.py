@@ -11,12 +11,24 @@ from csv2json import itemLine2Dict, csv2bin
 
 reload(sys)
 sys.path.append('../../')
-from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
-                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
+from global_config import ZMQ_VENT_PORT_FLOW5, ZMQ_CTRL_VENT_PORT_FLOW5,\
+                          ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH, FIRST_FILE_PART
 
 def load_items_from_bin(bin_path):
     return open(bin_path, 'rb')
 
+
+def ordered_file_list(file_list):
+    rank_list = []
+    for item in file_list:
+        if FIRST_FILE_PART in item and '.csv' in item:
+            rank_list.append(int((item.split('.')[0]).split('NODE')[1]))
+    #print 'rank_list:', rank_list
+    new_list = []
+    for i in sorted(rank_list):
+        new_list.append(FIRST_FILE_PART + str(i) + '.csv')
+
+    return new_list
 
 def send_all(f, sender):
     count = 0
@@ -49,7 +61,8 @@ def send_weibo(sender, total_count=0, total_cost=0):
     try:
         file_list = set(os.listdir(BIN_FILE_PATH))
         print "total file is ", len(file_list)
-        for each in file_list:
+        ordered_list = ordered_file_list(file_list)
+        for each in ordered_list:
             if 'csv' in each:
                 filename = each.split('.')[0]
                 if '%s.csv' % filename in file_list and '%s_yes5.txt' % filename not in file_list:

@@ -222,7 +222,8 @@ margin-left: -460px;
 width: 850px;
 height: 440px;
 margin: 0px auto;
-overflow: auto;
+overflow-y: auto;
+overflow-x: hidden;
 }
 .cols {
 	float: left;

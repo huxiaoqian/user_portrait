@@ -13,7 +13,7 @@ from zmq_csv_utils import send_weibo
 
 reload(sys)
 sys.path.append('../../')
-from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
+from global_config import ZMQ_VENT_PORT_FLOW5, ZMQ_CTRL_VENT_PORT_FLOW5,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
 
 
@@ -29,11 +29,11 @@ if __name__=="__main__":
 
     # used for send weibo
     sender = context.socket(zmq.PUSH)
-    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW2))  
+    sender.bind('tcp://%s:%s' %(ZMQ_VENT_HOST_FLOW1, ZMQ_VENT_PORT_FLOW5))  
     
     # used for controlled by controllor
     controller = context.socket(zmq.SUB)
-    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW2))
+    controller.connect('tcp://%s:%s' % (ZMQ_CTRL_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW5))
     controller.setsockopt(zmq.SUBSCRIBE, "")
 
     poller = zmq.Poller()
@@ -44,9 +44,9 @@ if __name__=="__main__":
     message = "PAUSE" # default start
 
     while 1:
-        event = poller.poll(1)
+        event = poller.poll(0)
         if event:
-            socks = dict(poller.poll(1))
+            socks = dict(poller.poll(0))
         else:
             socks = None
         
@@ -54,14 +54,14 @@ if __name__=="__main__":
             item = controller.recv()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
-                time.sleep(10)
+                time.sleep(1)
                 continue
             elif item == "RESTART": # restart the vent work
                 message = "RESTART"
                 total_count, total_cost = send_weibo(sender, total_count, total_cost)
         else:
             if message == "PAUSE":
-                time.sleep(10)
+                time.sleep(1)
                 print message
                 continue
             else:
