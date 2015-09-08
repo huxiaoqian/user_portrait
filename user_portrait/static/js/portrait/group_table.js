@@ -127,13 +127,6 @@ $.extend($.fn.dataTableExt.oPagination, {
                 });
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
-                    $('#recommend_all').attr("checked", false);
-                    recommend_choose_uids[recommend_pre_page] = test_uids;
-                    console.log(recommend_choose_uids);
-                    console.log(recommend_pre_page);
-                    console.log(test_uids);
-                    var prePage = $('li.recommend').children('a').html();
-                    recommend_pre_page = prePage; // redefine global_pre_page
                 }
             };
 
@@ -181,18 +174,6 @@ $.extend($.fn.dataTableExt.oPagination, {
                         .bind('click', function (e) {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
-                            // add
-                            var test_uids = [];
-                            $('input[name="in_status"]:checked').each(function(){
-                                test_uids.push($(this).attr('value'));
-                            });
-                            recommend_choose_uids[recommend_pre_page] = test_uids;
-                            console.log(recommend_choose_uids);
-                            console.log(recommend_pre_page);
-                            console.log(test_uids);
-                            fnDraw(oSettings);
-                            $('#recommend_all').attr("checked", false);
-                            var prePage = $(this).children('a').html();
                             fnDraw(oSettings);
                         });
                 }

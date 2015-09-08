@@ -41,6 +41,7 @@ Search_weibo.prototype = {
     html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
     html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
     html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th>';
+    html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
     html += '</tr></thead>';
     html += '<tbody>';
     for ( i=0 ; i<data.length; i++){
@@ -51,8 +52,9 @@ Search_weibo.prototype = {
             sex = '女';
         }
       save_id.push(data[s]['0']); 
-      html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '</th><th class="center" style="text-align:center">' + sex+ '</th>';
+      html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data[s]['0']+ '">' + data[s]['0']+ '</a></th><th class="center" style="text-align:center">' + data[s]['1']+ '<img data-toggle="tooltip" data-placement="right" title="" id=' + data[s]['0'] + ' src="/static/img/tag.png" class="tag" onmouseover="show_personal_tag(' + data[s]['0'] + ')"; style="height:20px"></th><th class="center" style="text-align:center">' + sex+ '</th>';
       html += '<th class="center" style="text-align:center">' + data[s]['3']+ '</th><th class="center" style="text-align:center">' + data[s]['4'].toFixed(2) + '</th><th class="center" style="text-align:center;width:72px">' + data[s]['5'].toFixed(2) + '</th>';  
+      html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + data[s]['0'] + '"/></th>';
       html += '</tr>';
     };
     html += '</tbody>';
@@ -91,31 +93,29 @@ Search_weibo.prototype = {
     html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
     $('#attribute_value').append(html);
   },
-  Draw_user_tag: function(data){
-    console.log(data);
-    $('#user_lable').empty();
-    user_lable_html = '';
-    user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-    user_lable_html += '<thead><tr><th class="center" style="text-align:center">用户ID</th>';
-    user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
-    user_lable_html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
-    user_lable_html += '</tr></thead>';
-    user_lable_html += '<tbody>';
-    for (key in data){
-     user_lable_html += '<tr>';
-     user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
-     user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
-     user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
-     user_lable_html += '</tr>';   
-    }    
-    user_lable_html += '</tbody>';
-    user_lable_html += '</table>';     
-    $('#user_lable').append(user_lable_html);
-  },
+  // Draw_user_tag: function(data){
+  //   console.log(data);
+  //   $('#user_lable').empty();
+  //   user_lable_html = '';
+  //   user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
+  //   user_lable_html += '<thead><tr><th class="center" style="text-align:center">用户ID</th>';
+  //   user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
+  //   user_lable_html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
+  //   user_lable_html += '</tr></thead>';
+  //   user_lable_html += '<tbody>';
+  //   for (key in data){
+  //    user_lable_html += '<tr>';
+  //    user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
+  //    user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
+  //    user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
+  //    user_lable_html += '</tr>';   
+  //   }    
+  //   user_lable_html += '</tbody>';
+  //   user_lable_html += '</table>';     
+  //   $('#user_lable').append(user_lable_html);
+  // },
   Draw_add_group_tag: function(data){
-    var downloadurl = window.location.host;
-    show_group_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
-    Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
+    alert('操作成功');
   },
   Draw_group_tag: function(data){
     console.log(data);
@@ -125,39 +125,46 @@ Search_weibo.prototype = {
         key_container.push(key);
         value_container.push(data[key]);
     }
-    $('#lable').highcharts({
-        title: {
+    var myChart = echarts.init(document.getElementById('lable'));
+    var option = {
+        title : {
             text: '',
-            x: -20 //center
         },
-        xAxis: {
-            categories: key_container
-        },
-        yAxis: {
-            title: {
-                text: '人数(人)'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        tooltip: {
-            valueSuffix: '人'
+        tooltip : {
+            trigger: 'axis'
         },
         legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
+            data:['标签']
         },
-        series: [{
-            name: '人数',
-            data: value_container
-        }]
-    });
-  },
+        toolbox: {
+            show : true,
+            feature : {
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value',
+                boundaryGap : [0, 0.01]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                data : key_container
+            }
+        ],
+        series : [
+            {
+                name:'标签',
+                type:'bar',
+                data:value_container
+            },
+        ]
+    };
+    myChart.setOption(option); 
+},
 
   Draw_overview: function(data){
     $('#overview').empty();
@@ -424,39 +431,44 @@ Draw_weibo: function(data){
     html += '</tbody>';
     html += '</table>';
     $('#weibo').append(html);
+},
+Draw_personal_tag: function(data){
+for (key in data){
+    personal_tag =  data[key];
+    document.getElementById(key).title=personal_tag;
+}
 }
 }
  
 var Search_weibo = new Search_weibo(); 
 
+// $('.tag').onmouseover=function(){   
+//             timer=setTimeout(function(){document.getElementById("content").style.display='block'},1000);   
+//         }
+
+function show_personal_tag(uid){
+    show_personal_tag_url = '/tag/show_user_tag/?uid_list=' + uid;
+    Search_weibo.call_sync_ajax_request(show_personal_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_personal_tag);
+}
+// function hide_personal_tag(uid){
+//     alert('2222222222222');
+// }
+
 function recommend_all(){
   $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
 }
 
-// page control start
-var test_uids = [];
-var test_uids_string = '';
-// page control end
 function add_group_tag(){
     select_uids = [];
     select_uids_string = '';
     $('input[name="in_status"]:checked').each(function(){
         select_uids.push($(this).attr('value'));
     })
-    console.log(select_uids);
 
-    for (var i = 0; i < test_uids.length; i++) {
-        t=i.toString();
-        test_uids_string += test_uids + ',';
-    };
-    console.log(test_uids);
     for (var i = 0; i < select_uids.length; i++) {
         s=i.toString();
         select_uids_string += select_uids[s] + ',';
     };
-    total_uids = select_uids_string + test_uids_string;
-    total_uids = total_uids.substring(0,total_uids.length-1);
-    console.log(total_uids);
     add_tag_attribute_name = $("#select_attribute_name").val();
     add_tag_attribute_value = $("#select_attribute_value").val();
     add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
@@ -644,7 +656,7 @@ function draw_relation_table(data){
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['0'] +'</a></td><td style="text-align:center">' + data['0'][s]['1'] +'</td><td style="text-align:center"><img src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['2'] +'</a></td><td style="text-align:center">' + data['0'][s]['3'] +'</td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['0'] + '">' + data['0'][s]['0'] +'</a></td><td style="text-align:center">' + data['0'][s]['1'] +'</td><td style="text-align:center"><img  src= "/static/img/arrow.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['0'][s]['2'] + '">' + data['0'][s]['2'] +'</a></td><td style="text-align:center">' + data['0'][s]['3'] +'</td><td style="text-align:center">' + data['0'][s]['4'] +'</td></tr>';
     };
     html += '</table>';
     html +='<div type="button" data-toggle="modal" data-target="#modal_group_in" style="font-size:16px;cursor:pointer;float:left"><u>查看更多</u></div>';
@@ -977,8 +989,8 @@ $(document).ready(function(){
     var attribute_value_url = '';
     attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
     Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
-    show_user_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
-    Search_weibo.call_sync_ajax_request(show_user_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
+    // show_user_tag_url = 'http://' + downloadurl + '/tag/show_user_tag/?uid_list=' + id_string;
+    // Search_weibo.call_sync_ajax_request(show_user_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_user_tag);
 
     show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?uid_list=' + id_string;
     Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
