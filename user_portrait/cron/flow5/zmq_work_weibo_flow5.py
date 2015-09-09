@@ -23,9 +23,9 @@ def init_leveldb(leveldb_folder):
     return leveldb_bucket
 
 
-# delete leveldb to keep 7 day data
+# delete leveldb to keep 8 day data
 def delete_leveldb(date_timestamp, ts_segment):
-    del_date_timestamp = date_timestamp - 7*3600*24
+    del_date_timestamp = date_timestamp - 8*3600*24
     del_date = ts2datetime(del_date_timestamp)
     del_ts_segment = ts_segment
     del_leveldb_folder = del_date + str(del_ts_segment)

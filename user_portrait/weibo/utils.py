@@ -51,6 +51,44 @@ def dynamic_leveldb(leveldb_folder):
     leveldb_bucket = leveldb.LevelDB(os.path.join(DEFAULT_LEVELDBPATH+'/', leveldb_folder), block_cache_size=8*(2 << 25), write_buffer_size=8*(2 << 25))
     return leveldb_bucket
 
+# get user weibo by date
+def user_weibo_date(uid, date):
+    result = []
+    file_list = set(os.listdir(DEFAULT_LEVELDBPATH))
+    for i in range(1, 25):
+        leveldb_folder = date + str(i)
+        if leveldb_folder in file_list:
+            leveldb_bucket = dynamic_leveldb(leveldb_folder)
+            try:
+                user_weibo = leveldb_bucket.Get(uid)
+                weibo_list = json.loads(user_weibo)
+                result.extend(weibo_list)
+            except:
+                pass
+    return result
+
+# get user weibo by ts
+def user_weibo_ts(uid, ts):
+    result = []
+    ts = int(ts) - 3600*4
+    file_list = set(os.listdir(DEFAULT_LEVELDBPATH))
+    datestr = ts2datetime(ts)
+    date_ts = datetime2ts(datestr)
+    ts_segment = ((ts - date_ts) / 3600) % 24 + 1
+    for i in range(0, 4):
+        segment = ts_segment + i
+        leveldb_folder = datestr + str(segment)
+        print 'leveldb_folder:', leveldb_folder
+        if leveldb_folder in file_list:
+            leveldb_bucket = dynamic_leveldb(leveldb_folder)
+            try:
+                user_weibo = leveldb_bucket.Get(uid)
+                weibo_list = json.loads(user_weibo)
+                result.extend(weibo_list)
+            except:
+                pass
+    return result
+
 
 if __name__=='__main__':
     uid = '2816287692'
