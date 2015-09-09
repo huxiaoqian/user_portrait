@@ -21,7 +21,7 @@ function createRandomItemStyle() {
     };
 }
 function Draw_keyword(data){
-	keyword = [];
+	var keyword = [];
 
 	$('#WordList').empty();
     html = '';
@@ -34,8 +34,10 @@ function Draw_keyword(data){
     };
     html += '</table>'; 
     $('#WordList').append(html);
-	
-	for (i=0;i<20;i++){
+    
+    var word_num = Math.min(20, data.length);
+
+	for (i=0;i<word_num;i++){
 		var word = {};
 		word['name'] = data[i][0];
 		word['value'] =data[i][1]*100;
