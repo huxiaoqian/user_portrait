@@ -17,7 +17,7 @@ border: 1px solid #AA8BE8;height: 230px;margin-left: -300px;}
 .decoration ul{margin-top:30px;}
 li{list-style-type:none;}
 .decoration ul li{width:100%;float:left;margin-bottom:20px;}
-.p_title {float: left;width: 260px;white-space: nowrap;overflow: hidden; font-weight: normal;text-align: right;color: #808080;}
+.p_title {float: left;width: 260px;white-space: nowrap;overflow: hidden; margin-right:20px; font-weight: normal;text-align: right;color: #808080;}
 #searchbtn {
   display: inline-block;
   background: #4f8fff none repeat scroll 0% 0%;
@@ -65,10 +65,10 @@ tbody td{text-align:center;}
 	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
 	<div class="decoration">
 		<ul class="">
-			<li><span class="p_title">标签类别:</span><input type="text"  id="groupName" class="input searchinput" name="attribute_name" placeholder="请输入标签类别"/></li>
-			<li><span class="p_title">标签名:</span><input type="text" id="groupState" class="input searchinput" name="attribute_value" placeholder="请输入标签名"/></li>
-			<li><span class="p_title">时间：</span><input type="text" id="groupState" class="input searchinput" name="date" placeholder="请输入时间2015-07-15"/></li>
-			<li><span class="p_title">创建者:</span><input type="text" id="groupState" class="input searchinput" name="user" placeholder="aa"/></li>
+			<li><span class="p_title">标签类别</span><input type="text"  id="groupName" class="input searchinput" name="attribute_name" placeholder="请输入标签类别"/></li>
+			<li><span class="p_title">标签名</span><input type="text" id="groupState" class="input searchinput" name="attribute_value" placeholder="请输入标签名"/></li>
+			<li><span class="p_title">时间</span><input type="text" id="groupState" class="input searchinput" name="date" placeholder="请输入时间2015-07-15"/></li>
+			<li><span class="p_title">创建者</span><input type="text" id="groupState" class="input searchinput" name="user" placeholder="aa"/></li>
 			<li><input name="submit" type="submit" class="bluebtn" id="searchbtn" value="确定"></li>
 		</ul>
 	</div>
@@ -137,7 +137,7 @@ tbody td{text-align:center;}
 		<div class="tagCols" >
 			<span style="margin-left:95px;">标签名</span>
 			<input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;" placeholder="如：一级">
-			<span class="addIcon" id="addTag"></span>
+			<span class="addIcon" id="addTag" style="margin-bottom:-10px;"></span>
 		</div>
 		
       </div>
@@ -187,9 +187,9 @@ tbody td{text-align:center;}
 		tagname = tagNames.split('/');
 		$('#EDIT').empty();
 		var html = '';
-		html += '<div class=""><span style="margin-left:30px;">标签类别：</span>';
+		html += '<div class=""><span style="margin-left:30px;">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
 		html += '<span style="color:blue;" id="attributeName">'+$(this).parent().prev().html()+'</span ></div>';
-		html += '<div class="" id="" style="padding-left:30px;" ><span style="margin-right:15px;">标签名:</span>';
+		html += '<div class="" id="" style="padding-left:30px;" ><span style="margin-right:15px;">标签名</span>';
 		for(i=0;i<tagname.length;i++){
 			html += '<span class="tagbg" id="" name="attrName"><span class="tagName">'+tagname[i]+'</span><a  class="delCon" id="delIcon"></a></span>';
 		}
