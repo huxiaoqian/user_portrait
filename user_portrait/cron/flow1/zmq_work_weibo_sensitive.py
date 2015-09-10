@@ -13,6 +13,9 @@ reload(sys)
 sys.path.append('../../')
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1 
 from global_utils import  R_CLUSTER_FLOW1
+from global_utils import R_CLUSTER_FLOW2 as r_cluster
+
+from time_utils import ts2datetime, datetime2ts
 
 reload(sys)
 sys.path.append('../../../../../libsvm-3.17/python/')
@@ -21,6 +24,7 @@ from sta_ad import load_scws
 sw = load_scws()
 cx_list = ['a', 'n', 'nr', 'nz', 'v', '@', 'd']
 
+"""
 # deal with sensitive word
 def sensitive_word():
     f1 = open('zz.txt', 'rb')
@@ -49,7 +53,7 @@ def sensitive_test(text):
         return 0
     else:
         return 1
-
+"""
 
 
 def get_queue_index(timestamp):
@@ -75,10 +79,33 @@ def cal_propage_work(item, sensitive_words):
     timestamp = item['timestamp']
     text = item['text']
 
-    ##sensitive_result = sensitive_test(text)
-    sensitive_result = len(searchWord(text.encode('utf-8')))
-    #print  sensitive_result
-    #sensitive_result = 0
+    sw_list = searchWord(text.encode('utf-8'))
+    sensitive_result = len(sw_list)
+    if sensitive_result:
+        date = ts2datetime(timestamp)
+        ts = datetime2ts(date)
+        map = {}
+        for w in sw_list:
+            word = "".join([chr(x) for x in w])
+            word = word.decode('utf-8')
+            print word
+            if not map.__contains__(word):
+                map[word] = 1
+            else:
+                map[word] += 1
+        try:
+            sensitive_count_string = r_cluster.hget('sensitive_'+str(ts), str(uid))
+            sensitive_count_dict = json.loads(sensitive_count_string)
+            for word in map:
+                count = map[word]
+                if sensitive_count_dict.__contains__(word):
+                    sensitive_count_dict[word] += count
+                else:
+                    sensitive_count_dict[word] = count
+            r_cluster.hset('sensitive_'+str(ts), str(uid), json.dumps(sensitive_count_dict))
+        except:
+            r_cluster.hset('sensitive_'+str(ts), str(uid), json.dumps(sensitive_dict))
+
     if message_type == 1:
         cluster_redis.sadd('user_set', user)
         if sensitive_result:

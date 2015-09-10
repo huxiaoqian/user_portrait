@@ -49,8 +49,8 @@ def main(es):
     """
 
     #index_name = "20130903"
-    es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    bool = es.indices.exists(index=es_index)
+    index_name = 's_'+time.strftime("%Y%m%d", time.localtime(time.time()-86400))
+    bool = es.indices.exists(index=index_name)
     print bool
     if not bool:
         print "no index exist"
@@ -74,13 +74,8 @@ def main(es):
             bulk_action.extend((x[0], x[1]))
 
             if user_rank % 1000 == 0:
-                while 1:
-                    try:
-                        es.bulk(bulk_action, index=index_name, doc_type="bci", timeout=30)
-                        bulk_action = []
-                        break
-                    except Exception, r:
-                        es = ES_CLUSTER_FLOW1
+                es.bulk(bulk_action, index=index_name, doc_type="bci", timeout=30)
+                bulk_action = []
                 print user_rank
 
             if user_rank % 10000 == 0:
