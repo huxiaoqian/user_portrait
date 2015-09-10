@@ -18,7 +18,7 @@ Group_result.prototype = {   //获取数据，重新画表
     var item = data;
 	var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>状态</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		html += '<tr>';
