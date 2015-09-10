@@ -8,6 +8,7 @@ import leveldb
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_config import DEFAULT_LEVELDBPATH
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_profile
 '''
 reload(sys)
 sys.path.append('../')
@@ -103,9 +104,19 @@ def get_group_weibo(task_name, date):
     except Exception ,e:
         raise e
     user_list = group_task['uid_list']
-    #step2 : get group user weibo
+    #step2: get group user name
+    profile_index_name = 'weibo_user'
+    profile_index_type = 'user'
+    try:
+        user_name_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':user_list})['docs']
+    except Exception, e:
+        raise e
+    print 'user_name_result:', user_name_result
+    #step3 : get group user weibo
     file_list = set(os.listdir(DEFAULT_LEVELDBPATH))
+    count = 0
     for user in user_list:
+        user_nick_name = user_name_result[count]['_source']['nick_name']
         for i in range(1, 25):
             leveldb_folder = date + str(i)
             if leveldb_folder in file_list:
@@ -113,7 +124,9 @@ def get_group_weibo(task_name, date):
                 try:
                     user_weibo = leveldb_bucket.Get(str(user))
                     weibo_list = json.loads(user_weibo)
-                    group_weibo.extend(weibo_list)
+                    for weibo in weibo_list:
+                        weibo['uname'] = user_nick_name
+                        group_weibo.append(weibo)
                 except:
                     pass
     sort_group_weibo = sorted(group_weibo, key=lambda x:x['timestamp'])
