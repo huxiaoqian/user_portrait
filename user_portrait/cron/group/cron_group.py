@@ -335,6 +335,29 @@ def get_attr_trend(uid_list):
     result['activity_time'] = json.dumps(segment_result)
     return result
 
+# get importance max & activeness max & influence max to normalize
+def get_evaluate_max():
+    max_result = {}
+    index_name = 'user_portrait'
+    index_type = 'user'
+    evaluate_index = ['activeness', 'importance', 'influence']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query': {
+                'match_all':{}
+                },
+            'size': 1,
+            'sort': [{evaluate:{'order': 'desc'}}]
+            }
+        try:
+            result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+
+    return max_result
+
 
 def get_attr_bci(uid_list):
     results = []
@@ -401,7 +424,8 @@ def get_attr_bci(uid_list):
                 user_results[uid] = {'retweeted_weibo_comment_top': [[user_item['retweeted_weibo_comment_top_number'], user_item['retweeted_weibo_top_comment_id']]]}
             
             # yuankun need
-            fans_number += user_item['user_fansnum']
+            #print 'fan_num:', user_item['user_fansnum'], type(user_item['user_fansnum']), type(fans_number)
+            fans_number += int(user_item['user_fansnum'])
             origin_weibo_retweeted_total_number += user_item['origin_weibo_retweeted_total_number']
             origin_weibo_comment_total_number += user_item['origin_weibo_comment_total_number']
             retweeted_weibo_retweeted_total_number += user_item['retweeted_weibo_retweeted_total_number']
@@ -409,6 +433,10 @@ def get_attr_bci(uid_list):
 
     user_portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
     #print 'user_portrait_result:', user_portrait_result[0]
+
+    # get activeness max & importance max & influence max to normalize
+    evaluate_max_result = get_evaluate_max()
+
     for user_portrait in user_portrait_result:
         #print 'user_portrait:', user_portrait
         try:
@@ -416,13 +444,16 @@ def get_attr_bci(uid_list):
             #print 'user_portrait_dict:', user_portrait_dict
             uname = user_portrait_dict['uname']
             importance = user_portrait_dict['importance']
+            normal_importance = math.log((importance / evaluate_max_result['importance']) * 9 + 1, 10) * 100
             activeness = user_portrait_dict['activeness']
+            normal_activeness = math.log(activeness / evaluate_max_result['activeness'] * 9 + 1, 10) * 100
             influence = user_portrait_dict['influence']
+            normal_influence = math.log(influence / evaluate_max_result['influence'] * 9 + 1, 10) * 100
         except:
             uname = ''
-            importance = ''
-            activeness = ''
-            influence = ''
+            normal_importance = ''
+            normal_activeness = ''
+            normal_influence = ''
         #print 'user_portrait_dict:', user_portrait_dict
         uid = user_portrait_dict['uid']
         user_item_dict = user_results[uid]
@@ -431,7 +462,7 @@ def get_attr_bci(uid_list):
         retweeted_weibo_retweeted_top_item = sorted(user_item_dict['retweeted_weibo_retweeted_top'], key=lambda x:x[0], reverse=True)[0]
         retweeted_weibo_comment_top_item = sorted(user_item_dict['retweeted_weibo_comment_top'], key=lambda x:x[0], reverse=True)[0]
         
-        results.append([uid, uname, activeness, importance, influence, origin_weibo_retweeted_top_item ,\
+        results.append([uid, uname, normal_activeness, normal_importance, normal_influence, origin_weibo_retweeted_top_item ,\
                         origin_weibo_comment_top_item, retweeted_weibo_retweeted_top_item, \
                         retweeted_weibo_comment_top_item])
 
