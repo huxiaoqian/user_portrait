@@ -43,8 +43,8 @@ tbody td{text-align:center;}
 .tagCols span{font-size:20px;}
 .addIcon{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
 #editAdd{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
-.tagbg{background-color:yellow;min-width:50px;border:soild 1px #eee;margin-right:10px;}
-#delIcon{background-image:url(../../static/img/delete16.png);width:16px;height:16px;cursor:pointer;display:inline-block;}
+.tagbg{background-color:lightblue;min-width:50px;border:soild 1px #eee;margin-right:10px;}
+#delIcon{background-image:url(../../static/img/delete16.png);width:16px;height:14px;cursor:pointer;display:inline-block;}
 #EDIT{font-size:18px;}
 .smallAdd{background-image:url(../../static/img/smallAdd.png);width:16px;height:16px;cursor:pointer;display:inline-block;}
 .input_tag_box{
@@ -111,7 +111,7 @@ tbody td{text-align:center;}
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">编辑标签</h4>
       </div>
-      <div class="modal-body" id="EDIT">
+      <div class="modal-body" id="EDIT" style="padding:30px;">
         
 		
       </div>
@@ -137,7 +137,7 @@ tbody td{text-align:center;}
 		<div class="tagCols" >
 			<span style="margin-left:95px;">标签名</span>
 			<input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;" placeholder="如：一级">
-			<span class="addIcon" id="addTag"></span>
+			<span class="addIcon" id="addTag" style="margin-bottom:-10px;"></span>
 		</div>
 		
       </div>
@@ -187,9 +187,9 @@ tbody td{text-align:center;}
 		tagname = tagNames.split('/');
 		$('#EDIT').empty();
 		var html = '';
-		html += '<div class=""><span style="margin-left:30px;">标签类别：</span>';
-		html += '<span style="color:red;" id="attributeName">'+$(this).parent().prev().html()+'</span ></div>';
-		html += '<div class="" id=""><span style="margin-left:30px;margin-right:15px;">标签名:</span>';
+		html += '<div class="" style="margin-bottom:10px;"><span style="">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+		html += '<span style="color:blue;" id="attributeName">'+$(this).parent().prev().html()+'</span ></div>';
+		html += '<div class="" id=""><span style="margin-right:15px;">标签名</span>';
 		for(i=0;i<tagname.length;i++){
 			html += '<span class="tagbg" id="" name="attrName"><span class="tagName">'+tagname[i]+'</span><a  class="delCon" id="delIcon"></a></span>';
 		}
