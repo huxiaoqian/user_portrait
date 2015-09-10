@@ -5,14 +5,14 @@ import json
 import time
 import leveldb
 
-#from user_portrait.time_utils import ts2datetime, datetime2ts
-#from user_portrait.global_config import DEFAULT_LEVELDBPATH
-
+from user_portrait.time_utils import ts2datetime, datetime2ts
+from user_portrait.global_config import DEFAULT_LEVELDBPATH
+'''
 reload(sys)
 sys.path.append('../')
 from time_utils import ts2datetime, datetime2ts
 from global_config import DEFAULT_LEVELDBPATH
-
+'''
 
 # get user weibo from leveldb
 def get_user_weibo(uid):
