@@ -42,7 +42,16 @@
 	}
 	.dataTables_filter{text-align:right;margin-bottom:5px;}
     .dataTables_paginate{margin-top:-50px;margin-bottom:-20px;}
- /*	a{TEXT-DECORATION:none}a:hover{TEXT-DECORATION:none}*/
+	ul,li {margin:0;padding:0} 
+	ol,ul {list-style:none}
+	#pageGro{ width:400px; height:25px; margin:0px auto; padding-top:30px;}
+	#pageGro div,#pageGro div ul li{ font-size:12px; color:#999; line-height:23px; float:left; margin-left:5px;}
+	#pageGro div ul li{ width:22px; text-align:center; border:1px solid #999; cursor:pointer;}
+	#pageGro div ul li.on{ color:#fff; background:#3c90d9; border:1px solid #3c90d9;}
+	#pageGro .pageUp{ border:1px solid #999; cursor:pointer;}
+	#pageGro .pageDown{ width:63px; border:1px solid #999; cursor:pointer;}
+	#pageGro .pageUp{ text-indent:23px;background:url(/static/img/pageUp.png) 5px 7px no-repeat;}
+	#pageGro .pageDown{ text-indent:5px;background:url(/static/img/pageDown.png) 46px 6px no-repeat;}
  	</style>
  {% endblock css %}
 
@@ -126,6 +135,26 @@
 					<div style="width:450px;height:300;float:left">
 					<div><span style="font-size:17px;margin-left:50px;">关键词云</span><span type="button"data-toggle="modal" data-target="#modal_keyword" style="font-size:17px;margin-left:200px;cursor:pointer;"><u>查看更多</u></span></div>
 					<div id="keywordcloud" style="width:450px;height:300px"></div>
+					</div>
+			      	<div style="font-size:18px;margin-bottom:10px">群组微博</div>
+						<div>
+							<span>选择类别：</span><span id='attribute_name' style="margin-left:10px"></span>
+							<span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">添加</button></span>
+				      	<div id= "group_user" style="margin-top:14px"></div>
+				      </div>
+					<div id="group_weibo" style="width:960px;height:800px"></div>
+					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
+						<div class="pageUp">上一页</div>
+					    <div class="pageList">
+					        <ul>
+					            <li>1</li>
+					            <li>2</li>
+					            <li>3</li>
+					            <li>4</li>
+					            <li>5</li>
+					        </ul>
+					    </div>
+					    <div class="pageDown">下一页</div>
 					</div>
 			      </div>
 			    </div>
@@ -256,7 +285,7 @@
 			      	    <div style="font-size:18px;margin-bottom:10px">选择用户添加标签</div>
 						<div>
 							<span>选择类别：</span><span id='attribute_name' style="margin-left:10px"></span>
-							<span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">添加</button></span>
+							<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">确定</button></span>
 				      	<div id= "group_user" style="margin-top:14px"></div>
 				      </div>
 				    </div>
@@ -382,6 +411,78 @@
 		$('.course_nr2 li').find('.shiji').slideDown(600);	
 	});
 	var myChart = echarts.init(document.getElementById('relation_picture'));
+
+//点击跳转页面
+function pageGroup(pageNum,pageCount){
+	switch(pageNum){
+		case 1:
+			page_icon(1,5,0);
+		break;
+		case 2:
+			page_icon(1,5,1);
+		break;
+		case pageCount-1:
+			page_icon(pageCount-4,pageCount,3);
+		break;
+		case pageCount:
+			page_icon(pageCount-4,pageCount,4);
+		break;
+		default:
+			page_icon(pageNum-2,pageNum+2,2);
+		break;
+	}
+}
+
+//根据当前选中页生成页面点击按钮
+function page_icon(page,count,eq){
+	var ul_html = "";
+	for(var i=page; i<=count; i++){
+		ul_html += "<li>"+i+"</li>";
+	}
+	$("#pageGro ul").html(ul_html);
+	$("#pageGro ul li").eq(eq).addClass("on");
+}
+
+//上一页
+function pageUp(pageNum,pageCount){
+	switch(pageNum){
+		case 1:
+		break;
+		case 2:
+			page_icon(1,5,0);
+		break;
+		case pageCount-1:
+			page_icon(pageCount-4,pageCount,2);
+		break;
+		case pageCount:
+			page_icon(pageCount-4,pageCount,3);
+		break;
+		default:
+			page_icon(pageNum-2,pageNum+2,1);
+		break;
+	}
+}
+
+//下一页
+function pageDown(pageNum,pageCount){
+	switch(pageNum){
+		case 1:
+			page_icon(1,5,1);
+		break;
+		case 2:
+			page_icon(1,5,2);
+		break;
+		case pageCount-1:
+			page_icon(pageCount-4,pageCount,4);
+		break;
+		case pageCount:
+		break;
+		default:
+			page_icon(pageNum-2,pageNum+2,3);
+		break;
+	}
+}
+
     </script>
 	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
     {% endblock Own_js %}

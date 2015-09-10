@@ -32,5 +32,6 @@ def ts2datetime_full(ts):
     return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(ts))
 
 if __name__=='__main__':
-    result = ts2date(int('1377964800'))
+    result = datetime2ts('2013-09-02')
+    #result = ts2date(1377993600)
     print 'result:', result
