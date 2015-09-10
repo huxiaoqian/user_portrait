@@ -19,7 +19,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 .shiji{ position:absolute; width:100%; left:0; top:-20px; display:none;}
 .ico{ height:67px; line-height:67px; color:#518dbb; font-weight:bold; background:url(/static/img/ico11.gif) no-repeat center top; margin-bottom:8px;}
 .ms{ width:100px;line-height:14px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin-left:18px;}
-#Alocation{height:auto;width:180px;margin-left:100px;margin-top:50px;}
+#Alocation{height:auto;width:180px;}
 .gray{color:#999;}
 </style>
 <div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>
@@ -72,6 +72,32 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 
 
 <div id="Activezh" style="height:300px;width:680px;margin-top:30px;" class="fleft"></div>
+
+<div id="weibo_content" style="border:#fff 1px solid;width:300px;height:300px;margin-top:50px;" class="fleft">
+	<div>
+		<span class="">时间</span><span>2015-09-03 01:00</span>
+		<p>2013年9月22日下午原定宿务航空马尼拉飞香港，。宿务航空告诉我23日第一班马尼拉飞香港的满座了，需要候补，为了赶上UA116，自己在马尼拉机场玩手机呆了一个未眠的夜晚，终于候补上宿务第一班飞香港的飞机，一上飞机就睡的死死的，越接近香港，飞机因为气流颠的越厉害，飞机上一个小孩子哭的厉害，我困的厉害，心里直报怨这个熊孩子吵醒我。落地香港后直奔UA柜台办值机手续，原本10：25分起飞的UA116延误到下午3点多起飞，折磨人，又是等了5个多小时才上飞机。马尼拉开好的航班取消延误证明和美联航给的延误证明，想到等着回来找美亚索赔，结果回来时间久了，总是忘记，后来也就不想索赔了。</p>
+	</div>
+	
+</div>
+
+
+<div class="" style="width:680px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >该用户的活跃时间段为：<span id="time1"></span> 和 <span id="time2"></span></h4>
+	</div>
+	<div id="" style="height:30px;width:650px">
+		<span class="fleft" style="margin-right:10px; width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;"><span id="saysay"></span></h4>
+	</div>
+	<div id="" style="height:30px;width:650px">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;"><span id="location_description1"></span><span id="location_description2"></span><span id="location_description3"></span><span id="location_description4"></span></h4>
+	</div>
+</div>
+
+
 <div id ="Alocation" class="">
 	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
 	<div class="LocationDetail" id="Top5">
@@ -94,21 +120,6 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 </div>
 
 
-
-<div class="" style="width:1000px;">
-	<div id="" style="height:30px;width:950px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;" >该用户的活跃时间段为：<span id="time1"></span> 和 <span id="time2"></span></h4>
-	</div>
-	<div id="" style="height:30px;width:950px">
-		<span class="fleft" style="margin-right:10px; width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;"><span id="saysay"></span></h4>
-	</div>
-	<div id="" style="height:30px;width:950px">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;"><span id="location_description1"></span><span id="location_description2"></span><span id="location_description3"></span><span id="location_description4"></span></h4>
-	</div>
-</div>
 <script src="/static/js/highstock.js" charset="utf-8"></script>
 <script src="/static/js/exporting.js" charset="utf-8"></script>
 <script src="/static/js/portrait/location.js" charset="utf-8"></script>
