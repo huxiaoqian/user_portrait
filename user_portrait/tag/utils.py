@@ -301,7 +301,7 @@ def get_group_tag(group_name):
                     result[tag_string] += 1
                 except:
                     result[tag_string] = 1
-
+    order_result = sorted(order_result.items(), key=lambda x:x[1], reverse=True)
     return result
 '''
 def get_group_tag(uid_list):
