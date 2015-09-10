@@ -89,12 +89,12 @@ Search_weibo.prototype = {
     $('#myModal').modal('hide');
   },
   Draw_group_tag: function(data){
-    console.log(data);
     key_container = [];
     value_container = [];
-    for (key in data){
-        key_container.push(key);
-        value_container.push(data[key]);
+    for (i=0;i<data.length;i++){
+        s=i.toString();
+        key_container.push(data[s]['0']);
+        value_container.push(data[s]['1']);
     }
     var myChart = echarts.init(document.getElementById('lable'));
     var option = {
@@ -408,14 +408,105 @@ for (key in data){
     personal_tag =  data[key];
     document.getElementById(key).title=personal_tag;
 }
+},
+Draw_group_weibo: function(data){
+    console.log(data);
+    page_num = 10;
+    // page_group_weibo(start_row,end_row,data);
+    if (data.length < page_num) {
+          page_num = data.length
+          page_group_weibo( 0, page_num, data);
+      }
+      else {
+          page_group_weibo( 0, page_num, data);
+          var total_pages = 0;
+          if (data.length % page_num == 0) {
+              total_pages = data.length / page_num;
+          }
+          else {
+              total_pages = data.length / page_num + 1;
+          }
+        }
+    var pageCount = total_pages;//模拟后台总页数
+    //生成分页按钮
+    if(pageCount>5){
+        page_icon(1,5,0);
+    }else{
+        page_icon(1,pageCount,0);
+    }
+    
+    //点击分页按钮触发
+    $("#pageGro li").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($(this).html());//获取当前页数
+            pageGroup(pageNum,pageCount);
+        }else{
+            $(this).addClass("on");
+            $(this).siblings("li").removeClass("on");
+        }
+          
+      start_row = (pageNum - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+        page_group_weibo(start_row,end_row,data);
+    });
+    
+    //点击上一页触发
+    $("#pageGro .pageUp").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#pageGro li.on").html());//获取当前页
+            pageUp(pageNum,pageCount);
+        }else{
+            var index = $("#pageGro ul li.on").index();//获取当前页
+            if(index > 0){
+                $("#pageGro li").removeClass("on");//清除所有选中
+                $("#pageGro ul li").eq(index-1).addClass("on");//选中上一页
+            }
+        }
+      start_row = (pageNum - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+        page_group_weibo(start_row,end_row,data);
+    });
+    
+    //点击下一页触发
+    $("#pageGro .pageDown").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#pageGro li.on").html());//获取当前页
+            pageDown(pageNum,pageCount);
+        }else{
+            var index = $("#pageGro ul li.on").index();//获取当前页
+            if(index+1 < pageCount){
+                $("#pageGro li").removeClass("on");//清除所有选中
+                $("#pageGro ul li").eq(index+1).addClass("on");//选中上一页
+            }
+        }
+      start_row = (pageNum - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+        page_group_weibo(start_row,end_row,data);
+    });
 }
 }
  
 var Search_weibo = new Search_weibo(); 
 
-// $('.tag').onmouseover=function(){   
-//             timer=setTimeout(function(){document.getElementById("content").style.display='block'},1000);   
-//         }
+function page_group_weibo(start_row,end_row,data){
+    $(#group_weibo).empty();
+var html = "";
+    html += '<div class="tang-scrollpanel-wrapper" style="height: ' + 71 * weibo_num + 'px;">';
+    html += '<div class="tang-scrollpanel-content">';
+    html += '<ul id="weibo_ul">';
+    for (i=start_row,i<end_row,i++){
+
+    }
+    html += '</ul>';
+    html += '</div>';
+    $(#group_weibo).append(html);
+}
 
 function show_personal_tag(uid){
     var show_personal_tag_url = '/tag/show_user_tag/?uid_list=' + uid;
