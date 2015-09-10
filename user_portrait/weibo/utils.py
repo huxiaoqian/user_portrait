@@ -81,13 +81,13 @@ def user_weibo_ts(uid, ts):
     for i in range(0, 4):
         segment = ts_segment + i
         leveldb_folder = datestr + str(segment)
-        print 'leveldb_folder:', leveldb_folder
+        #print 'leveldb_folder:', leveldb_folder
         if leveldb_folder in file_list:
             leveldb_bucket = dynamic_leveldb(leveldb_folder)
             try:
                 user_weibo = leveldb_bucket.Get(str(uid))
                 weibo_list = json.loads(user_weibo)
-                print 'len weibo_list:', len(weibo_list)
+                #print 'len weibo_list:', len(weibo_list)
                 result.extend(weibo_list)
             except:
                 pass
@@ -111,7 +111,7 @@ def get_group_weibo(task_name, date):
         user_name_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':user_list})['docs']
     except Exception, e:
         raise e
-    print 'user_name_result:', user_name_result
+    #print 'user_name_result:', user_name_result
     #step3 : get group user weibo
     file_list = set(os.listdir(DEFAULT_LEVELDBPATH))
     count = 0

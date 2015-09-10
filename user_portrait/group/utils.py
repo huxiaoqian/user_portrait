@@ -155,7 +155,7 @@ def search_task(task_name, submit_date, state, status):
     except:
         return None
     result = []
-    print 'len task_dict_list:', len(task_dict_list)
+    #print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:
         result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], task_dict['_source']['state'], task_dict['_source']['status']])
     
