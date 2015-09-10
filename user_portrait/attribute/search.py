@@ -9,6 +9,7 @@ import time
 import json
 import redis
 from description import active_geo_description, active_time_description, hashtag_description
+#reload(sys)
 #sys.path.append('../../')
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
@@ -348,6 +349,29 @@ def ip_dict2geo(ip_dict):
                 geo_dict[city] = ip_dict[ip]
     return geo_dict
 
+# get importance max & activeness max & influence max
+def get_evaluate_max():
+    max_result = {}
+    index_name = 'user_portrait'
+    index_type = 'user'
+    evaluate_index = ['activeness', 'importance', 'influence']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size':1,
+            'sort':[{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    print 'result:', max_result
+    return max_result
+
 
 #use to search user_portrait to show the attribute saved in es_user_portrait
 def search_attribute_portrait(uid):
@@ -461,6 +485,7 @@ def search_attribute_portrait(uid):
         results['uid'] = ''
         results['description'] = ''
     
+    # get importance value
     if results['importance']:
         #print results['importance']
         query_body = {
@@ -613,7 +638,8 @@ def delete_action(uid_list):
 if __name__=='__main__':
     uid = '1798289842'
     now_ts = 1377964800 + 3600 * 24 * 4
-    search_attribute_portrait(uid)
+    #search_attribute_portrait(uid)
+    result = get_evaluate_max()
     '''
     results1 = search_attention(uid)
     print 'attention:', results1

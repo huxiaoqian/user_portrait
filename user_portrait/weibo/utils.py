@@ -4,14 +4,15 @@ import sys
 import json
 import time
 import leveldb
-from user_portrait.time_utils import ts2datetime, datetime2ts
-from user_portrait.global_config import DEFAULT_LEVELDBPATH
-'''
+
+#from user_portrait.time_utils import ts2datetime, datetime2ts
+#from user_portrait.global_config import DEFAULT_LEVELDBPATH
+
 reload(sys)
 sys.path.append('../')
 from time_utils import ts2datetime, datetime2ts
 from global_config import DEFAULT_LEVELDBPATH
-'''
+
 
 # get user weibo from leveldb
 def get_user_weibo(uid):
@@ -70,7 +71,7 @@ def user_weibo_date(uid, date):
 # get user weibo by ts
 def user_weibo_ts(uid, ts):
     result = []
-    ts = int(ts) - 3600*4
+    ts = int(ts)
     file_list = set(os.listdir(DEFAULT_LEVELDBPATH))
     datestr = ts2datetime(ts)
     date_ts = datetime2ts(datestr)
@@ -82,8 +83,9 @@ def user_weibo_ts(uid, ts):
         if leveldb_folder in file_list:
             leveldb_bucket = dynamic_leveldb(leveldb_folder)
             try:
-                user_weibo = leveldb_bucket.Get(uid)
+                user_weibo = leveldb_bucket.Get(str(uid))
                 weibo_list = json.loads(user_weibo)
+                print 'len weibo_list:', len(weibo_list)
                 result.extend(weibo_list)
             except:
                 pass
@@ -92,5 +94,6 @@ def user_weibo_ts(uid, ts):
 
 if __name__=='__main__':
     uid = '2816287692'
-    result = get_user_weibo(uid)
+    ts = datetime2ts('2013-09-06')
+    result = user_weibo_ts(uid, str(ts))
     print 'result:', len(result)
