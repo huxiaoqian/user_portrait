@@ -90,8 +90,6 @@ def ajax_specified_user_active():
 
     return json.dumps(results)
 
-
-
 @mod.route('/user_index_distribution/')
 def ajax_user_index_distribution():
     date = request.args.get('date', '') # '2013-09-01'
