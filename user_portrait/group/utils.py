@@ -2,6 +2,7 @@
 import sys
 import time
 import json
+import math
 from mid2weibolink import weiboinfo2url
 #test
 '''
@@ -322,6 +323,29 @@ def get_group_results(task_name, module):
     #print result
     return result
 
+
+# get importance max & activeness max & influence max
+def get_evaluate_max():
+    max_result = {}
+    index_name = 'user_portrait'
+    index_type = 'user'
+    evaluate_index = ['importance', 'influence']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size': 1,
+            'sort': [{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    return max_result
+
 # get grouop user list
 def get_group_list(task_name):
     results = []
@@ -332,6 +356,7 @@ def get_group_list(task_name):
     #print 'es_result:', es_results['uid_list'], type(es_results['uid_list'])
     uid_list = es_results['uid_list']
     user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+    evaluate_max = get_evaluate_max()
     for item in user_portrait_attribute:
         uid = item['_id']
         try:
@@ -340,8 +365,10 @@ def get_group_list(task_name):
             gender = source['gender']
             location = source['location']
             importance = source['importance']
+            normal_importance = math.log(importance / evaluate_max['importance'] * 9 + 1, 10) * 100
             influence = source['influence']
-            results.append([uid, uname, gender, location, importance, influence])
+            normal_influence = math.log(influence / evaluate_max['influence'] * 9 + 1, 10) * 100
+            results.append([uid, uname, gender, location, normal_importance, normal_influence])
         except:
             results.append([uid])
     return results
