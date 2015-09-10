@@ -495,17 +495,17 @@ Draw_group_weibo: function(data){
 var Search_weibo = new Search_weibo(); 
 
 function page_group_weibo(start_row,end_row,data){
-    $(#group_weibo).empty();
+    $('#group_weibo').empty();
 var html = "";
     html += '<div class="tang-scrollpanel-wrapper" style="height: ' + 71 * weibo_num + 'px;">';
     html += '<div class="tang-scrollpanel-content">';
     html += '<ul id="weibo_ul">';
-    for (i=start_row,i<end_row,i++){
-
-    }
+    // for (var i=start_row, i<end_row, i++){
+    //     console.log('111');
+    // }
     html += '</ul>';
     html += '</div>';
-    $(#group_weibo).append(html);
+    $('#group_weibo').append(html);
 }
 
 function show_personal_tag(uid){
