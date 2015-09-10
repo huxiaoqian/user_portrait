@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+#*- coding:utf-8 -*-
 import json
 import time
 from user_portrait.global_utils import es_user_portrait as es
@@ -272,6 +272,7 @@ def get_attribute_value(attribute_name):
 # use to show group tag statistic result
 def get_group_tag(group_name):
     result = {}
+    order_result = []
     #get group task uid list
     #get user tag
     #statistic tag
@@ -301,8 +302,10 @@ def get_group_tag(group_name):
                     result[tag_string] += 1
                 except:
                     result[tag_string] = 1
-    order_result = sorted(order_result.items(), key=lambda x:x[1], reverse=True)
-    return result
+    order_result = sorted(result.items(), key=lambda x:x[1], reverse=True)
+    #print 'order_result:', order_result
+    return order_result
+
 '''
 def get_group_tag(uid_list):
     result = {}

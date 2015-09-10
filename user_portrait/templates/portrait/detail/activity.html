@@ -73,40 +73,32 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 
 <div id="Activezh" style="height:300px;width:680px;margin-top:30px;" class="fleft"></div>
 
-<div id="weibo_content" style="border:#000 1px solid;width:300px;height:300px;margin-top:50px;" class="fleft">
+<div id="weibo_content" style="border:#000 1px solid;width:300px;height:300px;margin-top:50px;overflow-y:auto;" class="fleft">
 	<div id="" style="font-size:10px;" class="">
 			<div style="">
-				<span style="margin-left:10px;">日期：</span>
+				<span style="margin-left:0px;">日期：</span>
 				<span id="date_zh" >
 					<select id="select_date">
-						<option value="09-01">09-01</option>
-						<option value="09-02">09-02</option>
-						<option value="09-03">09-03</option>
-						<option value="09-04">09-04</option>
-						<option value="09-05">09-05</option>
-						<option value="09-06">09-06</option>
-						<option value="09-07">09-07</option>
 					</select>
 				</span>
 			</div>
 			<div >
-				<span style="margin-left:10px">时间段：</span>
+				<span style="margin-left:2px">时间段：</span>
 				<span id="tiem_zh" style="">
 					<select id="select_time">
-						<option value="00:00">00:00-04:00</option>
-						<option value="04:00">04:00-08:00</option>
-						<option value="08:00">08:00-12:00</option>
-						<option value="12:00">12:00-16:00</option>
-						<option value="16:00">16:00-20:00</option>
-						<option value="20:00">20:00-00:00</option>
+						<option value="00:00:00">00:00-04:00</option>
+						<option value="04:00:00">04:00-08:00</option>
+						<option value="08:00:00">08:00-12:00</option>
+						<option value="12:00:00">12:00-16:00</option>
+						<option value="16:00:00">16:00-20:00</option>
+						<option value="20:00:00">20:00-00:00</option>
 					</select>
 				</span>
 			</div>
+			<button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
 	</div>
-	<div>
-		<p id="weibo_text">
-			9月13日即将上映，鲍勃、斯图尔特、凯文和小伙伴们将带来怎样的惊喜？一起拭目以待！《小黄人大眼萌》官方周边，天猫抢先发售中~转发微博 
-		</p>
+	<div id="weibo_text">
+		
 	</div>
 </div>
 
@@ -236,6 +228,7 @@ Activity.prototype = {   //获取数据，重新画表
     });
   },
   active:function(data){
+	console.log(data);
 	var item = data.activity_time;
         for (i=0;i<item.length;i++){
            var date = item[i][0]/(15*60*16);
@@ -255,12 +248,22 @@ Activity.prototype = {   //获取数据，重新画表
     var trend = data.activity_trend;
 	var data_count=[];
 	var data_time = [];
+	var date_zhang = [];
     for(i=0;i<trend.length;i++){
         var time = getDate(trend[i][0]);
         var count = trend[i][1];
+		var date_zh =getDate_zh(trend[i][0])
 		data_time.push(time);
 		data_count.push(count);
+		date_zhang.push(date_zh);
     }
+	var date_html ='';
+	$('#select_date').empty();
+	for(i=0;i<date_zhang.length;i=i+6){
+		//console.log(date_zhang[i]);
+		date_html =date_html + '<option value="'+date_zhang[i]+'">'+date_zhang[i]+'</option>';
+	}
+	$('#select_date').append(date_html);
 	//Draw_trend:
 	 $('#Activezh').highcharts({
         chart: {
@@ -326,6 +329,10 @@ Activity.prototype = {   //获取数据，重新画表
 }
 function getDate(tm){
     var tt = new Date(parseInt(tm)*1000).format("MM-dd hh:mm");
+    return tt;
+}
+function getDate_zh(tm){
+    var tt = new Date(parseInt(tm)*1000).format("MM-dd");
     return tt;
 }
 var Activity = new Activity();
