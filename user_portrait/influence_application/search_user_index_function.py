@@ -254,14 +254,34 @@ def search_portrait_history_active_info(uid, date, index_name="copy_user_portrai
         return "NotFound"
     except:
         return None
+    
+    date_max = {}
+    for date_str in date_list:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size': 1,
+            'sort': [{date_str: {'order': 'desc'}}]
+        }
+        try:
+            max_item = es.search(index=index_name, doc_type=doctype, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        date_max[date_str] = max_item[0]['_source'][date_str]
+    print 'date_max:', date_max
 
     return_dict = {}
     for item in date_list:
         return_dict[item] = result.get(item, 0)
 
     in_list = []
+    normal_list = []
     for item in sorted(date_list):
         in_list.append(return_dict[item])
+        normal_value = math.log((return_dict[item] / date_max[item]) * 9 + 1 , 10) * 100
+        normal_list.append(normal_value)
+    
     #print 'in_list:', in_list
     max_influence = max(in_list)
     ave_influence = sum(in_list) / float(7)
@@ -279,7 +299,7 @@ def search_portrait_history_active_info(uid, date, index_name="copy_user_portrai
     else:
         mark = u'波动低影响力'
     description = [u'该用户为', mark]
-    return [in_list, description]
+    return [normal_list, description]
 
 
 if __name__ == "__main__":

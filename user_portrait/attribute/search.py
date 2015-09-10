@@ -7,6 +7,7 @@ import sys
 import csv
 import time
 import json
+import math
 import redis
 from description import active_geo_description, active_time_description, hashtag_description
 #reload(sys)
@@ -369,7 +370,7 @@ def get_evaluate_max():
             raise e
         max_evaluate = result[0]['_source'][evaluate]
         max_result[evaluate] = max_evaluate
-    print 'result:', max_result
+    #print 'result:', max_result
     return max_result
 
 
@@ -553,6 +554,15 @@ def search_attribute_portrait(uid):
     else:
         print 'es_user_portrait error'
         results['all_count'] = 0
+    # activeness normalized to 0-100
+    evaluate_max = get_evaluate_max()
+    normal_activeness = math.log(results['activeness'] / evaluate_max['activeness'] * 9 + 1, 10)
+    results['activeness'] = normal_activeness * 100
+    normal_importance = math.log(results['importance'] / evaluate_max['importance'] * 9 + 1, 10)
+    results['importance'] = normal_importance * 100
+    normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
+    results['influence'] = normal_influence * 100
+    
     #link conclusion
     link_ratio = results['link']
     results['link_conclusion'] = get_link_conclusion(link_ratio)
