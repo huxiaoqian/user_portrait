@@ -63,32 +63,14 @@ Search_weibo.prototype = {
     html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
     $('#attribute_value').append(html);
   },
-  // Draw_user_tag: function(data){
-  //   console.log(data);
-  //   $('#user_lable').empty();
-  //   user_lable_html = '';
-  //   user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-  //   user_lable_html += '<thead><tr><th class="center" style="text-align:center">用户ID</th>';
-  //   user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
-  //   user_lable_html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
-  //   user_lable_html += '</tr></thead>';
-  //   user_lable_html += '<tbody>';
-  //   for (key in data){
-  //    user_lable_html += '<tr>';
-  //    user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
-  //    user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
-  //    user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
-  //    user_lable_html += '</tr>';   
-  //   }    
-  //   user_lable_html += '</tbody>';
-  //   user_lable_html += '</table>';     
-  //   $('#user_lable').append(user_lable_html);
-  // },
   Draw_add_group_tag: function(data){
     alert('操作成功');
     $('#myModal').modal('hide');
   },
   Draw_group_tag: function(data){
+    var height = '';
+    height = (data.length*50).toFixed(0) + 'px'; 
+    document.getElementById("lable").style.height=height; 
     key_container = [];
     value_container = [];
     for (i=0;i<data.length;i++){
@@ -410,9 +392,7 @@ for (key in data){
 }
 },
 Draw_group_weibo: function(data){
-    console.log(data);
     page_num = 10;
-    // page_group_weibo(start_row,end_row,data);
     if (data.length < page_num) {
           page_num = data.length
           page_group_weibo( 0, page_num, data);
@@ -424,87 +404,125 @@ Draw_group_weibo: function(data){
               total_pages = data.length / page_num;
           }
           else {
-              total_pages = data.length / page_num + 1;
+              total_pages = Math.round(data.length / page_num) + 1;
           }
         }
-    var pageCount = total_pages;//模拟后台总页数
-    //生成分页按钮
+    var pageCount = total_pages;
+
     if(pageCount>5){
         page_icon(1,5,0);
     }else{
         page_icon(1,pageCount,0);
     }
     
-    //点击分页按钮触发
-    $("#pageGro li").click(function(){
-        if(pageCount > 5){
-            var pageNum = parseInt($(this).html());//获取当前页数
-            pageGroup(pageNum,pageCount);
-        }else{
-            $(this).addClass("on");
-            $(this).siblings("li").removeClass("on");
-        }
+
+    // $("#pageGro li").click(function(){
+    //     if(pageCount > 5){
+    //         var pageNum = parseInt($(this).html());
+    //         pageGroup(pageNum,pageCount);
+    //     }else{
+    //         $(this).addClass("on");
+    //         $(this).siblings("li").removeClass("on");
+    //     }
           
-      start_row = (pageNum - 1)* page_num;
-      end_row = start_row + page_num;
-      if (end_row > data.length)
-          end_row = data.length;
-        page_group_weibo(start_row,end_row,data);
-    });
-    
-    //点击上一页触发
+    //   start_row = (pageNum - 1)* page_num;
+    //   end_row = start_row + page_num;
+    //   if (end_row > data.length)
+    //       end_row = data.length;
+    //     page_group_weibo(start_row,end_row,data);
+    // });
+
     $("#pageGro .pageUp").click(function(){
         if(pageCount > 5){
-            var pageNum = parseInt($("#pageGro li.on").html());//获取当前页
+            var pageNum = parseInt($("#pageGro li.on").html());
             pageUp(pageNum,pageCount);
         }else{
-            var index = $("#pageGro ul li.on").index();//获取当前页
+            var index = $("#pageGro ul li.on").index();
             if(index > 0){
-                $("#pageGro li").removeClass("on");//清除所有选中
-                $("#pageGro ul li").eq(index-1).addClass("on");//选中上一页
+                $("#pageGro li").removeClass("on");
+                $("#pageGro ul li").eq(index-1).addClass("on");
             }
         }
-      start_row = (pageNum - 1)* page_num;
+      console.log(pageNum);
+      start_row = pageNum* page_num;
       end_row = start_row + page_num;
-      if (end_row > data.length)
+      if (end_row > data.length){
           end_row = data.length;
+      }
+      console.log(start_row);
+      console.log(end_row);
         page_group_weibo(start_row,end_row,data);
     });
     
-    //点击下一页触发
+
     $("#pageGro .pageDown").click(function(){
         if(pageCount > 5){
-            var pageNum = parseInt($("#pageGro li.on").html());//获取当前页
+            var pageNum = parseInt($("#pageGro li.on").html());
+
             pageDown(pageNum,pageCount);
         }else{
-            var index = $("#pageGro ul li.on").index();//获取当前页
+            var index = $("#pageGro ul li.on").index();
             if(index+1 < pageCount){
-                $("#pageGro li").removeClass("on");//清除所有选中
-                $("#pageGro ul li").eq(index+1).addClass("on");//选中上一页
+                $("#pageGro li").removeClass("on");
+                $("#pageGro ul li").eq(index+1).addClass("on");
             }
         }
-      start_row = (pageNum - 1)* page_num;
+      console.log(pageNum);
+      start_row = pageNum* page_num;
       end_row = start_row + page_num;
-      if (end_row > data.length)
+      if (end_row > data.length){
           end_row = data.length;
+      }
+      console.log(start_row);
+      console.log(end_row);
         page_group_weibo(start_row,end_row,data);
     });
 }
 }
  
 var Search_weibo = new Search_weibo(); 
+function Draw_group_weibo_date(){
+    $('#group_weibo_date').empty();
+    html = '';
+    html += '<select id="select_group_weibo_date">';
+    var timestamp = Date.parse(new Date());
+    date = new Date(parseInt(timestamp)).format("yyyy-MM-dd");
+    html += '<option value="' + date + '" selected="selected">' + date + '</option>';      
+    for (var i = 0; i < 6; i++) {
+        timestamp = timestamp-24*3600*1000;
+        date = new Date(parseInt(timestamp)).format("yyyy-MM-dd");
+        html += '<option value="' + date + '">' + date + '</option>';
+}
+    html += '</select>';
+    $('#group_weibo_date').append(html);
+  }
 
 function page_group_weibo(start_row,end_row,data){
+    weibo_num = end_row - start_row;
     $('#group_weibo').empty();
 var html = "";
-    html += '<div class="tang-scrollpanel-wrapper" style="height: ' + 71 * weibo_num + 'px;">';
-    html += '<div class="tang-scrollpanel-content">';
-    html += '<ul id="weibo_ul">';
-    // for (var i=start_row, i<end_row, i++){
-    //     console.log('111');
-    // }
-    html += '</ul>';
-    html += '</div>';
+    html += '<div class="group_weibo_font">';
+    for (var i = start_row; i < end_row; i += 1){
+        s=i.toString();
+        uid = data[s]['uid'];
+        text = data[s]['text'];
+        uname = data[s]['uname'];
+        timestamp = data[s]['timestamp'];
+        date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
+        if (i%2 ==0){
+            html += '<div style="background:#F1E1FF">';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
+            html += '<p><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>'
+    }
+        else{
+            html += '<div>';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
+            html += '<p><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>';
+        }
+    }
+    html += '</div>'; 
     $('#group_weibo').append(html);
 }
 
@@ -512,9 +530,6 @@ function show_personal_tag(uid){
     var show_personal_tag_url = '/tag/show_user_tag/?uid_list=' + uid;
     Search_weibo.call_sync_ajax_request(show_personal_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_personal_tag);
 }
-// function hide_personal_tag(uid){
-//     alert('2222222222222');
-// }
 
 function recommend_all(){
   $('input[name="in_status"]:not(:disabled)').prop('checked', $("#recommend_all").prop('checked'));
@@ -1082,6 +1097,7 @@ function show_members(){
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
+    Draw_group_weibo_date();
     Draw_think_emotion();
     Draw_think_domain();
     Draw_think_topic();
@@ -1099,6 +1115,9 @@ $(document).ready(function(){
 
     var show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?task_name=' + name;
     Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
+
+    var show_group_weibo_url = 'http://' + downloadurl + '/weibo/show_group_weibo/?task_name=' + name + "&date=2013-09-02";
+    Search_weibo.call_sync_ajax_request(show_group_weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_group_weibo);
 
     var activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
     Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
