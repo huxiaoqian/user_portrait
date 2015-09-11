@@ -7,6 +7,20 @@ Base.prototype.simple_search_url = function (term){
 
 
 function bindSearchFunc(that){ 
+    $("#keyword").bind('keyup', function(e){
+        var ev = document.all?window.event:e;
+        if (ev.keyCode == 13){
+            var term = $("#keyword").val();
+            var simple_url = "/index/search_result/?stype=1&term=" + term;
+            console.log(simple_url);
+            window.location.href = simple_url;
+        }
+    }).bind('keydown', function(e){
+        var ev = document.all?window.event:e;
+        if (ev.keyCode == 13){
+            return false;
+        }
+    });
     $("#simple_search").click(function(){
         var term = $("#keyword").val();
         var simple_url = that.simple_search_url(term);
