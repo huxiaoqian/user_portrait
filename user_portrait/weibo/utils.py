@@ -130,7 +130,7 @@ def get_group_weibo(task_name, date):
                 except:
                     pass
     sort_group_weibo = sorted(group_weibo, key=lambda x:x['timestamp'])
-    return group_weibo
+    return sort_group_weibo
 
 
 if __name__=='__main__':
