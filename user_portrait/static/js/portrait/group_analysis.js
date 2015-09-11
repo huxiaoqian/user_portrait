@@ -415,22 +415,22 @@ Draw_group_weibo: function(data){
         page_icon(1,pageCount,0);
     }
     
-
-    // $("#pageGro li").click(function(){
-    //     if(pageCount > 5){
-    //         var pageNum = parseInt($(this).html());
-    //         pageGroup(pageNum,pageCount);
-    //     }else{
-    //         $(this).addClass("on");
-    //         $(this).siblings("li").removeClass("on");
-    //     }
-          
-    //   start_row = (pageNum - 1)* page_num;
-    //   end_row = start_row + page_num;
-    //   if (end_row > data.length)
-    //       end_row = data.length;
-    //     page_group_weibo(start_row,end_row,data);
-    // });
+    $("#pageGro li").live("click",function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($(this).html());
+            pageGroup(pageNum,pageCount);
+        }else{
+            $(this).addClass("on");
+            $(this).siblings("li").removeClass("on");
+        }
+      page = parseInt($("#pageGro li.on").html())  
+      console.log(page);         
+      start_row = (page - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+        page_group_weibo(start_row,end_row,data);
+    });
 
     $("#pageGro .pageUp").click(function(){
         if(pageCount > 5){
