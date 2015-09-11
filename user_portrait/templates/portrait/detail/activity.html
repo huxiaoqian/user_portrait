@@ -73,9 +73,9 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 
 <div id="Activezh" style="height:300px;width:680px;margin-top:30px;" class="fleft"></div>
 
-<div id="weibo_content" style="background-color:whitesmoke;width:300px;height:300px;margin-top:50px;" class="fleft">
+<div id="weibo_content" style="background-color:whitesmoke;width:300px;height:300px;margin-top:50px;overflow-y:auto;" class="fleft">
 	<div id="" style="font-size:10px;" class="">
-			<div style="margin-left:40px;">
+			<div style="margin-left:10px;">
 				<span >当前选择日期</span>
 				<span id="date_zh" >
                     <!--
@@ -84,7 +84,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
                     -->
 				</span>
 			</div>
-			<div style="float:right;margin-right:40px;">
+			<div style="float:right;margin-right:40px;margin-left:10px;">
 				<span>时间段</span>
                 <span id="time_zh">
                     <!--
@@ -151,6 +151,37 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 <script src="/static/js/portrait/location.js" charset="utf-8"></script>
 <script src="/static/js/portrait/weibo_content.js"></script>
 <script>
+function Weibo(){
+  this.ajax_method = 'GET';
+}
+Weibo.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+
+Draw_content:function(data){
+	var html = '';
+	$('#weibo_text').empty();
+	if(data==''){
+		html += "该时段用户未发布任何微博";
+	}else{
+		for(i=0;i<data.length;i++){
+			//console.log(data[i].text);
+			html += "<div style='width:100%;'><span>"+(i+1)+"</span>.<span>"+data[i].text+"</span></div>";
+		}
+
+	}
+	$('#weibo_text').append(html);
+  }
+}
+
+
 function Geo(){
   this.ajax_method = 'GET';
 }
@@ -165,7 +196,6 @@ Geo.prototype = {   //获取数据，重新画表
     });
   },
 geo:function(data){
-	
 	var geo_data = data[0]
 	console.log(geo_data);
 	document.getElementById('saysay').innerHTML = data[1];
@@ -192,6 +222,7 @@ geo:function(data){
 	}
 }
 }
+
 var Geo = new Geo();
 url = '/attribute/geo_track/?uid='+parent.personalData.uid ;
 Geo.call_sync_ajax_request(url, Geo.ajax_method, Geo.geo);
@@ -263,7 +294,7 @@ Activity.prototype = {   //获取数据，重新画表
 		date_zhang.push(date_zh);
     }
     console.log('here');
-    console.log(date_zhang);
+    console.log(window.date_zhang);
     /*
 	var date_html ='';
 	$('#select_date').empty();
@@ -346,6 +377,9 @@ Activity.prototype = {   //获取数据，重新画表
     });
   }
 }
+//微博文本默认数据
+
+
 function point2weibo(xnum, ts){
 	var url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts[0];
     var delta;
