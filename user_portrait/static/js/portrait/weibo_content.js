@@ -15,19 +15,18 @@ Weibo.prototype = {   //获取数据，重新画表
 Draw_content:function(data){
 	var html = '';
 	$('#weibo_text').empty();
-	if(data==''){
-		html += "该时段用户未发布任何微博";
-	}else{
-		for(i=0;i<data.length;i++){
-			//console.log(data[i].text);
-			html += "<div style='width:100%;'><span>"+(i+1)+"</span>.<span>"+data[i].text+"</span></div>";
-		}
+    if(data==''){
+        html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
+    }else{
+        for(i=0;i<data.length;i++){
+            //console.log(data[i].text);
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
+        }
 
-	}
+    }
 	$('#weibo_text').append(html);
   }
 }
-time_zh
 
 var date = '';
 var time = '';
