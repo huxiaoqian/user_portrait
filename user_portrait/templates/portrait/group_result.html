@@ -9,7 +9,7 @@
     <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
     .hidden{display:none;}
-	#file-upload{margin-left:50px;border:1px solid #999;}
+	#file-upload{margin-left:180px;border:1px solid #999;}
 	.fleft{float:left;}
 #uploadFile{position: fixed;margin-top: -200px;left: 50%;top: 50%;z-index: 1002;width: 620px;background: #FFF none repeat scroll 0% 0%;
 border: 1px solid #AA8BE8;height: 230px;margin-left: -300px;}
@@ -32,6 +32,7 @@ li{list-style-type:none;}
   height:30px;
 }
 #searchTable{float:right;margin-right:20px;}
+#upFile{float:right;margin-right:20px;}
 #SearchTab{position: fixed;margin-top: -200px;left: 50%;top: 50%;z-index: 1002;width: 620px;background: #FFF none repeat scroll 0% 0%;
 border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 #pageTitle{font-size:20px;text-indent:20px;font-family:"Microsoft YaHei UI";}
@@ -49,10 +50,16 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 	<h3 class="title">上传文件说明<a href="javascript:void(0)" id="close" class="close1"></a></h3>
 	<div class="decoration">
 		<ul class="clearfix">
-			<li><span class="p_title">群组名称：</span><input type="text"  class="input" name="task_name" placeholder="请输入群组名称"/></li>
-			<li><span class="p_title">备注：</span><input type="text"  class="input" name="state" placeholder="请输入备注"/></li>
-			<li><input name="submit" type="submit" class="bluebtn lineh" id="uploadbtn" value="确定" ></li>
+			<li><span class="p_title">群组名称：</span><input type="text"  class="input" name="task_name" id="file_task_name" placeholder="请输入群组名称"/></li>
+			<li><span class="p_title">备注：</span><input type="text"  class="input" name="state" id="file_state" placeholder="请输入备注"/></li>
+			<li>
+				<form enctype="multipart/form-data" method="post" style="margin-bottom:10px;margin-top:10px;">
+			<input type="file" name="fileUp" id="file-upload" class="fleft" onchange="handleFileSelect(this.files)"/>  
+			<input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
+	</form>
+			</li>
 		</ul>
+		
 	</div>
 </div>
 <div id="SearchTab"  class="hidden">
@@ -85,13 +92,12 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
                    <span class="TabTitle"  >任务管理列表</span>
                 </div>
 				<div class="fleft">
-	<form enctype="multipart/form-data" method="post" style="margin-bottom:10px;margin-top:10px;">
-		<input type="file" name="fileUp" id="file-upload" class="fleft" />  
-		<input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
-	</form>
+				
+	
 </div>
 <a id="turnback" href="" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a>
 <a id="searchTable" href="" style="margin-bottom:10px;margin-top:12px;">表单搜索</a>
+<a id="upFile" href="#" style="margin-bottom:10px;margin-top:12px;">上传文件</a>
                 <div class="box-content" id="Grouptable" >
                     
                 </div>
@@ -127,11 +133,13 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 			alert('Can only upload csv or txt file.');
 		}
 	});
+	/*
 	$("#uploadbtn1").off("click").click(function(){
 		$("#float-wrap").removeClass("hidden");
 		$("#uploadFile").removeClass("hidden");
 		return false;
 	});
+	*/
 	$("#searchTable").off("click").click(function(){
 		$("#float-wrap").removeClass("hidden");
 		$("#SearchTab").removeClass("hidden");
@@ -145,7 +153,33 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 		$("#float-wrap").addClass("hidden");
 		$("#SearchTab").addClass("hidden");
     });
-	
+	$("#upFile").off("click").click(function(){
+			$("#float-wrap").removeClass("hidden");
+			$("#uploadFile").removeClass("hidden");
+		});
+	function handleFileSelect(evt){
+        var files = evt;
+		var task_name = $('#file_task_name').val();
+		var state = $('#file_state').val();
+        for(var i=0,f;f=files[i];i++){
+            var reader = new FileReader();
+            reader.onload = function (oFREvent) {
+				var a = oFREvent.target.result;		
+				$.ajax({   
+					type:"POST",  
+					url:"/group/upload_file/",
+					dataType: "json",
+					async:false,
+					data:{upload_data:a,task_name:task_name,state:state},
+					//success: callback
+				});
+				
+				location.reload();
+			};            
+			reader.readAsText(f,'GB2312');                                                        
+        }
+
+    }
 </script>
 
 <script src="../../static/js/portrait/group_result.js"></script>
@@ -155,40 +189,7 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 {% block end_js %}
 {{ super () }}
 <script src="../../static/js/charisma.js"></script>
-<script src="../../static/js/ajaxfileupload.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $("#uploadbtn").click(function () {
-                ajaxFileUpload();
-            })
-        })
-        function ajaxFileUpload() {
-            $.ajaxFileUpload
-            (
-                {
-                    url: '/', //用于文件上传的服务器端请求地址,
-                    secureuri: false, //是否需要安全协议，一般设置为false
-                    fileElementId: 'file1', //文件上传域的ID
-                    dataType: 'json', //返回值类型 一般设置为json
-                    success: function (data, status)  //服务器成功响应处理函数
-                    {
-                        if (typeof (data.error) != 'undefined') {
-                            if (data.error != '') {
-                                alert(data.error);
-                            } else {
-                                alert(data.msg);
-                            }
-                        }
-                    },
-                    error: function (data, status, e)//服务器响应失败处理函数
-                    {
-                        alert(e);
-                    }
-                }
-            )
-            return false;
-        }
-    </script>
+<script src="../../static/js/ajaxfileupload.js"></script> 
 {% endblock end_js %}
 
 
