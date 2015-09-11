@@ -52,6 +52,9 @@
 	#pageGro .pageDown{ width:63px; border:1px solid #999; cursor:pointer;}
 	#pageGro .pageUp{ text-indent:23px;background:url(/static/img/pageUp.png) 5px 7px no-repeat;}
 	#pageGro .pageDown{ text-indent:5px;background:url(/static/img/pageDown.png) 46px 6px no-repeat;}
+	#group_weibo_font{ 
+	font-family: '微软雅黑';
+    font-size: 14px; }
  	</style>
  {% endblock css %}
 
@@ -135,12 +138,12 @@
 						<div><span style="font-size:17px;margin-left:50px;">关键词云</span><span type="button"data-toggle="modal" data-target="#modal_keyword" style="font-size:17px;margin-left:200px;cursor:pointer;"><u>查看更多</u></span></div>
 						<div id="keywordcloud" style="width:450px;height:240px"></div>
 					</div>
-					<div style="font-size:18px;margin-bottom:10px">群组微博</div>
+					<div style="font-size:18px;margin-bottom:10px;margin-top:270px">群组成员微博</div>
 					<div>
-						<span>选择日期：</span><span id='attribute_name' style="margin-left:10px"></span>
-						<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">确定</button></span>
+						<span>选择日期：</span><span id='group_weibo_date' style="margin-left:10px"></span>
+						<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择" onclick="add_group_tag()">确定</button></span>
 			        </div>
-					<div id="group_weibo" style="width:960px;height:400px"></div>
+					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
 					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
 						<div class="pageUp">上一页</div>
 					    <div class="pageList">
@@ -188,15 +191,13 @@
 			    </div>
 			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
 			      <div class="panel-body">
-						<div style="height:300px;width:900px;float:left">
 						<div style="font-size:17px;margin-bottom:20px;">标签划分</div>
-						<div id="lable" style="height:300px;width:900px;"></div>
-						</div>
-						<div style="height:400px;width:450px;float:left;margin-top:20px">
+						<div id="lable" style="width:900px;"></div>
+						<div style="height:400px;width:450px;float:left">
 						<div style="font-size:17px;margin-bottom:20px;">领域划分</div>
 						<div id="radar_domain" style="height:380px;width:450px;"></div>
 						</div>
-						<div style="height:400px;width:450px;float:right;margin-top:20px">
+						<div style="height:400px;width:450px;float:right">
 						<div style="font-size:17px;margin-bottom:20px;">话题划分</div>
 						<div id="radar_topic" style="height:380px;width:450px;"></div>
 						</div>
