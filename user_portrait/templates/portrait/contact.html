@@ -88,7 +88,7 @@
 </div>
 <div class='row'>
 <div class="box col-md-12" >
-    <div class="box-inner">
+    <div class="box-inner" id = 'box-height'>
         <div class="box-header" style="background-color:rgba(195,220,224,0.4)">
             <h2 style='margin-left:5px'>条件选择</h2>
         </div>
@@ -105,17 +105,17 @@
 
                          <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
-                            <span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" id="topic">话题</span>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" id="topic_string">话题</span>
                              <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
                         </div>
                          <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
-                            <span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" id="keywords">关键词</span>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white;background-color:white; display:inline-block" id="keywords_string">关键词</span>
                              <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
                         </div>
                         <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
-                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status">心理状态</span>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status_string">心理状态</span>
                              <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
                         </div>
                     </div>
@@ -130,6 +130,9 @@
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
                              <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
                         </div>
+                    </div>
+                    <div class='col-md-12' id='tag'>
+                        
                     </div>
                 </div>
             </div>
@@ -199,10 +202,10 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组成员自定义属性</h4>
+                <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组成员</h4>
               </div>
               <div class="modal-body">
-                <div style="font-size:18px;margin-top:-10px">增加标签</div>
+                <div style="font-size:18px;margin-top:-10px">选择用户添加标签</div>
                 <div>
                     <span>选择类别：</span><span id='attribute_name' style="margin-left:10px"></span>
                     <span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">添加</button></span>
@@ -273,7 +276,7 @@
                 }
             }
         });
-        var html = '<span  type="button" id="compare_button" title="选择2至3个用户对比" style="font-size:16px;cursor: pointer" onclick="diy_button();"><u>自定义属性</u></span>';
+        var html = '<span  type="button" id="compare_button" title="选择2至3个用户对比" style="font-size:16px;cursor: pointer" onclick="diy_button();"><u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u></span>';
         $('#pager').append(html);
         $('.caroufredsel_wrapper').css('height', '700px');
         $('#txt').css('height', '700px');
