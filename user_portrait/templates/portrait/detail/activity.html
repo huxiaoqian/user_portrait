@@ -73,32 +73,21 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 
 <div id="Activezh" style="height:300px;width:680px;margin-top:30px;" class="fleft"></div>
 
-<div id="weibo_content" style="border:#000 1px solid;width:300px;height:300px;margin-top:50px;overflow-y:auto;" class="fleft">
+<div id="weibo_content" style="background-color:whitesmoke;width:300px;height:300px;margin-top:50px;overflow-y:auto;" class="fleft">
 	<div id="" style="font-size:10px;" class="">
-			<div style="">
-				<span style="margin-left:0px;">日期：</span>
-				<span id="date_zh" >
-					<select id="select_date">
-					</select>
-				</span>
+			<div style="margin-left:10px;">
+				<span >当前选择日期</span>
+				<span id="date_zh" value="" ></span>
 			</div>
-			<div >
-				<span style="margin-left:2px">时间段：</span>
-				<span id="tiem_zh" style="">
-					<select id="select_time">
-						<option value="00:00:00">00:00-04:00</option>
-						<option value="04:00:00">04:00-08:00</option>
-						<option value="08:00:00">08:00-12:00</option>
-						<option value="12:00:00">12:00-16:00</option>
-						<option value="16:00:00">16:00-20:00</option>
-						<option value="20:00:00">20:00-00:00</option>
-					</select>
-				</span>
-			</div>
+			<div style="float:right;margin-right:40px;margin-left:10px;">
+				<span>时间段</span>
+                <span id="time_zh" value="00:00:00">00:00-04:00</span>
+            </div>
+            <!--
 			<button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
-	</div>
-	<div id="weibo_text">
-		
+            -->
+    </div>
+	<div id="weibo_text" style="padding:0px 10px;">
 	</div>
 </div>
 
@@ -106,7 +95,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 <div class="" style="width:680px;">
 	<div id="" style="height:30px;width:650px;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;" >该用户的活跃时间段为：<span id="time1"></span> 和 <span id="time2"></span></h4>
+		<h4 style="line-height:32px;" >该用户的活跃时间段为<span id="time1"></span> 和 <span id="time2"></span></h4>
 	</div>
 	<div id="" style="height:30px;width:650px">
 		<span class="fleft" style="margin-right:10px; width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
@@ -144,7 +133,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 <script src="/static/js/highstock.js" charset="utf-8"></script>
 <script src="/static/js/exporting.js" charset="utf-8"></script>
 <script src="/static/js/portrait/location.js" charset="utf-8"></script>
-<script src="/static/js/portrait/weibo_content.js"></script>
+
 <script>
 function Geo(){
   this.ajax_method = 'GET';
@@ -160,9 +149,8 @@ Geo.prototype = {   //获取数据，重新画表
     });
   },
 geo:function(data){
-	
 	var geo_data = data[0]
-	console.log(geo_data);
+	//console.log(geo_data);
 	document.getElementById('saysay').innerHTML = data[1];
 	var date = [];
 	var citys = [];
@@ -187,6 +175,7 @@ geo:function(data){
 	}
 }
 }
+
 var Geo = new Geo();
 url = '/attribute/geo_track/?uid='+parent.personalData.uid ;
 Geo.call_sync_ajax_request(url, Geo.ajax_method, Geo.geo);
@@ -228,23 +217,23 @@ Activity.prototype = {   //获取数据，重新画表
     });
   },
   active:function(data){
-	console.log(data);
+	//console.log(data);
 	var item = data.activity_time;
-        for (i=0;i<item.length;i++){
-           var date = item[i][0]/(15*60*16);
-           switch(date)
-		   {
-				case 0: x = "00:00-04:00";break;
-				case 1: x = "04:00-08:00";break;
-				case 2: x = "08:00-12:00";break;
-				case 3: x = "12:00-16:00";break;
-				case 4: x = "16:00-20:00";break;
-				case 5: x = "20:00-24:00";break;
-		   }
-		   var str ="time"+(i+1);
-		   time = document.getElementById(str);
-		   time.innerHTML = x;
-        }
+    for (i=0;i<item.length;i++){
+       var date = item[i][0]/(15*60*16);
+       switch(date)
+       {
+            case 0: x = "00:00-04:00";break;
+            case 1: x = "04:00-08:00";break;
+            case 2: x = "08:00-12:00";break;
+            case 3: x = "12:00-16:00";break;
+            case 4: x = "16:00-20:00";break;
+            case 5: x = "20:00-24:00";break;
+       }
+       var str ="time"+(i+1);
+       time = document.getElementById(str);
+       time.innerHTML = x;
+    }
     var trend = data.activity_trend;
 	var data_count=[];
 	var data_time = [];
@@ -257,13 +246,15 @@ Activity.prototype = {   //获取数据，重新画表
 		data_count.push(count);
 		date_zhang.push(date_zh);
     }
+	$('#date_zh').html(date_zhang[0]);
+	//$('#date_zh').setAttribute(value,date_zhang[0]);
+    /*
 	var date_html ='';
 	$('#select_date').empty();
-	for(i=0;i<date_zhang.length;i=i+6){
-		//console.log(date_zhang[i]);
-		date_html =date_html + '<option value="'+date_zhang[i]+'">'+date_zhang[i]+'</option>';
-	}
-	$('#select_date').append(date_html);
+	console.log(date_zhang[i]);
+	date_html =date_html + '<option value="'+date_zhang[i]+'">'+date_zhang[i]+'</option>';
+    $('#select_date').append(date_html);
+    */
 	//Draw_trend:
 	 $('#Activezh').highcharts({
         chart: {
@@ -282,14 +273,14 @@ Activity.prototype = {   //获取数据，重新画表
             text: '',
             x: -20
         },
-    lang: {
-            printChart: "打印",
-            downloadJPEG: "下载JPEG 图片",
-            downloadPDF: "下载PDF文档",
-            downloadPNG: "下载PNG 图片",
-            downloadSVG: "下载SVG 矢量图",
-            exportButtonTitle: "导出图片"
-        },
+        lang: {
+                printChart: "打印",
+                downloadJPEG: "下载JPEG 图片",
+                downloadPDF: "下载PDF文档",
+                downloadPNG: "下载PNG 图片",
+                downloadSVG: "下载SVG 矢量图",
+                exportButtonTitle: "导出图片"
+            },
         xAxis: {
             categories: data_time,
             labels:{
@@ -310,6 +301,16 @@ Activity.prototype = {   //获取数据，重新画表
                 color: '#808080'
             }]
         },
+        plotOptions:{
+            series:{            
+                cursor:'pointer',
+                events:{
+                    click:function(event){
+                        point2weibo(event.point.x, trend[event.point.x]);
+                    }
+                }
+            }
+        },
         tooltip: {
             valueSuffix: '条',
             xDateFormat: '%H:%M:%S'
@@ -327,6 +328,41 @@ Activity.prototype = {   //获取数据，重新画表
     });
   }
 }
+//微博文本默认数据
+
+
+function point2weibo(xnum, ts){
+	var url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts[0];
+    var delta;
+    //console.log(url);
+	base_call_ajax_request(url, draw_content);
+    $('#date_zh').html(getDate_zh(ts));
+    switch(xnum % 6)
+    {
+        case 0: delta = "00:00-04:00";break;
+        case 1: delta = "04:00-08:00";break;
+        case 2: delta = "08:00-12:00";break;
+        case 3: delta = "12:00-16:00";break;
+        case 4: delta = "16:00-20:00";break;
+        case 5: delta = "20:00-24:00";break;
+    }
+    $('#time_zh').html(delta);
+	function draw_content(data){
+        var html = '';
+        $('#weibo_text').empty();
+        if(data==''){
+            html += "该时段用户未发布任何微博";
+        }else{
+            for(i=0;i<data.length;i++){
+                //console.log(data[i].text);
+                html += "<div style='width:100%;'><span>"+(i+1)+"</span>.<span>"+data[i].text+"</span></div>";
+            }
+
+        }
+        $('#weibo_text').append(html);
+    }
+}
+
 function getDate(tm){
     var tt = new Date(parseInt(tm)*1000).format("MM-dd hh:mm");
     return tt;
@@ -351,7 +387,7 @@ if(location_geo){
 }
 $('#Top5').append(html);
 </script>
-
+<script src="/static/js/portrait/weibo_content.js"></script>
 
 
 

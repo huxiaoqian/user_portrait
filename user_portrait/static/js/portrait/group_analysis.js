@@ -443,14 +443,13 @@ Draw_group_weibo: function(data){
                 $("#pageGro ul li").eq(index-1).addClass("on");
             }
         }
-      console.log(pageNum);
-      start_row = pageNum* page_num;
+      page = parseInt($("#pageGro li.on").html())  
+      console.log(page);
+      start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
           end_row = data.length;
       }
-      console.log(start_row);
-      console.log(end_row);
         page_group_weibo(start_row,end_row,data);
     });
     
@@ -467,14 +466,13 @@ Draw_group_weibo: function(data){
                 $("#pageGro ul li").eq(index+1).addClass("on");
             }
         }
-      console.log(pageNum);
-      start_row = pageNum* page_num;
+      page = parseInt($("#pageGro li.on").html()) 
+      console.log(page);
+      start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
           end_row = data.length;
       }
-      console.log(start_row);
-      console.log(end_row);
         page_group_weibo(start_row,end_row,data);
     });
 }
@@ -510,15 +508,15 @@ var html = "";
         timestamp = data[s]['timestamp'];
         date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
         if (i%2 ==0){
-            html += '<div style="background:#F1E1FF">';
+            html += '<div style="background:whitesmoke;font-size:14px">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
-            html += '<p><font color:#e0e0e0>' + date + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
             html += '</div>'
     }
         else{
             html += '<div>';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
-            html += '<p><font color:#e0e0e0>' + date + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
             html += '</div>';
         }
     }
