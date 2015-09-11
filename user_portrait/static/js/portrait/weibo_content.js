@@ -27,20 +27,20 @@ Draw_content:function(data){
 	$('#weibo_text').append(html);
   }
 }
+time_zh
 
-/*
 var date = '';
 var time = '';
 var dateStr = '';
 var ts = '';
-date = $('#select_date').val();
-time = $('#select_time').val();
+date = $('#date_zh').html();
+time = '00:00:00';
 dateStr = '2013-'+date+' '+time;
 ts = get_unix_time(dateStr);
 var Weibo = new Weibo();
 var url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts;
 Weibo.call_sync_ajax_request(url, Weibo.ajax_method, Weibo.Draw_content);
-*/
+
 /*
 $('#select_date').change(function(){
 	date = $('#select_date').val();
@@ -71,10 +71,11 @@ $('#choose_date').click(function(){
     console.log(url);
 	Weibo.call_sync_ajax_request(url, Weibo.ajax_method, Weibo.Draw_content);
 })
+*/
 function get_unix_time(dateStr){
     var newstr = dateStr.replace(/-/g,'/'); 
     var date =  new Date(newstr); 
     var time_str = date.getTime().toString();
     return time_str.substr(0, 10);
 }
-*/
+
