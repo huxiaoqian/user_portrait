@@ -14,7 +14,7 @@ Tag.prototype = {   //获取数据，重新画表
 
 NewTag:function(data){
 	//console.log(data);
-   location.reload();
+  location.reload();
   }
 }
 
@@ -53,7 +53,8 @@ function get_input_data(){
 			value += ',';
 		}
 	}
-	value = value.substring(1,value.length-1);
+	value = value.substring(0,value.length-1);
+   // console.log(value);
 	input_value = value+'&';
 	temp += input_name;
     temp += input_value;
