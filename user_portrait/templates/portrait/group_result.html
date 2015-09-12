@@ -115,6 +115,9 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
 
     {% block Own_js %}
     {{ super() }}
+<script src="../../static/js/portrait/group_result.js"></script>
+<script src="../../static/js/portrait/groupSearch.js"></script>
+<script src="../../static/js/portrait/groupDel.js"></script>
   <script>
 	var fileInput = document.getElementById('file-upload');
 	fileInput.addEventListener('change', function () {
@@ -164,27 +167,29 @@ border: 1px solid #AA8BE8;height: 300px;margin-left: -300px;}
         for(var i=0,f;f=files[i];i++){
             var reader = new FileReader();
             reader.onload = function (oFREvent) {
-				var a = oFREvent.target.result;		
+				var a = oFREvent.target.result;	
+				console.log(a);
 				$.ajax({   
 					type:"POST",  
 					url:"/group/upload_file/",
 					dataType: "json",
 					async:false,
 					data:{upload_data:a,task_name:task_name,state:state},
-					//success: callback
+					
+					success: function(){
+								var show_url = "/group/show_task/";
+								Group_result.call_sync_ajax_request(show_url,Group_result.ajax_method,Group_result.Draw_resultTable);
+					}
+					
 				});
-				
 				location.reload();
+
 			};            
 			reader.readAsText(f,'GB2312');                                                        
         }
 
     }
 </script>
-
-<script src="../../static/js/portrait/group_result.js"></script>
-<script src="../../static/js/portrait/groupSearch.js"></script>
-<script src="../../static/js/portrait/groupDel.js"></script>
 {% endblock Own_js %}
 {% block end_js %}
 {{ super () }}

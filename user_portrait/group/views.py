@@ -29,7 +29,10 @@ def upload_file():
     uid_list = []
     for line in line_list:
         uid = line[:10]
-        uid_list.append(uid)
+        if len(uid)==10:
+            uid_list.append(uid)
+            #print 'uid:', uid
+    #print 'len uid list:', len(uid_list)
     input_data['uid_list'] = uid_list
     status = submit_task(input_data)
     return json.dumps(status)
