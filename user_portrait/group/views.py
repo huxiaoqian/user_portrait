@@ -17,8 +17,8 @@ mod = Blueprint('group', __name__, url_prefix='/group')
 @mod.route('/upload_file/', methods=['GET', 'POST'])
 def upload_file():
     upload_data = request.form['upload_data']
-    task_name = request.args.get('task_name', '')
-    state = request.args.get('state', '')
+    task_name = request.form['task_name']
+    state = request.form['state']
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
     line_list = upload_data.split('\n')
@@ -29,7 +29,10 @@ def upload_file():
     uid_list = []
     for line in line_list:
         uid = line[:10]
-        uid_list.append(uid)
+        if len(uid)==10:
+            uid_list.append(uid)
+            #print 'uid:', uid
+    #print 'len uid list:', len(uid_list)
     input_data['uid_list'] = uid_list
     status = submit_task(input_data)
     return json.dumps(status)
