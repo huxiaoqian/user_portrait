@@ -175,17 +175,16 @@ tbody td{text-align:center;}
 	
 </script>
 <script type="text/javascript" src="/static/js/portrait/tag.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_search.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_add.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_del.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_change.js"></script>
  
 <script>
     var add_flag;
+    var tagname = new Array();
     $('a[id^="currentEdit"]').click(function(e){
         add_flag = false;
-		var tagNames =  $(this).text();
-		tagname = tagNames.split('/');
+        var tagNames =  $(this).text();
+        if (tagNames.indexOf('/') > -1){
+            tagname = tagNames.split('/');
+        }
 		$('#EDIT').empty();
 		var html = '';
 		html += '<div class="" style="margin-bottom:10px;"><span style="">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
@@ -209,10 +208,10 @@ tbody td{text-align:center;}
 			$(this).parent().remove();
 		});
 	});
-	$(".addIcon").off("click").click(function(){
-		var html = '';
-		html += '<div class="tagCols"><span style="margin-left:65px;">标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
-		$('#ADDTAG').append(html);
+    $(".addIcon").off("click").click(function(){
+        var html = '';
+        html += '<div class="tagCols"><span style="margin-left:65px;">标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+        $('#ADDTAG').append(html);
 	});
 	function addNew(){
         var newtag = $('.input_tag_box').val();
