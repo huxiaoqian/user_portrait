@@ -2,9 +2,6 @@
     {% block title %}自定义标签{% endblock title%}
       {% block css %}
       {{ super() }}
-   
- 
-
     <style type="text/css">
     .hidden{display:none;}
 	#file-upload{margin-left:50px;border:1px solid #999;}
@@ -55,7 +52,8 @@ tbody td{text-align:center;}
     border-color: #9b9b9d #dcdcdc #dce7eb;
     border-radius: 3px;
     background-color: #fbfcfc;margin-right: 20px;}
- </style>
+
+</style>
  {% endblock css %}
 
     {% block main %}
@@ -212,7 +210,7 @@ tbody td{text-align:center;}
 	});
 	$(".addIcon").off("click").click(function(){
 		var html = '';
-		html += '<div class="tagCols"><span >标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+		html += '<div class="tagCols"><span style="margin-left:65px;">标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
 		$('#ADDTAG').append(html);
 	});
 	function addNew(){
