@@ -16,6 +16,7 @@ Draw_tag_table:function(data){
 	//console.log(data);
     $('#Tagtable').empty();
     var item = data;
+    console.log(item);
     var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">';
@@ -37,7 +38,7 @@ Draw_tag_table:function(data){
 	$('#Tagtable').append(html);
   }
 }
-url ="/tag/search_attribute/";
+var url ="/tag/search_attribute/";
 var Tag = new Tag();
 Tag.call_sync_ajax_request(url, Tag.ajax_method, Tag.Draw_tag_table);
 
