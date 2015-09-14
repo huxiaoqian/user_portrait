@@ -41,16 +41,17 @@ def submit_attribute(attribute_name, attribute_value, submit_user, submit_date):
 # use to search attribute table
 def search_attribute(query_body, condition_num):
     item_list = []
+    default_size = 100000
     if condition_num==0:
         try:
             result = es.search(index=attribute_index_name, doc_type=attribute_index_type, \
-                               body={'query':{'match_all':{}}})['hits']['hits']
+                    body={'query':{'match_all':{}}, 'size':default_size})['hits']['hits']
         except Exception, e:
             raise e
     else:
         try:
             result = es.search(index=attribute_index_name, doc_type=attribute_index_type, \
-                               body={'query':{'bool':{'must':query_body}}})['hits']['hits']
+                    body={'query':{'bool':{'must':query_body}}, 'size':default_size})['hits']['hits']
         except Exception, e:
             raise e
     if result:
