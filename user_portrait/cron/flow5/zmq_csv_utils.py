@@ -34,21 +34,22 @@ def send_all(f, sender):
     count = 0
     tb = time.time()
     ts = tb
+    try:
+        for line in f:
+            weibo_item = itemLine2Dict(line)
+            if weibo_item:
+                weibo_item_bin = csv2bin(weibo_item)
+                sender.send_json(weibo_item_bin)
+                count += 1
 
-    for line in f:
-        weibo_item = itemLine2Dict(line)
-        if weibo_item:
-            weibo_item_bin = csv2bin(weibo_item)
-            sender.send_json(weibo_item_bin)
-            count += 1
-
-        if count % 10000 == 0:
-            te = time.time()
-            print '[%s] deliver speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
-            if count % 100000 == 0:
-                print '[%s] total deliver %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb))
-            ts = te
-
+            if count % 10000 == 0:
+                te = time.time()
+                print '[%s] deliver speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
+                if count % 100000 == 0:
+                    print '[%s] total deliver %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb))
+                ts = te
+    except Exception, e:
+        pass
     total_cost = time.time() - tb
     return count, total_cost
 

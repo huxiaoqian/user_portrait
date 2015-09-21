@@ -13,32 +13,26 @@ from user_portrait.time_utils import ts2datetime
 
 mod = Blueprint('group', __name__, url_prefix='/group')
 
-
-# use to upload user list for group task to limit file type
-def allowed_file(filename):
-    return '.' in filename and \
-            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
 # use to upload file
 @mod.route('/upload_file/', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            print 'upload file name:', file.filename
-            filename = secure_filename(file.filename)
-            print 'secure file name:', filename
-            exist_filenames = os.listdir(UPLOAD_FOLDER)
-            if filenmae in exist_filenames:
-                return 'filename exist'
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
-            return 'success'
-        elif not file:
-            return 'no file'
-        elif not allowed_file(file.filename):
-            return 'error postfix'
-
-    return 'error method'
+    upload_data = request.form['upload_data']
+    task_name = request.args.get('task_name', '')
+    state = request.args.get('state', '')
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts)
+    line_list = upload_data.split('\n')
+    input_data = {}
+    input_data['submit_date'] = now_date
+    input_data['task_name'] = task_name
+    input_data['state'] = state
+    uid_list = []
+    for line in line_list:
+        uid = line[:10]
+        uid_list.append(uid)
+    input_data['uid_list'] = uid_list
+    status = submit_task(input_data)
+    return json.dumps(status)
 
 
 # submit group analysis task and save to redis as lists
