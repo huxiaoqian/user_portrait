@@ -2,9 +2,6 @@
     {% block title %}自定义标签{% endblock title%}
       {% block css %}
       {{ super() }}
-   
- 
-
     <style type="text/css">
     .hidden{display:none;}
 	#file-upload{margin-left:50px;border:1px solid #999;}
@@ -17,7 +14,7 @@ border: 1px solid #AA8BE8;height: 230px;margin-left: -300px;}
 .decoration ul{margin-top:30px;}
 li{list-style-type:none;}
 .decoration ul li{width:100%;float:left;margin-bottom:20px;}
-.p_title {float: left;width: 260px;white-space: nowrap;overflow: hidden; font-weight: normal;text-align: right;color: #808080;}
+.p_title {float: left;width: 260px;margin-right:30px;white-space: nowrap;overflow: hidden; font-weight: normal;text-align: right;color: #808080;}
 #searchbtn {
   display: inline-block;
   background: #4f8fff none repeat scroll 0% 0%;
@@ -55,7 +52,8 @@ tbody td{text-align:center;}
     border-color: #9b9b9d #dcdcdc #dce7eb;
     border-radius: 3px;
     background-color: #fbfcfc;margin-right: 20px;}
- </style>
+
+</style>
  {% endblock css %}
 
     {% block main %}
@@ -65,10 +63,10 @@ tbody td{text-align:center;}
 	<h3 class="title">搜索条件<a href="javascript:void(0)" id="close" class="close2"></a></h3>
 	<div class="decoration">
 		<ul class="">
-			<li><span class="p_title">标签类别:</span><input type="text"  id="groupName" class="input searchinput" name="attribute_name" placeholder="请输入标签类别"/></li>
-			<li><span class="p_title">标签名:</span><input type="text" id="groupState" class="input searchinput" name="attribute_value" placeholder="请输入标签名"/></li>
-			<li><span class="p_title">时间：</span><input type="text" id="groupState" class="input searchinput" name="date" placeholder="请输入时间2015-07-15"/></li>
-			<li><span class="p_title">创建者:</span><input type="text" id="groupState" class="input searchinput" name="user" placeholder="aa"/></li>
+			<li><span class="p_title">标签类别</span><input type="text"  id="groupName" class="input searchinput" name="attribute_name" placeholder="请输入标签类别"/></li>
+			<li><span class="p_title">标签名</span><input type="text" id="groupState" class="input searchinput" name="attribute_value" placeholder="请输入标签名"/></li>
+			<li><span class="p_title">时间</span><input type="text" id="groupState" class="input searchinput" name="date" placeholder="请输入时间2015-07-15"/></li>
+			<li><span class="p_title">创建者</span><input type="text" id="groupState" class="input searchinput" name="user" placeholder="aa"/></li>
 			<li><input name="submit" type="submit" class="bluebtn" id="searchbtn" value="确定"></li>
 		</ul>
 	</div>
@@ -177,16 +175,16 @@ tbody td{text-align:center;}
 	
 </script>
 <script type="text/javascript" src="/static/js/portrait/tag.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_search.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_add.js"></script> 
-<script type="text/javascript" src="/static/js/portrait/tag_del.js"></script> 
  
 <script>
     var add_flag;
+    var tagname = new Array();
     $('a[id^="currentEdit"]').click(function(e){
         add_flag = false;
-		var tagNames =  $(this).text();
-		tagname = tagNames.split('/');
+        var tagNames =  $(this).text();
+        if (tagNames.indexOf('/') > -1){
+            tagname = tagNames.split('/');
+        }
 		$('#EDIT').empty();
 		var html = '';
 		html += '<div class="" style="margin-bottom:10px;"><span style="">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
@@ -210,10 +208,10 @@ tbody td{text-align:center;}
 			$(this).parent().remove();
 		});
 	});
-	$(".addIcon").off("click").click(function(){
-		var html = '';
-		html += '<div class="tagCols"><span >标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
-		$('#ADDTAG').append(html);
+    $(".addIcon").off("click").click(function(){
+        var html = '';
+        html += '<div class="tagCols"><span style="margin-left:65px;">标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
+        $('#ADDTAG').append(html);
 	});
 	function addNew(){
         var newtag = $('.input_tag_box').val();
@@ -249,7 +247,6 @@ tbody td{text-align:center;}
             });
 	}
 </script>
-<script type="text/javascript" src="/static/js/portrait/tag_change.js"></script>
 {% endblock Own_js %}
 {% block end_js %}
 {{ super () }}
