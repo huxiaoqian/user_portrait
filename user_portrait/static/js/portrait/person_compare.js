@@ -352,15 +352,21 @@ function Compare(){
     html += '<tr class="list-3"><td class="cate_title" style="width:90px;text-align:right">领域</td>';
     for(var k in portrait){
         j += 1;
-        html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
+        //html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
+		
     }
+	html += '<td class="center" name="line1">作家</td>';
+	html += '<td class="center" name="line2">媒体</td>';
     html += '</tr>';
     j = 0;
     html += '<tr class="list-3"><td class="cate_title" style="width:90px;text-align:right">话题</td>';
     for(var k in portrait){
         j += 1;
-        html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
+        //html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
+		
     }
+	html += '<td class="center" name="line1">生活</td>';
+	html += '<td class="center" name="line2">娱乐</td>';
     html += '</tr>';
 
     j = 0;
