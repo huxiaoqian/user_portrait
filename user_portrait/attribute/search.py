@@ -10,8 +10,17 @@ import json
 import math
 import redis
 from description import active_geo_description, active_time_description, hashtag_description
-#reload(sys)
-#sys.path.append('../../')
+'''
+reload(sys)
+sys.path.append('../')
+from time_utils import ts2datetime, datetime2ts
+from global_utils import R_CLUSTER_FLOW2 as r_cluster
+from global_utils import R_DICT
+from global_utils import es_user_portrait
+from global_utils import es_user_profile
+from search_user_profile import search_uid2uname
+from filter_uid import all_delete_uid
+'''
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
@@ -52,7 +61,7 @@ def search_attention(uid):
                     except:
                         stat_results[ruid] = ruid_results[ruid]
     # print 'results:', stat_results
-    if not results:
+    if not stat_results:
         return [None, 0]
     try:
         sort_state_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
@@ -646,13 +655,14 @@ def delete_action(uid_list):
 
 
 if __name__=='__main__':
-    uid = '1798289842'
+    uid = '1843990885'
     now_ts = 1377964800 + 3600 * 24 * 4
     #search_attribute_portrait(uid)
-    result = get_evaluate_max()
-    '''
+    #result = get_evaluate_max()
+    
     results1 = search_attention(uid)
     print 'attention:', results1
+    '''
     results2 = search_follower(uid)
     print 'follow:', results2
     results3 = search_mention(now_ts, uid)
