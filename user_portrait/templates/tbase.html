@@ -6,7 +6,7 @@
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     		<meta charset="utf-8">
     		<meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>{% block title %}XXXXXX{% endblock title %}</title>
+            <title>{% block title %}人物画像系统{% endblock title %}</title>
 		{% endblock %}
 		<!-- end head 标签 -->
 
@@ -43,6 +43,7 @@
 	    	<script src='/static/js/echarts-all.js'></script>
 	    	<script src="/static/js/jquery-ui.min.js"></script>
 	   		<script src="/static/js/jquery-1.9.1.min.js"></script>
+	   		<script src="/static/js/jquery-page.min.js"></script>
 			<!-- data table plugin -->
 			<script src='/static/js/jquery.dataTables.min.js'></script>
 	    {% endblock %}
@@ -52,7 +53,7 @@
 		<!-- 上面导航 -->
 		{% block header %}
 			<div id="header">
-                <a href="/index/"><h1 class="headtitle" style="color:#333;">XXXXXX</h1></a>
+                <a href="/index/"><h1 class="headtitle" style="color:#333;">人物画像系统</h1></a>
 		        <form class="search-form" id="" method="post" action="">
 		       	  	<span class="searchborder fleft">
 		  				<input type="text" id="keyword" value="" placeholder="请输入uid或昵称"/>
@@ -65,7 +66,7 @@
 				</form>
 				
 				<div class="fleft entrance">
-					<a title="" href="/profile/" target="_blank" class="link2portrait">XXXXXX入口</a>
+					<a title="" href="/profile/" target="_blank" class="link2portrait">人物背景信息库入口</a>
 				</div>
 				
 		        <div class="fright userInfo">
