@@ -28,8 +28,6 @@ Draw_Follower:function(data){
 }
 }
 var Follower = new Follower();
-url = '/attribute/follower/?uid='+parent.personalData.uid ;
-Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
 
 function follower(data,UserID,UserName){
 	uids = [];
@@ -46,23 +44,34 @@ function follower(data,UserID,UserName){
     }
 	var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
-	nodeContent = []
+    var nod0 = {};
+	nodeContent = [];
+    nodeContent0 = [];
 	nod['category'] = 0;
 	nod['name'] = UserName;
 	nod['value'] = 10;
+    nod0['category'] = 0;
+    nod0['name'] = UserName;
+    nod0['value'] = 10;
 	nodeContent.push(nod);
+    nodeContent0.push(nod0);
 	for (i=0;i<uids.length;i++){
 			nod = {};
-			//console.log(data[i][1][2]);
+            nod0 = {};
+			console.log(data[i][1][2]);   
 			if(data[i][1][2]==0){
-				nod['category'] = 2;
+				nod0['category'] = 2;
+                nod0['name'] = uids[i];
+                nod0['value'] = values[i];
+                nod0['label'] = unames[i];
 			}else{
 				nod['category'] = 1;
+                nod['name'] = uids[i];
+                nod['value'] = values[i];
+                nod['label'] = unames[i];
 			}
-			nod['name'] = uids[i];
-			nod['value'] = values[i];
-            nod['label'] = unames[i];
 			nodeContent.push(nod);
+            nodeContent0.push(nod0);
 	}
 	var linkline =[];
 	for (i=0;i<uids.length;i++){
@@ -81,7 +90,72 @@ function follower(data,UserID,UserName){
             },
             legend: {
                 x: 'right',
-                data:['用户','未入库','已入库']
+                data:['用户','未入库']
+            },
+            series : [
+                {
+                    type:'force',
+                    name : "人物关系",
+                    ribbonType: false,
+                    categories : [
+                        {
+                            name: '用户'
+                        },
+						{
+                            name:'未入库'
+                        },
+                    ],
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                textStyle: {
+                                    color: '#333'
+                                }
+                            },
+                            nodeStyle : {
+                                brushType : 'both',
+                                borderColor : 'rgba(255,215,0,0.4)',
+                                borderWidth : 1
+                            },
+                            linkStyle: {
+                                type: 'curve'
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: false
+                                // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                            },
+                            nodeStyle : {
+                                //r: 30
+                            },
+                            linkStyle : {}
+                        }
+                    },
+                    useWorker: false,
+                    minRadius : 15,
+                    maxRadius : 25,
+                    gravity: 1.1,
+                    scaling: 1.1,
+                    roam: 'move',
+                    nodes:nodeContent0,
+                    links : linkline
+                }
+            ]
+    };  
+	myChart1.setOption(option); 
+
+    var myChart2 = echarts.init(document.getElementById('test1-2'));
+    var option = {
+            title : {
+                text: '粉丝',
+                x:'left',
+                y:'top'
+            },
+            legend: {
+                x: 'right',
+                data:['用户','已入库']
             },
             series : [
                 {
@@ -94,9 +168,6 @@ function follower(data,UserID,UserName){
                         },
                         {
                             name:'已入库'
-                        },
-						{
-                            name:'未入库'
                         },
                     ],
                     itemStyle: {
@@ -138,7 +209,8 @@ function follower(data,UserID,UserName){
                 }
             ]
     };  
-	myChart1.setOption(option); 
+    myChart2.setOption(option); 
+
     require([
             'echarts'
         ],
