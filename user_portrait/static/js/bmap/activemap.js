@@ -45,7 +45,6 @@
             index++;
         }
         function geocodeSearch(geoname){
-            console.log(index);
             if(index < geolist.length-1){
                 setTimeout(bdGEO,400);
             }
@@ -53,12 +52,12 @@
                 setTimeout(drawline, 400);
             }
             myGeo.getPoint(geoname, function(point){
-                console.log(geoname);
                 if (point){
                     var fixpoint= new BMap.Point(point.lng+3.5,point.lat-0.5);
-                    map.addOverlay(new BMap.Marker(fixpoint));
+                    var marker = new BMap.Marker(fixpoint);
+                    marker.setTitle(geoname);
+                    map.addOverlay(marker);
                     newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
-                    console.log(newgeo);
                 }
                 else{
                     //alert("no such point!");
@@ -69,8 +68,8 @@
             var option = {
                 color: ['gold','aqua','lime'],
                 title : {
-                    text: '模拟迁徙',
-                    subtext:'数据纯属虚构',
+                    text: '',
+                    subtext:'',
                     x:'center',
                     textStyle : {
                         color: '#fff'
