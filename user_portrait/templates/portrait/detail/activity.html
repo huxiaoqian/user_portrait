@@ -22,75 +22,6 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 #Alocation{height:auto;width:180px;}
 .gray{color:#999;}
 </style>
-<div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>
-<div class="clearfix course_nr" style="width:100%;">
-	<ul class="course_nr2">
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d1" ></p>
-				<p class="ms" id="city1"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d2"></p>
-				<p class="ms" id="city2"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d3"></p>
-				<p class="ms" id="city3"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d4"></p>
-				<p class="ms" id="city4"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d5"></p>
-				<p class="ms" id="city5"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d6"></p>
-				<p class="ms" id="city6"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d7"></p>
-				<p class="ms" id="city7"></p>
-			</div>
-		</li>
-	</ul>
-</div>
-
-
-<div id="Activezh" style="height:349px;width:680px;margin-top:50px;" class="fleft"></div>
-
-<div id="" style="font-size:10px;font-weight:bolder;width:300px;margin-top:50px;" class="">
-        <div style="margin-left:20px;">
-            <span >当前选择日期</span>
-            <span id="date_zh" value="" ></span>
-        </div>
-        <div style="float:right;margin-right:40px;margin-left:10px;">
-            <span>时间段</span>
-            <span id="time_zh" value="00:00:00">00:00-04:00</span>
-        </div>
-        <!--
-        <button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
-        -->
-</div>
-<div id="weibo_content" style="font-size:10px;background-color:whitesmoke;width:300px;height:300px;overflow-y:auto;" class="fleft">
-	<div id="weibo_text" style="padding:0px 10px;">
-	</div>
-</div>
-
 
 <div class="" style="width:680px;margin-top:15px;">
 	<div id="" style="height:30px;width:650px;line-height:32px;">
@@ -107,32 +38,100 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 	</div>
 </div>
 
+<div style="width:680px;float:left;">
+    <div style="margin-right:20px;float:right;">
+        <input type="radio" name="weibotrends" checked value="0"/>本日&nbsp;&nbsp;
+        <input type="radio" name="weibotrends" value="1"/>本周
+    </div>
+    <div id="Activezh" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
+</div>
+<div id="" style="font-size:10px;font-weight:bolder;width:300px;margin-top:10px;" class="">
+        <div style="margin-left:20px;">
+            <span >当前选择日期</span>
+            <span id="date_zh" value="" ></span>
+        </div>
+        <div style="float:right;margin-right:40px;margin-left:10px;">
+            <span>时间段</span>
+            <span id="time_zh" value="00:00:00">00:00-04:00</span>
+        </div>
+        <!--
+        <button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
+        -->
+</div>
+<div id="weibo_content" style="font-size:10px;background-color:whitesmoke;width:300px;height:300px;overflow-y:auto;" class="fleft">
+	<div id="weibo_text" style="padding:0px 10px;">
+	</div>
+</div>
+<div class="" style="float:left;width:680px;margin-top:15px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >微博走势该用户的活跃时间段为<span></span> 和 <span></span></h4>
+	</div>
+</div>
+
+<!--<div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>-->
+<div class="clearfix course_nr" style="width:100%;">
+	<ul class="course_nr2">
+		<li><div class="shiji"><p class="font12 ico" id="d1"></p><p class="ms" id="city1"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d2"></p><p class="ms" id="city2"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d3"></p><p class="ms" id="city3"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d4"></p><p class="ms" id="city4"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d5"></p><p class="ms" id="city5"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d6"></p><p class="ms" id="city6"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d7"></p><p class="ms" id="city7"></p></div></li>
+	</ul>
+</div>
+
+<div id="map" style="float:left;width:700px;height:700px;"></div>
 
 <div id ="Alocation" class="" style="margin-top:15px;">
 	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
 	<div class="LocationDetail" id="Top5">
-		<dl>
-			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5"></span></dt>
-		</dl>
+		<dl><dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5"></span></dt></dl>
+	</div>
+	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
+	<div class="LocationDetail" id="Top5">
+		<dl><dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5"></span></dt></dl>
+	</div>
+	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
+	<div class="LocationDetail" id="Top5">
+		<dl><dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4"></span></dt></dl>
+		<dl><dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5"></span></dt></dl>
+	</div>
+</div>
+<div class="" style="float:left;width:680px;margin-top:15px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >地理位置该用户的活跃时间段为<span></span> 和 <span></span></h4>
 	</div>
 </div>
 
+<div id="online" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
+<div class="" style="float:left;width:680px;margin-top:15px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >上网方式该用户的上网方式为<span></span> 和 <span></span></h4>
+	</div>
+</div>
+<div id="activeness" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
 
 <script src="/static/js/highstock.js" charset="utf-8"></script>
 <script src="/static/js/exporting.js" charset="utf-8"></script>
 <script src="/static/js/portrait/location.js" charset="utf-8"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aBrX8X2tEjcqiKwL78DLmanZ"></script>
+<script src="/static/js/bmap/geo.js"></script>
+<script src="/static/js/bmap/activemap.js"></script>
 
 <script>
 function Geo(){
