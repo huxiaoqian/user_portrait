@@ -45,10 +45,10 @@ height:500px;
 overflow-y:scroll;
 }
 </style>
-<p style="margin-top:30px;">来自<span style="color:red">lingyu</span>领域，热衷参与<span style="color:red">huati</span>话题，参与过<span style="color:red">######</span>hashtag</p>
-<div id="Language" style="width:300px;height:300px;margin-left:80px;margin-top:10px;"></div>
+<p style="margin-top:20px;font-size:16px;line-height:30px;">来自<span id="personal_domain" style="color:red">lingyu</span>领域，热衷参与<span id="personal_topic" style="color:red">huati</span>话题，参与过<span id="personal_hashtag" style="color:red">######</span>hashtag</p>
+<div id="Language" style="width:300px;height:280px;margin-left:40px;margin-top:10px;"></div>
 <div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_keyWords">更多</a></div>
-<div id="hashtag_words" style="width:300px;height:300px;margin-left:80px;margin-top:10px;float:left;"></div>
+<div id="hashtag_words" style="width:300px;height:280px;margin-left:80px;margin-top:10px;float:left;"></div>
 <div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_hashtagWords">更多</a></div>
 
 <div id="float-wrap" class="hidden"></div>
@@ -60,11 +60,18 @@ overflow-y:scroll;
     <h3 class="title">hashtag排名<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
     <div id="hashtag_WordList"></div>
 </div>
-<div id="" style="width:1000px;">
-	<div id="" style="height:30px;width:950px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;">平均文本长度：<span id="TLnum"></span></h4>
+<hr>
+<div id="" style="width:1000px;margin-top: -30px;">
+	<div id="" style="width:400px;margin-left:15px;border-right-color:#DDD;border-right-width:2px;border-right-style:solid;">
+    <h3>用户领域分析：</h3>
+		<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自<span id="info_domain">A</span>领域</h4>
+    <h4 style="line-height:40px;">根据用户粉丝结构分类，该用户来自<span id="friends_domain">B</span>领域</h4>
+    <h4 style="line-height:40px;">根据用户文本分类，该用户来自<span id="text_domain">C</span>领域</h4>
+    <h4 style="line-height:40px;">根据用户个人信息分类，该用户来自：<span id="personal_domain">D</span></h4>
 	</div>
+  <div id="user_topic" style="margin-left:20px;height:300px;width:500px;"></div>
+</div>
+<!--
 	<div id="" style="height:30px;width:950px;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
 		<h4 style="line-height:32px;">含链接微博比例：<span id="LLnum"></span>%</h4>
@@ -78,7 +85,8 @@ overflow-y:scroll;
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
 		<h4 id="emotionDes" style="line-height:32px;"></h4>
 	</div>
-</div>
+-->
+
 <script type="text/javascript">
         function switchTab(ProTag, ProBox) {
             for (i = 1; i < 7; i++) {

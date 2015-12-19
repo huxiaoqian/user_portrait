@@ -15,7 +15,7 @@ keywords_more = 'key_WordList'
 hashtag_more = 'hashtag_WordList'
 Draw_keyword(keywordsCloud, keywords_name, keywords_title, keywords_more)
 Draw_keyword(hashtag, hashtag_name, hashtag_title, hashtag_more)
-
+Draw_topic()
 function createRandomItemStyle() {
     return {
         normal: {
@@ -61,7 +61,7 @@ function Draw_keyword(data, div_name, div_title, more_div){
     },
     series: [{
         type: 'wordCloud',
-        size: ['80%', '80%'],
+        size: ['100%', '100%'],
         textRotation : [0, 45, 90, -45],
         textPadding: 0,
         autoSize: {
@@ -75,7 +75,61 @@ function Draw_keyword(data, div_name, div_title, more_div){
 	
 }
  
-function text2icon(text){
+function Draw_topic(){
+    var myChart2 = echarts.init(document.getElementById('user_topic'));
+    var option = {
+      title : {
+        text: '用户话题分布',
+        subtext: ''
+      },
+      tooltip : {
+        trigger: 'axis'
+      },
+      toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+      },
+      calculable : true,
+      polar : [
+       {
+        indicator : [
+        {text : '进攻', max  : 100},
+        {text : '防守', max  : 100},
+        {text : '体能', max  : 100},
+        {text : '速度', max  : 100},
+        {text : '力量', max  : 100},
+        {text : '技巧', max  : 100}
+        ],
+        radius : 90
+       }
+      ],
+      series : [
+       {
+        name: '话题分布情况',
+        type: 'radar',
+        itemStyle: {
+         normal: {
+          areaStyle: {
+            type: 'default'
+          }
+         }
+        },
+       data : [
+        {
+         value : [97, 32, 74, 95, 88, 92],
+         name : '罗纳尔多'}
+       ]
+      }]
+  };
+  myChart2.setOption(option);
+}
+
+/*function text2icon(text){
     var icon = '';
     for (var i = 0;i < emoticon_list.length;i++){
         var item = emoticon_list[i];
@@ -185,6 +239,7 @@ html6 += '</ul>';
 html6 += '</div> ';
 $('#con6').append(html6);
 
+*/
 function Hashtag(){
   this.ajax_method = 'GET';
 }
