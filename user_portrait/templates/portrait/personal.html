@@ -14,7 +14,7 @@
 <script type="text/javascript">
 $(function(){
 	/**软件功能切换js**/
-	$(".soft_con_icon ul li a").mouseover(function(){
+	$(".soft_con_icon ul li a").click(function(){
 		var id = $(this).attr("id");
 		var x=$(this).parent().index();
 		$(this).children("p").css({"color":"#008dd9"}).parent().parent().siblings().children().children("p").css({"color":"#333333"});
