@@ -7,8 +7,15 @@ var emoticon = parent.personalData.emoticon;
 var hashtag = parent.personalData.hashtag_dict;
 //keywords
 
+keywords_name = 'Language'
+hashtag_name = 'hashtag_words'
+keywords_title = '关键词'
+hashtag_title = 'hashtag'
+keywords_more = 'key_WordList'
+hashtag_more = 'hashtag_WordList'
+Draw_keyword(keywordsCloud, keywords_name, keywords_title, keywords_more)
+Draw_keyword(hashtag, hashtag_name, hashtag_title, hashtag_more)
 
-Draw_keyword(keywordsCloud)
 function createRandomItemStyle() {
     return {
         normal: {
@@ -20,10 +27,10 @@ function createRandomItemStyle() {
         }
     };
 }
-function Draw_keyword(data){
+function Draw_keyword(data, div_name, div_title, more_div){
 	var keyword = [];
 
-	$('#WordList').empty();
+	$('#'+ more_div).empty();
     html = '';
     html += '<table class="table table-striped table-bordered" style="width:480px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
@@ -33,8 +40,8 @@ function Draw_keyword(data){
        html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
-    $('#WordList').append(html);
-    
+    $('#'+ more_div).append(html);
+   
     var word_num = Math.min(20, data.length);
 
 	for (i=0;i<word_num;i++){
@@ -44,10 +51,10 @@ function Draw_keyword(data){
 		word['itemStyle'] = createRandomItemStyle();
 		keyword.push(word);
 	}
-	var myChart = echarts.init(document.getElementById('Language')); 
+	var myChart = echarts.init(document.getElementById(div_name)); 
 	var option = {
     title: {
-        text: '关键词',
+        text: div_title,
     },
     tooltip: {
         show: true
