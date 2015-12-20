@@ -7,7 +7,7 @@ import time
 import json
 import math
 from datetime import datetime
-from test_save_attribute import save_city
+from test_save_attribute import save_city_timestamp
 from test_save_attribute import save_activity
 from test_save_attribute import save_at
 
@@ -31,20 +31,21 @@ def extract_uname(text):
 def cal_propage_work(item):
     
     uid = item['uid']
-    print 'uid:', uid
     
     timestamp = item['timestamp']
-    #ip = item['geo']
     ip = item['send_ip']
     # attribute location
     if ip:
-        save_city(uid, ip, timestamp)
+        save_city_timestamp(uid, ip, timestamp)
+    '''
     # attribute activity
     date = ts2datetime(timestamp)
     ts = datetime2ts(date)
     time_segment = (timestamp - ts) / Fifteenminutes
     save_activity(uid, ts, time_segment)
+    
     # attribute mention
+    
     text = item['text']
     at_uname_list = extract_uname(text)
     try:
@@ -52,7 +53,7 @@ def cal_propage_work(item):
         save_at(uid, at_uname, timestamp)
     except:
         pass
-    
+    '''
 
 
 if __name__ == "__main__":
@@ -73,14 +74,12 @@ if __name__ == "__main__":
     while 1:
         try:
             item = receiver.recv_json()
-            #print 'item:', item
         except Exception, e:
             print Exception, ":", e 
         if not item:
             continue 
         
         if item['sp_type'] == '1':
-            #print 'item:', item
             try:
                 cal_propage_work(item)
             except:
