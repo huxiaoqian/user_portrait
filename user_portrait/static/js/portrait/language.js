@@ -7,8 +7,15 @@ var emoticon = parent.personalData.emoticon;
 var hashtag = parent.personalData.hashtag_dict;
 //keywords
 
-
-Draw_keyword(keywordsCloud)
+keywords_name = 'Language'
+hashtag_name = 'hashtag_words'
+keywords_title = '关键词'
+hashtag_title = 'hashtag'
+keywords_more = 'key_WordList'
+hashtag_more = 'hashtag_WordList'
+Draw_keyword(keywordsCloud, keywords_name, keywords_title, keywords_more)
+Draw_keyword(hashtag, hashtag_name, hashtag_title, hashtag_more)
+Draw_topic()
 function createRandomItemStyle() {
     return {
         normal: {
@@ -20,10 +27,10 @@ function createRandomItemStyle() {
         }
     };
 }
-function Draw_keyword(data){
+function Draw_keyword(data, div_name, div_title, more_div){
 	var keyword = [];
 
-	$('#WordList').empty();
+	$('#'+ more_div).empty();
     html = '';
     html += '<table class="table table-striped table-bordered" style="width:480px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
@@ -33,8 +40,8 @@ function Draw_keyword(data){
        html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
-    $('#WordList').append(html);
-    
+    $('#'+ more_div).append(html);
+   
     var word_num = Math.min(20, data.length);
 
 	for (i=0;i<word_num;i++){
@@ -44,17 +51,17 @@ function Draw_keyword(data){
 		word['itemStyle'] = createRandomItemStyle();
 		keyword.push(word);
 	}
-	var myChart = echarts.init(document.getElementById('Language')); 
+	var myChart = echarts.init(document.getElementById(div_name)); 
 	var option = {
     title: {
-        text: '关键词',
+        text: div_title,
     },
     tooltip: {
         show: true
     },
     series: [{
         type: 'wordCloud',
-        size: ['80%', '80%'],
+        size: ['100%', '100%'],
         textRotation : [0, 45, 90, -45],
         textPadding: 0,
         autoSize: {
@@ -68,7 +75,61 @@ function Draw_keyword(data){
 	
 }
  
-function text2icon(text){
+function Draw_topic(){
+    var myChart2 = echarts.init(document.getElementById('user_topic'));
+    var option = {
+      title : {
+        text: '用户话题分布',
+        subtext: ''
+      },
+      tooltip : {
+        trigger: 'axis'
+      },
+      toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+      },
+      calculable : true,
+      polar : [
+       {
+        indicator : [
+        {text : '进攻', max  : 100},
+        {text : '防守', max  : 100},
+        {text : '体能', max  : 100},
+        {text : '速度', max  : 100},
+        {text : '力量', max  : 100},
+        {text : '技巧', max  : 100}
+        ],
+        radius : 90
+       }
+      ],
+      series : [
+       {
+        name: '话题分布情况',
+        type: 'radar',
+        itemStyle: {
+         normal: {
+          areaStyle: {
+            type: 'default'
+          }
+         }
+        },
+       data : [
+        {
+         value : [97, 32, 74, 95, 88, 92],
+         name : '罗纳尔多'}
+       ]
+      }]
+  };
+  myChart2.setOption(option);
+}
+
+/*function text2icon(text){
     var icon = '';
     for (var i = 0;i < emoticon_list.length;i++){
         var item = emoticon_list[i];
@@ -178,6 +239,7 @@ html6 += '</ul>';
 html6 += '</div> ';
 $('#con6').append(html6);
 
+*/
 function Hashtag(){
   this.ajax_method = 'GET';
 }
