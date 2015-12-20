@@ -288,6 +288,8 @@ var div_name = 'weekly_ip';
 draw_daily_ip_table(div_name);
 var div_name = 'monthly_location';
 draw_daily_ip_table(div_name);
+var div_name = 'online_pattern';
+draw_daily_ip_table(div_name);
 
 function location_desc(data){
 	var description1 = document.getElementById('location_description1');
