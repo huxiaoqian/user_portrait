@@ -11,6 +11,19 @@ REDIS_CLUSTER_HOST_FLOW2 = '219.224.135.94'
 REDIS_CLUSTER_PORT_FLOW2 = '6379'
 REDIS_HOST = '219.224.135.97'
 REDIS_PORT = '6380'
+#uname to uid 
+UNAME2UID_HOST = '219.224.135.91'
+UNAME2UID_PORT = '7381'
+# uname2uid in redis: {'weibo_user': {uname:uid, ...}}
+UNAME2UID_HASH = 'weibo_user'
+
+#flow3:retweet/be_retweet redis
+RETWEET_REDIS_HOST = '219.224.135.97'
+RETWEET_REDIS_PORT = '6380'
+#flow3:comment/be_comment redis
+COMMENT_REDIS_HOST = '219.224.135.98'
+COMMENT_REDIS_PORT = '6379'
+
 
 USER_ES_HOST = '219.224.135.97'
 ES_CLUSTER_HOST_FLOW1 = ["219.224.135.93", "219.224.135.94"]
@@ -39,7 +52,7 @@ BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yua
 BIN_FILE_PATH = '/home/ubuntu8/data1309/20130901'
 
 # first part of csv file1
-FIRST_FILE_PART = 'MB_QL_9_7_NODE'
+FIRST_FILE_PART = 'MB_QL_9_3_NODE'
 
 # sensitive words path
 SENSITIVE_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/flow4/sensitive_words.txt'
@@ -49,6 +62,10 @@ USER_PROFILE_ES_HOST = ['219.224.135.96:9208','219.224.135.97:9208','219.224.135
 USER_PROFILE_ES_PORT = 9208
 USER_PORTRAIT_ES_HOST = ['219.224.135.93:9200', '219.224.135.94:9200']
 USER_PORTRAIT_ES_PORT = 9200
+FLOW_TEXT_ES_HOST = ['219.224.135.93:9206', '219.224.135.94:9206']
+FLOW_TEXT_ES_PORT = 9206
+
+
 
 # use to identify the db number of redis-97
 R_BEGIN_TIME = '2013-09-01'

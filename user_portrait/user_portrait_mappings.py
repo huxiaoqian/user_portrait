@@ -23,6 +23,10 @@ index_info = {
                     "type": "string",
                     "index": "not_analyzed"
                 },
+                'domain_v3':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                },
                 "uname":{
                     "type": "string",
                     "index": "not_analyzed"
@@ -31,13 +35,17 @@ index_info = {
                     "type": "string",
                     "index": "not_analyzed"
                 },
-                "geo_activity_dict":{
+                "activity_geo_dict":{
                     "type": "string",
                     "index": "not_analyzed"
                 },
                 "hashtag":{
                     "type": "string",
                     "analyzer": "my_analyzer"
+                },
+                'hashtag_dict':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
                 },
                 "keywords":{
                     "type": "string",
@@ -51,17 +59,16 @@ index_info = {
                     "type": "string",
                     "index": "not_analyzed"
                 },
+                'topic_string':{
+                    'type': 'string',
+                    'analyzer': 'my_analyzer'
+                    },
 
-
-                "geo_activity":{
+                "activity_geo":{
                     "type": "string",
                     "analyzer": "my_analyzer"
                 },
                 "keywords_string":{
-                    "type": "string",
-                    "analyzer": "my_analyzer"
-                },
-                "psycho_status_string":{
                     "type": "string",
                     "analyzer": "my_analyzer"
                 },
@@ -79,23 +86,11 @@ index_info = {
                 "activeness": {
                     "type": "long"
                 },
-
-                "emoticon": {
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
                 "online_pattern":{
                     "type": "string",
                     "index": "not_analyzed"
                 },
-                "link": {
-                    "type": "long",
-                    "index": "not_analyzed"
-                },
                 "fansnum": {
-                    "type": "long"
-                },
-                "text_len": {
                     "type": "long"
                 },
                 "photo_url": {
@@ -113,10 +108,6 @@ index_info = {
                     "type": "long"
                 },
                 "location": {
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "emotion_words": {
                     "type": "string",
                     "index": "not_analyzed"
                 },

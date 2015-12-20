@@ -60,7 +60,7 @@ def active_time_description(result):
  
     description = '用户属于%s类型，活跃时间主要集中在%s' % (pd[segment], definition)
 
-    return description
+    return description, pd[segment]
 
 
 def hashtag_description(result):
