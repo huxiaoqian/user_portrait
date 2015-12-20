@@ -1,6 +1,71 @@
 <script type="text/javascript" src='/static/js/esl.js'></script>
 <script type="text/javascript" src='/static/js/echarts-all.js'></script>
 <script type="text/javascript" src='/static/js/echarts.js'></script>
+<script src="/static/js/portrait/attention.js"></script>
+<script src="/static/js/portrait/follower.js"></script>
+<script src="/static/js/portrait/mention.js"></script>
+<script type="text/javascript">
+  window.onload=function(){
+    var radio=document.getElementsByName('graph-type');
+    url = '/attribute/follower/?uid='+parent.personalData.uid ;
+    Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
+    for(var i=0;i<radio.length;i++)
+    {
+        radio[i].onclick=function()
+        {
+            var select_graph = this.value;
+            if (select_graph == 1){
+              $("#graph-domain").empty();
+              var html = '';
+              html+='<div style="padding-left:150px;">最近有<span id="fansNumber"></span>人转发该用户微博（图中显示Top20）</div><div id ="test1" style="height:600px;width:50%;"><div id ="test1-2" style="height:600px;width:50%;"></div>'
+              $('#graph-domain').append(html)
+              url = '/attribute/follower/?uid='+parent.personalData.uid ;
+              Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
+            }
+            else if(select_graph == 2){
+              $("#graph-domain").empty();
+              var html = '';
+              html+='<div style="padding-left:150px;">最近该用户被<span id="fansNumber"></span>人转发（图中显示Top20）</div><div id ="test1" style="height:600px;width:800px;"></div>'
+              $('#graph-domain').append(html)
+              url = '/attribute/attention/?uid='+parent.personalData.uid ;
+              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+            }
+            else if(select_graph == 3){
+              $("#graph-domain").empty();
+              var html = '';
+              html+='<div class="">该用户最近跟<span id="mentionNumber"></span>人@交互（图中显示Top20）</div><div id ="test1" style="height:600px;width:800px;"></div>'
+              $('#graph-domain').append(html)
+              url = '/attribute/attention/?uid='+parent.personalData.uid ;
+              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+            }
+            else if(select_graph == 4){
+              $("#graph-domain").empty();
+              var html = '';
+              html+='<div class="">该用户最近评论了<span id="mentionNumber"></span>用户的微博（图中显示Top20）</div><div id ="test1" style="height:600px;width:800px;"></div>'
+              $('#graph-domain').append(html)
+              url = '/attribute/attention/?uid='+parent.personalData.uid ;
+              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+            }
+            else if(select_graph == 5){
+              $("#graph-domain").empty();
+              var html = '';
+              html+='<div class="">该用户的微博最近被<span id="mentionNumber"></span>人评论（图中显示Top20）</div><div id ="test1" style="height:600px;width:800px;"></div>'
+              $('#graph-domain').append(html)
+              url = '/attribute/attention/?uid='+parent.personalData.uid ;
+              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+            }
+            else if(select_graph == 6){
+              $("#graph-domain").empty();
+              var html = '';
+              html+='<div class="">该用户最近与<span id="mentionNumber"></span>人互动（图中显示Top20）</div><div id ="test1" style="height:600px;width:800px;"></div>'
+              $('#graph-domain').append(html)
+              url = '/attribute/attention/?uid='+parent.personalData.uid ;
+              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+            }
+          }
+        }
+    }
+</script>
 <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <style type="text/css">
 a:focus, a:hover {
@@ -8,45 +73,23 @@ a:focus, a:hover {
 }
 </style>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="width:100%">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-  </ol>
 
-  <!-- Wrapper for slides -->
-  <div class="carousel-inner" role="listbox">
-    <div class="item active" style="padding-left:150px;">
-	<div class="">最近有<span id="fansNumber"></span>人转发该用户微博（图中显示Top20）</div>
-     <div id ='test1' style='height:600px;width:800px;'></div>
-    </div>
-    <div class="item" style="padding-left:150px;"> 
-	<div class="">该用户最近跟<span id="mentionNumber"></span>人@交互（图中显示Top20）</div>
-      <div id ='test2' style='height:600px;width:800px'></div>
-    </div>
-	<div class="item " style="padding-left:150px"> 
-	<div class="">最近该用户转发过<span id="attentionNumber"></span>人的微博（图中显示Top20）</div>
-      <div id ='test3' style='height:600px;width:800px;'></div>
-    </div>
+  <div style="width:100%;text-align:right;font-size:20px;margin:8px;">
+    <input type="radio" name="graph-type" value="1" style="width:15px;height:15px;margin-left:8px;" checked >转发
+    <input type="radio" name="graph-type" value="2"  style="width:15px;height:15px;margin-left:8px;">被转发
+    <input type="radio" name="graph-type" value="3"  style="width:15px;height:15px;margin-left:8px;">提及
+    <input type="radio" name="graph-type" value="4"  style="width:15px;height:15px;margin-left:8px;">评论
+    <input type="radio" name="graph-type" value="5" style="width:15px;height:15px;margin-left:8px;">被评论
+    <input type="radio" name="graph-type" value="6"  style="width:15px;height:15px;margin-left:8px;">互动
   </div>
+    
+  <div style="width:100%;" id="graph-domain">
+    <div  style="padding-left:150px;width:100%;">最近有<span id="fansNumber"></span>人转发该用户微博（图中显示Top20）</div>
+    <div id ="test1" style="height:600px;width:400px;"></div>
+    <div id ="test1-2" style="height:600px;width:400px;"></div>
+  <br>
 
-  <!-- Controls -->
-  <div>
-  <a class="left" href="#carousel-example-generic" role="button" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true" style="display:block; margin-top:-341px; font-size:30px; background-color: #8E8E8E; color:white"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  </div>
-  <div>
-  <a class="right" href="#carousel-example-generic" role="button" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" style="display:block; margin-top:-359px; font-size:30px; background-color: #8E8E8E; color:white; margin-left:950px"></span>
-    <span class="sr-only">Next</span>
-  </a>
-  </div>
+
 </div>
-	<script src="/static/js/portrait/attention.js"></script>
-	<script src="/static/js/portrait/follower.js"></script>
-	<script src="/static/js/portrait/mention.js"></script>
    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
  
