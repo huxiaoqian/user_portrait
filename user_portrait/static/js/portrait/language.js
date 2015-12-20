@@ -71,17 +71,52 @@ function Draw_keyword(data, div_name, div_title, more_div){
         data: keyword
     }]
 };
-      myChart.setOption(option);
-	
+      myChart.setOption(option);	
 }
- 
+
+function get_radar_data (data) {
+  var topic = data;
+  var topic_name = [];
+  var topic_value = [];
+  for(var key in topic){
+    topic_value.push(topic[key])
+    topic_name.push(key)
+  };
+  var topic_value2 = [];
+  var topic_name2 = [];
+  for(var i=0; i<6;i++){ //取前6个最大值
+    a=topic_value.indexOf(Math.max.apply(Math, topic_value))
+    topic_value2.push(topic_value[a]);
+    topic_name2.push(topic_name[a]);
+    topic_value[a]=0;
+  }
+  var topic_name3 = [];
+  for(var i=0;i<6;i++){ //设置最大值的话题的阈值
+    var name_dict = {};
+    var index = topic_name2[i];
+    name_dict["text"] = index;
+    name_dict["max"] = 50
+    topic_name3.push(name_dict)
+  }
+  var topic_result = [];
+  topic_result.push(topic_name3);
+  topic_result.push(topic_value2);
+  return topic_result;
+}
 function Draw_topic(){
-    var myChart2 = echarts.init(document.getElementById('user_topic'));
-    var option = {
-      title : {
-        text: '用户话题分布',
-        subtext: ''
-      },
+  var topic = {'话题1':20,'话题2':23,'话题3':45,'话题4':32,'话题5':22,'话题6':40,'话题7':19,'话题8':35}
+  var topic_result = [];
+  topic_result = get_radar_data(topic);
+  var topic_name = topic_result[0];
+  console.log('aaaaaaaaaaaaaaaa')
+  console.log(topic_name);
+  var topic_value = topic_result[1];
+  var myChart2 = echarts.init(document.getElementById('user_topic'));
+  var option = {
+    title : {
+      text: '用户话题分布',
+      subtext: ''
+    },
       tooltip : {
         trigger: 'axis'
       },
@@ -97,14 +132,7 @@ function Draw_topic(){
       calculable : true,
       polar : [
        {
-        indicator : [
-        {text : '进攻', max  : 100},
-        {text : '防守', max  : 100},
-        {text : '体能', max  : 100},
-        {text : '速度', max  : 100},
-        {text : '力量', max  : 100},
-        {text : '技巧', max  : 100}
-        ],
+        indicator :topic_name,
         radius : 90
        }
       ],
@@ -121,8 +149,8 @@ function Draw_topic(){
         },
        data : [
         {
-         value : [97, 32, 74, 95, 88, 92],
-         name : '罗纳尔多'}
+         value : topic_value,
+         name : '用户话题分布'}
        ]
       }]
   };
@@ -240,6 +268,8 @@ html6 += '</div> ';
 $('#con6').append(html6);
 
 */
+
+
 function Hashtag(){
   this.ajax_method = 'GET';
 }

@@ -4,6 +4,7 @@
 <script src="/static/js/portrait/attention.js"></script>
 <script src="/static/js/portrait/follower.js"></script>
 <script src="/static/js/portrait/mention.js"></script>
+<script src="/static/js/portrait/field_topic.js"></script>
 <script type="text/javascript">
   window.onload=function(){
     var radio=document.getElementsByName('graph-type');
@@ -83,9 +84,15 @@ a:focus, a:hover {
     
 <div style="width:100%;" id="graph-domain">
     <div  style="padding-left:150px;width:100%;">最近有<span id="fansNumber"></span>人转发该用户微博（图中显示Top20）</div>
-    <div id ="test1" style="height:600px;width:400px;"></div>
-    <div id ="test1-2" style="height:600px;width:400px;"></div>
-  <br>
-</div>
+    <div id="test1" style="height:400px;width:400px;"></div>
+    <div id="test1-2" style="height:400px;width:400px;"></div>
+  </div>
+  <div style="width:100%;">
+    <span style='font-size:17px;color:#777'>领域</span>
+    <span style="margin-left:500px;font-size:17px;color:#777">话题</span>
+  </div>
+  <div id="field" style="height:380px;width:400px;"></div>
+  <div id="topic" style="height:380px;width:400px;"></div>
+  
    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
  
