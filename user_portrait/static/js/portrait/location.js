@@ -266,7 +266,7 @@ activity_call_ajax_request(url, active_chart);
 
 function draw_daily_ip_table(div_name){
     var location_geo = parent.personalData.activity_geo;
-    console.log(location_geo);
+    //console.log(location_geo);
     $('#'+div_name).empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
