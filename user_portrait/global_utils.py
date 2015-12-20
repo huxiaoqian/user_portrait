@@ -8,7 +8,15 @@ from global_config import REDIS_CLUSTER_HOST_FLOW1, REDIS_CLUSTER_PORT_FLOW1,\
                           REDIS_CLUSTER_HOST_FLOW2, REDIS_CLUSTER_PORT_FLOW2,\
                           REDIS_HOST, REDIS_PORT
 from global_config import WEIBO_API_HOST, WEIBO_API_PORT
-from global_config import USER_PROFILE_ES_HOST, USER_PROFILE_ES_PORT, ES_CLUSTER_HOST_FLOW1, USER_PORTRAIT_ES_HOST, USER_PORTRAIT_ES_PORT
+from global_config import USER_PROFILE_ES_HOST, USER_PROFILE_ES_PORT, ES_CLUSTER_HOST_FLOW1,\
+                          USER_PORTRAIT_ES_HOST, USER_PORTRAIT_ES_PORT,\
+                          FLOW_TEXT_ES_HOST, FLOW_TEXT_ES_PORT
+from global_config import UNAME2UID_HOST, UNAME2UID_PORT
+from global_config import RETWEET_REDIS_HOST, RETWEET_REDIS_PORT
+from global_config import COMMENT_REDIS_HOST, COMMENT_REDIS_PORT
+
+#uname2uid redis
+uname2uid_redis = redis.StrictRedis(host=UNAME2UID_HOST, port=UNAME2UID_PORT)
 
 def _default_cluster_redis(host=REDIS_CLUSTER_HOST_FLOW1, port=REDIS_CLUSTER_PORT_FLOW1):
     startup_nodes = [{'host':host, 'port':port}]
@@ -20,6 +28,17 @@ R_CLUSTER_FLOW2 = _default_cluster_redis(host=REDIS_CLUSTER_HOST_FLOW2, port=RED
 
 def _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=1):
     return redis.StrictRedis(host, port, db)
+
+#use to save retweet/be_retweet
+retweet_r_1 = _default_redis(host=RETWEET_REDIS_HOST,port=RETWEET_REDIS_PORT, db=1)
+retweet_r_2 = _default_redis(host=RETWEET_REDIS_HOST, port=RETWEET_REDIS_PORT, db=2)
+retweet_redis_dict = {'1':retweet_r_1, '2':retweet_r_2}
+#use to save comment/be_comment
+comment_r_1 = _default_redis(host=COMMENT_REDIS_HOST, port=COMMENT_REDIS_PORT, db=1)
+comment_r_2 = _default_redis(host=COMMENT_REDIS_HOST, port=COMMENT_REDIS_PORT, db=2)
+comment_redis_dict = {'1':comment_r_1, '2':comment_r_2}
+
+
 
 R_0 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 R_1 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=1)
@@ -58,10 +77,45 @@ R_RECOMMENTATION_OUT = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 R_ADMIN = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 # type: hash ----{admin, username, password}
 
-# elasticsearch initialize, one for user_profile, one for user_portrait
-es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)
-es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+#use to write portrait user list to redis as queue for 
+update_day_redis = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
+UPDATE_DAY_REDIS_KEY = 'update_day'
 
+
+# elasticsearch initialize, one for user_profile, one for user_portrait
+es_user_profile = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+es_flow_text = Elasticsearch(FLOW_TEXT_ES_HOST, timeout=600)
+
+# elasticsearch index_name and index_type
+profile_index_name = 'weibo_user'  # user profile es
+profile_index_type = 'user'
+portrait_index_name = 'user_portrait' # user portrait
+portrait_index_type = 'user'
+flow_text_index_name_pre = 'flow_text_' # flow text: 'flow_text_2013-09-01'
+flow_text_index_type = 'text'
+# week retweet/be_retweet relation es
+retweet_index_name_pre = 'retweet_' # retweet: 'retweet_1' or 'retweet_2'
+retweet_index_type = 'user'
+be_retweet_index_name_pre = 'be_retweet_' #be_retweet: 'be_retweet_1'/'be_retweet_2'
+be_retweet_index_type = 'user'
+# week comment/be_comment relation es
+comment_index_name_pre = 'comment_'
+comment_index_type = 'user'
+be_comment_index_name_pre = 'be_comment_'
+be_comment_index_type = 'user'
+# es for activeness history, influence history and pagerank
+copy_portrait_index_name = 'this_is_a_copy_user_portrait'
+copy_portrait_index_type = 'manage'
+
+#use to load balck words of weibo keywords
+BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black.txt'
+
+def load_black_words():
+    black_words = set([line.strip('\r\n') for line in file(BLACK_WORDS_PATH)])
+    return black_words
+
+black_words = load_black_words()
 
 
 def _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1):

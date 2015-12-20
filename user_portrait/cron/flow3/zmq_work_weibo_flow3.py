@@ -7,31 +7,67 @@ import time
 import json
 import math
 from datetime import datetime
-from test_save_attribute import save_ruid
+from test_save_attribute import save_retweet, save_comment
 
 reload(sys)
 sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
 from global_config import ZMQ_VENT_PORT_FLOW3, ZMQ_CTRL_VENT_PORT_FLOW3,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
+from global_config import UNAME2UID_HASH as uname2uid_hash
+from global_utils import uname2uid_redis
 
 
-def extract_uname(text):
-    at_uname_list = []
+#uname2uid from redis
+def uname2uid(uname):
+    try:
+        uid = uname2uid_redis.hget(uname2uid_hash, uname)
+    except:
+        uid = ''
+    return uid
+
+#use to extract retweet weibo direct uname
+#write in version:15-12-08
+def retweet_uname2uid(item):
+    direct_uid = None
+    uid = item['uid']
+    root_uid = item['root_uid']
+    timestamp = item['timestamp']
+    text = item['text']
+    direct_uid = ''
     if isinstance(text, str):
         text = text.decode('utf-8', 'ignore')
-    text = text.split('//@')[0]
-    RE = re.compile(u'@([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+) ', re.UNICODE)
+    RE = re.compile(u'//@([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+):', re.UNICODE)
     repost_chains = RE.findall(text)
+    if repost_chains != []:
+        direct_uname = repost_chains[0]
+        direct_uid = uname2uid(direct_uname)
 
-    return repost_chains
+    if direct_uid == '':
+        direct_uid = root_uid
 
-def cal_propage_work(item):
+    save_retweet(uid, direct_uid, timestamp)
+
+#use to extract comment weibo direct uname
+#write in version:15-12-08
+def comment_uname2uid(item):
+    direct_uid = None
     uid = item['uid']
+    root_uid = item['root_uid']
     timestamp = item['timestamp']
-    #r_uid = item['retweeted_uid']
-    r_uid = item['root_uid']
-    save_ruid(uid, r_uid, timestamp)
+    text = item['text']
+    direct_uid = ''
+    if isinstance(text, str):
+        text = text.decode('utf-8', 'ignore')
+    RE = re.compile(u'回复@([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+):', re.UNICODE)
+    comment_chains = RE.findall(text)
+    if comment_chains != []:
+        direct_uname = comment_chains[0]
+        direct_uid = uname2uid(direct_uname)
+    if direct_uid == '':
+        direct_uid = root_uid
+    
+    save_comment(uid, direct_uid, timestamp)
 
 
 if __name__ == "__main__":
@@ -58,12 +94,17 @@ if __name__ == "__main__":
             continue 
         
         if item['sp_type'] == '1':
-            try:
-                if item and item['message_type']==3:
-                    cal_propage_work(item)
-            except:
-                pass
-        
+            message_type = item['message_type']
+            '''
+            if message_type==3:
+                retweet_uname2uid(item)
+            elif message_type==2:
+                comment_uname2uid(item)
+            '''
+            #test
+            if message_type==2:
+                comment_uname2uid(item)
+
         count += 1
         if count % 10000 == 0:
             te = time.time()
