@@ -12,6 +12,7 @@ Follower.prototype = {   //获取数据，重新画表
     });
   },
 Draw_Follower:function(data){
+    console.log(data);
 	var UserID = parent.personalData.uid;
     var UserName = parent.personalData.uname;
     var Fnumber = document.getElementById('fansNumber');
