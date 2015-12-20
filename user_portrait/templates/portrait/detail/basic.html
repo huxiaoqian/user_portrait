@@ -2,7 +2,11 @@
 <script type="text/javascript" src='/static/js/esl.js'></script>
 
 <div id="Pdetail">
-	
+    <div style="margin-top:10px;font-size:16px;"><b style="margin-right:50px;">影响力走势图:</b>
+	<input name="choose_module" type="radio" checked value=1>每周影响力
+    <input style="margin-left:20px;" name="choose_module" type="radio" value=2>每日影响力
+    </div>
+    <br>
 	<div id="influence_chart" style="height:300px;width:1000px;"></div>
 	<div id=""  style="width:1000px;line-height:48px;font-size:18px;font-family:"Microsoft YaHei UI";">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
@@ -30,11 +34,10 @@ Influence.prototype = {   //获取数据，重新画表
     });
   },
   Draw_influence:function(data){
-	//console.log(data);
+	console.log(data);
 	var item = data[0];
-	//console.log(item);
 	var conclusion = data[1];
-	console.log(conclusion);
+	//console.log(conclusion);
 	document.getElementById('saysth').innerHTML = conclusion[0];
 	document.getElementById('sayimportant').innerHTML = conclusion[1];
 	var dataFixed = [];
@@ -50,13 +53,11 @@ Influence.prototype = {   //获取数据，重新画表
     var myChart = echarts.init(document.getElementById('influence_chart')); 
         
     var option = {
-        title : {
-            text: '影响力走势图',
-        },
         tooltip : {
             trigger: 'axis'
         },
         legend: {
+            x : 'right',
             data:['影响力']
         },
         calculable : true,
@@ -96,9 +97,28 @@ Influence.prototype = {   //获取数据，重新画表
     }
 }
 
+function choose_dayorweek(url){
+$('input[name="choose_module"]').click(function(){                  
+  var index = $('input[name="choose_module"]:checked').val();
+  console.log(index);
+  if(index == 1){
+    $('#influence_chart').empty();
+    //console.log(url);
+    Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
+  }else{
+    $('#influence_chart').empty();
+    $('#influence_chart').append('<p>aaaa</p>');
+    
+  }
+})}
+
 var Influence = new Influence();
-var url = '/influence_application/portrait_history_active/?date=2013-09-07&uid='+parent.personalData.uid ;
-Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
+var influence_url = '/influence_application/portrait_history_active/?date=2013-09-07&uid='+parent.personalData.uid ;
+console.log(url)
+Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+choose_dayorweek(influence_url);
+
+
 </script>
 <script src="/static/js/portrait/influence.js"></script>
 
