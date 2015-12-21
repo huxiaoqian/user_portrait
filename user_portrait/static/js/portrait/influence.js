@@ -79,6 +79,7 @@ Influence.prototype = {   //获取数据，重新画表
   $('#influence_weibo').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>用户在昨天未发布任何微博</span></div>";
+        $('#influence_weibo').append(html);
     }else{
         for(i=0;i<data.length;i++){
             //console.log(data[i].text);
@@ -92,13 +93,60 @@ Influence.prototype = {   //获取数据，重新画表
             html += "<div style='width:100%;padding:2px;'>";
             html += "<span style='margin:0 20px'>最高值:<span id='' style='color:red;'>"+data[i].zuigao+"</span></span>";
             html += "<span style='margin:0 20px;'>爆发度:<span id='' style='color:red;'>"+data[i].baofa+"</span></span>";
-            html += "<span style='float:right;margin-right:30px;'><span >转发数:<span type='button'data-toggle='modal' data-target='#re_influence' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].zhuanfa+"</u></span></span>";
-            html += "<span style='margin-left:50px'>评论数:<span id='comment_count' type='button'data-toggle='modal' data-target='#cmt_influence' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].pinglun+"</u></span></span></span></div>";
+            html += "<span style='float:right;margin-right:30px;'><span>转发数:<span class='retweet_count' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].zhuanfa+"</u></span></span>";
+            html += "<span style='margin-left:50px'>评论数:<span class='comment_count' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].pinglun+"</u></span></span></span></div>";
             html += "</div>";
         }
+      $('#influence_weibo').append(html);
+      $(".closeList2").off("click").click(function(){
+        $("#float-wrap").addClass("hidden");
+        $("#re_influence").addClass("hidden");
+        $("#cmt_influence").addClass("hidden");
+        return false;
+      });
+      $(".retweet_count").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#re_influence").removeClass("hidden");
+        return false;
+      });
+      $(".comment_count").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#cmt_influence").removeClass("hidden");
+        return false;
+      });
     }
-  $('#influence_weibo').append(html);
-}
+  },
+  Influence_motal:function(data, div_name){         //后期加名字
+    $('#'+div_name).empty();
+    var html = '';
+    html += '<div style="float:none;margin:0;font-size:16px;">该类用户多来自'+data[0]+'领域，多参与'+data[1]+'话题的讨论，所处地为'+data[2]+',平均影响力为'+data[3]+'</div>';
+    html += '<hr>';
+    html += '<h4>已入库用户:('+data[4].length+')</h4><p>';
+    for (i=0;i<data[4].length;i++){
+      html += '<span"><img style="margin:10px 0px 0px 20px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
+      
+      // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
+      // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
+      // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
+      // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
+      // html += '</ul></div>';
+
+    }
+    html += '</p>';
+    html += '<hr><h4>未入库用户:('+data[5].length+')</h4><p>';
+    for (i=0;i<data[5].length;i++){
+      html += '<span"><img style="margin:10px 0px 0px 20px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
+
+      // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
+      // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
+      // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
+      // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
+      // html += '</ul></div>';
+
+    }
+    html += '</p>';
+    $('#'+div_name).append(html);
+  }
 
 }
 
@@ -112,15 +160,20 @@ $('input[name="choose_module"]').click(function(){
     Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
   }else{
     $('#influence_chart').empty();
-    $('#influence_chart').append('<p>aaaa</p>');
+    Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
+
+    //$('#influence_chart').append('<p>aaaa</p>');
     
   }
 })}
 
 var weibo =[{"text":"【“小学生太需要自由快乐的生活了”】教育专家孙云晓在回忆他的“危险的童年”时说：小学阶段的教育，包括学校、家庭和社会教育的成败得失，将很大程度决定孩子的一生，“小学生太需要自由快乐的生活了，他们上半天课足矣，另外半天适宜参加各种兴趣活动” 。你赞同吗？","zhuanfa":1225453,"pinglun":11425421,"zuigao":16743,"baofa":2135632},{"text":"【“小学生太需要自由快乐的生活了”】教育专家孙云晓在回忆他的“危险的童年”时说：小学阶段的教育，包括学校、家庭和社会教育的成败得失，将很大程度决定孩子的一生，“小学生太需要自由快乐的生活了，他们上半天课足矣，另外半天适宜参加各种兴趣活动” 。你赞同吗？","zhuanfa":123,"pinglun":111,"zuigao":123,"baofa":212},{"text":"【“小学生太需要自由快乐的生活了”】教育专家孙云晓在回忆他的“危险的童年”时说：小学阶段的教育，包括学校、家庭和社会教育的成败得失，将很大程度决定孩子的一生，“小学生太需要自由快乐的生活了，他们上半天课足矣，另外半天适宜参加各种兴趣活动” 。你赞同吗？","zhuanfa":123,"pinglun":111,"zuigao":123,"baofa":212}]
+var weibo2 = ['媒体','娱乐','北京','45',['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1'],['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1']]
+var div_name = 're_user'
 var Influence = new Influence();
 var influence_url = '/influence_application/portrait_history_active/?date=2013-09-07&uid='+parent.personalData.uid ;
 //console.log(url)
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
 Influence.draw_weibo(weibo);
+Influence.Influence_motal(weibo2,div_name)
 choose_dayorweek(influence_url);

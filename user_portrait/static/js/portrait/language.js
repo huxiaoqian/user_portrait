@@ -16,6 +16,30 @@ hashtag_more = 'hashtag_WordList'
 Draw_keyword(keywordsCloud, keywords_name, keywords_title, keywords_more)
 Draw_keyword(hashtag, hashtag_name, hashtag_title, hashtag_more)
 Draw_topic()
+
+$(function() {
+    $( '#dl-menu' ).dlmenu();
+  });
+$(".closeList").off("click").click(function(){
+    console.log('dsvnkjfdvbskjdbvsd11111111');
+    $("#float-wrap").addClass("hidden");
+    
+    $("#more_keyWords").addClass("hidden");
+    $("#more_hashtagWords").addClass("hidden");
+    return false;
+  });
+$("#showmore_keyWords").off("click").click(function(){
+    $("#float-wrap").removeClass("hidden");
+    $("#more_keyWords").removeClass("hidden");
+    return false;
+  });
+
+$("#showmore_hashtagWords").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#more_hashtagWords").removeClass("hidden");
+        return false;
+    });
+
 function createRandomItemStyle() {
     return {
         normal: {
