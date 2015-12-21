@@ -71,67 +71,31 @@ overflow-y:scroll;
 	</div>
   <div id="user_topic" style="margin-left:20px;height:300px;width:500px;"></div>
 </div>
-<!--
-	<div id="" style="height:30px;width:950px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;">含链接微博比例：<span id="LLnum"></span>%</h4>
-	</div>
-	<div id="" style="height:30px;width:950px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 id="linkDes" style="line-height:32px;"></h4>
-	</div>
-	
-	<div id="" style="height:30px;width:950px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 id="emotionDes" style="line-height:32px;"></h4>
-	</div>
--->
 
 <script type="text/javascript">
-        function switchTab(ProTag, ProBox) {
-            for (i = 1; i < 7; i++) {
-                if ("tab" + i == ProTag) {
-                    document.getElementById(ProTag).getElementsByTagName("a")[0].className = "on";
-                } else {
-                    document.getElementById("tab" + i).getElementsByTagName("a")[0].className = "";
-                }
-                if ("con" + i == ProBox) {
-                    document.getElementById(ProBox).style.display = "";
-                } else {
-                    document.getElementById("con" + i).style.display = "none";
-                }
-            }
-        }
+        // function switchTab(ProTag, ProBox) {
+        //     for (i = 1; i < 7; i++) {
+        //         if ("tab" + i == ProTag) {
+        //             document.getElementById(ProTag).getElementsByTagName("a")[0].className = "on";
+        //         } else {
+        //             document.getElementById("tab" + i).getElementsByTagName("a")[0].className = "";
+        //         }
+        //         if ("con" + i == ProBox) {
+        //             document.getElementById(ProBox).style.display = "";
+        //         } else {
+        //             document.getElementById("con" + i).style.display = "none";
+        //         }
+        //     }
+        // }
     </script>
 <script src="/static/js/emoticon.js"></script>
 <script src="/static/js/jquery.dlmenu.js"></script>
 <script src="/static/js/portrait/language.js"></script>
 <script type="text/javascript">
-$(function() {
-		$( '#dl-menu' ).dlmenu();
-	});
-$(".closeList").off("click").click(function(){
-		$("#float-wrap").addClass("hidden");
-		$("#more_keyWords").addClass("hidden");
-    $("#more_hashtagWords").addClass("hidden");
-		return false;
-	});
-$("#showmore_keyWords").off("click").click(function(){
-		$("#float-wrap").removeClass("hidden");
-		$("#more_keyWords").removeClass("hidden");
-		return false;
-	});
-
-$("#showmore_hashtagWords").off("click").click(function(){
-        $("#float-wrap").removeClass("hidden");
-        $("#more_hashtagWords").removeClass("hidden");
-        return false;
-    });
-
-var textlength = document.getElementById('TLnum');
-textlength.innerHTML = parent.personalData.text_len.toFixed(0);
-var linklength = document.getElementById('LLnum');
-var link = parent.personalData.link * 100;
-linklength.innerHTML = link.toFixed(2);               
+// var textlength = document.getElementById('TLnum');
+// textlength.innerHTML = parent.personalData.text_len.toFixed(0);
+// var linklength = document.getElementById('LLnum');
+// var link = parent.personalData.link * 100;
+// linklength.innerHTML = link.toFixed(2);               
 </script>
                     
