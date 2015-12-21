@@ -867,11 +867,17 @@ def search_ip(now_ts, uid):
                 except:
                     all_week_result[ip] = 1
 
+    for i in range(0, 6): 
+        try:
+            segment_dict = week_time_ip_dict[i]
+        except:
+            week_time_ip_dict[i] = {}
+    
     for segment in week_time_ip_dict:
         segment_dict = week_time_ip_dict[segment]
         sort_segment_dict = sorted(segment_dict.items(), key=lambda x:x[1], reverse=True)
         sort_week_result[segment] = sort_segment_dict[:IP_TOP]
-
+    
     sort_all_week_top = sorted(all_week_result.items(), key=lambda x:x[1], reverse=True)
     
     results['week_ip'] = sort_week_result
@@ -893,6 +899,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     home_ip = []
     conclusion = u'该用户的家庭IP为'
     sort_week_result = sorted(week_result.items(), key=lambda x:x[0])
+    #print 'sort_week_result:', sort_week_result
     job_segment_dict = union_dict(sort_week_result[2][1], sort_week_result[3][1]) # 8:00-12:00 and 12:00-16:00
     home_segment_dict = union_dict(sort_week_result[0][1], sort_week_result[5][1]) # 0:00-4:00 and 20:00-24:00
     sort_job_dict = sorted(job_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
@@ -1123,10 +1130,10 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
 # return :{time_segment:count}
 def search_activity(now_ts, uid):
     date = ts2datetime(now_ts)
-    print 'date:', date
+    #print 'date:', date
     ts = datetime2ts(date)
     timestamp = ts
-    print 'date-timestamp:', ts
+    #print 'date-timestamp:', ts
     activity_result = dict()
     results = dict()
     segment_result = dict()
@@ -1221,7 +1228,7 @@ def search_activity_flow_text(uid):
     activity_result['activity_trend'] = activity_trend
     sort_activity_time = sorted(activity_time.items(), key=lambda x:x[1], reverse=True)
     activity_result['activity_time'] = sort_activity_time[:2]
-    print 'segment_result:', segment_result
+    #print 'segment_result:', segment_result
     description = active_time_description(activity_time)
     activity_result['description'] = description
 
@@ -1270,7 +1277,7 @@ def get_geo_track(uid):
         else:
             date_results.append([date_key, []])
 
-    print 'results:', date_results
+    #print 'results:', date_results
     city_set = set(city_list)
     geo_conclusion = get_geo_conclusion(uid, city_set)
     return [date_results, geo_conclusion]
