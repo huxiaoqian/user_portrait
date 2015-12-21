@@ -77,7 +77,6 @@ def search_attention(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
-    print 'index_name:', index_name
     try:
         retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
@@ -86,7 +85,6 @@ def search_attention(uid, top_count):
         retweet_dict = json.loads(retweet_result['uid_retweet'])
     else:
         retweet_dict = {}
-    print 'retweet_dict:', retweet_dict
     sort_retweet_result = sorted(retweet_dict.items(), key=lambda x:x[1], reverse=True)
     count = 0
     in_portrait_list = []
@@ -181,7 +179,6 @@ def search_attention(uid):
         sort_state_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
     except:
         return [None, 0]
-    print 'sort_state_results:', sort_state_results
     uid_list = [item[0] for item in sort_state_results]
     es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
     es_portrait_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
@@ -308,7 +305,6 @@ def search_comment(uid, top_count):
         retweet_dict = json.loads(retweet_result['uid_comment'])
     else:
         retweet_dict = {}
-    print 'retweet_dict:', retweet_dict
     sort_retweet_result = sorted(retweet_dict.items(), key=lambda x:x[1], reverse=True)
     count = 0
     in_portrait_list = []
@@ -701,7 +697,7 @@ def search_location_week(uid, now_date_ts):
     try:
         user_portrait_result = es_user_portrsit.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
-        return None
+        return {}
     activity_geo_string = user_portrait_result['activity_geo_dict']
     if activity_geo_string:
         activity_geo_dict_list = json.loads(activity_geo_string)
@@ -910,7 +906,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     for item in sort_job_dict:
         conclusion += item[0]
         conclusion += ','
-        json_ip.append([item[0]])
+        job_ip.append([item[0]])
 
     #get abnormal use IP
     day_ip_set = set(all_day_top.keys())

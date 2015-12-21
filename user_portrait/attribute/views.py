@@ -127,16 +127,13 @@ def ajax_portrait_search():
 def ajax_location():
     uid = request.args.get('uid', '')
     uid = str(uid)
-    print 'uid:', uid
     time_type = request.args.get('time_type', '') # type = day; week; month
     now_ts = time.time()
     # test
     now_ts = test_time - DAY
     results = search_location(now_ts, uid, time_type)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    
+    return json.dumps(results)
 
 
 #use to get ip information for day and week
