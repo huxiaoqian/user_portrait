@@ -6,51 +6,13 @@ import scws
 import csv
 import sys
 import json
-from search import search_follower,search_attention
-from search_user_profile import es_get_source
-from global_utils import es_user_profile
+from global_utils import abs_path,ES_CLUSTER_FLOW1 as es
 
 zh_text = ['nick_name','rel_name','description','sp_type','user_location']
 
-def find_friends(uids):
-
-    friends_list = dict()
-    for uid in uids:
-        #v = search_follower(uid)
-        v_items = search_attention(uid)
-        v = v_items[0]
-        item = []
-        if not v:
-            friends_list[str(uid)] = []
-            continue
-        for i in v.keys():
-            item.append(i)
-        friends_list[str(uid)] = item
-
-    return friends_list
-
-def get_info(uids):
-
-    friends_list = dict()
-    for uid in uids:
-        #print uid
-        data = es_get_source(uid)
-        item = dict()
-        if not data:
-            friends_list[str(uid)] = 'other'
-            continue
-        for k,v in data.items():
-            if k in set(zh_text):
-                item[k] = v.encode('utf-8')
-            else:
-                item[k] = v
-        friends_list[str(uid)] = item
-
-    return friends_list
-
 def write_user(friends,area):
 
-    fw = open('./dogapi_combine/'+area+'_info.jl','w')
+    fw = open(abs_path+'./dogapi_combine/'+area+'_info.jl','w')
     for k,v in friends.items():
         data = {'user':v,'id':k}
         d = json.dumps(data)
@@ -58,7 +20,7 @@ def write_user(friends,area):
 
 def write_friends(friends,area):
 
-    fw = open('./dogapi_combine/'+area+'_friends.jl','w')
+    fw = open(abs_path+'./dogapi_combine/'+area+'_friends.jl','w')
     for k,v in friends.items():
         data = {'friends':v,'id':k}
         d = json.dumps(data)
@@ -66,7 +28,7 @@ def write_friends(friends,area):
 
 def readUidByArea(area):
     uidlist = []
-    with open("./domain_combine/" + area +".txt") as f:
+    with open(abs_path+"./domain_combine/" + area +".txt") as f:
         for line in f:
             uid = line.split()[0]
             uid = uid.strip('\ufeff')
@@ -75,18 +37,21 @@ def readUidByArea(area):
 
 def readcsv(name):
 
-    f = open('./test_user/uid_%s.txt' % name)
+    f = open(abs_path+'./test_user/uid_%s.txt' % name)
     uidlist = []
+    i = 1
     for line in f:
         line = line.strip('\r\n')
+        if i == 1:
+            i = 2
+            continue
         uidlist.append(line)
 
     return uidlist
 
 def train_data():#训练数据
-    classes = ['mediaworker', 'activer', 'grassroot', 'business']
-#'university', 'homeadmin', 'abroadadmin', 'homemedia', 'abroadmedia', 'folkorg', \
-#          'lawyer', 'politician', 
+    classes = ['mediaworker', 'activer', 'grassroot', 'business',\
+               'university', 'homeadmin', 'abroadadmin', 'homemedia', 'abroadmedia', 'folkorg', 'lawyer', 'politician']
     for area in classes:
         #print '%s start....' % area
         uidlist = readUidByArea(area)
@@ -102,10 +67,23 @@ def get_user(uidlist):#返回用户的背景信息
         输入数据：uid列表
         输出数据：users列表
     '''
+    user_list = dict()
+    search_result = es.mget(index='weibo_user', doc_type='user', body={"ids": uidlist})["docs"]
+    for item in search_result:
+        uid = item['_id']
+        if not item['found']:
+            user_list[str(uid)] = 'other'
+        else:
+            data = item['_source']
+            row = dict()
+            for k,v in data.items():
+                if k in set(zh_text):
+                    row[k] = v.encode('utf-8')
+                else:
+                    row[k] = v
+            user_list[str(uid)] = row
 
-    user_info = get_info(uidlist)        
-
-    return user_info
+    return user_list
 
 def get_friends(uidlist):#返回用户的粉丝结构
     '''
@@ -114,13 +92,29 @@ def get_friends(uidlist):#返回用户的粉丝结构
         输出数据：friend列表
     '''
 
-    friend_list = find_friends(uidlist)
+    friend_list = dict()
+    search_result = es.mget(index='retweet_1', doc_type='user', body={"ids": uidlist})["docs"]
+    for item in search_result:
+        uid = item['_id']
+        if not item['found']:
+            friend_list[str(uid)] = []
+        else:
+            data = item['_source']['uid_retweet']
+            data = eval(data)
+            row = []
+            for i in data.keys():
+                row.append(i)
+            friend_list[str(uid)] = row
     
     return friend_list
 
 if __name__ == '__main__':
 
-    train_data()
+    uidlist = readcsv('111')
+    user_list = get_user(uidlist)
+    #friend_list = get_friends(uidlist)
+    print user_list
+    #train_data()
 
     
     

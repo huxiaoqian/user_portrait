@@ -3,39 +3,18 @@
 import os
 import re
 import scws
-import redis
+import sys
+import csv
 from elasticsearch import Elasticsearch
+sys.path.append('../../../')
+from parameter import DOMAIN_ABS_PATH as abs_path
 
-REDIS_HOST = '219.224.135.97'
-REDIS_PORT = '6380'
+ES_CLUSTER_HOST_FLOW1 = ["219.224.135.93", "219.224.135.94"]
+def _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1):
+    es = Elasticsearch(host, timeout=60, retry_on_timeout=True, max_retries=6)
+    return es
 
-def _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=1):
-    return redis.StrictRedis(host, port, db)
-
-R_0 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
-R_1 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=1)
-R_2 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=2)
-R_3 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=3)
-R_4 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=4)
-R_5 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
-R_6 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=6)
-R_7 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=7)
-R_8 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=8)
-R_9 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=9)
-R_10 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=10)
-R_11 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=11)
-R_12 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=12)
-R_13 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=13)
-R_14 = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
-
-R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7,\
-          '8':R_8, '9':R_9, '10':R_10, '11':R_11, '12':R_12, '13':R_13,\
-          '14':R_14}
-
-USER_PORTRAIT_ES_HOST = ['219.224.135.93:9200', '219.224.135.94:9200']
-USER_PROFILE_ES_HOST = ['219.224.135.96:9208','219.224.135.97:9208','219.224.135.98:9208']
-es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)
-es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+ES_CLUSTER_FLOW1 = _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1)
 
 ##加载领域标签
 
@@ -46,12 +25,114 @@ zh_labels = ['高校', '境内机构', '境外机构', '媒体', '境外媒体',
 txt_labels = ['university', 'homeadmin', 'abroadadmin', 'homemedia', 'abroadmedia', 'folkorg', \
           'lawyer', 'politician', 'mediaworker', 'activer', 'grassroot', 'business']
 r_labels = ['university', 'homeadmin', 'abroadadmin', 'homemedia', 'abroadmedia', 'folkorg',]
+
+##领域标签加载结束
+
+##加载领域词典
+
+def load_train():
+
+    domain_dict = dict()
+    domain_count = dict()
+    for i in txt_labels:
+        reader = csv.reader(file(abs_path+'/topic_dict/%s.csv'% i, 'rb'))
+        word_dict = dict()
+        count = 0
+        for f,w_text in reader:
+            f = f.strip('\xef\xbb\xbf')
+            word_dict[str(w_text)] = float(f)
+            count = count + float(f)
+        domain_dict[i] = word_dict
+        domain_count[i] = count
+
+    len_dict = dict()
+    total = 0
+    for k,v in domain_dict.items():
+        len_dict[k] = len(v)
+        total = total + len(v)
+    
+    return domain_dict,domain_count,len_dict,total
+
+DOMAIN_DICT,DOMAIN_COUNT,LEN_DICT,TOTAL = load_train()
+
+##加载领域词典结束
+
+##加载特定身份的词典
+
+def getAdminWords():
+    adminw = []
+    f = open(abs_path+'/domain_dict/adw.txt', 'r')
+    for line in f:
+        w = line.strip()
+        adminw.append(w) # 政府职位相关词汇
+    f.close()
+
+    return adminw
+
+adminw = getAdminWords()
+
+def getMediaWords():
+    mediaw = []
+    mediaf = open(abs_path+'/domain_dict/mediaw.txt','r')
+    for line in mediaf:
+        mediaw.append(line.strip()) # 媒体相关词汇
+
+    return mediaw
+
+mediaw = getMediaWords()
+
+def getBusinessWords():
+    businessw = []
+    f = open(abs_path+'/domain_dict/businessw.txt', 'r')
+    for line in f:
+        businessw.append(line.strip()) # 商业人士词汇
+
+    return businessw
+
+businessw = getBusinessWords()
+
 outlist = ['海外', '香港', '台湾', '澳门']
 lawyerw = ['律师', '法律', '法务', '辩护']
 STATUS_THRE = 4000
 FOLLOWER_THRE = 1000
 
-##领域标签加载结束
+##加载特定身份的词典结束
+
+##加载用户粉丝结构
+
+def readProtoUser():
+    f = open(abs_path+"/protou_combine/protou.txt", "r")
+    protou = dict()
+    for line in f:
+        area=line.split(":")[0]
+        if area not in protou:
+            protou[area]=set()
+        for u in (line.split(":")[1]).split():
+            protou[area].add(str(u))
+
+    return protou
+
+proto_users = readProtoUser()
+
+def readTrainUser():
+
+    txt_list = ['abroadadmin','abroadmedia','business','folkorg','grassroot','activer',\
+                'homeadmin','homemedia','lawyer','mediaworker','politician','university']
+    data = dict()
+    for i in range(0,len(txt_list)):
+        f = open(abs_path+"/domain_combine/%s.txt" % txt_list[i],"r")
+        item = []
+        for line in f:
+            line = line.strip('\r\n')
+            item.append(line)
+        data[txt_list[i]] = set(item)
+        f.close()
+
+    return data
+
+train_users = readTrainUser()
+
+##加载用户粉丝结构结束
 
 ##对微博文本进行预处理
 
@@ -89,8 +170,7 @@ CHS_DICT_PATH = '/usr/local/scws/etc/dict.utf8.xdb'
 CHT_DICT_PATH = '/usr/local/scws/etc/dict_cht.utf8.xdb'
 IGNORE_PUNCTUATION = 1
 
-#ABSOLUTE_DICT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './dict'))
-ABSOLUTE_DICT_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/domain/dict/'
+ABSOLUTE_DICT_PATH = os.path.abspath(os.path.join(abs_path, './dict'))
 CUSTOM_DICT_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'userdic.txt')
 EXTRA_STOPWORD_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'stopword.txt')
 EXTRA_EMOTIONWORD_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'emotionlist.txt')
@@ -108,6 +188,7 @@ def load_black_words():
     return one_words
 
 single_word_whitelist = set(load_one_words())
+black_word = set(load_black_words())
 
 def load_scws():
     s = scws.Scws()
