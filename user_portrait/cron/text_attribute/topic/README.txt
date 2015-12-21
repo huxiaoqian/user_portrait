@@ -8,7 +8,8 @@ test_tfidf为根据语料中词频计算词语的tfidf，去掉tfidf较低的20%的词语
 from test_topic import topic_classfiy
 函数输入、输出说明：
 输入数据示例：字典
-{uid1:[weibo1,weibo2,weibo3,...]}
+分词之后的词频字典
+{uid1:{'key1':f1,'key2':f2...}...}
 
 输出数据示例：字典
 1、用户18个话题的分布：
