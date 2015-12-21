@@ -43,7 +43,7 @@ from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TR
 from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
                                     ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
 
-r_beigin_time = datetime2ts(R_BEGIN_TIME)
+r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
 
 emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
@@ -63,7 +63,7 @@ def search_identify_uid(uid):
 def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
-    db_number = ((date_ts - r_begin_ts) / (DAY*7)) %2 +1
+    db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
     return db_number
 
 #use to search user attention from es: retweet_1 or retweet_2
@@ -626,7 +626,7 @@ def search_mention(now_ts, uid, top_count):
     out_in_profile_list = []
     for out_item in out_profile_result:
         source = out_item['_source']
-        uname = source['uname']
+        uname = source['nick_name']
         fansnum = source['fansnum']
         out_portrait_list.append([uname, fansnum])
         out_in_profile_list.append(uname)
