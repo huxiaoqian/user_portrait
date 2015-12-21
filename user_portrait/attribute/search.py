@@ -38,6 +38,10 @@ from user_portrait.parameter import DAY, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_CO
 from user_portrait.search_user_profile import search_uid2uname
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.parameter import IP_TIME_SEGMENT, IP_TOP, DAY, IP_CONCLUSION_TOP, domain_en2ch_dict, topic_en2ch_dict
+from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TREND_AVE_MIN_THRESHOLD,\
+                                    INFLUENCE_TREND_AVE_MAX_THRESHOLD, INFLUENCE_TREND_DESCRIPTION_TEXT
+from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
+                                    ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
 
 r_beigin_time = datetime2ts(R_BEGIN_TIME)
 
@@ -1857,10 +1861,12 @@ def get_activeness_trend(uid):
         es_result = es_user_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
     except:
         return None
+    value_list = []
     for item in es_result:
         item_list = item.split('_')
         if len(item_list)==2:
             value = es_result[item]
+            value_list.append(value)
             query_body = {
                     'query':{
                         'range':{
@@ -1877,7 +1883,26 @@ def get_activeness_trend(uid):
     time_list = [item[0] for item in sort_results]
     activeness_list = [item[1] for item in sort_results]
 
-    return {'time_line':time_list, 'activeness':activeness_list}
+    #get activeness description
+    max_activeness = max(value_list)
+    min_activeness = min(value_list)
+    ave_activeness = sum(value_list) / float(len(value_list))
+    if max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['0']
+    elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['1']
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['2']
+    elif max_activeness - min_activeness > AVTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['3']
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_MIN_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['4']
+    else:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['5']
+
+    description = [u'该用户为', mark]
+
+    return {'time_line':time_list, 'activeness':activeness_list, 'description':description}
 
 #use to get influence_trend
 #write in version: 15-12-08
@@ -1914,18 +1939,18 @@ def get_influence_trend(uid):
     max_influence = max(influence_value_list)
     ave_influence = sum(influence_value_list) / float(len(influence_value_list))
     min_influence = min(influence_value_list)
-    if max_influence - min_influence <= 400 and ave_influence >= 900:
-        mark = u'平稳高影响力'
-    elif max_influence - min_influence > 400 and ave_influence >= 900:
-        mark = u'波动高影响力'
-    elif max_influence - min_influence <= 400 and ave_influence < 900 and ave_influence >= 500:
-        mark = u'平稳一般影响力'
-    elif max_influence - min_influence > 400 and ave_influence < 900 and ave_influence >= 500:
-        mark = u'波动一般影响力'
-    elif max_influence - min_influence <= 400 and ave_influence < 500:
-        mark = u'平稳低影响力'
+    if max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MAX_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['0']
+    elif max_influence - min_influence > INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MAX_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['1']
+    elif max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MAX_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MIN_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['2']
+    elif max_influence - min_influence > INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MAX_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MIN_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['3']
+    elif max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MIN_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['4']
     else:
-        mark = u'波动低影响力'
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['5']
     description = [u'该用户为', mark]
 
     return {'time_line':time_list, 'influence':influence_list, 'description':description}

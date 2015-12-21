@@ -9,9 +9,15 @@ sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from global_utils import es_user_profile as es_profile
 from global_utils import es_user_portrait as es_user_portrait
-from influence_conclusion import retweeted_threshould, comment_threshould, influence_tag
-user_portrait = "user_portrait"
-es = Elasticsearch("219.224.135.93:9206", timeout=60)
+#from influence_conclusion import retweeted_threshould, comment_threshould, influence_tag
+from parameter import INFLUENCE_RETWEETED_THRESHOLD as retweeted_threshold
+from parameter import INFLUENCE_COMMENT_THRESHOLD as comment_threshold
+from parameter import INFLUENCE_TAG as influence_tag
+from global_utils import portrait_index_name as user_portrait
+from global_utils import es_flow_text as es
+
+#user_portrait = "user_portrait"
+#es = Elasticsearch("219.224.135.93:9206", timeout=60)
 index_name = "bci_20130907"
 index_flow_text = "flow_text_2013-09-01"
 
