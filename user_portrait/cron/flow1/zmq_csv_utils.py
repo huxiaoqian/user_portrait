@@ -67,6 +67,7 @@ def send_all(f, sender):
                 print '[%s] read csv speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
                 print '[%s] total send filter weibo %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count_send, te - tb, count / (te - tb))
                 ts = te
+                time.sleep(2)
     except:
         print "pass"
     total_cost = time.time() - tb
