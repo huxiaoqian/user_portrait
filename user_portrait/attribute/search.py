@@ -59,7 +59,7 @@ def search_identify_uid(uid):
 def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
-    db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
+    db_number = ((date_ts - r_begin_ts) / (DAY*7)) %2 +1
     return db_number
 
 #use to search user attention from es: retweet_1 or retweet_2
@@ -584,6 +584,7 @@ def search_mention(now_ts, uid, top_count):
     count = 0
     in_portrait_result = {'topic':{}, 'domain':{}}
     in_portrait_topic_list = []
+    out_list = []
     while True:
         if count>=len(sort_stat_results):
             break
