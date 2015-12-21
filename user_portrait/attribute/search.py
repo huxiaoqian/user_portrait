@@ -77,14 +77,16 @@ def search_attention(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
+    print 'index_name:', index_name
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
         retweet_dict = json.loads(retweet_result['uid_retweet'])
     else:
         retweet_dict = {}
+    print 'retweet_dict:', retweet_dict
     sort_retweet_result = sorted(retweet_dict.items(), key=lambda x:x[1], reverse=True)
     count = 0
     in_portrait_list = []
@@ -96,8 +98,8 @@ def search_attention(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -117,8 +119,10 @@ def search_attention(uid, top_count):
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
             else:
                 if len(out_portrait_list)<top_count:
-                    out_portriat_list.append(uid)
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count>= len(sort_retweet_result):
             break
         else:
             count += 20
@@ -132,7 +136,7 @@ def search_attention(uid, top_count):
     #use to get user information from user profile
     out_portrait_result = {}
     try:
-        out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
     except Exception, e:
         raise e
     out_portrait_list = []
@@ -211,7 +215,7 @@ def search_follower(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=be_retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -229,8 +233,8 @@ def search_follower(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = {}
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -248,26 +252,27 @@ def search_follower(uid, top_count):
                     in_portrait_topic_list.extend(topic_list)
                     retweet_count = retweet_dict[uid]
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
-                else:
-                    if len(out_portrait_list)<top_count:
-                        out_portriat_list.append(uid)
+            else:
+                if len(out_portrait_list)<top_count:
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(sort_retweet_result):
             break
         else:
             count += 20
-
     in_portrait_result['topic'] = {}
     for topic_item in in_portrait_topic_list:
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portriat_result['topic'][topic_item] = 1
-        #use to get user information from user profile
-        out_portrait_result = {}
-        try:
-            out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-        except Exception, e:
-            raise e
+    #use to get user information from user profile
+    out_portrait_result = []
+    try:
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = []
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
@@ -296,13 +301,14 @@ def search_comment(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=comment_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
         retweet_dict = json.loads(retweet_result['uid_comment'])
     else:
         retweet_dict = {}
+    print 'retweet_dict:', retweet_dict
     sort_retweet_result = sorted(retweet_dict.items(), key=lambda x:x[1], reverse=True)
     count = 0
     in_portrait_list = []
@@ -314,8 +320,8 @@ def search_comment(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -335,8 +341,10 @@ def search_comment(uid, top_count):
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
             else:
                 if len(out_portrait_list)<top_count:
-                    out_portriat_list.append(uid)
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(sort_retweet_result):
             break
         else:
             count += 20
@@ -346,13 +354,13 @@ def search_comment(uid, top_count):
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
-            in_portriat_result['topic'][topic_item] = 1
-        #use to get user information from user profile
-        out_portrait_result = {}
-        try:
-            out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-        except Exception, e:
-            raise e
+            in_portrait_result['topic'][topic_item] = 1
+    #use to get user information from user profile
+    out_portrait_result = {}
+    try:
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = {}
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
@@ -379,7 +387,7 @@ def search_be_comment(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=be_comment_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -398,8 +406,8 @@ def search_be_comment(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -419,8 +427,10 @@ def search_be_comment(uid, top_count):
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
             else:
                 if len(out_portrait_list)<top_count:
-                    out_portriat_list.append(uid)
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(sort_retweet_result):
             break
         else:
             count += 20
@@ -434,9 +444,9 @@ def search_be_comment(uid, top_count):
     #use to get user information from user profile
     out_portrait_result = {}
     try:
-        out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-    except Exception, e:
-        raise e
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = []
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']

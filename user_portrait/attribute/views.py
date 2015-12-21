@@ -15,7 +15,7 @@ from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import SOCIAL_DEFAULT_COUNT, SENTIMENT_TREND_DEFAULT_TYPE
-from user_portrait.parameter import DEFAULT_SENTIMENT
+from user_portrait.parameter import DEFAULT_SENTIMENT, DAY
 
 # use to test 13-09-08
 test_time = 1378569600
