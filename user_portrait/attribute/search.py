@@ -38,8 +38,12 @@ from user_portrait.parameter import DAY, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_CO
 from user_portrait.search_user_profile import search_uid2uname
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.parameter import IP_TIME_SEGMENT, IP_TOP, DAY, IP_CONCLUSION_TOP, domain_en2ch_dict, topic_en2ch_dict
+from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TREND_AVE_MIN_THRESHOLD,\
+                                    INFLUENCE_TREND_AVE_MAX_THRESHOLD, INFLUENCE_TREND_DESCRIPTION_TEXT
+from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
+                                    ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
 
-r_beigin_time = datetime2ts(R_BEGIN_TIME)
+r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
 
 emotion_mark_dict = {'126': 'positive', '127':'negative', '128':'anxiety', '129':'angry'}
@@ -74,7 +78,7 @@ def search_attention(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -92,8 +96,8 @@ def search_attention(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -113,8 +117,10 @@ def search_attention(uid, top_count):
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
             else:
                 if len(out_portrait_list)<top_count:
-                    out_portriat_list.append(uid)
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count>= len(sort_retweet_result):
             break
         else:
             count += 20
@@ -128,7 +134,7 @@ def search_attention(uid, top_count):
     #use to get user information from user profile
     out_portrait_result = {}
     try:
-        out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
     except Exception, e:
         raise e
     out_portrait_list = []
@@ -173,7 +179,6 @@ def search_attention(uid):
         sort_state_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)[:20]
     except:
         return [None, 0]
-    print 'sort_state_results:', sort_state_results
     uid_list = [item[0] for item in sort_state_results]
     es_profile_results = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list})['docs']
     es_portrait_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
@@ -207,7 +212,7 @@ def search_follower(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=be_retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -225,8 +230,8 @@ def search_follower(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = {}
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -244,26 +249,27 @@ def search_follower(uid, top_count):
                     in_portrait_topic_list.extend(topic_list)
                     retweet_count = retweet_dict[uid]
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
-                else:
-                    if len(out_portrait_list)<top_count:
-                        out_portriat_list.append(uid)
+            else:
+                if len(out_portrait_list)<top_count:
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(sort_retweet_result):
             break
         else:
             count += 20
-
     in_portrait_result['topic'] = {}
     for topic_item in in_portrait_topic_list:
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portriat_result['topic'][topic_item] = 1
-        #use to get user information from user profile
-        out_portrait_result = {}
-        try:
-            out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-        except Exception, e:
-            raise e
+    #use to get user information from user profile
+    out_portrait_result = []
+    try:
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = []
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
@@ -292,7 +298,7 @@ def search_comment(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=comment_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -310,8 +316,8 @@ def search_comment(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -331,8 +337,10 @@ def search_comment(uid, top_count):
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
             else:
                 if len(out_portrait_list)<top_count:
-                    out_portriat_list.append(uid)
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(sort_retweet_result):
             break
         else:
             count += 20
@@ -342,13 +350,13 @@ def search_comment(uid, top_count):
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
-            in_portriat_result['topic'][topic_item] = 1
-        #use to get user information from user profile
-        out_portrait_result = {}
-        try:
-            out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-        except Exception, e:
-            raise e
+            in_portrait_result['topic'][topic_item] = 1
+    #use to get user information from user profile
+    out_portrait_result = {}
+    try:
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = {}
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
@@ -375,7 +383,7 @@ def search_be_comment(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        retweet_result = es_user_portrait.get(index=index_name, doc_type=be_comment_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -394,8 +402,8 @@ def search_be_comment(uid, top_count):
         uid_list = [item[0] for item in sort_retweet_result[count:count+20]]
         try:
             portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
-        except Exception, e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             uid = item['_id']
             if item['found'] == True:
@@ -415,8 +423,10 @@ def search_be_comment(uid, top_count):
                     in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
             else:
                 if len(out_portrait_list)<top_count:
-                    out_portriat_list.append(uid)
+                    out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(sort_retweet_result):
             break
         else:
             count += 20
@@ -430,9 +440,9 @@ def search_be_comment(uid, top_count):
     #use to get user information from user profile
     out_portrait_result = {}
     try:
-        out_user_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-    except Exception, e:
-        raise e
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = []
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
@@ -584,6 +594,7 @@ def search_mention(now_ts, uid, top_count):
     count = 0
     in_portrait_result = {'topic':{}, 'domain':{}}
     in_portrait_topic_list = []
+    out_list = []
     while True:
         if count>=len(sort_stat_results):
             break
@@ -621,7 +632,7 @@ def search_mention(now_ts, uid, top_count):
     out_in_profile_list = []
     for out_item in out_profile_result:
         source = out_item['_source']
-        uname = source['uname']
+        uname = source['nick_name']
         fansnum = source['fansnum']
         out_portrait_list.append([uname, fansnum])
         out_in_profile_list.append(uname)
@@ -686,7 +697,7 @@ def search_location_week(uid, now_date_ts):
     try:
         user_portrait_result = es_user_portrsit.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
-        return None
+        return {}
     activity_geo_string = user_portrait_result['activity_geo_dict']
     if activity_geo_string:
         activity_geo_dict_list = json.loads(activity_geo_string)
@@ -895,7 +906,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     for item in sort_job_dict:
         conclusion += item[0]
         conclusion += ','
-        json_ip.append([item[0]])
+        job_ip.append([item[0]])
 
     #get abnormal use IP
     day_ip_set = set(all_day_top.keys())
@@ -1856,10 +1867,12 @@ def get_activeness_trend(uid):
         es_result = es_user_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
     except:
         return None
+    value_list = []
     for item in es_result:
         item_list = item.split('_')
         if len(item_list)==2:
             value = es_result[item]
+            value_list.append(value)
             query_body = {
                     'query':{
                         'range':{
@@ -1876,7 +1889,26 @@ def get_activeness_trend(uid):
     time_list = [item[0] for item in sort_results]
     activeness_list = [item[1] for item in sort_results]
 
-    return {'time_line':time_list, 'activeness':activeness_list}
+    #get activeness description
+    max_activeness = max(value_list)
+    min_activeness = min(value_list)
+    ave_activeness = sum(value_list) / float(len(value_list))
+    if max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['0']
+    elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['1']
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['2']
+    elif max_activeness - min_activeness > AVTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['3']
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_MIN_THRESHOLD:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['4']
+    else:
+        mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['5']
+
+    description = [u'该用户为', mark]
+
+    return {'time_line':time_list, 'activeness':activeness_list, 'description':description}
 
 #use to get influence_trend
 #write in version: 15-12-08
@@ -1913,18 +1945,18 @@ def get_influence_trend(uid):
     max_influence = max(influence_value_list)
     ave_influence = sum(influence_value_list) / float(len(influence_value_list))
     min_influence = min(influence_value_list)
-    if max_influence - min_influence <= 400 and ave_influence >= 900:
-        mark = u'平稳高影响力'
-    elif max_influence - min_influence > 400 and ave_influence >= 900:
-        mark = u'波动高影响力'
-    elif max_influence - min_influence <= 400 and ave_influence < 900 and ave_influence >= 500:
-        mark = u'平稳一般影响力'
-    elif max_influence - min_influence > 400 and ave_influence < 900 and ave_influence >= 500:
-        mark = u'波动一般影响力'
-    elif max_influence - min_influence <= 400 and ave_influence < 500:
-        mark = u'平稳低影响力'
+    if max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MAX_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['0']
+    elif max_influence - min_influence > INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MAX_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['1']
+    elif max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MAX_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MIN_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['2']
+    elif max_influence - min_influence > INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MAX_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MIN_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['3']
+    elif max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MIN_THRESHOLD:
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['4']
     else:
-        mark = u'波动低影响力'
+        mark = INFLUENCE_TREND_DESCRIPTION_TEXT['5']
     description = [u'该用户为', mark]
 
     return {'time_line':time_list, 'influence':influence_list, 'description':description}
