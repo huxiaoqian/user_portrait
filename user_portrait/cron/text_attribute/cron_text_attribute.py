@@ -9,12 +9,30 @@ import csv
 import sys
 import json
 import time
+from datetime import datetime
 # read weibo bulk from api
 from weibo_api import read_user_weibo
 from flow_information import get_flow_information
-from evaluate_index import get_evaluate_index
+from evaluate_index import get_importance, get_activity_time, get_activeness, get_influence
 from user_profile import get_profile_information
 from save_utils import attr_hash, save_user_results
+from config import topic_en2ch_dict, domain_en2ch_dict
+from domain_topic_input import get_user_keywords_dict
+
+# compute user domain
+from domain.test_domain_v2 import domain_classfiy
+# compute user topic
+from topic.test_topic import topic_classfiy
+# compute user psy
+from psy.new_psy import psychology_classfiy
+
+sys.path.append('../../')
+from global_utils import es_user_profile, profile_index_name, profile_index_type
+
+
+
+#abandon in version: 15-12-08
+'''
 reload(sys)
 sys.path.append('../../../../../libsvm-3.17/python/')
 from sta_ad import load_scws
@@ -35,8 +53,6 @@ BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/te
 def load_black_words():
     black_words = set([line.strip('\r\n') for line in file(BLACK_WORDS_PATH)])
     a = list(black_words)[0]
-    #print 'a, type:', a , type(a)
-    #print 'len_black_word:', len(black_words)
     return black_words
 
 black_words = load_black_words()
@@ -47,7 +63,6 @@ def get_emoticon_dict():
     for line in f:
         line_list = line.split(':')
         emoticon = line_list[0]
-        #print 'emoticon:', type(emoticon), emoticon
         emo_class = line_list[1]
         try:
             results[emo_class].append(emoticon.decode('utf-8'))
@@ -71,19 +86,18 @@ def get_liwc_dict():
     return results
 
 liwc_dict = get_liwc_dict()
+'''
 
 # read uid_list from user portrait
 def read_uid_list():
     uid_list = []
     return uid_list
 
+#abandon in version: 15-12-08
+'''
 def attr_text_len(weibo_list):
     len_list = [len(weibo['text']) for weibo in weibo_list]
-    #max_len = max(len_list)
-    #min_len = min(len_list)
     ave_len = float(sum(len_list)) / len(len_list)
-    #print 'len_list:', len_list
-    #return [min_len, max_len, ave_len]
     return ave_len
 
 def attr_emoticon(weibo_list):
@@ -93,8 +107,6 @@ def attr_emoticon(weibo_list):
         for emo_class in emoticon_dict:
             emoticons = emoticon_dict[emo_class]
             for emoticon in emoticons:
-                #print 'emoticon:', emoticon.encode('utf-8'), type(emoticon)
-                #print 'text:', type(text)
                 if isinstance(text, str):
                     text = text.decode('utf-8')
                 count = text.count(emoticon)
@@ -105,7 +117,10 @@ def attr_emoticon(weibo_list):
                         results[emoticon] = count
     
     return results
+'''
 
+#abandon in version:15-12-08
+''''
 # {class_num:{word:count}}
 def attr_liwc(weibo_list):
     results = {}
@@ -124,15 +139,11 @@ def attr_liwc(weibo_list):
                             results[num][liwc_word.decode('utf-8')] = 1
                     else:
                         results[num] = {liwc_word.decode('utf-8'): 1}
-    # test
-    '''
-    for num in results:
-        for word in results[num]:
-            print 'num, word, count:', num, word, results[num][word]
-    '''
     return results
+'''
 
-
+#abandon in version:15-12-08
+'''
 def attr_link(weibo_list):
     count = []
     for weibo in weibo_list:
@@ -150,7 +161,10 @@ def attr_link(weibo_list):
         return ave_count
     else:
         return 0
+'''
 
+
+#use to get online_pattern attribute
 def attr_online_pattern(weibo_list):
     results= {}
     for weibo in weibo_list:
@@ -161,6 +175,9 @@ def attr_online_pattern(weibo_list):
             results[online_pattern] = 1
     return results
 
+
+#abandon in version:15-12-08
+'''
 def attr_keywords(weibo_list):
     results = {}
     for weibo in weibo_list:
@@ -169,19 +186,14 @@ def attr_keywords(weibo_list):
         for i in pattern_list:
             p = re.compile(i)
             text = p.sub('', text)
-        '''
-        tks = [token for token
-               in sw.participle(text)
-               if (token[1] in cx_dict) and (token[1] not in black_words) and (3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist)]
-        '''
         tks = []
         for token in sw.participle(text):
             if 3<len(token[0])<30 or token[0].decode('utf-8') in single_word_whitelist:
                 if token[1] in cx_dict:
                     if (token[0] not in black_words):
                         tks.append(token)
-                    else:
-                        print 'delete:', token[0]
+                    #else:
+                    #    print 'delete:', token[0]
 
         #print 'tks:', tks[0][0], type(tks[0][0])
         for tk in tks:
@@ -196,101 +208,225 @@ def attr_keywords(weibo_list):
             keywords_results[sort_item[0]] = sort_item[1]
     #print 'attr_keyword:', keywords_results
     return keywords_results
+'''
 
+#use to compute online_pattern attribute
+#write in version:15-12-08
 def compute_text_attribute(user, weibo_list):
     result = {}
+    '''
     # text attr1: len
     result['text_len'] = attr_text_len(weibo_list)
-    # text attr2: emoticon
-    result['emoticon'] = json.dumps(attr_emoticon(weibo_list))
-    # text attr3: liwc word
-    result['emotion_words'] = json.dumps(attr_liwc(weibo_list))
     # text attr4: web link
     result['link'] = attr_link(weibo_list)
+    '''
     # text attr5: online pattern
     result['online_pattern'] = json.dumps(attr_online_pattern(weibo_list))
-    # text attr6: keywords
-    keywords_dict = attr_keywords(weibo_list)
-    result['keywords'] = json.dumps(keywords_dict)
-    result['keywords_string'] = '&'.join(keywords_dict.keys())
-    #print 'result:', result['keywords']
-    # test attr7: domain
-    #result['domain'] = attr_domain(weibo_list)
-    result['domain'] = 'test_domain'
-    # test attr8: psycho_feature
-    #result['psycho_feature'] = attr_psycho_feature(user, weibo_list)
-    result['psycho_feature'] = 'psycho_feature'
-    # test attr9: psycho_status
-    #result['psycho_status'] = attr_psycho_status(user, weibo_list)
-    result['psycho_status'] = json.dumps({'level1':{'status1':1, 'status2':2}, 'level2':{'status1':1, 'status2':2}})
-    result['psycho_status_string'] = 'status1&status2'
-    # test atrr10: topic
-    #result['topic'] = attr_topic(weibo_list)
-    result['topic'] = json.dumps({'art':1, 'education':2})
-    #get top2 topic
-    result['topic_string'] = 'art&education'
-    #test attr
+    
     return result
 
-#start-up by scan_compute_redis
-def compute2in(uid_list, user_weibo_dict, status='insert'):
+#make topic_en to topic_ch
+def topic_en2ch(topic_label):
+    insert_topic_label_list = []
+    for en_label in topic_label:
+        ch_label = topic_en2ch_dict[en_label]
+        insert_topic_label_list.append(ch_label.encode('utf-8'))
+    insert_topic_label_string = '&'.join(insert_topic_label_list)
+    return insert_topic_label_string
+
+#make domain_en to domain_ch
+def domain_en2ch(domain_en_label):
+    insert_domain_label = ''
+    ch_label = domain_en2ch_dict[domain_en_label]
+    ch_label = ch_label.encode('utf-8')
+    return ch_label
+
+#start-up by scan_compute_redis and compute user attribute for who need to be added to user_portrait
+#write in version:15-12-08
+#input: uid_list and user_weibo_dict
+#output: save user attribute to user_portrait
+#attention: this function cannot be used to update user_portrait
+def compute2in(uid_list, user_weibo_dict):
+    #get user flow information: hashtag, activity_geo, keywords
     flow_result = get_flow_information(uid_list)
+    #get user topic information
+    topic_results_dict, topic_results_label = topic_classfiy(user_weibo_list)
+    #get user domain information
+    domain_results = domain_classfiy(user_weibo_dict)
+    domain_results_dict = domain_results[0]
+    domain_results_label = domain_results[1]
+    #get user psy information
+    psy_results_dict = psychology_classfiy(user_weibo_dict)
+    #get user profile information
     register_result = get_profile_information(uid_list)
+    #get user fansnum max
+    fansnum_max = get_fansnum_max()
+    #get user activeness by bulk_action
+    activeness_results = get_activity_time(uid_list)
+    #get user inlfuence by bulk action
+    influence_results = get_influence(uid_list)
+    #deal bulk action
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
+        #compute text attribute: online_pattern
         results = compute_text_attribute(user, weibo_list)
         results['uname'] = uname
         results['uid'] = str(user)
+        #add flow information: hashtag, activity_geo, keywords
         flow_dict = flow_result[str(user)]
         results = dict(results, **flow_dict)
-        user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
-        evaluation_index = get_evaluate_index(user_info, status='insert')
-        results = dict(results, **evaluation_index)
-        register_dict = register_result[user]
+        #add topic attribute
+        topic_dict = topic_results_dict[user]
+        results['topic'] = json.dumps(topic_dic)                   #{topic1_en:pro1, topic2_en:pro, ...}
+        topic_label = topic_results_label[user] 
+        results['topic_string'] = topic_en2ch(topic_label)         #topic1_ch&topic2_ch&topic3_ch
+        #add domain attribute
+        user_domain_dict = domain_results_dict[user]
+        user_domain_label = domain_results_label[user]
+        results['domain_v3'] = json.dumps(user_domain_dict)        #[domain_en1, domain_en2, domain_en3]
+        results['domain_string'] = domain_en2ch(user_domain_label) #domain_ch
+        #add psy attribute
+        user_psy_dict = psy_results_dict[user]
+        results['psycho_status'] = json.dumps(user_psy_dict)
+        #add user profile attribute
+        register_dict = register_result[str(user)]
         results = dict(results, **register_dict)
-        if status=='insert':
-            action = {'index':{'_id':str(user)}}
-        else:
-            action = {'update':{'_id', str(user)}}
-            results = {'doc': results}
+        #add user_evaluate attribute---importance
+        results['importance'] = get_importance(results['domain'], results['topic_string'], results['fansnum'], fansnum)
+        #add user_evaluate attribute---activeness
+        user_activeness_time = activeness_results[user]
+        user_activeness_geo = json.loads(results['activity_geo_dict'])[-1]
+        results['activeness'] = get_activeness(user_activeness_geo, user_activeness_time)
+        #add user_evaluate attribute---influence
+        results['influence'] = influence_results[user]
+        #bulk_action
+        action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, results])
     status = save_user_results(bulk_action)
     return True
 
+#get user fansnum max from es_user_profile to compute evaluate index--importance
+def get_fansnum_max():
+    query_body = {
+        'query':{
+            'match_all':{}
+            },
+        'size': 1,
+        'sort': [{'fansnum': {'order': 'desc'}}]
+        }
+    try:
+        fansnum_max_results = es_user_profile.search(index=profile_index_name, doc_type=profile_index_type, body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    fansnum_max = fansnum_max_results[0]['_source']['fansnum']
+
+    return fansnum_max
+
 #test manual instruction
 def main():
-    # read the uid list
-    uid_list = read_uid_list()
-    # get user weibo 7day {user:[weibos]}
-    user_weibo_dict = read_user_weibo(uid_list)
+    #get user weibo 7day {user:[weibos]}
+    user_weibo_dict = read_user_weibo()
     uid_list = user_weibo_dict.keys()
-    #print 'uid_list:', len(uid_list)
-    #print 'user weibo dict:', len(user_weibo_dict)
+    start_ts = time.time()
+    #get user flow information: hashtag, activity_geo, keywords
     flow_result = get_flow_information(uid_list)
+    #get user profile information
     register_result = get_profile_information(uid_list)
+    #get topic and domain input data
+    user_keywords_dict = get_user_keywords_dict(user_weibo_dict)
+    #get user topic and domain by bulk action
+    topic_results_dict, topic_results_label = topic_classfiy(user_keywords_dict)
+    domain_results = domain_classfiy(user_keywords_dict)
+    domain_results_dict = domain_results[0]
+    domain_results_label = domain_results[1]
+    #get user psy attribute
+    psy_results_dict = psychology_classfiy(user_weibo_dict)
+    
+    #get user fansnum max
+    fansnum_max = get_fansnum_max()
+    #get user activeness by bulk_action
+    activeness_results = get_activity_time(uid_list)
+    #get user inlfuence by bulk action
+    influence_results = get_influence(uid_list)
     # compute text attribute
     bulk_action = []
     for user in user_weibo_dict:
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
+        #get user text attribute: online_pattern
         results = compute_text_attribute(user, weibo_list)
         results['uid'] = str(user)
+        #add user flow information: hashtag, activity_geo, keywords
         flow_dict = flow_result[str(user)]
         results = dict(results, **flow_dict)
-        # deal to the bulk action
-        user_info = {'uid':str(user), 'domain':results['domain'], 'topic':results['topic'], 'activity_geo':results['activity_geo']}
-        evaluation_index = get_evaluate_index(user_info, status='insert')
-        results = dict(results, **evaluation_index)
-        #print 'register_result:', register_result
+        
+        #add user topic attribute
+        user_topic_dict = topic_results_dict[user]
+        user_label_dict = topic_results_label[user]
+        results['topic'] = json.dumps(user_topic_dict)         # {'topic1_en':pro1, 'topic2_en':pro2...}
+        results['topic_string'] = topic_en2ch(user_label_dict) # 'topic1_ch&topic2_ch&topic3_ch'
+        #add user domain attribute
+        user_domain_dict = domain_results_dict[user]
+        user_label_dict = domain_results_label[user]
+        results['domain_v3'] = json.dumps(user_domain_dict) # [label1_en, label2_en, label3_en]
+        results['domain'] = domain_en2ch(user_label_dict)      # label_ch
+        #add user psy attribute
+        user_psy_dict = psy_results_dict[user]
+        results['psycho_status'] = json.dumps(user_psy_dict)
+        
+        #add user profile attribute
         register_dict = register_result[str(user)]
         results = dict(results, **register_dict)
+        #add user_evaluate attribute---importance
+        results['importance'] = get_importance(results['domain'], results['topic_string'], results['fansnum'], fansnum_max)
+        #add user_evaluate attribute---activeness
+        user_activeness_time = activeness_results[user]
+        user_activeness_geo = json.loads(results['activity_geo_dict'])[-1]
+        results['activeness'] = get_activeness(user_activeness_geo, user_activeness_time)
+        #add user_evaluate attribute---influence
+        results['influence'] = influence_results[user]
+        #bulk_action
         action = {'index':{'_id': str(user)}}
         bulk_action.extend([action, results])
-    status = save_user_results(bulk_action)
+    end_ts = time.time()
+    #print 'time_segment:', end_ts - start_ts
+    print 'bulk_action:', bulk_action
+    #status = save_user_results(bulk_action)
     return True # save by bulk
+
+def add_domain():
+    #read user weibo
+    user_weibo_dict = read_user_weibo()
+    uid_list = user_weibo_dict.keys()
+    #get topic and domain input data
+    user_keywords_dict = get_user_keywords_dict(user_weibo_dict)
+    print 'user_keywords_dict:',user_keywords_dict
     
+    print 'len(uid_list):', len(uid_list)
+    start_ts = time.time()
+    print 'start_ts:', start_ts
+    '''
+    psy_results = psychology_classfiy(user_weibo_dict)
+    print 'psy_result:', psy_results
+    
+    domain_results = domain_classfiy(user_weibo_dict)
+    domain_dict = domain_results[0]
+    domain_label = domain_results[1]
+    print 'domain_dict:', domain_dict
+    print 'domain_label:', domain_label
+    topic_dict , topic_label = topic_classfiy(user_weibo_dict)
+    print 'topic_dict:', topic_dict
+    print 'topic_label:', topic_label
+    '''
+    end_ts = time.time()
+    print 'end_ts:', end_ts
+    print 'end_ts - start_ts' , (end_ts - start_ts)
+    print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'),end_ts - start_ts, len(uid_list))
+
+
 if __name__=='__main__':
     print 'test'
-    bulk_action = main()
+    #bulk_action = main()
     #print 'bulk_action:', bulk_action
+    add_domain()

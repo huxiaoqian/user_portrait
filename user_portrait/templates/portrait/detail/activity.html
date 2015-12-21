@@ -22,75 +22,6 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 #Alocation{height:auto;width:180px;}
 .gray{color:#999;}
 </style>
-<div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>
-<div class="clearfix course_nr" style="width:100%;">
-	<ul class="course_nr2">
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d1" ></p>
-				<p class="ms" id="city1"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d2"></p>
-				<p class="ms" id="city2"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d3"></p>
-				<p class="ms" id="city3"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d4"></p>
-				<p class="ms" id="city4"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d5"></p>
-				<p class="ms" id="city5"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d6"></p>
-				<p class="ms" id="city6"></p>
-			</div>
-		</li>
-		<li>
-			<div class="shiji">
-				<p class="font12 ico" id="d7"></p>
-				<p class="ms" id="city7"></p>
-			</div>
-		</li>
-	</ul>
-</div>
-
-
-<div id="Activezh" style="height:349px;width:680px;margin-top:50px;" class="fleft"></div>
-
-<div id="" style="font-size:10px;font-weight:bolder;width:300px;margin-top:50px;" class="">
-        <div style="margin-left:20px;">
-            <span >当前选择日期</span>
-            <span id="date_zh" value="" ></span>
-        </div>
-        <div style="float:right;margin-right:40px;margin-left:10px;">
-            <span>时间段</span>
-            <span id="time_zh" value="00:00:00">00:00-04:00</span>
-        </div>
-        <!--
-        <button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
-        -->
-</div>
-<div id="weibo_content" style="font-size:10px;background-color:whitesmoke;width:300px;height:300px;overflow-y:auto;" class="fleft">
-	<div id="weibo_text" style="padding:0px 10px;">
-	</div>
-</div>
-
 
 <div class="" style="width:680px;margin-top:15px;">
 	<div id="" style="height:30px;width:650px;line-height:32px;">
@@ -107,287 +38,91 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 	</div>
 </div>
 
-
-<div id ="Alocation" class="" style="margin-top:15px;">
-	<div class="LocationTitle fleft" style="width:100%">位置分布TOP5</div>
-	<div class="LocationDetail" id="Top5">
-		<dl>
-			<dt><span class="LocationImg mleft fleft"></span><span class="Acity fleft" id="top1"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top2"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top3"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top4"></span></dt>
-		</dl>
-		<dl>
-			<dt><span class="LocationImg fleft mleft"></span><span class="Acity fleft" id="top5"></span></dt>
-		</dl>
+<div style="width:680px;float:left;">
+    <div style="margin-right:20px;float:right;">
+        <input type="radio" name="weibotrends" checked value="0"/>本日&nbsp;&nbsp;
+        <input type="radio" name="weibotrends" value="1"/>本周
+    </div>
+    <div id="Activezh" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
+</div>
+<div id="" style="font-size:10px;font-weight:bolder;width:300px;margin-top:10px;" class="">
+        <div style="margin-left:20px;">
+            <span >当前选择日期</span>
+            <span id="date_zh" value="" ></span>
+        </div>
+        <div style="float:right;margin-right:40px;margin-left:10px;">
+            <span>时间段</span>
+            <span id="time_zh" value="00:00:00">00:00-04:00</span>
+        </div>
+        <!--
+        <button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
+        -->
+</div>
+<div id="weibo_content" style="font-size:10px;background-color:whitesmoke;width:300px;height:300px;overflow-y:auto;" class="fleft">
+	<div id="weibo_text" style="padding:0px 10px;">
+	</div>
+</div>
+<div class="" style="float:left;width:680px;margin-top:15px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >微博走势该用户的活跃时间段为<span></span> 和 <span></span></h4>
 	</div>
 </div>
 
+<!--<div style="text-align:center;width:100%;font-size:20px;">一周轨迹活动</div>-->
+<div class="clearfix course_nr" style="width:100%;">
+	<ul class="course_nr2">
+		<li><div class="shiji"><p class="font12 ico" id="d1"></p><p class="ms" id="city1"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d2"></p><p class="ms" id="city2"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d3"></p><p class="ms" id="city3"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d4"></p><p class="ms" id="city4"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d5"></p><p class="ms" id="city5"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d6"></p><p class="ms" id="city6"></p></div></li>
+		<li><div class="shiji"><p class="font12 ico" id="d7"></p><p class="ms" id="city7"></p></div></li>
+	</ul>
+</div>
+
+<div id="map" style="float:left;width:700px;height:750px;margin-top:20px;"></div>
+
+<div id ="Alocation" class="" style="margin-top:20px;margin-left:10px;width:280px;">
+    <div><span style='margin-left:60px;font-size:16px;color:#777'>日排名</span></div>
+     <div class="table-responsive"id='daily_ip' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+    </div>
+    <div><span style='margin-left:60px;font-size:16px;color:#777'>周排名</span></div>
+     <div class="table-responsive"id='weekly_ip' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+    </div>
+    <div><span style='margin-left:60px;font-size:16px;color:#777'>月排名</span></div>
+     <div class="table-responsive"id='monthly_location' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+    </div>
+</div>
+<div class="" style="float:left;width:680px;margin-top:15px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >地理位置该用户的活跃时间段为<span></span> 和 <span></span></h4>
+	</div>
+</div>
+
+<!--<div id="online" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
+-->
+<div class="" style="float:left;width:680px;margin-top:15px;">
+	<div id="" style="height:30px;width:650px;line-height:32px;">
+		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+		<h4 style="line-height:32px;" >上网方式该用户的上网方式为<span></span> 和 <span></span></h4>
+	</div>
+</div>
+<div id="activeness" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
+<div style="margin-top:20px;margin-left:10px;width:280px;">
+    <div><span style='margin-left:60px;font-size:16px;color:#777'>上网方式排名</span></div>
+     <div class="table-responsive"id='online_pattern' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+    </div>
+</div>
 
 <script src="/static/js/highstock.js" charset="utf-8"></script>
 <script src="/static/js/exporting.js" charset="utf-8"></script>
 <script src="/static/js/portrait/location.js" charset="utf-8"></script>
-
-<script>
-function Geo(){
-  this.ajax_method = 'GET';
-}
-Geo.prototype = {   //获取数据，重新画表
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-geo:function(data){
-	var geo_data = data[0]
-	//console.log(geo_data);
-	document.getElementById('saysay').innerHTML = data[1];
-	var date = [];
-	var citys = [];
-	for(var key in geo_data){
-		date.push(geo_data[key][0]);
-		citys.push(geo_data[key][1][0])
-	}
-	//console.log(citys);
-	//console.log(date);
-	for(i=0;i<date.length;i++){
-		document.getElementById('d'+(i+1)).innerHTML = date[i];
-    }
-    for(i=0;i<citys.length;i++){
-        //console.log(citys[i]);
-		if(citys[i]){
-			document.getElementById('city'+(i+1)).innerHTML = citys[i][0];
-		}else{
-			$('#city'+(i+1)).addClass('gray');
-			document.getElementById('city'+(i+1)).innerHTML = '未发布微博';
-		}
-		
-	}
-}
-}
-
-var Geo = new Geo();
-url = '/attribute/geo_track/?uid='+parent.personalData.uid ;
-Geo.call_sync_ajax_request(url, Geo.ajax_method, Geo.geo);
-
-</script>
-<script type="text/javascript">
-// Date format
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
- function Activity(){
-  this.ajax_method = 'GET';
-}
-Activity.prototype = {   //获取数据，重新画表
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-  active:function(data){
-	//console.log(data);
-	var item = data.activity_time;
-    for (i=0;i<item.length;i++){
-       var date = item[i][0]/(15*60*16);
-       switch(date)
-       {
-            case 0: x = "00:00-04:00";break;
-            case 1: x = "04:00-08:00";break;
-            case 2: x = "08:00-12:00";break;
-            case 3: x = "12:00-16:00";break;
-            case 4: x = "16:00-20:00";break;
-            case 5: x = "20:00-24:00";break;
-       }
-       var str ="time"+(i+1);
-       time = document.getElementById(str);
-       time.innerHTML = x;
-    }
-    var trend = data.activity_trend;
-	var data_count=[];
-	var data_time = [];
-	var date_zhang = [];
-    for(i=0;i<trend.length;i++){
-        var time = getDate(trend[i][0]);
-        var count = trend[i][1];
-		var date_zh =getDate_zh(trend[i][0])
-		data_time.push(time);
-		data_count.push(count);
-		date_zhang.push(date_zh);
-    }
-	$('#date_zh').html(date_zhang[0]);
-	//$('#date_zh').setAttribute(value,date_zhang[0]);
-    /*
-	var date_html ='';
-	$('#select_date').empty();
-	console.log(date_zhang[i]);
-	date_html =date_html + '<option value="'+date_zhang[i]+'">'+date_zhang[i]+'</option>';
-    $('#select_date').append(date_html);
-    */
-	//Draw_trend:
-	 $('#Activezh').highcharts({
-        chart: {
-            type: 'spline',// line,
-            animation: Highcharts.svg, // don't animate in old IE
-            style: {
-                fontSize: '12px',
-                fontFamily: 'Microsoft YaHei'
-            }},
-        title: {
-            text: '微博时间走势图',
-			align:'left',
-			fontSize:'20',
-        },
-        subtitle: {
-            text: '',
-            x: -20
-        },
-        lang: {
-                printChart: "打印",
-                downloadJPEG: "下载JPEG 图片",
-                downloadPDF: "下载PDF文档",
-                downloadPNG: "下载PNG 图片",
-                downloadSVG: "下载SVG 矢量图",
-                exportButtonTitle: "导出图片"
-            },
-        xAxis: {
-            categories: data_time,
-            labels:{
-              rotation: 0,
-                        step: 6,
-                        x:0,
-                        y:30,
-            }
-        },
-        yAxis: {
-			min:0,
-            title: {
-                text: '微博总量 (条)'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions:{
-            series:{            
-                cursor:'pointer',
-                events:{
-                    click:function(event){
-                        point2weibo(event.point.x, trend[event.point.x]);
-                    }
-                }
-            }
-        },
-        tooltip: {
-            valueSuffix: '条',
-            xDateFormat: '%H:%M:%S'
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name:'微博量',
-            data: data_count
-        }]
-    });
-  }
-}
-//微博文本默认数据
-
-
-function point2weibo(xnum, ts){
-	var url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts[0];
-    var delta;
-    //console.log(url);
-	base_call_ajax_request(url, draw_content);
-    $('#date_zh').html(getDate_zh(ts));
-    switch(xnum % 6)
-    {
-        case 0: delta = "00:00-04:00";break;
-        case 1: delta = "04:00-08:00";break;
-        case 2: delta = "08:00-12:00";break;
-        case 3: delta = "12:00-16:00";break;
-        case 4: delta = "16:00-20:00";break;
-        case 5: delta = "20:00-24:00";break;
-    }
-    $('#time_zh').html(delta);
-	function draw_content(data){
-        var html = '';
-        $('#weibo_text').empty();
-        if(data==''){
-            html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
-        }else{
-            for(i=0;i<data.length;i++){
-                //console.log(data[i].text);
-                html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
-            }
-
-        }
-        $('#weibo_text').append(html);
-    }
-}
-
-function getDate(tm){
-    var tt = new Date(parseInt(tm)*1000).format("MM-dd hh:mm");
-    return tt;
-}
-function getDate_zh(tm){
-    var tt = new Date(parseInt(tm)*1000).format("MM-dd");
-    return tt;
-}
-var Activity = new Activity();
-url = '/attribute/activity/?uid='+parent.personalData.uid;
-Activity.call_sync_ajax_request(url, Activity.ajax_method, Activity.active);
-var location_geo = parent.personalData.activity_geo;
-$('#Top5').empty();
-var html = '';
-if(location_geo){
-	for (i=1;i<location_geo.length+1;i++){
-	//console.log(location_geo[i][0]); 
-	html += '<dl><dt><span class="LocationImg  fleft"></span><span class="Acity fleft" id="top1">'+location_geo[i-1][0]+'</span></dt></dl>'
-	}
-}else{
-	html += '<dl><dt><span class="LocationImg  fleft"></span><span class="Acity fleft" id="top1">暂时无此数据</span></dt></dl>'
-}
-$('#Top5').append(html);
-</script>
-<script src="/static/js/portrait/weibo_content.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aBrX8X2tEjcqiKwL78DLmanZ"></script>
+<script src="/static/js/bmap/geo.js"></script>
+<script src="/static/js/bmap/activemap.js"></script>
 
 
 

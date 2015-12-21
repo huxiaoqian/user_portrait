@@ -3,7 +3,20 @@
 <link href="/static/personal/css/component.css" rel="stylesheet" type="text/css" />
 <script src="/static/js/modernizr.custom.js"></script>
 <style>
-#moreWords{
+#more_keyWords{
+  position: fixed;
+  margin-top: -200px;
+  left: 65%;
+  top: 40%;
+  z-index: 1002;
+  width: 500px;
+  background: #FFF none repeat scroll 0% 0%;
+  border: 1px solid #AA8BE8;
+  height: 600px;
+  margin-left: -460px;
+  font_family: "Microsoft YaHei UI";
+}
+#more_hashtagWords{
   position: fixed;
   margin-top: -200px;
   left: 65%;
@@ -23,135 +36,42 @@
   padding-left: 10px;
   font-family: "Microsoft YaHei UI";
 }
-#WordList{
+#key_WordList{
+height:500px;
+overflow-y:scroll;
+}
+#hashtag_WordList{
 height:500px;
 overflow-y:scroll;
 }
 </style>
-<div id="Language" style="width:300px;height:300px;margin-left:80px;margin-top:30px;"></div>
-<div class="showmore" style="margin-top:50px;font-size:16px;"><a style="cursor:pointer; "  id="showmoreWords">更多</a></div>
-<div class="hotwords" style="width:550px;height:300px;margin-left:20px;padding-left:20px;">
-	<div id="TabContainer" >
-		<!--
-		<div class="Lsubtitle fleft" style="">
-			<ul class="tabTitle fleft">
-				<li id="tab1" class=""><a href="#" class="on" onclick="switchTab('tab1','con1');this.blur();return false;">
-                正面情感词</a></li>
-				<li id="tab2" class=""><a href="#" onclick="switchTab('tab2','con2');this.blur();return false;">
-                负面情感词</a></li>
-				<li id="tab3" class=""><a href="#" onclick="switchTab('tab3','con3');this.blur();return false;">
-                焦虑情感词</a></li>
-				<li id="tab4" class=""><a href="#" onclick="switchTab('tab4','con4');this.blur();return false;">
-                生气情感词</a></li>
-				<li id="tab5" class=""><a href="#" onclick="switchTab('tab5','con5');this.blur();return false;">
-                表情符号</a></li>
-				<li id="tab6" class=""><a href="#" onclick="switchTab('tab6','con6');this.blur();return false;">
-                hashtag</a></li>
-			</ul>
-		</div>
-		-->
-        <div class="column">
-            <div id="con1" class="fleft">
-                <div class="Litem-list fleft">
-                <ul class="Litem">
-                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">down...</span></li>
-                </ul>
-                </div>        
-            </div>
-            <div id="con2" class="fleft" style="display: none">
-               <div class="Litem-list fleft">
-                <ul class="Litem">
-                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">down...</span></li>
-                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">down...</span></li>
-                </ul>
-                </div>           
-            </div>
-            <div id="con3" class="fleft" style="display: none">
-               <div class="Litem-list fleft">
-                <ul class="Litem">
-                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">着急......</span></li>
-                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">着急...</span></li>
-                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">着急...</span></li>
-                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">着急...</span></li>
-                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">着急...</span></li>
-                </ul>
-                </div>           
-            </div>
-            <div id="con4" class="fleft" style="display: none">
-                <div class="Litem-list fleft">
-                <ul class="Litem">
-                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">愤怒...</span></li>
-                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">愤怒....</span></li>
-                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">愤怒...</span></li>
-                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">愤怒...</span></li>
-                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">愤怒...</span></li>
-                </ul>
-                </div>           
-            </div>
-            <div id="con5" class="fleft" style="display: none">
-                <div class="Litem-list fleft">
-                <ul class="Litem">
-                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">高兴...</span></li>
-                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">眦牙...</span></li>
-                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">害羞...</span></li>
-                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">哭泣...</span></li>
-                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">尴尬...</span></li>
-                </ul>
-                </div>           
-            </div>
-            <div id="con6" class="fleft" style="display: none">
-                <div class="Litem-list fleft">
-                <ul class="Litem">
-                    <li> <span class="fleft range">排名</span><span class="items fleft Lkeywords">关键词</span></li>
-                    <li> <span class="fleft range">1</span><span class="items fleft Lkeywords">命运意儿...</span></li>
-                    <li> <span class="fleft range">2</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
-                    <li> <span class="fleft range">3</span><span class="items fleft Lkeywords">人生就是...</span></li>
-                    <li> <span class="fleft range">4</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
-                    <li> <span class="fleft range">5</span><span class="items fleft Lkeywords">命运是个神马玩意儿...</span></li>
-                </ul>
-                </div>           
-            </div>
-        </div>
-		<div class="column">
-					<div id="dl-menu" class="dl-menuwrapper fright" style="margin-left:20px;width:170px;">
-						<button>Open Menu</button>
-						<ul class="dl-menu">
-							<li id="tab1" class=""><a href="#" class="on" onclick="switchTab('tab1','con1');this.blur();return false;">正面情感词</a></li>
-							<li id="tab2" class=""><a href="#" onclick="switchTab('tab2','con2');this.blur();return false;">负面情感词</a></li>
-							<li id="tab3" class=""><a href="#" onclick="switchTab('tab3','con3');this.blur();return false;">焦虑情感词</a></li>
-							<li id="tab4" class=""><a href="#" onclick="switchTab('tab4','con4');this.blur();return false;">生气情感词</a></li>
-							<li id="tab5" class=""><a href="#" onclick="switchTab('tab5','con5');this.blur();return false;">表情符号</a></li>
-							<li id="tab6" class=""><a href="#" onclick="switchTab('tab6','con6');this.blur();return false;">hashtag</a></li>
-						</ul>
-					</div><!-- /dl-menuwrapper -->
-					
-	
-			
-		</div>
-    </div>
-</div>
+<p style="margin-top:20px;font-size:16px;line-height:30px;">来自<span id="personal_domain" style="color:red">lingyu</span>领域，热衷参与<span id="personal_topic" style="color:red">huati</span>话题，参与过<span id="personal_hashtag" style="color:red">######</span>hashtag</p>
+<div id="Language" style="width:300px;height:280px;margin-left:40px;margin-top:10px;"></div>
+<div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_keyWords">更多</a></div>
+<div id="hashtag_words" style="width:300px;height:280px;margin-left:80px;margin-top:10px;float:left;"></div>
+<div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_hashtagWords">更多</a></div>
+
 <div id="float-wrap" class="hidden"></div>
-<div id="moreWords" class="hidden">
+<div id="more_keyWords" class="hidden">
 	<h3 class="title">关键词排名<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
-	<div id="WordList"></div>
+	<div id="key_WordList"></div>
 </div>
-<div id="" style="width:1000px;">
-	<div id="" style="height:30px;width:950px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;">平均文本长度：<span id="TLnum"></span></h4>
+<div id="more_hashtagWords" class="hidden">
+    <h3 class="title">hashtag排名<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
+    <div id="hashtag_WordList"></div>
+</div>
+<hr>
+<div id="" style="width:1000px;margin-top: -30px;">
+	<div id="" style="width:400px;margin-left:15px;border-right-color:#DDD;border-right-width:2px;border-right-style:solid;">
+    <h3>用户领域分析：</h3>
+		<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自<span id="info_domain">A</span>领域</h4>
+    <h4 style="line-height:40px;">根据用户粉丝结构分类，该用户来自<span id="friends_domain">B</span>领域</h4>
+    <h4 style="line-height:40px;">根据用户文本分类，该用户来自<span id="text_domain">C</span>领域</h4>
+    <h4 style="line-height:40px;">根据用户个人信息分类，该用户来自：<span id="personal_domain">D</span></h4>
 	</div>
+  <div id="user_topic" style="margin-left:20px;height:300px;width:500px;"></div>
+</div>
+<!--
 	<div id="" style="height:30px;width:950px;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
 		<h4 style="line-height:32px;">含链接微博比例：<span id="LLnum"></span>%</h4>
@@ -165,7 +85,8 @@ overflow-y:scroll;
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
 		<h4 id="emotionDes" style="line-height:32px;"></h4>
 	</div>
-</div>
+-->
+
 <script type="text/javascript">
         function switchTab(ProTag, ProBox) {
             for (i = 1; i < 7; i++) {
@@ -191,14 +112,22 @@ $(function() {
 	});
 $(".closeList").off("click").click(function(){
 		$("#float-wrap").addClass("hidden");
-		$("#moreWords").addClass("hidden");
+		$("#more_keyWords").addClass("hidden");
+    $("#more_hashtagWords").addClass("hidden");
 		return false;
 	});
-$("#showmoreWords").off("click").click(function(){
+$("#showmore_keyWords").off("click").click(function(){
 		$("#float-wrap").removeClass("hidden");
-		$("#moreWords").removeClass("hidden");
+		$("#more_keyWords").removeClass("hidden");
 		return false;
 	});
+
+$("#showmore_hashtagWords").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#more_hashtagWords").removeClass("hidden");
+        return false;
+    });
+
 var textlength = document.getElementById('TLnum');
 textlength.innerHTML = parent.personalData.text_len.toFixed(0);
 var linklength = document.getElementById('LLnum');

@@ -7,8 +7,15 @@ var emoticon = parent.personalData.emoticon;
 var hashtag = parent.personalData.hashtag_dict;
 //keywords
 
-
-Draw_keyword(keywordsCloud)
+keywords_name = 'Language'
+hashtag_name = 'hashtag_words'
+keywords_title = '关键词'
+hashtag_title = 'hashtag'
+keywords_more = 'key_WordList'
+hashtag_more = 'hashtag_WordList'
+Draw_keyword(keywordsCloud, keywords_name, keywords_title, keywords_more)
+Draw_keyword(hashtag, hashtag_name, hashtag_title, hashtag_more)
+Draw_topic()
 function createRandomItemStyle() {
     return {
         normal: {
@@ -20,10 +27,10 @@ function createRandomItemStyle() {
         }
     };
 }
-function Draw_keyword(data){
+function Draw_keyword(data, div_name, div_title, more_div){
 	var keyword = [];
 
-	$('#WordList').empty();
+	$('#'+ more_div).empty();
     html = '';
     html += '<table class="table table-striped table-bordered" style="width:480px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
@@ -33,8 +40,8 @@ function Draw_keyword(data){
        html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
-    $('#WordList').append(html);
-    
+    $('#'+ more_div).append(html);
+   
     var word_num = Math.min(20, data.length);
 
 	for (i=0;i<word_num;i++){
@@ -44,17 +51,17 @@ function Draw_keyword(data){
 		word['itemStyle'] = createRandomItemStyle();
 		keyword.push(word);
 	}
-	var myChart = echarts.init(document.getElementById('Language')); 
+	var myChart = echarts.init(document.getElementById(div_name)); 
 	var option = {
     title: {
-        text: '关键词',
+        text: div_title,
     },
     tooltip: {
         show: true
     },
     series: [{
         type: 'wordCloud',
-        size: ['80%', '80%'],
+        size: ['100%', '100%'],
         textRotation : [0, 45, 90, -45],
         textPadding: 0,
         autoSize: {
@@ -64,11 +71,93 @@ function Draw_keyword(data){
         data: keyword
     }]
 };
-      myChart.setOption(option);
-	
+      myChart.setOption(option);	
 }
- 
-function text2icon(text){
+
+function get_radar_data (data) {
+  var topic = data;
+  var topic_name = [];
+  var topic_value = [];
+  for(var key in topic){
+    topic_value.push(topic[key])
+    topic_name.push(key)
+  };
+  var topic_value2 = [];
+  var topic_name2 = [];
+  for(var i=0; i<6;i++){ //取前6个最大值
+    a=topic_value.indexOf(Math.max.apply(Math, topic_value))
+    topic_value2.push(topic_value[a]);
+    topic_name2.push(topic_name[a]);
+    topic_value[a]=0;
+  }
+  var topic_name3 = [];
+  for(var i=0;i<6;i++){ //设置最大值的话题的阈值
+    var name_dict = {};
+    var index = topic_name2[i];
+    name_dict["text"] = index;
+    name_dict["max"] = 50
+    topic_name3.push(name_dict)
+  }
+  var topic_result = [];
+  topic_result.push(topic_name3);
+  topic_result.push(topic_value2);
+  return topic_result;
+}
+function Draw_topic(){
+  var topic = {'话题1':20,'话题2':23,'话题3':45,'话题4':32,'话题5':22,'话题6':40,'话题7':19,'话题8':35}
+  var topic_result = [];
+  topic_result = get_radar_data(topic);
+  var topic_name = topic_result[0];
+  console.log('aaaaaaaaaaaaaaaa')
+  console.log(topic_name);
+  var topic_value = topic_result[1];
+  var myChart2 = echarts.init(document.getElementById('user_topic'));
+  var option = {
+    title : {
+      text: '用户话题分布',
+      subtext: ''
+    },
+      tooltip : {
+        trigger: 'axis'
+      },
+      toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+      },
+      calculable : true,
+      polar : [
+       {
+        indicator :topic_name,
+        radius : 90
+       }
+      ],
+      series : [
+       {
+        name: '话题分布情况',
+        type: 'radar',
+        itemStyle: {
+         normal: {
+          areaStyle: {
+            type: 'default'
+          }
+         }
+        },
+       data : [
+        {
+         value : topic_value,
+         name : '用户话题分布'}
+       ]
+      }]
+  };
+  myChart2.setOption(option);
+}
+
+/*function text2icon(text){
     var icon = '';
     for (var i = 0;i < emoticon_list.length;i++){
         var item = emoticon_list[i];
@@ -177,6 +266,9 @@ if(hashtag.length==0){
 html6 += '</ul>';
 html6 += '</div> ';
 $('#con6').append(html6);
+
+*/
+
 
 function Hashtag(){
   this.ajax_method = 'GET';
