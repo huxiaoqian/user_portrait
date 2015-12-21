@@ -47,10 +47,10 @@ DEFAULT_SENTIMENT = '1' #happy, angry, sad
 
 
 #cron/text_attribute/topic
-TOPIC_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/topic'
+TOPIC_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/topic'
 
 #cron/text_attribute/domain
-DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/domain'
+DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/domain'
 
 #cron/text_attribute/psy
-PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/psy'
+PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/psy'
