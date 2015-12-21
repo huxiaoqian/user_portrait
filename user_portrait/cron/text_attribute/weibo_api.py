@@ -10,11 +10,15 @@ def read_user_weibo(uid_list):
 '''
 
 # test: read user weibo
-def read_user_weibo(uid_list):
+def read_user_weibo():
     user_weibo_dict = dict()
     csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/uid_text.csv', 'rb')
     reader = csv.reader(csvfile)
+    count = 0
     for line in reader:
+        count += 1
+        if count>2:
+            break
         weibo = dict()
         user = line[0]
         weibo['uname'] = 'unknown'

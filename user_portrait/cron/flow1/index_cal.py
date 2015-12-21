@@ -36,24 +36,21 @@ def activity_weibo(weibo_timestamp, user_info, timestamp_type):
     return weibo_brust
 
 
-def statistic_weibo(origin_weibo_retweeted_count,user_info,origin_weibo_list,weibo_type, total_number=0, top_retweeted=0,average_number=0):
+def statistic_weibo(origin_weibo_retweeted_count,user_info,weibo_type, total_number=0, average_number=0):
 
     origin_weibo_retweeted_detail = {}
+    top_retweeted = [("0", 0)]
     origin_weibo_top_retweeted_id = 0
     if len(origin_weibo_retweeted_count) != 0:
-        for origin_weibo_id in origin_weibo_retweeted_count:
+        for origin_weibo_id in origin_weibo_retweeted_count: # mid set
             origin_weibo_id = str(origin_weibo_id)
             origin_weibo_retweeted_detail[origin_weibo_id] = int(user_info[origin_weibo_id+weibo_type])
-            if top_retweeted < origin_weibo_retweeted_detail[origin_weibo_id]:
-                origin_weibo_top_retweeted_id = origin_weibo_id
-            top_retweeted = max(top_retweeted, origin_weibo_retweeted_detail[origin_weibo_id])
             total_number += int(origin_weibo_retweeted_detail[origin_weibo_id])
-        try:
-            average_number = float(total_number) / len(origin_weibo_list)
-        except:
-            average_number = float(total_number) / len(origin_weibo_retweeted_count)
+        average_number = float(total_number) / len(origin_weibo_retweeted_count)
+        order = sorted(origin_weibo_retweeted_detail.iteritems(), key=lambda x:x[1], reverse=True)
+        top_retweeted = order[0:3] # list of top 3 weibo
 
-    return origin_weibo_retweeted_detail, total_number, top_retweeted, average_number,origin_weibo_top_retweeted_id
+    return origin_weibo_retweeted_detail, total_number, top_retweeted, average_number
 
 
 def expand_index_action(data):

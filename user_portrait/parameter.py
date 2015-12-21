@@ -45,12 +45,49 @@ SOCIAL_DEFAULT_COUNT = '20'
 SENTIMENT_TREND_DEFAULT_TYPE = 'day'
 DEFAULT_SENTIMENT = '1' #happy, angry, sad
 
+#attribute: influence index and conclusion
+INFLUENCE_RETWEETED_THRESHOLD = 500
+INFLUENCE_COMMENT_THRESHOLD = 500
+INFLUENCE_TAG = {
+         "0": "昨日无影响", # 无数据
+         "1": "热门信息发布者", # 原创微博的被转发量和评论量高
+         "2": "热门信息传播者", # 转发微博的被转发量和评论量高
+         "3": "热门信息发布者和传播者", # 同时高
+         "4": "影响力低"
+    }
+
+#attribtue: influence trend conclusion
+INFLUENCE_TREND_SPAN_THRESHOLD = 400
+INFLUENCE_TREND_AVE_MIN_THRESHOLD = 500
+INFLUENCE_TREND_AVE_MAX_THRESHOLD = 900
+INFLUENCE_TREND_DESCRIPTION_TEXT = {
+        '0': u'平稳高影响力',
+        '1': u'波动高影响力',
+        '2': u'平稳一般影响力',
+        '3': u'波动一般影响力',
+        '4': u'平稳低影响力',
+        '5': u'波动低影响力'
+    }
+
+#attribute: activeness trend conclusion
+ACTIVENESS_TREND_SPAN_THRESHOLD = 1.5
+ACTIVENESS_TREND_AVE_MIN_THRESHOLD = 1.5
+ACTIVENESS_TREND_AVE_MAX_THRESHOLD = 2.5
+ACTIVENESS_TREND_DESCRIPTION_TEXT = {
+        '0': u'平稳高活跃度',
+        '1': u'波动高活跃度',
+        '2': u'平稳一般活跃度', 
+        '3': u'波动一般活跃度',
+        '4': u'平稳低活跃度',
+        '5': u'波动低活跃度'
+    }
+
 
 #cron/text_attribute/topic
-TOPIC_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/topic'
+TOPIC_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/topic'
 
 #cron/text_attribute/domain
-DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/domain'
+DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/domain'
 
 #cron/text_attribute/psy
-PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/psy'
+PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/psy'

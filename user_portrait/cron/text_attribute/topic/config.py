@@ -27,7 +27,8 @@ CHS_DICT_PATH = '/usr/local/scws/etc/dict.utf8.xdb'
 CHT_DICT_PATH = '/usr/local/scws/etc/dict_cht.utf8.xdb'
 IGNORE_PUNCTUATION = 1
 
-ABSOLUTE_DICT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './dict'))
+#ABSOLUTE_DICT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './dict'))
+ABSOLUTE_DICT_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/domain/dict/'
 CUSTOM_DICT_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'userdic.txt')
 EXTRA_STOPWORD_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'stopword.txt')
 EXTRA_EMOTIONWORD_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'emotionlist.txt')

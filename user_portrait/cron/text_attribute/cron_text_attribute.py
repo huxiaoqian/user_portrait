@@ -17,7 +17,7 @@ from evaluate_index import get_importance, get_activity_time, get_activeness, ge
 from user_profile import get_profile_information
 from save_utils import attr_hash, save_user_results
 from config import topic_en2ch_dict, domain_en2ch_dict
-
+from domain_topic_input import get_user_keywords_dict
 
 # compute user domain
 from domain.test_domain_v2 import domain_classfiy
@@ -333,10 +333,11 @@ def main():
     flow_result = get_flow_information(uid_list)
     #get user profile information
     register_result = get_profile_information(uid_list)
-    
+    #get topic and domain input data
+    user_keywords_dict = get_user_keywords_dict(user_weibo_dict)
     #get user topic and domain by bulk action
-    topic_results_dict, topic_results_label = topic_classfiy(user_weibo_dict)
-    domain_results = domain_classfiy(user_weibo_dict)
+    topic_results_dict, topic_results_label = topic_classfiy(user_keywords_dict)
+    domain_results = domain_classfiy(user_keywords_dict)
     domain_results_dict = domain_results[0]
     domain_results_label = domain_results[1]
     #get user psy attribute
@@ -398,12 +399,17 @@ def add_domain():
     #read user weibo
     user_weibo_dict = read_user_weibo()
     uid_list = user_weibo_dict.keys()
+    #get topic and domain input data
+    user_keywords_dict = get_user_keywords_dict(user_weibo_dict)
+    print 'user_keywords_dict:',user_keywords_dict
+    
     print 'len(uid_list):', len(uid_list)
     start_ts = time.time()
     print 'start_ts:', start_ts
+    '''
     psy_results = psychology_classfiy(user_weibo_dict)
     print 'psy_result:', psy_results
-    '''
+    
     domain_results = domain_classfiy(user_weibo_dict)
     domain_dict = domain_results[0]
     domain_label = domain_results[1]
@@ -421,6 +427,6 @@ def add_domain():
 
 if __name__=='__main__':
     print 'test'
-    bulk_action = main()
-    print 'bulk_action:', bulk_action
-    #add_domain()
+    #bulk_action = main()
+    #print 'bulk_action:', bulk_action
+    add_domain()
