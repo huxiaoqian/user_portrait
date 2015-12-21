@@ -7,7 +7,7 @@ import heapq
 import re
 import math
 from decimal import *
-from config import load_train_ori
+from config import DOMAIN_DICT_ORI,DOMAIN_COUNT_ORI,abs_path
 
 class TopkHeap(object):
     def __init__(self, k):
@@ -43,15 +43,13 @@ def cal_idf(word,domain_dict,domain_count,topic):
     return idf
     
 def main():
-    
-    domain_dict,domain_count = load_train_ori()
-    weight = dict()
 
-    for k,v in domain_dict.items():
+    weight = dict()
+    for k,v in DOMAIN_DICT_ORI.items():
         weight_dict = dict()
         for k1,v1 in v.items():
-            tf = Decimal(v1)/Decimal(domain_count[k])
-            idf = cal_idf(k1,domain_dict,domain_count,k)
+            tf = Decimal(v1)/Decimal(DOMAIN_COUNT_ORI[k])
+            idf = cal_idf(k1,DOMAIN_DICT_ORI,DOMAIN_COUNT_ORI,k)
             weight_dict[k1] = Decimal(tf)*Decimal(idf)
         weight[k] = weight_dict
 
@@ -73,7 +71,7 @@ def write_file(result_data,name,domain_dict):
 
     data = rank_tfidf(result_data)
     
-    with open('./topic_dict/%s_tfidf.csv' % name, 'wb') as f:
+    with open('%s/topic_dict/%s_tfidf.csv' % (abs_path,name), 'wb') as f:
         writer = csv.writer(f)
         for i in range(0,len(data)):
             writer.writerow((domain_dict[data[i][1]],data[i][1]))
@@ -83,13 +81,14 @@ def write_file(result_data,name,domain_dict):
 if __name__ == '__main__':
     
     result_data,domain_dict = main()
-    count = 0
-    for k,v in result_data.items():
-        #print domain_dict[k]
-        n = write_file(v,k,domain_dict[k])
-        count = count + n
+##    count = 0
+##    for k,v in result_data.items():
+##        n = write_file(v,k,domain_dict[k])
+##        count = count + n
+##
+##    print count
 
-    print count
+    print result_data
 
 
 

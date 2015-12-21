@@ -3,43 +3,7 @@
 import os
 import sys
 import json
-from global_utils import STATUS_THRE,FOLLOWER_THRE,labels,outlist,lawyerw,cut,load_scws
-
-sys.path.append('../../../')
-from parameter import DOMAIN_ABS_PATH as abs_path
-
-
-def getAdminWords():
-    adminw = []
-    f = open(abs_path+'/domain_dict/adw.txt', 'r')
-    for line in f:
-        w = line.strip()
-        adminw.append(w) # 政府职位相关词汇
-    f.close()
-
-    return adminw
-
-adminw = getAdminWords()
-
-def getMediaWords():
-    mediaw = []
-    mediaf = open(abs_path+'/domain_dict/mediaw.txt','r')
-    for line in mediaf:
-        mediaw.append(line.strip()) # 媒体相关词汇
-
-    return mediaw
-
-mediaw = getMediaWords()
-
-def getBusinessWords():
-    businessw = []
-    f = open(abs_path+'/domain_dict/businessw.txt', 'r')
-    for line in f:
-        businessw.append(line.strip()) # 商业人士词汇
-
-    return businessw
-
-businessw = getBusinessWords()
+from global_utils import STATUS_THRE,FOLLOWER_THRE,labels,outlist,lawyerw,cut,load_scws,adminw,mediaw,businessw
 
 s = load_scws()
 

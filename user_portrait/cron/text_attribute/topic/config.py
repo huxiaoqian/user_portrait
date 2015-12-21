@@ -4,10 +4,10 @@ import os
 import scws
 import re
 import csv
+import sys
 from decimal import *
-
-abs_path = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/topic'
-
+sys.path.append('../../../')
+from parameter import TOPIC_ABS_PATH as abs_path
 
 name_list = ['art','computer','economic','education','environment','medicine',\
             'military','politics','sports','traffic','life',\
@@ -27,8 +27,7 @@ CHS_DICT_PATH = '/usr/local/scws/etc/dict.utf8.xdb'
 CHT_DICT_PATH = '/usr/local/scws/etc/dict_cht.utf8.xdb'
 IGNORE_PUNCTUATION = 1
 
-#ABSOLUTE_DICT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), './dict'))
-ABSOLUTE_DICT_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/domain/dict/'
+ABSOLUTE_DICT_PATH = os.path.abspath(os.path.join(abs_path, './dict'))
 CUSTOM_DICT_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'userdic.txt')
 EXTRA_STOPWORD_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'stopword.txt')
 EXTRA_EMOTIONWORD_PATH = os.path.join(ABSOLUTE_DICT_PATH, 'emotionlist.txt')
@@ -46,6 +45,7 @@ def load_black_words():
     return one_words
 
 single_word_whitelist = set(load_one_words())
+black_word = set(load_black_words())
 
 def load_scws():
     s = scws.Scws()
@@ -95,8 +95,6 @@ def load_train():#读取生成之后的tfidf文档，对新的用户进行话题
     domain_dict = dict()
     domain_count = dict()
     for i in name_list:
-        #reader = csv.reader(file('./topic_dict/%s_tfidf.csv'% i, 'rb'))
-        #change to abs-path
         reader = csv.reader(file(abs_path + '/topic_dict/%s_tfidf.csv' % i, 'rb'))
         word_dict = dict()
         count = 0
@@ -107,15 +105,21 @@ def load_train():#读取生成之后的tfidf文档，对新的用户进行话题
         domain_dict[i] = word_dict
         domain_count[i] = count
 
-    return domain_dict,domain_count
+    len_dict = dict()
+    total = 0
+    for k,v in domain_dict.items():
+        len_dict[k] = len(v)
+        total = total + len(v)
+    
+    return domain_dict,domain_count,len_dict,total
+
+DOMAIN_DICT,DOMAIN_COUNT,LEN_DICT,TOTAL = load_train()
 
 def load_train_ori():#加载原始词频文档，计算每个词语的tfidf，并生成对应的tfidf文档
 
     domain_dict = dict()
     domain_count = dict()
     for i in name_list:
-        #reader = csv.reader(file('./topic_dict/%s_ori.csv'% i, 'rb'))
-        #change to abs-path
         reader = csv.reader(file(abs_path + '/topic_dict/%s_ori.csv' % i, 'rb'))
         word_dict = dict()
         count = 0
@@ -127,3 +131,5 @@ def load_train_ori():#加载原始词频文档，计算每个词语的tfidf，�
         domain_count[i] = count
 
     return domain_dict,domain_count
+
+DOMAIN_DICT_ORI,DOMAIN_COUNT_ORI = load_train_ori()
