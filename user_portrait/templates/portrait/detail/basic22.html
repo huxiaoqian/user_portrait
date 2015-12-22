@@ -1,18 +1,19 @@
 <link href="/static/personal/css/basic.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src='/static/js/esl.js'></script>
+<!-- <script type="text/javascript" src='/static/js/esl.js'></script> -->
 <style>
-#re_influence{
+/*#re_influence{
   position: fixed;
-  left: 55%;
-  top: 5%;
+  margin-top: -200px;
+  left: 65%;
+  top: 40%;
   z-index: 1002;
-  width: 850px;
+  width: 500px;
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8;
   height: 600px;
   margin-left: -460px;
   font_family: "Microsoft YaHei UI";
-}
+}*/
 #cmt_influence{
   position: fixed;
   margin-top: -200px;
@@ -33,7 +34,7 @@
   padding-left: 10px;
   font-family: "Microsoft YaHei UI";
 }
-#re_user_content{
+#re_user{
 height:500px;
 overflow-y:scroll;
 width:100%;
@@ -70,28 +71,36 @@ width:100%;
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
 		<span id="saysth"style="line-height:32px;"></span><span class="red" id="sayimportant"style="line-height:32px;">
 	</div>
-  
-	<!-- <div id="treeB" style="width:1000px;height:400px;"></div>
-	<div id=""  style="width:1000px;line-height:48px;font-size:18px;font-family:"Microsoft YaHei UI";">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<span id="sayinfluence"style="line-height:32px;"></span>
-	</div> -->
+
 
 </div>
 
-<div id="float-wrap" class="hidden"></div>
+<!-- <div id="float-wrap" class="hidden"></div>
 <div id="re_influence" class="hidden">
   <h3 class="title">转发用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
-  <div id="re_user_content" style="padding:10px;align:left;">
-    <div id="re_user_domain" style="width:250px;height:250px; margin:5px;"></div>
-    <div id="re_user_domain" style="width:250px;height:250px; margin:5px;"></div>
-    <div id="re_user_domain" style="width:250px;height:250px; margin:5px;"></div>
-    <div id="re_user" style="padding:10px;align:left;"></div>
-  </div>
+  <div id="re_user" style="padding:10px;align:left;">11111</div>
 </div>
 <div id="cmt_influence" class="hidden">
     <h3 class="title">评论用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
     <div id="cmt_user" style="padding:10px;align:left;">111111111</div>
+</div> -->
+
+
+<div class="modal fade" id="re_influence" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">转发用户情况</h4>
+      </div>
+      <div class="modal-body" id="re_user2">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
