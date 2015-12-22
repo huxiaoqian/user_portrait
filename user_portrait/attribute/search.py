@@ -1077,30 +1077,22 @@ def get_activity_weibo(uid, time_type, start_ts):
     end_ts = start_ts + time_segment
     time_date = ts2datetime(start_ts)
     flow_text_index_name = flow_text_index_name_pre + time_date # get flow text es index name: flow_text_2013-09-07
-    print 'flow_text_index_name:', flow_text_index_name
-    print 'start_ts, end_ts:',start_ts, ts2date(start_ts), end_ts, ts2date(end_ts)
     query = []
     query.append({'term': {'uid': uid}})
     query.append({'range': {'timestamp': {'from': start_ts, 'to': end_ts}}})
-    '''
-    query_body = {
-        'query':{
-            'term':{'uid': uid},
-            'range':{
-                'timestamp':{
-                    'from': start_ts, 
-                    'to': end_ts
-                    }
-                }
-            }
-        }
-    '''
     try:
         flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort': 'timestamp', 'size': MAX_VALUE})['hits']['hits']
     except:
         flow_text_es_result = []
     for item in flow_text_es_result:
-        weibo_list.append(item['_source'])
+        weibo = {}
+        source = item['_source']
+        weibo['timestamp'] = ts2date(source['timestamp'])
+        weibo['ip'] = source['ip']
+        weibo['text'] = source['text']
+        weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        weibo['ip'] = source['ip']
+        weibo_list.append(weibo)
     return weibo_list
 
 
