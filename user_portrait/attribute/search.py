@@ -1010,13 +1010,15 @@ def search_activity(now_ts, uid):
                 day_weibo[time_segment*HALF_HOUR] += day_dict[segment]
             except:
                 day_weibo[time_segment*HALF_HOUR] = day_dict[segment]
-        max_time = max(day_weibo.keys())
+        #max_time = max(day_weibo.keys())
+        max_time = int(time.time() - now_day_ts)
+        #test
+        max_time = datetime2ts('2013-09-08') - datetime2ts('2013-09-07')
         for time_segment in range(HALF_HOUR, max_time+1, HALF_HOUR):
             if time_segment in day_weibo:
                 day_time_count.append((time_segment, day_weibo[time_segment]))
             else:
                 day_time_count.append((time_segment, 0))
-
     #compute week trend
     week_weibo = dict()
     segment_result = dict()
@@ -1041,7 +1043,7 @@ def search_activity(now_ts, uid):
             except:
                 segment_result[int(time_segment)/16*15*60*16] = week_dict[time_segment]
 
-    for i in range(1,8):
+    for i in range(0,7):
         ts = now_day_ts - i*DAY
         for j in range(0, 6):
             time_seg = ts + j*15*60*16
@@ -1072,28 +1074,25 @@ def get_activity_weibo(uid, time_type, start_ts):
     elif time_type == 'week':
         time_segment = FOUR_HOUR
 
-    end_ts = start_ts + end_ts
+    end_ts = start_ts + time_segment
     time_date = ts2datetime(start_ts)
     flow_text_index_name = flow_text_index_name_pre + time_date # get flow text es index name: flow_text_2013-09-07
-
-    query_body = {
-        'query':{
-            'term':{'uid': uid},
-            'range':{
-                'timestamp':{
-                    'from': start_ts, 
-                    'to': end_ts
-                    }
-                }
-            }
-        }
-
+    query = []
+    query.append({'term': {'uid': uid}})
+    query.append({'range': {'timestamp': {'from': start_ts, 'to': end_ts}}})
     try:
-        flow_text_es_result = es_flow_text.search(index_name=flow_text_index_name, doc_type=index_type, body=query_body)['hits']['hits']
-    except Exception, e:
-        raise e
+        flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort': 'timestamp', 'size': MAX_VALUE})['hits']['hits']
+    except:
+        flow_text_es_result = []
     for item in flow_text_es_result:
-        weibo_list.append(item['_source'])
+        weibo = {}
+        source = item['_source']
+        weibo['timestamp'] = ts2date(source['timestamp'])
+        weibo['ip'] = source['ip']
+        weibo['text'] = source['text']
+        weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        weibo['ip'] = source['ip']
+        weibo_list.append(weibo)
     return weibo_list
 
 

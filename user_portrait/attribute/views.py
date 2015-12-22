@@ -198,10 +198,9 @@ def ajax_activity_weibo():
     time_type = str(request.args.get('type', '')) # type = day or week
     start_ts = int(request.args.get('start_ts', ''))
     results = get_activity_weibo(uid, time_type, start_ts)
-    if result:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = []
+    return json.dumps(results)
 
 #abandon in version-15-12-08
 '''
