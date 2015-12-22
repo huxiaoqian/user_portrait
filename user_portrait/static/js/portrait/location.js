@@ -26,6 +26,10 @@ function getDate_zh(tm){
     var tt = new Date(parseInt(tm)*1000).format("MM-dd");
     return tt;
 }
+function getDate_ms(tm){
+    var tt = new Date(parseInt(tm)*1000).format("hh:mm");
+    return tt;
+}
 function activity_call_ajax_request(url, callback){
     $.ajax({
       url: url,
@@ -39,7 +43,6 @@ function bind_time_option(){
     $('input[name=weibotrends]').change(function(){
         var selected_type = $(this).val();
         global_time_type = selected_type;
-        console.log(selected_type);
         if (global_time_type == 'day'){
             week_chart(global_active_data.day_trend);
         }
@@ -52,9 +55,7 @@ var global_time_type = 'day';
 var pre_time = new Date();
 pre_time.setFullYear(2013,8,1);
 pre_time.setHours(0,0,0);
-//console.log(pre_time);
 pre_time=Math.floor(pre_time.getTime()/1000);
-//console.log(pre_time);
 bind_time_option();
 
 function geo_track(data){
@@ -89,7 +90,6 @@ activity_call_ajax_request(url, geo_track);
 
 function  active_chart(data){
     global_active_data = data;
-	console.log(data);
 	var item = data.activity_time; //activity_time
     for (i=0;i<item.length;i++){
        var date = item[i][0]/(15*60*16);
@@ -124,7 +124,7 @@ function week_chart(trend_data){
         for(i=0;i<trend.length;i++){
             var time = getDate(pre_time+trend[i][0]);
             var count = trend[i][1];
-            var date_zh =getDate_zh(pre_time+trend[i][0])
+            var date_zh =getDate_zh(pre_time+trend[i][0]);
             data_time.push(time);
             data_count.push(count);
             date_zhang.push(date_zh);
@@ -148,7 +148,6 @@ function week_chart(trend_data){
     var dateStr = '2013-'+date+' '+time;
     var ts = get_unix_time(dateStr);
     var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
-    console.log(url);
     activity_call_ajax_request(url, draw_content); // draw_weibo
 	//Draw_trend:
 	 $('#Activezh').highcharts({
@@ -279,7 +278,6 @@ function point2weibo(xnum, ts){
     var delta = '';
     if (global_time_type == 'day'){
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+(pre_time+ts[0]);
-        console.log(url);
         activity_call_ajax_request(url, draw_content); //draw weibo
 
         var a = Math.floor(xnum / 2);
@@ -293,7 +291,6 @@ function point2weibo(xnum, ts){
     }
     else{
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts[0];
-        console.log(url);
         activity_call_ajax_request(url, draw_content); //draw weibo
         switch(xnum % 6)
         {
@@ -309,14 +306,12 @@ function point2weibo(xnum, ts){
     $('#time_zh').html(delta);
 }
 function draw_content(data){
-    console.log(data);
     var html = '';
     $('#weibo_text').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
-            //console.log(data[i].text);
             html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
         }
 
@@ -328,30 +323,38 @@ var url = '/attribute/activity/?uid=' + uid;
 var global_active_data;
 activity_call_ajax_request(url, active_chart);
 
-function draw_daily_ip_table(div_name){
-    console.log('here');
-    var location_geo = personalData.activity_geo;
-    console.log(location_geo);
-    $('#daily_ip').empty();
-    var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">IP</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < location_geo.length; i++) {
-       var s = i.toString();
-       var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m;
-       html += '</th><th style="text-align:center">' + location_geo[i][0];
-       html += '</th><th style="text-align:center">' + location_geo[i][1];
-       html +='</th></tr>';
-    };
-    html += '</table>'; 
-    $('#daily_ip').append(html);                  
+function draw_daily_ip_table(ip_data){
+    var div_name = ['daily_ip','weekly_ip'];
+    var location_geo;
+    console.log(ip_data);
+    for (var i in div_name){
+        if (i == 0){
+            location_geo = ip_data.all_day_top;
+        }
+        else{
+            location_geo = ip_data.all_week_top;
+        }
+        var name = div_name[i];
+        $('#'+name).empty();
+        var html = '';
+        html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+        html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">IP</th><th style="text-align:center">微博数</th></tr>';
+        for (var i = 0; i < location_geo.length; i++) {
+           var s = i.toString();
+           var m = i + 1;
+           html += '<tr><th style="text-align:center">' + m;
+           html += '</th><th style="text-align:center">' + location_geo[i][0];
+           html += '</th><th style="text-align:center">' + location_geo[i][1];
+           html +='</th></tr>';
+        };
+        html += '</table>'; 
+        $('#'+name).append(html);                  
+
+    }
 }
 var url = '/attribute/ip/?uid=' + uid;
 activity_call_ajax_request(url, draw_daily_ip_table);
 /*
-var div_name = 'weekly_ip';
-draw_daily_ip_table(div_name);
 var div_name = 'monthly_location';
 draw_daily_ip_table(div_name);
 var div_name = 'online_pattern';
