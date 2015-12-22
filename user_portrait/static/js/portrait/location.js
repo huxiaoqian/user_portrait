@@ -27,18 +27,29 @@ function getDate_zh(tm){
     return tt;
 }
 function activity_call_ajax_request(url, callback){
-$.ajax({
-  url: url,
-  type: 'GET',
-  dataType: 'json',
-  async: false,
-  success:callback
-});
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
 }
+function bind_time_option(){
+    $('input[name=weibotrends]').change(function(){
+        var selected_type = $(this).val();
+        global_time_type = selected_type;
+        console.log(selected_type);
+    });
+}
+var global_time_type = 'day';
+bind_time_option();
+
 function geo_track(data){
+    console.log(data);
 	var geo_data = data[0]
 	//console.log(geo_data);
-	document.getElementById('saysay').innerHTML = data[1];
+	//document.getElementById('saysay').innerHTML = data[1];
 	var date = [];
 	var citys = [];
 	for(var key in geo_data){
@@ -62,11 +73,11 @@ function geo_track(data){
 	}
 }
 
-var url = '/attribute/geo_track/?uid='+ uid;
+var url = '/attribute/location/?uid='+ uid + '&time_type=week';
 activity_call_ajax_request(url, geo_track);
 
 function  active_chart(data){
-	//console.log(data);
+	console.log(data);
 	var item = data.activity_time;
     for (i=0;i<item.length;i++){
        var date = item[i][0]/(15*60*16);
@@ -83,27 +94,55 @@ function  active_chart(data){
        time = document.getElementById(str);
        time.innerHTML = x;
     }
-    var trend = data.activity_trend;
-	var data_count=[];
-	var data_time = [];
-	var date_zhang = [];
-    for(i=0;i<trend.length;i++){
-        var time = getDate(trend[i][0]);
-        var count = trend[i][1];
-		var date_zh =getDate_zh(trend[i][0])
-		data_time.push(time);
-		data_count.push(count);
-		date_zhang.push(date_zh);
+    if (global_time_type == 'day'){
+       week_chart(data.day_trend);
     }
-	$('#date_zh').html(date_zhang[0]);
-	//$('#date_zh').setAttribute(value,date_zhang[0]);
-    /*
-	var date_html ='';
-	$('#select_date').empty();
-	console.log(date_zhang[i]);
-	date_html =date_html + '<option value="'+date_zhang[i]+'">'+date_zhang[i]+'</option>';
-    $('#select_date').append(date_html);
-    */
+    // week
+    else{
+        week_chart(data.week_trend);
+    }
+}
+function week_chart(trend_data){
+    var trend = trend_data;
+    var data_count=[];
+    var data_time = [];
+    var date_zhang = [];
+    if (global_time_type == 'day'){
+        var pre_time = new Date();
+        pre_time.setFullYear(2013,8,1);
+        pre_time.setHours(0,0,0);
+        console.log(pre_time);
+        pre_time=Math.floor(pre_time.getTime()/1000);
+        console.log(pre_time);
+        for(i=0;i<trend.length;i++){
+            var time = getDate(pre_time+trend[i][0]);
+            var count = trend[i][1];
+            var date_zh =getDate_zh(pre_time+trend[i][0])
+            data_time.push(time);
+            data_count.push(count);
+            date_zhang.push(date_zh);
+        }
+        $('#time_zh').html('00:00-00:30');
+    }
+    else{
+        for(i=0;i<trend.length;i++){
+            var time = getDate(trend[i][0]);
+            var count = trend[i][1];
+            var date_zh =getDate_zh(trend[i][0])
+            data_time.push(time);
+            data_count.push(count);
+            date_zhang.push(date_zh);
+        }
+        $('#time_zh').html('00:00-04:00');
+    }
+    $('#date_zh').html(date_zhang[0]);
+    var date = $('#date_zh').html();
+    var time = '00:00:00';
+    var dateStr = '2013-'+date+' '+time;
+    var ts = get_unix_time(dateStr);
+    var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
+    console.log(url);
+    activity_call_ajax_request(url, draw_content);
 	//Draw_trend:
 	 $('#Activezh').highcharts({
         chart: {
@@ -230,9 +269,9 @@ function  active_chart(data){
 }
 //微博文本默认数据
 function point2weibo(xnum, ts){
-	var url ="/weibo/show_user_weibo_ts/?uid="+uid+"&ts="+ts[0];
+	var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts[0];
     var delta;
-    //console.log(url);
+    console.log(url);
 	activity_call_ajax_request(url, draw_content);
     $('#date_zh').html(getDate_zh(ts));
     switch(xnum % 6)
@@ -245,29 +284,30 @@ function point2weibo(xnum, ts){
         case 5: delta = "20:00-24:00";break;
     }
     $('#time_zh').html(delta);
-	function draw_content(data){
-        var html = '';
-        $('#weibo_text').empty();
-        if(data==''){
-            html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
-        }else{
-            for(i=0;i<data.length;i++){
-                //console.log(data[i].text);
-                html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
-            }
-
+}
+function draw_content(data){
+    var html = '';
+    $('#weibo_text').empty();
+    if(data==''){
+        html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
+    }else{
+        for(i=0;i<data.length;i++){
+            //console.log(data[i].text);
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
         }
-        $('#weibo_text').append(html);
+
     }
+    $('#weibo_text').append(html);
 }
 
 var url = '/attribute/activity/?uid=' + uid;
 activity_call_ajax_request(url, active_chart);
 
 function draw_daily_ip_table(div_name){
-    var location_geo = parent.personalData.activity_geo;
-    //console.log(location_geo);
-    $('#'+div_name).empty();
+    console.log('here');
+    var location_geo = personalData.activity_geo;
+    console.log(location_geo);
+    $('#daily_ip').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">IP</th><th style="text-align:center">微博数</th></tr>';
@@ -280,17 +320,18 @@ function draw_daily_ip_table(div_name){
        html +='</th></tr>';
     };
     html += '</table>'; 
-    $('#'+div_name).append(html);                  
+    $('#daily_ip').append(html);                  
 }
-var div_name = 'daily_ip';
-draw_daily_ip_table(div_name);
+var url = '/attribute/ip/?uid=' + uid;
+activity_call_ajax_request(url, draw_daily_ip_table);
+/*
 var div_name = 'weekly_ip';
 draw_daily_ip_table(div_name);
 var div_name = 'monthly_location';
 draw_daily_ip_table(div_name);
 var div_name = 'online_pattern';
 draw_daily_ip_table(div_name);
-
+*/
 function location_desc(data){
 	var description1 = document.getElementById('location_description1');
 	var description3 = document.getElementById('location_description3');
@@ -309,82 +350,10 @@ function location_desc(data){
 		document.getElementById('location_description4').innerHTML = data['description'][3];
 	}
 }
+
 var url ="/attribute/location/?uid="+uid;
-activity_call_ajax_request(url, location_desc);
+//activity_call_ajax_request(url, location_desc);
 
-function Weibo(){
-  this.ajax_method = 'GET';
-}
-Weibo.prototype = {   //获取数据，重新画表
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-
-Draw_content:function(data){
-	var html = '';
-	$('#weibo_text').empty();
-    if(data==''){
-        html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
-    }else{
-        for(i=0;i<data.length;i++){
-            //console.log(data[i].text);
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
-        }
-
-    }
-	$('#weibo_text').append(html);
-  }
-}
-
-var date = '';
-var time = '';
-var dateStr = '';
-var ts = '';
-date = $('#date_zh').html();
-time = '00:00:00';
-dateStr = '2013-'+date+' '+time;
-ts = get_unix_time(dateStr);
-var Weibo = new Weibo();
-var url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts;
-Weibo.call_sync_ajax_request(url, Weibo.ajax_method, Weibo.Draw_content);
-
-/*
-$('#select_date').change(function(){
-	date = $('#select_date').val();
-	dateStr = '2015-'+date+' '+time+':00';
-	ts = get_unix_time(dateStr);
-	url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts;
-	Weibo.call_sync_ajax_request(url, Weibo.ajax_method, Weibo.Draw_content);
-})
-$('#select_time').change(function(){
-	 time = $('#select_time').val();
-	 dateStr = '2015-'+date+' '+time+':00';
-	 ts = get_unix_time(dateStr);
-	 url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts;
-	 Weibo.call_sync_ajax_request(url, Weibo.ajax_method, Weibo.Draw_content);
-})
-*/
-//dateStr = '2015-'+date+' '+time+':00';
-//console.log(dateStr);
-//dateStr = '2014-05-08 00:22:11 ';
-//
-/*
-$('#choose_date').click(function(){
-	date = $('#select_date').val();
-	time = $('#select_time').val();
-	dateStr = '2013-'+date+' '+time;
-	ts = get_unix_time(dateStr);
-	url ="/weibo/show_user_weibo_ts/?uid="+parent.personalData.uid+"&ts="+ts;
-    console.log(url);
-	Weibo.call_sync_ajax_request(url, Weibo.ajax_method, Weibo.Draw_content);
-})
-*/
 function get_unix_time(dateStr){
     var newstr = dateStr.replace(/-/g,'/'); 
     var date =  new Date(newstr); 
