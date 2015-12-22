@@ -40,6 +40,12 @@ function bind_time_option(){
         var selected_type = $(this).val();
         global_time_type = selected_type;
         console.log(selected_type);
+        if (global_time_type == 'day'){
+            week_chart(global_active_data.day_trend);
+        }
+        else{
+            week_chart(global_active_data.week_trend);
+        }
     });
 }
 var global_time_type = 'day';
@@ -77,6 +83,7 @@ var url = '/attribute/location/?uid='+ uid + '&time_type=week';
 activity_call_ajax_request(url, geo_track);
 
 function  active_chart(data){
+    global_active_data = data;
 	console.log(data);
 	var item = data.activity_time;
     for (i=0;i<item.length;i++){
@@ -111,9 +118,9 @@ function week_chart(trend_data){
         var pre_time = new Date();
         pre_time.setFullYear(2013,8,1);
         pre_time.setHours(0,0,0);
-        console.log(pre_time);
+        //console.log(pre_time);
         pre_time=Math.floor(pre_time.getTime()/1000);
-        console.log(pre_time);
+        //console.log(pre_time);
         for(i=0;i<trend.length;i++){
             var time = getDate(pre_time+trend[i][0]);
             var count = trend[i][1];
@@ -142,7 +149,7 @@ function week_chart(trend_data){
     var ts = get_unix_time(dateStr);
     var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
     console.log(url);
-    activity_call_ajax_request(url, draw_content);
+    activity_call_ajax_request(url, draw_content); // draw_weibo
 	//Draw_trend:
 	 $('#Activezh').highcharts({
         chart: {
@@ -270,19 +277,30 @@ function week_chart(trend_data){
 //微博文本默认数据
 function point2weibo(xnum, ts){
 	var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts[0];
-    var delta;
+    var delta = '';
     console.log(url);
-	activity_call_ajax_request(url, draw_content);
-    $('#date_zh').html(getDate_zh(ts));
-    switch(xnum % 6)
-    {
-        case 0: delta = "00:00-04:00";break;
-        case 1: delta = "04:00-08:00";break;
-        case 2: delta = "08:00-12:00";break;
-        case 3: delta = "12:00-16:00";break;
-        case 4: delta = "16:00-20:00";break;
-        case 5: delta = "20:00-24:00";break;
+	activity_call_ajax_request(url, draw_content); //draw weibo
+    if (global_time_type == 'day'){
+        var a = Math.floor(xnum / 2);
+        var b = xnum % 2;
+        delta += (a<10?"0"+a+":":a+":");
+        delta += (b==0?"00-":"30-");
+        a += 1;
+        delta += (a<10?"0"+a+":":a+":");
+        delta += (b!=0?"00":"30");
     }
+    else{
+        switch(xnum % 6)
+        {
+            case 0: delta = "00:00-04:00";break;
+            case 1: delta = "04:00-08:00";break;
+            case 2: delta = "08:00-12:00";break;
+            case 3: delta = "12:00-16:00";break;
+            case 4: delta = "16:00-20:00";break;
+            case 5: delta = "20:00-24:00";break;
+        }
+    }
+    $('#date_zh').html(getDate_zh(ts));
     $('#time_zh').html(delta);
 }
 function draw_content(data){
@@ -301,6 +319,7 @@ function draw_content(data){
 }
 
 var url = '/attribute/activity/?uid=' + uid;
+var global_active_data;
 activity_call_ajax_request(url, active_chart);
 
 function draw_daily_ip_table(div_name){
