@@ -45,12 +45,17 @@ height:500px;
 overflow-y:scroll;
 }
 </style>
-<p style="margin-top:20px;font-size:16px;line-height:30px;">来自<span id="personal_domain" style="color:red">lingyu</span>领域，热衷参与<span id="personal_topic" style="color:red">huati</span>话题，参与过<span id="personal_hashtag" style="color:red">######</span>hashtag</p>
-<div id="Language" style="width:300px;height:280px;margin-left:40px;margin-top:10px;"></div>
-<div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_keyWords">更多</a></div>
-<div id="hashtag_words" style="width:300px;height:280px;margin-left:80px;margin-top:10px;float:left;"></div>
-<div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_hashtagWords">更多</a></div>
-
+<h4 style="margin-top:20px;font-size:16px;line-height:30px;">来自<span id="personal_domain" style="color:red">lingyu</span>领域，热衷参与<span id="personal_topic" style="color:red">huati</span>话题，参与过<span id="personal_hashtag" style="color:red">######</span>hashtag</h4>
+<div>
+  <div style="margin-right:-50px;font-size:16px;"><h3>关键词</h3></div>
+  <div id="Language" style="width:300px;height:280px;margin-top:10px;"></div>
+  <div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_keyWords">更多</a></div>
+</div>
+<div>
+  <div style="font-size:16px;margin-right:50px;margin-left:100px;"><h3>hashtag</h3></div>
+  <div id="hashtag_words" style="width:300px;height:280px;margin-top:10px;float:left;"></div>
+  <div class="showmore" style="margin-top:30px;font-size:16px;"><a style="cursor:pointer; "  id="showmore_hashtagWords">更多</a></div>
+</div>
 <div id="float-wrap" class="hidden"></div>
 <div id="more_keyWords" class="hidden">
 	<h3 class="title">关键词排名<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
@@ -61,7 +66,7 @@ overflow-y:scroll;
     <div id="hashtag_WordList"></div>
 </div>
 <hr>
-<div id="" style="width:1000px;margin-top: -30px;">
+<div id="" style="width:1000px;">
 	<div id="" style="width:400px;margin-left:15px;border-right-color:#DDD;border-right-width:2px;border-right-style:solid;">
     <h3>用户领域分析：</h3>
 		<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自<span id="info_domain">A</span>领域</h4>
@@ -69,7 +74,10 @@ overflow-y:scroll;
     <h4 style="line-height:40px;">根据用户文本分类，该用户来自<span id="text_domain">C</span>领域</h4>
     <h4 style="line-height:40px;">根据用户个人信息分类，该用户来自：<span id="personal_domain">D</span></h4>
 	</div>
-  <div id="user_topic" style="margin-left:20px;height:300px;width:500px;"></div>
+  <div style="margin-left:30px;margin-top:0px;">
+    <div ><h3>用户话题分布</h3></div>
+    <div id="user_topic" style="margin-left:-100px;height:300px;width:400px;"></div>
+  </div>
 </div>
 
 <script type="text/javascript">

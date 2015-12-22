@@ -77,9 +77,10 @@ function Draw_keyword(data, div_name, div_title, more_div){
 	}
 	var myChart = echarts.init(document.getElementById(div_name)); 
 	var option = {
-    title: {
-        text: div_title,
-    },
+    // title: {
+    //     text: div_title,
+        
+    // },
     tooltip: {
         show: true
     },
@@ -137,10 +138,10 @@ function Draw_topic(){
   var topic_value = topic_result[1];
   var myChart2 = echarts.init(document.getElementById('user_topic'));
   var option = {
-    title : {
-      text: '用户话题分布',
-      subtext: ''
-    },
+    // title : {
+    //   text: '用户话题分布',
+    //   subtext: ''
+    // },
       tooltip : {
         trigger: 'axis'
       },
