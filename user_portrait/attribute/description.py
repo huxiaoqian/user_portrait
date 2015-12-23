@@ -1,4 +1,16 @@
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
+import time
+import sys
+from influence_appendix import level
+
+reload(sys)
+sys.path.append('./../')
+from global_utils import es_user_portrait as es
+from time_utils import datetime2ts, ts2datetime
+from parameter import INFLUENCE_CONCLUSION as conclusion_dict
+from parameter import INFLUENCE_LENTH as N
+from parameter import PRE_ACTIVENESS as pre_activeness
+from parameter import INFLUENCE_LEVEL as influence_level
 
 def active_geo_description(result):
     active_city = {}
@@ -89,7 +101,69 @@ def hashtag_description(result):
 
     return description
 
+
+# version: 2015-12-22
+# conclusion of a user based on history influence info
+def conclusion_on_influence(uid):
+    # test
+    index_name = "this_is_a_copy_user_portrait"
+    index_type = "manage"
+    try:
+        influ_result = es.get(index=index_name, doc_type=index_type, id=uid)['_source']
+    except:
+        influ_result = {}
+        result = conclusion_dict['0']
+        return result
+
+    # generate time series---keys
+    now_ts = time.time()
+    now_ts = datetime2ts('2013-09-12')
+    influence_set = set()
+    activeness_set = set()
+    for i in range(N):
+        ts = ts2datetime(now_ts - i*3600*24)
+        activeness_set.add(pre_activeness+ts)
+        influence_set.add(ts.replace('-', ""))
+
+    # 区分影响力和活跃度的keys
+    keys_set = set(influ_result.keys())
+    influence_keys = keys_set & activeness_set
+    activeness_keys = keys_set & influence_set
+
+    if influence_keys:
+        influence_value = []
+        for key in influence_keys:
+            influence_value.append(influ_result[key])
+        mean, std_var = level(influence_value)
+        try:
+            variate = std_var/(mean*1.0)
+        except:
+            variate = 0
+        if mean < influence_level[0]:
+            result = conclusion_dict['1']
+        elif mean >= influence_level[0] and mean < influence_level[1]:
+            result = conclusion_dict['2']
+        elif mean >= influence_level[1] and mean < influence_level[2]:
+            if variate < 0.15:
+                result = conclusion_dict["3"]
+            else:
+                result = conclusion_dict["4"]
+        elif mean >= influence_level[2] and mean < influence_level[3]:
+            if variate < 0.15:
+                result = conclusion_dict["5"]
+            else:
+                result = conclusion_dict["6"]
+        elif mean >= influence_level[3] and mean < influence_level[4]:
+            result = conclusion_dict["7"]
+        else:
+            result = conclusion_dict["8"]
+    else:
+        result = conclusion_dict['0']
+
+    return result
+
 if __name__ == "__main__":
+    """
     c = {'beijing':{'219.224.135.1': 5}}
     b = {0:2, 14400:1,28800:3, 43200:5, 57600:2, 72000:3}
     a = {'花千骨':4}
@@ -99,3 +173,9 @@ if __name__ == "__main__":
     print m
     print k
     print n
+    """
+    print conclusion_on_influence('2050856634')
+
+
+
+

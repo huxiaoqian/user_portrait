@@ -91,3 +91,27 @@ DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/u
 
 #cron/text_attribute/psy
 PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/psy'
+
+
+# pre-influence index
+pre_influence_index = "bci_"
+influence_doctype = "bci"
+
+# conclusion of history influence
+INFLUENCE_LENTH = 30
+INFLUENCE_LEVEL = [200, 500, 700, 900, 1100]
+PRE_ACTIVENESS = "activeness_"
+INFLUENCE_CONCLUSION = {
+    "0": "该用户近期无影响力",
+    "1": "该用户近期影响力很小",
+    "2": "该用户近期影响力一般",
+    "3": "该用户近期影响力持续较高",
+    "4": "该用户近期影响力较高，波动较大",
+    "5": "该用户近期影响力持续很高",
+    "6": "该用户近期影响力很高，波动性大",
+    "7": "该用户影响力接近意见领袖",
+    "8": "该用户影响力巨大"
+    }
+
+ACTIVENESS_CONCLUSION = {
+    

@@ -1,26 +1,34 @@
 # -*-coding:utf-8 -*-
 import sys
 import json
+import time
 import redis
 from elasticsearch import Elasticsearch
-from influence_appendix import aggregation, proportion
+from influence_appendix import aggregation, proportion, filter_mid
 reload(sys)
-sys.path.append('./../../')
+sys.path.append('./../')
 from global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from global_utils import es_user_profile as es_profile
 from global_utils import es_user_portrait as es_user_portrait
+from time_utils import datetime2ts, ts2datetime
 #from influence_conclusion import retweeted_threshould, comment_threshould, influence_tag
 from parameter import INFLUENCE_RETWEETED_THRESHOLD as retweeted_threshold
 from parameter import INFLUENCE_COMMENT_THRESHOLD as comment_threshold
 from parameter import INFLUENCE_TAG as influence_tag
+from parameter import pre_influence_index as pre_index
+from parameter import influence_doctype
 from global_utils import portrait_index_name as user_portrait
 from global_utils import es_flow_text as es
+from global_utils import flow_text_index_name_pre as pre_text_index
+from global_utils import portrait_index_type, flow_text_index_type, profile_index_type, profile_index_name
 
 #user_portrait = "user_portrait"
 #es = Elasticsearch("219.224.135.93:9206", timeout=60)
-index_name = "bci_20130907"
+influence_date = ts2datetime(time.time())
+index_name = pre_index + influence_date.replace("-","")
+index_name = "bci_20130901" # test
+index_flow_text = pre_text_index + influence_date
 index_flow_text = "flow_text_2013-09-01"
-
 
 def get_text(top_list):
 
@@ -31,7 +39,7 @@ def get_text(top_list):
         mid_list = ["0", "0", "0"]
         for i in range(len(top_list)):
             mid_list[i] = top_list[i][0]
-        search_result = es.mget(index=index_flow_text, doc_type="text", body={"ids":mid_list}, fields="text")["docs"]
+        search_result = es.mget(index=index_flow_text, doc_type=flow_text_index_type, body={"ids":mid_list}, fields="text")["docs"]
         for i in range(len(top_list)):
             if search_result[i]["found"]:
                 top_list[i][0] = search_result[i]["fields"]["text"][0]
@@ -50,7 +58,7 @@ def influenced_detail(uid, date):
 
     detail_text = {}
     try:
-        user_info = es_cluster.get(index=index_name, doc_type="bci", id=uid)["_source"]
+        user_info = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         return json.dumps({})
     origin_retweetd = json.loads(user_info["origin_weibo_retweeted_top"])
@@ -91,7 +99,7 @@ def influenced_people(uid, mid, influence_style, default_number=20):
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 3}}])
     else: # commented people
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}])
-    search_results = es.search(index=index_flow_text, doc_type="text", body=query_body, fields=["uid"], timeout=30)["hits"]["hits"]
+    search_results = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"], timeout=30)["hits"]["hits"]
     print search_results
     if len(search_results) == 0:
         return json.dumps([[],[]])
@@ -99,7 +107,7 @@ def influenced_people(uid, mid, influence_style, default_number=20):
     for item in search_results:
         results.append(item["fields"]["uid"][0])
 
-    portrait_results = es_user_portrait.mget(index="user_portrait", doc_type="user", body={"ids": results}, fields=["importance","uid"])["docs"]
+    portrait_results = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids": results}, fields=["importance","uid"])["docs"]
     in_portrait = {}
     out_portrait = []
     print portrait_results
@@ -113,7 +121,7 @@ def influenced_people(uid, mid, influence_style, default_number=20):
 
     return json.dumps([in_portrait[:default_number], out_portrait[:default_number]])
 
-def influenced_user_detail(query_body, origin_retweeted_mid, retweeted_retweeted_mid, message_type):
+def influenced_user_detail(uid,query_body, origin_retweeted_mid, retweeted_retweeted_mid, message_type):
     #详细影响到的人 
     origin_retweeted_uid = [] # influenced user uid_list
     retweeted_retweeted_uid = []
@@ -122,8 +130,8 @@ def influenced_user_detail(query_body, origin_retweeted_mid, retweeted_retweeted
     if origin_retweeted_mid: # 所有转发该条原创微博的用户
         for iter_mid in origin_retweeted_mid:
             query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
-        query_body["query"]["filtered"]["filter"]["bool"]["must"] = [{"message_type": message_type}, {"root_uid": uid}]
-        origin_retweeted_result = es.search(index=index_flow_text, doc_type="text", body=query_body)["hits"]["hits"]
+        query_body["query"]["filtered"]["filter"]["bool"]["must"] = [{"term":{"message_type": message_type}}, {"term":{"root_uid": uid}}]
+        origin_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
         print origin_retweeted_result
         if origin_retweeted_result:
             for item in origin_retweeted_result:
@@ -132,7 +140,7 @@ def influenced_user_detail(query_body, origin_retweeted_mid, retweeted_retweeted
         for iter_mid in retweeted_retweeted_mid:
             query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term":{"message_type": message_type}},{"term": {"directed_uid": uid}}])
-        retweeted_retweeted_result = es.search(index=index_flow_text, doc_type="text", body=query_body)["hits"]["hits"]
+        retweeted_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
         print retweeted_retweeted_result
         if retweeted_retweeted_result:
             for item in retweeted_retweeted_result:
@@ -148,7 +156,7 @@ def influenced_user_detail(query_body, origin_retweeted_mid, retweeted_retweeted
     retweeted_uid_list.extend(origin_retweeted_uid)
     retweeted_uid_list.extend(retweeted_retweeted_uid)
     if retweeted_uid_list:
-        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type="user", body={"ids": retweeted_uid_list}, fields=["domain", "topici_string", "activity_geo", "influence"])["docs"]
+        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topici_string", "activity_geo", "influence"])["docs"]
         for item in user_portrait_result:
             if item["found"]:
                 count += 1
@@ -179,11 +187,11 @@ def statistics_influence_people(uid):
     results["retweeted"] = {}
     results["comment"] = {}
     try:
-        bci_result = es_user_portrait.get(index=index_name, doc_type="bci", id=uid)["_source"]
+        bci_result = es_user_portrait.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         bci_result = []
         return json.dumps(results)
-    #print bci_result
+    print bci_result
     origin_retweeted_mid = [] # origin weibo mid
     retweeted_retweeted_mid = [] # retweeted weibo mid
     origin_comment_mid = []
@@ -193,13 +201,13 @@ def statistics_influence_people(uid):
     origin_comment = json.loads(bci_result["origin_weibo_comment_detail"])
     retweeted_comment = json.loads(bci_result["retweeted_weibo_comment_detail"])
     if origin_retweeted:
-        origin_retweeted_mid = origin_retweeted.keys()
+        origin_retweeted_mid = filter_mid(origin_retweeted)
     if retweeted_retweeted:
-        retweeted_retweeted_mid = retweeted_retweeted.keys()
+        retweeted_retweeted_mid = filter_mid(retweeted_retweeted)
     if origin_comment:
-        origin_comment_mid = origin_comment.keys()
+        origin_comment_mid = filter_mid(origin_comment)
     if retweeted_comment:
-        retweeted_comment_mid = retweeted_comment.keys()
+        retweeted_comment_mid = filter_mid(retweeted_comment)
 
     query_body = {
         "query":{
@@ -217,8 +225,8 @@ def statistics_influence_people(uid):
         "size":100000
     }
 
-    retweeted_results = influenced_user_detail(query_body, origin_retweeted_mid, retweeted_retweeted_mid, 3)
-    comment_results = influenced_user_detail(query_body, origin_comment_mid, retweeted_comment_mid, 2)
+    retweeted_results = influenced_user_detail(uid, query_body, origin_retweeted_mid, retweeted_retweeted_mid, 3)
+    comment_results = influenced_user_detail(uid, query_body, origin_comment_mid, retweeted_comment_mid, 2)
     results["retweeted"] = retweeted_results
     results["comment"] = comment_results
 
@@ -229,7 +237,7 @@ def statistics_influence_people(uid):
 
 def tag_vector(uid):
     try:
-        bci_result = es_cluster.get(index=index_name, doc_type="bci", id=uid)["_source"]
+        bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         tag = influence_tag["0"]
         return tag
@@ -258,5 +266,5 @@ if __name__ == "__main__":
     #print influenced_detail("3396850362", "20130901")
     #print get_text([["3617510756389302",10],["3617510748726939", 5], ["617510752637061", 3]])
     #print influenced_people("2758565493","3616273092968593",0)
-    #statistics_influence_people("2282311537")
-    print tag_vector("33711188092")
+    statistics_influence_people("2796627290")
+    #print tag_vector("33711188092")
