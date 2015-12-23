@@ -299,7 +299,10 @@ def ajax_sentiment_trend():
     uid = request.args.get('uid', '')
     uid = str(uid)
     time_type = request.args.get('time_type', SENTIMENT_TREND_DEFAULT_TYPE)
-    results = search_sentiment_trend(uid, time_type)
+    now_ts = time.time()
+    #test
+    now_ts = test_time - DAY
+    results = search_sentiment_trend(uid, time_type, now_ts)
     if not results:
         results = {}
     return json.dumps(results)
