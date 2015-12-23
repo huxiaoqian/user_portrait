@@ -67,6 +67,44 @@ def get_db_num(timestamp):
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
     return db_number
 
+
+#use to get user remark
+#write in version: 15-12-08
+#input: uid
+#output: remark
+def search_remark(uid):
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    try:
+        user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
+    except:
+        user_portrait_result = {}
+    try:
+        remark_result = user_portrait_result['remark']
+    except:
+        remark_result = ''
+
+    return remark_result
+
+
+#use to edit remark
+#write in version: 15-12-08
+#input: uid, remark
+#output: status
+def edit_remark(uid, remark):
+    status = 'yes'
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    try:
+        user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
+    except:
+        return 'no uid'
+    es_user_portrait.update(index=portrait_index_name, doc_type=portrait_index_type, id=uid, body={'doc':{'remark': remark}})
+    
+    return status
+
 #use to search user attention from es: retweet_1 or retweet_2
 #write in version: 15-12-08
 #input:uid, top_count(0-50)
