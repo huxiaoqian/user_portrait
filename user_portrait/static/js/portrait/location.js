@@ -327,6 +327,7 @@ function draw_daily_ip_table(ip_data){
     var div_name = ['daily_ip','weekly_ip'];
     var location_geo;
     console.log(ip_data);
+    $('#locate_desc').html(ip_data.description);
     for (var i in div_name){
         if (i == 0){
             location_geo = ip_data.all_day_top;
@@ -351,13 +352,72 @@ function draw_daily_ip_table(ip_data){
         $('#'+name).append(html);                  
 
     }
+    //span ip
+    $('#span_ip').empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">时段</th><th style="text-align:center">00:00-04:00</th><th style="text-align:center">04:00-08:00</th>';
+    html += '<th style="text-align:center">08:00-12:00</th><th style="text-align:center">12:00-16:00</th><th style="text-align:center">16:00-20:00</th>';
+    html += '<th style="text-align:center">20:00-24:00</th></tr>';
+
+    location_geo = ip_data.day_ip;
+    html += '<tr>';
+    html += '<th>本日(微博数)</th>';
+    for (var i = 0; i < 6; i++) {
+       var s = i.toString();
+       html += '<th style="text-align:center">';
+       if (i in location_geo){
+           top_two = location_geo[i];
+           for (var j = 0;j < top_two.length;j++){
+               html += top_two[j][0] + '(' + top_two[j][1] + ')';
+           }
+       }
+       html += '</th>';
+    };
+    html += '</tr>';
+    location_geo = ip_data.week_ip;
+    html += '<tr>';
+    html += '<th>本周(微博数)</th>';
+    for (var i = 0; i < 6; i++) {
+       var s = i.toString();
+       html += '<th style="text-align:center">';
+       if (i in location_geo){
+           top_two = location_geo[i];
+           for (var j = 0;j < top_two.length;j++){
+               html += top_two[j][0] + '(' + top_two[j][1] + ')';
+           }
+       }
+       html += '</th>';
+    };
+    html += '</tr>';
+    html += '</table>'; 
+    $('#span_ip').append(html);                  
+
 }
 var url = '/attribute/ip/?uid=' + uid;
 activity_call_ajax_request(url, draw_daily_ip_table);
+
+function draw_online_pattern(online_data){
+    console.log(online_data);
+    $('#online_pattern').empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < online_data.length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m;
+       html += '</th><th style="text-align:center">' + online_data[i][0];
+       html += '</th><th style="text-align:center">' + online_data[i][1];
+       html +='</th></tr>';
+    };
+    html += '</table>'; 
+    $('#online_pattern').append(html);                  
+}
+var url = '/attribute/online_pattern/?uid='+uid;
+activity_call_ajax_request(url,draw_online_pattern);
 /*
 var div_name = 'monthly_location';
-draw_daily_ip_table(div_name);
-var div_name = 'online_pattern';
 draw_daily_ip_table(div_name);
 */
 function location_desc(data){
