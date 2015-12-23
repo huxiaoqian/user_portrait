@@ -396,10 +396,28 @@ function draw_daily_ip_table(ip_data){
 }
 var url = '/attribute/ip/?uid=' + uid;
 activity_call_ajax_request(url, draw_daily_ip_table);
+
+function draw_online_pattern(online_data){
+    console.log(online_data);
+    $('#online_pattern').empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < online_data.length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m;
+       html += '</th><th style="text-align:center">' + online_data[i][0];
+       html += '</th><th style="text-align:center">' + online_data[i][1];
+       html +='</th></tr>';
+    };
+    html += '</table>'; 
+    $('#online_pattern').append(html);                  
+}
+var url = '/attribute/online_pattern/?uid='+uid;
+activity_call_ajax_request(url,draw_online_pattern);
 /*
 var div_name = 'monthly_location';
-draw_daily_ip_table(div_name);
-var div_name = 'online_pattern';
 draw_daily_ip_table(div_name);
 */
 function location_desc(data){
