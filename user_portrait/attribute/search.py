@@ -21,7 +21,7 @@ from global_utils import es_user_profile
 from search_user_profile import search_uid2uname
 from filter_uid import all_delete_uid
 '''
-from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
+from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date, datetimestr2ts
 
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import R_DICT
@@ -380,6 +380,7 @@ def search_comment(uid, top_count):
 #output: in_portrait_list, in_portrait_result, out_portrait_list
 def search_be_comment(uid, top_count):
     results = {}
+    now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
     try:
@@ -488,7 +489,7 @@ def search_bidirect_interaction(uid, top_count):
     for be_retweet_item in be_retweet_result:
         if be_retweet_item['found']==True:
             be_retweet_uid = be_retweet_item['_id']
-            be_retweet_dict = json.loads(be_retweet_item['uid_be_retweet'])
+            be_retweet_dict = json.loads(be_retweet_item['_source']['uid_be_retweet'])
             if uid in be_retweet_dict:
                 retweet_inter_dict[be_retweet_uid] = be_retweet_dict[uid] + retweet_uid_dict[be_retweet_uid]
     #bidirect interaction in comment and be_comment
@@ -496,12 +497,15 @@ def search_bidirect_interaction(uid, top_count):
         comment_result = es_user_portrait.get(index=comment_index_name, doc_type=comment_index_type, id=uid)['_source']
     except:
         comment_result = {}
-    comment_uid_dict = json.loads(comment_result['uid_comment'])
+    if comment_result:
+        comment_uid_dict = json.loads(comment_result['uid_comment'])
+    else:
+        comment_uid_dict = {}
     comment_uid_list = comment_uid_dict.keys()
     try:
         be_comment_result = es_user_portrait.mget(index=be_comment_index_name, doc_type=be_comment_index_type, body={'ids':comment_uid_list})['docs']
-    except Exception, e:
-        raise e
+    except:
+        be_comment_result = []
     for be_comment_item in be_comment_result:
         if be_comment_item['found']==True:
             be_comment_uid = be_comment_item['_id']
@@ -665,6 +669,7 @@ def search_location(now_ts, uid, time_type):
 def search_location_day(uid, now_date_ts):
     results = {}
     all_results = {}
+    #print 'now_date:', ts2datetime(now_date_ts)
     try:
         day_ip_string = r_cluster.hget('new_ip_'+str(now_date_ts), uid)
     except Exception, e:
@@ -694,22 +699,25 @@ def search_location_day(uid, now_date_ts):
 #output: geo track week
 def search_location_week(uid, now_date_ts):
     results = {}
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
     try:
-        user_portrait_result = es_user_portrsit.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
+        user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
         return {}
+    
     activity_geo_string = user_portrait_result['activity_geo_dict']
     if activity_geo_string:
         activity_geo_dict_list = json.loads(activity_geo_string)
     activity_geo_week = activity_geo_dict_list[-7:]
     day_count = len(activity_geo_week)
     for i in range(day_count, 0, -1):
-        iter_day_ts = ts2datetime(now_date_ts)
+        iter_day_ts = ts2datetime(now_date_ts - DAY*i)
         iter_day_date = datetime2ts(iter_day_ts)
-        day_geo_dict = user_portrait_result[day_count - i]
+        day_geo_dict = activity_geo_week[day_count - i]
         sort_day_geo = sorted(day_geo_dict.items(), key=lambda x:x[1], reverse=True)
         results[iter_day_date] = sort_day_geo
-
     return results
 
 #use to get user activity geo information for month from user_portrait
@@ -719,6 +727,9 @@ def search_location_week(uid, now_date_ts):
 def search_location_month(uid, now_date_ts):
     results = {}
     all_results = {}
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -729,16 +740,16 @@ def search_location_month(uid, now_date_ts):
     activity_geo_week = activity_geo_dict_list[-30:]
     day_count = len(activity_geo_week)
     for i in range(day_count, 0, -1):
-        iter_day_ts = ts2datetime(now_date_ts)
+        iter_day_ts = ts2datetime(now_date_ts - DAY*i)
         iter_day_date = datetime2ts(iter_day_ts)
-        day_geo_dict = user_portrait_result[day_count - i]
+        day_geo_dict = activity_geo_week[day_count - i]
         sort_day_geo = sorted(day_geo_dict.items(), key=lambda x:x[1], reverse=True)
         results[iter_day_date] = sort_day_geo
         for geo in day_geo_dict:
             try:
                 all_results[geo] += day_geo_dict[geo]
             except:
-                all_results[geo] = day_geod_dict[geo]
+                all_results[geo] = day_geo_dict[geo]
     all_top_geo = sorted(all_results.items(), key=lambda x:x[1], reverse=True)
     count = len(all_results)
     if count == 1:
@@ -748,7 +759,7 @@ def search_location_month(uid, now_date_ts):
     else:
         description_text = u'为该用户的主要活动地，且偶尔会出差到不同的城市'
     description = [all_top_geo[0][0], description_text]
-    return {'month_track':all_result, 'all_top':all_top_geo, 'description': description}
+    return {'month_track':all_results, 'all_top':all_top_geo, 'description': description}
 
 #abandon in version:15-12-08
 '''
@@ -866,7 +877,7 @@ def search_ip(now_ts, uid):
                     all_week_result[ip] += 1
                 except:
                     all_week_result[ip] = 1
-
+    
     for i in range(0, 6): 
         try:
             segment_dict = week_time_ip_dict[i]
@@ -884,6 +895,7 @@ def search_ip(now_ts, uid):
     results['all_week_top'] = sort_all_week_top[:IP_TOP]
 
     #conclusion
+    #print 'all_week_result:', all_week_result
     description, home_ip, job_ip = get_ip_description(week_time_ip_dict, all_week_result, all_day_result)
     results['description'] = description
     #tag vector
@@ -904,15 +916,16 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     home_segment_dict = union_dict(sort_week_result[0][1], sort_week_result[5][1]) # 0:00-4:00 and 20:00-24:00
     sort_job_dict = sorted(job_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     sort_home_dict = sorted(home_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
+
     for item in sort_home_dict:
         conclusion += item[0]
-        conclusion += ','
+        conclusion += u','
         home_ip.append(item[0])
 
     conclusion += u'工作IP为'
     for item in sort_job_dict:
         conclusion += item[0]
-        conclusion += ','
+        conclusion += u','
         job_ip.append([item[0]])
 
     #get abnormal use IP
@@ -920,7 +933,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     week_ip_set = set(all_week_top.keys())
     abnormal_set = day_ip_set - week_ip_set
     if len(abnormal_set)==0:
-        return conclusion[:-1]
+        return conclusion[:-1], home_ip, job_ip
     else:
         conclusion += u'异常使用的IP为'
     abnormal_dict = dict()
@@ -931,6 +944,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
         conclusion += item[0]
         conclusion += ','
     conclusion = conclusion[:-1]
+    #print 'conclusion:', conclusion, home_ip, job_ip
     return conclusion, home_ip, job_ip
 
 #abandon in version:15-12-08
@@ -1436,16 +1450,22 @@ def get_online_pattern(now_ts, uid):
 #output: keywords, hashtag, domain, topic
 def search_preference_attribute(uid):
     results = {}
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
     try:
         portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
         return None
     #keywords
     keywords_dict = json.loads(portrait_result['keywords'])
-    sort_keywords = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]
+    sort_keywords = sorted(keywords_dict, key=lambda x:x[1], reverse=True)[:50]
     results['keywords'] = sort_keywords
     #hashtag
-    hashtag_dict = json.loads(portrait_result['hashtag'])
+    if portrait_result['hashtag']:
+        hashtag_dict = json.loads(portrait_result['hashtag'])
+    else:
+        hashtag_dict = {}
     sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)[:50]
     results['hashtag'] = sort_hashtag
     #domain
@@ -1464,7 +1484,15 @@ def search_preference_attribute(uid):
     description_text1 = u'该用户所属领域为'
     description_text2 = u'偏好参与的话题为'
     description = [description_text1, domain, description_text2, sort_topic[0][0]]
-    tag_vector_list = [[u'hashtag',sort_hashtag[0][0]], [u'领域',domain], [u'话题', sort_topic[0][0]]]
+    try:
+        top_hashtag = sort_hashtag[0][0]
+    except:
+        top_hashtag = ''
+    try:
+        top_topic = sort_topic[0][0]
+    except:
+        top_topic = ''
+    tag_vector_list = [[u'hashtag',top_hashtag], [u'领域',domain], [u'话题', top_topic]]
     return {'results': results, 'description':description, 'tag_vector': tag_vector_list}
 
 
@@ -1874,9 +1902,10 @@ def get_activeness_trend(uid):
     except:
         return None
     value_list = []
+    #print 'es_result:', es_result
     for item in es_result:
         item_list = item.split('_')
-        if len(item_list)==2:
+        if len(item_list)==2 and '-' in item_list[1]:
             value = es_result[item]
             value_list.append(value)
             query_body = {
@@ -1890,7 +1919,9 @@ def get_activeness_trend(uid):
                     }
                 }
             rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
-            results[item[1]] = rank
+            if '-' in item_list[1]:
+                results[item_list[1]] = rank['count']
+    #print 'results:', results
     sort_results = sorted(results.items(), key=lambda x:datetime2ts(x[0]))
     time_list = [item[0] for item in sort_results]
     activeness_list = [item[1] for item in sort_results]
@@ -1903,11 +1934,11 @@ def get_activeness_trend(uid):
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['0']
     elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['1']
-    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['2']
-    elif max_activeness - min_activeness > AVTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+    elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['3']
-    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_MIN_THRESHOLD:
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['4']
     else:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['5']
@@ -1929,7 +1960,7 @@ def get_influence_trend(uid):
     influence_value_list = []
     for item in es_result:
         item_list = item.split('_')
-        if len(item_list)==1:
+        if len(item_list)==1 and item_list[0] != 'uid':
             value = es_result[item]
             influence_value_list.append(value)
             query_body = {
@@ -1943,8 +1974,10 @@ def get_influence_trend(uid):
                     }
                 }
             rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
-            results[item[1]] = rank
-    sort_results = sorted(results.items(), key=lambda x:datetime2ts(x[0]))
+            if '-' not in item_list[0]:
+                results[item_list[0]] = rank['count']
+    #print 'results:', results
+    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))
     time_list = [item[0] for item in sort_results]
     influence_list = [item[1] for item in sort_results]
     
