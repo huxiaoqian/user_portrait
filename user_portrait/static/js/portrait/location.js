@@ -216,62 +216,6 @@ function week_chart(trend_data){
             data: data_count
         }]
     });
-	 $('#activeness').highcharts({
-        chart: {
-            type: 'spline',// line,
-            animation: Highcharts.svg, // don't animate in old IE
-            style: {
-                fontSize: '12px',
-                fontFamily: 'Microsoft YaHei'
-            }},
-        title: {
-            text: '活跃度走势图',
-			align:'left',
-			fontSize:'20',
-        },
-        lang: {
-                printChart: "打印",
-                downloadJPEG: "下载JPEG 图片",
-                downloadPDF: "下载PDF文档",
-                downloadPNG: "下载PNG 图片",
-                downloadSVG: "下载SVG 矢量图",
-                exportButtonTitle: "导出图片"
-            },
-        xAxis: {
-            categories: data_time,
-            labels:{
-                rotation: 0,
-                step: 6,
-                x:0,
-                y:30,
-            }
-        },
-        yAxis: {
-			min:0,
-            title: {
-                text: '微博总量 (条)'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        tooltip: {
-            valueSuffix: '条',
-            xDateFormat: '%H:%M:%S'
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name:'活跃度',
-            data: data_count
-        }]
-    });
 }
 //微博文本默认数据
 function point2weibo(xnum, ts){
@@ -397,7 +341,8 @@ function draw_daily_ip_table(ip_data){
 var url = '/attribute/ip/?uid=' + uid;
 activity_call_ajax_request(url, draw_daily_ip_table);
 
-function draw_online_pattern(online_data){
+function draw_online_pattern(data){
+    var online_data = data.sort_result;
     console.log(online_data);
     $('#online_pattern').empty();
     var html = '';
@@ -416,6 +361,68 @@ function draw_online_pattern(online_data){
 }
 var url = '/attribute/online_pattern/?uid='+uid;
 activity_call_ajax_request(url,draw_online_pattern);
+
+function draw_activeness_chart(data){
+    console.log(data);
+    $('#activeness').highcharts({
+        chart: {
+            type: 'spline',// line,
+            animation: Highcharts.svg, // don't animate in old IE
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Microsoft YaHei'
+            }},
+        title: {
+            text: '活跃度走势图',
+			align:'left',
+			fontSize:'20',
+        },
+        lang: {
+                printChart: "打印",
+                downloadJPEG: "下载JPEG 图片",
+                downloadPDF: "下载PDF文档",
+                downloadPNG: "下载PNG 图片",
+                downloadSVG: "下载SVG 矢量图",
+                exportButtonTitle: "导出图片"
+            },
+        xAxis: {
+            categories: [], //
+            labels:{
+                rotation: 0,
+                step: 6,
+                x:0,
+                y:30,
+            }
+        },
+        yAxis: {
+			min:0,
+            title: {
+                text: '微博总量 (条)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '条',
+            xDateFormat: '%H:%M:%S'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name:'活跃度',
+            data: [], //
+        }]
+    });
+}
+var url = '/attribute/activeness_trend/?uid=' + uid;
+activity_call_ajax_request(url, draw_activeness_chart);
 /*
 var div_name = 'monthly_location';
 draw_daily_ip_table(div_name);

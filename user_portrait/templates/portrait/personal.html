@@ -4,6 +4,7 @@
 {% block css %}
 {{ super() }}
 <link  type="text/css" href="/static/personal/css/style.css" rel="stylesheet"/>
+<link  type="text/css" href="/static/personal/css/basic.css" rel="stylesheet"/>
 {% endblock css %}
 
 {% block head_js %}
@@ -84,6 +85,14 @@ $(function(){
 </div>
 <div id="float-wrap" class="hidden"></div>
 
+<!--标签向量化-->
+<div id="vectorInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 70%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
+	<h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本特征<a href="javascript:void(0)" class="Vectorclose" id="close"></a></h3>
+	<div class="m-wrap" style="margin-top:30px;">
+		<ul id="vector_table"class="clearfix">
+		</ul>
+	</div>
+</div>
 <!--注册信息-->
 <div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 70%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
 	<h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本注册信息<a href="javascript:void(0)" class="Basicclose" id="close"></a></h3>
@@ -178,6 +187,8 @@ call_sync_ajax_request:function(url, method, callback){
 		
 	}
 }
+var global_tag_vector = new Array(); //全局标签化向量
+
 var uid = "{{ uid }}";
 var Personal = new Personal();
 var personalData; // global data
@@ -346,7 +357,12 @@ if(personalData.online_pattern[0][0]){
 	});
 	$("#tagvector").off("click").click(function(){
 		$("#float-wrap").removeClass("hidden");
-		$("#basicInfo").removeClass("hidden");
+		$("#vectorInfo").removeClass("hidden");
+		return false;
+	});
+	$(".Vectorclose").off("click").click(function(){
+		$("#float-wrap").addClass("hidden");
+		$("#vectorInfo").addClass("hidden");
 		return false;
 	});
 </script>
@@ -393,5 +409,9 @@ if(personalData.online_pattern[0][0]){
 
 {% block Own_js %}
 {{ super() }}
-
+<script>
+    $('#vector_table').empty();
+    var html = '<li class="li_1"><span class="pt_title">用户ID</span><span class="pt_detail">12345678</span></li>';
+    $('#vector_table').html(html);
+</script>
 {% endblock Own_js%}
