@@ -268,6 +268,11 @@ var global_active_data;
 activity_call_ajax_request(url, active_chart);
 
 function draw_daily_ip_table(ip_data){
+    var tag_vector = ip_data.tag_vector;
+    for (var n = 0; n < tag_vector.length; n++){
+        console.log(tag_vector[n]);          //notice!!! tag_vector[n]:[name, value]
+        global_tag_vector.push(tag_vector[n]);
+    }
     var div_name = ['daily_ip','weekly_ip'];
     var location_geo;
     console.log(ip_data);

@@ -411,7 +411,13 @@ if(personalData.online_pattern[0][0]){
 {{ super() }}
 <script>
     $('#vector_table').empty();
-    var html = '<li class="li_1"><span class="pt_title">用户ID</span><span class="pt_detail">12345678</span></li>';
+    var html = '';
+    for (var i = 0;i < global_tag_vector.length; i++){
+        var unit = global_tag_vector[i];
+        html += '<li class="li_1"><span class="pt_title">';
+        html += unit[0] + '</span><span class="pt_detail">';
+        html += unit[1] + '</span></li>';
+    }
     $('#vector_table').html(html);
 </script>
 {% endblock Own_js%}
