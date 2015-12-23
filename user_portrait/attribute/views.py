@@ -46,11 +46,9 @@ def ajax_preference():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_preference_attribute(uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
-
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 @mod.route('/portrait_search/')
 def ajax_portrait_search():
@@ -145,13 +143,11 @@ def ajax_ip():
     uid = request.args.get('uid', '')
     now_ts = time.time()
     # test
-    now_ts = test_time - 3600*24*3
+    now_ts = test_time
     result = search_ip(now_ts, uid)
-    if result:
-        return json.dumps(result)
-    else:
-        return None
-
+    if not result:
+        result = {}
+    return json.dumps(result)
 
 
 #use to get user mention @ user
@@ -182,10 +178,9 @@ def ajax_activity_day():
     # test
     now_ts = test_time
     results = search_activity(now_ts, uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 #use to get weibo for activity trend in day or week
 #write in version:15-12-08
@@ -199,7 +194,7 @@ def ajax_activity_weibo():
     start_ts = int(request.args.get('start_ts', ''))
     results = get_activity_weibo(uid, time_type, start_ts)
     if not results:
-        results = []
+        results = {}
     return json.dumps(results)
 
 #abandon in version-15-12-08
@@ -229,10 +224,9 @@ def ajax_attention():
     uid = str(uid)
     top_count = int(top_count)
     results = search_attention(uid, top_count)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 #use to get user be_retweet from es:be_retweet_1 or be_retweet_2
 #write in version:15-12-08
@@ -245,10 +239,9 @@ def ajax_follower():
     top_count = request.args.get('top_count', SOCIAL_DEFAULT_COUNT)
     top_count = int(top_count)
     results = search_follower(uid, top_count)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 #use to get user comment from es: comment_1 or comment_2
 #write in version: 15-12-08
@@ -261,10 +254,9 @@ def ajax_comment():
     top_count = request.args.get('top_count', SOCIAL_DEFAULT_COUNT)
     top_count = int(top_count)
     results = search_comment(uid, top_count)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 
 #use to get user be_comment from es: be_comment_1 or be_comment_2
@@ -278,10 +270,9 @@ def ajax_be_comment():
     top_count = request.args.get('top_count', SOCIAL_DEFAULT_COUNT)
     top_count = int(top_count)
     results = search_be_comment(uid, top_count)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 #use to get user interaction from es:retweet_1+be_retweet_1, comment_1+be_comment_1
 #write in version: 15-12-08
@@ -294,10 +285,9 @@ def ajax_interaction():
     top_count = request.args.get('top_count', SOCIAL_DEFAULT_COUNT)
     top_count = int(top_count)
     results = search_bidirect_interaction(uid. top_count)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 
 #use to get user sentiment trend
@@ -310,10 +300,9 @@ def ajax_sentiment_trend():
     uid = str(uid)
     time_type = request.args.get('time_type', SENTIMENT_TREND_DEFAULT_TYPE)
     results = search_sentiment_trend(uid, time_type)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 
 #use to get user weibo from sentiment trend
@@ -329,10 +318,9 @@ def ajax_sentiment_weibo():
     time_type = request.args.get('time_type', SENTIMENT_TREND_DEFAULT_TYPE)
     sentiment_type = request.args.get('sentiment', DEFAULT_SENTIMENT)
     results = search_sentiment_weibo(uid, start_ts, time_type, sentiment_type)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 
 #use to get user tendency and psy
@@ -344,10 +332,9 @@ def ajax_tendency_psy():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_tendency_psy(uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 
 #abandon in version: 15-12-08
@@ -379,10 +366,9 @@ def ajax_online_pattern():
     #test
     now_ts = test_time
     results = get_online_pattern(now_ts, uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 
 #get user evaluate_index: activeness trend
@@ -394,10 +380,9 @@ def ajax_activeness_trend():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = get_activeness_trend(uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 #get user influence trend
 #write in version: 15-12-08
@@ -408,10 +393,9 @@ def ajax_influence_trend():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = get_influence_trend(uid)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    if not results:
+        results = {}
+    return json.dumps(results)
 
 @mod.route('/identify_uid/')
 def ajax_identify_uid():

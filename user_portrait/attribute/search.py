@@ -1418,7 +1418,7 @@ def get_online_pattern(now_ts, uid):
         return None
     online_pattern_string = portrait_result['online_pattern']
     if online_pattern_string:
-        result = json.loads(online_pattern_dict)
+        result = json.loads(online_pattern_string)
     sort_result = sorted(result.items(), key=lambda x:x[1], reverse=True)
     count = len(result)
     if count == 1:
