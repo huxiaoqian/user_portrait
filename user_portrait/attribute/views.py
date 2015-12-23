@@ -143,7 +143,7 @@ def ajax_ip():
     uid = request.args.get('uid', '')
     now_ts = time.time()
     # test
-    now_ts = test_time
+    now_ts = test_time - DAY
     result = search_ip(now_ts, uid)
     if not result:
         result = {}
