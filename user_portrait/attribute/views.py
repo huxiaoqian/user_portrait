@@ -284,7 +284,7 @@ def ajax_interaction():
     uid = str(uid)
     top_count = request.args.get('top_count', SOCIAL_DEFAULT_COUNT)
     top_count = int(top_count)
-    results = search_bidirect_interaction(uid. top_count)
+    results = search_bidirect_interaction(uid, top_count)
     if not results:
         results = {}
     return json.dumps(results)
