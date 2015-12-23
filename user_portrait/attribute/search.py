@@ -1877,9 +1877,10 @@ def get_activeness_trend(uid):
     except:
         return None
     value_list = []
+    print 'es_result:', es_result
     for item in es_result:
         item_list = item.split('_')
-        if len(item_list)==2:
+        if len(item_list)==2 and '-' in item_list[1]:
             value = es_result[item]
             value_list.append(value)
             query_body = {
@@ -1893,7 +1894,9 @@ def get_activeness_trend(uid):
                     }
                 }
             rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
-            results[item[1]] = rank
+            if '-' in item_list[1]:
+                results[item_list[1]] = rank['count']
+    #print 'results:', results
     sort_results = sorted(results.items(), key=lambda x:datetime2ts(x[0]))
     time_list = [item[0] for item in sort_results]
     activeness_list = [item[1] for item in sort_results]
@@ -1906,11 +1909,11 @@ def get_activeness_trend(uid):
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['0']
     elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['1']
-    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['2']
-    elif max_activeness - min_activeness > AVTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_MIN_THRESHOLD:
+    elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['3']
-    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_MIN_THRESHOLD:
+    elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['4']
     else:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['5']
