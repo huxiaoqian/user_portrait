@@ -866,7 +866,7 @@ def search_ip(now_ts, uid):
                     all_week_result[ip] += 1
                 except:
                     all_week_result[ip] = 1
-
+    
     for i in range(0, 6): 
         try:
             segment_dict = week_time_ip_dict[i]
@@ -884,6 +884,7 @@ def search_ip(now_ts, uid):
     results['all_week_top'] = sort_all_week_top[:IP_TOP]
 
     #conclusion
+    #print 'all_week_result:', all_week_result
     description, home_ip, job_ip = get_ip_description(week_time_ip_dict, all_week_result, all_day_result)
     results['description'] = description
     #tag vector
@@ -904,15 +905,16 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     home_segment_dict = union_dict(sort_week_result[0][1], sort_week_result[5][1]) # 0:00-4:00 and 20:00-24:00
     sort_job_dict = sorted(job_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     sort_home_dict = sorted(home_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
+
     for item in sort_home_dict:
         conclusion += item[0]
-        conclusion += ','
+        conclusion += u','
         home_ip.append(item[0])
 
     conclusion += u'工作IP为'
     for item in sort_job_dict:
         conclusion += item[0]
-        conclusion += ','
+        conclusion += u','
         job_ip.append([item[0]])
 
     #get abnormal use IP
@@ -920,7 +922,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     week_ip_set = set(all_week_top.keys())
     abnormal_set = day_ip_set - week_ip_set
     if len(abnormal_set)==0:
-        return conclusion[:-1]
+        return conclusion[:-1], home_ip, job_ip
     else:
         conclusion += u'异常使用的IP为'
     abnormal_dict = dict()
@@ -931,6 +933,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
         conclusion += item[0]
         conclusion += ','
     conclusion = conclusion[:-1]
+    #print 'conclusion:', conclusion, home_ip, job_ip
     return conclusion, home_ip, job_ip
 
 #abandon in version:15-12-08
