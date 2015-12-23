@@ -130,7 +130,7 @@ def search_attention(uid, top_count):
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
-            in_portriat_result['topic'][topic_item] = 1
+            in_portrait_result['topic'][topic_item] = 1
     #use to get user information from user profile
     out_portrait_result = {}
     try:
