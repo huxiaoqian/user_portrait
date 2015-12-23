@@ -81,35 +81,34 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
 		<li><div class="shiji"><p class="font12 ico" id="d7"></p><p class="ms" id="city7"></p></div></li>
 	</ul>
 </div>
+<div  style="margin-top:20px;margin-left:10px;width:100%;">
+    <div><span style='font-size:16px;color:#777'>分时段主要IP</span></div>
+     <div class="table-responsive"id='span_ip' style='overflow-x:hidden;width:100%;height:150px;float:left;'>
+    </div>
+</div>
 
 <div id="map" style="float:left;width:700px;height:750px;margin-top:20px;"></div>
 
 <div id ="Alocation" class="" style="margin-top:20px;margin-left:10px;width:280px;">
-    <div><span style='margin-left:60px;font-size:16px;color:#777'>日排名</span><span type="button"data-toggle="modal" data-target="#more_dayly_ip"  style='font-size:16px;margin-left:160px;cursor: pointer'><u>查看更多</u></span></div>
-     <div class="table-responsive"id='daily_ip' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+    <div><span style='margin-left:60px;font-size:16px;color:#777'>日排名</span></div>
+     <div class="table-responsive"id='daily_ip' style='overflow-x:hidden;width:280px;height:185px;float:left;'>
     </div>
-    <div><span style='margin-left:60px;font-size:16px;color:#777'>周排名</span><span type="button"data-toggle="modal" data-target="#more_weekly_ip" style="font-size:16px;margin-left:160px;cursor: pointer"><u>查看更多</u><span></div>
-     <div class="table-responsive"id='weekly_ip' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+    <div><span style='margin-left:60px;font-size:16px;color:#777'>周排名</span></div>
+     <div class="table-responsive"id='weekly_ip' style='overflow-x:hidden;width:280px;height:185px;float:left;'>
     </div>
     <div><span style='margin-left:60px;font-size:16px;color:#777'>月排名</span></div>
-     <div class="table-responsive"id='monthly_location' style='overflow-x:hidden;width:280px;height:200px;float:left;'>
+     <div class="table-responsive"id='monthly_location' style='overflow-x:hidden;width:280px;height:185px;float:left;'>
     </div>
 </div>
-<div class="" style="float:left;width:680px;margin-top:15px;">
-	<div id="" style="height:30px;width:650px;line-height:32px;">
+<div class="" style="float:left;width:100%;margin-top:15px;">
+	<div id="" style="height:30px;width:100%;line-height:32px;">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;" >地理位置该用户的活跃时间段为<span></span> 和 <span></span></h4>
+        <h4 id="locate_desc" style="line-height:32px;"></h4>
 	</div>
 </div>
 
 <!--<div id="online" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
 -->
-<div class="" style="float:left;width:680px;margin-top:15px;">
-	<div id="" style="height:30px;width:650px;line-height:32px;">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<h4 style="line-height:32px;" >上网方式该用户的上网方式为<span></span> 和 <span></span></h4>
-	</div>
-</div>
 <div id="activeness" style="height:349px;width:680px;margin-top:0px;" class="fleft"></div>
 <div style="margin-top:20px;margin-left:10px;width:280px;">
     <div><span style='margin-left:60px;font-size:16px;color:#777'>上网方式排名</span></div>
