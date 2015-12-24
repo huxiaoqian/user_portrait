@@ -116,6 +116,10 @@ def search_attention(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    #test
     try:
         retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
@@ -153,7 +157,7 @@ def search_attention(uid, top_count):
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
                     retweet_count = retweet_dict[uid]
-                    in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
+                    in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count:
                     out_portrait_list.append(uid)
@@ -250,6 +254,10 @@ def search_follower(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    #end test
     try:
         retweet_result = es_user_portrait.get(index=index_name, doc_type=be_retweet_index_type, id=uid)['_source']
     except:
@@ -287,7 +295,7 @@ def search_follower(uid, top_count):
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
                     retweet_count = retweet_dict[uid]
-                    in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
+                    in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count:
                     out_portrait_list.append(uid)
@@ -302,7 +310,7 @@ def search_follower(uid, top_count):
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
-            in_portriat_result['topic'][topic_item] = 1
+            in_portrait_result['topic'][topic_item] = 1
     #use to get user information from user profile
     out_portrait_result = []
     try:
@@ -336,6 +344,10 @@ def search_comment(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    #test
     try:
         retweet_result = es_user_portrait.get(index=index_name, doc_type=comment_index_type, id=uid)['_source']
     except:
@@ -373,7 +385,7 @@ def search_comment(uid, top_count):
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
                     retweet_count = retweet_dict[uid]
-                    in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
+                    in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count:
                     out_portrait_list.append(uid)
@@ -422,6 +434,10 @@ def search_be_comment(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    #end test
     try:
         retweet_result = es_user_portrait.get(index=index_name, doc_type=be_comment_index_type, id=uid)['_source']
     except:
@@ -460,7 +476,7 @@ def search_be_comment(uid, top_count):
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
                     retweet_count = retweet_dict[uid]
-                    in_portrait_list.append([uid,uname,influence, importance, retweet_dict])
+                    in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count:
                     out_portrait_list.append(uid)
@@ -476,7 +492,7 @@ def search_be_comment(uid, top_count):
         try:
             in_portrait_result['topic'][topic_item] += 1
         except:
-            in_portriat_result['topic'][topic_item] = 1
+            in_portrait_result['topic'][topic_item] = 1
     #use to get user information from user profile
     out_portrait_result = {}
     try:
@@ -548,9 +564,9 @@ def search_bidirect_interaction(uid, top_count):
     for be_comment_item in be_comment_result:
         if be_comment_item['found']==True:
             be_comment_uid = be_comment_item['_id']
-            be_comment_dict = json.loads(be_comment_item['uid_be_comment'])
+            be_comment_dict = json.loads(be_comment_item['_source']['uid_be_comment'])
             if uid in be_comment_dict:
-                comment_inter_dict[be_comment_uid] = be_comment_dict[uid] + comment_uid_dict[be_comment_dict]
+                comment_inter_dict[be_comment_uid] = be_comment_dict[uid] + comment_uid_dict[be_comment_uid]
     #sort retweet_inter_dict and comment_inter_dict and get top count
     sort_retweet_inter = sorted(retweet_inter_dict.items(), key=lambda x:x[1], reverse=True)[:top_count]
     sort_comment_inter = sorted(comment_inter_dict.items(), key=lambda x:x[1], reverse=True)[:top_count]

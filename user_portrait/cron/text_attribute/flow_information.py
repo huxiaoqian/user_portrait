@@ -65,15 +65,16 @@ def get_flow_information(uid_list):
             for ip in uid_ip_dict:
                 ip_count = len(uid_ip_dict[ip].split('&'))
                 geo = ip2city(ip)
-                #print 'geo:', geo
-                try:
-                    iter_results[uid]['geo'][geo] += ip_count
-                except:
-                    iter_results[uid]['geo'][geo] = ip_count
-                try:
-                    uid_day_geo[uid][geo] += ip_count
-                except:
-                    uid_day_geo[uid][geo] = ip_count
+                if geo:
+                    #print 'geo:', geo
+                    try:
+                        iter_results[uid]['geo'][geo] += ip_count
+                    except:
+                        iter_results[uid]['geo'][geo] = ip_count
+                    try:
+                        uid_day_geo[uid][geo] += ip_count
+                    except:
+                        uid_day_geo[uid][geo] = ip_count
             iter_results[uid]['geo_track'].append(uid_day_geo[uid])
             count += 1
         
@@ -83,13 +84,13 @@ def get_flow_information(uid_list):
         for uid in uid_list:
             nest_body_list.append({'match':{'uid':uid}})
         query.append({'bool':{'should': nest_body_list}})
-
+        
         try:
             text_results = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'size':MAX_VALUE}, _source=True, fields=['uid', 'keywords_dict'])['hits']['hits']
         except:
             text_results = {}
         for item in text_results:
-            #print 'item:', item
+            #print 'keywords item:', item
             uid = item['fields']['uid'][0]
             uid_keywords_dict = json.loads(item['fields']['keywords_dict'][0])
             for keywords in uid_keywords_dict:
@@ -97,6 +98,7 @@ def get_flow_information(uid_list):
                     iter_results[uid]['keywords'][keywords] += uid_keywords_dict[keywords]
                 except:
                     iter_results[uid]['keywords'][keywords] = uid_keywords_dict[keywords]
+
        
     #get keywords top
     for uid in uid_list:
@@ -107,7 +109,9 @@ def get_flow_information(uid_list):
         geo_dict = iter_results[uid]['geo']
         geo_track_list = iter_results[uid]['geo_track']
         results[uid]['activity_geo_dict'] = json.dumps(geo_track_list)
-        results[uid]['activity_geo'] = '&'.join(['&'.join(item.split('\t')) for item in geo_dict.keys()])
+        geo_dict_keys = geo_dict.keys()
+        #print 'geo_dict_keys:', geo_dict_keys
+        results[uid]['activity_geo'] = '&'.join(['&'.join(item.split('\t')) for item in geo_dict_keys])
         #print 'activity_geo:',  results[uid]['activity_geo']
 
         keywords_dict = iter_results[uid]['keywords']
