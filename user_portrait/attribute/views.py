@@ -575,4 +575,13 @@ def ajax_all_influenced_users():
 
     return results
 
+@mod.route('/tag_vector/')
+def ajax_tag_vector():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+
+    results = tag_vector(uid)
+
+    return results
+
 
