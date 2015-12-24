@@ -34,18 +34,23 @@
   color: #3F3F3F;
   border-bottom: 1px solid #E2E2E6;
   padding-left: 10px;
-  font-family: "Microsoft YaHei UI";
+  font_family: "Microsoft YaHei UI";
 }
 #key_WordList{
 height:500px;
+width:97%;
+margin:10px;
 overflow-y:scroll;
 }
 #hashtag_WordList{
 height:500px;
+width:97%;
+margin:10px;
 overflow-y:scroll;
 }
 </style>
-<div style="width:100%;"><h4>来自lingyu领域，热衷参与huati话题，参与过######</h4></div>
+<div id="preference_conclusion" style="width:100%;"></div>
+
 <div>
   <div style="margin-right:-50px;font-size:16px;"><h3>关键词</h3></div>
   <div id="Language" style="width:300px;height:280px;margin-top:10px;"></div>
@@ -67,43 +72,14 @@ overflow-y:scroll;
 </div>
 <hr>
 <div id="" style="width:1000px;">
-	<div id="" style="width:400px;margin-left:15px;border-right-color:#DDD;border-right-width:2px;border-right-style:solid;">
-    <h3>用户领域分析：</h3>
-		<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自<span id="info_domain">A</span>领域</h4>
-    <h4 style="line-height:40px;">根据用户粉丝结构分类，该用户来自<span id="friends_domain">B</span>领域</h4>
-    <h4 style="line-height:40px;">根据用户文本分类，该用户来自<span id="text_domain">C</span>领域</h4>
-    <h4 style="line-height:40px;">根据用户个人信息分类，该用户来自：<span id="personal_domain">D</span></h4>
+	<div id="preference_domain" style="width:400px;margin-left:15px;border-right-color:#DDD;border-right-width:2px;border-right-style:solid;">
 	</div>
   <div style="margin-left:30px;margin-top:0px;">
     <div ><h3>用户话题分布</h3></div>
     <div id="user_topic" style="margin-left:-100px;height:300px;width:400px;"></div>
   </div>
 </div>
-
-<script type="text/javascript">
-        // function switchTab(ProTag, ProBox) {
-        //     for (i = 1; i < 7; i++) {
-        //         if ("tab" + i == ProTag) {
-        //             document.getElementById(ProTag).getElementsByTagName("a")[0].className = "on";
-        //         } else {
-        //             document.getElementById("tab" + i).getElementsByTagName("a")[0].className = "";
-        //         }
-        //         if ("con" + i == ProBox) {
-        //             document.getElementById(ProBox).style.display = "";
-        //         } else {
-        //             document.getElementById("con" + i).style.display = "none";
-        //         }
-        //     }
-        // }
-    </script>
 <script src="/static/js/emoticon.js"></script>
 <script src="/static/js/jquery.dlmenu.js"></script>
 <script src="/static/js/portrait/language.js"></script>
-<script type="text/javascript">
-// var textlength = document.getElementById('TLnum');
-// textlength.innerHTML = parent.personalData.text_len.toFixed(0);
-// var linklength = document.getElementById('LLnum');
-// var link = parent.personalData.link * 100;
-// linklength.innerHTML = link.toFixed(2);               
-</script>
                     
