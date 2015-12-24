@@ -76,10 +76,6 @@ def ajax_get_remark():
         results = {}
     return json.dumps(results)
 
-
-
-
-
 @mod.route('/portrait_search/')
 def ajax_portrait_search():
     stype = request.args.get('stype', '')
