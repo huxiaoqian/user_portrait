@@ -21,7 +21,6 @@ $(function() {
     $( '#dl-menu' ).dlmenu();
   });
 $(".closeList").off("click").click(function(){
-    console.log('dsvnkjfdvbskjdbvsd11111111');
     $("#float-wrap").addClass("hidden");
     
     $("#more_keyWords").addClass("hidden");
@@ -133,8 +132,6 @@ function Draw_topic(){
   var topic_result = [];
   topic_result = get_radar_data(topic);
   var topic_name = topic_result[0];
-  console.log('aaaaaaaaaaaaaaaa')
-  console.log(topic_name);
   var topic_value = topic_result[1];
   var myChart2 = echarts.init(document.getElementById('user_topic'));
   var option = {
@@ -295,42 +292,40 @@ $('#con6').append(html6);
 */
 
 
-function Hashtag(){
-  this.ajax_method = 'GET';
-}
-Hashtag.prototype = {   //获取数据，重新画表
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-Draw_hashtag:function(data){
+// function Hashtag(){
+//   this.ajax_method = 'GET';
+// }
+// Hashtag.prototype = {   //获取数据，重新画表
+//   call_sync_ajax_request:function(url, method, callback){
+//     $.ajax({
+//       url: url,
+//       type: method,
+//       dataType: 'json',
+//       async: false,
+//       success:callback
+//     });
+//   },
+// Draw_hashtag:function(data){
 	
 	
-	var link = document.getElementById('linkDes');
-	if(data.link_conclusion==""){
-        link.innerHTML = '';
-    }else{
-        link.innerHTML = data.link_conclusion;
-    }
+// 	var link = document.getElementById('linkDes');
+// 	if(data.link_conclusion==""){
+//         link.innerHTML = '';
+//     }else{
+//         link.innerHTML = data.link_conclusion;
+//     }
 	
-	var emotion = document.getElementById('emotionDes');
-    if(data.emotion_conclusion==""){
-        emotion.innerHTML = '';
-    }else{
-        emotion.innerHTML = data.emotion_conclusion;
-    }
-	
-	
-}
-}
-var Hashtag = new Hashtag();
-url = '/attribute/portrait_attribute/?uid='+parent.personalData.uid ;
-Hashtag.call_sync_ajax_request(url, Hashtag.ajax_method, Hashtag.Draw_hashtag);
+// 	var emotion = document.getElementById('emotionDes');
+//     if(data.emotion_conclusion==""){
+//         emotion.innerHTML = '';
+//     }else{
+//         emotion.innerHTML = data.emotion_conclusion;
+//     }	
+// }
+// }
+// var Hashtag = new Hashtag();
+// url = '/attribute/portrait_attribute/?uid='+parent.personalData.uid ;
+// Hashtag.call_sync_ajax_request(url, Hashtag.ajax_method, Hashtag.Draw_hashtag);
 
 
 
