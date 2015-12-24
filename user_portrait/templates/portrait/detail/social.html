@@ -6,87 +6,86 @@
 <script src="/static/js/portrait/mention.js"></script>
 <script src="/static/js/portrait/field_topic.js"></script>
 <script type="text/javascript">
-  window.onload=function(){
-    var radio=document.getElementsByName('graph-type');
-    url = '/attribute/follower/?uid='+parent.personalData.uid ;
-    Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
-    for(var i=0;i<radio.length;i++)
-    {
-        radio[i].onclick=function()
-        {
-            var select_graph = this.value;
-            if (select_graph == 1){
-              $("#description").empty();
-              var html = '';
-              html+='<div style="padding-left:150px;">最近有<span id="fansNumber"></span>人转发该用户微博（图中显示Top20）</div>'
-              $('#description').append(html)
-              url = '/attribute/follower/?uid='+parent.personalData.uid ;
-              Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
-            }
-            else if(select_graph == 2){
-              $("#description").empty();
-              var html = '';
-              html+='<div style="padding-left:150px;">最近该用户被<span id="fansNumber"></span>人转发（图中显示Top20）</div>'
-              $('#description').append(html)
-              url = '/attribute/attention/?uid='+parent.personalData.uid ;
-              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-            }
-            else if(select_graph == 3){
-              $("#description").empty();
-              var html = '';
-              html+='<div class="">该用户最近跟<span id="mentionNumber"></span>人@交互（图中显示Top20）</div><div id ="test1" style="height:600px;width:800px;"></div>'
-              $('#description').append(html)
-              url = '/attribute/attention/?uid='+parent.personalData.uid ;
-              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-            }
-            else if(select_graph == 4){
-              $("#description").empty();
-              var html = '';
-              html+='<div class="">该用户最近评论了<span id="mentionNumber"></span>用户的微博（图中显示Top20）</div>'
-              $('#description').append(html)
-              url = '/attribute/attention/?uid='+parent.personalData.uid ;
-              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-            }
-            else if(select_graph == 5){
-              $("#description").empty();
-              var html = '';
-              html+='<div class="">该用户的微博最近被<span id="mentionNumber"></span>人评论（图中显示Top20）</div>'
-              $('#description').append(html)
-              url = '/attribute/attention/?uid='+parent.personalData.uid ;
-              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-            }
-            else if(select_graph == 6){
-              $("#description").empty();
-              var html = '';
-              html+='<div class="">该用户最近与<span id="mentionNumber"></span>人互动（图中显示Top20）</div>'
-              $('#description').append(html)
-              url = '/attribute/attention/?uid='+parent.personalData.uid ;
-              Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-            }
-    }
-   }
-  }
+  $(document).ready(function(){
+    $('#graph_button').click(function(){
+      var select_graph = $('input[name="graph-type"]:checked').val();
+      var select_num=document.getElementById('num-range').value;
+      var uid0 = document.location.search.substr(1).split('&');
+      var uid1 = uid0[0].match(/uid=([^\"]*)/);
+      var uid = uid1[1];
+      var UserName = document.getElementById('nickname').innerHTML;
+      if (select_graph == 1){
+        $("#graph-domain").empty();
+        var html = '';
+        html+='<div style="padding-left:150px;width:100%;">该用户最近转发了<span id="Number"></span>人的微博</div><div id ="test1" style="height:600px;width:50%;"></div>'
+        $('#graph-domain').append(html)
+        url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+      }
+      else if(select_graph == 2){
+        $("#graph-domain").empty();
+        var html = '';
+        html+='<div style="padding-left:150px;width:100%;">最近该用户被<span id="Number"></span>人转发</div><div id ="test1" style="height:600px;width:800px;"></div>'
+        $('#graph-domain').append(html)
+        url = '/attribute/follower/?uid='+uid+'&top_count='+select_num ;
+        Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
+      }
+      else if(select_graph == 3){
+        $("#graph-domain").empty();
+        var html = '';
+        html+='<div style="padding-left:150px;width:100%;">该用户最近跟<span id="Number"></span>人@交互</div><div id ="test1" style="height:600px;width:800px;"></div>'
+        $('#graph-domain').append(html)
+        url = '/attribute/mention/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+      }
+      else if(select_graph == 4){
+        $("#graph-domain").empty();
+        var html = '';
+        html+='<div style="padding-left:150px;width:100%;">该用户最近评论了<span id="Number"></span>用户的微博</div><div id ="test1" style="height:600px;width:800px;"></div>'
+        $('#graph-domain').append(html)
+        url = '/attribute/comment/?uid='+uid+'&top_count='+select_num  ;
+        Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_attention);
+      }
+      else if(select_graph == 5){
+        $("#graph-domain").empty();
+        var html = '';
+        html+='<div style="padding-left:150px;width:100%;">该用户的微博最近被<span id="Number"></span>人评论</div><div id ="test1" style="height:600px;width:800px;"></div>'
+        $('#graph-domain').append(html)
+        url = '/attribute/be_comment/?uid='+uid+'&top_count='+select_num  ;
+        Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_attention);
+      }
+      else if(select_graph == 6){
+        $("#graph-domain").empty();
+        var html = '';
+        html+='<div style="padding-left:150px;width:100%;">该用户最近与<span id="Number"></span>人互动</div><div id ="test1" style="height:600px;width:800px;"></div>'
+        $('#graph-domain').append(html)
+        url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+      }      
+    });
+
+          })
 </script>
 <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<style type="text/css">
-a:focus, a:hover {
-  text-decoration: none;
-}
-</style>
 
-  <div style="width:100%;text-align:right;font-size:20px;margin:8px;">
-    <input type="radio" name="graph-type" value=1 style="width:15px;height:15px;margin-left:8px;" checked >转发
-    <input type="radio" name="graph-type" value=2  style="width:15px;height:15px;margin-left:8px;">被转发
-    <input type="radio" name="graph-type" value=3  style="width:15px;height:15px;margin-left:8px;">提及
-    <input type="radio" name="graph-type" value=4 style="width:15px;height:15px;margin-left:8px;">评论
-    <input type="radio" name="graph-type" value=5 style="width:15px;height:15px;margin-left:8px;">被评论
-    <input type="radio" name="graph-type" value=6  style="width:15px;height:15px;margin-left:8px;">互动
-  </div>
+<div style="width:100%;text-align:right;font-size:20px;margin:8px;">
+    <input type="radio" name="graph-type" value="1" style="width:15px;height:15px;margin-left:8px;" checked >转发
+    <input type="radio" name="graph-type" value="2"  style="width:15px;height:15px;margin-left:8px;">被转发
+    <input type="radio" name="graph-type" value="3"  style="width:15px;height:15px;margin-left:8px;">提及
+    <input type="radio" name="graph-type" value="4"  style="width:15px;height:15px;margin-left:8px;">评论
+    <input type="radio" name="graph-type" value="5" style="width:15px;height:15px;margin-left:8px;">被评论
+    <input type="radio" name="graph-type" value="6"  style="width:15px;height:15px;margin-left:8px;">互动
+</div>
+<div style="width:100%;text-align:right;font-size:15px;margin:8px;">
+<div style="margin-left:600px;">显示人数&nbsp&nbsp</div>
+<div><input type="range" id="num-range" min="20" max="50" step="10" value="20">20&nbsp&nbsp&nbsp&nbsp30&nbsp&nbsp&nbsp&nbsp40&nbsp&nbsp&nbsp&nbsp50</div>
+<button class="btn btn-primary btn-sm" style="width:80px;height:30px;float:right;margin-top: 10px;margin-right: 10px;" id="graph_button" title="确定选择">确定</button>
+</div>
     
-  <div style="width:100%;" id="graph-domain">
-    <div id="description"style="padding-left:150px;width:100%;"><div style="padding-left:150px;">最近有<span id="fansNumber"></span>人转发该用户微博（图中显示Top20）</div></div>
-    <div id="test1" style="height:400px;width:400px;"></div>
-    <div id="test1-2" style="height:400px;width:400px;"></div>
+<div style="width:100%;" id="graph-domain">
+    <div  style="padding-left:150px;width:100%;">最近有<span id="fansNumber"></span>人转发该用户微博</div>
+    <div id="test1" style="height:400px;width:800px;"></div>
+    <!--<div id="test1-2" style="height:400px;width:400px;"></div>-->
   </div>
   <div style="width:100%;">
     <span style='font-size:17px;color:#777'>领域</span>

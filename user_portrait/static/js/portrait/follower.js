@@ -12,76 +12,101 @@ Follower.prototype = {   //获取数据，重新画表
     });
   },
 Draw_Follower:function(data){
-    console.log(data);
-	var UserID = parent.personalData.uid;
-    var UserName = parent.personalData.uname;
-    var Fnumber = document.getElementById('fansNumber');
-    Fnumber.innerHTML = data[1];
+	//var UserID = uid;
+    //var UserName = parent.personalData.uname;
+    var UserName = document.getElementById('nickname').innerHTML;
+    var Fnumber = document.getElementById('Number');
+    Fnumber.innerHTML = data['out_portrait_list'].length;
    
-	var items = data[0]
+	var items = data;
     //console.log(data[0]);
 	if(items==null){
 		var say = document.getElementById('test1');
 		say.innerHTML = '该用户暂无此数据';
 	}else{
-		follower(items,UserID,UserName);		
+		follower(items,uid,UserName);		
 	}	
 }
 }
 var Follower = new Follower();
+url = '/attribute/follower/?uid='+uid+'&top_count='+select_num;
+Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
 
 function follower(data,UserID,UserName){
-	uids = [];
-	unames = [];
-	values = [];
-	
-	for(i=0;i<data.length;i++){
-        uids.push(data[i][0]);
+    out_data = data['out_portrait_list'];
+    in_data = data['in_portrait_list'];
+	out_uids = [];
+	out_unames = [];
+	out_values = [];
+    in_uids = [];
+    in_unames = [];
+    in_values = [];
+	for(i=0;i<out_data.length;i++){
+        out_uids.push(out_data[i][0]);
         // if(data[i][1][0] == '未知'){
         //     data[i][1][0] = "未知("+ data[i][0] +")";
         // }
-        unames.push(data[i][1][0]);
-        values.push(data[i][1][1]);
+        out_unames.push(out_data[i][1]);
+        out_values.push(out_data[i][2]);
+    }
+    for(i=0;i<in_data.length;i++){
+        in_uids.push(out_data[i][0]);
+        in_unames.push(in_data[i][1]);
+        in_values.push(in_data[i][2]);
     }
 	var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
 	var nod = {};
-    var nod0 = {};
-	nodeContent = [];
-    nodeContent0 = [];
+	nodeContent = []
 	nod['category'] = 0;
 	nod['name'] = UserName;
 	nod['value'] = 10;
-    nod0['category'] = 0;
-    nod0['name'] = UserName;
-    nod0['value'] = 10;
 	nodeContent.push(nod);
-    nodeContent0.push(nod0);
-	for (i=0;i<uids.length;i++){
+    for (i=0;i<out_uids.length;i++){
+            nod = {};
+            //console.log(data[i][1][2]);
+            nod['category'] = 2;
+            nod['name'] = out_uids[i];
+            nod['value'] = out_values[i];
+            nod['label'] = out_unames[i];
+            nodeContent.push(nod);
+    }
+    for (i=0;i<in_uids.length;i++){
+            nod = {};
+            //console.log(data[i][1][2]);
+            nod['category'] = 1;
+            nod['name'] = in_uids[i];
+            nod['value'] = in_values[i];
+            nod['label'] = in_unames[i];
+            nodeContent.push(nod);
+    }    
+	/*for (i=0;i<uids.length;i++){
 			nod = {};
-            nod0 = {};
-			console.log(data[i][1][2]);   
+			//console.log(data[i][1][2]);
 			if(data[i][1][2]==0){
-				nod0['category'] = 2;
-                nod0['name'] = uids[i];
-                nod0['value'] = values[i];
-                nod0['label'] = unames[i];
+				nod['category'] = 2;
 			}else{
 				nod['category'] = 1;
-                nod['name'] = uids[i];
-                nod['value'] = values[i];
-                nod['label'] = unames[i];
 			}
+			nod['name'] = uids[i];
+			nod['value'] = values[i];
+            nod['label'] = unames[i];
 			nodeContent.push(nod);
-            nodeContent0.push(nod0);
-	}
+	}*/
 	var linkline =[];
-	for (i=0;i<uids.length;i++){
+	for (i=0;i<in_uids.length;i++){
 		line ={};
-		line['source'] = uids[i];
+		line['source'] = in_uids[i];
 		line['target'] = UserName;
 		line['weight'] = 1;
 		linkline.push(line);
 	}
+    for (i=0;i<out_uids.length;i++){
+        line ={};
+        line['source'] = out_uids[i];
+        line['target'] = UserName;
+        line['weight'] = 1;
+        linkline.push(line);
+    }
 	var myChart1 = echarts.init(document.getElementById('test1'));
 	var option = {
             title : {
@@ -91,72 +116,7 @@ function follower(data,UserID,UserName){
             },
             legend: {
                 x: 'right',
-                data:['用户','未入库']
-            },
-            series : [
-                {
-                    type:'force',
-                    name : "人物关系",
-                    ribbonType: false,
-                    categories : [
-                        {
-                            name: '用户'
-                        },
-						{
-                            name:'未入库'
-                        },
-                    ],
-                    itemStyle: {
-                        normal: {
-                            label: {
-                                show: true,
-                                textStyle: {
-                                    color: '#333'
-                                }
-                            },
-                            nodeStyle : {
-                                brushType : 'both',
-                                borderColor : 'rgba(255,215,0,0.4)',
-                                borderWidth : 1
-                            },
-                            linkStyle: {
-                                type: 'curve'
-                            }
-                        },
-                        emphasis: {
-                            label: {
-                                show: false
-                                // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
-                            },
-                            nodeStyle : {
-                                //r: 30
-                            },
-                            linkStyle : {}
-                        }
-                    },
-                    useWorker: false,
-                    minRadius : 15,
-                    maxRadius : 25,
-                    gravity: 1.1,
-                    scaling: 1.1,
-                    roam: 'move',
-                    nodes:nodeContent0,
-                    links : linkline
-                }
-            ]
-    };  
-	myChart1.setOption(option); 
-
-    var myChart2 = echarts.init(document.getElementById('test1-2'));
-    var option = {
-            title : {
-                text: '粉丝',
-                x:'left',
-                y:'top'
-            },
-            legend: {
-                x: 'right',
-                data:['用户','已入库']
+                data:['用户','未入库','已入库']
             },
             series : [
                 {
@@ -169,6 +129,9 @@ function follower(data,UserID,UserName){
                         },
                         {
                             name:'已入库'
+                        },
+						{
+                            name:'未入库'
                         },
                     ],
                     itemStyle: {
@@ -210,8 +173,7 @@ function follower(data,UserID,UserName){
                 }
             ]
     };  
-    myChart2.setOption(option); 
-
+	myChart1.setOption(option); 
     require([
             'echarts'
         ],
@@ -264,4 +226,3 @@ function follower(data,UserID,UserName){
     )   
 	
 }
-

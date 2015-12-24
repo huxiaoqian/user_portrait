@@ -27,7 +27,7 @@ Draw_tag:function(data){
     for(i=0;i<item.length;i++){
 		attrTag.push(item[i].split(':'));
 	}
-	console.log(attrTag);
+	//console.log(attrTag);
 	for(i=0;i<attrTag.length;i++){
 		attributeNames.push(attrTag[i][0]);
 		attributeValues.push(attrTag[i][1]);
@@ -192,7 +192,7 @@ function add_person_tag(){
 		alert("已经存在相同的标签类型，新的标签名将替换原有的标签名！");
 		var change_url = '';
 		change_url = '/tag/change_attribute_portrait/?uid=3697357313&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
-		console.log(change_url);
+		//console.log(change_url);
 		Tag_change.call_sync_ajax_request(change_url, Tag_change.ajax_method, Tag_change.Draw_tag_change);
 	}
 }

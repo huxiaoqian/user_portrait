@@ -11,13 +11,13 @@ import json
 import time
 from datetime import datetime
 # read weibo bulk from api
-from weibo_api import read_user_weibo
+#from weibo_api import read_user_weibo
 from flow_information import get_flow_information
 from evaluate_index import get_importance, get_activity_time, get_activeness, get_influence
 from user_profile import get_profile_information
 from save_utils import attr_hash, save_user_results
 from config import topic_en2ch_dict, domain_en2ch_dict
-from domain_topic_input import get_user_keywords_dict
+from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
 
 # compute user domain
 from domain.test_domain_v2 import domain_classfiy
@@ -28,7 +28,6 @@ from psy.new_psy import psychology_classfiy
 
 sys.path.append('../../')
 from global_utils import es_user_profile, profile_index_name, profile_index_type
-
 
 
 #abandon in version: 15-12-08
@@ -324,34 +323,55 @@ def get_fansnum_max():
     return fansnum_max
 
 #test manual instruction
-def main():
+def test_cron_text_attribute(user_weibo_dict):
     #get user weibo 7day {user:[weibos]}
-    user_weibo_dict = read_user_weibo()
+    print 'start cron_text_attribute'
+    #user_weibo_dict = read_user_weibo()
     uid_list = user_weibo_dict.keys()
+    print 'user count:', len(uid_list)
+    
     start_ts = time.time()
     #get user flow information: hashtag, activity_geo, keywords
+    print 'get flow result'
     flow_result = get_flow_information(uid_list)
+    print 'flow result len:', len(flow_result)
+    
     #get user profile information
+    print 'get register result'
     register_result = get_profile_information(uid_list)
+    print 'register result len:', len(register_result)
     #get topic and domain input data
-    user_keywords_dict = get_user_keywords_dict(user_weibo_dict)
+    user_weibo_string_dict = get_user_weibo_string(user_weibo_dict) # use as the tendency input data
+    user_keywords_dict = get_user_keywords_dict(user_weibo_string_dict)
     #get user topic and domain by bulk action
+    print 'get topic and domain'
     topic_results_dict, topic_results_label = topic_classfiy(user_keywords_dict)
     domain_results = domain_classfiy(user_keywords_dict)
     domain_results_dict = domain_results[0]
     domain_results_label = domain_results[1]
+    print 'topic result len:', len(topic_results_dict)
+    print 'domain result len:', len(domain_results_dict)
     #get user psy attribute
+    print 'get psy result'
     psy_results_dict = psychology_classfiy(user_weibo_dict)
-    
+    print 'psy result len:', len(psy_results_dict)
     #get user fansnum max
     fansnum_max = get_fansnum_max()
     #get user activeness by bulk_action
+    print 'get activeness results'
     activeness_results = get_activity_time(uid_list)
+    print 'activeness result len:', len(activeness_results)
     #get user inlfuence by bulk action
+    print 'get influence'
     influence_results = get_influence(uid_list)
+    print 'influence results len:', len(influence_results)
     # compute text attribute
+    user_set = set()
     bulk_action = []
+    count = 0
     for user in user_weibo_dict:
+        count += 1
+        user_set.add(user)
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
         #get user text attribute: online_pattern
@@ -389,10 +409,19 @@ def main():
         #bulk_action
         action = {'index':{'_id': str(user)}}
         bulk_action.extend([action, results])
+        if count >= 20:
+            mark = save_user_results(bulk_action)
+            bulk_action = []
+            count = 0
+    
     end_ts = time.time()
-    #print 'time_segment:', end_ts - start_ts
-    print 'bulk_action:', bulk_action
-    #status = save_user_results(bulk_action)
+    
+    print 'user_set len:', len(user_set)
+    print 'count:', count
+    print 'bulk_action count:', len(bulk_action)
+    if bulk_action:
+        status = save_user_results(bulk_action)
+    
     return True # save by bulk
 
 def add_domain():
@@ -427,6 +456,6 @@ def add_domain():
 
 if __name__=='__main__':
     print 'test'
-    #bulk_action = main()
-    #print 'bulk_action:', bulk_action
-    add_domain()
+    bulk_action = test_cron_text_attribute()
+    print 'bulk_action:', bulk_action
+    #add_domain()

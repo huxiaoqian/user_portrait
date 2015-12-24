@@ -13,8 +13,8 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import flow_text_index_name_pre, flow_text_index_type, es_flow_text
-from parameter import DAY
-from time_utils import datetime2ts, ts2datetime
+from parameter import DAY, MAX_VALUE
+from time_utils import datetime2ts, ts2datetime, ts2date
 
 test_ts = datetime2ts('2013-09-08')
 
@@ -65,15 +65,18 @@ def get_flow_information(uid_list):
             for ip in uid_ip_dict:
                 ip_count = len(uid_ip_dict[ip].split('&'))
                 geo = ip2city(ip)
-                try:
-                    iter_results[uid]['geo'][geo] += ip_count
-                except:
-                    iter_results[uid]['geo'][geo] = ip_count
-                try:
-                    uid_day_geo[uid][geo] += ip_count
-                except:
-                    uid_day_geo[uid][geo] = ip_count
+                if geo:
+                    #print 'geo:', geo
+                    try:
+                        iter_results[uid]['geo'][geo] += ip_count
+                    except:
+                        iter_results[uid]['geo'][geo] = ip_count
+                    try:
+                        uid_day_geo[uid][geo] += ip_count
+                    except:
+                        uid_day_geo[uid][geo] = ip_count
             iter_results[uid]['geo_track'].append(uid_day_geo[uid])
+            count += 1
         
         #compute keywords:
         nest_body_list = []
@@ -81,13 +84,13 @@ def get_flow_information(uid_list):
         for uid in uid_list:
             nest_body_list.append({'match':{'uid':uid}})
         query.append({'bool':{'should': nest_body_list}})
-
+        
         try:
-            text_results = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}}, _source=True, fields=['uid', 'keywords_dict'])['hits']['hits']
+            text_results = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'size':MAX_VALUE}, _source=True, fields=['uid', 'keywords_dict'])['hits']['hits']
         except:
             text_results = {}
         for item in text_results:
-            #print 'item:', item
+            #print 'keywords item:', item
             uid = item['fields']['uid'][0]
             uid_keywords_dict = json.loads(item['fields']['keywords_dict'][0])
             for keywords in uid_keywords_dict:
@@ -95,6 +98,7 @@ def get_flow_information(uid_list):
                     iter_results[uid]['keywords'][keywords] += uid_keywords_dict[keywords]
                 except:
                     iter_results[uid]['keywords'][keywords] = uid_keywords_dict[keywords]
+
        
     #get keywords top
     for uid in uid_list:
@@ -105,8 +109,11 @@ def get_flow_information(uid_list):
         geo_dict = iter_results[uid]['geo']
         geo_track_list = iter_results[uid]['geo_track']
         results[uid]['activity_geo_dict'] = json.dumps(geo_track_list)
-        results[uid]['activity_geo'] = '&'.join(geo_dict.keys())
-        
+        geo_dict_keys = geo_dict.keys()
+        #print 'geo_dict_keys:', geo_dict_keys
+        results[uid]['activity_geo'] = '&'.join(['&'.join(item.split('\t')) for item in geo_dict_keys])
+        #print 'activity_geo:',  results[uid]['activity_geo']
+
         keywords_dict = iter_results[uid]['keywords']
         keywords_top50 = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]
         keywords_top50_string = '&'.join([keyword_item[0] for keyword_item in keywords_top50])
@@ -291,6 +298,7 @@ def update_flow_information(user_info):
     new_day_ip_dict = dict()
     for i in range(7,0,-1):
         ts = timestamp - 24*3600*i
+        print 'iter date:', ts2date(ts)
         results = r_cluster.hmget('hashtag_'+str(ts), uid_list)
         online_pattern_results = r_cluster.hmget('online_'+str(ts), uid_list)
 
@@ -310,6 +318,7 @@ def update_flow_information(user_info):
                             user_hashtag_dict[uid][hashtag] = hashtag_dict[hashtag]
                     else:
                         user_hashtag_dict[uid] = {hashtag: hashtag_dict[hashtag]}
+            '''
             #attr: online_pattern
             if online_pattern_results[j]:
                 online_pattern_dict = json.loads(online_pattern_results[j])
@@ -321,7 +330,8 @@ def update_flow_information(user_info):
                             user_online_dict[uid][online_pattern] = online_pattern_dict[online_pattern]
                     else:
                         user_online_dict[uid] = {online_pattern: online_pattern_dict[online_pattern]}
-
+            '''
+            
             #attr: activity_geo by ip-timestamp
             if i==0 and ip_result[j]:
                 ip_timestamp_dict = json.loads(ip_result[j])
@@ -346,6 +356,7 @@ def update_flow_information(user_info):
                     day_geo_string = '&'.join(geo_string.split('\t'))
                     new_week_geo_list.append(day_geo_string)
                 activity_geo_string = '&'.join(new_week_geo_list)
+                print 'activity_geo_string:', activity_geo_string
                 
 
     for uid in uid_list:
@@ -357,6 +368,7 @@ def update_flow_information(user_info):
         except KeyError:
             hashtag_string = ''
             hashtag_list = ''
+        '''
         #attr: online_pattern
         try:
             online_dict = user_online_dict[uid]
@@ -365,13 +377,13 @@ def update_flow_information(user_info):
         except KeyError:
             online_string = ''
             online_list = ''
-
+        '''
         result[uid] = {'hashtag_dict':hashtag_string, 'hashtag':hashtag_list, \
                        'activity_geo_dict': json.loads(new_day_geo_list), 'activity_geo': activity_geo_string, \
                        'online_pattern_dict': online_pattern_string, 'online_pattern': online_pattern_list}
     return result
 
 if __name__=='__main__':
-    test_uid = ['3491926757', '2022781845']
+    test_uid = ['1640601392', '2294854302']
     result_dict = get_flow_information(test_uid)
     print 'result_dict:', result_dict
