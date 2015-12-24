@@ -73,12 +73,8 @@ def ajax_get_remark():
     uid = str(uid)
     results = search_remark(uid)
     if not results:
-        results = {}
+        results = ''
     return json.dumps(results)
-
-
-
-
 
 @mod.route('/portrait_search/')
 def ajax_portrait_search():
@@ -352,7 +348,7 @@ def ajax_sentiment_weibo():
     sentiment_type = request.args.get('sentiment', DEFAULT_SENTIMENT)
     results = search_sentiment_weibo(uid, start_ts, time_type, sentiment_type)
     if not results:
-        results = {}
+        results = ''
     return json.dumps(results)
 
 
