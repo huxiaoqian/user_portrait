@@ -58,7 +58,7 @@ $(function(){
 {% block main %}
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
 	<div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
-    <div class="nickname"><span  id="nickname" style="color:black;"></span>&nbsp;&nbsp;<a id="tagvector" target="_blank" style="cursor:pointer;">向量化标签</a></div>
+    <div class="nickname"><span  id="nickname" style="color:black;"></span>&nbsp;&nbsp;<a id="tagvector" target="_blank" style="cursor:pointer;"><img src="/static/img/tag-icon.png" style="height:20px;width:20px;"></a></div>
 	<div style="text-align:center;height:30px;">
         <a id="basic_info" target='_blank' style="cursor:pointer;">ta的注册信息</a>&nbsp;&nbsp;
 		<a id="tag" target='_blank' style="cursor:pointer;">ta的个性标签</a>&nbsp;&nbsp;
@@ -87,7 +87,7 @@ $(function(){
 
 <!--标签向量化-->
 <div id="vectorInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 70%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
-	<h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本特征<a href="javascript:void(0)" class="Vectorclose" id="close"></a></h3>
+	<h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">标签向量化<a href="javascript:void(0)" class="Vectorclose" id="close"></a></h3>
 	<div class="m-wrap" style="margin-top:30px;">
 		<ul id="vector_table"class="clearfix">
 		</ul>

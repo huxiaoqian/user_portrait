@@ -1,5 +1,4 @@
 ﻿function month_process(data){
-    console.log(data);
     require.config({
         paths: {
             echarts: '/static/js/bmap/js'
@@ -34,18 +33,28 @@
         var point = new BMap.Point(startPoint.x, startPoint.y);
         map.centerAndZoom(point, 5);
         map.enableScrollWheelZoom(true);
+        console.log(data);
+        // process
+        var timelist = new Array();
+        var geolist = new Array();
+        for (var i = 0; i < data.length; i++){
+            var time_geo = data[i];
+            timelist.push(time_geo[0]);
+            geolist.push(time_geo[1].split('\t').pop());
+        }
         // marker
         var newgeo = new Array();
         var myGeo = new BMap.Geocoder();
-        var geolist = ['北京', '上海','广州','南宁', '南昌', '大连','拉萨','长春','包头','重庆','常州'];
+        //var geolist = ['北京', '上海','广州','南宁', '南昌', '大连','拉萨'];
         var index = 0;
         bdGEO();
         function bdGEO(){
             var geoname = geolist[index];
-            geocodeSearch(geoname);
+            var timename = timelist[index];
+            geocodeSearch(geoname, timename);
             index++;
         }
-        function geocodeSearch(geoname){
+        function geocodeSearch(geoname, timename){
             if(index < geolist.length-1){
                 setTimeout(bdGEO,400);
             }
@@ -56,7 +65,7 @@
                 if (point){
                     var fixpoint= new BMap.Point(point.lng+3.5,point.lat-0.5);
                     var marker = new BMap.Marker(fixpoint);
-                    marker.setTitle(geoname);
+                    marker.setTitle(geoname+','+timename);
                     map.addOverlay(marker);
                     newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
                 }
@@ -66,6 +75,15 @@
             }, geoname);
         }
         function drawline(){
+            var linklist = new Array();
+            var last_geo = geolist[0];
+            for (var i = 1; i < geolist.length; i++){
+                linklist.push([{name:last_geo},{name:geolist[i], value:90}]);
+                last_geo = geolist[i];
+            }
+            console.log(linklist);
+            //linklist = [[{name:'北京'}, {name:'南宁',value:90}],[{name:'北京'}, {name:'南昌',value:90}],[{name:'北京'}, {name:'拉萨',value:90}]];
+            //console.log(linklist);
             var option = {
                 color: ['gold','aqua','lime'],
                 title : {
@@ -111,7 +129,7 @@
                 },
                 series : [
                     {
-                        name:'北京',
+                        name:'全国',
                         type:'map',
                         mapType: 'none',
                         data:[],
@@ -128,24 +146,14 @@
                             itemStyle : {
                                 normal: {
                                     borderWidth:1,
+                                    label:{show:false},
                                     lineStyle: {
                                         type: 'solid',
                                         shadowBlur: 10
                                     }
                                 }
                             },
-                            data : [
-                                [{name:'北京'}, {name:'上海',value:90}],
-                                [{name:'北京'}, {name:'广州',value:90}],
-                                [{name:'北京'}, {name:'大连',value:90}],
-                                [{name:'北京'}, {name:'南宁',value:90}],
-                                [{name:'北京'}, {name:'南昌',value:90}],
-                                [{name:'北京'}, {name:'拉萨',value:90}],
-                                [{name:'北京'}, {name:'长春',value:90}],
-                                [{name:'北京'}, {name:'包头',value:90}],
-                                [{name:'北京'}, {name:'重庆',value:90}],
-                                [{name:'北京'}, {name:'常州',value:90}]
-                            ]
+                            data : linklist
                         },
                     }
                 ]
@@ -159,26 +167,26 @@
 );
 }
 var url = '/attribute/location/?uid='+uid+'&time_type=month';
-activity_call_ajax_request(url, month_process);
+activity_call_ajax_request(url, location_desc);
 
 function location_desc(data){
-    console.log(data);
-    /*
-	var description1 = document.getElementById('location_description1');
-	var description3 = document.getElementById('location_description3');
-	//description.innerHTML = data['description'];
-	var length =  data['description'].length;
-	if(length==2){
-		description1.style.color="red";
-		description1.innerHTML = data['description'][0];
-		document.getElementById('location_description2').innerHTML = data['description'][1];
-	}else{
-		description1.style.color="red";
-		description1.innerHTML = data['description'][0];
-		document.getElementById('location_description2').innerHTML = data['description'][1];
-		description3.style.color="red";
-		description3.innerHTML = data['description'][2];
-		document.getElementById('location_description4').innerHTML = data['description'][3];
-	}
-    */
+    //console.log(data);
+    $('#locate_desc').html(data.description.join('')); //description
+    var location_geo = data.all_top;
+    $('#monthly_location').empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < location_geo.length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m;
+       html += '</th><th style="text-align:center">' + location_geo[i][0];
+       html += '</th><th style="text-align:center">' + location_geo[i][1];
+       html +='</th></tr>';
+    };
+    html += '</table>'; 
+    $('#monthly_location').append(html);                  
+    // track map
+    month_process(data.month_track);
 }

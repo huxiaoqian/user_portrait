@@ -58,15 +58,13 @@ pre_time.setHours(0,0,0);
 pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
 
-function geo_track(data){
-    console.log(data);
-	var geo_data = data[0]
+function geo_track(geo_data){
 	//console.log(geo_data);
 	var date = [];
 	var citys = [];
 	for(var key in geo_data){
-		date.push(geo_data[key][0]);
-		citys.push(geo_data[key][1][0])
+		date.push(getDate_zh(key));
+        citys.push(geo_data[key][0])
 	}
 	//console.log(citys);
 	//console.log(date);
@@ -90,6 +88,25 @@ activity_call_ajax_request(url, geo_track);
 
 function  active_chart(data){
     global_active_data = data;
+    //console.log(data);
+    var tag_vector = data.tag_vector;
+    //active time
+    var name = tag_vector[0][0];
+    var value;
+    var active_date = tag_vector[0][1][0][0]/(15*60*16);
+   switch(active_date)
+   {
+        case 0: value = "00:00-04:00";break;
+        case 1: value = "04:00-08:00";break;
+        case 2: value = "08:00-12:00";break;
+        case 3: value = "12:00-16:00";break;
+        case 4: value = "16:00-20:00";break;
+        case 5: value = "20:00-24:00";break;
+   }
+   global_tag_vector.push([name, value]);
+   //active type
+   global_tag_vector.push(tag_vector[1]);
+
 	var item = data.activity_time; //activity_time
     for (i=0;i<item.length;i++){
        var date = item[i][0]/(15*60*16);
@@ -250,6 +267,7 @@ function point2weibo(xnum, ts){
     $('#time_zh').html(delta);
 }
 function draw_content(data){
+    //console.log(data);
     var html = '';
     $('#weibo_text').empty();
     if(data==''){
@@ -270,13 +288,13 @@ activity_call_ajax_request(url, active_chart);
 function draw_daily_ip_table(ip_data){
     var tag_vector = ip_data.tag_vector;
     for (var n = 0; n < tag_vector.length; n++){
-        console.log(tag_vector[n]);          //notice!!! tag_vector[n]:[name, value]
+        //console.log(tag_vector[n]);          //notice!!! tag_vector[n]:[name, value]
         global_tag_vector.push(tag_vector[n]);
     }
     var div_name = ['daily_ip','weekly_ip'];
     var location_geo;
-    console.log(ip_data);
-    $('#locate_desc').html(ip_data.description);
+    //console.log(ip_data);
+    $('#ip_desc').html(ip_data.description);
     for (var i in div_name){
         if (i == 0){
             location_geo = ip_data.all_day_top;
@@ -321,6 +339,9 @@ function draw_daily_ip_table(ip_data){
                html += top_two[j][0] + '(' + top_two[j][1] + ')';
            }
        }
+       else{
+           html += '-';
+       }
        html += '</th>';
     };
     html += '</tr>';
@@ -348,7 +369,7 @@ activity_call_ajax_request(url, draw_daily_ip_table);
 
 function draw_online_pattern(data){
     var online_data = data.sort_result;
-    console.log(online_data);
+    //console.log(online_data);
     $('#online_pattern').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -368,7 +389,18 @@ var url = '/attribute/online_pattern/?uid='+uid;
 activity_call_ajax_request(url,draw_online_pattern);
 
 function draw_activeness_chart(data){
-    console.log(data);
+    $('#activeness_desc').html(data.description.join(''));
+    //console.log(data);
+    var data_time = [];
+    var data_count = [];
+    var timeline = data.time_line;
+    var activeness = data.activeness;
+    for (var i = 0;i < timeline.length;i++){
+        data_time.push(timeline[i]);
+    }
+    for (var i = 0;i < activeness.length;i++){
+        data_count.push(activeness[i]);
+    }
     $('#activeness').highcharts({
         chart: {
             type: 'spline',// line,
@@ -391,10 +423,10 @@ function draw_activeness_chart(data){
                 exportButtonTitle: "导出图片"
             },
         xAxis: {
-            categories: [], //
+            categories: data_time,
             labels:{
                 rotation: 0,
-                step: 6,
+                step: 1,
                 x:0,
                 y:30,
             }
@@ -402,7 +434,7 @@ function draw_activeness_chart(data){
         yAxis: {
 			min:0,
             title: {
-                text: '微博总量 (条)'
+                text: '活跃度',
             },
             plotLines: [{
                 value: 0,
@@ -411,7 +443,7 @@ function draw_activeness_chart(data){
             }]
         },
         tooltip: {
-            valueSuffix: '条',
+            valueSuffix: '',
             xDateFormat: '%H:%M:%S'
         },
         legend: {
@@ -422,37 +454,12 @@ function draw_activeness_chart(data){
         },
         series: [{
             name:'活跃度',
-            data: [], //
+            data: data_count,
         }]
     });
 }
 var url = '/attribute/activeness_trend/?uid=' + uid;
 activity_call_ajax_request(url, draw_activeness_chart);
-/*
-var div_name = 'monthly_location';
-draw_daily_ip_table(div_name);
-*/
-function location_desc(data){
-	var description1 = document.getElementById('location_description1');
-	var description3 = document.getElementById('location_description3');
-	//description.innerHTML = data['description'];
-	var length =  data['description'].length;
-	if(length==2){
-		description1.style.color="red";
-		description1.innerHTML = data['description'][0];
-		document.getElementById('location_description2').innerHTML = data['description'][1];
-	}else{
-		description1.style.color="red";
-		description1.innerHTML = data['description'][0];
-		document.getElementById('location_description2').innerHTML = data['description'][1];
-		description3.style.color="red";
-		description3.innerHTML = data['description'][2];
-		document.getElementById('location_description4').innerHTML = data['description'][3];
-	}
-}
-
-var url ="/attribute/location/?uid="+uid;
-//activity_call_ajax_request(url, location_desc);
 
 function get_unix_time(dateStr){
     var newstr = dateStr.replace(/-/g,'/'); 
