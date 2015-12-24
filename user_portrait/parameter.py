@@ -100,6 +100,7 @@ influence_doctype = "bci"
 # conclusion of history influence
 INFLUENCE_LENTH = 30
 INFLUENCE_LEVEL = [200, 500, 700, 900, 1100]
+ACTIVENESS_LEVEL = [0.5, 1, 1.5, 2]
 PRE_ACTIVENESS = "activeness_"
 INFLUENCE_CONCLUSION = {
     "0": "该用户近期无影响力",
@@ -114,4 +115,17 @@ INFLUENCE_CONCLUSION = {
     }
 
 ACTIVENESS_CONCLUSION = {
-    
+    "0": "该用户近期没有活跃",
+    "1": "该用户近期不太活跃",
+    "2": "该用户近期活跃程度一般",
+    "3": "该用户近期较为活跃",
+    "4": "该用户近期非常活跃",
+    "5": "该用户近期极其活跃"
+    }
+
+BCI_LIST = ["origin_weibo_number", "origin_weibo_number", "retweeted_weibo_number", "retweeted_weibo_retweeted_brust_average", "origin_weibo_retweeted_average_number", "origin_weibo_comment_top_number", \
+           "origin_weibo_comment_brust_average", "retweeted_weibo_top_retweeted_id", "retweeted_weibo_comment_top_number", "origin_weibo_top_comment_id", "retweeted_weibo_retweeted_total_number", "retweeted_weibo_retweeted_average_number", \
+           "origin_weibo_retweeted_total_number", "retweeted_weibo_top_comment_id", "origin_weibo_top_retweeted_id", "origin_weibo_comment_average_number", "origin_weibo_retweeted_brust_average", "origin_weibo_retweeted_top_number", \
+           "retweeted_weibo_retweeted_top_number","user_index", "retweeted_weibo_comment_total_number", "retweeted_weibo_comment_brust_average", "origin_weibo_comment_total_number", "retweeted_weibo_comment_average_number"]
+
+

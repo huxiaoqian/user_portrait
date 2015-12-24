@@ -3,14 +3,14 @@ import time
 import sys
 from influence_appendix import level
 
-reload(sys)
-sys.path.append('./../')
-from global_utils import es_user_portrait as es
-from time_utils import datetime2ts, ts2datetime
-from parameter import INFLUENCE_CONCLUSION as conclusion_dict
-from parameter import INFLUENCE_LENTH as N
-from parameter import PRE_ACTIVENESS as pre_activeness
-from parameter import INFLUENCE_LEVEL as influence_level
+from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.time_utils import datetime2ts, ts2datetime
+from user_portrait.parameter import INFLUENCE_CONCLUSION as conclusion_dict
+from user_portrait.parameter import ACTIVENESS_CONCLUSION as activeness_conclusion_dict
+from user_portrait.parameter import INFLUENCE_LENTH as N
+from user_portrait.parameter import PRE_ACTIVENESS as pre_activeness
+from user_portrait.parameter import INFLUENCE_LEVEL as influence_level
+from user_portrait.parameter import INFLUENCE_LEVEL as activeness_level
 
 def active_geo_description(result):
     active_city = {}
@@ -162,6 +162,51 @@ def conclusion_on_influence(uid):
 
     return result
 
+# version: 2015-12-22
+# conclusion of a user based on history influence info
+def conclusion_on_activeness(uid):
+    # test
+    index_name = "this_is_a_copy_user_portrait"
+    index_type = "manage"
+    try:
+        influ_result = es.get(index=index_name, doc_type=index_type, id=uid)['_source']
+    except:
+        influ_result = {}
+        result = activeness_conclusion_dict['0']
+        return result
+
+    # generate time series---keys
+    now_ts = time.time()
+    now_ts = datetime2ts('2013-09-12')
+    activeness_set = set()
+    for i in range(N):
+        ts = ts2datetime(now_ts - i*3600*24)
+        activeness_set.add(pre_activeness+ts)
+
+    # 区分影响力和活跃度的keys
+    keys_set = set(influ_result.keys())
+    activeness_keys = keys_set & activeness_set
+
+    if activeness_keys:
+        activeness_value = []
+        for key in activeness_keys:
+            activeness_value.append(influ_result[key])
+        mean, std_var = level(activeness_value)
+        if mean < activeness_level[0]:
+            result = activeness_conclusion_dict['1']
+        elif mean >= activeness_level[0] and mean < activeness_level[1]:
+            result = activeness_conclusion_dict['2']
+        elif mean >= activeness_level[1] and mean < activeness_level[2]:
+            result = activeness_conclusion_dict["3"]
+        elif mean >= activeness_level[2] and mean < activeness_level[3]:
+            result = activeness_conclusion_dict["4"]
+        else:
+            result = activeness_conclusion_dict["5"]
+    else:
+        result = conclusion_dict['0']
+
+    return result
+
 if __name__ == "__main__":
     """
     c = {'beijing':{'219.224.135.1': 5}}
@@ -175,7 +220,7 @@ if __name__ == "__main__":
     print n
     """
     print conclusion_on_influence('2050856634')
-
+    print conclusion_on_activeness("2i050856634")
 
 
 
