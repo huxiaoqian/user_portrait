@@ -769,6 +769,8 @@ def search_location_month(uid, now_date_ts):
     #test
     portrait_index_name = 'user_portrait_1222'
     portrait_index_type = 'user'
+    now_date_ts += DAY
+    #end test
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -798,7 +800,19 @@ def search_location_month(uid, now_date_ts):
     else:
         description_text = u'为该用户的主要活动地，且偶尔会出差到不同的城市'
     description = [all_top_geo[0][0], description_text]
-    return {'month_track':all_results, 'all_top':all_top_geo, 'description': description}
+    month_track_result = []
+    end_ts = now_date_ts - DAY
+    start_ts = end_ts - DAY*len(activity_geo_week)
+    for geo_item in activity_geo_week:
+        start_ts = start_ts + DAY
+        iter_date = ts2datetime(start_ts)
+        day_dict = geo_item
+        sort_day = sorted(day_dict.items(), key=lambda x:x[1], reverse=True)
+        if sort_day:
+            month_track_result.append([iter_date, sort_day[0][0]])
+        else:
+            month_track_result.append([iter_date, ''])
+    return {'month_track':month_track_result, 'all_top':all_top_geo, 'description': description}
 
 #abandon in version:15-12-08
 '''
