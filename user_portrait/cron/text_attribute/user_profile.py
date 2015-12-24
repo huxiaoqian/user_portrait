@@ -34,6 +34,8 @@ def get_profile_information(uid_list):
                     user_dict[field] =0
                 elif field=='friendsnum':
                     user_dict[field] = 0
+                elif field=='gender':
+                    user_dict[field] = 0
                 elif field=='uname':
                     user_dict[field] = u'unknown'
                 else:
