@@ -42,6 +42,7 @@ from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TR
                                     INFLUENCE_TREND_AVE_MAX_THRESHOLD, INFLUENCE_TREND_DESCRIPTION_TEXT
 from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
                                     ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
+from user_portrait.parameter import SENTIMENT_DICT
 
 r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -65,6 +66,44 @@ def get_db_num(timestamp):
     date_ts = datetime2ts(date)
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
     return db_number
+
+
+#use to get user remark
+#write in version: 15-12-08
+#input: uid
+#output: remark
+def search_remark(uid):
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    try:
+        user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
+    except:
+        user_portrait_result = {}
+    try:
+        remark_result = user_portrait_result['remark']
+    except:
+        remark_result = ''
+
+    return remark_result
+
+
+#use to edit remark
+#write in version: 15-12-08
+#input: uid, remark
+#output: status
+def edit_remark(uid, remark):
+    status = 'yes'
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    try:
+        user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
+    except:
+        return 'no uid'
+    es_user_portrait.update(index=portrait_index_name, doc_type=portrait_index_type, id=uid, body={'doc':{'remark': remark}})
+    
+    return status
 
 #use to search user attention from es: retweet_1 or retweet_2
 #write in version: 15-12-08
@@ -1121,14 +1160,14 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
     else:
         time_Segment = DAY
     end_ts = start_ts + time_segment
-    time_Date = ts2datetime(start_ts)
+    time_date = ts2datetime(start_ts)
     flow_text_index_name = flow_text_index_name_pre + time_date
     query = []
     query.append({'term': {'uid': uid}})
     query.append({'term': {'sentiment': sentiment}})
     query.append({'range':{'timestamp':{'from':start_ts, 'to':end_ts}}})
     try:
-        flow_text_es_result = es_flow_text.search(index_name=flow_text_index_name, doc_type=index_type, body={'query':{'bool':{'must': query}}, 'sort':'timestamp', 'size':1000000})['hits']['hits']
+        flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort':'timestamp', 'size':1000000})['hits']['hits']
     except Exception, e:
         raise e
     for item in flow_text_es_result:
@@ -1500,11 +1539,11 @@ def search_preference_attribute(uid):
 #write in version: 15-12-08
 #input: uid, time_type
 #output: sentiment_trend
-def search_sentiment_trend(uid, time_type):
+def search_sentiment_trend(uid, time_type, now_ts):
     results = {'1':{}, '2':{}, '3':{}}
-    trend_results = {'1':[], '2':[], '3':[], 'time_list':[]}
+    trend_results = {'1':[], '2':[], '3':[]}
     sentiment_list = ['1', '2', '3']
-    now_ts = time.time()
+    
     now_date = ts2datetime(now_ts)
     now_date_ts = datetime2ts(now_date)
     if time_type=='day':
@@ -1521,7 +1560,7 @@ def search_sentiment_trend(uid, time_type):
             try:
                 results[sentiment][time_segment] += 1
             except:
-                results[sentiment][time_Segment] = 1
+                results[sentiment][time_segment] = 1
         time_list = [item for item in range(now_date_ts, now_date_ts+DAY, HALF_HOUR)]
         results['time_list'] = time_list
         for time_segment in time_list:
@@ -1535,10 +1574,10 @@ def search_sentiment_trend(uid, time_type):
         for sentiment in trend_results:
             description_result[sentiment] = sum(trend_results[sentiment])
         sort_description_result = sorted(description_result.items(), key=lambda x:x[1], reverse=True)
-        max_sentiment = SENTIMENT_DICT(sort_description_result[0][0])
+        max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
-        return {'trend_result':trend_result, 'description':description, 'time_list':time_list}
+        return {'trend_result':trend_results, 'description':description, 'time_list':time_list}
     elif time_type=='week':
         for i in range(7,0,-1):
             iter_date_ts = now_date_ts - i*DAY
@@ -1570,7 +1609,7 @@ def search_sentiment_trend(uid, time_type):
         for sentiment in trend_results:
             description_result[sentiment] = sum(trend_results[sentiment])
         sort_description_result = sorted(description_result.items(), key=lambda x:x[1], reverse=True)
-        max_sentiment = SENTIMENT_DICT(sort_description_result[0][0])
+        max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
 
@@ -1581,11 +1620,17 @@ def search_sentiment_trend(uid, time_type):
 #input: uid
 #output: tendency and psy
 def search_tendency_psy(uid):
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
     results = {}
     try:
         portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
         return None
+    #test
+    portrait_result['tendency'] = json.dumps({'test':1})
+
     tendency_dict = json.loads(portrait_result['tendency'])
     psy_dict = json.loads(portrait_result['psycho_status'])
     first_dict = psy_dict['first']

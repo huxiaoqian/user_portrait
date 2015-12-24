@@ -9,7 +9,7 @@ from search import search_attribute_portrait, search_location, search_ip, search
 from search import delete_action, search_identify_uid, get_activeness_trend
 from search import get_activity_weibo, search_comment, search_be_comment
 from search import search_bidirect_interaction, search_preference_attribute, search_sentiment_trend, search_tendency_psy
-from search import search_sentiment_weibo, get_influence_trend
+from search import search_sentiment_weibo, get_influence_trend, search_remark, edit_remark
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
@@ -49,6 +49,36 @@ def ajax_preference():
     if not results:
         results = {}
     return json.dumps(results)
+
+
+#edit user remark
+#write in version: 15-12-08
+#input: uid, remark
+#output: status
+@mod.route('/edit_remark/')
+def ajax_edit_remark():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    remark = request.args.get('remark', '')
+    results = edit_remark(uid, remark) # results = 'yes' or 'no uid'
+    return  results
+
+#input remark
+#write in version: 15-12-08
+#input: uid
+#output: remark
+@mod.route('/get_remark/')
+def ajax_get_remark():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    results = search_remark(uid)
+    if not results:
+        results = {}
+    return json.dumps(results)
+
+
+
+
 
 @mod.route('/portrait_search/')
 def ajax_portrait_search():
@@ -299,7 +329,10 @@ def ajax_sentiment_trend():
     uid = request.args.get('uid', '')
     uid = str(uid)
     time_type = request.args.get('time_type', SENTIMENT_TREND_DEFAULT_TYPE)
-    results = search_sentiment_trend(uid, time_type)
+    now_ts = time.time()
+    #test
+    now_ts = test_time - DAY
+    results = search_sentiment_trend(uid, time_type, now_ts)
     if not results:
         results = {}
     return json.dumps(results)
