@@ -224,7 +224,7 @@ def ajax_activity_weibo():
     start_ts = int(request.args.get('start_ts', ''))
     results = get_activity_weibo(uid, time_type, start_ts)
     if not results:
-        results = {}
+        results = []
     return json.dumps(results)
 
 #abandon in version-15-12-08
