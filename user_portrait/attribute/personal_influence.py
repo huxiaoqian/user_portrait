@@ -90,11 +90,13 @@ def get_text(top_list, date):
 # top retweeted or commentted weibo context
 # date: 20130901
 # uid
+# style: 0--origin retweeted, 1--origin comment, 2--retweeted-retweeted, 3 --retweeted comment
 # return context and number 
-def influenced_detail(uid, date):
+def influenced_detail(uid, date, style):
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
-    detail_text = {}
+    #detail_text = {}
+    style = int(style)
     try:
         user_info = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
@@ -104,10 +106,18 @@ def influenced_detail(uid, date):
     retweeted_retweeted = json.loads(user_info["retweeted_weibo_retweeted_top"])
     retweeted_comment = json.loads(user_info["retweeted_weibo_comment_top"])
 
-    detail_text["origin_retweeted"] = get_text(origin_retweetd, date)
-    detail_text["origin_comment"] = get_text(origin_comment, date)
-    detail_text["retweeted_retweeted"] = get_text(retweeted_retweeted, date)
-    detail_text["retweeted_comment"] = get_text(retweeted_comment, date)
+    if style == 0:
+        detail_text = get_text(origin_retweetd, date)
+    elif style == 1:
+        detail_text = get_text(origin_comment, date)
+    elif style == 2:
+        detail_text = get_text(origin_comment, date)
+    else:
+        detail_text = get_text(retweeted_comment, date)
+    #detail_text["origin_retweeted"] = get_text(origin_retweetd, date)
+    #detail_text["origin_comment"] = get_text(origin_comment, date)
+    #detail_text["retweeted_retweeted"] = get_text(retweeted_retweeted, date)
+    #detail_text["retweeted_comment"] = get_text(retweeted_comment, date)
 
     return json.dumps(detail_text)
 

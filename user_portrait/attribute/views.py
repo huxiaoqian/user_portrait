@@ -537,10 +537,11 @@ def ajax_user_influence_detail():
 def ajax_get_top_weibo():
     uid = request.args.get('uid', '')
     date = request.args.get('date', '')
+    style = request.args.get("style", 0)
     uid = str(uid)
     date = str(date).replace('/', '-')
 
-    results = influenced_detail(uid, date)
+    results = influenced_detail(uid, date, style)
 
     return results
 
