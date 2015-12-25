@@ -191,6 +191,14 @@ function week_chart(trend_data){
         xAxis: {
             categories: data_time,
             labels:{
+              formatter: function(){
+                  if (global_time_type == 'day'){
+                      return this.value.split(' ')[1];
+                  }
+                  else{
+                      return this.value;
+                  }
+              },
               rotation: 0,
               step: 6,
               x:0,
