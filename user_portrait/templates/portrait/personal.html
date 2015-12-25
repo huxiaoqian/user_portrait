@@ -185,7 +185,12 @@ Personal.prototype = {   //群组搜索
 	},
     remarkData:function(data){
         //console.log(data);
-        $('#extraDetail').html(data);
+        if (data == ''){
+            $('#extraDetail').html('暂无');
+        }
+        else{
+            $('#extraDetail').html(data);
+        }
     },
 	personData:function(data){
 		personalData = data ;
@@ -316,7 +321,7 @@ function bind_remark_edit(Personal){
     $('#extraDetail').click(function(){
         var td = $(this);
         var txt = td.html();
-        var input = "<input id='editremark' style='width:400px;' type='text' value='" + txt + "'/>";
+        var input = "<input id='editremark' style='width:300px;' type='text' value='" + txt + "'/>";
         td.html(input);
         $('#editremark').click(function(){
             return false;
@@ -326,7 +331,12 @@ function bind_remark_edit(Personal){
             var ev = document.all?window.event:e;
             if (ev.keyCode == 13){
                 var newtxt = $(this).val();
-                td.html(newtxt);
+                if (newtxt == ''){
+                    td.html('暂无');
+                }
+                else{    
+                    td.html(newtxt);
+                }
                 if (newtxt != txt){
                     var url = '/attribute/edit_remark/?uid=' + uid + '&remark=' + newtxt;
                     Personal.call_sync_ajax_request(url, Personal.ajax_method, confirm_edit);
@@ -341,7 +351,12 @@ function bind_remark_edit(Personal){
         });
         $('#editremark').blur(function(){
             var newtxt = $(this).val();
-            td.html(newtxt);
+            if (newtxt == ''){
+                td.html('暂无');
+            }
+            else{    
+                td.html(newtxt);
+            }
             if (newtxt != txt){
                 var url = '/attribute/edit_remark/?uid=' + uid + '&remark=' + newtxt;
                 Personal.call_sync_ajax_request(url, Personal.ajax_method, confirm_edit);
