@@ -15,7 +15,8 @@ from user_portrait.parameter import INFLUENCE_COMMENT_THRESHOLD as comment_thres
 from user_portrait.parameter import INFLUENCE_TAG as influence_tag
 from user_portrait.parameter import pre_influence_index as pre_index
 from user_portrait.parameter import influence_doctype
-from user_portrait.parameter import BCI_LIST
+from user_portrait.parameter import BCI_LIST, INFLUENCE_TOTAL_THRESHOULD, INFLUENCE_TOTAL_LIST, INFLUENCE_BRUST_THRESHOULD, INFLUENCE_BRUST_LIST
+from user_portrait.parameter import CURRNET_INFLUENCE_THRESHOULD, CURRENT_INFLUENCE_CONCLUSION, INFLUENCE_TOTAL_CONCLUSION, INFLUENCE_BRUST_CONCLUSION
 from user_portrait.global_utils import portrait_index_name as user_portrait
 from user_portrait.global_utils import es_flow_text as es
 from user_portrait.global_utils import flow_text_index_name_pre as pre_text_index
@@ -292,7 +293,11 @@ def statistics_influence_people(uid, date):
     return json.dumps(results)
 
 
-def tag_vector(uid):
+def tag_vector(uid, date):
+    date1 = str(date).replace('-', '')
+    index_name = pre_index + date1
+    index_flow_text = pre_text_index + date
+
     try:
         bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
@@ -306,18 +311,53 @@ def tag_vector(uid):
     sum_retweeted = sum(origin_retweeted.values()) + sum(origin_comment.values())
     sum_comment = sum(retweeted_retweeted.values()) + sum(retweeted_comment.values())
 
-    if sum_retweeted >= retweeted_threshould:
-        if sum_comment >= comment_threshould:
+    if sum_retweeted >= retweeted_threshold:
+        if sum_comment >= comment_threshold:
             tag = influence_tag['3']
         else:
             tag = influence_tag['1']
     else:
-        if sum_comment >= comment_threshould:
+        if sum_comment >= comment_threshold:
             tag = influence_tag['2']
         else:
             tag = influence_tag['4']
 
     return tag
+
+
+def comment_on_influence(uid, date):
+    date1 = str(date).replace('-', '')
+    index_name = pre_index + date1
+    index_flow_text = pre_text_index + date
+
+    try:
+        bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
+    except:
+        description = CURRENT_INFLUENCE_CONCLUSION['0']
+        return description
+
+    user_index = bci_result['user_index']
+    if user_index < CURRNET_INFLUENCE_THRESHOULD[0]:
+        description = CURRENT_INFLUENCE_CONCLUSION['0']
+    elif user_index >= CURRNET_INFLUENCE_THRESHOULD[0] and user_index < CURRNET_INFLUENCE_THRESHOULD[1]:
+        description = CURRENT_INFLUENCE_CONCLUSION['1']
+    elif user_index >= CURRNET_INFLUENCE_THRESHOULD[1] and user_index < CURRNET_INFLUENCE_THRESHOULD[2]:
+        description = CURRENT_INFLUENCE_CONCLUSION['2']
+    elif user_index >= CURRNET_INFLUENCE_THRESHOULD[2] and user_index < CURRNET_INFLUENCE_THRESHOULD[3]:
+        description = CURRENT_INFLUENCE_CONCLUSION['3']
+    elif user_index >= CURRNET_INFLUENCE_THRESHOULD[3] and user_index < CURRNET_INFLUENCE_THRESHOULD[4]:
+        description = CURRENT_INFLUENCE_CONCLUSION['4']
+    else:
+        description = CURRENT_INFLUENCE_CONCLUSION['5']
+
+    for i in range(4):
+        if bci_result[INFLUENCE_TOTAL_LIST[i]] > INFLUENCE_TOTAL_THRESHOULD[i]:
+            description = description + INFLUENCE_TOTAL_CONCLUSION[i]
+            if bci_result[INFLUENCE_BRUST_LIST[i]] > INFLUENCE_BRUST_THRESHOULD[i]:
+                description = description + INFLUENCE_BRUST_CONCLUSION[i]
+
+    return description
+
 
 if __name__ == "__main__":
     #print influenced_detail("3396850362", "20130901")

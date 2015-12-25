@@ -16,8 +16,8 @@ from user_portrait.search_user_profile import es_get_source
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import SOCIAL_DEFAULT_COUNT, SENTIMENT_TREND_DEFAULT_TYPE
 from user_portrait.parameter import DEFAULT_SENTIMENT, DAY
-from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector
-
+from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence
+from description import conclusion_on_activeness, conclusion_on_influence
 # use to test 13-09-08
 test_time = 1378569600
 
@@ -576,13 +576,44 @@ def ajax_all_influenced_users():
 
     return results
 
-@mod.route('/tag_vector/')
-def ajax_tag_vector():
+
+
+# date: 2013-09-01
+@mod.route('/current_influence_comment/')
+def ajax_current_influence_comment():
+    uid = request.args.get('uid', '')
+    date = request.args.get("date", '')
+    uid = str(uid)
+    date = str(date)
+
+    results = comment_on_influence(uid, date)
+
+    return results
+
+
+
+# date: 2013-09-01
+@mod.route('/current_tag_vector/')
+def ajax_current_tag_vector():
+    uid = request.args.get('uid', '')
+    date = request.args.get("date", '')
+    uid = str(uid)
+    date = str(date)
+
+    results = tag_vector(uid, date)
+
+    return results
+
+
+@mod.route('/history_activeness_influence/')
+def ajax_history_activeness_influence():
     uid = request.args.get('uid', '')
     uid = str(uid)
 
-    results = tag_vector(uid)
+    results = []
+    results.append(conclusion_on_activeness(uid))
+    results.append(conclusion_on_influence(uid))
 
-    return results
+    return json.dumps(results)
 
 
