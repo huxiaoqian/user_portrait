@@ -57,7 +57,7 @@ Draw_emotion:function(data){
         var say = document.getElementById('emotion');
         say.innerHTML = '该用户暂无此数据';
     }else{
-        emotions(items);       
+        emotions(items);     
     }   
 }
 }
@@ -68,6 +68,9 @@ url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
 Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
 url_content = '/attribute/sentiment_weibo/?uid=2652126907&start_ts=1378567800&time_type=day&sentiment=1';
 call_ajax_request(url_content,draw_content);
+url_think = '/attribute/tendency_psy/?uid='+uid;
+call_ajax_request(url_think,draw_think);
+
 
 function choose_time(){            
     index = $('input[name="time-type"]:checked').val();
@@ -147,5 +150,112 @@ option = {
 myChart1.setOption(option); 
 }
   
-
+function draw_think(data){
+    console.log(data);
+    var first = data['psy_first'];
+    var second = data['psy_second'];
+    var first_name = ['积极','消极','中性'];
+    var second_name = ['愤怒','其他','焦虑','悲伤'];
+    var first_content = [];
+    var second_content = [];
+    var nod = {};
+    console.log(first);
+    var i = 0;
+    for(var key in first){
+        var nod = {};
+        nod['name'] = first_name[i];
+        nod['value'] = first[key];
+        first_content.push(nod);
+        i = i + 1;
+        //first_name.push(key);
+    }
+    var j = 0;
+    for(var key in second){
+        var nod = {};
+        nod['name'] = second_name[j];
+        nod['value'] = second[key];
+        second_content.push(nod);
+        j = j + 1;
+        //second_name.push(key);
+    }
+    console.log(first_content);
+var myChart = echarts.init(document.getElementById('pie_emotion'));
+var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {
+                show: true, 
+                type: ['pie', 'funnel']
+            },
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : false,
+    series : [
+        {
+            name:'访问来源',
+            type:'pie',
+            selectedMode: 'single',
+            radius : [0, 70],
+            
+            // for funnel
+            x: '20%',
+            width: '40%',
+            funnelAlign: 'right',
+            max: 1548,
+            
+            itemStyle : {
+                normal : {
+                    label : {
+                        position : 'inner'
+                    },
+                    labelLine : {
+                        show : false
+                    }
+                }
+            },
+            data:first_content
+        },
+        {
+            name:'访问来源',
+            type:'pie',
+            radius : [100, 140],
+            
+            // for funnel
+            x: '60%',
+            width: '35%',
+            funnelAlign: 'left',
+            max: 1048,
+            
+            data:second_content
+        }
+    ]
+};
+myChart.setOption(option); 
+var ecConfig = require('echarts/config');
+myChart.on(ecConfig.EVENT.PIE_SELECTED, function (param){
+    var selected = param.selected;
+    var serie;
+    var str = '当前选择： ';
+    for (var idx in selected) {
+        serie = option.series[idx];
+        for (var i = 0, l = serie.data.length; i < l; i++) {
+            if (selected[idx][i]) {
+                str += '【系列' + idx + '】' + serie.name + ' : ' + 
+                       '【数据' + i + '】' + serie.data[i].name + ' ';
+            }
+        }
+    }
+    document.getElementById('wrong-message').innerHTML = str;
+})
+                    
+}
 </script>
