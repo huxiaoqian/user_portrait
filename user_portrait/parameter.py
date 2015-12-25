@@ -92,6 +92,8 @@ DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/u
 #cron/text_attribute/psy
 PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/psy'
 
+#cron/text_attribute/event
+EVENT_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/event'
 
 # pre-influence index
 pre_influence_index = "bci_"
