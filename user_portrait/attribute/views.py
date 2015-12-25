@@ -16,7 +16,8 @@ from user_portrait.search_user_profile import es_get_source
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import SOCIAL_DEFAULT_COUNT, SENTIMENT_TREND_DEFAULT_TYPE
 from user_portrait.parameter import DEFAULT_SENTIMENT, DAY
-
+from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence
+from description import conclusion_on_activeness, conclusion_on_influence
 # use to test 13-09-08
 test_time = 1378569600
 
@@ -516,4 +517,103 @@ def ajax_user_index():
     results = search_user_index(date, uid)
 
     return json.dumps(results)
+
+
+@mod.route('/user_influence_detail/')
+def ajax_user_influence_detail():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
+    uid = str(uid)
+    date = str(date).replace('/', '')
+
+    results = get_user_influence(uid, date)
+
+    return results
+
+
+# get top 3 weibo
+# date: 2013-09-01 (must be)
+@mod.route('/get_top_weibo/')
+def ajax_get_top_weibo():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
+    style = request.args.get("style", 0)
+    uid = str(uid)
+    date = str(date).replace('/', '-')
+
+    results = influenced_detail(uid, date, style)
+
+    return results
+
+# date: 2013-09-01
+# all influenced user by a weibo
+@mod.route('/influenced_users/')
+def ajax_influenced_users():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
+    mid = request.args.get('mid', '')
+    style = request.args.get('style', '')
+    number = request.args.get("number", 20)
+    uid = str(uid)
+    date = str(date).replace('/', '-')
+    mid = str(mid)
+    style = int(style)
+    number = int(number)
+
+    results = influenced_people(uid, mid, style, date, number)
+
+    return results
+
+
+@mod.route('/all_influenced_users/')
+def ajax_all_influenced_users():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
+    uid = str(uid)
+    date = str(date).replace('/', '-')
+
+    results = statistics_influence_people(uid, date)
+
+    return results
+
+
+
+# date: 2013-09-01
+@mod.route('/current_influence_comment/')
+def ajax_current_influence_comment():
+    uid = request.args.get('uid', '')
+    date = request.args.get("date", '')
+    uid = str(uid)
+    date = str(date)
+
+    results = comment_on_influence(uid, date)
+
+    return results
+
+
+
+# date: 2013-09-01
+@mod.route('/current_tag_vector/')
+def ajax_current_tag_vector():
+    uid = request.args.get('uid', '')
+    date = request.args.get("date", '')
+    uid = str(uid)
+    date = str(date)
+
+    results = tag_vector(uid, date)
+
+    return results
+
+
+@mod.route('/history_activeness_influence/')
+def ajax_history_activeness_influence():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+
+    results = []
+    results.append(conclusion_on_activeness(uid))
+    results.append(conclusion_on_influence(uid))
+
+    return json.dumps(results)
+
 

@@ -172,7 +172,7 @@ def compute(user_set, es):
 if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130901"
+    es_index = "20130904"
     es_index = "bci_"+es_index
     bool = es.indices.exists(index=es_index)
     print bool
@@ -196,6 +196,7 @@ if __name__ == "__main__":
                     print "%s : %s" %(count, ts - tb)
                     tb = ts
             else:
+                print "total_count : %s "  %count
                 #os.system("python update_daily_user_index_rank.py &")
                 sys.exit(0)
 

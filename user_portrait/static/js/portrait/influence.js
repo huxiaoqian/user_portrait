@@ -17,18 +17,18 @@ Influence.prototype = {   //获取数据，重新画表
   var item_y = data.influence;
 	var conclusion = data.description;
 	//console.log(conclusion);
-	document.getElementById('saysth').innerHTML = conclusion;
-	//document.getElementById('sayimportant').innerHTML = conclusion[1];
+	document.getElementById('saysth').innerHTML = conclusion[0];
+	document.getElementById('sayimportant').innerHTML = conclusion[1];
 	var dataFixed = [];
 	for(i=0;i<item_y.length;i++){
-		dataFixed.push(parseFloat(item_y.toFixed(2)));
+		dataFixed.push(parseFloat(item_y[i]).toFixed(2));
 	}
-	var line_chart_dates = [];
-	var line_chart_tomorrow = new Date();
-    for(var i=0;i<7;i++){
-      var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
-      line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
-    }
+	// var line_chart_dates = [];
+	// var line_chart_tomorrow = new Date();
+ //    for(var i=0;i<7;i++){
+ //      var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
+ //      line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
+ //    }
     var myChart = echarts.init(document.getElementById('influence_chart')); 
         
     var option = {
@@ -45,12 +45,11 @@ Influence.prototype = {   //获取数据，重新画表
                 type : 'category',
                 boundaryGap : false,
                 data : item_x
-                //data : line_chart_dates
             }
         ],
         yAxis : [
             {
-                type : 'value',
+                type : 'value'
             }
         ],
         series : [
@@ -78,13 +77,12 @@ Influence.prototype = {   //获取数据，重新画表
 
   draw_weibo:function(data){
   var html = '';
-  $('#influence_weibo').empty();
+  $('#influence_weibo1').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>用户在昨天未发布任何微博</span></div>";
-        $('#influence_weibo').append(html);
+        $('#influence_weibo1').append(html);
     }else{
         for(i=0;i<data.length;i++){
-            //console.log(data[i].text);
             if(i%2 == 0){
               html += "<div style='width:100%;background-color:whitesmoke'>";
             }else{
@@ -99,7 +97,7 @@ Influence.prototype = {   //获取数据，重新画表
             html += "<span style='margin-left:50px'>评论数:<span class='comment_count' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].pinglun+"</u></span></span></span></div>";
             html += "</div>";
         }
-      $('#influence_weibo').append(html);
+      $('#influence_weibo1').append(html);
       $(".closeList2").off("click").click(function(){
         $("#float-wrap").addClass("hidden");
         $("#re_influence").addClass("hidden");
@@ -118,8 +116,7 @@ Influence.prototype = {   //获取数据，重新画表
       });
     }
   },
-  Draw_circle:function(div_name){
-
+  Draw_pie:function(div_name){
     var myChart = {};
     myChart = echarts.init(document.getElementById(div_name));
     var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
@@ -149,7 +146,7 @@ Influence.prototype = {   //获取数据，重新画表
                         x: '25%',
                         width: '50%',
                         funnelAlign: 'center',
-                        max: 1548
+                        max: 100
                     }
                 }
             },
@@ -162,14 +159,14 @@ Influence.prototype = {   //获取数据，重新画表
         {
             name:'访问来源',
             type:'pie',
-            radius : ['50%', '70%'],
+            radius : ['20%', '40%'],
             itemStyle : {
                 normal : {
                     label : {
-                        show : false
+                        show : true
                     },
                     labelLine : {
-                        show : false
+                        show : true
                     }
                 },
                 emphasis : {
@@ -189,15 +186,27 @@ Influence.prototype = {   //获取数据，重新画表
     }; 
     myChart.setOption(option);                
   },
-  Draw_table:function(data){
-
+  Draw_table:function(){
+    $('#influence_table').empty();
+    var data = [1,2,3,4,5,6,7]
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th><th colspan="4" style="text-align:center">转发情况</th><th colspan="4" style="text-align:center">评论情况</th></tr>'
+    html += '<tr><th style="text-align:center">转发总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th>';
+    html += '<th style="text-align:center">评论总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th></tr>';
+    html += '<tr><th style="text-align:center">原创微博</th><th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th>';
+    html += '<th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th></tr>';
+    html += '<tr><th style="text-align:center">转发微博</th><th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th>';
+    html += '<th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th></tr>';
+    html += '</table>';
+    $('#influence_table').append(html);
   },
 
   Influence_motal:function(data, div_name){         
     $('#'+div_name).empty();
     //console.log(div_name);
     var html = '';
-    html += '<hr>';
+    html += '<hr style="margin-top:-10px;">';
     html += '<h4>已入库用户:('+data[4].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
     for (i=0;i<data[4].length;i++){
       html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
@@ -224,7 +233,6 @@ Influence.prototype = {   //获取数据，重新画表
     }
     html += '</p>';
     $('#'+div_name).append(html);
-    //console.log(div_name);
   }
 
 }
@@ -252,8 +260,9 @@ var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
 Influence.draw_weibo(weibo);
 for(var i=0; i<div_name2.length; i++){
-  Influence.Draw_circle(div_name2[i]);
+  Influence.Draw_pie(div_name2[i]);
 };
 Influence.Influence_motal(weibo2,div_name[0]);
-Influence.Influence_motal(weibo2,div_name[1])
+Influence.Influence_motal(weibo2,div_name[1]);
+Influence.Draw_table();
 choose_dayorweek(influence_url);
