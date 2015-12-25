@@ -91,3 +91,41 @@ DOMAIN_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/u
 
 #cron/text_attribute/psy
 PSY_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/psy'
+
+
+# pre-influence index
+pre_influence_index = "bci_"
+influence_doctype = "bci"
+
+# conclusion of history influence
+INFLUENCE_LENTH = 30
+INFLUENCE_LEVEL = [200, 500, 700, 900, 1100]
+ACTIVENESS_LEVEL = [0.5, 1, 1.5, 2]
+PRE_ACTIVENESS = "activeness_"
+INFLUENCE_CONCLUSION = {
+    "0": "该用户近期无影响力",
+    "1": "该用户近期影响力很小",
+    "2": "该用户近期影响力一般",
+    "3": "该用户近期影响力持续较高",
+    "4": "该用户近期影响力较高，波动较大",
+    "5": "该用户近期影响力持续很高",
+    "6": "该用户近期影响力很高，波动性大",
+    "7": "该用户影响力接近意见领袖",
+    "8": "该用户影响力巨大"
+    }
+
+ACTIVENESS_CONCLUSION = {
+    "0": "该用户近期没有活跃",
+    "1": "该用户近期不太活跃",
+    "2": "该用户近期活跃程度一般",
+    "3": "该用户近期较为活跃",
+    "4": "该用户近期非常活跃",
+    "5": "该用户近期极其活跃"
+    }
+
+BCI_LIST = ["origin_weibo_number", "origin_weibo_number", "retweeted_weibo_number", "retweeted_weibo_retweeted_brust_average", "origin_weibo_retweeted_average_number", "origin_weibo_comment_top_number", \
+           "origin_weibo_comment_brust_average", "retweeted_weibo_top_retweeted_id", "retweeted_weibo_comment_top_number", "origin_weibo_top_comment_id", "retweeted_weibo_retweeted_total_number", "retweeted_weibo_retweeted_average_number", \
+           "origin_weibo_retweeted_total_number", "retweeted_weibo_top_comment_id", "origin_weibo_top_retweeted_id", "origin_weibo_comment_average_number", "origin_weibo_retweeted_brust_average", "origin_weibo_retweeted_top_number", \
+           "retweeted_weibo_retweeted_top_number","user_index", "retweeted_weibo_comment_total_number", "retweeted_weibo_comment_brust_average", "origin_weibo_comment_total_number", "retweeted_weibo_comment_average_number"]
+
+
