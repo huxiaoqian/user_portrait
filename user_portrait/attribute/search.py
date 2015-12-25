@@ -1541,7 +1541,7 @@ def search_preference_attribute(uid):
     domain_v3 = json.loads(portrait_result['domain_v3'])
     domain_v3_list = [domain_en2ch_dict[item] for item in domain_v3]
     domain = portrait_result['domain']
-    results['domain'] = [domain_v3, domain]
+    results['domain'] = [domain_v3_list, domain]
     #topic
     topic_en_dict = json.loads(portrait_result['topic'])
     topic_ch_dict = {}
