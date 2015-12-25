@@ -4,68 +4,8 @@
 <script src="/static/js/portrait/attention.js"></script>
 <script src="/static/js/portrait/follower.js"></script>
 <script src="/static/js/portrait/mention.js"></script>
+<script src="/static/js/portrait/comment.js"></script>
 <script src="/static/js/portrait/field_topic.js"></script>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('#graph_button').click(function(){
-      var select_graph = $('input[name="graph-type"]:checked').val();
-      var select_num=document.getElementById('num-range').value;
-      var uid0 = document.location.search.substr(1).split('&');
-      var uid1 = uid0[0].match(/uid=([^\"]*)/);
-      var uid = uid1[1];
-      var UserName = document.getElementById('nickname').innerHTML;
-      if (select_graph == 1){
-        $("#graph-domain").empty();
-        var html = '';
-        html+='<div style="padding-left:150px;width:100%;">该用户最近转发了<span id="Number"></span>人的微博</div><div id ="test1" style="height:600px;width:50%;"></div>'
-        $('#graph-domain').append(html)
-        url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
-        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-      }
-      else if(select_graph == 2){
-        $("#graph-domain").empty();
-        var html = '';
-        html+='<div style="padding-left:150px;width:100%;">最近该用户被<span id="Number"></span>人转发</div><div id ="test1" style="height:600px;width:800px;"></div>'
-        $('#graph-domain').append(html)
-        url = '/attribute/follower/?uid='+uid+'&top_count='+select_num ;
-        Follower.call_sync_ajax_request(url, Follower.ajax_method, Follower.Draw_Follower);
-      }
-      else if(select_graph == 3){
-        $("#graph-domain").empty();
-        var html = '';
-        html+='<div style="padding-left:150px;width:100%;">该用户最近跟<span id="Number"></span>人@交互</div><div id ="test1" style="height:600px;width:800px;"></div>'
-        $('#graph-domain').append(html)
-        url = '/attribute/mention/?uid='+uid+'&top_count='+select_num  ;
-        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-      }
-      else if(select_graph == 4){
-        $("#graph-domain").empty();
-        var html = '';
-        html+='<div style="padding-left:150px;width:100%;">该用户最近评论了<span id="Number"></span>用户的微博</div><div id ="test1" style="height:600px;width:800px;"></div>'
-        $('#graph-domain').append(html)
-        url = '/attribute/comment/?uid='+uid+'&top_count='+select_num  ;
-        Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_attention);
-      }
-      else if(select_graph == 5){
-        $("#graph-domain").empty();
-        var html = '';
-        html+='<div style="padding-left:150px;width:100%;">该用户的微博最近被<span id="Number"></span>人评论</div><div id ="test1" style="height:600px;width:800px;"></div>'
-        $('#graph-domain').append(html)
-        url = '/attribute/be_comment/?uid='+uid+'&top_count='+select_num  ;
-        Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_attention);
-      }
-      else if(select_graph == 6){
-        $("#graph-domain").empty();
-        var html = '';
-        html+='<div style="padding-left:150px;width:100%;">该用户最近与<span id="Number"></span>人互动</div><div id ="test1" style="height:600px;width:800px;"></div>'
-        $('#graph-domain').append(html)
-        url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
-        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-      }      
-    });
-
-          })
-</script>
 <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 <div style="width:100%;text-align:right;font-size:20px;margin:8px;">
@@ -83,7 +23,7 @@
 </div>
     
 <div style="width:100%;" id="graph-domain">
-    <div  style="padding-left:150px;width:100%;">最近有<span id="fansNumber"></span>人转发该用户微博</div>
+    <div id="test0" style="width:100%;">转发情况</div>
     <div id="test1" style="height:400px;width:800px;"></div>
     <!--<div id="test1-2" style="height:400px;width:400px;"></div>-->
   </div>
@@ -96,3 +36,66 @@
   
    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
  
+<script type="text/javascript">
+  $(document).ready(function(){
+     var select_graph = $('input[name="graph-type"]:checked').val();
+      var select_num=document.getElementById('num-range').value;
+      var uid0 = document.location.search.substr(1).split('&');
+      var uid1 = uid0[0].match(/uid=([^\"]*)/);
+      var uid = uid1[1];
+      var UserName = document.getElementById('nickname').innerHTML;
+      url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
+      Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+    $('#graph_button').click(function(){
+      var select_graph = $('input[name="graph-type"]:checked').val();
+      var select_num=document.getElementById('num-range').value;
+      var uid0 = document.location.search.substr(1).split('&');
+      var uid1 = uid0[0].match(/uid=([^\"]*)/);
+      var uid = uid1[1];
+      var UserName = document.getElementById('nickname').innerHTML;
+        $("#test1").empty();
+        $("#test0").empty();
+        $("#field").empty();
+        $("#topic").empty();
+      if (select_graph == 1){
+        var test_html='转发情况';
+        $("#test0").append(test_html);
+        url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+      }
+      else if(select_graph == 2){
+        var test_html='被转发情况';
+        $("#test0").append(test_html);
+        url = '/attribute/follower/?uid='+uid+'&top_count='+select_num ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+      }
+      else if(select_graph == 3){
+        var test_html='提及情况';
+        $("#test0").append(test_html);
+        url = '/attribute/mention/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+      }
+      else if(select_graph == 4){
+        var test_html='评论情况';
+        $("#test0").append(test_html);
+         url = '/attribute/comment/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+        //Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_picture);
+      }
+      else if(select_graph == 5){
+        var test_html='被评论情况';
+        $("#test0").append(test_html);
+        url = '/attribute/be_comment/?uid='+uid+'&top_count='+select_num  ;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+        //Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_picture);
+      }
+      else if(select_graph == 6){
+        var test_html='互动情况';
+        $("#test0").append(test_html);
+        url = '/attribute/bidirect_interaction/?uid='+uid+'&top_count='+select_num  ;
+        Interaction.call_sync_ajax_request(url, Interaction.ajax_method, Interaction.Draw_picture);
+      }      
+    });
+
+          })
+</script>
