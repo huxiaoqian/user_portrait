@@ -1188,7 +1188,7 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
     if time_type=='day':
         time_segment = HALF_HOUR
     else:
-        time_Segment = DAY
+        time_segment = DAY
     end_ts = start_ts + time_segment
     time_date = ts2datetime(start_ts)
     flow_text_index_name = flow_text_index_name_pre + time_date
@@ -1570,18 +1570,18 @@ def search_preference_attribute(uid):
 #input: uid, time_type
 #output: sentiment_trend
 def search_sentiment_trend(uid, time_type, now_ts):
-    results = {'1':{}, '2':{}, '3':{}}
-    trend_results = {'1':[], '2':[], '3':[]}
-    sentiment_list = ['1', '2', '3']
+    results = {'1':{}, '2':{}, '3':{}, '0':{}, 'time_list':[]}
+    trend_results = {'1':[], '2':[], '3':[], '0':[]}
+    sentiment_list = ['1', '2', '3', '0']
     
     now_date = ts2datetime(now_ts)
     now_date_ts = datetime2ts(now_date)
     if time_type=='day':
         flow_text_index_name = flow_text_index_name_pre + now_date
         try:
-            flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'match':{'uid': uid}}})['hits']['hits']
-        except Exception, e:
-            raise e
+            flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'term':{'uid': uid}}})['hits']['hits']
+        except:
+            flow_text_count = []
         for flow_text_item in flow_text_count:
             source = flow_text_item['_source']
             timestamp = source['timestamp']
@@ -1607,27 +1607,33 @@ def search_sentiment_trend(uid, time_type, now_ts):
         max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
-        return {'trend_result':trend_results, 'description':description, 'time_list':time_list}
+        new_time_list = [ts2date(item) for item in time_list]
+        return {'trend_result':trend_results, 'description':description, 'time_list':new_time_list}
     elif time_type=='week':
+        #test
+        now_date_ts += DAY
+        #end_test
         for i in range(7,0,-1):
             iter_date_ts = now_date_ts - i*DAY
             iter_date = ts2datetime(iter_date_ts)
             flow_text_index_name = flow_text_index_name_pre + iter_date
             try:
-                flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'match':{'uid':uid}}})['hits']['hits']
-            except Exception, e:
-                raise e
+                flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'term':{'uid':uid}}})['hits']['hits']
+            except:
+                flow_text_count = []
             for flow_text_item in flow_text_count:
                 source = flow_text_item['_source']
-                timestamp = source['timestamp']
-                time_segment = int((timestamp - iter_date_ts) / HALF_HOUR) * HALF_HOUR + now_date_ts
+                #timestamp = source['timestamp']
+                #time_segment = int((timestamp - iter_date_ts) / HALF_HOUR) * HALF_HOUR + iter_date_ts
+                time_segment = iter_date_ts
                 sentiment = source['sentiment']
                 try:
                     results[sentiment][time_segment] += 1
                 except:
                     results[sentiment][time_segment] = 1
-            time_list = [item for item in range(iter_date_ts, iter_date_ts+DAY, HALF_HOUR)]
-            results['time_list'].extend(time_list)
+            
+            #time_list = [item for item in range(iter_date_ts, iter_date_ts+DAY, HALF_HOUR)]
+            results['time_list'].append(iter_date_ts)
         for time_segment in results['time_list']:
             for sentiment in sentiment_list:
                 try:
@@ -1642,6 +1648,8 @@ def search_sentiment_trend(uid, time_type, now_ts):
         max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
+
+        time_list = [ts2datetime(item) for item in results['time_list']]
 
         return {'trend_result':trend_results, 'time_list':time_list, 'description':description}
 

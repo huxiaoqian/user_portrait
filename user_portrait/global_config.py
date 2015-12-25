@@ -52,7 +52,7 @@ BIN_FILE_PATH = '/home/ubuntu8/yuankun/data' # '219.224.135.93:/home/ubuntu8/yua
 BIN_FILE_PATH = '/home/ubuntu8/data1309/20130901'
 
 # first part of csv file1
-FIRST_FILE_PART = 'MB_QL_9_3_NODE'
+FIRST_FILE_PART = 'MB_QL_9_4_NODE'
 
 # sensitive words path
 SENSITIVE_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/flow4/sensitive_words.txt'

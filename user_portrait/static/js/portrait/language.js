@@ -62,7 +62,7 @@ function Draw_keyword(data, div_name, more_div){
   }else{
    
       html = '';
-      html += '<table class="table table-striped table-bordered" style="width:480px;">';
+      html += '<table class="table table-striped table-bordered" style="width:450px;">';
       html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
       for (var i = 0; i < data.length; i++) {
          var s = i.toString();
@@ -95,7 +95,7 @@ function Draw_keyword(data, div_name, more_div){
       },
       series: [{
           type: 'wordCloud',
-          size: ['100%', '100%'],
+          size: ['130%', '130%'],
           textRotation : [0, 45, 90, -45],
           textPadding: 0,
           autoSize: {
