@@ -39,8 +39,10 @@
         var geolist = new Array();
         for (var i = 0; i < data.length; i++){
             var time_geo = data[i];
-            timelist.push(time_geo[0]);
-            geolist.push(time_geo[1].split('\t').pop());
+            if (time_geo[1] != ''){
+                timelist.push(time_geo[0]);
+                geolist.push(time_geo[1].split('\t').pop());
+            }
         }
         // marker
         var newgeo = new Array();

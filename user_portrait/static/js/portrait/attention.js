@@ -14,14 +14,23 @@ Attention.prototype = {   //获取数据，重新画表
 Draw_attention:function(data){
 	var UserID = uid;
     var UserName = document.getElementById('nickname').innerHTML;
-    var Anumber = document.getElementById('Number');
-    Anumber.innerHTML = data[1];
+    var select_graph = $('input[name="graph-type"]:checked').val();
+    var texts = '';
+    if (select_graph == 1){texts = '转发情况';}
+    else if(select_graph == 2){texts = '被转发情况';}
+    else if(select_graph == 3){texts = '提及情况';}
+    else if(select_graph == 4){texts = '评论情况';}
+    else if(select_graph == 5){texts = '被评论情况';}
+    else if(select_graph == 6){texts = '互动情况';}
+
 	var items = data;
 	if(items==null){
 		var say = document.getElementById('test1');
 		say.innerHTML = '该用户暂无此数据';
 	}else{
-		attention(items,UserID,UserName);
+		attention(items,UserID,UserName,texts);
+        draw_topic(items['in_portrait_result']);
+        draw_field(items['in_portrait_result']);
 	}	
 }
 }
@@ -29,28 +38,9 @@ var Attention = new Attention();
 url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
 Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
 
-function attention(data,UserID,UserName){
+function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
-    out_uids = [];
-    out_unames = [];
-    out_values = [];
-    in_uids = [];
-    in_unames = [];
-    in_values = [];
-    for(i=0;i<out_data.length;i++){
-        out_uids.push(out_data[i][0]);
-        // if(data[i][1][0] == '未知'){
-        //     data[i][1][0] = "未知("+ data[i][0] +")";
-        // }
-        out_unames.push(out_data[i][1]);
-        out_values.push(out_data[i][2]);
-    }
-    for(i=0;i<in_data.length;i++){
-        in_uids.push(out_data[i][0]);
-        in_unames.push(in_data[i][1]);
-        in_values.push(in_data[i][2]);
-    }
     var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
@@ -58,48 +48,35 @@ function attention(data,UserID,UserName){
     nod['name'] = UserName;
     nod['value'] = 10;
     nodeContent.push(nod);
-    for (i=0;i<out_uids.length;i++){
+    for (i=0;i<out_data.length;i++){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 2;
-            nod['name'] = out_uids[i];
-            nod['value'] = out_values[i];
-            nod['label'] = out_unames[i];
+            nod['name'] = out_data[i][0];
+            nod['label'] = out_data[i][1];
+            nod['value'] = out_data[i][2];
             nodeContent.push(nod);
     }
-    for (i=0;i<in_uids.length;i++){
+    for (i=0;i<in_data.length;i++){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 1;
-            nod['name'] = in_uids[i];
-            nod['value'] = in_values[i];
-            nod['label'] = in_unames[i];
+            nod['name'] = in_data[i][0]
+            nod['label'] = in_data[i][1];
+            nod['value'] = in_data[i][2];
             nodeContent.push(nod);
     }    
-    /*for (i=0;i<uids.length;i++){
-            nod = {};
-            //console.log(data[i][1][2]);
-            if(data[i][1][2]==0){
-                nod['category'] = 2;
-            }else{
-                nod['category'] = 1;
-            }
-            nod['name'] = uids[i];
-            nod['value'] = values[i];
-            nod['label'] = unames[i];
-            nodeContent.push(nod);
-    }*/
     var linkline =[];
-    for (i=0;i<in_uids.length;i++){
+    for (i=0;i<in_data.length;i++){
         line ={};
-        line['source'] = in_uids[i];
+        line['source'] = in_data[i][0];
         line['target'] = UserName;
         line['weight'] = 1;
         linkline.push(line);
     }
-    for (i=0;i<out_uids.length;i++){
+    for (i=0;i<out_data.length;i++){
         line ={};
-        line['source'] = out_uids[i];
+        line['source'] = out_data[i][0];
         line['target'] = UserName;
         line['weight'] = 1;
         linkline.push(line);
@@ -107,7 +84,7 @@ function attention(data,UserID,UserName){
 	var myChart3 = echarts.init(document.getElementById('test1'));
 	var option = {
             title : {
-                text: '关注',
+                text: texts,
                 x:'left',
                 y:'top'
             },
@@ -222,4 +199,89 @@ function attention(data,UserID,UserName){
                 });
             }
     )   
+}
+
+function draw_topic(data){
+    var myChart = echarts.init(document.getElementById('topic')); 
+    var datas = data['topic'];
+    var nod = {};
+    var nodcontent = [];
+    for(var key in datas){
+        var nod = {};
+        nod['name'] = key;
+        nod['value'] = datas[key];
+        nodcontent.push(nod);
+    }
+    var option = {
+    title : {
+        text: '',
+        subtext: '',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    series : [
+        {
+            name:'话题',
+            type:'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:nodcontent
+        }
+    ]
+};                    
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+}
+
+function draw_field(data){
+    console.log('asdfa');
+    var myChart = echarts.init(document.getElementById('field')); 
+    var datas = data['domain'];
+    var nod = {};
+    var nodcontent = [];
+    for(var key in datas){
+        var nod = {};
+        nod['name'] = key;
+        nod['value'] = datas[key];
+        nodcontent.push(nod);
+    }        
+    var option = {
+    title : {
+        text: '',
+        subtext: '',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    series : [
+        {
+            name:'领域',
+            type:'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:nodcontent
+        }
+    ]
+};
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
 }
