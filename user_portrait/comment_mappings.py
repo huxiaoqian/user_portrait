@@ -21,13 +21,13 @@ def comment_es_mappings(db_number):
                             },
                         'uid_comment':{
                             'type': 'string',
-                            'index': 'not_analyzed'
+                            'index': 'no'
                             }
                         }
                     }
                 }
         }
-    index_name = 'comment_' + db_number
+    index_name = '1225_comment_' + db_number
     exist_indice = es.indices.exists(index=index_name)
     if exist_indice:
         es.indices.delete(index=index_name)
@@ -51,13 +51,13 @@ def be_comment_es_mappings(db_number):
                             },
                         'uid_be_comment':{
                             'type': 'string',
-                            'index': 'not_analyzed'
+                            'index': 'no'
                             }
                         }
                     }
                 }
         }
-    index_name = 'be_comment_' + db_number
+    index_name = '1225_be_comment_' + db_number
     exist_indice = es.indices.exists(index=index_name)
     if exist_indice:
         es.indices.delete(index=index_name)
