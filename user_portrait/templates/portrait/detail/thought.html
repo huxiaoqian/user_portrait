@@ -8,21 +8,23 @@
         border: solid #FFE4B5 1px;   
     }   
 </style>
-<div>该用户的心情</div>
-<div style="width:100%;text-align:right;margin:8px;">
+<div style="width:100%;">
+<div style="width:200px;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 style="line-height:32px;" >该用户的心情为<span id="con_emotion"></span></h4></div>
+<div style="width: 770px;text-align:right;margin:8px;margin-top: 20px;">
    <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >每日变动情况
    <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">每周变动情况
 </div>
+</div>
 <div style="width:680px;height:400px;" id="emotion"></div>
-<div style="width:300px;height:400px;background-color:whitesmoke;" id="content"></div>
+<div style="width: 280px;height: 380px;background-color:whitesmoke;margin-left: 20px;" id="content"></div>
 <div style="width:998px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
-		<div style="width:100%;font-size:16px">倾向性<hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div style="width:100%;font-size:16px;margin:0px;">倾向性<hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="sen_trend" style="height:350px;width:450px;"></div>
 		</div>
-		<div style="height:380px;width:450px;float:right;margin-top:-20px">
-		<div style="width:100%;font-size:16px">心理状态<hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
+		<div style="width:100%;font-size:16px;margin:0px;">心理状态<hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="pie_emotion" style="height:350px;width:450px;"></div>
 		</div>
 	</div>	
@@ -65,13 +67,14 @@ Draw_emotion:function(data){
 var Thought = new Thought();
 index = $('input[name="time-type"]:checked').val();
 url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
+console.log(uid);
 Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
-url_content = '/attribute/sentiment_weibo/?uid=2652126907&start_ts=1378567800&time_type=day&sentiment=1';
+url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
 call_ajax_request(url_content,draw_content);
 url_think = '/attribute/tendency_psy/?uid='+uid;
 call_ajax_request(url_think,draw_think);
 call_ajax_request(url_think,draw_trend);
-console.log('saffgg');
+
 
 function choose_time(){            
     index = $('input[name="time-type"]:checked').val();
@@ -113,8 +116,8 @@ function emotions(data){
     }
     console.log(nodcontent[0]);
 
-var myChart1 = echarts.init(document.getElementById('emotion'));
-option = {
+    var myChart1 = echarts.init(document.getElementById('emotion'));
+    var option = {
     title : {
         text: '情绪变动曲线',
     },
@@ -148,8 +151,33 @@ option = {
         }
     ],
     series : nodcontent
-};
-myChart1.setOption(option); 
+    };
+    myChart1.setOption(option); 
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                console.log(param);
+                var sentiment = param.seriesIndex;
+                var date = new Date(param.name);
+                var starts_ts = date.getTime();
+                var start_ts = starts_ts.toString().substr(0,10);
+                console.log(start_ts);
+                ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
+                $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:draw_content
+                    });                
+                }
+            myChart1.on(ecConfig.EVENT.CLICK, focus);
+            }
+            
+    )
 }
   
 function draw_think(data){
@@ -182,7 +210,7 @@ function draw_think(data){
     }
     console.log(first_content);
 var myChart = echarts.init(document.getElementById('pie_emotion'));
-var option = {
+    var option = {
     tooltip : {
         trigger: 'item',
         formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -240,10 +268,10 @@ var option = {
             data:second_content
         }
     ]
-};
-myChart.setOption(option); 
-var ecConfig = require('echarts/config');
-myChart.on(ecConfig.EVENT.PIE_SELECTED, function (param){
+    };
+    myChart.setOption(option); 
+    var ecConfig = require('echarts/config');
+    myChart.on(ecConfig.EVENT.PIE_SELECTED, function (param){
     var selected = param.selected;
     var serie;
     var str = '当前选择： ';
@@ -257,11 +285,37 @@ myChart.on(ecConfig.EVENT.PIE_SELECTED, function (param){
         }
     }
     document.getElementById('wrong-message').innerHTML = str;
-})
+    })
                     
 }
 
 function draw_trend(data){
+    var trends = data['tendency'];
+    var nods = [];
+    var nod = {};
+    var nodcontent = [];
+    var nodcon0 = {};
+    var i = 0;
+    for(var i in trends){
+        var nod = {};
+        nod['name'] = i;
+        nod['value'] = trends[i];
+        nods.push(nod);
+    }
+    for (i=0;i<nods.length;i++){
+        console.log(nods.length);
+        var nodcon0 = {};
+        nodcon0['name'] = i;
+        nodcon0['type'] = 'gauge';
+        nodcon0['min'] = 0;
+        nodcon0['max'] = 3;
+        //nodcon0['center'] = 
+        nodcon0['data'] = [{'value':nods[i]['value'],'name':nods[i]['name']}]
+        //nodcon0['data'] = nods[i];
+        nodcontent.push(nodcon0);
+    }
+
+    console.log(nodcontent);
     var myChart = echarts.init(document.getElementById('sen_trend'));
     var option = {
     tooltip : {
@@ -275,14 +329,7 @@ function draw_trend(data){
             saveAsImage : {show: true}
         }
     },
-    series : [
-        {
-            name:'业务指标',
-            type:'gauge',
-            detail : {formatter:'{value}%'},
-            data:[{value: 50, name: '完成率'}]
-        }
-    ]
+    series : nodcontent
 };
        myChart.setOption(option);              
 
