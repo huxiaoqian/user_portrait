@@ -18,6 +18,8 @@ from retweet_mappings import retweet_es_mappings, be_retweet_es_mappings
 
 begin_ts = datetime2ts(R_BEGIN_TIME)
 
+error_f = open('/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/flow3/error_file.txt', 'w')
+
 #use to get db_number which is needed to es
 def get_db_num(timestamp):
     date = ts2datetime(timestamp)
@@ -133,8 +135,16 @@ def scan_comment():
                 save_dict['uid'] = uid
                 save_dict['uid_be_comment'] = json.dumps(item_result)
                 be_comment_bulk_action.extend([{'index':{'_id': uid}}, save_dict])
-        es.bulk(comment_bulk_action, index='1225_comment_'+str(db_number), doc_type='user')
-        es.bulk(be_comment_bulk_action, index='1225_be_comment_'+str(db_number), doc_type='user')
+        try:
+            es.bulk(comment_bulk_action, index='1225_comment_'+str(db_number), doc_type='user')
+        except:
+            index_name = '1225_comment_'+str(db_number)
+            split_bulk_action(comment_bulk_action, index_name)
+        try:
+            es.bulk(be_comment_bulk_action, index='1225_be_comment_'+str(db_number), doc_type='user')
+        except:
+            index_name = '1225_be_comment_'+str(db_number)
+            split_bulk_action(be_comment_bulk_action, index_name)
         comment_bulk_action = []
         be_comment_bulk_action = []
         end_ts = time.time()
@@ -147,6 +157,26 @@ def scan_comment():
     print 'end'
 
 
+def split_bulk_action(bulk_action, index_name):
+    new_bulk_action = []
+    for i in range(0, len(bulk_action)):
+        if i % 2 == 0:
+            new_bulk_action = [bulk_action[i], bulk_action[i+1]]
+            #print 'new_bulk_action:', new_bulk_action
+            try:
+                es.bulk(new_bulk_action, index=index_name, doc_type='user')
+            except:
+                error_f.writelines([new_bulk_action[0]['index']['_id'], '\n'])
+
+
+
+
 if __name__=='__main__':
     #scan_retweet()
     scan_comment()
+    '''
+    bulk_action = [{'index':{'_id': '1234567890'}}, {'test':'test'}, {'index':{'_id':'7894561230'}}, {'test2':'test2'}]
+    index_name = 'test_portrait_00'
+    split_bulk_action(bulk_action, index_name)
+    '''
+    error_f.close()

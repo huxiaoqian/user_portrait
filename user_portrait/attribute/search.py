@@ -192,7 +192,8 @@ def search_attention(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        out_portrait_list.append([uid, uname, fansnum])
+        retweet_count = retweet_dict[uid]
+        out_portrait_list.append([uid, uname, retweet_count, fansnum])
 
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
 
@@ -329,7 +330,8 @@ def search_follower(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        out_portrait_list.append([uid, uname, fansnum])
+        retweet_count = retweet_dict[uid]
+        out_portrait_list.append([uid, uname, retweet_count, fansnum])
 
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
 
@@ -420,7 +422,9 @@ def search_comment(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        out_portrait_list.append([uid, uname, fansnum])
+
+        retweet_count = retweet_dict[uid]
+        out_portrait_list.append([uid, uname, retweet_count, fansnum])
 
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
 
@@ -511,7 +515,8 @@ def search_be_comment(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        out_portrait_list.append([uid, uname, fansnum])
+        retweet_count = retweet_dict[uid]
+        out_portrait_list.append([uid, uname, retweet_count, fansnum])
     
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
 
@@ -567,11 +572,86 @@ def search_bidirect_interaction(uid, top_count):
             be_comment_dict = json.loads(be_comment_item['_source']['uid_be_comment'])
             if uid in be_comment_dict:
                 comment_inter_dict[be_comment_uid] = be_comment_dict[uid] + comment_uid_dict[be_comment_uid]
-    #sort retweet_inter_dict and comment_inter_dict and get top count
-    sort_retweet_inter = sorted(retweet_inter_dict.items(), key=lambda x:x[1], reverse=True)[:top_count]
-    sort_comment_inter = sorted(comment_inter_dict.items(), key=lambda x:x[1], reverse=True)[:top_count]
+    
+    #get bidirect_interaction dict
+    #print 'retweet_inter_dict:', retweet_inter_dict
+    #print 'comment_inter_dict:', comment_inter_dict
+    all_interaction_dict = union_dict(retweet_inter_dict, comment_inter_dict)
+    sort_all_interaction_dict = sorted(all_interaction_dict.items(), key=lambda x:x[1], reverse=True)
+    #get in_portrait_list, in_portrait_results and out_portrait_list
+    all_interaction_uid_list = [item[0] for item in sort_all_interaction_dict]
+    in_portrait_list = []
+    in_portrait_result = {}
+    in_portrait_topic_list = []
+    in_portrait_result['domain'] = {}
+    out_portrait_list = []
+    count = 0
+    #print 'all_interaction_uid_list:', all_interaction_uid_list
+    while True:
+        uid_list = [item for item in all_interaction_uid_list[count: count+20]]
+        try:
+            portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
+        except:
+            portrait_result = []
+        for item in portrait_result:
+            uid = item['_id']
+            if item['found'] == True:
+                if len(in_portrait_list) < top_count:
+                    source = item['_source']
+                    uname = source['uname']
+                    influence = source['influence']
+                    importance = source['importance']
+                    top_list = source['topic_string'].split('&')
+                    domain = source['domain']
+                    try:
+                        in_portrait_result['domain'][domain] += 1
+                    except:
+                        in_portrait_result['domain'][domain] = 1
+                    in_portrait_topic_list.extend(topic_list)
+                    interaction_count = all_interaction_dict[uid]
+                    in_portrait_list.append([uid, uname, influence, importance, interaction_count])
+            else:
+                if len(out_portrait_list)<top_count:
+                    out_portrait_list.append(uid)
+        if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
+            break
+        elif count >= len(all_interaction_uid_list):
+            break
+        else:
+            count += 20
 
-    return results
+    in_portrait_result['topic'] = {}
+    for topic_item in in_portrait_topic_list:
+        try:
+            in_portrait_result['topic'][topic_item] += 1
+        except:
+            in_portrait_result['topic'][topic_item] = 1
+
+    #use to get user information from user profile
+    out_portrait_result = {}
+    try:
+        out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
+    except:
+        out_user_result = []
+    out_portrait_list = []
+    #print 'out_user_results:', out_user_result
+    for out_user_item in out_user_result:
+        uid = out_user_item['_id']
+        if out_user_item['found'] == True:
+            source = out_user_item['_source']
+            uname = source['nick_name']
+            if uname == '':
+                uname =  u'未知'
+            fansnum = source['fansnum']
+        else:
+            uname = u'未知'
+            fansnum = 0
+
+        interaction_count = all_interaction_dict[uid]
+        out_portrait_list.append([uid, uname, interaction_count, fansnum])
+
+
+    return {'in_portrait_list':in_portrait_list, 'in_portrait_result': in_portrait_result, 'out_portrait_list': out_portrait_list}
 
 #abandon in version: 15-12-08
 '''
@@ -692,12 +772,13 @@ def search_mention(now_ts, uid, top_count):
     for out_item in out_profile_result:
         source = out_item['_source']
         uname = source['nick_name']
+        uid = source['uid']
         fansnum = source['fansnum']
-        out_portrait_list.append([uname, fansnum])
+        out_portrait_list.append([uid, uname, fansnum])
         out_in_profile_list.append(uname)
     out_out_profile_list = list(set(out_list) - set(out_in_profile_list))
     for out_out_itme in out_out_profile_list:
-        out_portrait_list.append([out_out_item, '0'])
+        out_portrait_list.append(['', out_out_item, '0'])
 
     return {'in_portrait_list':in_portrait_list, 'out_portrait_list':out_portrait_list, 'in_portrait_result':in_portrait_result}
 
@@ -1466,7 +1547,8 @@ def union_dict(*objs):
     _keys = set(sum([obj.keys() for obj in objs],[]))
     _total = {}
     for _key in _keys:
-        _total[_key] = sum([obj.get(_key, 0) for obj in objs])
+        _total[_key] = sum([int(obj.get(_key, 0)) for obj in objs])
+    #print '_total:', _total
     return _total
 
 # use to show user online pattern by week
