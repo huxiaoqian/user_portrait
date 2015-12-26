@@ -16,7 +16,7 @@ from user_portrait.search_user_profile import es_get_source
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import SOCIAL_DEFAULT_COUNT, SENTIMENT_TREND_DEFAULT_TYPE
 from user_portrait.parameter import DEFAULT_SENTIMENT, DAY
-from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence
+from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence, detail_weibo_influence
 from description import conclusion_on_activeness, conclusion_on_influence
 # use to test 13-09-08
 test_time = 1378569600
@@ -560,19 +560,22 @@ def ajax_influenced_users():
     style = int(style)
     number = int(number)
 
-    results = influenced_people(uid, mid, style, date, number)
+    results = detail_weibo_influence(uid, mid, style, date, number)
 
-    return results
+    return json.dumps(results)
 
 
+# style: 0: all retweeted users, 1: all comment users
 @mod.route('/all_influenced_users/')
 def ajax_all_influenced_users():
     uid = request.args.get('uid', '')
     date = request.args.get('date', '')
+    style = request.args.get("style", 0)
     uid = str(uid)
     date = str(date).replace('/', '-')
+    style = int(style)
 
-    results = statistics_influence_people(uid, date)
+    results = statistics_influence_people(uid, date, style)
 
     return results
 

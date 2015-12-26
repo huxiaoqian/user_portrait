@@ -89,10 +89,11 @@ Influence.prototype = {   //获取数据，重新画表
               html += "<div style='width:100%;'>";
             }
             html += "<div style='width:100%;padding:2px;'>";
-            html += "<img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
+            //html += "<img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'>";
+            html += i+1+"<span>"+data[i].text+"</span></div>";
             html += "<div style='width:100%;padding:2px;'>";
-            html += "<span style='margin:0 20px'>最高值:<span id='' style='color:red;'>"+data[i].zuigao+"</span></span>";
-            html += "<span style='margin:0 20px;'>爆发度:<span id='' style='color:red;'>"+data[i].baofa+"</span></span>";
+            // html += "<span style='margin:0 20px'>最高值:<span id='' style='color:red;'>"+data[i].zuigao+"</span></span>";
+            // html += "<span style='margin:0 20px;'>爆发度:<span id='' style='color:red;'>"+data[i].baofa+"</span></span>";
             html += "<span style='float:right;margin-right:30px;'><span>转发数:<span class='retweet_count' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].zhuanfa+"</u></span></span>";
             html += "<span style='margin-left:50px'>评论数:<span class='comment_count' style='font-size:16px;margin-left:10px;cursor: pointer'><u>"+data[i].pinglun+"</u></span></span></span></div>";
             html += "</div>";
@@ -191,12 +192,12 @@ Influence.prototype = {   //获取数据，重新画表
     var data = [1,2,3,4,5,6,7]
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th><th colspan="4" style="text-align:center">转发情况</th><th colspan="4" style="text-align:center">评论情况</th></tr>'
+    html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th><th colspan="4" style="text-align:center">转发情况 ('+data[0]+')</th><th colspan="4" style="text-align:center">评论情况 ('+data[0]+')</th></tr>'
     html += '<tr><th style="text-align:center">转发总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th>';
     html += '<th style="text-align:center">评论总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th></tr>';
-    html += '<tr><th style="text-align:center">原创微博</th><th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th>';
+    html += '<tr><th style="text-align:center">原创微博 ('+data[0]+')</th><th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th>';
     html += '<th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th></tr>';
-    html += '<tr><th style="text-align:center">转发微博</th><th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th>';
+    html += '<tr><th style="text-align:center">转发微博 ('+data[0]+')</th><th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th>';
     html += '<th style="text-align:center">'+data[0]+'</th><th style="text-align:center">'+data[1]+'</th><th style="text-align:center">'+data[2]+'</th><th style="text-align:center">'+data[3]+'</th></tr>';
     html += '</table>';
     $('#influence_table').append(html);
@@ -207,7 +208,7 @@ Influence.prototype = {   //获取数据，重新画表
     //console.log(div_name);
     var html = '';
     html += '<hr style="margin-top:-10px;">';
-    html += '<h4>已入库用户:('+data[4].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
+    html += '<h4>已入库用户('+data[4].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
     for (i=0;i<data[4].length;i++){
       html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
       
@@ -220,7 +221,7 @@ Influence.prototype = {   //获取数据，重新画表
     }
 
     html += '</p>';
-    html += '<hr><h4>未入库用户:('+data[5].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
+    html += '<hr><h4>未入库用户('+data[5].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
     for (i=0;i<data[5].length;i++){
       html += '<span"><img style="margin:10px 0px 0px 20px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
 
@@ -233,6 +234,26 @@ Influence.prototype = {   //获取数据，重新画表
     }
     html += '</p>';
     $('#'+div_name).append(html);
+  },
+  Draw_basic_influence:function(data){
+
+    console.log(data);
+    console.log("111111111111");
+    var html = data.toString();
+    console.log(html);
+    $('#influence_conclusion_c').append(data);
+  },
+  Draw_yesterday_table_influence:function(data){
+    console.log(data);
+    console.log('22222');
+  },
+  Draw_current_influence_comment:function(data){
+    console.log(data);
+    console.log("333");
+  },
+  Draw_get_top_weibo:function(data){
+    console.log(data);
+    console.log('44444')
   }
 
 }
@@ -266,3 +287,12 @@ Influence.Influence_motal(weibo2,div_name[0]);
 Influence.Influence_motal(weibo2,div_name[1]);
 Influence.Draw_table();
 choose_dayorweek(influence_url);
+
+var basic_influence_url = '/attribute/current_influence_comment/?uid=1220291284&date=2013-09-04';
+Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
+var yesterday_table_influence_url = '/attribute/current_tag_vector/?uid=1220291284&date=2013-09-01';
+Influence.call_sync_ajax_request(yesterday_table_influence_url, Influence.ajax_method, Influence.Draw_yesterday_table_influence);
+var current_influence_comment_url = '/attribute/current_influence_comment/?uid=1220291284&date=2013-09-01';
+Influence.call_sync_ajax_request(current_influence_comment_url, Influence.ajax_method, Influence.Draw_current_influence_comment);
+var get_top_weibo_url = '/attribute/get_top_weibo/?date=2013-09-01&style=0';
+Influence.call_sync_ajax_request(get_top_weibo_url, Influence.ajax_method, Influence.Draw_get_top_weibo);
