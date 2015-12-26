@@ -183,14 +183,173 @@ function Draw_topic(data){
   myChart2.setOption(option);
 }
 function show_domain(data){
-  var html = '';
-  html += '<h3>用户领域分析</h3>';
-  html += '<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自<span style="color:red">'+data[0][0]+'</span>领域</h4>';
-  html += '<h4 style="line-height:40px;">根据用户粉丝结构分类，该用户来自<span style="color:red">'+data[0][1]+'</span>领域</h4>'
-  html += '<h4 style="line-height:40px;">根据用户文本分类，该用户来自<span style="color:red">'+data[0][2]+'</span>领域</h4>'
-  html += '<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自：<span style="color:red">'+data[1]+'</span></h4>'
-  $("#preference_domain").append(html);
+  console.log(data);
+  console.log('1111111111');
+  // var html = '';
+  // html += '<h3>用户领域分析</h3>';
+  data1 = '根据用户个人信息分类:'+data[0][0];
+  data2 = '根据用户粉丝结构分类:'+data[0][1];
+  data3 = '根据用户文本分类:'+data[0][2];
+  data4 = '根据用户个人信息分类:'+data[1];
+var myChart1 = echarts.init(document.getElementById('preference_domain')); 
+var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: "{b}: {c}"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : false,
 
+    series : [
+        {
+            name:'树图',
+            type:'tree',
+            orient: 'horizontal',  // vertical horizontal
+            rootLocation: {x: 20, y: '50%'}, // 根节点位置  {x: 'center',y: 10}
+            nodePadding: 20,
+            symbol: 'circle',
+            symbolSize: 40,
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        position: 'inside',
+                        textStyle: {
+                            color: '#cc9999',
+                            fontSize: 15,
+                            fontWeight:  'bolder'
+                        }
+                    },
+                    lineStyle: {
+                        color: '#000',
+                        width: 1,
+                        type: 'curve' // 'curve'|'broken'|'solid'|'dotted'|'dashed'
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: true
+                    }
+                }
+            },
+            data: [
+                {
+                    name: '用户领域分析',
+                    value: 2,
+                    symbolSize: [40, 70],
+                    // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: false
+                            }
+                        }
+                    },
+                    children: [
+                          {
+                          name: data1,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: '#fa6900',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        },
+                          {
+                          name: data2,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: 'red',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        },
+                          {
+                          name: data3,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: 'blue',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        },
+                          {
+                          name: data4,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: 'green',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+   myChart1.setOption(option);               
+  // $("#preference_domain").append(html);
 }
 
 function show_results(data){

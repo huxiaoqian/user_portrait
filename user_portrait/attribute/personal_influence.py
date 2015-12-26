@@ -137,7 +137,7 @@ def influenced_detail(uid, date, style):
     elif style == 1:
         detail_text = get_text(origin_comment, date, user_info, style)
     elif style == 2:
-        detail_text = get_text(origin_comment, date, user_info, style)
+        detail_text = get_text(retweeted-retweeted, date, user_info, style)
     else:
         detail_text = get_text(retweeted_comment, date, user_info, style)
     #detail_text["origin_retweeted"] = get_text(origin_retweetd, date)
@@ -147,7 +147,19 @@ def influenced_detail(uid, date, style):
 
     return json.dumps(detail_text)
 
-
+def get_user_url(uid_list):
+    results = []
+    es_results = es_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids": uid_list})['docs']
+    for item in es_results:
+        temp = []
+        if item['found']:
+            temp.append(item['_source']["photo_url"])
+            temp.append(tem['_id'])
+        else:
+            temp.append("unknown")
+            temp.append(item['_id'])
+        results.append(temp)
+    return results
 
 def influenced_people(uid, mid, influence_style, date, default_number=20):
 # uid 
@@ -192,9 +204,15 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         else:
             out_portrait.append(item['_id'])
     in_portrait = sorted(in_portrait.items(), key=lambda x:x[1], reverse=True)
+    temp_list = []
+    for item in in_portrait:
+        temp_list.append(item[0])
+    in_portrait_url = get_user_url(temp_list)
+    out_portrait_url = get_user_url(out_portrait)
+    print temp_list
+    print out_portrait_url
 
-
-    return ([in_portrait[:default_number], out_portrait[:default_number]])
+    return ([in_portrait_url[:default_number], out_portrait_url[:default_number]])
 
 def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, message_type):
     query_body = {
@@ -271,7 +289,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     retweeted_results["influence"] = average_influence
 
     return retweeted_results
-
+# 某条微博的影响力，人和分布
 def detail_weibo_influence(uid, mid, style, date, number):
     results = dict()
     influence_users = influenced_people(uid, mid, style, date, number)
@@ -332,11 +350,11 @@ def statistics_influence_people(uid, date, style):
 
 
     if int(style) == 0: # retweeted
-        retweeted_results = influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweeted_retweeted_mid, 3)
+        retweeted_results = influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, 3)
         retweeted_results["total_number"] = retweeted_total_number
         results = retweeted_results
     else:
-        comment_results = influenced_user_detail(uid, date, query_body, origin_comment_mid, retweeted_comment_mid, 2)
+        comment_results = influenced_user_detail(uid, date, origin_comment_mid, retweeted_comment_mid, 2)
         comment_results["total_number"] = comment_total_number
         results = comment_results
 
