@@ -56,12 +56,12 @@ width:100%;
 
 <div id="Pdetail">
   <div id="influence_conclusion" style="margin-bottom:-10px;">
-    <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-    <h4 style="line-height:40px;width:900px;">该用户影响力为：<span style="color:red">100</span>；类型为：<span style="color:red">A</span><br></h4>
+    <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 id="influence_conclusion_c" style="line-height:40px;"></h4>
+    <!-- <h4 style="line-height:40px;width:900px;">该用户影响力为：<span style="color:red">100</span>；类型为：<span style="color:red">A</span><br></h4>
     <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
     <h4 style="line-height:60px;width:900px;">影响的领域有：<span style="color:red">ABCD</span></h4>
     <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-    <h4 style="line-height:60px;width:900px;">影响的话题有：<span style="color:red">ABCD</span></h4>
+    <h4 style="line-height:60px;width:900px;">影响的话题有：<span style="color:red">ABCD</span></h4> -->
   </div>
   <div id="yesterday_influence" style="width:1000px;;">
     <h3>昨日影响力</h3>
@@ -128,8 +128,13 @@ width:100%;
 <div id="cmt_influence" class="hidden">
     <h3 class="title">评论用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
     <div id="cmt_user_content" style="padding:10px;align:left;">
+      <p style="margin-bottom: -35px;margin-left: -35px;font-size: 16px;">
+        <span class = "user_title">领域分布</span>
+        <span class = "user_title">话题分布</span>
+        <span class = "user_title">地域分布</span>
+      </p>
     <div id="cmt_user_domain" style="width:250px;height:250px; margin:5px;"></div>
-    <div id="cmt_user_topic" style="width:250px;height:250px; margin:5px;"></div>
+    <div id="cmt_user_topic" style="width:250px;height:260px; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
     <div id="cmt_user_geo" style="width:250px;height:250px; margin:5px;"></div>
     <div id="cmt_user" style="padding:10px;align:left;">12234234</div>
   </div>
