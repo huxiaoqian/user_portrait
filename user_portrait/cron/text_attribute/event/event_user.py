@@ -21,6 +21,7 @@ def event_classfiy(uid_weibo):
         weight1 = 0
         weight2 = 0
         count = 0
+        v = v.encode('utf-8')
         for k1,v1 in WORD_WEIGHT.items():           
             if v.count(k1):
                 weight1 = weight1 + v1
