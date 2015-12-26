@@ -12,16 +12,10 @@ Attention.prototype = {   //获取数据，重新画表
     });
   },
 Draw_attention:function(data){
-	var UserID = uid;
-    var UserName = document.getElementById('nickname').innerHTML;
-    var select_graph = $('input[name="graph-type"]:checked').val();
+	//var UserID = uid;
+    //var UserName = document.getElementById('nickname').innerHTML;
+    //var select_graph = $('input[name="graph-type"]:checked').val();
     var texts = '';
-    if (select_graph == 1){texts = '转发情况';}
-    else if(select_graph == 2){texts = '被转发情况';}
-    else if(select_graph == 3){texts = '提及情况';}
-    else if(select_graph == 4){texts = '评论情况';}
-    else if(select_graph == 5){texts = '被评论情况';}
-    else if(select_graph == 6){texts = '互动情况';}
 
 	var items = data;
 	if(items==null){
