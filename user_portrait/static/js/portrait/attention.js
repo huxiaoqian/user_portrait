@@ -93,16 +93,13 @@ function attention(data,UserID,UserName,texts){
                     ribbonType: false,
                     categories : [
                         {
-                            name: '用户',
-                            symbol:'star'
+                            name: '用户'
                         },
                        {
-                            name:'已入库',
-                            symbol:'circle'
+                            name:'已入库'
                         },
 						{
-                            name:'未入库',
-                            symbol:'diamond'
+                            name:'未入库'
                         },
                     ],
                     itemStyle: {
