@@ -77,7 +77,7 @@ Draw_emotion:function(data){
         url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
         call_ajax_request(url_content,th_draw_content);
         $('#select_time').empty();  
-        html0 += "<div>当前选择时间段:</div><div>"+items['time_list'][0]+"</div><br><div>当前选择情绪:</div><div>中性</div>";
+        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['time_list'][0]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
         $('#select_time').append(html0);
     }   
 }
@@ -178,8 +178,12 @@ function emotions(data){
                 console.log(param);
                 var sentiment = param.seriesIndex;
                 var date = new Date(param.name);
-                var starts_ts = date.getTime();
-                var start_ts = starts_ts.toString().substr(0,10);
+                var starts_ts = date.getTime().toString().substr(0,10);
+                console.log(index);
+                if(index == 'week'){
+                var start_ts = parseInt(starts_ts)-28800;                   
+                }
+                else if(index == 'day'){var start_ts = starts_ts;}
                 console.log(start_ts);
                 ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({

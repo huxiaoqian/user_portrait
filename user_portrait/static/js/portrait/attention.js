@@ -95,17 +95,27 @@ function attention(data,UserID,UserName,texts){
                     ribbonType: false,
                     categories : [
                         {
-                            name: '用户'
+                            name: '用户',
+                            symbol:'star'
                         },
                        {
-                            name:'已入库'
+                            name:'已入库',
+                            symbol:'circle'
                         },
 						{
-                            name:'未入库'
+                            name:'未入库',
+                            symbol:'diamond'
                         },
                     ],
                     itemStyle: {
                         normal: {
+                            color:function(param){
+                                console.log(param);
+                                console.log(param.series.nodes[param.dataIndex].value);
+                                if(param.series.nodes[param.dataIndex].value > 20){
+                                    return 'red';
+                                }
+                            },
                             label: {
                                 show: true,
                                 textStyle: {
