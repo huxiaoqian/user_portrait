@@ -135,7 +135,7 @@
         var test_html='互动情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
         url = '/attribute/bidirect_interaction/?uid='+uid+'&top_count='+select_num  ;
-        Interaction.call_sync_ajax_request(url, Interaction.ajax_method, Interaction.Draw_picture);
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
       }      
     });
 
