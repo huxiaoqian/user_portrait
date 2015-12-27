@@ -71,11 +71,17 @@
 <script type="text/javascript">
      var select_graph = $('input[name="graph-type"]:checked').val();
       var select_num=document.getElementById('num-range').value;
-      var uid0 = document.location.search.substr(1).split('&');
-      var uid1 = uid0[0].match(/uid=([^\"]*)/);
-      var uid = uid1[1];
-      var UserID = uid;
-      var UserName = document.getElementById('nickname').innerHTML;
+      // var uid0 = document.location.search.substr(1).split('&');
+      // var uid1 = uid0[0].match(/uid=([^\"]*)/);
+      // var uid = uid1[1];
+      // var UserID = uid;
+      // var UserName = document.getElementById('nickname').innerHTML;
+</script>
+<script src="/static/js/portrait/attention.js"></script>
+<script src="/static/js/portrait/follower.js"></script>
+<script src="/static/js/portrait/mention.js"></script>
+<script src="/static/js/portrait/comment.js"></script>
+<script>
       url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
       Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
   $(document).ready(function(){
@@ -84,10 +90,10 @@
       console.log('asdfasgd');
       var select_graph = $('input[name="graph-type"]:checked').val();
       var select_num=document.getElementById('num-range').value;
-      var uid0 = document.location.search.substr(1).split('&');
-      var uid1 = uid0[0].match(/uid=([^\"]*)/);
-      var uid = uid1[1];
-      var UserName = document.getElementById('nickname').innerHTML;
+      // var uid0 = document.location.search.substr(1).split('&');
+      // var uid1 = uid0[0].match(/uid=([^\"]*)/);
+      // var uid = uid1[1];
+      // var UserName = document.getElementById('nickname').innerHTML;
         $("#test1").empty();
         $("#test0").empty();
         $("#field").empty();
@@ -134,7 +140,3 @@
 
           })
 </script>
-<script src="/static/js/portrait/attention.js"></script>
-<script src="/static/js/portrait/follower.js"></script>
-<script src="/static/js/portrait/mention.js"></script>
-<script src="/static/js/portrait/comment.js"></script>
