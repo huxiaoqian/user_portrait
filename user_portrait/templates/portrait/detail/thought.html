@@ -9,14 +9,19 @@
     }   
 </style>
 <div style="width:100%;">
-<div style="width:200px;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 style="line-height:32px;" >该用户的心情为<span id="con_emotion"></span></h4></div>
-<div style="width: 770px;text-align:right;margin:8px;margin-top: 20px;">
-   <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >每日变动情况
-   <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">每周变动情况
+<div style="width:300px;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 style="line-height:32px;" >该用户的主要情绪为<span id="con_emotion"></span></h4></div>
+<div id='select_time' style="font-weight:bold;margin:0px;margin-left:400px;font-size:12px;"></div>
 </div>
+<div style="width:680px;height:450px;margin:0px;">
+<div style="font-size: 16px;width:400px;margin:0px;">情绪变动曲线<hr style="margin-top:10px;margin-right:20px;" /></div>
+<div style="margin-left: 170px;">
+   <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
+   <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
 </div>
-<div style="width:680px;height:400px;" id="emotion"></div>
-<div style="width: 280px;height: 380px;background-color:whitesmoke;margin-left: 20px;" id="content"></div>
+<div style="width:680px;height:400px;margin:0px;" id="emotion"></div>
+</div>
+
+<div style="width: 280px;height: 400px;background-color:whitesmoke;margin-left: 20px;" id="content"></div>
 <div style="width:998px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
@@ -55,11 +60,23 @@ Thought.prototype = {   //获取数据，重新画表
   },
 Draw_emotion:function(data){
     var items = data;
+    console.log(items);
     if(items==null){
         var say = document.getElementById('emotion');
         say.innerHTML = '该用户暂无此数据';
     }else{
-        emotions(items);     
+        con = document.getElementById('con_emotion');
+        con.innerHTML = items['description'][1];
+        emotions(items);
+        var time_init = new Date(items['time_list'][0]);
+        var times_init = time_init.getTime().toString().substr(0,10);
+        console.log(times_init);    
+        var html0 = '';
+        url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
+        call_ajax_request(url_content,th_draw_content);
+        $('#select_time').empty();  
+        html0 += "<div>当前选择的时间段为</div><div>"+items['time_list'][0]+"</div><br><div>当前选择的情绪为</div><div>中性</div>";
+        $('#select_time').append(html0);
     }   
 }
 }
@@ -67,10 +84,9 @@ Draw_emotion:function(data){
 var Thought = new Thought();
 index = $('input[name="time-type"]:checked').val();
 url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
-console.log(uid);
 Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
-url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
-call_ajax_request(url_content,draw_content);
+//url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
+//call_ajax_request(url_content,th_draw_content);
 url_think = '/attribute/tendency_psy/?uid='+uid;
 call_ajax_request(url_think,draw_think);
 call_ajax_request(url_think,draw_trend);
@@ -83,9 +99,10 @@ function choose_time(){
     //$('#emotion').empty();
   }
 
-function draw_content(data){
+function th_draw_content(data){
     var html = '';
     $('#content').empty();
+    $('#select_time').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
@@ -118,9 +135,6 @@ function emotions(data){
 
     var myChart1 = echarts.init(document.getElementById('emotion'));
     var option = {
-    title : {
-        text: '情绪变动曲线',
-    },
     tooltip : {
         trigger: 'axis'
     },
@@ -171,8 +185,12 @@ function emotions(data){
                       type: 'GET',
                       dataType: 'json',
                       async: false,
-                      success:draw_content
-                    });                
+                      success:th_draw_content
+                    });
+                var html0 = '';
+                $('#select_time').empty();  
+                html0 += "<div>当前选择的时间段为</div><div>"+param.name+"</div><br><div>当前选择的情绪为</div><div>"+names[sentiment]+'</div>';
+                $('#select_time').append(html0);
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
             }
