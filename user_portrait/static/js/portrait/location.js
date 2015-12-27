@@ -347,7 +347,7 @@ function draw_daily_ip_table(ip_data){
     for (var i = 0; i < 6; i++) {
        var s = i.toString();
        html += '<th style="text-align:center">';
-       if (i in location_geo){
+       if ((i in location_geo) && (location_geo[i].length != 0)){
            top_two = location_geo[i];
            for (var j = 0;j < top_two.length;j++){
                html += top_two[j][0] + '(' + top_two[j][1] + ')';
@@ -365,11 +365,14 @@ function draw_daily_ip_table(ip_data){
     for (var i = 0; i < 6; i++) {
        var s = i.toString();
        html += '<th style="text-align:center">';
-       if (i in location_geo){
+       if ((i in location_geo) && (location_geo[i].length != 0)){
            top_two = location_geo[i];
            for (var j = 0;j < top_two.length;j++){
                html += top_two[j][0] + '(' + top_two[j][1] + ')';
            }
+       }
+       else{
+           html += '-';
        }
        html += '</th>';
     };
