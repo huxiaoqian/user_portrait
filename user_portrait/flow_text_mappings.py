@@ -76,5 +76,5 @@ def get_mappings(index_name):
     #es.index(index=index_name, doc_type='text', id='test', body={'uid':'test'})
 
 if __name__=='__main__':
-    index_name = 'flow_text_2013-09-03'
+    index_name = 'flow_text_2013-09-06'
     get_mappings(index_name)
