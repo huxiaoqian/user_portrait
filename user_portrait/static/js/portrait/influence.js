@@ -198,14 +198,13 @@ Draw_pie_all0:function(data){
        }else{
          user_name = data[0][i][1];
        }
-      html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + img_src + '" alt="' + user_name +'"></span>';
+      html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + img_src + '" title="' + user_name +'"></span>';
     }
       // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
       // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
       // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
       // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
       // html += '</ul></div>';
-
     }
 
     html += '</p>';
@@ -227,7 +226,7 @@ Draw_pie_all0:function(data){
           user_name = data[1][i][1];
         }
 
-        html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + img_src + '" alt="' + user_name +'"></span>';
+        html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + img_src + '" title="' + user_name +'"></span>';
     }
       // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
       // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
@@ -325,10 +324,12 @@ function Draw_get_top_weibo(data,div_name){
     }else{
         for(i=0;i<data.length;i++){
             s = (i+1).toString();
+            //html += "<div style='height:85px;padding:12px 15px;width:100%;background-color:whitesmoke'>";
+
             if(i%2 == 0){
-              html += "<div style='height:85px;padding:12px 15px;width:100%;background-color:whitesmoke'>";
+              html += "<div style='height:80px;padding:7px 15px;width:100%;background-color:whitesmoke'>";
             }else{
-              html += "<div style='height:85px;padding:12px 15px;width:100%;'>";
+              html += "<div style='padding:0px 15px;width:100%;'>";
             }
             html += "<div style='width:100%;'>";
             //html += "<img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'>";
