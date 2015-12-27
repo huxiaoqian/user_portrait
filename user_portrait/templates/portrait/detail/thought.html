@@ -29,7 +29,7 @@
 		</div>
 	</div>	
 </div>
-<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
+<script src="/static/js/echarts-all.js"></script>
 <script type="text/javascript">
 function call_ajax_request(url, callback){
     $.ajax({
@@ -70,7 +70,7 @@ url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
 console.log(uid);
 Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
 url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
-call_ajax_request(url_content,draw_content);
+call_ajax_request(url_content,draw_thought_content);
 url_think = '/attribute/tendency_psy/?uid='+uid;
 call_ajax_request(url_think,draw_think);
 call_ajax_request(url_think,draw_trend);
@@ -83,7 +83,7 @@ function choose_time(){
     //$('#emotion').empty();
   }
 
-function draw_content(data){
+function draw_thought_content(data){
     var html = '';
     $('#content').empty();
     if(data==''){
@@ -171,7 +171,7 @@ function emotions(data){
                       type: 'GET',
                       dataType: 'json',
                       async: false,
-                      success:draw_content
+                      success:draw_thought_content
                     });                
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
