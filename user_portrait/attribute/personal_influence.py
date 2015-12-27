@@ -212,8 +212,6 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         temp_list.append(item[0])
     in_portrait_url = get_user_url(temp_list)
     out_portrait_url = get_user_url(out_portrait)
-    print temp_list
-    print out_portrait_url
 
     return ([in_portrait_url[:default_number], out_portrait_url[:default_number]])
 
@@ -274,7 +272,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
                 count += 1
                 temp_domain = item["fields"]["domain"][0].split('&')
                 temp_topic = item["fields"]["topic_string"][0].split('&')
-                temp_geo = json.loads(item["fields"]["activity_geo"][0])[-1].keys()
+                temp_geo = json.loads(item["fields"]["activity_geo_dict"][0])[-1].keys()
                 total_influence += item["fields"]["influence"][0]
                 retweeted_domain = aggregation(temp_domain, retweeted_domain)
                 retweeted_topic = aggregation(temp_topic, retweeted_topic)
