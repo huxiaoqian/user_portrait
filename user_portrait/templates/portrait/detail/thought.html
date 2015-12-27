@@ -110,7 +110,7 @@ function th_draw_content(data){
     }else{
         for(i=0;i<data.length;i++){
             //console.log(data[i].text);
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[0]['text']+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i]['text']+"</span></div>";
         }
     }
     $('#thought_weibo_text').append(html);
