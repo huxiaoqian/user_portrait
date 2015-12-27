@@ -1190,7 +1190,7 @@ def search_activity(now_ts, uid):
     week_weibo = dict()
     segment_result = dict()
     week_weibo_count = []
-    for i in range(1, 8):
+    for i in range(0, 7):
         ts = now_day_ts - DAY*i
         try:
             week_result = r_cluster.hget('activity_'+str(ts), str(uid))
