@@ -10,21 +10,27 @@ from elasticsearch import Elasticsearch
 from index_cal import influence_weibo_cal, user_index_cal, deliver_weibo_brust, activity_weibo, statistic_weibo, expand_index_action 
 from rediscluster import RedisCluster
 from bci_mappings import mappings
+from send_uid import send_uid
 
 reload(sys)
 sys.path.append('../../')
 from global_utils import  ES_CLUSTER_FLOW1, R_CLUSTER_FLOW1
+from parameter import pre_influence_index, influence_doctype
 
 es = ES_CLUSTER_FLOW1
 cluster_redis = R_CLUSTER_FLOW1
 
-def compute(user_set, es):
+def compute(user_set):
     bulk_action = []
     count_c = 0
-    
+
     weibo_redis = R_CLUSTER_FLOW1
     for user in user_set:
+        origin_weibo_set = weibo_redis.smembers(user + "_origin_weibo") # origin weibo list
+        retweeted_weibo_set = weibo_redis.smembers(user + "_retweeted_weibo") # retweeted weibo list
+        comment_weibo_set = weibo_redis.smembers(user + "comment_weibo") # comment weibo list
         user_info = weibo_redis.hgetall(user)#dict
+
         origin_weibo_retweeted_timestamp = []
         origin_weibo_retweeted_count = []
         origin_weibo_list = []
@@ -38,8 +44,6 @@ def compute(user_set, es):
         user_fansnum = 0
         comment_weibo_number = 0
         user_friendsnum = 0
-        origin_weibo_list = list(weibo_redis.smembers(user+'_origin_weibo'))
-        retweeted_weibo_list = list(weibo_redis.smembers(user+'_retweeted_weibo'))
         for key in user_info.keys():
             if 'origin_weibo_retweeted_timestamp_' in key: # 不同时间段的原创微博被转发的爆发度
                 origin_weibo_retweeted_timestamp.append(key.split('_')[-1])
@@ -61,10 +65,6 @@ def compute(user_set, es):
                 user_fansnum = user_info[key]
             elif "user_friendsnum" in key:
                 user_friendsnum = user_info[key]
-            elif 'comment_weibo' == key:
-                comment_weibo_number = int(user_info[key])
-            elif "_origin_weibo_timestamp" in key:
-                pass
             else:
                 print user_info
                 print key
@@ -85,16 +85,16 @@ def compute(user_set, es):
         """
         user_id = str(user)
         origin_weibo_retweeted_detail, origin_weibo_retweeted_total_number, origin_weibo_retweeted_top, origin_weibo_retweeted_average_number \
-                = statistic_weibo(origin_weibo_retweeted_count, user_info, "_origin_weibo_retweeted")
+                = statistic_weibo(origin_weibo_retweeted_count, origin_weibo_set, user_info, "_origin_weibo_retweeted")
 
         origin_weibo_comment_detail, origin_weibo_comment_total_number, origin_weibo_comment_top, origin_weibo_comment_average_number\
-                = statistic_weibo(origin_weibo_comment_count, user_info, "_origin_weibo_comment")
+                = statistic_weibo(origin_weibo_comment_count, origin_weibo_set, user_info, "_origin_weibo_comment")
 
         retweeted_weibo_retweeted_detail, retweeted_weibo_retweeted_total_number, retweeted_weibo_retweeted_top, retweeted_weibo_retweeted_average_number \
-                = statistic_weibo(retweeted_weibo_retweeted_count, user_info,  '_retweeted_weibo_retweeted')
+                = statistic_weibo(retweeted_weibo_retweeted_count, retweeted_weibo_set, user_info,  '_retweeted_weibo_retweeted')
 
         retweeted_weibo_comment_detail, retweeted_weibo_comment_total_number, retweeted_weibo_comment_top, retweeted_weibo_comment_average_number\
-                = statistic_weibo(retweeted_weibo_comment_count, user_info, '_retweeted_weibo_comment')
+                = statistic_weibo(retweeted_weibo_comment_count, retweeted_weibo_set, user_info, '_retweeted_weibo_comment')
 
 
         origin_weibo_retweeted_brust= activity_weibo(origin_weibo_retweeted_timestamp, user_info, "origin_weibo_retweeted_timestamp")
@@ -120,9 +120,9 @@ def compute(user_set, es):
         user_item['user'] = user
         user_item['user_fansnum'] = user_fansnum
         user_item["user_friendsnum"] = user_friendsnum
-        user_item['origin_weibo_number'] = len(origin_weibo_list)
-        user_item['comment_weibo_number'] = comment_weibo_number
-        user_item['retweeted_weibo_number'] = len(retweeted_weibo_list)
+        user_item['origin_weibo_number'] = len(origin_weibo_set)
+        user_item['comment_weibo_number'] = len(comment_weibo_set)
+        user_item['retweeted_weibo_number'] = len(retweeted_weibo_set)
 
         user_item['origin_weibo_retweeted_total_number'] = origin_weibo_retweeted_total_number
         user_item['origin_weibo_retweeted_average_number'] = origin_weibo_retweeted_average_number
@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
     es_index = "20130905"
-    es_index = "bci_"+es_index
+    es_index = pre_influence_index + es_index
     bool = es.indices.exists(index=es_index)
     print bool
     if not bool:
@@ -182,19 +182,20 @@ if __name__ == "__main__":
     count = 0
     tb = time.time()
 
+    send_uid()
+
     while 1:
         id_set=[]
-        if 1:
-            user_set = cluster_redis.rpop('active_user_id')
-            if user_set:
-                temp = json.loads(user_set)
-                compute(temp, es)
-                count += 10000
+        user_set = cluster_redis.rpop('active_user_id')
+        if user_set:
+            temp = json.loads(user_set)
+            compute(temp)
+            count += 10000
 
-                if True:
-                    ts = time.time()
-                    print "%s : %s" %(count, ts - tb)
-                    tb = ts
+            if True:
+                ts = time.time()
+                print "%s : %s" %(count, ts - tb)
+                tb = ts
             else:
                 print "total_count : %s "  %count
                 #os.system("python update_daily_user_index_rank.py &")
