@@ -77,89 +77,35 @@ Influence.prototype = {   //获取数据，重新画表
 
  Draw_get_top_weibo1:function(data){
   var div_name = 'influence_weibo1';
-  Draw_get_top_weibo(data, div_name)
+  Draw_get_top_weibo(data, div_name);
 },
  Draw_get_top_weibo2:function(data){
   var div_name = 'influence_weibo2';
-  Draw_get_top_weibo(data, div_name)
+  Draw_get_top_weibo(data, div_name);
 },
  Draw_get_top_weibo3:function(data){
   var div_name = 'influence_weibo3';
-  Draw_get_top_weibo(data, div_name)
+  Draw_get_top_weibo(data, div_name);
 },
  Draw_get_top_weibo4:function(data){
   var div_name = 'influence_weibo4';
-  Draw_get_top_weibo(data, div_name)
+  Draw_get_top_weibo(data, div_name);
 },
-  Draw_pie:function(div_name){
-    var myChart = {};
-    myChart = echarts.init(document.getElementById(div_name));
-    var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
-    var data_list = [];
-    var data_dict = {};
-    for (var key in data){
-      data_dict.value = data[key];
-      data_dict.name = key;
-      data_list.push(data_dict);
-      data_dict = {};
-    }
-    var option = {
-      tooltip : {
-        trigger: 'item',
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-      },
-      toolbox: {
-        show : false,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            magicType : {
-                show: true, 
-                type: ['pie', 'funnel'],
-                option: {
-                    funnel: {
-                        x: '25%',
-                        width: '50%',
-                        funnelAlign: 'center',
-                        max: 100
-                    }
-                }
-            },
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-      },
-      calculable : true,
-      series : [
-        {
-            name:'访问来源',
-            type:'pie',
-            radius : ['20%', '40%'],
-            itemStyle : {
-                normal : {
-                    label : {
-                        show : true
-                    },
-                    labelLine : {
-                        show : true
-                    }
-                },
-                emphasis : {
-                    label : {
-                        show : true,
-                        position : 'center',
-                        textStyle : {
-                            fontSize : '14',
-                            fontWeight : 'bold'
-                        }
-                    }
-                }
-            },
-            data:data_list
-        }
-      ]
-    }; 
-    myChart.setOption(option);                
+Draw_pie_all0:function(data){
+    var div_name = ['re_user_domain_all','re_user_topic_all','re_user_geo_all']
+    Draw_pie(data.domian, div_name[0]);
+    Drwa_pie(data.topic, div_name[1]);
+    Draw_pie(data.geo, div_name[2]);
+  },
+
+
+  
+
+  Draw_pie_all1:function(data){
+    var div_name = ['cmt_user_domain_all','cmt_user_topic_all','cmt_user_geo_all']
+    Draw_pie(data.domian, div_name[0]);
+    Drwa_pie(data.topic, div_name[1]);
+    Draw_pie(data.geo, div_name[2]);
   },
 
   Influence_motal:function(data, div_name){         
@@ -213,7 +159,9 @@ Influence.prototype = {   //获取数据，重新画表
     $('#influence_table').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th><th colspan="4" style="text-align:center">转发情况 (1)</th><th colspan="4" style="text-align:center">评论情况 (1)</th></tr>'
+    html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th>';
+    html += '<th id="retweet_distribution" colspan="4" style="text-align:center; font-size:16px;margin-left:10px;cursor: pointer"><u>转发情况</u></th>';
+    html += '<th id="comment_distribution" colspan="4" style="text-align:center; font-size:16px;margin-left:10px;cursor: pointer"><u>评论情况</u></th></tr>';
     html += '<tr><th style="text-align:center">转发总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th>';
     html += '<th style="text-align:center">评论总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th></tr>';
     html += '<tr><th style="text-align:center">原创微博 ('+data['origin_weibo_number']+')</th>';
@@ -239,46 +187,119 @@ Influence.prototype = {   //获取数据，重新画表
     html += '</table>';
     $('#influence_table').append(html);
   },
-  Draw_all_influenced_users_style0:function(data){
-    html = "";
-    html += '转发情况:&nbsp;&nbsp话题:';
-    $('#all_influenced_users_style0').empty();
-    for (key in data['topic']){
-      html += '&nbsp;' + key + '(' + data['topic'][key] + ')';
-    }
-    html += '&nbsp&nbsp;领域:';
-    for (key in data['domian']){
-      html += '&nbsp;' + key + '(' + data['domian'][key]*10 + '%)';
-    }
-    html += '&nbsp;&nbsp;地理位置:';
-    for (key in data['geo']){
-      html += '&nbsp;' + key + '(' + data['geo'][key] + ')';
-    }
-    html += '&nbsp;&nbsp;总数(' + data['total_number'] + ')';
-    html += '&nbsp;&nbsp;影响力:' + data['influence'] ;
-    $('#all_influenced_users_style0').append(html);
-  },
-    Draw_all_influenced_users_style1:function(data){
-    html = "";
-    html += '评论情况:&nbsp;&nbsp话题:';
-    $('#all_influenced_users_style1').empty();
-    for (key in data['topic']){
-      html += '&nbsp;' +  key + '(' + data['topic'][key] + ')';
-    }
-    html += '&nbsp&nbsp;领域:';
-    for (key in data['domian']){
-      html += '&nbsp;' +key + '(' + data['domian'][key] + ')';
-    }
-    html += '&nbsp;&nbsp;地理位置:';
-    for (key in data['geo']){
-      html += '&nbsp;' +  key + '(' + data['geo'][key] + ')';
-    }
-    html += '&nbsp;&nbsp;总数(' + data['total_number'] + ')';
-    html += '&nbsp;&nbsp;影响力:' + data['influence'] ;
-    $('#all_influenced_users_style1').append(html);
-  }
+  // Draw_all_influenced_users_style0:function(data){
+  //   html = "";
+  //   html += '转发情况:&nbsp;&nbsp话题:';
+  //   $('#all_influenced_users_style0').empty();
+  //   for (key in data['topic']){
+  //     html += '&nbsp;' + key + '(' + data['topic'][key] + ')';
+  //   }
+  //   html += '&nbsp&nbsp;领域:';
+  //   for (key in data['domian']){
+  //     html += '&nbsp;' + key + '(' + data['domian'][key]*10 + '%)';
+  //   }
+  //   html += '&nbsp;&nbsp;地理位置:';
+  //   for (key in data['geo']){
+  //     html += '&nbsp;' + key + '(' + data['geo'][key] + ')';
+  //   }
+  //   html += '&nbsp;&nbsp;总数(' + data['total_number'] + ')';
+  //   html += '&nbsp;&nbsp;影响力:' + data['influence'] ;
+  //   $('#all_influenced_users_style0').append(html);
+  // },
+  //   Draw_all_influenced_users_style1:function(data){
+  //   html = "";
+  //   html += '评论情况:&nbsp;&nbsp话题:';
+  //   $('#all_influenced_users_style1').empty();
+  //   for (key in data['topic']){
+  //     html += '&nbsp;' +  key + '(' + data['topic'][key] + ')';
+  //   }
+  //   html += '&nbsp&nbsp;领域:';
+  //   for (key in data['domian']){
+  //     html += '&nbsp;' +key + '(' + data['domian'][key] + ')';
+  //   }
+  //   html += '&nbsp;&nbsp;地理位置:';
+  //   for (key in data['geo']){
+  //     html += '&nbsp;' +  key + '(' + data['geo'][key] + ')';
+  //   }
+  //   html += '&nbsp;&nbsp;总数(' + data['total_number'] + ')';
+  //   html += '&nbsp;&nbsp;影响力:' + data['influence'] ;
+  //   $('#all_influenced_users_style1').append(html);
+  // }
 
 }
+
+ function Draw_pie(data, div_name){
+    {
+    var myChart = {};
+     myChart = echarts.init(document.getElementById(div_name));
+    //var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
+    var data_list = [];
+    var data_dict = {};
+    for (var key in data){
+                       data_dict.value = data[key].toFixed(2);
+                       data_dict.name = key;
+                       data_list.push(data_dict);
+                       data_dict = {};
+                     }
+                     var option = {
+                       tooltip : {
+                         trigger: 'item',
+                         formatter: "{a} <br/>{b} : {c} ({d}%)"
+                       },
+                       toolbox: {
+                         show : false,
+                         feature : {
+                             mark : {show: true},
+                             dataView : {show: true, readOnly: false},
+                             magicType : {
+                                 show: true, 
+                                 type: ['pie', 'funnel'],
+                                 option: {
+                                     funnel: {
+                                         x: '25%',
+                                         width: '50%',
+                                         funnelAlign: 'center',
+                                         max: 100
+                                     }
+                                 }
+                             },
+                             restore : {show: true},
+                             saveAsImage : {show: true}
+                         }
+                       },
+                       calculable : true,
+                       series : [
+                         {
+                             name:'访问来源',
+                             type:'pie',
+                             radius : ['20%', '40%'],
+                             itemStyle : {
+                                 normal : {
+                                     label : {
+                                         show : true
+                                     },
+                                     labelLine : {
+                                         show : true
+                                     }
+                                 },
+                                 emphasis : {
+                                     label : {
+                                         show : true,
+                                         position : 'center',
+                                         textStyle : {
+                                             fontSize : '14',
+                                             fontWeight : 'bold'
+                                         }
+                                     }
+                                 }
+                             },
+                             data:data_list
+                         }
+                       ]
+                     }; 
+                     myChart.setOption(option);
+                        }             
+  }
 
 function Draw_get_top_weibo(data,div_name){
   var html = '';
@@ -305,22 +326,8 @@ function Draw_get_top_weibo(data,div_name){
             html += "</div>";
         }
       $('#'+div_name).append(html);
-      $(".closeList2").off("click").click(function(){
-        $("#float-wrap").addClass("hidden");
-        $("#re_influence").addClass("hidden");
-        $("#cmt_influence").addClass("hidden");
-        return false;
-      });
-      $(".retweet_count").off("click").click(function(){
-        $("#float-wrap").removeClass("hidden");
-        $("#re_influence").removeClass("hidden");
-        return false;
-      });
-      $(".comment_count").off("click").click(function(){
-        $("#float-wrap").removeClass("hidden");
-        $("#cmt_influence").removeClass("hidden");
-        return false;
-      });
+
+      
     }
   }
 
@@ -334,9 +341,45 @@ $('input[name="choose_module"]').click(function(){
     $('#influence_chart').empty();
     Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);    
   }
+})}
+
+function click_action(){
+  $(".closeList2").off("click").click(function(){
+        $("#float-wrap").addClass("hidden");
+        $("#re_influence").addClass("hidden");
+        $("#cmt_influence").addClass("hidden");
+        $("#comment_distribution_content").addClass("hidden");
+        $("#retweet_distribution_content").addClass("hidden");
+        return false;
+      });
+      $(".retweet_count").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#re_influence").removeClass("hidden");
+        return false;
+      });
+      $(".comment_count").off("click").click(function(){       
+        $("#float-wrap").removeClass("hidden");
+        $("#cmt_influence").removeClass("hidden");
+        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=1';
+        Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
+        return false;
+      });
+      $("#retweet_distribution").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        console.log("1213243431");
+        $("#retweet_distribution_content").removeClass("hidden");
+        var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=0';
+        Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
+        return false;
+      });
+      $("#comment_distribution").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#comment_distribution_content").removeClass("hidden");
+        return false;
+      });
+
 }
-)
-}
+
 var weibo3 =['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
 var weibo =[{"text":"【“小学生太需要自由快乐的生活了”】教育专家孙云晓在回忆他的“危险的童年”时说：小学阶段的教育，包括学校、家庭和社会教育的成败得失，将很大程度决定孩子的一生，“小学生太需要自由快乐的生活了，他们上半天课足矣，另外半天适宜参加各种兴趣活动” 。你赞同吗？","zhuanfa":1225453,"pinglun":11425421,"zuigao":16743,"baofa":2135632},{"text":"【“小学生太需要自由快乐的生活了”】教育专家孙云晓在回忆他的“危险的童年”时说：小学阶段的教育，包括学校、家庭和社会教育的成败得失，将很大程度决定孩子的一生，“小学生太需要自由快乐的生活了，他们上半天课足矣，另外半天适宜参加各种兴趣活动” 。你赞同吗？","zhuanfa":123,"pinglun":111,"zuigao":123,"baofa":212},{"text":"【“小学生太需要自由快乐的生活了”】教育专家孙云晓在回忆他的“危险的童年”时说：小学阶段的教育，包括学校、家庭和社会教育的成败得失，将很大程度决定孩子的一生，“小学生太需要自由快乐的生活了，他们上半天课足矣，另外半天适宜参加各种兴趣活动” 。你赞同吗？","zhuanfa":123,"pinglun":111,"zuigao":123,"baofa":212}]
 var weibo2 = ['媒体','娱乐','北京','45',['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1'],['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1']]
@@ -345,8 +388,9 @@ var Influence = new Influence();
 var influence_url = '/attribute/influence_trend/?uid='+parent.personalData.uid ;
 var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+var data_test = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
 for(var i=0; i<div_name2.length; i++){
-  Influence.Draw_pie(div_name2[i]);
+  Draw_pie(data_test, div_name2[i]);
 };
 Influence.Influence_motal(weibo2,div_name[0]);
 Influence.Influence_motal(weibo2,div_name[1]);
@@ -378,6 +422,11 @@ var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid=1182391231&date=20
 Influence.call_sync_ajax_request(get_top_weibo_url_style2, Influence.ajax_method, Influence.Draw_get_top_weibo3);
 var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-05&style=3';
 Influence.call_sync_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
+// var influence_vector_url = '';
+// for (var n=0; n<tag_vector.length; n++){
+//   global_tag_vector.push(tag_vector[n]);
+// }
+click_action();
 
-
+      
 
