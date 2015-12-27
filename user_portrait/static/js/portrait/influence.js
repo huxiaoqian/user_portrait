@@ -92,22 +92,23 @@ Influence.prototype = {   //获取数据，重新画表
   Draw_get_top_weibo(data, div_name);
 },
 Draw_pie_all0:function(data){
-  console.log("999999999999999");
-    console.log(data.geo);
+  
+    $('#all_re_conclusion').empty();
+    var html = '该类用户共有'+data.total_number+'人,平均影响力为'+data.influence.toFixed(2);
+    $('#all_re_conclusion').append(html);
     var div_name = ['re_user_domain_all','re_user_topic_all','re_user_geo_all']
     Draw_pie(data.domian, div_name[0]);
     Draw_pie(data.geo, div_name[2]);
     Draw_pie(data.topic, div_name[1]);
     
   },
-
-
-  
-
   Draw_pie_all1:function(data){
     var div_name = ['cmt_user_domain_all','cmt_user_topic_all','cmt_user_geo_all'];
     console.log("999999999999999")
-    console.log(data.domian);
+    console.log(data.influence);
+    $('#all_cmt_conclusion').empty();
+    var html = '该类用户共有'+data.total_number+'人,平均影响力为'+data.influence.toFixed(2);
+    $('#all_cmt_conclusion').append(html);
     Draw_pie(data.domian, div_name[0]);
     Draw_pie(data.topic, div_name[1]);
     Draw_pie(data.geo, div_name[2]);
@@ -152,14 +153,7 @@ Draw_pie_all0:function(data){
     console.log(html);
     $('#influence_conclusion_c').append(data);
   },
-  // Draw_yesterday_table_influence:function(data){
-  //   console.log(data);
-  //   console.log('22222');
-  // },
-  // Draw_current_influence_comment:function(data){
-  //   console.log(data);
-  //   console.log("333");
-  // },
+  
   Draw_user_influence_detail:function(data){
     $('#influence_table').empty();
     var html = '';
@@ -192,45 +186,14 @@ Draw_pie_all0:function(data){
     html += '</table>';
     $('#influence_table').append(html);
   },
-  // Draw_all_influenced_users_style0:function(data){
-  //   html = "";
-  //   html += '转发情况:&nbsp;&nbsp话题:';
-  //   $('#all_influenced_users_style0').empty();
-  //   for (key in data['topic']){
-  //     html += '&nbsp;' + key + '(' + data['topic'][key] + ')';
-  //   }
-  //   html += '&nbsp&nbsp;领域:';
-  //   for (key in data['domian']){
-  //     html += '&nbsp;' + key + '(' + data['domian'][key]*10 + '%)';
-  //   }
-  //   html += '&nbsp;&nbsp;地理位置:';
-  //   for (key in data['geo']){
-  //     html += '&nbsp;' + key + '(' + data['geo'][key] + ')';
-  //   }
-  //   html += '&nbsp;&nbsp;总数(' + data['total_number'] + ')';
-  //   html += '&nbsp;&nbsp;影响力:' + data['influence'] ;
-  //   $('#all_influenced_users_style0').append(html);
-  // },
-  //   Draw_all_influenced_users_style1:function(data){
-  //   html = "";
-  //   html += '评论情况:&nbsp;&nbsp话题:';
-  //   $('#all_influenced_users_style1').empty();
-  //   for (key in data['topic']){
-  //     html += '&nbsp;' +  key + '(' + data['topic'][key] + ')';
-  //   }
-  //   html += '&nbsp&nbsp;领域:';
-  //   for (key in data['domian']){
-  //     html += '&nbsp;' +key + '(' + data['domian'][key] + ')';
-  //   }
-  //   html += '&nbsp;&nbsp;地理位置:';
-  //   for (key in data['geo']){
-  //     html += '&nbsp;' +  key + '(' + data['geo'][key] + ')';
-  //   }
-  //   html += '&nbsp;&nbsp;总数(' + data['total_number'] + ')';
-  //   html += '&nbsp;&nbsp;影响力:' + data['influence'] ;
-  //   $('#all_influenced_users_style1').append(html);
-  // }
-
+  Influence_tag_vector:function(data){
+    var tag_vector = []
+    tag_vector.push('影响力类型');
+    tag_vector.push(data);
+    global_tag_vector.push(tag_vector);
+    
+  },
+  
 }
 
  function Draw_pie(data, div_name){
@@ -238,9 +201,7 @@ Draw_pie_all0:function(data){
       console.log("83ry98yerre");
     }else{
     var myChart = {};
-    console.log("8888888888");
-    console.log(div_name);
-     myChart = echarts.init(document.getElementById(div_name));
+    myChart = echarts.init(document.getElementById(div_name));
     //var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
     var data_list = [];
     var data_dict = {};
@@ -433,10 +394,11 @@ var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid=1182391231&date=20
 Influence.call_sync_ajax_request(get_top_weibo_url_style2, Influence.ajax_method, Influence.Draw_get_top_weibo3);
 var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-05&style=3';
 Influence.call_sync_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
-// var influence_vector_url = '';
-// for (var n=0; n<tag_vector.length; n++){
-//   global_tag_vector.push(tag_vector[n]);
-// }
+
+var influence_tag_url = '/attribute/current_tag_vector/?uid=1218353337&date=2013-09-02';
+Influence.call_sync_ajax_request(influence_tag_url, Influence.ajax_method, Influence.Influence_tag_vector);
+
+
 click_action();
 
       

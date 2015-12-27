@@ -348,7 +348,16 @@ function show_results(data){
   Draw_keyword(hashtag, hashtag_name, hashtag_more, hash_more);
   Draw_topic(topic);
   show_conclusion(conclusion);
-  show_domain(domain)
+  show_domain(domain);
+
+  var tag_vector = data.tag_vector;
+  console.log(tag_vector);
+  for(var i=0; i<tag_vector.length;i++){
+    if(tag_vector[i][1] == ''){
+      tag_vector[i][1] = '暂无数据'
+    }
+    global_tag_vector.push(tag_vector[i]);
+  }
   }
 
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
