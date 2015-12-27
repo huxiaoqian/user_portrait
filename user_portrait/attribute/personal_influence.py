@@ -137,7 +137,7 @@ def influenced_detail(uid, date, style):
     elif style == 1:
         detail_text = get_text(origin_comment, date, user_info, style)
     elif style == 2:
-        detail_text = get_text(retweeted-retweeted, date, user_info, style)
+        detail_text = get_text(retweeted_retweeted, date, user_info, style)
     else:
         detail_text = get_text(retweeted_comment, date, user_info, style)
     #detail_text["origin_retweeted"] = get_text(origin_retweetd, date)
