@@ -157,8 +157,10 @@ def get_user_url(uid_list):
         temp = []
         if item['found']:
             temp.append(item['_source']["photo_url"])
+            temp.append(item['_source']['nick_name'])
             temp.append(item['_id'])
         else:
+            temp.append("unknown")
             temp.append("unknown")
             temp.append(item['_id'])
         results.append(temp)
@@ -229,7 +231,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
                 }
             }
         },
-        "size":10000
+        "size":100000
     }
     #详细影响到的人 
     date1 = str(date).replace('-', '')
