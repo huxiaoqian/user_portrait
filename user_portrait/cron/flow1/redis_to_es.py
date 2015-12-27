@@ -172,7 +172,7 @@ def compute(user_set, es):
 if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130904"
+    es_index = "20130905"
     es_index = "bci_"+es_index
     bool = es.indices.exists(index=es_index)
     print bool
