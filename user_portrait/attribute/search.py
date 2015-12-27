@@ -2158,7 +2158,7 @@ def get_influence_trend(uid):
                 results[item_list[0]] = rank['count']
     #print 'results:', results
     sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))
-    time_list = [item[0] for item in sort_results]
+    time_list = [ts2datetime(datetimestr2ts(item[0])) for item in sort_results]
     influence_list = [item[1] for item in sort_results]
     
     max_influence = max(influence_value_list)

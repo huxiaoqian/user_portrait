@@ -110,14 +110,23 @@ function th_draw_content(data){
     }else{
         for(i=0;i<data.length;i++){
             //console.log(data[i].text);
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[0]['text']+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i]['text']+"</span></div>";
         }
     }
     $('#thought_weibo_text').append(html);
 }
 
 function emotions(data){
-    var times = data['time_list'];
+    var times = [];
+    if (index =='week'){
+        times = data['time_list'];}
+    else{
+        for (var t in data['time_list']){
+            console.log(data['time_list'][t]);
+            times.push(data['time_list'][t].substr(11,5));
+        }
+    }
+    console.log(times);
     var names = ['中性','积极','悲伤','愤怒']; 
     var data0 = data['trend_result']['0'];
     var data1 = data['trend_result']['1'];
