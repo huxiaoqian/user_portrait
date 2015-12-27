@@ -76,9 +76,7 @@ $(function(){
 	</div>
 	<div class="power">
 		<span class="activePower" style="color:black;">历史状态&nbsp;&nbsp;</span>
-		<span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（No.<span id="APrank"></span>/<span id="APsum"></span>）
-		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
-		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（No.<span id="FPrank"></span>/<span id="FPsum"></span>）
+		<span id="histactive" class="activePower lightw"></span>
 	</div>
 	<div class="PersonPre" style="margin-bottom:5px;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</span></div>
     <div class="PersonPre"><span class="lightw">备注：</span>
@@ -183,15 +181,6 @@ Personal.prototype = {   //群组搜索
           success:callback
         });
 	},
-    remarkData:function(data){
-        //console.log(data);
-        if (data == ''){
-            $('#extraDetail').html('暂无');
-        }
-        else{
-            $('#extraDetail').html(data);
-        }
-    },
 	personData:function(data){
 		personalData = data ;
         console.log(data);
@@ -305,7 +294,24 @@ Personal.prototype = {   //群组搜索
             pattern.innerHTML = "无此数据";
         }
 		
-	}
+	},
+    remarkData:function(data){
+        //console.log(data);
+        if (data == ''){
+            $('#extraDetail').html('暂无');
+        }
+        else{
+            $('#extraDetail').html(data);
+        }
+    },
+    historyData:function(data){
+        //console.log(data);
+        $('#histactive').html(data[0]+'，且'+data[1]);
+    },
+    currentData:function(data){
+        console.log(data);
+        //$('#histactive').html(data[0]+'，且'+data[1]);
+    },
 }
 var global_tag_vector = new Array(); //全局标签化向量
 
@@ -316,6 +322,10 @@ var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
 var url = "/attribute/get_remark/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.remarkData);
+var url = "/attribute/history_activeness_influence/?uid=" + uid;
+Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.historyData);
+var url = "/attribute/current_tag_vector/?uid=" + uid;
+Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.currentData);
 
 function bind_remark_edit(Personal){
     $('#extraDetail').click(function(){
