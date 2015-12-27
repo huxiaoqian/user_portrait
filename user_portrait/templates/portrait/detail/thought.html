@@ -16,7 +16,10 @@
 </div>
 </div>
 <div style="width:680px;height:400px;" id="emotion"></div>
-<div style="width: 280px;height: 380px;background-color:whitesmoke;margin-left: 20px;" id="content"></div>
+<div style="width:280px;height:380px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
+	<div id="thought_weibo_text" style="padding:0px 10px;">
+	</div>
+</div>
 <div style="width:998px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
@@ -85,7 +88,7 @@ function choose_time(){
 
 function draw_thought_content(data){
     var html = '';
-    $('#content').empty();
+    $('#thought_weibo_text').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
@@ -94,7 +97,7 @@ function draw_thought_content(data){
             html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[0]['text']+"</span></div>";
         }
     }
-    $('#content').append(html);
+    $('#thought_weibo_text').append(html);
 }
 
 function emotions(data){
