@@ -22,7 +22,7 @@ from user_portrait.global_utils import es_flow_text as es
 from user_portrait.global_utils import flow_text_index_name_pre as pre_text_index
 from user_portrait.global_utils import portrait_index_type, flow_text_index_type, profile_index_type, profile_index_name
 
-#user_portrait = "user_portrait"
+user_portrait = "user_portrait_1222"
 #es = Elasticsearch("219.224.135.93:9206", timeout=60)
 influence_date = ts2datetime(time.time())
 index_name = pre_index + influence_date.replace("-","")
@@ -137,7 +137,7 @@ def influenced_detail(uid, date, style):
     elif style == 1:
         detail_text = get_text(origin_comment, date, user_info, style)
     elif style == 2:
-        detail_text = get_text(retweeted-retweeted, date, user_info, style)
+        detail_text = get_text(retweeted_retweeted, date, user_info, style)
     else:
         detail_text = get_text(retweeted_comment, date, user_info, style)
     #detail_text["origin_retweeted"] = get_text(origin_retweetd, date)
@@ -154,7 +154,7 @@ def get_user_url(uid_list):
         temp = []
         if item['found']:
             temp.append(item['_source']["photo_url"])
-            temp.append(tem['_id'])
+            temp.append(item['_id'])
         else:
             temp.append("unknown")
             temp.append(item['_id'])
@@ -283,9 +283,12 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
             average_influence = total_influence/count
         except:
             average_influence = 0
-    retweeted_results["domian"] = retweeted_domain
-    retweeted_results["topic"] = retweeted_topic
-    retweeted_results["geo"] = retweeted_geo
+    sorted_retweeted_domain = sorted(retweeted_domain.items(),key=lambda x:x[1], reverse=True)
+    sorted_retweeted_topic = sorted(retweeted_topic.items(),key=lambda x:x[1], reverse=True)
+    sorted_retweeted_geo = sorted(retweeted_geo.items(), key=lambda x:x[1], reverse=True)
+    retweeted_results["domian"] = sorted_retweeted_domain[:5]
+    retweeted_results["topic"] = sorted_retweeted_topic[:5]
+    retweeted_results["geo"] = sorted_retweeted_geo[:5]
     retweeted_results["influence"] = average_influence
 
     return retweeted_results

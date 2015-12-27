@@ -183,19 +183,18 @@ function Draw_topic(data){
   myChart2.setOption(option);
 }
 function show_domain(data){
-  console.log(data);
-  console.log('1111111111');
+
   // var html = '';
-  // html += '<h3>用户领域分析</h3>';
+  //html += '<h3>用户领域分析</h3>';
   data1 = '根据用户个人信息分类:'+data[0][0];
   data2 = '根据用户粉丝结构分类:'+data[0][1];
   data3 = '根据用户文本分类:'+data[0][2];
-  data4 = '根据用户个人信息分类:'+data[1];
+  data4 = data[1];
 var myChart1 = echarts.init(document.getElementById('preference_domain')); 
 var option = {
     tooltip : {
         trigger: 'item',
-        formatter: "{b}: {c}"
+        formatter: "{b}"
     },
     toolbox: {
         show : true,
@@ -213,19 +212,19 @@ var option = {
             name:'树图',
             type:'tree',
             orient: 'horizontal',  // vertical horizontal
-            rootLocation: {x: 20, y: '50%'}, // 根节点位置  {x: 'center',y: 10}
+            rootLocation: {x: 40, y: '50%'}, // 根节点位置  {x: 'center',y: 10}
             nodePadding: 20,
             symbol: 'circle',
-            symbolSize: 40,
+            symbolSize: 20,
             itemStyle: {
                 normal: {
                     label: {
                         show: true,
                         position: 'inside',
                         textStyle: {
-                            color: '#cc9999',
-                            fontSize: 15,
-                            fontWeight:  'bolder'
+                            color: '#000',
+                            fontSize: 16,
+                            font_family: "Microsoft YaHei UI"
                         }
                     },
                     lineStyle: {
@@ -242,14 +241,15 @@ var option = {
             },
             data: [
                 {
-                    name: '用户领域分析',
-                    value: 2,
-                    symbolSize: [40, 70],
+                    name: data4,
+                    //value: 2,
+                    symbolSize: [0, 10],
                     // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
                     itemStyle: {
                         normal: {
+                           color: '##DDDDDD',
                             label: {
-                                show: false
+                                show: true
                             }
                         }
                     },
@@ -261,7 +261,7 @@ var option = {
                           value: 4,
                           itemStyle: {
                               normal: {
-                                  color: '#fa6900',
+                                  color: '#CCC',
                                   label: {
                                       show: true,
                                       position: 'right'
@@ -283,7 +283,7 @@ var option = {
                           value: 4,
                           itemStyle: {
                               normal: {
-                                  color: 'red',
+                                  color: '#999',
                                   label: {
                                       show: true,
                                       position: 'right'
@@ -305,7 +305,7 @@ var option = {
                           value: 4,
                           itemStyle: {
                               normal: {
-                                  color: 'blue',
+                                  color: '#999999',
                                   label: {
                                       show: true,
                                       position: 'right'
@@ -319,29 +319,7 @@ var option = {
                                   borderWidth: 0
                               }
                           }
-                        },
-                          {
-                          name: data4,
-                          symbol: 'circle',
-                          symbolSize: 20,
-                          value: 4,
-                          itemStyle: {
-                              normal: {
-                                  color: 'green',
-                                  label: {
-                                      show: true,
-                                      position: 'right'
-                                  },
-                                  
-                              },
-                              emphasis: {
-                                  label: {
-                                      show: false
-                                  },
-                                  borderWidth: 0
-                              }
-                          }
-                        }
+                        }    
                     ]
                 }
             ]
@@ -349,7 +327,7 @@ var option = {
     ]
 };
    myChart1.setOption(option);               
-  // $("#preference_domain").append(html);
+   //$("#preference_domain_title").append(html);
 }
 
 function show_results(data){
