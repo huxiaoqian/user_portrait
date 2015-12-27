@@ -178,8 +178,12 @@ function emotions(data){
                 console.log(param);
                 var sentiment = param.seriesIndex;
                 var date = new Date(param.name);
-                var starts_ts = date.getTime();
-                var start_ts = starts_ts.toString().substr(0,10);
+                var starts_ts = date.getTime().toString().substr(0,10);
+                console.log(index);
+                if(index == 'week'){
+                var start_ts = parseInt(starts_ts)-28800;                   
+                }
+                else if(index == 'day'){var start_ts = starts_ts;}
                 console.log(start_ts);
                 ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({
