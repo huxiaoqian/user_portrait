@@ -31,9 +31,7 @@ Draw_attention:function(data){
 }
 var Attention = new Attention();
 url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
-console.log('asdgag');
 Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-console.log('asasdfdgag');
 function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
@@ -95,16 +93,13 @@ function attention(data,UserID,UserName,texts){
                     ribbonType: false,
                     categories : [
                         {
-                            name: '用户',
-                            symbol:'star'
+                            name: '用户'
                         },
                        {
-                            name:'已入库',
-                            symbol:'circle'
+                            name:'已入库'
                         },
 						{
-                            name:'未入库',
-                            symbol:'diamond'
+                            name:'未入库'
                         },
                     ],
                     itemStyle: {
@@ -112,8 +107,14 @@ function attention(data,UserID,UserName,texts){
                             color:function(param){
                                 console.log(param);
                                 console.log(param.series.nodes[param.dataIndex].value);
-                                if(param.series.nodes[param.dataIndex].value > 20){
+                                if(param.series.nodes[param.dataIndex].value == '9'){
                                     return 'red';
+                                }
+                                else if(param.series.nodes[param.dataIndex].value == '8'){
+                                    return 'blue';
+                                }
+                                else if(param.series.nodes[param.dataIndex].value == '7'){
+                                    return 'yellow';
                                 }
                             },
                             label: {

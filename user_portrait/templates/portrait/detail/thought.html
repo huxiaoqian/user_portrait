@@ -110,7 +110,7 @@ function th_draw_content(data){
     }else{
         for(i=0;i<data.length;i++){
             //console.log(data[i].text);
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[0]['text']+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i]['text']+"</span></div>";
         }
     }
     $('#thought_weibo_text').append(html);
@@ -195,7 +195,7 @@ function emotions(data){
                     });
                 var html0 = '';
                 $('#select_time').empty();  
-                html0 += "<div>当前选择时间段:</div><div>"+param.name+"</div><br><div>当前选择情绪:</div><div>"+names[sentiment]+'</div>';
+                html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+param.name+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>"+names[sentiment]+'</div>';
                 $('#select_time').append(html0);
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
@@ -213,24 +213,31 @@ function draw_think(data){
     var first_content = [];
     var second_content = [];
     var nod = {};
+    var neg = 0;
     console.log(first);
     var i = 0;
     for(var key in first){
         var nod = {};
         nod['name'] = first_name[i];
-        nod['value'] = first[key];
+        nod['value'] = first[key].toFixed(2);
         first_content.push(nod);
+        if(key == 'negemo'){
+            neg = first[key];
+            var j = 0;
+            for(var keys in second){
+                var nod = {};
+                nod['name'] = second_name[j];
+                nod['value'] = (second[keys] * neg).toFixed(2);
+                second_content.push(nod);
+                j = j + 1;
+                //second_name.push(key);
+            }
+        }
+        else {
+            second_content.push(nod);
+        }
         i = i + 1;
         //first_name.push(key);
-    }
-    var j = 0;
-    for(var key in second){
-        var nod = {};
-        nod['name'] = second_name[j];
-        nod['value'] = second[key];
-        second_content.push(nod);
-        j = j + 1;
-        //second_name.push(key);
     }
     console.log(first_content);
 var myChart = echarts.init(document.getElementById('pie_emotion'));
