@@ -22,7 +22,7 @@ from user_portrait.global_utils import es_flow_text as es
 from user_portrait.global_utils import flow_text_index_name_pre as pre_text_index
 from user_portrait.global_utils import portrait_index_type, flow_text_index_type, profile_index_type, profile_index_name
 
-#user_portrait = "user_portrait"
+user_portrait = "user_portrait_1222"
 #es = Elasticsearch("219.224.135.93:9206", timeout=60)
 influence_date = ts2datetime(time.time())
 index_name = pre_index + influence_date.replace("-","")
@@ -63,28 +63,53 @@ def get_user_influence(uid, date):
     order_count = es_cluster.count(index=index_name, doc_type=influence_doctype, body=query_body)['count']
 
     result["total_count"] = total_count
-    result["order_count"] = order_count
+    result["order_count"] = order_count + 1
 
     return json.dumps(result)
 
 
-def get_text(top_list, date):
+def get_text(top_list, date, user_info, style):
 
 # input: [[mid1, no.1], [mid2, no.2], ['mid3', no.3]]
 # output: [[text1, no.1], [text2, no.2], [text3, no.3]]
+    results = []
+    detail_list = ["origin_weibo_retweeted_detail", "origin_weibo_comment_detail", "retweeted_weibo_retweeted_detail", "retweeted_weibo_comment_detail"]
     index_flow_text = pre_text_index + date
-    if int(top_list[0][0]) != 0: # no one
-        mid_list = ["0", "0", "0"]
+    if len(top_list) != 0: # no one
+        mid_list = []
         for i in range(len(top_list)):
-            mid_list[i] = top_list[i][0]
+            mid_list.append(top_list[i][0])
         search_result = es.mget(index=index_flow_text, doc_type=flow_text_index_type, body={"ids":mid_list}, fields="text")["docs"]
         for i in range(len(top_list)):
-            if search_result[i]["found"]:
-                top_list[i][0] = search_result[i]["fields"]["text"][0]
+            temp = []
+            temp.append(mid_list[i])
+            if int(style) == 0:
+                temp.append(top_list[i][1])
+                temp.append(json.loads(user_info[detail_list[1]]).get(top_list[i][0], 0))
+            elif int(style) == 1:
+                temp.append(json.loads(user_info[detail_list[0]]).get(top_list[i][0], 0))
+                temp.append(top_list[i][1])
+            elif int(style) == 2:
+                temp.append(top_list[i][1])
+                temp.append(json.loads(user_info[detail_list[3]]).get(top_list[i][0], 0))
             else:
-                top_list[i][0] = ""
-
-    return top_list
+                temp.append(json.loads(user_info[detail_list[2]]).get(top_list[i][0], 0))
+                temp.append(top_list[i][1])
+            if search_result[i]["found"]:
+                temp.append(search_result[i]["fields"]["text"][0])
+            else:
+                date = ts2datetime(datetime2ts(date)-24*3600)
+                index_flow_text = pre_text_index + date
+                try:
+                    temp_result = es.get(index=index_flow_text, doc_type=flow_text_index_type, id=top_list[i][0])
+                except:
+                    temp_result = {}
+                if temp_result.has_key("_source"):
+                    temp.append(temp_result["_source"]["text"])
+                else:
+                    temp.append("")
+            results.append(temp)
+    return results
 
 
 
@@ -108,13 +133,13 @@ def influenced_detail(uid, date, style):
     retweeted_comment = json.loads(user_info["retweeted_weibo_comment_top"])
 
     if style == 0:
-        detail_text = get_text(origin_retweetd, date)
+        detail_text = get_text(origin_retweetd, date, user_info, style)
     elif style == 1:
-        detail_text = get_text(origin_comment, date)
+        detail_text = get_text(origin_comment, date, user_info, style)
     elif style == 2:
-        detail_text = get_text(origin_comment, date)
+        detail_text = get_text(retweeted_retweeted, date, user_info, style)
     else:
-        detail_text = get_text(retweeted_comment, date)
+        detail_text = get_text(retweeted_comment, date, user_info, style)
     #detail_text["origin_retweeted"] = get_text(origin_retweetd, date)
     #detail_text["origin_comment"] = get_text(origin_comment, date)
     #detail_text["retweeted_retweeted"] = get_text(retweeted_retweeted, date)
@@ -122,7 +147,22 @@ def influenced_detail(uid, date, style):
 
     return json.dumps(detail_text)
 
-
+def get_user_url(uid_list):
+    results = []
+    try:
+        es_results = es_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids": uid_list})['docs']
+    except:
+        es_results = {}
+    for item in es_results:
+        temp = []
+        if item['found']:
+            temp.append(item['_source']["photo_url"])
+            temp.append(item['_id'])
+        else:
+            temp.append("unknown")
+            temp.append(item['_id'])
+        results.append(temp)
+    return results
 
 def influenced_people(uid, mid, influence_style, date, default_number=20):
 # uid 
@@ -152,28 +192,47 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
     else: # commented people
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}])
     search_results = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"], timeout=30)["hits"]["hits"]
-    print search_results
     if len(search_results) == 0:
         return json.dumps([[],[]])
     results = []
     for item in search_results:
         results.append(item["fields"]["uid"][0])
 
-    portrait_results = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids": results}, fields=["importance","uid"])["docs"]
+    portrait_results = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": results}, fields=["importance","uid"])["docs"]
     in_portrait = {}
     out_portrait = []
-    print portrait_results
     for item in portrait_results:
         if item["found"]:
             in_portrait[item["fields"]["uid"][0]] = item["fields"]["importance"][0]
         else:
             out_portrait.append(item['_id'])
     in_portrait = sorted(in_portrait.items(), key=lambda x:x[1], reverse=True)
+    temp_list = []
+    for item in in_portrait:
+        temp_list.append(item[0])
+    in_portrait_url = get_user_url(temp_list)
+    out_portrait_url = get_user_url(out_portrait)
+    print temp_list
+    print out_portrait_url
 
+    return ([in_portrait_url[:default_number], out_portrait_url[:default_number]])
 
-    return json.dumps([in_portrait[:default_number], out_portrait[:default_number]])
-
-def influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweeted_retweeted_mid, message_type):
+def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, message_type):
+    query_body = {
+        "query":{
+            "filtered":{
+                "filter":{
+                    "bool":{
+                        "should":[
+                        ],
+                        "must": [
+                        ]
+                    }
+                }
+            }
+        },
+        "size":10000
+    }
     #详细影响到的人 
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
@@ -187,7 +246,6 @@ def influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweete
             query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
         query_body["query"]["filtered"]["filter"]["bool"]["must"] = [{"term":{"message_type": message_type}}, {"term":{"root_uid": uid}}]
         origin_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
-        print origin_retweeted_result
         if origin_retweeted_result:
             for item in origin_retweeted_result:
                 origin_retweeted_uid.append(item["fields"]["uid"][0])
@@ -196,7 +254,6 @@ def influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweete
             query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term":{"message_type": message_type}},{"term": {"directed_uid": uid}}])
         retweeted_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
-        print retweeted_retweeted_result
         if retweeted_retweeted_result:
             for item in retweeted_retweeted_result:
                 retweeted_retweeted_uid.append(item["fields"]["uid"][0])
@@ -211,13 +268,13 @@ def influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweete
     retweeted_uid_list.extend(origin_retweeted_uid)
     retweeted_uid_list.extend(retweeted_retweeted_uid)
     if retweeted_uid_list:
-        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topici_string", "activity_geo", "influence"])["docs"]
+        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topic_string", "activity_geo_dict", "influence"])["docs"]
         for item in user_portrait_result:
             if item["found"]:
                 count += 1
                 temp_domain = item["fields"]["domain"][0].split('&')
                 temp_topic = item["fields"]["topic_string"][0].split('&')
-                temp_geo = item["fields"]["activity_geo"][0].split('&')
+                temp_geo = json.loads(item["fields"]["activity_geo"][0])[-1].keys()
                 total_influence += item["fields"]["influence"][0]
                 retweeted_domain = aggregation(temp_domain, retweeted_domain)
                 retweeted_topic = aggregation(temp_topic, retweeted_topic)
@@ -229,14 +286,26 @@ def influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweete
             average_influence = total_influence/count
         except:
             average_influence = 0
-    retweeted_results["domian"] = retweeted_domain
-    retweeted_results["topic"] = retweeted_topic
-    retweeted_results["geo"] = retweeted_geo
+    sorted_retweeted_domain = sorted(retweeted_domain.items(),key=lambda x:x[1], reverse=True)
+    sorted_retweeted_topic = sorted(retweeted_topic.items(),key=lambda x:x[1], reverse=True)
+    sorted_retweeted_geo = sorted(retweeted_geo.items(), key=lambda x:x[1], reverse=True)
+    retweeted_results["domian"] = sorted_retweeted_domain[:5]
+    retweeted_results["topic"] = sorted_retweeted_topic[:5]
+    retweeted_results["geo"] = sorted_retweeted_geo[:5]
     retweeted_results["influence"] = average_influence
 
     return retweeted_results
+# 某条微博的影响力，人和分布
+def detail_weibo_influence(uid, mid, style, date, number):
+    results = dict()
+    influence_users = influenced_people(uid, mid, style, date, number)
+    results["influence_users"] = influence_users
+    influence_distribution = influenced_user_detail(uid, date, [mid], [mid], style)
+    results["influence_distribution"] = influence_distribution
+    return results
 
-def statistics_influence_people(uid, date):
+
+def statistics_influence_people(uid, date, style):
     # output: different retweeted and comment, uids' domain distribution, topic distribution, registeration geo distribution
     results = {} # retwweted weibo people and comment weibo people
     results["retweeted"] = {}
@@ -250,7 +319,6 @@ def statistics_influence_people(uid, date):
     except:
         bci_result = []
         return json.dumps(results)
-    print bci_result
     origin_retweeted_mid = [] # origin weibo mid
     retweeted_retweeted_mid = [] # retweeted weibo mid
     origin_comment_mid = []
@@ -259,6 +327,8 @@ def statistics_influence_people(uid, date):
     retweeted_retweeted = json.loads(bci_result["retweeted_weibo_retweeted_detail"])
     origin_comment = json.loads(bci_result["origin_weibo_comment_detail"])
     retweeted_comment = json.loads(bci_result["retweeted_weibo_comment_detail"])
+    retweeted_total_number = sum(origin_retweeted.values()) + sum(retweeted_retweeted.values())
+    comment_total_number = sum(origin_comment.values()) + sum(retweeted_comment.values())
     if origin_retweeted:
         origin_retweeted_mid = filter_mid(origin_retweeted)
     if retweeted_retweeted:
@@ -281,14 +351,18 @@ def statistics_influence_people(uid, date):
                 }
             }
         },
-        "size":100000
+        "size":10000
     }
 
-    retweeted_results = influenced_user_detail(uid, date, query_body, origin_retweeted_mid, retweeted_retweeted_mid, 3)
-    comment_results = influenced_user_detail(uid, date, query_body, origin_comment_mid, retweeted_comment_mid, 2)
-    results["retweeted"] = retweeted_results
-    results["comment"] = comment_results
 
+    if int(style) == 0: # retweeted
+        retweeted_results = influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, 3)
+        retweeted_results["total_number"] = retweeted_total_number
+        results = retweeted_results
+    else:
+        comment_results = influenced_user_detail(uid, date, origin_comment_mid, retweeted_comment_mid, 2)
+        comment_results["total_number"] = comment_total_number
+        results = comment_results
 
     return json.dumps(results)
 
@@ -297,12 +371,14 @@ def tag_vector(uid, date):
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
     index_flow_text = pre_text_index + date
+    result = []
 
     try:
         bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         tag = influence_tag["0"]
-        return tag
+        result.append(tag)
+        return json.dumps(result)
 
     origin_retweeted = json.loads(bci_result["origin_weibo_retweeted_detail"])
     retweeted_retweeted = json.loads(bci_result["retweeted_weibo_retweeted_detail"])
@@ -321,20 +397,22 @@ def tag_vector(uid, date):
             tag = influence_tag['2']
         else:
             tag = influence_tag['4']
-
-    return tag
+    result.append(tag)
+    return json.dumps(result)
 
 
 def comment_on_influence(uid, date):
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
     index_flow_text = pre_text_index + date
+    result = []
 
     try:
         bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         description = CURRENT_INFLUENCE_CONCLUSION['0']
-        return description
+        result.append(description)
+        return json.dumps(result)
 
     user_index = bci_result['user_index']
     if user_index < CURRNET_INFLUENCE_THRESHOULD[0]:
@@ -355,8 +433,8 @@ def comment_on_influence(uid, date):
             description = description + INFLUENCE_TOTAL_CONCLUSION[i]
             if bci_result[INFLUENCE_BRUST_LIST[i]] > INFLUENCE_BRUST_THRESHOULD[i]:
                 description = description + INFLUENCE_BRUST_CONCLUSION[i]
-
-    return description
+    result.append(description)
+    return json.dumps(result)
 
 
 if __name__ == "__main__":

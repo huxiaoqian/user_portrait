@@ -80,8 +80,10 @@ $(function(){
 		<span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
 		<span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（No.<span id="FPrank"></span>/<span id="FPsum"></span>）
 	</div>
-	<div class="PersonPre" style="margin-bottom:5px;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
-	<div class="PersonPre"><span class="lightw">备注：</span><span class="" style="font-family: "宋体";" id="extraDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
+	<div class="PersonPre" style="margin-bottom:5px;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</span></div>
+    <div class="PersonPre"><span class="lightw">备注：</span>
+        <span style="font-family: "宋体";" id="extraDetail">此账号信息由微博系统自动发出。</span>
+    </div>
 </div>
 <div id="float-wrap" class="hidden"></div>
 
@@ -172,18 +174,136 @@ $(function(){
 	this.ajax_method = 'GET';
 }
 Personal.prototype = {   //群组搜索
-call_sync_ajax_request:function(url, method, callback){
-	$.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
+    call_sync_ajax_request:function(url, method, callback){
+        $.ajax({
+          url: url,
+          type: method,
+          dataType: 'json',
+          async: false,
+          success:callback
+        });
 	},
+    remarkData:function(data){
+        //console.log(data);
+        if (data == ''){
+            $('#extraDetail').html('暂无');
+        }
+        else{
+            $('#extraDetail').html(data);
+        }
+    },
 	personData:function(data){
 		personalData = data ;
-       console.log(data);
+        console.log(data);
+        var contact_url = '/index/contact/?uid=' + uid;
+        $('#contact').attr('href', contact_url)
+        var homepage_url = 'http://weibo.com/u/' + uid;
+        $('#homepage').attr('href', homepage_url)
+        var APsum = document.getElementById('APsum');
+        APsum.innerHTML = personalData.all_count;
+        var IPsum = document.getElementById('IPsum');
+        IPsum.innerHTML = personalData.all_count;
+        var FPsum = document.getElementById('FPsum');
+        FPsum.innerHTML = personalData.all_count;
+        var img = document.getElementById('portraitImg');
+        //console.log(personalData.photo_url);
+        if(personalData.photo_url == "unknown"){
+            img.src =  "http://tp2.sinaimg.cn/1878376757/50/0/1";
+        }else{
+            img.src = personalData.photo_url;
+        }
+        var influencePower = document.getElementById('FPnum');
+        if(personalData.influence){
+            influencePower.innerHTML = personalData.influence.toFixed(2);
+        }else{
+            influencePower.innerHTML = "无此数据";
+        }
+        var importantPower = document.getElementById('IPnum');
+        if(personalData.importance){
+            importantPower.innerHTML = personalData.importance.toFixed(2);
+        }else{
+            importantPower.innertHTML = "无此数据";
+        }
+        var activePower = document.getElementById('APnum');
+        if(personalData.activeness){
+            activePower.innerHTML = personalData.activeness.toFixed(2);
+        }else{
+            activePower.innerHTML = "无此数据";
+        }
+        var nickName = document.getElementById('nickname');
+        if(personalData.uname){
+            nickName.innerHTML = personalData.uname;
+        }else{
+            nickName.innerHTML = "无此数据";
+        }
+        var detailPortrait = document.getElementById('portraitDetail');
+        if(!personalData.description ){
+            detailPortrait.innerHTML = "无此数据";
+        }else{
+            detailPortrait.innerHTML = personalData.description;
+        }
+        var I_rank = document.getElementById('IPrank');
+        if(personalData.importance_rank){
+            I_rank.innerHTML = personalData.importance_rank;
+        }else{
+            I_rank.innerHTML = "无此数据";
+        }
+        var A_rank = document.getElementById('APrank');
+        if(personalData.activeness_rank){
+            A_rank.innerHTML = personalData.activeness_rank;
+        }else{
+            A_rank.innerHTML = "无此数据";
+        }
+        var F_rank = document.getElementById('FPrank');
+        if(personalData.influence_rank){
+            F_rank.innerHTML = personalData.influence_rank;
+        }else{
+            F_rank.innerHTML = "无此数据";
+        }
+        var uid_div = document.getElementById('userId');
+        if(personalData.uid){
+            uid_div.innerHTML = personalData.uid;
+        }else{
+            uid_div.innerHTML = "无此数据";
+        }
+            
+        var userlocation = document.getElementById('userLocation');
+        if(personalData.location){
+            userlocation.innerHTML = personalData.location;
+        }else{
+            userlocation.innerHTML = "无此数据";
+        }
+        var gender = document.getElementById('userGender');
+        if(personalData.gender){
+            gendernum = personalData.gender;
+            if (gendernum==1){
+                gender.innerHTML = '男';
+            }else{
+                gender.innerHTML = '女';
+            }
+        }else{
+            gender.innerHTML = "无此数据";
+        }
+        var fans = document.getElementById('userFans');
+        if(personalData.fansnum){
+            fans.innerHTML = personalData.fansnum;
+        }else{
+            fans.innerHTML = "无此数据";
+        }
+            
+        var friends = document.getElementById('userFriend');
+        if( personalData.friendsnum){
+            friends.innerHTML = personalData.friendsnum;
+        }else{
+            friends.innerHTML = "无此数据";
+        }
+            
+        var pattern = document.getElementById('userOnline');
+        if(personalData.online_pattern[0][0]){
+            pattern.innerHTML = personalData.online_pattern[0][0];
+        }else{
+            pattern.innerHTML = "无此数据";
+        }
 		
 	}
 }
@@ -194,95 +314,62 @@ var Personal = new Personal();
 var personalData; // global data
 var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
-var contact_url = '/index/contact/?uid=' + uid;
-$('#contact').attr('href', contact_url)
-var homepage_url = 'http://weibo.com/u/' + uid;
-$('#homepage').attr('href', homepage_url)
-var APsum = document.getElementById('APsum');
-APsum.innerHTML = personalData.all_count;
-var IPsum = document.getElementById('IPsum');
-IPsum.innerHTML = personalData.all_count;
-var FPsum = document.getElementById('FPsum');
-FPsum.innerHTML = personalData.all_count;
-var img = document.getElementById('portraitImg');
-//console.log(personalData.photo_url);
-if(personalData.photo_url == "unknown"){
-    img.src =  "http://tp2.sinaimg.cn/1878376757/50/0/1";
-}else{
-    img.src = personalData.photo_url;
+var url = "/attribute/get_remark/?uid=" + uid;
+Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.remarkData);
+
+function bind_remark_edit(Personal){
+    $('#extraDetail').click(function(){
+        var td = $(this);
+        var txt = td.html();
+        var input = "<input id='editremark' style='width:300px;' type='text' value='" + txt + "'/>";
+        td.html(input);
+        $('#editremark').click(function(){
+            return false;
+        });
+        $('#editremark').trigger('focus');
+        $('#editremark').bind('keyup', function(e){
+            var ev = document.all?window.event:e;
+            if (ev.keyCode == 13){
+                var newtxt = $(this).val();
+                if (newtxt == ''){
+                    td.html('暂无');
+                }
+                else{    
+                    td.html(newtxt);
+                }
+                if (newtxt != txt){
+                    var url = '/attribute/edit_remark/?uid=' + uid + '&remark=' + newtxt;
+                    Personal.call_sync_ajax_request(url, Personal.ajax_method, confirm_edit);
+                    console.log('diff');
+                }
+            }
+        }).bind('keydown', function(e){
+            var ev = document.all?window.event:e;
+            if (ev.keyCode == 13){
+                return false;
+            }
+        });
+        $('#editremark').blur(function(){
+            var newtxt = $(this).val();
+            if (newtxt == ''){
+                td.html('暂无');
+            }
+            else{    
+                td.html(newtxt);
+            }
+            if (newtxt != txt){
+                var url = '/attribute/edit_remark/?uid=' + uid + '&remark=' + newtxt;
+                Personal.call_sync_ajax_request(url, Personal.ajax_method, confirm_edit);
+                console.log('diff');
+            }
+        });
+        function confirm_edit(data){
+            //alert(data);
+        }
+    });
 }
-var influencePower = document.getElementById('FPnum');
-if(personalData.influence){
-    influencePower.innerHTML = personalData.influence.toFixed(2);
-}else{
-    influencePower.innerHTML = "无此数据";
-}
-var importantPower = document.getElementById('IPnum');
-if(personalData.importance){
-    importantPower.innerHTML = personalData.importance.toFixed(2);
-}else{
-    importantPower.innertHTML = "无此数据";
-}
-var activePower = document.getElementById('APnum');
-if(personalData.activeness){
-    activePower.innerHTML = personalData.activeness.toFixed(2);
-}else{
-    activePower.innerHTML = "无此数据";
-}
-var nickName = document.getElementById('nickname');
-if(personalData.uname){
-    nickName.innerHTML = personalData.uname;
-}else{
-    nickName.innerHTML = "无此数据";
-}
-var detailPortrait = document.getElementById('portraitDetail');
-if(!personalData.description ){
-    detailPortrait.innerHTML = "无此数据";
-}else{
-    detailPortrait.innerHTML = personalData.description;
-}
-var I_rank = document.getElementById('IPrank');
-if(personalData.importance_rank){
-    I_rank.innerHTML = personalData.importance_rank;
-}else{
-    I_rank.innerHTML = "无此数据";
-}
-var A_rank = document.getElementById('APrank');
-if(personalData.activeness_rank){
-    A_rank.innerHTML = personalData.activeness_rank;
-}else{
-    A_rank.innerHTML = "无此数据";
-}
-var F_rank = document.getElementById('FPrank');
-if(personalData.influence_rank){
-    F_rank.innerHTML = personalData.influence_rank;
-}else{
-    F_rank.innerHTML = "无此数据";
-}
-var uid_div = document.getElementById('userId');
-if(personalData.uid){
-	uid_div.innerHTML = personalData.uid;
-}else{
-	uid_div.innerHTML = "无此数据";
-}
-	
-var userlocation = document.getElementById('userLocation');
-if(personalData.location){
-	userlocation.innerHTML = personalData.location;
-}else{
-	userlocation.innerHTML = "无此数据";
-}
-var gender = document.getElementById('userGender');
-if(personalData.gender){
-	gendernum = personalData.gender;
-	if (gendernum==1){
-		gender.innerHTML = '男';
-	}else{
-		gender.innerHTML = '女';
-	}
-}else{
-	gender.innerHTML = "无此数据";
-}
+bind_remark_edit(Personal);
+
 /*    
 var domain = document.getElementById('userDomain');
 if(personalData.domain){
@@ -310,26 +397,6 @@ if(personalData.topic){
 }
 */
 	
-var fans = document.getElementById('userFans');
-if(personalData.fansnum){
-	fans.innerHTML = personalData.fansnum;
-}else{
-	fans.innerHTML = "无此数据";
-}
-    
-var friends = document.getElementById('userFriend');
-if( personalData.friendsnum){
-	friends.innerHTML = personalData.friendsnum;
-}else{
-	friends.innerHTML = "无此数据";
-}
-    
-var pattern = document.getElementById('userOnline');
-if(personalData.online_pattern[0][0]){
-	pattern.innerHTML = personalData.online_pattern[0][0];
-}else{
-	pattern.innerHTML = "无此数据";
-}
 </script>
 
 <script type="text/javascript" src="/static/js/portrait/show_tag.js"></script> 
@@ -366,15 +433,15 @@ if(personalData.online_pattern[0][0]){
 		return false;
 	});
 </script>
-<div class="soft_function">
+<div class="soft_function" id="detail">
 
 	<div class="soft_con_icon">
 		<ul>
-			<li><a id="pic_fun_adm" href="#"><img src="/static/personal/images/activity.png"/><p style="color:#008dd9">活动特征</p></a></li>
-            <li><a id="pic_fun_crm" href="#"><img  src="/static/personal/images/language.png"/><p>偏好特征</p></a></li>
-            <li><a id="pic_fun_project" href="#"><img  src="/static/personal/images/basic.png"/><p>影响力特征</p></a></li>
-			<li><a id="pic_fun_k" href="#"><img  src="/static/personal/images/social.png"/><p>社交特征</p></a></li>
-			<li><a id="pic_fun_mobile" href="#"><img  src="/static/personal/images/thought.png"/><p>思想特征</p></a></li>
+			<li><a id="pic_fun_adm" href="#detail"><img src="/static/personal/images/activity.png"/><p style="color:#008dd9">活动特征</p></a></li>
+            <li><a id="pic_fun_crm" href="#detail"><img  src="/static/personal/images/language.png"/><p>偏好特征</p></a></li>
+            <li><a id="pic_fun_project" href="#detail"><img  src="/static/personal/images/basic.png"/><p>影响力特征</p></a></li>
+			<li><a id="pic_fun_k" href="#detail"><img  src="/static/personal/images/social.png"/><p>社交特征</p></a></li>
+			<li><a id="pic_fun_mobile" href="#detail"><img  src="/static/personal/images/thought.png"/><p>思想特征</p></a></li>
 
 		</ul>
 	</div> 

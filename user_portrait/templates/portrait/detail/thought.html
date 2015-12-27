@@ -1,3 +1,4 @@
+
  <style type="text/css">   
     .border-table {   
         border-collapse: collapse;   
@@ -7,86 +8,140 @@
         border: solid #FFE4B5 1px;   
     }   
 </style>
-<div>该用户的心情</div>
-<div style="width:100%;text-align:right;font-size:20px;margin:8px;">
-   <input type="radio" name="time-type" value=1 onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >每日变动情况
-   <input type="radio" name="time-type" value=2  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">每周变动情况
+<div style="width:100%;">
+<div style="width:300px;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 style="line-height:32px;" >该用户的主要情绪为<span id="con_emotion"></span></h4></div>
+<div id='select_time' style="font-weight:bold;margin:0px;margin-left:400px;font-size:12px;"></div>
 </div>
-<div style="width:680px;height:400px;" id="emotion"></div>
-<div style="width:300px;height:400px;" id="content"></div>
-<div style="width:998px;"><h4 class="page-header"style='margin-top:10px'>倾向性和心理状态</h4>
+<div style="width:680px;height:450px;margin:0px;">
+    <div style="font-size: 16px;width:400px;margin:0px;">情绪变动曲线</div>
+    <div style="margin-left: 170px;">
+       <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
+       <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
+    </div>
+    <div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
+</div>
+<div style="width:280px;height:400px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
+    <div id="thought_weibo_text" style="padding:0px 10px;">
+    </div>
+</div>
+<div style="width:998px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
-		<div style="font-size:16px">倾向性</div>
-		<div id="radar_domain" style="height:350px;width:450px;"></div>
+		<div style="width:100%;font-size:16px;margin:0px;">倾向性<hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div id="sen_trend" style="height:350px;width:450px;"></div>
 		</div>
-		<div style="height:380px;width:450px;float:right;margin-top:-20px">
-		<div style="font-size:16px">心理状态</div>
+		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
+		<div style="width:100%;font-size:16px;margin:0px;">心理状态<hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="pie_emotion" style="height:350px;width:450px;"></div>
 		</div>
 	</div>	
 </div>
-<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>
- <script type="text/javascript">
-  window.onload=function(){
-        var index=1;
- 		Draw_think_topic();
- 		Draw_think_emotion();
-        choose_time();
-        //Draw_emotion(index);
- 	}
-
-function choose_time(){
-//$('input[name="time-type"]').click(function(){                  
-  index = $('input[name="time-type"]:checked').val();
-  if(index == 1){
-    //$('#emotion').empty();
-    Draw_emotion(index);
-    //console.log(url);
-    //Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
-  }else{
-    //$('#emotion').empty();
-    Draw_emotion(index);
-  }
+<script src="/static/js/echarts-all.js"></script>
+<script type="text/javascript">
+function call_ajax_request(url, callback){
+    $.ajax({
+        url: url,
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        success: callback
+    });
 }
-//)}
+function Thought(){
+  this.ajax_method = 'GET';
+    }
+Thought.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+Draw_emotion:function(data){
+    var items = data;
+    console.log(items);
+    if(items==null){
+        var say = document.getElementById('emotion');
+        say.innerHTML = '该用户暂无此数据';
+    }else{
+        con = document.getElementById('con_emotion');
+        con.innerHTML = items['description'][1];
+        emotions(items);
+        var time_init = new Date(items['time_list'][0]);
+        var times_init = time_init.getTime().toString().substr(0,10);
+        console.log(times_init);    
+        var html0 = '';
+        url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
+        call_ajax_request(url_content,th_draw_content);
+        $('#select_time').empty();  
+        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['time_list'][0]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
+        $('#select_time').append(html0);
+    }   
+}
+}
 
-function draw_content(data){
+var Thought = new Thought();
+index = $('input[name="time-type"]:checked').val();
+url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
+Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
+//url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
+//call_ajax_request(url_content,th_draw_content);
+url_think = '/attribute/tendency_psy/?uid='+uid;
+call_ajax_request(url_think,draw_think);
+call_ajax_request(url_think,draw_trend);
+
+
+function choose_time(){            
+    index = $('input[name="time-type"]:checked').val();
+    url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
+    Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
+    //$('#emotion').empty();
+  }
+
+function th_draw_content(data){
     var html = '';
-    $('#content').empty();
+    $('#thought_weibo_text').empty();
+    $('#select_time').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
             //console.log(data[i].text);
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[0]['text']+"</span></div>";
         }
-
     }
-    $('#content').append(html);
+    $('#thought_weibo_text').append(html);
 }
 
-function Draw_emotion(times){
-    var nodes = [];
-    if (times == 1){
-        nodes = ['周一','周二','周三','周四','周五','周六','周日'];
+function emotions(data){
+    var times = data['time_list'];
+    var names = ['中性','积极','悲伤','愤怒']; 
+    var data0 = data['trend_result']['0'];
+    var data1 = data['trend_result']['1'];
+    var data2 = data['trend_result']['2'];
+    var data3 = data['trend_result']['3'];
+    var datas = [data0,data1,data2,data3];
+    var nods = {};
+    var nodcontent = [];
+    for(i=0;i<4;i++){
+        nods = {};
+        nods['name'] = names[i];
+        nods['type'] = 'line';
+        nods['data'] = datas[i];
+        nodcontent.push(nods);
     }
-    else {
-        nodes = ['第一周','第二周','第三周','第四周','第五周','第六周','第七周'];
-    };
-    console.log(nodes);
-    var myChart = echarts.init(document.getElementById('emotion')); 
-    console.log('aa');
+    console.log(nodcontent[0]);
+
+    var myChart1 = echarts.init(document.getElementById('emotion'));
     var option = {
-    title : {
-        text: '未来一周气温变化',
-        subtext: '纯属虚构'
-    },
     tooltip : {
         trigger: 'axis'
     },
     legend: {
-        data:['最高气温','最低气温']
+        data:names
     },
     toolbox: {
         show : true,
@@ -103,123 +158,82 @@ function Draw_emotion(times){
         {
             type : 'category',
             boundaryGap : false,
-            data : nodes
+            data : times
         }
     ],
     yAxis : [
         {
             type : 'value',
-            axisLabel : {
-                formatter: '{value} °C'
-            }
         }
     ],
-    series : [
-        {
-            name:'最高气温',
-            type:'line',
-            data:[11, 11, 15, 13, 12, 13, 10],
-            markPoint : {
-                data : [
-                    {type : 'max', name: '最大值'},
-                    {type : 'min', name: '最小值'}
-                ]
-            },
-            markLine : {
-                data : [
-                    {type : 'average', name: '平均值'}
-                ]
-            }
-        },
-        {
-            name:'最低气温',
-            type:'line',
-            data:[1, -2, 2, 5, 3, 2, 0],
-            markPoint : {
-                data : [
-                    {name : '周最低', value : -2, xAxis: 1, yAxis: -1.5}
-                ]
-            },
-            markLine : {
-                data : [
-                    {type : 'average', name : '平均值'}
-                ]
-            }
-        }
-    ]
-};
-    myChart.setOption(option);     
-}
-
-        // 基于准备好的dom，初始化echarts图表
-function Draw_think_topic(){
-    // domain_value = [];
-    // domain_key = [];
-    // indicate = [];
-    // for ( key in data['2']){
-    //      indicator = {};
-    //     domain_key.push(key);
-    //     indicator['text'] = key;
-    //     indicator['max'] = 20;
-    //     indicate.push(indicator);
-    //     domain_value.push(data['2'][key]);
-    // }
-    var myChart = echarts.init(document.getElementById('radar_domain')); 
-        
-        var option = {
-        title : {
-            text: '',
-            subtext: ''
-        },
-        tooltip : {
-            trigger: 'axis'
-        },
-        legend: {
-            x : 'center',
-            data:['倾向性']
-        },
-        toolbox: {
-            show : true,
-            feature : {
-                saveAsImage : {show: true}
-            }
-        },
-        calculable : true,
-        polar : [
-            {
-            indicator : [
-                {text : '九一八', max  : 100},
-                {text : '博鳌论坛', max  : 100},
-                {text : 'APEC', max  : 100},
-                {text : '两会', max  : 100}],
-                radius : 80
-            }
+    series : nodcontent
+    };
+    myChart1.setOption(option); 
+    require([
+            'echarts'
         ],
-        series : [
-            {
-                name: '',
-                type: 'radar',
-                itemStyle: {
-                    normal: {
-                        areaStyle: {
-                            type: 'default'
-                        }
-                    }
-                },
-                data : [
-                    {
-                        value : [97, 42, 88, 94, 90, 86],
-                        name : '倾向性'
-                    }
-                ]
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                console.log(param);
+                var sentiment = param.seriesIndex;
+                var date = new Date(param.name);
+                var starts_ts = date.getTime().toString().substr(0,10);
+                console.log(index);
+                if(index == 'week'){
+                var start_ts = parseInt(starts_ts)-28800;                   
+                }
+                else if(index == 'day'){var start_ts = starts_ts;}
+                console.log(start_ts);
+                ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
+                $.ajax({
+                      url: ajax_url,
+                      type: 'GET',
+                      dataType: 'json',
+                      async: false,
+                      success:th_draw_content
+                    });
+                var html0 = '';
+                $('#select_time').empty();  
+                html0 += "<div>当前选择时间段:</div><div>"+param.name+"</div><br><div>当前选择情绪:</div><div>"+names[sentiment]+'</div>';
+                $('#select_time').append(html0);
+                }
+            myChart1.on(ecConfig.EVENT.CLICK, focus);
             }
-        ]
-    };                
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
+            
+    )
 }
-function Draw_think_emotion(){
-    var myChart = echarts.init(document.getElementById('pie_emotion')); 
+  
+function draw_think(data){
+    console.log(data);
+    var first = data['psy_first'];
+    var second = data['psy_second'];
+    var first_name = ['积极','消极','中性'];
+    var second_name = ['愤怒','其他','焦虑','悲伤'];
+    var first_content = [];
+    var second_content = [];
+    var nod = {};
+    console.log(first);
+    var i = 0;
+    for(var key in first){
+        var nod = {};
+        nod['name'] = first_name[i];
+        nod['value'] = first[key];
+        first_content.push(nod);
+        i = i + 1;
+        //first_name.push(key);
+    }
+    var j = 0;
+    for(var key in second){
+        var nod = {};
+        nod['name'] = second_name[j];
+        nod['value'] = second[key];
+        second_content.push(nod);
+        j = j + 1;
+        //second_name.push(key);
+    }
+    console.log(first_content);
+var myChart = echarts.init(document.getElementById('pie_emotion'));
     var option = {
     tooltip : {
         trigger: 'item',
@@ -228,23 +242,23 @@ function Draw_think_emotion(){
     toolbox: {
         show : true,
         feature : {
-            mark : {show: false},
-            dataView : {show: false, readOnly: false},
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
             magicType : {
-                show: false, 
+                show: true, 
                 type: ['pie', 'funnel']
             },
-            restore : {show: false},
+            restore : {show: true},
             saveAsImage : {show: true}
         }
     },
     calculable : false,
     series : [
         {
-            name:'',
+            name:'访问来源',
             type:'pie',
             selectedMode: 'single',
-            radius : [0, 35],
+            radius : [0, 70],
             
             // for funnel
             x: '20%',
@@ -262,16 +276,12 @@ function Draw_think_emotion(){
                     }
                 }
             },
-            data:[
-                {value:5, name:'积极'},
-                {value:5, name:'中性'},
-                {value:12, name:'消极', selected:true}
-            ]
+            data:first_content
         },
         {
-            name:'',
+            name:'访问来源',
             type:'pie',
-            radius : [50, 70],
+            radius : [100, 140],
             
             // for funnel
             x: '60%',
@@ -279,18 +289,73 @@ function Draw_think_emotion(){
             funnelAlign: 'left',
             max: 1048,
             
-            data:[
-                {value:5, name:'积极'},
-                {value:5, name:'中性'},
-                {value:3, name:'生气'},
-                {value:4, name:'悲伤'},
-                {value:5, name:'其他'}
-            ]
+            data:second_content
         }
     ]
-}
-    myChart.setOption(option);  
+    };
+    myChart.setOption(option); 
+    var ecConfig = require('echarts/config');
+    myChart.on(ecConfig.EVENT.PIE_SELECTED, function (param){
+    var selected = param.selected;
+    var serie;
+    var str = '当前选择： ';
+    for (var idx in selected) {
+        serie = option.series[idx];
+        for (var i = 0, l = serie.data.length; i < l; i++) {
+            if (selected[idx][i]) {
+                str += '【系列' + idx + '】' + serie.name + ' : ' + 
+                       '【数据' + i + '】' + serie.data[i].name + ' ';
+            }
+        }
+    }
+    document.getElementById('wrong-message').innerHTML = str;
+    })
                     
 }
 
-    </script>
+function draw_trend(data){
+    var trends = data['tendency'];
+    var nods = [];
+    var nod = {};
+    var nodcontent = [];
+    var nodcon0 = {};
+    var i = 0;
+    for(var i in trends){
+        var nod = {};
+        nod['name'] = i;
+        nod['value'] = trends[i];
+        nods.push(nod);
+    }
+    for (i=0;i<nods.length;i++){
+        console.log(nods.length);
+        var nodcon0 = {};
+        nodcon0['name'] = i;
+        nodcon0['type'] = 'gauge';
+        nodcon0['min'] = 0;
+        nodcon0['max'] = 3;
+        //nodcon0['center'] = 
+        nodcon0['data'] = [{'value':nods[i]['value'],'name':nods[i]['name']}]
+        //nodcon0['data'] = nods[i];
+        nodcontent.push(nodcon0);
+    }
+
+    console.log(nodcontent);
+    var myChart = echarts.init(document.getElementById('sen_trend'));
+    var option = {
+    tooltip : {
+        formatter: "{a} <br/>{b} : {c}%"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    series : nodcontent
+};
+       myChart.setOption(option);              
+
+}
+</script>

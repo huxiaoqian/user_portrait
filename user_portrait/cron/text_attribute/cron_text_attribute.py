@@ -19,12 +19,15 @@ from save_utils import attr_hash, save_user_results
 from config import topic_en2ch_dict, domain_en2ch_dict
 from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
 
+# compute user event
+from event.event_user import event_classfiy
 # compute user domain
 from domain.test_domain_v2 import domain_classfiy
 # compute user topic
 from topic.test_topic import topic_classfiy
 # compute user psy
 from psy.new_psy import psychology_classfiy
+
 
 sys.path.append('../../')
 from global_utils import es_user_profile, profile_index_name, profile_index_type
@@ -343,6 +346,10 @@ def test_cron_text_attribute(user_weibo_dict):
     #get topic and domain input data
     user_weibo_string_dict = get_user_weibo_string(user_weibo_dict) # use as the tendency input data
     user_keywords_dict = get_user_keywords_dict(user_weibo_string_dict)
+    #get user event results by bulk action
+    event_results_dict = event_classfiy(user_weibo_string_dict)
+    print 'event_result len:', len(event_results_dict)
+    
     #get user topic and domain by bulk action
     print 'get topic and domain'
     topic_results_dict, topic_results_label = topic_classfiy(user_keywords_dict)
@@ -386,6 +393,9 @@ def test_cron_text_attribute(user_weibo_dict):
         user_label_dict = topic_results_label[user]
         results['topic'] = json.dumps(user_topic_dict)         # {'topic1_en':pro1, 'topic2_en':pro2...}
         results['topic_string'] = topic_en2ch(user_label_dict) # 'topic1_ch&topic2_ch&topic3_ch'
+        #add user event attribute
+        results['tendency'] = event_results_dict[user]
+        
         #add user domain attribute
         user_domain_dict = domain_results_dict[user]
         user_label_dict = domain_results_label[user]
@@ -422,6 +432,7 @@ def test_cron_text_attribute(user_weibo_dict):
     if bulk_action:
         status = save_user_results(bulk_action)
     
+
     return True # save by bulk
 
 def add_domain():

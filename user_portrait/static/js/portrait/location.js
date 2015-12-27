@@ -53,7 +53,7 @@ function bind_time_option(){
 }
 var global_time_type = 'day';
 var pre_time = new Date();
-pre_time.setFullYear(2013,8,1);
+pre_time.setFullYear(2013,8,7);
 pre_time.setHours(0,0,0);
 pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
@@ -191,6 +191,14 @@ function week_chart(trend_data){
         xAxis: {
             categories: data_time,
             labels:{
+              formatter: function(){
+                  if (global_time_type == 'day'){
+                      return this.value.split(' ')[1];
+                  }
+                  else{
+                      return this.value;
+                  }
+              },
               rotation: 0,
               step: 6,
               x:0,
@@ -199,6 +207,7 @@ function week_chart(trend_data){
         },
         yAxis: {
 			min:0,
+            allowDecimals: false,
             title: {
                 text: '微博总量 (条)'
             },
@@ -245,9 +254,15 @@ function point2weibo(xnum, ts){
         var b = xnum % 2;
         delta += (a<10?"0"+a+":":a+":");
         delta += (b==0?"00-":"30-");
-        a += 1;
-        delta += (a<10?"0"+a+":":a+":");
-        delta += (b!=0?"00":"30");
+        if (b == 0){
+            delta += (a<10?"0"+a+":":a+":");
+            delta += "30";
+        }
+        else{
+            a += 1;
+            delta += (a<10?"0"+a+":":a+":");
+            delta += "00";
+        }
         $('#date_zh').html(getDate_zh(pre_time+ts[0]));
     }
     else{
@@ -267,7 +282,7 @@ function point2weibo(xnum, ts){
     $('#time_zh').html(delta);
 }
 function draw_content(data){
-    //console.log(data);
+    console.log(data);
     var html = '';
     $('#weibo_text').empty();
     if(data==''){
@@ -333,7 +348,7 @@ function draw_daily_ip_table(ip_data){
     for (var i = 0; i < 6; i++) {
        var s = i.toString();
        html += '<th style="text-align:center">';
-       if (i in location_geo){
+       if ((i in location_geo) && (location_geo[i].length != 0)){
            top_two = location_geo[i];
            for (var j = 0;j < top_two.length;j++){
                html += top_two[j][0] + '(' + top_two[j][1] + ')';
@@ -351,11 +366,14 @@ function draw_daily_ip_table(ip_data){
     for (var i = 0; i < 6; i++) {
        var s = i.toString();
        html += '<th style="text-align:center">';
-       if (i in location_geo){
+       if ((i in location_geo) && (location_geo[i].length != 0)){
            top_two = location_geo[i];
            for (var j = 0;j < top_two.length;j++){
                html += top_two[j][0] + '(' + top_two[j][1] + ')';
            }
+       }
+       else{
+           html += '-';
        }
        html += '</th>';
     };

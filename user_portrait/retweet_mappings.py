@@ -21,13 +21,13 @@ def retweet_es_mappings(db_number):
                             },
                         'uid_retweet':{
                             'type': 'string',
-                            'index': 'not_analyzed'
+                            'index': 'no'
                             }
                         }
                     }
                 }
              }
-    index_name = 'retweet_'+db_number
+    index_name = '1225_retweet_'+db_number
     exist_indice = es.indices.exists(index=index_name)
     if exist_indice:
         es.indices.delete(index=index_name)
@@ -52,13 +52,13 @@ def be_retweet_es_mappings(db_number):
                         },
                     'uid_be_retweet':{
                         'type': 'string',
-                        'index': 'not_analyzed'
+                        'index': 'no'
                         }
                     }
                     }
                 }
         }
-    index_name = 'be_retweet_'+db_number
+    index_name = '1225_be_retweet_'+db_number
     exist_indice = es.indices.exists(index=index_name)
     print 'before exist:', exist_indice
     if exist_indice:
@@ -72,6 +72,6 @@ def be_retweet_es_mappings(db_number):
 if __name__=='__main__':
     print 'test'
     db_number = '1'
-    #retweet_mark = retweet_es_mappings(db_number)
-    be_retweet_mark = be_retweet_es_mappings(db_number)
-    print 'mark:', be_retweet_mark
+    retweet_mark = retweet_es_mappings(db_number)
+    #be_retweet_mark = be_retweet_es_mappings(db_number)
+    print 'mark:', retweet_mark

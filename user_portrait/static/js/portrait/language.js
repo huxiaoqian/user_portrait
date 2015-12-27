@@ -34,7 +34,7 @@ $("#showmore_hashtagWords").off("click").click(function(){
 function show_conclusion(data){
   var html = '';
   html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;"></span>';
-  html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>,'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
+  html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>，'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
   $("#preference_conclusion").append(html);
 }
 
@@ -49,21 +49,21 @@ function createRandomItemStyle() {
         }
     };
 }
-function Draw_keyword(data, div_name, more_div){
+function Draw_keyword(data, div_name, more_div, more){
 	var keyword = [];
   var html = '';
-  console.log(data);
 	$('#'+ more_div).empty();
   if(data.length == 0){
      console.log(div_name);
-      html = '<h3 style="text-align:center;margin-left:50px; margin-top:50%;">暂无数据</h3>';
-      $('#'+ more_div).append(html);
+      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      //$('#'+ more_div).append(html);
       $('#'+ div_name).append(html);
+      $('#'+ more).empty();
   }else{
    
       html = '';
       html += '<table class="table table-striped table-bordered" style="width:450px;">';
-      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
+      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频数</th></tr>';
       for (var i = 0; i < data.length; i++) {
          var s = i.toString();
          var m = i + 1;
@@ -72,8 +72,6 @@ function Draw_keyword(data, div_name, more_div){
       html += '</table>'; 
       $('#'+ more_div).append(html);
 
-    
-   
       var word_num = Math.min(20, data.length);
 
   	for (i=0;i<word_num;i++){
@@ -86,10 +84,6 @@ function Draw_keyword(data, div_name, more_div){
 
   	var myChart = echarts.init(document.getElementById(div_name)); 
   	var option = {
-      // title: {
-      //     text: div_title,
-          
-      // },
       tooltip: {
           show: true
       },
@@ -130,8 +124,7 @@ function get_radar_data (data) {
     var name_dict = {};
     var index = topic_name2[i];
     name_dict["text"] = index;
-    name_dict["max"] = Math.max.apply(Math, topic_value2).toFixed(3)+0.5;
-    console.log(name_dict["max"]);
+    name_dict["max"] = Math.max.apply(Math, topic_value2).toFixed(3)+0.2;
     topic_name3.push(name_dict);
   }
   var topic_result = [];
@@ -190,14 +183,151 @@ function Draw_topic(data){
   myChart2.setOption(option);
 }
 function show_domain(data){
-  var html = '';
-  html += '<h3>用户领域分析：</h3>';
-  html += '<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自<span style="color:red">'+data[0][0]+'</span>领域</h4>';
-  html += '<h4 style="line-height:40px;">根据用户粉丝结构分类，该用户来自<span style="color:red">'+data[0][1]+'</span>领域</h4>'
-  html += '<h4 style="line-height:40px;">根据用户文本分类，该用户来自<span style="color:red">'+data[0][2]+'</span>领域</h4>'
-  html += '<h4 style="line-height:40px;">根据用户个人信息分类，该用户来自：<span style="color:red">'+data[1]+'</span></h4>'
-  $("#preference_domain").append(html);
 
+  // var html = '';
+  //html += '<h3>用户领域分析</h3>';
+  data1 = '根据用户个人信息分类：'+data[0][0];
+  data2 = '根据用户粉丝结构分类：'+data[0][1];
+  data3 = '根据用户文本分类：'+data[0][2];
+  data4 = data[1];
+var myChart1 = echarts.init(document.getElementById('preference_domain')); 
+var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: "{b}"
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : false,
+
+    series : [
+        {
+            name:'树图',
+            type:'tree',
+            orient: 'horizontal',  // vertical horizontal
+            rootLocation: {x: 40, y: '50%'}, // 根节点位置  {x: 'center',y: 10}
+            nodePadding: 20,
+            symbol: 'circle',
+            symbolSize: 20,
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        position: 'inside',
+                        textStyle: {
+                            color: '#000',
+                            fontSize: 16,
+                            font_family: "Microsoft YaHei UI"
+                        }
+                    },
+                    lineStyle: {
+                        color: '#000',
+                        width: 1,
+                        type: 'curve' // 'curve'|'broken'|'solid'|'dotted'|'dashed'
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: true
+                    }
+                }
+            },
+            data: [
+                {
+                    name: data4,
+                    //value: 2,
+                    symbolSize: [0, 10],
+                    // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
+                    itemStyle: {
+                        normal: {
+                           color: '##DDDDDD',
+                            label: {
+                                show: true
+                            }
+                        }
+                    },
+                    children: [
+                          {
+                          name: data1,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: '#CCC',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        },
+                          {
+                          name: data2,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: '#999',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        },
+                          {
+                          name: data3,
+                          symbol: 'circle',
+                          symbolSize: 20,
+                          value: 4,
+                          itemStyle: {
+                              normal: {
+                                  color: '#999999',
+                                  label: {
+                                      show: true,
+                                      position: 'right'
+                                  },
+                                  
+                              },
+                              emphasis: {
+                                  label: {
+                                      show: false
+                                  },
+                                  borderWidth: 0
+                              }
+                          }
+                        }    
+                    ]
+                }
+            ]
+        }
+    ]
+};
+   myChart1.setOption(option);               
+   //$("#preference_domain_title").append(html);
 }
 
 function show_results(data){
@@ -212,11 +342,22 @@ function show_results(data){
   var hashtag_name = 'hashtag_words';
   var keywords_more = 'key_WordList';
   var hashtag_more = 'hashtag_WordList';
-  Draw_keyword(keywordsCloud, keywords_name, keywords_more);
-  Draw_keyword(hashtag, hashtag_name, hashtag_more);
+  var key_more = 'key_more';
+  var hash_more = 'hash_more';
+  Draw_keyword(keywordsCloud, keywords_name, keywords_more, key_more);
+  Draw_keyword(hashtag, hashtag_name, hashtag_more, hash_more);
   Draw_topic(topic);
   show_conclusion(conclusion);
-  show_domain(domain)
+  show_domain(domain);
+
+  var tag_vector = data.tag_vector;
+  console.log(tag_vector);
+  for(var i=0; i<tag_vector.length;i++){
+    if(tag_vector[i][1] == ''){
+      tag_vector[i][1] = '暂无数据'
+    }
+    global_tag_vector.push(tag_vector[i]);
+  }
   }
 
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;

@@ -207,7 +207,7 @@ if __name__ == "__main__":
     now_date = ts2datetime(tb)
     index_name_pre = flow_text_index_name_pre
     index_type = flow_text_index_type
-    start_date = '2013-09-03'
+    start_date = '2013-09-06'
     now_index_name_date = start_date
     action = []
     xdata = []

@@ -84,7 +84,7 @@ UPDATE_DAY_REDIS_KEY = 'update_day'
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
-es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 6000)
 es_flow_text = Elasticsearch(FLOW_TEXT_ES_HOST, timeout=600)
 
 # elasticsearch index_name and index_type
@@ -95,14 +95,14 @@ portrait_index_type = 'user'
 flow_text_index_name_pre = 'flow_text_' # flow text: 'flow_text_2013-09-01'
 flow_text_index_type = 'text'
 # week retweet/be_retweet relation es
-retweet_index_name_pre = 'retweet_' # retweet: 'retweet_1' or 'retweet_2'
+retweet_index_name_pre = '1225_retweet_' # retweet: 'retweet_1' or 'retweet_2'
 retweet_index_type = 'user'
-be_retweet_index_name_pre = 'be_retweet_' #be_retweet: 'be_retweet_1'/'be_retweet_2'
+be_retweet_index_name_pre = '1225_be_retweet_' #be_retweet: 'be_retweet_1'/'be_retweet_2'
 be_retweet_index_type = 'user'
 # week comment/be_comment relation es
-comment_index_name_pre = 'comment_'
+comment_index_name_pre = '1225_comment_'
 comment_index_type = 'user'
-be_comment_index_name_pre = 'be_comment_'
+be_comment_index_name_pre = '1225_be_comment_'
 be_comment_index_type = 'user'
 # es for activeness history, influence history and pagerank
 copy_portrait_index_name = 'this_is_a_copy_user_portrait'

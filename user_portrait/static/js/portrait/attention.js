@@ -12,45 +12,31 @@ Attention.prototype = {   //获取数据，重新画表
     });
   },
 Draw_attention:function(data){
-	var UserID = uid;
-    var UserName = document.getElementById('nickname').innerHTML;
-    var Anumber = document.getElementById('Number');
-    Anumber.innerHTML = data[1];
+	//var UserID = uid;
+    //var UserName = document.getElementById('nickname').innerHTML;
+    //var select_graph = $('input[name="graph-type"]:checked').val();
+    var texts = '';
 	var items = data;
 	if(items==null){
 		var say = document.getElementById('test1');
 		say.innerHTML = '该用户暂无此数据';
 	}else{
-		attention(items,UserID,UserName);
+		attention(items,UserID,UserName,texts);
+        draw_topic(items['in_portrait_result']);
+        draw_field(items['in_portrait_result']);
+        draw_more_topic(items['in_portrait_result']);        
+        draw_more_field(items['in_portrait_result']);
 	}	
 }
 }
 var Attention = new Attention();
 url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
+console.log('asdgag');
 Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-
-function attention(data,UserID,UserName){
+console.log('asasdfdgag');
+function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
-    out_uids = [];
-    out_unames = [];
-    out_values = [];
-    in_uids = [];
-    in_unames = [];
-    in_values = [];
-    for(i=0;i<out_data.length;i++){
-        out_uids.push(out_data[i][0]);
-        // if(data[i][1][0] == '未知'){
-        //     data[i][1][0] = "未知("+ data[i][0] +")";
-        // }
-        out_unames.push(out_data[i][1]);
-        out_values.push(out_data[i][2]);
-    }
-    for(i=0;i<in_data.length;i++){
-        in_uids.push(out_data[i][0]);
-        in_unames.push(in_data[i][1]);
-        in_values.push(in_data[i][2]);
-    }
     var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
@@ -58,48 +44,35 @@ function attention(data,UserID,UserName){
     nod['name'] = UserName;
     nod['value'] = 10;
     nodeContent.push(nod);
-    for (i=0;i<out_uids.length;i++){
+    for (i=0;i<out_data.length;i++){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 2;
-            nod['name'] = out_uids[i];
-            nod['value'] = out_values[i];
-            nod['label'] = out_unames[i];
+            nod['name'] = out_data[i][0];
+            nod['label'] = out_data[i][1];
+            nod['value'] = out_data[i][3];
             nodeContent.push(nod);
     }
-    for (i=0;i<in_uids.length;i++){
+    for (i=0;i<in_data.length;i++){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 1;
-            nod['name'] = in_uids[i];
-            nod['value'] = in_values[i];
-            nod['label'] = in_unames[i];
+            nod['name'] = in_data[i][0]
+            nod['label'] = in_data[i][1];
+            nod['value'] = in_data[i][4];
             nodeContent.push(nod);
     }    
-    /*for (i=0;i<uids.length;i++){
-            nod = {};
-            //console.log(data[i][1][2]);
-            if(data[i][1][2]==0){
-                nod['category'] = 2;
-            }else{
-                nod['category'] = 1;
-            }
-            nod['name'] = uids[i];
-            nod['value'] = values[i];
-            nod['label'] = unames[i];
-            nodeContent.push(nod);
-    }*/
     var linkline =[];
-    for (i=0;i<in_uids.length;i++){
+    for (i=0;i<in_data.length;i++){
         line ={};
-        line['source'] = in_uids[i];
+        line['source'] = in_data[i][0];
         line['target'] = UserName;
         line['weight'] = 1;
         linkline.push(line);
     }
-    for (i=0;i<out_uids.length;i++){
+    for (i=0;i<out_data.length;i++){
         line ={};
-        line['source'] = out_uids[i];
+        line['source'] = out_data[i][0];
         line['target'] = UserName;
         line['weight'] = 1;
         linkline.push(line);
@@ -107,7 +80,7 @@ function attention(data,UserID,UserName){
 	var myChart3 = echarts.init(document.getElementById('test1'));
 	var option = {
             title : {
-                text: '关注',
+                text: texts,
                 x:'left',
                 y:'top'
             },
@@ -122,17 +95,27 @@ function attention(data,UserID,UserName){
                     ribbonType: false,
                     categories : [
                         {
-                            name: '用户'
+                            name: '用户',
+                            symbol:'star'
                         },
                        {
-                            name:'已入库'
+                            name:'已入库',
+                            symbol:'circle'
                         },
 						{
-                            name:'未入库'
+                            name:'未入库',
+                            symbol:'diamond'
                         },
                     ],
                     itemStyle: {
                         normal: {
+                            color:function(param){
+                                console.log(param);
+                                console.log(param.series.nodes[param.dataIndex].value);
+                                if(param.series.nodes[param.dataIndex].value > 20){
+                                    return 'red';
+                                }
+                            },
                             label: {
                                 show: true,
                                 textStyle: {
@@ -222,4 +205,71 @@ function attention(data,UserID,UserName){
                 });
             }
     )   
+}
+
+
+function draw_topic(data){
+    $('#topic').empty();
+    var datas = data['topic'];
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       i = i + 1;
+       if(i >=6 ){
+        break;
+       }
+  }
+    html += '</table>'; 
+    $('#topic').append(html);                  
+}
+
+function draw_more_topic(data){
+    $('#topic0').empty();
+    var datas = data['topic'];
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+    i = i + 1;
+  }
+    html += '</table>'; 
+    $('#topic0').append(html);                  
+}
+
+function draw_field(data){
+    $('#field').empty();
+    var datas = data['domain'];
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       i = i + 1;
+       if(i >=6 ){
+        break;
+       }
+  }
+    html += '</table>'; 
+    $('#field').append(html);                  
+}
+
+function draw_more_field(data){
+    $('#field0').empty();
+    var datas = data['domain'];
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+    i = i + 1;
+  }
+    html += '</table>'; 
+    $('#field0').append(html);                  
 }

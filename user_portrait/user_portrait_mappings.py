@@ -62,7 +62,7 @@ index_info = {
                 'topic_string':{
                     'type': 'string',
                     'analyzer': 'my_analyzer'
-                    },
+                },
 
                 "activity_geo":{
                     "type": "string",
@@ -122,6 +122,6 @@ index_info = {
 
 es = Elasticsearch('219.224.135.93')
 
-es.indices.create(index="user_portrait", body=index_info, ignore=400)
+es.indices.create(index="user_portrait_1222", body=index_info, ignore=400)
 
 #es.index(index="test_mapping_index", doc_type="user", id="1917335617",body={"uid":"1917335617", "hashtag_string":"中国好声音&急速前进&花千骨", "hashtag":"中国好声音&急速前进&花千骨", "geo_activity":"中国		北京	北京&中国	上海	上海", "geo_activity_string":"北京&上海"})

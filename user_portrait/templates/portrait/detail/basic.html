@@ -29,6 +29,30 @@
   margin-left: -460px;
   font_family: "Microsoft YaHei UI";
 }
+#retweet_distribution_content{
+  position: fixed;
+  left: 55%;
+  top: 5%;
+  z-index: 1002;
+  width: 850px;
+  background: #FFF none repeat scroll 0% 0%;
+  border: 1px solid #AA8BE8;
+  height: 400px;
+  margin-left: -460px;
+  font_family: "Microsoft YaHei UI";
+}
+#comment_distribution_content{
+  position: fixed;
+  left: 55%;
+  top: 5%;
+  z-index: 1002;
+  width: 850px;
+  background: #FFF none repeat scroll 0% 0%;
+  border: 1px solid #AA8BE8;
+  
+  margin-left: -460px;
+  font_family: "Microsoft YaHei UI";
+}
 .title{
   font-size: 20px;
   color: #3F3F3F;
@@ -56,17 +80,19 @@ width:100%;
 
 <div id="Pdetail">
   <div id="influence_conclusion" style="margin-bottom:-10px;">
-    <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-    <h4 style="line-height:40px;width:900px;">该用户影响力为：<span style="color:red">100</span>；类型为：<span style="color:red">A</span><br></h4>
+    <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 id="influence_conclusion_c" style="line-height:40px;"></h4>
+    <!-- <h4 style="line-height:40px;width:900px;">该用户影响力为：<span style="color:red">100</span>；类型为：<span style="color:red">A</span><br></h4>
     <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
     <h4 style="line-height:60px;width:900px;">影响的领域有：<span style="color:red">ABCD</span></h4>
     <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-    <h4 style="line-height:60px;width:900px;">影响的话题有：<span style="color:red">ABCD</span></h4>
+    <h4 style="line-height:60px;width:900px;">影响的话题有：<span style="color:red">ABCD</span></h4> -->
   </div>
   <div id="yesterday_influence" style="width:1000px;;">
     <h3>昨日影响力</h3>
     <hr>
     <div id = "influence_table" style="width:100%;margin-bottom:-15px;"></div>
+      <div style = 'font-size:16px' id = "all_influenced_users_style0"></div>
+      <div style = 'font-size:16px'id = "all_influenced_users_style1"></div>
       <div class="box-content">
             <ul class="nav nav-tabs" id="myTab">
                 <li class="active" title="领域"><a href="#rewteet_origin">被转发的原创微博</a></li>
@@ -80,29 +106,27 @@ width:100%;
                     </div>
                 </div>
                 <div class="tab-pane" id="comment_origin" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo2'>111211
+                    <div class="row category margin-bottom-20" id='influence_weibo2'>
                     </div>
                 </div>
                 <div class="tab-pane" id="retweet_retweet" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo3'>111131
+                    <div class="row category margin-bottom-20" id='influence_weibo3'>
                     </div>
                 </div>
                 <div class="tab-pane" id="comment_retweet" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo4'>11114111111
+                    <div class="row category margin-bottom-20" id='influence_weibo4'>
                     </div>
                 </div>
-
             </div>
       </div>
 
     <!-- <div id="influence_weibo"></div> -->
   </div>
-  <div style="margin-top:10px;font-size:16px;"><h3 style="margin-right:50px;">影响力走势图:</h3>
+  <div style="margin-top:-50px;font-size:16px;"><h3 style="margin-right:50px;">影响力走势图</h3>
     <hr style="width:1000px;">
 	  <input name="choose_module" type="radio" checked value=1>每周影响力
     <input style="margin-left:20px;" name="choose_module" type="radio" value=2>每日影响力
   </div>
-    <br>
 	<div id="influence_chart" style="height:300px;width:1000px;"></div>
 	<div id=""  style="width:1000px;line-height:48px;font-size:18px;font-family:"Microsoft YaHei UI";">
 		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
@@ -120,19 +144,57 @@ width:100%;
       <span class = "user_title">地域分布</span>
     </p>
     <div id="re_user_domain" style="width:250px;height:260px; margin:5px;"></div>
-    <div id="re_user_topic" style="width:250px;height:260px; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+    <div id="re_user_topic" style="width:260px;height:260px; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
     <div id="re_user_geo" style="width:250px;height:260px; margin:5px;"></div>
     <div id="re_user" style="padding:10px;align:left;"></div>
   </div>
 </div>
+
 <div id="cmt_influence" class="hidden">
     <h3 class="title">评论用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
     <div id="cmt_user_content" style="padding:10px;align:left;">
+      <p style="margin-bottom: -35px;margin-left: -35px;font-size: 16px;">
+        <span class = "user_title">领域分布</span>
+        <span class = "user_title">话题分布</span>
+        <span class = "user_title">地域分布</span>
+      </p>
     <div id="cmt_user_domain" style="width:250px;height:250px; margin:5px;"></div>
-    <div id="cmt_user_topic" style="width:250px;height:250px; margin:5px;"></div>
+    <div id="cmt_user_topic" style="width:260px;height:260px; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
     <div id="cmt_user_geo" style="width:250px;height:250px; margin:5px;"></div>
     <div id="cmt_user" style="padding:10px;align:left;">12234234</div>
   </div>
+</div>
+
+<div id="retweet_distribution_content" class="hidden">
+    <h3 class="title">转发用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
+    <div id="re_user_content_all" style="padding:10px;align:left;">
+      <h4 id="all_re_conclusion"></h4><br>
+      <p style="margin-bottom: -35px;margin-left: -35px;font-size: 16px;">
+        <span class = "user_title">领域分布</span>
+        <span class = "user_title">话题分布</span>
+        <span class = "user_title">地域分布</span>
+      </p>
+      
+    <div id="re_user_domain_all" style="width:250px;height:250px; margin:5px;"></div>
+    <div id="re_user_topic_all" style="width:290px;height:260px; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+    <div id="re_user_geo_all" style="width:250px;height:250px; margin:5px;"></div>
+    
+  </div>
+</div>
+
+<div id="comment_distribution_content" class="hidden">
+    <h3 class="title">评论用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
+    <div id="cmt_user_content_all" style="padding:10px;align:left;">
+      <h4 id="all_cmt_conclusion"></h4><br>
+      <p style="margin-bottom: -35px;margin-left: -35px;font-size: 16px;">
+        <span class = "user_title">领域分布</span>
+        <span class = "user_title">话题分布</span>
+        <span class = "user_title">地域分布</span>
+      </p>
+      <div id="cmt_user_domain_all" style="width:250px;height:250px; margin:5px;"></div>
+      <div id="cmt_user_topic_all" style="width:290px;height:260px; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+      <div id="cmt_user_geo_all" style="width:250px;height:250px; margin:5px;"></div>
+    </div>
 </div>
 
 <script> 
