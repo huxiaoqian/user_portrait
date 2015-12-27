@@ -1247,6 +1247,7 @@ def get_activity_weibo(uid, time_type, start_ts):
     weibo_list = []
     if time_type == 'day':
         time_segment = HALF_HOUR
+        start_ts = start_ts - time_segment
     elif time_type == 'week':
         time_segment = FOUR_HOUR
 
