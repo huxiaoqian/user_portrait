@@ -59,7 +59,7 @@ def active_time_description(result):
         count += v
     average = count / 6.0
     active_time_order = sorted(result.iteritems(), key=lambda asd:asd[1], reverse=True)
-    active_time = {0:'0-4', 14400:'4-8',28800:'8-12',43200:'12-16',57600:'16-20',72000:'20-24'}
+    active_time = {0:'0:00-4:00', 14400:'4:00-8:00',28800:'8:00-12:00',43200:'12:00-16:00',57600:'16:00-20:00',72000:'20:00-24:00'}
     v_list = []
     for k,v in result.items():
         if v > average:

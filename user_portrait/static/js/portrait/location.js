@@ -53,7 +53,7 @@ function bind_time_option(){
 }
 var global_time_type = 'day';
 var pre_time = new Date();
-pre_time.setFullYear(2013,8,1);
+pre_time.setFullYear(2013,8,7);
 pre_time.setHours(0,0,0);
 pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
@@ -253,9 +253,15 @@ function point2weibo(xnum, ts){
         var b = xnum % 2;
         delta += (a<10?"0"+a+":":a+":");
         delta += (b==0?"00-":"30-");
-        a += 1;
-        delta += (a<10?"0"+a+":":a+":");
-        delta += (b!=0?"00":"30");
+        if (b == 0){
+            delta += (a<10?"0"+a+":":a+":");
+            delta += "30";
+        }
+        else{
+            a += 1;
+            delta += (a<10?"0"+a+":":a+":");
+            delta += "00";
+        }
         $('#date_zh').html(getDate_zh(pre_time+ts[0]));
     }
     else{
@@ -275,7 +281,7 @@ function point2weibo(xnum, ts){
     $('#time_zh').html(delta);
 }
 function draw_content(data){
-    //console.log(data);
+    console.log(data);
     var html = '';
     $('#weibo_text').empty();
     if(data==''){

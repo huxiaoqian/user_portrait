@@ -18,7 +18,7 @@ IP_CONCLUSION_TOP = 2 # return job/home ip with top2
 GEO_COUNT_THRESHOLD = 5
 
 #attribute: sentiment
-SENTIMENT_DICT = {'1':u'积极', '2':u'悲伤', '3':u'愤怒'}
+SENTIMENT_DICT = {'1':u'积极', '2':u'悲伤', '3':u'愤怒', '0': u'中性'}
 
 #attribute: online_pattern
 PATTERN_THRESHOLD = 3

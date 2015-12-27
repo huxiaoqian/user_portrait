@@ -16,7 +16,6 @@ Draw_attention:function(data){
     //var UserName = document.getElementById('nickname').innerHTML;
     //var select_graph = $('input[name="graph-type"]:checked').val();
     var texts = '';
-
 	var items = data;
 	if(items==null){
 		var say = document.getElementById('test1');
@@ -25,13 +24,16 @@ Draw_attention:function(data){
 		attention(items,UserID,UserName,texts);
         draw_topic(items['in_portrait_result']);
         draw_field(items['in_portrait_result']);
+        draw_more_topic(items['in_portrait_result']);        
+        draw_more_field(items['in_portrait_result']);
 	}	
 }
 }
 var Attention = new Attention();
 url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
+console.log('asdgag');
 Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-
+console.log('asasdfdgag');
 function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
@@ -48,7 +50,7 @@ function attention(data,UserID,UserName,texts){
             nod['category'] = 2;
             nod['name'] = out_data[i][0];
             nod['label'] = out_data[i][1];
-            nod['value'] = out_data[i][2];
+            nod['value'] = out_data[i][3];
             nodeContent.push(nod);
     }
     for (i=0;i<in_data.length;i++){
@@ -57,7 +59,7 @@ function attention(data,UserID,UserName,texts){
             nod['category'] = 1;
             nod['name'] = in_data[i][0]
             nod['label'] = in_data[i][1];
-            nod['value'] = in_data[i][2];
+            nod['value'] = in_data[i][4];
             nodeContent.push(nod);
     }    
     var linkline =[];
@@ -195,87 +197,69 @@ function attention(data,UserID,UserName,texts){
     )   
 }
 
+
 function draw_topic(data){
-    var myChart = echarts.init(document.getElementById('topic')); 
+    $('#topic').empty();
     var datas = data['topic'];
-    var nod = {};
-    var nodcontent = [];
-    for(var key in datas){
-        var nod = {};
-        nod['name'] = key;
-        nod['value'] = datas[key];
-        nodcontent.push(nod);
-    }
-    var option = {
-    title : {
-        text: '',
-        subtext: '',
-        x:'center'
-    },
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            saveAsImage : {show: true}
-        }
-    },
-    calculable : true,
-    series : [
-        {
-            name:'话题',
-            type:'pie',
-            radius : '55%',
-            center: ['50%', '60%'],
-            data:nodcontent
-        }
-    ]
-};                    
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       i = i + 1;
+       if(i >=6 ){
+        break;
+       }
+  }
+    html += '</table>'; 
+    $('#topic').append(html);                  
+}
+
+function draw_more_topic(data){
+    $('#topic0').empty();
+    var datas = data['topic'];
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+    i = i + 1;
+  }
+    html += '</table>'; 
+    $('#topic0').append(html);                  
 }
 
 function draw_field(data){
-    console.log('asdfa');
-    var myChart = echarts.init(document.getElementById('field')); 
+    $('#field').empty();
     var datas = data['domain'];
-    var nod = {};
-    var nodcontent = [];
-    for(var key in datas){
-        var nod = {};
-        nod['name'] = key;
-        nod['value'] = datas[key];
-        nodcontent.push(nod);
-    }        
-    var option = {
-    title : {
-        text: '',
-        subtext: '',
-        x:'center'
-    },
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            saveAsImage : {show: true}
-        }
-    },
-    calculable : true,
-    series : [
-        {
-            name:'领域',
-            type:'pie',
-            radius : '55%',
-            center: ['50%', '60%'],
-            data:nodcontent
-        }
-    ]
-};
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       i = i + 1;
+       if(i >=6 ){
+        break;
+       }
+  }
+    html += '</table>'; 
+    $('#field').append(html);                  
+}
+
+function draw_more_field(data){
+    $('#field0').empty();
+    var datas = data['domain'];
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
+    var i = 1;
+    for (var key in datas) {
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+    i = i + 1;
+  }
+    html += '</table>'; 
+    $('#field0').append(html);                  
 }

@@ -65,6 +65,8 @@ def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
+    #test
+    db_number = 1
     return db_number
 
 
@@ -124,6 +126,7 @@ def search_attention(uid, top_count):
         retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
+    print 'retweet_result:', retweet_result
     if retweet_result:
         retweet_dict = json.loads(retweet_result['uid_retweet'])
     else:
@@ -178,8 +181,8 @@ def search_attention(uid, top_count):
     out_portrait_result = {}
     try:
         out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-    except Exception, e:
-        raise e
+    except:
+        out_user_result = []
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
@@ -601,7 +604,7 @@ def search_bidirect_interaction(uid, top_count):
                     uname = source['uname']
                     influence = source['influence']
                     importance = source['importance']
-                    top_list = source['topic_string'].split('&')
+                    topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
                         in_portrait_result['domain'][domain] += 1
@@ -1166,14 +1169,17 @@ def search_activity(now_ts, uid):
         day_result = r_cluster.hget('activity_'+str(now_day_ts), str(uid))
     except:
         day_result = ''
+    #print 'day_result:', day_result
     if day_result != '':
         day_dict = json.loads(day_result)
         for segment in day_dict:
-            time_segment = (int(segment) + 1 )/2
+            time_segment = int(segment)/2 + 1
+            #print 'segment, time_segment:', segment, time_segment
             try:
                 day_weibo[time_segment*HALF_HOUR] += day_dict[segment]
             except:
                 day_weibo[time_segment*HALF_HOUR] = day_dict[segment]
+        #print 'day_weibo:', day_weibo
         #max_time = max(day_weibo.keys())
         max_time = int(time.time() - now_day_ts)
         #test
@@ -1187,7 +1193,7 @@ def search_activity(now_ts, uid):
     week_weibo = dict()
     segment_result = dict()
     week_weibo_count = []
-    for i in range(1, 8):
+    for i in range(0, 7):
         ts = now_day_ts - DAY*i
         try:
             week_result = r_cluster.hget('activity_'+str(ts), str(uid))
@@ -1686,6 +1692,7 @@ def search_sentiment_trend(uid, time_type, now_ts):
         for sentiment in trend_results:
             description_result[sentiment] = sum(trend_results[sentiment])
         sort_description_result = sorted(description_result.items(), key=lambda x:x[1], reverse=True)
+        #print 'sort_description_result:', sort_description_result
         max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
