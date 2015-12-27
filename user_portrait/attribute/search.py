@@ -722,12 +722,12 @@ def search_mention(now_ts, uid, top_count):
         if not result_string:
             continue
         result_dict = json.loads(result_string)
-        for at_uid in result_dict:
+        for at_uname in result_dict:
             try:
                 stat_results[at_uname] += result_dict[at_uname]
             except:
                 stat_results[at_uname] = result_dict[at_uname]
-    
+    #print 'stat_result:', stat_results
     sort_stat_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)
     all_count = len(sort_stat_results) # all mention count
     #select in_portrait and out_portrait
@@ -742,11 +742,10 @@ def search_mention(now_ts, uid, top_count):
             break
         nest_body_list = [{'match':{'uname':item[0]}} for item in sort_stat_results[count:count+20]]
         query = [{'bool':{'should': nest_body_list}}]
-        query.append({})
         try:
             portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body={'query':{'bool':{'must':query}}, 'size':100})['hits']['hits']
-        except Exception ,e:
-            raise e
+        except:
+            portrait_result = []
         for item in portrait_result:
             if len(in_portrait_list)<top_count:
                 user_dict = item['_source']
@@ -762,26 +761,33 @@ def search_mention(now_ts, uid, top_count):
                 in_portrait_topic_list.extend(topic_list)
                 in_portrait_result.append([uid, uname, influence, importance])
         out_item_list = list(set([item[0] for item in sort_stat_results[count:count+20]]) - set([item['_source']['uname'] for item in portrait_result]))
-        out_list.extend(out_list)
+        out_list.extend(out_item_list)
         if len(out_list)>=top_count and len(in_portrait_list)>=top_count:
             break
+        else:
+            count += 20
+    #print 'in_portrait_list:', in_portrait_list
+    #print 'out_portrait_list:', out_list
     out_query_list = [{'match':{'uname':item}} for item in out_list]
-    query = [{'bool':{'should': out_query_list}}]
-    try:
-        out_profile_result = es_user_profile.search(index=profile_index_name, doc_type=profile_index_type, body={'query':{'bool':{'must':query}}, 'size':100})['hits']['hits']
-    except Exception, e:
-        raise e
+    if len(out_query_list) != 0:
+        query = [{'bool':{'should': out_query_list}}]
+        try:
+            out_profile_result = es_user_profile.search(index=profile_index_name, doc_type=profile_index_type, body={'query':{'bool':{'must':query}}, 'size':100})['hits']['hits']
+        except:
+            out_profile_result = []
+    else:
+        out_profile_result = []
     out_in_profile_list = []
     for out_item in out_profile_result:
         source = out_item['_source']
         uname = source['nick_name']
         uid = source['uid']
         fansnum = source['fansnum']
-        out_portrait_list.append([uid, uname, fansnum])
+        out_portrait_list.append([uid, uname, stat_results[uname], fansnum])
         out_in_profile_list.append(uname)
     out_out_profile_list = list(set(out_list) - set(out_in_profile_list))
-    for out_out_itme in out_out_profile_list:
-        out_portrait_list.append(['', out_out_item, '0'])
+    for out_out_item in out_out_profile_list:
+        out_portrait_list.append(['', out_out_item, stat_results[out_out_item],'0'])
 
     return {'in_portrait_list':in_portrait_list, 'out_portrait_list':out_portrait_list, 'in_portrait_result':in_portrait_result}
 
@@ -1241,6 +1247,7 @@ def get_activity_weibo(uid, time_type, start_ts):
     weibo_list = []
     if time_type == 'day':
         time_segment = HALF_HOUR
+        start_ts = start_ts - time_segment
     elif time_type == 'week':
         time_segment = FOUR_HOUR
 
