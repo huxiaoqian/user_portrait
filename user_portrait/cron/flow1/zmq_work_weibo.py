@@ -8,13 +8,13 @@ import math
 import sys
 import redis
 from datetime import datetime
-
+from rediscluster.exceptions import ClusterDownException
 reload(sys)
 sys.path.append('../../')
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1 
 from global_utils import  R_CLUSTER_FLOW1
+from global_utils import uname2uid_redis as r_name
 
-r_name = redis.StrictRedis("219.224.135.91", "7381", db=0)
 
 def get_queue_index(timestamp):
     time_struc = time.gmtime(float(timestamp))
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
 
     cluster_redis = R_CLUSTER_FLOW1
-    
+    f = open("cluster_error.txt", "wb")
 
     count = 0
     tb = time.time()
@@ -118,8 +118,13 @@ if __name__ == "__main__":
             continue 
 
         if int(item['sp_type']) == 1:
-            if 1:
+            try:
                 cal_propage_work(item)
+            except ClusterDownException:
+                cal_propage_work(item)
+                f.write("unable rebuild cluster error"+'\n')
+            except Exception, r:
+                f.write(Exception + "  " + r)
 
 
             count += 1

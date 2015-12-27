@@ -107,7 +107,7 @@ def get_text(top_list, date, user_info, style):
                 if temp_result.has_key("_source"):
                     temp.append(temp_result["_source"]["text"])
                 else:
-                    temp.append("这是早期微博,当前库中没有该微博的文本信息")
+                    temp.append("")
             results.append(temp)
     return results
 
@@ -149,7 +149,10 @@ def influenced_detail(uid, date, style):
 
 def get_user_url(uid_list):
     results = []
-    es_results = es_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids": uid_list})['docs']
+    try:
+        es_results = es_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids": uid_list})['docs']
+    except:
+        es_results = {}
     for item in es_results:
         temp = []
         if item['found']:
@@ -209,8 +212,6 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         temp_list.append(item[0])
     in_portrait_url = get_user_url(temp_list)
     out_portrait_url = get_user_url(out_portrait)
-    print temp_list
-    print out_portrait_url
 
     return ([in_portrait_url[:default_number], out_portrait_url[:default_number]])
 
@@ -265,13 +266,13 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     retweeted_uid_list.extend(origin_retweeted_uid)
     retweeted_uid_list.extend(retweeted_retweeted_uid)
     if retweeted_uid_list:
-        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topic_string", "activity_geo", "influence"])["docs"]
+        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topic_string", "activity_geo_dict", "influence"])["docs"]
         for item in user_portrait_result:
             if item["found"]:
                 count += 1
                 temp_domain = item["fields"]["domain"][0].split('&')
                 temp_topic = item["fields"]["topic_string"][0].split('&')
-                temp_geo = item["fields"]["activity_geo"][0].split('&')
+                temp_geo = json.loads(item["fields"]["activity_geo_dict"][0])[-1].keys()
                 total_influence += item["fields"]["influence"][0]
                 retweeted_domain = aggregation(temp_domain, retweeted_domain)
                 retweeted_topic = aggregation(temp_topic, retweeted_topic)
