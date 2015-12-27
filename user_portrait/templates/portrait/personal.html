@@ -308,10 +308,6 @@ Personal.prototype = {   //群组搜索
         //console.log(data);
         $('#histactive').html(data[0]+'，且'+data[1]);
     },
-    currentData:function(data){
-        console.log(data);
-        //$('#histactive').html(data[0]+'，且'+data[1]);
-    },
 }
 var global_tag_vector = new Array(); //全局标签化向量
 
@@ -325,8 +321,12 @@ Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.remarkData);
 var url = "/attribute/history_activeness_influence/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.historyData);
 var url = "/attribute/current_tag_vector/?uid=" + uid;
-Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.currentData);
+Personal.call_sync_ajax_request(url, Personal.ajax_method, currentData);
 
+function currentData(data){
+    console.log(data);
+    global_tag_vector.push(['昨日影响力评价',data[0]]);
+}
 function bind_remark_edit(Personal){
     $('#extraDetail').click(function(){
         var td = $(this);
