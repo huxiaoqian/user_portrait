@@ -117,7 +117,16 @@ function th_draw_content(data){
 }
 
 function emotions(data){
-    var times = data['time_list'];
+    var times = [];
+    if (index =='week'){
+        times = data['time_list'];}
+    else{
+        for (var t in data['time_list']){
+            console.log(data['time_list'][t]);
+            times.push(data['time_list'][t].substr(11,5));
+        }
+    }
+    console.log(times);
     var names = ['中性','积极','悲伤','愤怒']; 
     var data0 = data['trend_result']['0'];
     var data1 = data['trend_result']['1'];
