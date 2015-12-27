@@ -1169,14 +1169,17 @@ def search_activity(now_ts, uid):
         day_result = r_cluster.hget('activity_'+str(now_day_ts), str(uid))
     except:
         day_result = ''
+    #print 'day_result:', day_result
     if day_result != '':
         day_dict = json.loads(day_result)
         for segment in day_dict:
-            time_segment = (int(segment) + 1 )/2
+            time_segment = int(segment)/2 + 1
+            #print 'segment, time_segment:', segment, time_segment
             try:
                 day_weibo[time_segment*HALF_HOUR] += day_dict[segment]
             except:
                 day_weibo[time_segment*HALF_HOUR] = day_dict[segment]
+        #print 'day_weibo:', day_weibo
         #max_time = max(day_weibo.keys())
         max_time = int(time.time() - now_day_ts)
         #test
