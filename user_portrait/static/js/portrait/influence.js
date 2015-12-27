@@ -92,19 +92,24 @@ Influence.prototype = {   //获取数据，重新画表
   Draw_get_top_weibo(data, div_name);
 },
 Draw_pie_all0:function(data){
+  console.log("999999999999999");
+    console.log(data.geo);
     var div_name = ['re_user_domain_all','re_user_topic_all','re_user_geo_all']
     Draw_pie(data.domian, div_name[0]);
-    Drwa_pie(data.topic, div_name[1]);
     Draw_pie(data.geo, div_name[2]);
+    Draw_pie(data.topic, div_name[1]);
+    
   },
 
 
   
 
   Draw_pie_all1:function(data){
-    var div_name = ['cmt_user_domain_all','cmt_user_topic_all','cmt_user_geo_all']
+    var div_name = ['cmt_user_domain_all','cmt_user_topic_all','cmt_user_geo_all'];
+    console.log("999999999999999")
+    console.log(data.domian);
     Draw_pie(data.domian, div_name[0]);
-    Drwa_pie(data.topic, div_name[1]);
+    Draw_pie(data.topic, div_name[1]);
     Draw_pie(data.geo, div_name[2]);
   },
 
@@ -229,24 +234,28 @@ Draw_pie_all0:function(data){
 }
 
  function Draw_pie(data, div_name){
-    {
+    if (data.length == 0){
+      console.log("83ry98yerre");
+    }else{
     var myChart = {};
+    console.log("8888888888");
+    console.log(div_name);
      myChart = echarts.init(document.getElementById(div_name));
     //var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
     var data_list = [];
     var data_dict = {};
-    for (var key in data){
-                       data_dict.value = data[key].toFixed(2);
-                       data_dict.name = key;
-                       data_list.push(data_dict);
-                       data_dict = {};
-                     }
-                     var option = {
-                       tooltip : {
-                         trigger: 'item',
-                         formatter: "{a} <br/>{b} : {c} ({d}%)"
-                       },
-                       toolbox: {
+    for (var i=0; i<data.length; i++){
+      data_dict.value = data[i][1].toFixed(2);
+      data_dict.name = data[i][0];
+      data_list.push(data_dict);
+      data_dict = {};
+    }
+     var option = {
+        tooltip : {
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+         toolbox: {
                          show : false,
                          feature : {
                              mark : {show: true},
@@ -282,23 +291,23 @@ Draw_pie_all0:function(data){
                                          show : true
                                      }
                                  },
-                                 emphasis : {
-                                     label : {
-                                         show : true,
-                                         position : 'center',
-                                         textStyle : {
-                                             fontSize : '14',
-                                             fontWeight : 'bold'
-                                         }
-                                     }
-                                 }
-                             },
-                             data:data_list
-                         }
-                       ]
-                     }; 
-                     myChart.setOption(option);
-                        }             
+        emphasis : {
+       label : {
+      show : true,
+      position : 'center',
+      textStyle : {
+          fontSize : '14',
+       fontWeight : 'bold'
+       }
+      }
+        }
+      },
+      data:data_list
+     }
+    ]
+       }; 
+      myChart.setOption(option);
+    }             
   }
 
 function Draw_get_top_weibo(data,div_name){
@@ -360,8 +369,7 @@ function click_action(){
       $(".comment_count").off("click").click(function(){       
         $("#float-wrap").removeClass("hidden");
         $("#cmt_influence").removeClass("hidden");
-        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=1';
-        Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
+        
         return false;
       });
       $("#retweet_distribution").off("click").click(function(){
@@ -375,6 +383,8 @@ function click_action(){
       $("#comment_distribution").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#comment_distribution_content").removeClass("hidden");
+        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=1';
+        Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
 
@@ -388,7 +398,8 @@ var Influence = new Influence();
 var influence_url = '/attribute/influence_trend/?uid='+parent.personalData.uid ;
 var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
-var data_test = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
+//var data_test = [["\u7ecf\u6d4e\u7c7b", 0.3333333333333333], ["\u6559\u80b2\u7c7b", 0.3333333333333333], ["\u653f\u6cbb\u7c7b_\u5b97\u6559", 0.3333333333333333]]
+var data_test = [["\u5317\u4eac", 0.6666666666666666], ["\u4e2d\u56fd", 0.3333333333333333]];
 for(var i=0; i<div_name2.length; i++){
   Draw_pie(data_test, div_name2[i]);
 };
