@@ -207,6 +207,7 @@ function week_chart(trend_data){
         },
         yAxis: {
 			min:0,
+            allowDecimals: false,
             title: {
                 text: '微博总量 (条)'
             },
