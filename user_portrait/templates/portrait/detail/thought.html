@@ -18,7 +18,8 @@
    <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
    <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
 </div>
-<div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
+<div style="width:650px;height:400px;margin;0px;" id="emotion"></div>
+</div>
 <div style="width:280px;height:400px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
 	<div id="thought_weibo_text" style="padding:0px 10px;">
 	</div>
@@ -177,8 +178,8 @@ function emotions(data){
                 console.log(param);
                 var sentiment = param.seriesIndex;
                 var date = new Date(param.name);
-                var starts_ts = date.getTime();
-                var start_ts = starts_ts.toString().substr(0,10);
+                var starts_ts = date.getTime().toString().substr(0,10);
+                var start_ts = parseInt(starts_ts)-28800;
                 console.log(start_ts);
                 ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({
