@@ -114,38 +114,6 @@ Draw_pie_all0:function(data){
     Draw_pie(data.geo, div_name[2]);
   },
 
-  Influence_motal:function(data, div_name){         
-    $('#'+div_name).empty();
-    //console.log(div_name);
-    var html = '';
-    html += '<hr style="margin-top:-10px;">';
-    html += '<h4>已入库用户('+data[4].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
-    for (i=0;i<data[4].length;i++){
-      html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
-      
-      // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-      // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
-      // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
-      // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
-      // html += '</ul></div>';
-
-    }
-
-    html += '</p>';
-    html += '<hr><h4>未入库用户('+data[5].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
-    for (i=0;i<data[5].length;i++){
-      html += '<span"><img style="margin:10px 0px 0px 20px;" src="' + data[4][i] + '" alt="' + data[4][i] +'"></span>';
-
-      // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
-      // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
-      // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
-      // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
-      // html += '</ul></div>';
-
-    }
-    html += '</p>';
-    $('#'+div_name).append(html);
-  },
   Draw_basic_influence:function(data){
 
     console.log(data);
@@ -190,14 +158,91 @@ Draw_pie_all0:function(data){
     var tag_vector = []
     tag_vector.push('影响力类型');
     tag_vector.push(data);
-    global_tag_vector.push(tag_vector);
-    
+    global_tag_vector.push(tag_vector); 
   },
-  
+  Single_users_influence_re:function(data){
+    Influence_motal(data.influence_users, 're_user');
+    Draw_pie(data.influence_distribution.topic, 're_user_topic');
+    Draw_pie(data.influence_distribution.domian, 're_user_domain');
+    Draw_pie(data.influence_distribution.geo, 're_user_geo');
+
+  },
+  Single_users_influence_cmt:function(data){
+    Influence_motal(data.influence_users, 'cmt_user');
+    Draw_pie(data.influence_distribution.topic, 'cmt_user_topic');
+    Draw_pie(data.influence_distribution.domian, 'cmt_user_domain');
+    Draw_pie(data.influence_distribution.geo, 'cmt_user_geo');  
+  }
 }
+
+  function Influence_motal(data, div_name){         
+    $('#'+div_name).empty();
+    //console.log(div_name);
+    var html = '';
+    html += '<hr style="margin-top:-10px;">';
+    html += '<h4>已入库用户('+data[0].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
+    if (data[0].length == 0){
+      console.log('123456789098765432');
+      //$('#'+div_name).append('<h4>暂无数据</h4>');
+    }else{
+      for (i=0;i<data[0].length;i++){
+       var img_src = ''
+       if (data[0][i][0] == 'unknown'){
+       img_src = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+       }else{
+        img_src = data[0][i][0];
+       };
+       var user_name = '';
+       if (data[0][i][1] == 'unknown'){
+        user_name = '未知';
+       }else{
+         user_name = data[0][i][1];
+       }
+      html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + img_src + '" alt="' + user_name +'"></span>';
+    }
+      // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
+      // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
+      // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
+      // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
+      // html += '</ul></div>';
+
+    }
+
+    html += '</p>';
+    html += '<hr><h4>未入库用户('+data[1].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
+    if (data[1].length == 0){
+      //$('#'+div_name).append('<h4 style="margin-left:33%;margin-top:50%;">暂无数据</h4>');
+    }else{
+      for (i=0;i<data[1].length;i++){
+        var img_src = ''
+        if (data[1][i][0] == 'unknown'){
+          img_src = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+        }else{
+          img_src = data[1][i][0];
+        };
+        var user_name = '';
+        if (data[1][i][1] == 'unknown'){
+          user_name = '未知';
+        }else{
+          user_name = data[1][i][1];
+        }
+
+        html += '<span"><img style="margin:10px 0px 0px 25px;" src="' + img_src + '" alt="' + user_name +'"></span>';
+    }
+      // html += '<ul style="margin-top:0px;margin-bottom:0;padding-left: 7px;height:50px; overflow-y:hidden" class="list-inline">';
+      // html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope">';
+      // //html += '<a target="_blank" href="/index/personal/?uid=' + data[4][i] +'" title="' + data[4][i] +'">';
+      // html += '<div class="small-photo shadow-5"><span class="helper"></span>'+i+'<img src="' + data[4][i] + '" alt="' + data[4][i] +'"></div></li>';         
+      // html += '</ul></div>';
+
+    }
+    html += '</p>';
+    $('#'+div_name).append(html);
+  }
 
  function Draw_pie(data, div_name){
     if (data.length == 0){
+      $('#'+div_name).append('<h4 style="margin-top:50%;margin-left:33%;">暂无数据</h4>');
       console.log("83ry98yerre");
     }else{
     var myChart = {};
@@ -281,9 +326,9 @@ function Draw_get_top_weibo(data,div_name){
         for(i=0;i<data.length;i++){
             s = (i+1).toString();
             if(i%2 == 0){
-              html += "<div style='width:100%;background-color:whitesmoke'>";
+              html += "<div style='height:85px;padding:12px 15px;width:100%;background-color:whitesmoke'>";
             }else{
-              html += "<div style='width:100%;'>";
+              html += "<div style='height:85px;padding:12px 15px;width:100%;'>";
             }
             html += "<div style='width:100%;'>";
             //html += "<img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'>";
@@ -329,8 +374,7 @@ function click_action(){
       });
       $(".comment_count").off("click").click(function(){       
         $("#float-wrap").removeClass("hidden");
-        $("#cmt_influence").removeClass("hidden");
-        
+        $("#cmt_influence").removeClass("hidden");   
         return false;
       });
       $("#retweet_distribution").off("click").click(function(){
@@ -353,18 +397,17 @@ function click_action(){
 
 
 var weibo2 = ['媒体','娱乐','北京','45',['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1'],['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1']]
-var div_name = ['cmt_user','re_user'];
+
 var Influence = new Influence();
 var influence_url = '/attribute/influence_trend/?uid='+parent.personalData.uid ;
 var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
-//var data_test = [["\u7ecf\u6d4e\u7c7b", 0.3333333333333333], ["\u6559\u80b2\u7c7b", 0.3333333333333333], ["\u653f\u6cbb\u7c7b_\u5b97\u6559", 0.3333333333333333]]
-var data_test = [["\u5317\u4eac", 0.6666666666666666], ["\u4e2d\u56fd", 0.3333333333333333]];
-for(var i=0; i<div_name2.length; i++){
-  Draw_pie(data_test, div_name2[i]);
-};
-Influence.Influence_motal(weibo2,div_name[0]);
-Influence.Influence_motal(weibo2,div_name[1]);
+// var data_test = [["\u5317\u4eac", 0.6666666666666666], ["\u4e2d\u56fd", 0.3333333333333333]];
+// for(var i=0; i<div_name2.length; i++){
+//   Draw_pie(data_test, div_name2[i]);
+// };
+// Influence.Influence_motal(weibo2,div_name[0]);
+// Influence.Influence_motal(weibo2,div_name[1]);
 choose_dayorweek(influence_url);
 
 var basic_influence_url = '/attribute/current_influence_comment/?uid=1220291284&date=2013-09-04';
@@ -379,6 +422,10 @@ Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax
 var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=1';
 Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_all_influenced_users_style1);
 
+var influenced_users_url_re = '/attribute/influenced_users/?uid=2659121381&date=2013-09-05&style=0&mid=3619083100174037';
+Influence.call_sync_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
+var influenced_users_url_cmt = '/attribute/influenced_users/?uid=2659121381&date=2013-09-05&style=1&mid=3619083100174037';
+Influence.call_sync_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
 
 var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-05&style=0';
 Influence.call_sync_ajax_request(get_top_weibo_url_style0, Influence.ajax_method, Influence.Draw_get_top_weibo1);
