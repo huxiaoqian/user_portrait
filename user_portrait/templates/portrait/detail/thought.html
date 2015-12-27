@@ -13,15 +13,16 @@
 <div id='select_time' style="font-weight:bold;margin:0px;margin-left:400px;font-size:12px;"></div>
 </div>
 <div style="width:680px;height:450px;margin:0px;">
-<div style="font-size: 16px;width:400px;margin:0px;">情绪变动曲线<hr style="margin-top:10px;margin-right:20px;" /></div>
-<div style="margin-left: 170px;">
-   <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
-   <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
+    <div style="font-size: 16px;width:400px;margin:0px;">情绪变动曲线</div>
+    <div style="margin-left: 170px;">
+       <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
+       <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
+    </div>
+    <div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
 </div>
-<div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
 <div style="width:280px;height:400px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
-	<div id="thought_weibo_text" style="padding:0px 10px;">
-	</div>
+    <div id="thought_weibo_text" style="padding:0px 10px;">
+    </div>
 </div>
 <div style="width:998px;">
 	<div>
@@ -76,7 +77,7 @@ Draw_emotion:function(data){
         url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
         call_ajax_request(url_content,th_draw_content);
         $('#select_time').empty();  
-        html0 += "<div>当前选择的时间段为</div><div>"+items['time_list'][0]+"</div><br><div>当前选择的情绪为</div><div>中性</div>";
+        html0 += "<div>当前选择时间段:</div><div>"+items['time_list'][0]+"</div><br><div>当前选择情绪:</div><div>中性</div>";
         $('#select_time').append(html0);
     }   
 }
@@ -190,7 +191,7 @@ function emotions(data){
                     });
                 var html0 = '';
                 $('#select_time').empty();  
-                html0 += "<div>当前选择的时间段为</div><div>"+param.name+"</div><br><div>当前选择的情绪为</div><div>"+names[sentiment]+'</div>';
+                html0 += "<div>当前选择时间段:</div><div>"+param.name+"</div><br><div>当前选择情绪:</div><div>"+names[sentiment]+'</div>';
                 $('#select_time').append(html0);
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
