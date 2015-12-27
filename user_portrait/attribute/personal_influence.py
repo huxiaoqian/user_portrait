@@ -201,7 +201,6 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         results.append(item["fields"]["uid"][0])
 
     portrait_results = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": results}, fields=["importance","uid"])["docs"]
-    print portrait_results
     in_portrait = {}
     out_portrait = []
     for item in portrait_results:
@@ -234,7 +233,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
                 }
             }
         },
-        "size":10000
+        "size":1000000
     }
     #详细影响到的人 
     date1 = str(date).replace('-', '')
