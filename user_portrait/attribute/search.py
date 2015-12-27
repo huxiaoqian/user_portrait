@@ -604,7 +604,7 @@ def search_bidirect_interaction(uid, top_count):
                     uname = source['uname']
                     influence = source['influence']
                     importance = source['importance']
-                    top_list = source['topic_string'].split('&')
+                    topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
                         in_portrait_result['domain'][domain] += 1
