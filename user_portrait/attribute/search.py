@@ -1674,13 +1674,14 @@ def search_sentiment_trend(uid, time_type, now_ts):
     if time_type=='day':
         flow_text_index_name = flow_text_index_name_pre + now_date
         try:
-            flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'term':{'uid': uid}}})['hits']['hits']
+            flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'term':{'uid': uid}}, 'sort': 'timestamp', 'size':MAX_VALUE})['hits']['hits']
         except:
             flow_text_count = []
         for flow_text_item in flow_text_count:
             source = flow_text_item['_source']
             timestamp = source['timestamp']
             time_segment = int((timestamp - now_date_ts) / HALF_HOUR) * HALF_HOUR + now_date_ts
+            print 'timestamp, time_segment:', timestamp, ts2date(timestamp), ts2date(time_segment), time_segment
             sentiment = source['sentiment']
             try:
                 results[sentiment][time_segment] += 1
@@ -1714,7 +1715,7 @@ def search_sentiment_trend(uid, time_type, now_ts):
             iter_date = ts2datetime(iter_date_ts)
             flow_text_index_name = flow_text_index_name_pre + iter_date
             try:
-                flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'term':{'uid':uid}}})['hits']['hits']
+                flow_text_count = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'term':{'uid':uid}}, 'sort':'timestamp', 'size': MAX_VALUE})['hits']['hits']
             except:
                 flow_text_count = []
             for flow_text_item in flow_text_count:
