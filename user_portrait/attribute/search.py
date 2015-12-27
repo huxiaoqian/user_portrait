@@ -1190,7 +1190,7 @@ def search_activity(now_ts, uid):
     week_weibo = dict()
     segment_result = dict()
     week_weibo_count = []
-    for i in range(1, 8):
+    for i in range(0, 7):
         ts = now_day_ts - DAY*i
         try:
             week_result = r_cluster.hget('activity_'+str(ts), str(uid))
@@ -1689,6 +1689,7 @@ def search_sentiment_trend(uid, time_type, now_ts):
         for sentiment in trend_results:
             description_result[sentiment] = sum(trend_results[sentiment])
         sort_description_result = sorted(description_result.items(), key=lambda x:x[1], reverse=True)
+        #print 'sort_description_result:', sort_description_result
         max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
