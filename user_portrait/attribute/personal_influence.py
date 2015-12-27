@@ -157,8 +157,10 @@ def get_user_url(uid_list):
         temp = []
         if item['found']:
             temp.append(item['_source']["photo_url"])
+            temp.append(item['_source']['nick_name'])
             temp.append(item['_id'])
         else:
+            temp.append("unknown")
             temp.append("unknown")
             temp.append(item['_id'])
         results.append(temp)
@@ -199,6 +201,7 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         results.append(item["fields"]["uid"][0])
 
     portrait_results = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": results}, fields=["importance","uid"])["docs"]
+    print portrait_results
     in_portrait = {}
     out_portrait = []
     for item in portrait_results:
@@ -215,7 +218,9 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
 
     return ([in_portrait_url[:default_number], out_portrait_url[:default_number]])
 
-def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, message_type):
+
+# 给定所有转发微博的mid,计算影响到的人的领域、话题、地理位置
+def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, message_type, default_number=20):
     query_body = {
         "query":{
             "filtered":{
@@ -240,16 +245,26 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     origin_comment_uid = []
     retweeted_comment_uid = []
     if origin_retweeted_mid: # 所有转发该条原创微博的用户
-        for iter_mid in origin_retweeted_mid:
-            query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
-        query_body["query"]["filtered"]["filter"]["bool"]["must"] = [{"term":{"message_type": message_type}}, {"term":{"root_uid": uid}}]
+        length = len(origin_retweeted_mid)
+        if length != 1:
+            for iter_mid in origin_retweeted_mid:
+                query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
+        else:
+            iter_mid = origin_retweeted_mid[0]
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term": {"root_mid": iter_mid}})
+        query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term":{"message_type": message_type}}, {"term":{"root_uid": uid}}])
         origin_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
         if origin_retweeted_result:
             for item in origin_retweeted_result:
                 origin_retweeted_uid.append(item["fields"]["uid"][0])
     if retweeted_retweeted_mid: # 所有评论该条原创微博的用户
-        for iter_mid in retweeted_retweeted_mid:
-            query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
+        length = len(retweeted_retweeted_mid)
+        if length != 1:
+            for iter_mid in retweeted_retweeted_mid:
+                query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
+        else:
+            iter_mid = origin_retweeted_mid[0]
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term": {"root_mid": iter_mid}})
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term":{"message_type": message_type}},{"term": {"directed_uid": uid}}])
         retweeted_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
         if retweeted_retweeted_result:
@@ -260,16 +275,22 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     retweeted_domain = {}
     retweeted_topic = {}
     retweeted_geo = {}
+    in_portrait = []
+    out_portrait = []
     average_influence = 0
     total_influence = 0
     count = 0
     retweeted_uid_list.extend(origin_retweeted_uid)
     retweeted_uid_list.extend(retweeted_retweeted_uid)
     if retweeted_uid_list:
-        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topic_string", "activity_geo_dict", "influence"])["docs"]
+        user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topic_string", "activity_geo_dict","importance", "influence"])["docs"]
         for item in user_portrait_result:
             if item["found"]:
+                temp = []
                 count += 1
+                temp.append(item['_id'])
+                temp.append(item["fields"]["importance"][0])
+                in_portrait.append(temp)
                 temp_domain = item["fields"]["domain"][0].split('&')
                 temp_topic = item["fields"]["topic_string"][0].split('&')
                 temp_geo = json.loads(item["fields"]["activity_geo_dict"][0])[-1].keys()
@@ -277,6 +298,8 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
                 retweeted_domain = aggregation(temp_domain, retweeted_domain)
                 retweeted_topic = aggregation(temp_topic, retweeted_topic)
                 retweeted_geo = aggregation(temp_geo, retweeted_geo)
+            else:
+                out_portrait.append(item['_id'])
         retweeted_domain = proportion(retweeted_domain)
         retweeted_topic = proportion(retweeted_topic)
         retweeted_geo = proportion(retweeted_geo)
@@ -291,9 +314,22 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     retweeted_results["topic"] = sorted_retweeted_topic[:5]
     retweeted_results["geo"] = sorted_retweeted_geo[:5]
     retweeted_results["influence"] = average_influence
+    in_portrait = sorted(in_portrait, key=lambda x:x[1], reverse=True)
+
+    temp_list = []
+    for item in in_portrait:
+        temp_list.append(item[0])
+    retweeted_results['in_portrait_number'] = len(temp_list)
+    retweeted_results['out_portrait_number'] = len(out_portrait)
+    in_portrait_url = get_user_url(temp_list[:default_number])
+    out_portrait_url = get_user_url(out_portrait[:default_number])
+    retweeted_results["in_portrait"] = in_portrait_url
+    retweeted_results["out_portrait"] = out_portrait_url
 
     return retweeted_results
-# 某条微博的影响力，人和分布
+
+
+# 用于调用，某条微博的影响力，人和分布
 def detail_weibo_influence(uid, mid, style, date, number):
     results = dict()
     influence_users = influenced_people(uid, mid, style, date, number)
@@ -313,7 +349,7 @@ def statistics_influence_people(uid, date, style):
     index_flow_text = pre_text_index + date
 
     try:
-        bci_result = es_user_portrait.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
+        bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         bci_result = []
         return json.dumps(results)
