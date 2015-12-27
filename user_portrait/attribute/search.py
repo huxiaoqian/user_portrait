@@ -65,6 +65,8 @@ def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
+    #test
+    db_number = 1
     return db_number
 
 
@@ -124,6 +126,7 @@ def search_attention(uid, top_count):
         retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
+    print 'retweet_result:', retweet_result
     if retweet_result:
         retweet_dict = json.loads(retweet_result['uid_retweet'])
     else:
@@ -178,8 +181,8 @@ def search_attention(uid, top_count):
     out_portrait_result = {}
     try:
         out_user_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={'ids':out_portrait_list})['docs']
-    except Exception, e:
-        raise e
+    except:
+        out_user_result = []
     out_portrait_list = []
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
