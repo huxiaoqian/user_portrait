@@ -118,6 +118,7 @@ def search_attention(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
+    center_uid = uid
     #test
     portrait_index_name = 'user_portrait_1222'
     portrait_index_type = 'user'
@@ -126,7 +127,6 @@ def search_attention(uid, top_count):
         retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
-    print 'retweet_result:', retweet_result
     if retweet_result:
         retweet_dict = json.loads(retweet_result['uid_retweet'])
     else:
@@ -146,7 +146,7 @@ def search_attention(uid, top_count):
             portrait_result = []
         for item in portrait_result:
             uid = item['_id']
-            if item['found'] == True:
+            if item['found'] == True and uid != center_uid:
                 if len(in_portrait_list)<top_count:
                     source = item['_source']
                     uname = source['uname']
@@ -162,7 +162,7 @@ def search_attention(uid, top_count):
                     retweet_count = retweet_dict[uid]
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
-                if len(out_portrait_list)<top_count:
+                if len(out_portrait_list)<top_count and uid != center_uid:
                     out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
             break
@@ -258,6 +258,7 @@ def search_follower(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
+    center_uid = uid
     #test
     portrait_index_name = 'user_portrait_1222'
     portrait_index_type = 'user'
@@ -285,7 +286,7 @@ def search_follower(uid, top_count):
             portrait_result = {}
         for item in portrait_result:
             uid = item['_id']
-            if item['found'] == True:
+            if item['found'] == True and uid != center_uid:
                 if len(in_portrait_list)<top_count:
                     source = item['_source']
                     uname = source['uname']
@@ -301,7 +302,7 @@ def search_follower(uid, top_count):
                     retweet_count = retweet_dict[uid]
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
-                if len(out_portrait_list)<top_count:
+                if len(out_portrait_list)<top_count and uid != center_uid:
                     out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
             break
@@ -349,6 +350,7 @@ def search_comment(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
+    center_uid = uid
     #test
     portrait_index_name = 'user_portrait_1222'
     portrait_index_type = 'user'
@@ -376,7 +378,7 @@ def search_comment(uid, top_count):
             portrait_result = []
         for item in portrait_result:
             uid = item['_id']
-            if item['found'] == True:
+            if item['found'] == True and uid != center_uid:
                 if len(in_portrait_list)<top_count:
                     source = item['_source']
                     uname = source['uname']
@@ -392,7 +394,7 @@ def search_comment(uid, top_count):
                     retweet_count = retweet_dict[uid]
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
-                if len(out_portrait_list)<top_count:
+                if len(out_portrait_list)<top_count and uid != center_uid:
                     out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
             break
@@ -441,6 +443,7 @@ def search_be_comment(uid, top_count):
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
+    center_uid = uid
     #test
     portrait_index_name = 'user_portrait_1222'
     portrait_index_type = 'user'
@@ -469,7 +472,7 @@ def search_be_comment(uid, top_count):
             portrait_result = []
         for item in portrait_result:
             uid = item['_id']
-            if item['found'] == True:
+            if item['found'] == True and uid != center_uid:
                 if len(in_portrait_list)<top_count:
                     source = item['_source']
                     uname = source['uname']
@@ -485,7 +488,7 @@ def search_be_comment(uid, top_count):
                     retweet_count = retweet_dict[uid]
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
-                if len(out_portrait_list)<top_count:
+                if len(out_portrait_list)<top_count and uid != center_uid:
                     out_portrait_list.append(uid)
         if len(out_portrait_list)==top_count and len(in_portrait_list)==top_count:
             break
@@ -538,6 +541,7 @@ def search_bidirect_interaction(uid, top_count):
     results = {}
     retweet_inter_dict = {}
     comment_inter_dict = {}
+    center_uid = uid
     #bidirect interaction in retweet and be_retweet
     try:
         retweet_result = es_user_portrait.get(index=retweet_index_name, doc_type=retweet_index_type, id=uid)['_source']
@@ -550,8 +554,8 @@ def search_bidirect_interaction(uid, top_count):
     except Exception, e:
         raise e
     for be_retweet_item in be_retweet_result:
-        if be_retweet_item['found']==True:
-            be_retweet_uid = be_retweet_item['_id']
+        be_retweet_uid = be_retweet_item['_id']
+        if be_retweet_item['found']==True and be_retweet_uid != uid:
             be_retweet_dict = json.loads(be_retweet_item['_source']['uid_be_retweet'])
             if uid in be_retweet_dict:
                 retweet_inter_dict[be_retweet_uid] = be_retweet_dict[uid] + retweet_uid_dict[be_retweet_uid]
@@ -570,8 +574,8 @@ def search_bidirect_interaction(uid, top_count):
     except:
         be_comment_result = []
     for be_comment_item in be_comment_result:
-        if be_comment_item['found']==True:
-            be_comment_uid = be_comment_item['_id']
+        be_comment_uid = be_comment_item['_id']
+        if be_comment_item['found']==True and be_comment_uid != uid:
             be_comment_dict = json.loads(be_comment_item['_source']['uid_be_comment'])
             if uid in be_comment_dict:
                 comment_inter_dict[be_comment_uid] = be_comment_dict[uid] + comment_uid_dict[be_comment_uid]
@@ -1778,14 +1782,16 @@ def search_tendency_psy(uid):
 #use to search user_portrait to show the attribute saved in es_user_portrait
 def search_attribute_portrait(uid):
     results = dict()
-    index_name = 'user_portrait'
-    index_type = 'user'
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
     try:
-        results = es_user_portrait.get(index=index_name, doc_type=index_type, id=uid)['_source']
+        results = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
         results = None
         return None
     keyword_list = []
+    '''
     if results['keywords']:
         keywords_dict = json.loads(results['keywords'])
         sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
@@ -1803,7 +1809,7 @@ def search_attribute_portrait(uid):
     else:
         results['activity_geo'] = []
 
-    '''
+    
     #geo ip-timestamp
     if results['activity_geo_dict']:
         geo_dict_list = json.loads(results['activity_geo_dict'])[-7:]
@@ -1813,7 +1819,7 @@ def search_attribute_portrait(uid):
         results['activity_geo'] = geo_top
     else:
         results['activity_geo'] = []
-    '''
+    
     if results['hashtag_dict']:
         hashtag_dict = json.loads(results['hashtag_dict'])
         sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
@@ -1850,7 +1856,7 @@ def search_attribute_portrait(uid):
     else:
         results['topic'] = []
     
-    '''
+    
     #topic_label--new
     if results['topic_string']:
         results['topic_label'] = results['topic_string'].split('&')
@@ -1861,7 +1867,7 @@ def search_attribute_portrait(uid):
         results['topic'] = json.loads(results['topic'])
     else:
         results['topic'] = {}
-    '''
+    
     
     #domain
     if results['domain']:
@@ -1897,6 +1903,7 @@ def search_attribute_portrait(uid):
         results['psycho_feature'] = psycho_feature_list
     else:
         results['psycho_feature'] = []
+    '''
     #state
     if results['uid']:
         uid = results['uid']
@@ -1926,7 +1933,7 @@ def search_attribute_portrait(uid):
                         }
                     }
                 }
-        importance_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        importance_rank = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)
         if importance_rank['_shards']['successful'] != 0:
             #print 'importance_rank:', importance_rank
             results['importance_rank'] = importance_rank['count']
@@ -1946,7 +1953,7 @@ def search_attribute_portrait(uid):
                         }
                     }
                 }
-        activeness_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        activeness_rank = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)
         if activeness_rank['_shards']['successful'] != 0:
             results['activeness_rank'] = activeness_rank['count']
         else:
@@ -1963,7 +1970,7 @@ def search_attribute_portrait(uid):
                         }
                     }
                 }
-        influence_rank = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+        influence_rank = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)
         if influence_rank['_shards']['successful'] != 0:
             results['influence_rank'] = influence_rank['count']
         else:
@@ -1975,7 +1982,7 @@ def search_attribute_portrait(uid):
                 'match_all':{}
                 }
             }
-    all_count_results = es_user_portrait.count(index=index_name, doc_type=index_type, body=query_body)
+    all_count_results = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)
     if all_count_results['_shards']['successful'] != 0:
         results['all_count'] = all_count_results['count']
     else:
@@ -1986,13 +1993,16 @@ def search_attribute_portrait(uid):
     normal_activeness = math.log(results['activeness'] / evaluate_max['activeness'] * 9 + 1, 10)
     results['activeness'] = int(normal_activeness * 100)
     normal_importance = math.log(results['importance'] / evaluate_max['importance'] * 9 + 1, 10)
+    print 'importance:', results['importance']
+    print 'normal importance:', normal_importance*100
     results['importance'] = int(normal_importance * 100)
     normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
     results['influence'] = int(normal_influence * 100)
-    
+    '''
     #link conclusion
     link_ratio = results['link']
     results['link_conclusion'] = get_link_conclusion(link_ratio)
+    '''
     return results
 
 #get emotion conclusion
