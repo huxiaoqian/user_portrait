@@ -402,7 +402,7 @@ def test_cron_text_attribute(user_weibo_dict):
         results['domain_v3'] = json.dumps(user_domain_dict) # [label1_en, label2_en, label3_en]
         results['domain'] = domain_en2ch(user_label_dict)      # label_ch
         #add user psy attribute
-        user_psy_dict = psy_results_dict[user]
+        user_psy_dict = [psy_results_dict[user]]
         results['psycho_status'] = json.dumps(user_psy_dict)
         
         #add user profile attribute
