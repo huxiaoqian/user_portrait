@@ -33,8 +33,10 @@ from user_portrait.global_utils import be_retweet_index_name_pre, be_retweet_ind
 from user_portrait.global_utils import comment_index_name_pre, comment_index_type
 from user_portrait.global_utils import be_comment_index_name_pre, be_comment_index_type
 from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type
+from user_portrait.global_utils import R_RECOMMENTATION as r_recomment
 from user_portrait.global_config import R_BEGIN_TIME
 from user_portrait.parameter import DAY, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
+from user_portrait.parameter import PSY_DESCRIPTION_FIELD, psy_en2ch_dict, psy_description_dict
 from user_portrait.search_user_profile import search_uid2uname
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.parameter import IP_TIME_SEGMENT, IP_TOP, DAY, IP_CONCLUSION_TOP, domain_en2ch_dict, topic_en2ch_dict
@@ -1051,12 +1053,26 @@ def search_ip(now_ts, uid):
     for segment in day_result:
         segment_dict = day_result[segment]
         sort_segment_dict = sorted(segment_dict.items(), key=lambda x:x[1], reverse=True)
-        sort_day_result[segment] = sort_segment_dict[:IP_TOP]
+        #add geo information for ip
+        new_sort_segment_dict = []
+        for item in sort_segment_dict[:IP_TOP]:
+            ip = item[0]
+            geo = ip2city(ip)
+            count = item[1]
+            new_sort_segment_dict.append([ip, count, geo])
+        sort_day_result[segment] = new_sort_segment_dict
 
     all_day_top = sorted(all_day_result.items(), key=lambda x:x[1], reverse=True)
+    #add geo information for ip
+    new_all_day_top = []
+    for item in all_day_top:
+        ip = item[0]
+        count = item[1]
+        geo = ip2city(ip)
+        new_all_day_top.append([ip, count, geo])
 
     results['day_ip'] = sort_day_result
-    results['all_day_top'] = all_day_top[:IP_TOP]
+    results['all_day_top'] = new_all_day_top
 
     #get week ip result
     week_time_ip_dict = dict()
@@ -1095,12 +1111,25 @@ def search_ip(now_ts, uid):
     for segment in week_time_ip_dict:
         segment_dict = week_time_ip_dict[segment]
         sort_segment_dict = sorted(segment_dict.items(), key=lambda x:x[1], reverse=True)
-        sort_week_result[segment] = sort_segment_dict[:IP_TOP]
+        #add geo information to ip
+        new_sort_segment_dict = []
+        for item in sort_segment_dict[:IP_TOP]:
+            ip = item[0]
+            geo = ip2city(ip)
+            count = item[1]
+            new_sort_segment_dict.append([ip, count, geo])
+        sort_week_result[segment] = new_sort_segment_dict
     
     sort_all_week_top = sorted(all_week_result.items(), key=lambda x:x[1], reverse=True)
-    
+    #add geo information to ip
+    new_sort_all_week_top = []
+    for item in sort_all_week_top:
+        ip = item[0]
+        geo = ip2city(ip)
+        count = item[1]
+        new_sort_all_week_top.append([ip, count, geo])
     results['week_ip'] = sort_week_result
-    results['all_week_top'] = sort_all_week_top[:IP_TOP]
+    results['all_week_top'] = new_sort_all_week_top
 
     #conclusion
     #print 'all_week_result:', all_week_result
@@ -1802,6 +1831,19 @@ def search_sentiment_trend(uid, time_type, now_ts):
 
         return {'trend_result':trend_results, 'time_list':time_list, 'description':description}
 
+
+#get psy all ave dict from overview es
+#write in version: 15-12-08
+#remark!! there should be adjust
+def get_all_ave_psy():
+    results= {}
+    hash_name = 'overview'
+    overview_result = r_recomment.getall(hash_name)
+    results = json.loads(overview_result['ave_psy'])
+
+    return results
+
+
 #use to get tendency and psy
 #write in version: 15-12-08
 #input: uid
@@ -1816,15 +1858,72 @@ def search_tendency_psy(uid):
     except:
         return None
     #test
-    portrait_result['tendency'] = json.dumps({'test':1})
+    results['tendency'] = portrait_result['tendency']
+    
+    psy_dict_list = json.loads(portrait_result['psycho_status'])
+    psy_change_dict = dict()
+    #get history all other ave psy level
+    #all_ave_psy_dict = get_all_ave_psy()  #this value should be computed in overview every day
+    #test
+    all_ave_psy_dict = {'anger':0, 'other':0.8, 'anx':0, 'sad':0.2, 'posemo':0.4, 'negemo':0.2, 'middle':0.4}
+    #end test
+    
+    if len(psy_dict_list) == 2:
+        old_psy_dict = psy_dict_list[0]
+        old_psy = dict(old_psy_dict['first'], **old_psy_dict['second'])
+        new_psy_dict = psy_dict_list[1]
+        new_psy = dict(new_psy_dict['first'], **old_psy_dict['second'])
+        for item in new_psy:
+            iter_list = []
+            #add compare with old self
+            if new_psy_[item] > old_psy[item]:
+                iter_list.append(1)
+            elif new_psy[item] < old_psy[item]:
+                iter_list.append(-1)
+            else:
+                iter_list.append(0)
+            #add compare with all other ave level
+            if new_psy[item] > all_ave_psy_dict[item]:
+                iter_list.append(1)
+            elif new_psy[item] < all_ave_psy_dict[item]:
+                iter_list.append(-1)
+            else:
+                iter_list.append(0)
+            psy_change_dict[item] = iter_list
+    elif len(psy_dict_list) == 1:
+        new_psy_dict = psy_dict_list[0]
+        new_psy = dict(new_psy_dict['first'], **old_psy_dict['second'])
+        for item in new_psy:
+            #add compare with all other ave level
+            if new_psy[item] > all_ave_psy_dict[item]:
+                psy_change_dict[item] = [0, 1]
+            elif new_psy[item] < all_ave_psy_dict[item]:
+                psy_change_dict[item] = [0, -1]
+            else:
+                psy_change_dict[item] = [0, 0]
+    
+    description = [u'该用户']
+    for field in PSY_DESCRIPTION_FIELD:
+        if psy_change_dict[field] == [0, 1]:
+            description.append(psy_en2ch_dict[field])
+            description.append(psy_description_dict['0'])
+            #u'与个人历史水平持平,但是高于全库平均水平'
+        elif psy_change_dict[field] == [1, 0]:
+            description.append(psy_en2ch_dict[field])
+            description.append(psy_description_dict['1'])
+            #u'高于个人历史水平, 但与全库平均水平持平'
+        elif psy_change_dict[field] == [1, 1]:
+            description.append(psy_en2ch_dict[field])
+            description.append(psy_description_dict['2'])
+            #u'高于个人历史水平及全库平均水平'
+    if len(description) == 1:
+        description.append(psy_description_dict['3'])
+        #u'心理状态平稳正常'
 
-    tendency_dict = json.loads(portrait_result['tendency'])
-    psy_dict = json.loads(portrait_result['psycho_status'])
-    first_dict = psy_dict['first']
-    second_dict = psy_dict['second']
-    results['tendency'] = tendency_dict
-    results['psy_first'] = first_dict
-    results['psy_second'] = second_dict
+    result['psy_change'] = psy_change_dict
+    results['psy_first'] = new_psy_dict['first']
+    results['psy_second'] = new_psy_dict['second']
+    results['description'] = description
     return results
 
 #use to search user_portrait to show the attribute saved in es_user_portrait

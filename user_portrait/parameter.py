@@ -45,6 +45,17 @@ SOCIAL_DEFAULT_COUNT = '20'
 SENTIMENT_TREND_DEFAULT_TYPE = 'day'
 DEFAULT_SENTIMENT = '1' #happy, angry, sad
 
+
+#attribute:psy desciption field
+PSY_DESCRIPTION_FIELD = ['anger', 'anx', 'sad', 'negemo']
+psy_en2ch_dict = {'anger': u'愤怒情绪', 'anx': u'焦虑情绪', 'sad': u'悲伤情绪', 'negemo':u'消极情绪'}
+psy_description_dict = {
+        '0':u'与个人历史水平持平,但是高于全库平均水平',
+        '1':u'高于个人历史水平, 但与全库平均水平持平',
+        '2':u'高于个人历史水平及全库平均水平',
+        '3':u'心理状态平稳正常'
+        }
+
 #attribute: influence index and conclusion
 INFLUENCE_RETWEETED_THRESHOLD = 500
 INFLUENCE_COMMENT_THRESHOLD = 500
