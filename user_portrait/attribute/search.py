@@ -159,7 +159,7 @@ def search_attention(uid, top_count):
                     except:
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
-                    retweet_count = retweet_dict[uid]
+                    retweet_count = int(retweet_dict[uid])
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count and uid != center_uid:
@@ -177,6 +177,14 @@ def search_attention(uid, top_count):
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portrait_result['topic'][topic_item] = 1
+    # sort topic and domin stat result
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['topic'] = sort_topic_dict
+    in_portrait_result['domain'] = sort_domain_dict
+     
     #use to get user information from user profile
     out_portrait_result = {}
     try:
@@ -195,7 +203,7 @@ def search_attention(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        retweet_count = retweet_dict[uid]
+        retweet_count = int(retweet_dict[uid])
         out_portrait_list.append([uid, uname, retweet_count, fansnum])
 
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
@@ -299,7 +307,7 @@ def search_follower(uid, top_count):
                     except:
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
-                    retweet_count = retweet_dict[uid]
+                    retweet_count = int(retweet_dict[uid])
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count and uid != center_uid:
@@ -316,6 +324,15 @@ def search_follower(uid, top_count):
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portrait_result['topic'][topic_item] = 1
+    
+    #sort in_portrait_result domain and topic
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['topic'] = sort_topic_dict
+    in_portrait_result['domain'] = sort_domain_dict
+    
     #use to get user information from user profile
     out_portrait_result = []
     try:
@@ -334,7 +351,7 @@ def search_follower(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        retweet_count = retweet_dict[uid]
+        retweet_count = int(retweet_dict[uid])
         out_portrait_list.append([uid, uname, retweet_count, fansnum])
 
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
@@ -391,7 +408,7 @@ def search_comment(uid, top_count):
                     except:
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
-                    retweet_count = retweet_dict[uid]
+                    retweet_count = int(retweet_dict[uid])
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count and uid != center_uid:
@@ -409,6 +426,15 @@ def search_comment(uid, top_count):
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portrait_result['topic'][topic_item] = 1
+    
+    #sort in_portrait_result topic and domain
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['topic'] = sort_topic_dict
+    in_portrait_result['domain'] = sort_domain_dict
+
     #use to get user information from user profile
     out_portrait_result = {}
     try:
@@ -428,7 +454,7 @@ def search_comment(uid, top_count):
             uname = u'未知'
             fansnum = 0
 
-        retweet_count = retweet_dict[uid]
+        retweet_count = int(retweet_dict[uid])
         out_portrait_list.append([uid, uname, retweet_count, fansnum])
 
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
@@ -485,7 +511,7 @@ def search_be_comment(uid, top_count):
                     except:
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
-                    retweet_count = retweet_dict[uid]
+                    retweet_count = int(retweet_dict[uid])
                     in_portrait_list.append([uid,uname,influence, importance, retweet_count])
             else:
                 if len(out_portrait_list)<top_count and uid != center_uid:
@@ -503,6 +529,15 @@ def search_be_comment(uid, top_count):
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portrait_result['topic'][topic_item] = 1
+    
+    #sort in_portrait_result: domain and topic
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['domain'] = sort_domain_dict
+    in_portrait_result['topic'] = sort_topic_dict
+
     #use to get user information from user profile
     out_portrait_result = {}
     try:
@@ -521,7 +556,7 @@ def search_be_comment(uid, top_count):
         else:
             uname = u'未知'
             fansnum = 0
-        retweet_count = retweet_dict[uid]
+        retweet_count = int(retweet_dict[uid])
         out_portrait_list.append([uid, uname, retweet_count, fansnum])
     
     return {'in_portrait_list':in_portrait_list, 'in_portrait_result':in_portrait_result, 'out_portrait_list':out_portrait_list}
@@ -615,7 +650,7 @@ def search_bidirect_interaction(uid, top_count):
                     except:
                         in_portrait_result['domain'][domain] = 1
                     in_portrait_topic_list.extend(topic_list)
-                    interaction_count = all_interaction_dict[uid]
+                    interaction_count = int(all_interaction_dict[uid])
                     in_portrait_list.append([uid, uname, influence, importance, interaction_count])
             else:
                 if len(out_portrait_list)<top_count:
@@ -633,6 +668,14 @@ def search_bidirect_interaction(uid, top_count):
             in_portrait_result['topic'][topic_item] += 1
         except:
             in_portrait_result['topic'][topic_item] = 1
+    
+    #sort in_portrait_result: domain and topic
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['domain'] = sort_domain_dict
+    in_portrait_result['topic'] = sort_topic_dict
 
     #use to get user information from user profile
     out_portrait_result = {}
@@ -654,7 +697,7 @@ def search_bidirect_interaction(uid, top_count):
             uname = u'未知'
             fansnum = 0
 
-        interaction_count = all_interaction_dict[uid]
+        interaction_count = int(all_interaction_dict[uid])
         out_portrait_list.append([uid, uname, interaction_count, fansnum])
 
 
@@ -851,6 +894,8 @@ def search_location_week(uid, now_date_ts):
     #test
     portrait_index_name = 'user_portrait_1222'
     portrait_index_type = 'user'
+    now_date_ts += DAY
+    #test end
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -1645,10 +1690,13 @@ def search_preference_attribute(uid):
     topic_en_dict = json.loads(portrait_result['topic'])
     topic_ch_dict = {}
     for topic_en in topic_en_dict:
-        topic_ch = topic_en2ch_dict[topic_en]
-        topic_ch_dict[topic_ch] = topic_en_dict[topic_en]
-    results['topic'] = topic_ch_dict
-    sort_topic = sorted(topic_ch_dict.items(), key=lambda x:x[1], reverse=True)
+        if topic_en != 'life':
+            topic_ch = topic_en2ch_dict[topic_en]
+            topic_ch_dict[topic_ch] = topic_en_dict[topic_en]
+    sort_topic_ch_dict = sorted(topic_ch_dict.itmes(), key=lambda x:x[1], reverse=True)
+    #results['topic'] = topic_ch_dict
+    results['topic'] = sort_topic_ch_dict
+
     description_text1 = u'该用户所属领域为'
     description_text2 = u'偏好参与的话题为'
     description = [description_text1, domain, description_text2, sort_topic[0][0]]
@@ -2142,6 +2190,7 @@ def get_activeness_trend(uid):
 #input: uid
 #output: {'time_line':[], 'influence':[]}
 def get_influence_trend(uid):
+    print 'uid:', uid
     results = {}
     try:
         es_result = es_user_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
@@ -2153,6 +2202,7 @@ def get_influence_trend(uid):
         if len(item_list)==1 and item_list[0] != 'uid':
             value = es_result[item]
             influence_value_list.append(value)
+            '''
             query_body = {
                     'query':{
                         'range':{
@@ -2166,6 +2216,23 @@ def get_influence_trend(uid):
             rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
             if '-' not in item_list[0]:
                 results[item_list[0]] = rank['count']
+            '''
+            query_key = item
+            query_body = {
+                    'query':{
+                        'match_all':{}
+                    },
+                    'size': 1,
+                    'sort': [{query_key: {'order': 'desc'}}]
+                }
+            try:
+                iter_max_value = es_user_portrait.search(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)['hits']['hits']
+            except Exception, e:
+                raise e
+            iter_max = iter_max_value[0]['_source'][query_key]
+            if '-' not in item_list[0]:
+                normal_value = math.log((value / iter_max) * 9 + 1 , 10) * 100
+                results[item_list[0]] = normal_value
     #print 'results:', results
     sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))
     time_list = [ts2datetime(datetimestr2ts(item[0])) for item in sort_results]
