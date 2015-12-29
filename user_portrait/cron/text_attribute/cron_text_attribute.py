@@ -429,6 +429,7 @@ def test_cron_text_attribute(user_weibo_dict):
     print 'user_set len:', len(user_set)
     print 'count:', count
     print 'bulk_action count:', len(bulk_action)
+    
     if bulk_action:
         status = save_user_results(bulk_action)
     

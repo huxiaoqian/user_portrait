@@ -72,25 +72,25 @@ INFLUENCE_TREND_SPAN_THRESHOLD = 400
 INFLUENCE_TREND_AVE_MIN_THRESHOLD = 500
 INFLUENCE_TREND_AVE_MAX_THRESHOLD = 900
 INFLUENCE_TREND_DESCRIPTION_TEXT = {
-        '0': u'平稳高影响力',
-        '1': u'波动高影响力',
-        '2': u'平稳一般影响力',
-        '3': u'波动一般影响力',
-        '4': u'平稳低影响力',
-        '5': u'波动低影响力'
+        '0': u'影响力较高,且保持平稳',
+        '1': u'影响力较高,且波动性较大',
+        '2': u'影响力一般,且保持平稳',
+        '3': u'影响力一般,且波动性较大',
+        '4': u'影响力较低,且保持平稳',
+        '5': u'影响力较低,且波动性较大'
     }
 
 #attribute: activeness trend conclusion
-ACTIVENESS_TREND_SPAN_THRESHOLD = 1.5
-ACTIVENESS_TREND_AVE_MIN_THRESHOLD = 1.5
-ACTIVENESS_TREND_AVE_MAX_THRESHOLD = 2.5
+ACTIVENESS_TREND_SPAN_THRESHOLD = 30
+ACTIVENESS_TREND_AVE_MIN_THRESHOLD = 40
+ACTIVENESS_TREND_AVE_MAX_THRESHOLD = 70
 ACTIVENESS_TREND_DESCRIPTION_TEXT = {
-        '0': u'平稳高活跃度',
-        '1': u'波动高活跃度',
-        '2': u'平稳一般活跃度', 
-        '3': u'波动一般活跃度',
-        '4': u'平稳低活跃度',
-        '5': u'波动低活跃度'
+        '0': u'活跃度较高, 且保持平稳',
+        '1': u'活跃度较高, 且波动性较大',
+        '2': u'活跃度一般, 且保持平稳', 
+        '3': u'活跃度一般, 且波动性较大',
+        '4': u'活跃度较低, 且保持平稳',
+        '5': '活跃度较低, 且波动性较大'
     }
 
 

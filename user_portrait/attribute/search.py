@@ -2269,18 +2269,24 @@ def get_activeness_trend(uid):
     ave_activeness = sum(value_list) / float(len(value_list))
     if max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['0']
+        #u'活跃度较高, 且保持平稳'
     elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['1']
+        #u'活跃度较高, 且波动性较大'
     elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['2']
+        #u'活跃度一般, 且保持平稳'
     elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['3']
+        #u'活跃度一般, 且波动性较大'
     elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['4']
+        #u'活跃度较低, 且保持平稳'
     else:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['5']
+        #u'活跃度较低, 且波动性较大'
 
-    description = [u'该用户为', mark]
+    description = [u'该用户', mark]
 
     return {'time_line':time_list, 'activeness':activeness_list, 'description':description}
 
@@ -2342,17 +2348,23 @@ def get_influence_trend(uid):
     min_influence = min(influence_value_list)
     if max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MAX_THRESHOLD:
         mark = INFLUENCE_TREND_DESCRIPTION_TEXT['0']
+        #u'影响力较高,且保持平稳'
     elif max_influence - min_influence > INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MAX_THRESHOLD:
         mark = INFLUENCE_TREND_DESCRIPTION_TEXT['1']
+        #u'影响力较高,且波动性较大'
     elif max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MAX_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MIN_THRESHOLD:
         mark = INFLUENCE_TREND_DESCRIPTION_TEXT['2']
+        #u'影响力一般,且保持平稳'
     elif max_influence - min_influence > INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MAX_THRESHOLD and ave_influence >= INFLUENCE_TREND_AVE_MIN_THRESHOLD:
         mark = INFLUENCE_TREND_DESCRIPTION_TEXT['3']
+        #u'影响力一般,且波动性较大'
     elif max_influence - min_influence <= INFLUENCE_TREND_SPAN_THRESHOLD and ave_influence < INFLUENCE_TREND_AVE_MIN_THRESHOLD:
         mark = INFLUENCE_TREND_DESCRIPTION_TEXT['4']
+        #u'影响力较低,且保持平稳'
     else:
         mark = INFLUENCE_TREND_DESCRIPTION_TEXT['5']
-    description = [u'该用户为', mark]
+        #u'影响力较低,且波动性较大'
+    description = [u'该用户', mark]
 
     return {'time_line':time_list, 'influence':influence_list, 'description':description}
 
