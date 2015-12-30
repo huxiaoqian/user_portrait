@@ -96,7 +96,7 @@ Draw_pie_all0:function(data){
     $('#all_re_conclusion').empty();
     var html = '该类用户共有'+data.total_number+'人,平均影响力为'+data.influence.toFixed(2);
     $('#all_re_conclusion').append(html);
-    var div_name = ['re_user_domain_all','re_user_topic_all','re_user_geo_all']
+    var div_name = ['re_user_domain_all','re_user_topic_all','re_user_geo_all'];
     Draw_pie(data.domian, div_name[0]);
     Draw_pie(data.geo, div_name[2]);
     Draw_pie(data.topic, div_name[1]);
@@ -104,7 +104,7 @@ Draw_pie_all0:function(data){
   },
   Draw_pie_all1:function(data){
     var div_name = ['cmt_user_domain_all','cmt_user_topic_all','cmt_user_geo_all'];
-    console.log("999999999999999")
+    console.log("999999999999999");
     console.log(data.influence);
     $('#all_cmt_conclusion').empty();
     var html = '该类用户共有'+data.total_number+'人,平均影响力为'+data.influence.toFixed(2);
@@ -162,6 +162,10 @@ Draw_pie_all0:function(data){
   },
   Single_users_influence_re:function(data){
     Influence_motal(data.influence_users, 're_user');
+    $('#re_conclusion').empty();
+    console.log(data.influence);
+    var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
+    $('#re_conclusion').append(html);
     Draw_pie(data.influence_distribution.topic, 're_user_topic');
     Draw_pie(data.influence_distribution.domian, 're_user_domain');
     Draw_pie(data.influence_distribution.geo, 're_user_geo');
@@ -169,6 +173,9 @@ Draw_pie_all0:function(data){
   },
   Single_users_influence_cmt:function(data){
     Influence_motal(data.influence_users, 'cmt_user');
+    $('#cmt_conclusion').empty();
+    var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
+    $('#cmt_conclusion').append(html);
     Draw_pie(data.influence_distribution.topic, 'cmt_user_topic');
     Draw_pie(data.influence_distribution.domian, 'cmt_user_domain');
     Draw_pie(data.influence_distribution.geo, 'cmt_user_geo');  
