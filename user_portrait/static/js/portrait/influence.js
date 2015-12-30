@@ -127,8 +127,8 @@ Draw_pie_all0:function(data){
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px;">';
     html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th>';
-    html += '<th colspan="4" style="text-align:center;">转发情况<u id="retweet_distribution" style="font-size:12px;color:#2FA4E7;margin-left:20px;cursor: pointer">查看详情</u></th>';
-    html += '<th colspan="4" style="text-align:center;">评论情况<u id="comment_distribution" style="font-size:12px;color:#2FA4E7;margin-left:20px;cursor: pointer">查看详情</u></th></tr>';
+    html += '<th colspan="4" style="text-align:center;">转发情况<u id="retweet_distribution" style="font-size:12px;color:#555555;margin-left:20px;cursor: pointer">查看详情</u></th>';
+    html += '<th colspan="4" style="text-align:center;">评论情况<u id="comment_distribution" style="font-size:12px;color:#555555;margin-left:20px;cursor: pointer">查看详情</u></th></tr>';
     html += '<tr><th style="text-align:center">转发总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th>';
     html += '<th style="text-align:center">评论总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th></tr>';
     html += '<tr><th style="text-align:center">原创微博 ('+data['origin_weibo_number']+')</th>';
