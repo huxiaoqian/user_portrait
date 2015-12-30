@@ -1863,6 +1863,7 @@ def search_tendency_psy(uid):
     except:
         return None
     #test
+    print 'portrait_result:', portrait_result
     results['tendency'] = portrait_result['tendency']
     
     psy_dict_list = json.loads(portrait_result['psycho_status'])
@@ -1877,7 +1878,7 @@ def search_tendency_psy(uid):
         old_psy_dict = psy_dict_list[0]
         old_psy = dict(old_psy_dict['first'], **old_psy_dict['second'])
         new_psy_dict = psy_dict_list[1]
-        new_psy = dict(new_psy_dict['first'], **old_psy_dict['second'])
+        new_psy = dict(new_psy_dict['first'], **new_psy_dict['second'])
         for item in new_psy:
             iter_list = []
             #add compare with old self
@@ -1897,7 +1898,7 @@ def search_tendency_psy(uid):
             psy_change_dict[item] = iter_list
     elif len(psy_dict_list) == 1:
         new_psy_dict = psy_dict_list[0]
-        new_psy = dict(new_psy_dict['first'], **old_psy_dict['second'])
+        new_psy = dict(new_psy_dict['first'], **new_psy_dict['second'])
         for item in new_psy:
             #add compare with all other ave level
             if new_psy[item] > all_ave_psy_dict[item]:
@@ -1925,7 +1926,7 @@ def search_tendency_psy(uid):
         description.append(psy_description_dict['3'])
         #u'心理状态平稳正常'
 
-    result['psy_change'] = psy_change_dict
+    results['psy_change'] = psy_change_dict
     results['psy_first'] = new_psy_dict['first']
     results['psy_second'] = new_psy_dict['second']
     results['description'] = description
