@@ -21,7 +21,6 @@ es = ES_CLUSTER_FLOW1
 cluster_redis = R_CLUSTER_FLOW1
 
 def compute(user_set):
-    bulk_action = []
     count_c = 0
 
     weibo_redis = R_CLUSTER_FLOW1
@@ -65,24 +64,13 @@ def compute(user_set):
                 user_fansnum = user_info[key]
             elif "user_friendsnum" in key:
                 user_friendsnum = user_info[key]
+            elif "comment_weibo" == key:
+                pass
             else:
                 print user_info
                 print key
                 print user
-        """
-        user_origin_weibo_timestamp = [] 
-        if len(origin_weibo_list):
-            for i in range(len(origin_weibo_list)):
-                timestamp = user_info[str(origin_weibo_list[i])+'_origin_weibo_timestamp']
-                user_origin_weibo_timestamp.append(timestamp)
 
-
-        user_retweeted_weibo_timestamp = [] 
-        if len(retweeted_weibo_list):
-            for i in range(len(retweeted_weibo_list)):
-                timestamp = user_info[str(retweeted_weibo_list[i])+'_retweeted_weibo_timestamp']
-                user_retweeted_weibo_timestamp.append(timestamp)
-        """
         user_id = str(user)
         origin_weibo_retweeted_detail, origin_weibo_retweeted_total_number, origin_weibo_retweeted_top, origin_weibo_retweeted_average_number \
                 = statistic_weibo(origin_weibo_retweeted_count, origin_weibo_set, user_info, "_origin_weibo_retweeted")
@@ -167,12 +155,12 @@ def compute(user_set):
             es.bulk(bulk_action, index=es_index, doc_type='bci', timeout=30)
             bulk_action = []
             print count_c
-
+    return bulk_action
 
 if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130905"
+    es_index = "20130907"
     es_index = pre_influence_index + es_index
     bool = es.indices.exists(index=es_index)
     print bool
@@ -180,24 +168,27 @@ if __name__ == "__main__":
         mappings(es, es_index)
 
     count = 0
+    bulk_action = []
     tb = time.time()
 
-    send_uid()
 
     while 1:
         id_set=[]
         user_set = cluster_redis.rpop('active_user_id')
         if user_set:
             temp = json.loads(user_set)
-            compute(temp)
+            bulk_action = compute(temp, bulk_action)
             count += 10000
 
-            if True:
-                ts = time.time()
-                print "%s : %s" %(count, ts - tb)
-                tb = ts
-            else:
-                print "total_count : %s "  %count
-                #os.system("python update_daily_user_index_rank.py &")
-                break
+            ts = time.time()
+            print "%s : %s" %(count, ts - tb)
+            tb = ts
+        elif bulk_action:
+            count += len(temp)
+            es.bulk(bulk_action, index=es_index, doc_type='bci', timeout=30)
+            print "total_count : %s "  %count
+            break
 
+        else:
+            print "total_count : %s "  %count
+            break
