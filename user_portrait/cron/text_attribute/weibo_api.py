@@ -17,7 +17,7 @@ def read_black_list():
 #test: read user weibo
 def read_user_weibo():
     user_weibo_dict = dict()
-    csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/uid_text_0728.csv', 'rb')
+    csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/uid_text.csv', 'rb')
     reader = csv.reader(csvfile)
     count = 0
     for line in reader:
@@ -35,8 +35,8 @@ def read_user_weibo():
             user_weibo_dict[user].append(weibo)
         except:
             user_weibo_dict[user] = [weibo]
-    print 'all count:', count
-
+    print 'all count:', len(user_weibo_dict)
+    
     iter_count = 0
     iter_weibo_dict = {}
     for user in user_weibo_dict:
