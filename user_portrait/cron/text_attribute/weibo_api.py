@@ -23,7 +23,7 @@ def read_user_weibo():
     for line in reader:
         count += 1
         '''
-        if count>2:
+        if count>20:
             break
         '''
         weibo = dict()
