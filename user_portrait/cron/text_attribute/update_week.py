@@ -11,10 +11,91 @@ from save_utils import save_user_results
 from weibo_api import read_user_weibo
 from cron_text_attribute import compute2in
 from elasticsearch.helpers import scan
+from weibo_api import read_user_weibo # get user_weibo_dict from weibo_bulk_data
+from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
+
+from event.event_user import event_classfiy
+from domain.test_domain_v2 import domain_classfiy
+from topic.test_topic import topic_classfiy
+from psy.new_psy import psychology_classfiy
+
 reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
+from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
+from config import topic_en2ch_dict, domain_en2ch_dict
 
+
+#use to update attribute every month for domain, topic, psy, tendency
+#write in version: 15-12-08
+#this file run after the file: scan_es2redis.py function:scan_es2redis_month()
+def update_attribute_week():
+    bulk_action = []
+    count = 0
+    user_info_list = {}
+    start_ts = time.time()
+    while True:
+        r_user_info = update_week_redis.rpop(UPDATE_WEEK_REDIS_KEY)
+        if r_user_info:
+            r_user_info = json.loads(r_user_info)
+            uid = r_user_info.keys()[0]
+            user_info_list[uid] = r_user_info[uid]
+            count += 1
+        else:
+            break
+
+        if count % 1000 == 0:
+            uid_list = user_info_list.keys()
+            #get user_list weibo dict (7 days): {uid1: [weibo1, weibo2,..], uid2:[weibo1, weibo2,...]}
+            user_weibo_dict = read_user_weibo(user_list)
+            #deal input data structure
+            #get tendency input data
+            user_weibo_string = get_user_weibo_string(user_weibo_dict)
+            #get domain and topic input data
+            user_keywords_dict = get_user_keywords_dict(user_weibo_string_dict)
+            #get user event results by bulk action
+            event_results_dict = event_classfiy(user_weibo_string_dict)
+            #get user topic results by bulk action
+            topic_results_dict, topic_results_label = topic_classfiy(user_keywords_dict)
+            #get user domain results by bulk action
+            domain_results_dict = domain_classfiy(user_keywords_dict)
+            #get user psy results by bulk action
+            psy_results_dict = psychology_clssfiy(user_weibo_dict)
+            
+            bulk_action = []
+            results = {}
+            for uid in uid_list:
+                results['uid'] = uid
+                #add user topic attribute
+                user_topic_dict = topic_results_dict[uid]
+                user_label_dict = topic_results_label[uid]
+                results['topic'] = json.dumps(user_topic_dict)
+                results['topic_string'] = topic_en2ch(user_label_dict)
+                #add user domain attribute
+                user_domain_dict = domain_results_dict[uid]
+                user_label_dict = domain_results_label[uid]
+                results['domain_v3'] = json.dumps(user_label_dict)
+                results['domain'] = domain_en2ch(user_label_dict)
+                #add user event attribute
+                results['tendency'] = event_results_dict[uid]
+                #add user psy attribute
+                new_user_psy_dict = psy_results_dict[uid]
+                old_user_psy_list = json.loads(user_info_list[uid]['psycho_status'])
+                user_psy_list = old_user_psy_list[-1:].add(new_user_psy_dict)
+                results['psycho_status'] = json.dumps(user_psy_list)
+                action = {'update':{'_id': uid}}
+                bulk_action.extend([action, {'doc': results}])
+            es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+            user_info_list = {}
+            end_ts = time.time()
+            print '%s sec count 1000' % (end_ts - start_ts)
+            start_ts = end_ts
+    
+    print 'count:', count
+
+
+#abandon in version: 15-12-08
+'''
 def update_atttribute_week():
     # scan the user_portrait and bulk action to update
     status = False
@@ -46,7 +127,7 @@ def update_atttribute_week():
             status = compute2in(uid_list, user_weibo_dict, status='update')
             print 'status:', status
     return status
-
+'''
 
 if __name__=='__main__':
     status = update_attribute_week()

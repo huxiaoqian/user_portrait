@@ -54,7 +54,7 @@ def cal_propage_work(item):
         RE = re.compile(u'//@([a-zA-Z-_⺀-⺙⺛-⻳⼀-⿕々〇〡-〩〸-〺〻㐀-䶵一-鿃豈-鶴侮-頻並-龎]+):', re.UNICODE)
         nicknames = RE.findall(text)
         queue_index = get_queue_index(timestamp)
-        cluster_redis.hincrby(user, 'comment_weibo', 1)
+        #cluster_redis.hincrby(user, 'comment_weibo', 1)
 
         #if 1:
         if len(nicknames) == 0:

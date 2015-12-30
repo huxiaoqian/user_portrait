@@ -77,10 +77,11 @@ R_RECOMMENTATION_OUT = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 R_ADMIN = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=15)
 # type: hash ----{admin, username, password}
 
-#use to write portrait user list to redis as queue for 
+#use to write portrait user list to redis as queue for update_day and update_week
 update_day_redis = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
 UPDATE_DAY_REDIS_KEY = 'update_day'
-
+update_week_redis  = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
+UPDATE_WEEK_REDIS_KEY = 'update_week'
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)

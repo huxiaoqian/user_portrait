@@ -62,7 +62,7 @@ def search_result():
     stype = request.args.get('stype', '1')
     if stype == '1':
         term = request.args.get('term', '')
-        print term
+        #print term
         return render_template('portrait/search_result.html', stype=stype, term=term)
     else:
         uid = request.args.get('uid', '')
