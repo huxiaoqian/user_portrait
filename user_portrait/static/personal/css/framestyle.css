@@ -53,14 +53,14 @@ a {
 	margin-bottom: 25px;
 	padding: 0px;
 	background: #FFFFFF;
-	border: 1px solid #C1DCE0;
+	border: 1px solid #77ACF4;
 }
 .framepost .title {
 	height: 38px;
 	margin-bottom: 10px;
 	padding: 12px 0 0 20px;
-	background: #C1DCE0;
-	border: 1px solid #C1DCE0;
+	background: #77ACF4;
+	border: 1px solid #77ACF4;
 	letter-spacing: -.5px;
 	color: #FFFFFF;
 }
@@ -106,9 +106,9 @@ a {
 	margin-bottom: 30px;
 	padding: 0px 20px 20px 20px;
 	background: #F4F7F7;
-	border-left: 1px solid #C1DCE0;
-	border-right: 1px solid #C1DCE0;
-	border-bottom: 1px solid #C1DCE0;
+	border-left: 1px solid #77ACF4;
+	border-right: 1px solid #77ACF4;
+	border-bottom: 1px solid #77ACF4;
 }
 
 #framesidebar li li {
@@ -128,10 +128,10 @@ a {
 #framesidebar h2 {
 	height: 38px;
 	padding: 12px 0 0 20px;
-	background: #C1DCE0;
-	border: 1px solid #C1DCE0;
+	background: #77ACF4;
+	border: 1px solid #77ACF4;
 	letter-spacing: -.5px;
-	color: #48390E;
+	/*color: #77ACF4;*/
 }
 
 #framesidebar p {
