@@ -174,21 +174,33 @@ activity_call_ajax_request(url, location_desc);
 function location_desc(data){
     //console.log(data);
     $('#locate_desc').html(data.description.join('')); //description
-    var location_geo = data.all_top;
-    $('#monthly_location').empty();
+    var location_geo;
+    // loction table
+    $('#total_location_rank').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">地点</th><th style="text-align:center">微博数</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th>';
+    for (var i = 0; i < 5; i++){
+        var s = i.toString();
+        var m = i + 1;
+        html += '<th style="text-align:center">' + m + '</th>';
+    }
+    html += '<th style="text-align:center"></th>';
+    html += '</tr>';
+    //month
+    location_geo = data.all_top;
+    html += '<tr><th style="text-align:center">最近30天</th>';
     for (var i = 0; i < location_geo.length; i++) {
-       var s = i.toString();
-       var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m;
-       html += '</th><th style="text-align:center">' + location_geo[i][0];
-       html += '</th><th style="text-align:center">' + location_geo[i][1];
-       html +='</th></tr>';
-    };
+        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+    }
+    while (i < 5){
+        html += '<th style="text-align:center">-</th>';
+        i++;
+    }
+    html += '<th style="text-align:center">查看地图</th>';
+    html += '</tr>';
     html += '</table>'; 
-    $('#monthly_location').append(html);                  
+    $('#total_location_rank').append(html);
     // track map
     month_process(data.month_track);
 }

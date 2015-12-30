@@ -107,6 +107,7 @@ function  active_chart(data){
    //active type
    global_tag_vector.push(tag_vector[1]);
 
+   /*
 	var item = data.activity_time; //activity_time
     for (i=0;i<item.length;i++){
        var date = item[i][0]/(15*60*16);
@@ -123,6 +124,7 @@ function  active_chart(data){
        time = document.getElementById(str);
        time.innerHTML = x;
     }
+    */
     $('#saysay').html(data.description); //description
     if (global_time_type == 'day'){
        week_chart(data.day_trend);
@@ -176,7 +178,7 @@ function week_chart(trend_data){
                 fontFamily: 'Microsoft YaHei'
             }},
         title: {
-            text: '微博时间走势图',
+            text: '',
 			align:'left',
 			fontSize:'20',
         },
@@ -306,35 +308,49 @@ function draw_daily_ip_table(ip_data){
         //console.log(tag_vector[n]);          //notice!!! tag_vector[n]:[name, value]
         global_tag_vector.push(tag_vector[n]);
     }
-    var div_name = ['daily_ip','weekly_ip'];
-    var location_geo;
+    //var div_name = ['daily_ip','weekly_ip'];
     //console.log(ip_data);
     $('#ip_desc').html(ip_data.description);
-    for (var i in div_name){
-        if (i == 0){
-            location_geo = ip_data.all_day_top;
-        }
-        else{
-            location_geo = ip_data.all_week_top;
-        }
-        var name = div_name[i];
-        $('#'+name).empty();
-        var html = '';
-        html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-        html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">IP</th><th style="text-align:center">微博数</th></tr>';
-        for (var i = 0; i < location_geo.length; i++) {
-           var s = i.toString();
-           var m = i + 1;
-           html += '<tr><th style="text-align:center">' + m;
-           html += '</th><th style="text-align:center">' + location_geo[i][0];
-           html += '</th><th style="text-align:center">' + location_geo[i][1];
-           html +='</th></tr>';
-        };
-        html += '</table>'; 
-        $('#'+name).append(html);                  
-
+    var location_geo;
+    // ip table
+    $('#total_IP_rank').empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th>';
+    for (var i = 0; i < 5; i++){
+        var s = i.toString();
+        var m = i + 1;
+        html += '<th style="text-align:center">' + m + '</th>';
     }
-    //span ip
+    html += '<th style="text-align:center"></th>';
+    html += '</tr>';
+    // daily
+    location_geo = ip_data.all_day_top;
+    html += '<tr><th style="text-align:center">当日</th>';
+    for (var i = 0; i < location_geo.length; i++) {
+        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+    }
+    while (i < 5){
+        html += '<th style="text-align:center">-</th>';
+        i++;
+    }
+    html += '<th style="text-align:center">查看地图</th>';
+    html += '</tr>';
+    //week
+    location_geo = ip_data.all_week_top;
+    html += '<tr><th style="text-align:center">最近7天</th>';
+    for (var i = 0; i < location_geo.length; i++) {
+        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+    }
+    while (i < 5){
+        html += '<th style="text-align:center">-</th>';
+        i++;
+    }
+    html += '<th style="text-align:center">查看地图</th>';
+    html += '</tr>';
+    html += '</table>'; 
+    $('#total_IP_rank').append(html);
+    // span ip
     $('#span_ip').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -344,7 +360,7 @@ function draw_daily_ip_table(ip_data){
 
     location_geo = ip_data.day_ip;
     html += '<tr>';
-    html += '<th>本日(微博数)</th>';
+    html += '<th style="text-align:center;">当日</th>';
     for (var i = 0; i < 6; i++) {
        var s = i.toString();
        html += '<th style="text-align:center">';
@@ -362,7 +378,7 @@ function draw_daily_ip_table(ip_data){
     html += '</tr>';
     location_geo = ip_data.week_ip;
     html += '<tr>';
-    html += '<th>本周(微博数)</th>';
+    html += '<th style="text-align:center;">最近7天</th>';
     for (var i = 0; i < 6; i++) {
        var s = i.toString();
        html += '<th style="text-align:center">';
@@ -428,7 +444,7 @@ function draw_activeness_chart(data){
                 fontFamily: 'Microsoft YaHei'
             }},
         title: {
-            text: '活跃度走势图',
+            text: '',
 			align:'left',
 			fontSize:'20',
         },
