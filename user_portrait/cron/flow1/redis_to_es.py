@@ -65,24 +65,13 @@ def compute(user_set):
                 user_fansnum = user_info[key]
             elif "user_friendsnum" in key:
                 user_friendsnum = user_info[key]
+            elif "comment_weibo" == key:
+                pass
             else:
                 print user_info
                 print key
                 print user
-        """
-        user_origin_weibo_timestamp = [] 
-        if len(origin_weibo_list):
-            for i in range(len(origin_weibo_list)):
-                timestamp = user_info[str(origin_weibo_list[i])+'_origin_weibo_timestamp']
-                user_origin_weibo_timestamp.append(timestamp)
 
-
-        user_retweeted_weibo_timestamp = [] 
-        if len(retweeted_weibo_list):
-            for i in range(len(retweeted_weibo_list)):
-                timestamp = user_info[str(retweeted_weibo_list[i])+'_retweeted_weibo_timestamp']
-                user_retweeted_weibo_timestamp.append(timestamp)
-        """
         user_id = str(user)
         origin_weibo_retweeted_detail, origin_weibo_retweeted_total_number, origin_weibo_retweeted_top, origin_weibo_retweeted_average_number \
                 = statistic_weibo(origin_weibo_retweeted_count, origin_weibo_set, user_info, "_origin_weibo_retweeted")
@@ -172,7 +161,7 @@ def compute(user_set):
 if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130905"
+    es_index = "20130907"
     es_index = pre_influence_index + es_index
     bool = es.indices.exists(index=es_index)
     print bool
@@ -182,7 +171,7 @@ if __name__ == "__main__":
     count = 0
     tb = time.time()
 
-    send_uid()
+    #send_uid()
 
     while 1:
         id_set=[]
