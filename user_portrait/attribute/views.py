@@ -16,8 +16,8 @@ from user_portrait.search_user_profile import es_get_source
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import SOCIAL_DEFAULT_COUNT, SENTIMENT_TREND_DEFAULT_TYPE
 from user_portrait.parameter import DEFAULT_SENTIMENT, DAY
-from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence, detail_weibo_influence
-from description import conclusion_on_activeness, conclusion_on_influence
+from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence, detail_weibo_influence, influence_summary
+from description import conclusion_on_influence
 # use to test 13-09-08
 test_time = 1378569600
 
@@ -528,7 +528,7 @@ def ajax_user_influence_detail():
 
     results = get_user_influence(uid, date)
 
-    return results
+    return json.dumps(results)
 
 
 # get top 3 weibo
@@ -543,7 +543,7 @@ def ajax_get_top_weibo():
 
     results = influenced_detail(uid, date, style)
 
-    return results
+    return json.dumps(results)
 
 # date: 2013-09-01
 # all influenced user by a weibo
@@ -577,7 +577,7 @@ def ajax_all_influenced_users():
 
     results = statistics_influence_people(uid, date, style)
 
-    return results
+    return json.dumps(results)
 
 
 
@@ -591,7 +591,7 @@ def ajax_current_influence_comment():
 
     results = comment_on_influence(uid, date)
 
-    return results
+    return json.dumps(results)
 
 
 
@@ -605,7 +605,7 @@ def ajax_current_tag_vector():
 
     results = tag_vector(uid, date)
 
-    return results
+    return json.dumps(results)
 
 
 @mod.route('/history_activeness_influence/')
@@ -614,9 +614,16 @@ def ajax_history_activeness_influence():
     uid = str(uid)
 
     results = []
-    results.append(conclusion_on_activeness(uid))
     results.append(conclusion_on_influence(uid))
 
     return json.dumps(results)
 
+# 影响力总评价，大小，类型，领域和话题
+@mod.route("/summary_influence/")
+def ajax_summary_influence():
+    uid = request.args.get('uid', '')
+    date = request.args.get('date', '')
 
+    result = influence_summary(uid, date)
+
+    return json.dumps(result)

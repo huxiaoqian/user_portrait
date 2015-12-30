@@ -4,6 +4,7 @@ import sys
 from influence_appendix import level
 
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type
 from user_portrait.time_utils import datetime2ts, ts2datetime
 from user_portrait.parameter import INFLUENCE_CONCLUSION as conclusion_dict
 from user_portrait.parameter import ACTIVENESS_CONCLUSION as activeness_conclusion_dict
@@ -112,54 +113,63 @@ def conclusion_on_influence(uid):
         influ_result = es.get(index=index_name, doc_type=index_type, id=uid)['_source']
     except:
         influ_result = {}
-        result = conclusion_dict['0']
+        result = [0, 0, 0, 0] # aver_activeness, sotred, aver_influence, sorted
         return result
 
-    # generate time series---keys
-    now_ts = time.time()
-    now_ts = datetime2ts('2013-09-12')
-    influence_set = set()
-    activeness_set = set()
-    for i in range(N):
-        ts = ts2datetime(now_ts - i*3600*24)
-        activeness_set.add(pre_activeness+ts)
-        influence_set.add(ts.replace('-', ""))
+    aver_activeness = influ_result.get("aver_activeness", 0)
+    aver_influence = influ_result.get("aver_influence", 0)
+    influence_query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort": {"aver_influence": {"order": "desc"}},
+        "size": 1
+    }
+    top_influence = es.search(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=influence_query_body)['hits']['hits'][0]['sort'][0]
 
-    # 区分影响力和活跃度的keys
-    keys_set = set(influ_result.keys())
-    influence_keys = keys_set & activeness_set
-    activeness_keys = keys_set & influence_set
 
-    if influence_keys:
-        influence_value = []
-        for key in influence_keys:
-            influence_value.append(influ_result[key])
-        mean, std_var = level(influence_value)
-        try:
-            variate = std_var/(mean*1.0)
-        except:
-            variate = 0
-        if mean < influence_level[0]:
-            result = conclusion_dict['1']
-        elif mean >= influence_level[0] and mean < influence_level[1]:
-            result = conclusion_dict['2']
-        elif mean >= influence_level[1] and mean < influence_level[2]:
-            if variate < 0.15:
-                result = conclusion_dict["3"]
-            else:
-                result = conclusion_dict["4"]
-        elif mean >= influence_level[2] and mean < influence_level[3]:
-            if variate < 0.15:
-                result = conclusion_dict["5"]
-            else:
-                result = conclusion_dict["6"]
-        elif mean >= influence_level[3] and mean < influence_level[4]:
-            result = conclusion_dict["7"]
-        else:
-            result = conclusion_dict["8"]
-    else:
-        result = conclusion_dict['0']
+    activeness_query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort": {"aver_activeness": {"order": "desc"}},
+        "size": 1
+    }
+    top_activeness = es.search(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=activeness_query_body)['hits']['hits'][0]['sort'][0]
 
+    influence_query_body = {
+        "query": {
+            "filtered":{
+                "filter": {
+                    "range": {
+                        "aver_influence": {
+                            "gt": aver_influence
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    activeness_query_body = {
+        "query": {
+            "filtered":{
+                "filter": {
+                    "range": {
+                        "aver_activeness": {
+                            "gt": aver_activeness
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    influence_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=influence_query_body)['count']
+    activeness_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=activeness_query_body)['count']
+
+    result = [aver_activeness*100.0/top_activeness, activeness_count, aver_influence*100.0/top_influence, influence_count]
+    print aver_activeness, top_activeness, aver_influence, top_influence
     return result
 
 # version: 2015-12-22
@@ -220,7 +230,6 @@ if __name__ == "__main__":
     print n
     """
     print conclusion_on_influence('2050856634')
-    print conclusion_on_activeness("2i050856634")
 
 
 
