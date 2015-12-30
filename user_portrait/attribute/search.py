@@ -1728,7 +1728,7 @@ def search_preference_attribute(uid):
 
     description_text1 = u'该用户所属领域为'
     description_text2 = u'偏好参与的话题为'
-    description = [description_text1, domain, description_text2, sort_topic[0][0]]
+    description = [description_text1, domain, description_text2, sort_topic_ch_dict[0][0]]
     try:
         top_hashtag = sort_hashtag[0][0]
     except:
