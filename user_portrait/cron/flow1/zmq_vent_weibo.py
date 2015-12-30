@@ -61,7 +61,8 @@ if __name__=="__main__":
                 print "receive message from zmq", message
                 total_count = 0
                 total_cost = 0
-                total_count, total_cost = send_weibo(sender, total_count, total_cost)
+                total_count, total_cost = send_weibo(sender, poller, controller, total_count, total_cost)
+                break
             else:
                 pass
         else:
@@ -70,9 +71,8 @@ if __name__=="__main__":
                 print "nothing receive from zmq, ", message
                 continue
             else:
-                print "keep calculation, ", message
-                total_count, total_cost = send_weibo(sender, total_count, total_cost)
-                time.sleep(2)
+                total_count, total_cost = send_weibo(sender, poller, controller, total_count, total_cost)
+
 
 
 

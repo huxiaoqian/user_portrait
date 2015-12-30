@@ -38,6 +38,7 @@ def send_uid():
                 print '%s : %s' %(count, ts - tb)
                 tb = ts
 
-
+if __name__ == "__main__":
+    send_uid()
 
 
