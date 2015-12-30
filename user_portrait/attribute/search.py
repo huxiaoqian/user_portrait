@@ -908,13 +908,18 @@ def search_location_week(uid, now_date_ts):
         activity_geo_dict_list = json.loads(activity_geo_string)
     activity_geo_week = activity_geo_dict_list[-7:]
     day_count = len(activity_geo_week)
+    all_geo_dict = {}
     for i in range(day_count, 0, -1):
         iter_day_ts = ts2datetime(now_date_ts - DAY*i)
         iter_day_date = datetime2ts(iter_day_ts)
         day_geo_dict = activity_geo_week[day_count - i]
         sort_day_geo = sorted(day_geo_dict.items(), key=lambda x:x[1], reverse=True)
         results[iter_day_date] = sort_day_geo
-    return results
+        all_geo_dict = union_dict(all_geo_dict, day_geo_dict)
+    
+    sort_all_geo_dict = sorted(all_geo_dict.items(), key=lambda x:x[1], reverse=True)
+
+    return {'week_geo_track': results, 'week_top': sort_all_geo_dict}
 
 #use to get user activity geo information for month from user_portrait
 #write in version:15-12-08
