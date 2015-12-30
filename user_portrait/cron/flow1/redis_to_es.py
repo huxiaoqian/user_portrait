@@ -188,5 +188,5 @@ if __name__ == "__main__":
             else:
                 print "total_count : %s "  %count
                 #os.system("python update_daily_user_index_rank.py &")
-                sys.exit(0)
+                break
 

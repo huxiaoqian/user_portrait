@@ -53,10 +53,12 @@ if __name__=="__main__":
             item = controller.recv()
             if item == "PAUSE": # pause the vent work
                 message = "PAUSE"
+                print "receive message from zmq", message
                 time.sleep(1)
                 continue
             elif item == "RESTART": # restart the vent work
                 message = "RESTART"
+                print "receive message from zmq", message
                 total_count = 0
                 total_cost = 0
                 total_count, total_cost = send_weibo(sender, poller, controller, total_count, total_cost)
@@ -66,7 +68,7 @@ if __name__=="__main__":
         else:
             if message == "PAUSE":
                 time.sleep(1)
-                print message
+                print "nothing receive from zmq, ", message
                 continue
             else:
                 total_count, total_cost = send_weibo(sender, poller, controller, total_count, total_cost)

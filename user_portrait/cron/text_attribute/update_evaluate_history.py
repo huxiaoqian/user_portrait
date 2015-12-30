@@ -11,7 +11,31 @@ sys.path.append('../../')
 from global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from global_utils import copy_portrait_index_name, copy_portrait_index_type
 from time_utils import ts2datetime, datetime2ts
-from parameter import DAY
+from parameter import DAY, LOW_INFLUENCE_THRESHOULD
+
+# yuankun-20151229
+def average_value(source):
+    average_influence = 0
+    average_activeness = 0
+    total_influence = 0
+    total_activeness = 0
+    count_influence = 0
+    count_activeness = 0
+    for k,v in source.iteritems():
+        if 'activeness_' in k: # 活跃度计算
+            total_activeness += int(v)
+            count_activeness += 1
+        elif str(k) not in set(['uid', 'low_number', 'aver_activeness', 'aver_influence']):#影响力计算，需要更改字段名
+            total_influence += int(v)
+            count_influence += 1
+        else:
+            pass
+    average_activeness = total_activeness*1.0/count_activeness
+    average_influence = total_influence*1.0/count_influence
+
+    return average_activeness, average_influence
+
+
 
 #use to scan portrait to get activeness and influence to es:copy_user_portrait
 #write in version: 15-12-08
@@ -37,10 +61,10 @@ def scan_index_history():
             scan_re = s_re.next()['_source']
             count += 1
             uid = scan_re['uid']
-            '''
+
             activeness_key = 'activeness_'+now_date_string
             influence_key = now_date_string
-            '''
+
             add_info[uid] = {activeness_key:scan_re['activeness'], influence_key:scan_re['influence']}
             if count % 1000==0:
                 uid_list = add_info.keys()
@@ -63,6 +87,17 @@ def scan_index_history():
                     except:
                         pass
                     new_user_item = dict(user_history_item, **add_info[uid])
+                    # yuankun-20151229
+                    if add_info[uid][influence_key] < LOW_INFLUENCE_THRESHOULD:#更新活跃情况，出库
+                        try:
+                            new_user_item["low_number"] += 1
+                        except:
+                            new_user_item["low_number"] = 1
+                    else:
+                        new_user_item["low_number"] = 0
+                    aver_activeness, aver_influence = average_value(new_user_item)
+                    new_user_item['aver_activeness'] = aver_activeness
+                    new_user_item['aver_influence'] = aver_influence
                     #print 'add_info:', add_info[uid]
                     #print 'user_history_item:', user_history_item
                     #print 'new_user_item:', new_user_item
@@ -97,6 +132,16 @@ def scan_index_history():
                     except:
                         pass
                     new_user_item = dict(user_history_item, **add_info[uid])
+                    if add_info[uid][influence_key] < LOW_INFLUENCE_THRESHOULD:
+                        try:
+                            new_user_item["low_number"] += 1
+                        except:
+                            new_user_item["low_number"] = 1
+                    else:
+                        new_user_item["low_number"] = 0
+                    aver_activeness, aver_influence = average_value(new_user_item)
+                    new_user_item['aver_activeness'] = aver_activeness
+                    new_user_item['aver_influence'] = aver_influence
                     action = {'index':{'_id': uid}}
                     bulk_action.extend([action, new_user_item])
                     iter_count += 1
@@ -128,6 +173,16 @@ def scan_index_history():
             except:
                 pass
             new_user_item = dict(user_history_item, **add_info[uid])
+            if add_info[uid][influence_key] < LOW_INFLUENCE_THRESHOULD:
+                try:
+                    new_user_item["low_number"] += 1
+                except:
+                    new_user_item["low_number"] = 1
+            else:
+                new_user_item["low_number"] = 0
+            aver_activeness, aver_influence = average_value(new_user_item)
+            new_user_item['aver_activeness'] = aver_activeness
+            new_user_item['aver_influence'] = aver_influence
             action = {'index':{'_id': uid}}
             bulk_action.extend([action, new_user_item])
             iter_count += 1
