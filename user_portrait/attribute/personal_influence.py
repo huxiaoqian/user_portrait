@@ -21,6 +21,8 @@ from user_portrait.global_utils import portrait_index_name as user_portrait
 from user_portrait.global_utils import es_flow_text as es
 from user_portrait.global_utils import flow_text_index_name_pre as pre_text_index
 from user_portrait.global_utils import portrait_index_type, flow_text_index_type, profile_index_type, profile_index_name
+uid_url = 'http://weibo.com/u/'
+
 
 user_portrait = "user_portrait_1222"
 #es = Elasticsearch("219.224.135.93:9206", timeout=60)
@@ -103,8 +105,15 @@ def get_text(top_list, date, user_info, style):
                 temp.append(ts2date(source["timestamp"]))
                 temp.append(source["sentiment"])
                 temp.append(weiboinfo2url(source['uid'], source['mid']))
+                temp.append(uid_url+source['uid'])
+                temp.append(source['uid'])
+                try:
+                    uname = es_profile.get(index=profile_index_name, doc_type=profile_index_type, id=source['uid'])["_source"]["nick_name"]
+                    temp.append(uname)
+                except:
+                    temp.append("unknown")
             else:
-                temp.extend(["", "", "", "", ""])
+                temp.extend(["", "", "", "", "", "", "", ""])
             results.append(temp)
     return results
 
@@ -123,7 +132,8 @@ def influenced_detail(uid, date, style):
     try:
         user_info = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
-        return json.dumps({})
+        result = {}
+        return result
     origin_retweetd = json.loads(user_info["origin_weibo_retweeted_top"])
     origin_comment = json.loads(user_info['origin_weibo_comment_top'])
     retweeted_retweeted = json.loads(user_info["retweeted_weibo_retweeted_top"])
@@ -192,7 +202,8 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}])
     search_results = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"], timeout=30)["hits"]["hits"]
     if len(search_results) == 0:
-        return json.dumps([[],[]])
+        result = [[], []]
+        return result
     results = []
     for item in search_results:
         results.append(item["fields"]["uid"][0])
@@ -338,8 +349,6 @@ def detail_weibo_influence(uid, mid, style, date, number):
 def statistics_influence_people(uid, date, style):
     # output: different retweeted and comment, uids' domain distribution, topic distribution, registeration geo distribution
     results = {} # retwweted weibo people and comment weibo people
-    results["retweeted"] = {}
-    results["comment"] = {}
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
     index_flow_text = pre_text_index + date
@@ -348,7 +357,7 @@ def statistics_influence_people(uid, date, style):
         bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         bci_result = []
-        return json.dumps(results)
+        return results
     origin_retweeted_mid = [] # origin weibo mid
     retweeted_retweeted_mid = [] # retweeted weibo mid
     origin_comment_mid = []
@@ -443,7 +452,7 @@ def comment_on_influence(uid, date):
     except:
         description = CURRENT_INFLUENCE_CONCLUSION['0']
         result.append(description)
-        return json.dumps([result, underline])
+        return ([result, underline])
 
     user_index = bci_result['user_index']
     if user_index < CURRNET_INFLUENCE_THRESHOULD[0]:
@@ -486,15 +495,16 @@ def influence_summary(uid, date):
     comment_result = statistics_influence_people(uid, date, 1)
     domain = set()
     topic = set()
-    for item in retweeted_result["domian"]:
-        domain.add(item[0])
-    for item in comment_result["domian"]:
-        domain.add(item[0])
-    for item in retweeted_result["topic"]:
-        topic.add(item[0])
-    for item in comment_result["topic"]:
-        topic.add(item[0])
-
+    if retweeted_result:
+        for item in retweeted_result["domian"]:
+            domain.add(item[0])
+        for item in retweeted_result["topic"]:
+            topic.add(item[0])
+    if comment_result:
+        for item in comment_result["domian"]:
+            domain.add(item[0])
+        for item in comment_result["topic"]:
+            topic.add(item[0])
     result.append(list(domain))
     result.append(list(topic))
     print result
