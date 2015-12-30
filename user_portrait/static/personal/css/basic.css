@@ -18,7 +18,7 @@
   font-size:16px;
   width:70%;
   text-align:center;
-  margin-left:50px;
+  margin-left:90px;
 } 
 .pt_title {
   float: left;
@@ -27,7 +27,6 @@
   overflow: hidden;
   font-weight: normal;
   text-align: right;
-  color: #808080;
 
 }
 .pt_detail {
@@ -35,4 +34,5 @@
   word-break: break-all;
   margin-left:60px;
   padding-left:90px;
+  color: #808080;
 }

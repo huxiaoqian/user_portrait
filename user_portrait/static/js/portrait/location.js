@@ -328,6 +328,7 @@ function draw_daily_ip_table(ip_data){
     location_geo = ip_data.all_day_top;
     html += '<tr><th style="text-align:center">当日</th>';
     for (var i = 0; i < location_geo.length; i++) {
+        if (i == 5) break;
         html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
     }
     while (i < 5){
@@ -340,6 +341,7 @@ function draw_daily_ip_table(ip_data){
     location_geo = ip_data.all_week_top;
     html += '<tr><th style="text-align:center">最近7天</th>';
     for (var i = 0; i < location_geo.length; i++) {
+        if (i == 5) break;
         html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
     }
     while (i < 5){
@@ -356,7 +358,7 @@ function draw_daily_ip_table(ip_data){
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">时段</th><th style="text-align:center">00:00-04:00</th><th style="text-align:center">04:00-08:00</th>';
     html += '<th style="text-align:center">08:00-12:00</th><th style="text-align:center">12:00-16:00</th><th style="text-align:center">16:00-20:00</th>';
-    html += '<th style="text-align:center">20:00-24:00</th></tr>';
+    html += '<th style="text-align:center">20:00-24:00</th><th style="text-align:center"></th></tr>';
 
     location_geo = ip_data.day_ip;
     html += '<tr>';
@@ -375,6 +377,7 @@ function draw_daily_ip_table(ip_data){
        }
        html += '</th>';
     };
+    html += '<th style="text-align:center">查看地图</th>';
     html += '</tr>';
     location_geo = ip_data.week_ip;
     html += '<tr>';
@@ -393,6 +396,7 @@ function draw_daily_ip_table(ip_data){
        }
        html += '</th>';
     };
+    html += '<th style="text-align:center">查看地图</th>';
     html += '</tr>';
     html += '</table>'; 
     $('#span_ip').append(html);                  
