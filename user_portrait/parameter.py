@@ -23,6 +23,9 @@ SENTIMENT_DICT = {'1':u'积极', '2':u'悲伤', '3':u'愤怒', '0': u'中性'}
 #attribute: online_pattern
 PATTERN_THRESHOLD = 3
 
+#activeness threshould 
+LOW_INFLUENCE_THRESHOULD = 200
+
 #attribute: domain
 domain_en2ch_dict = {'university':u'高校', 'homeadmin':u'境内机构', 'abroadadmin':u'境外机构', \
                      'homemedia':u'媒体', 'abroadmedia':u'境外媒体', 'folkorg':u'民间组织',\
@@ -143,7 +146,8 @@ BCI_LIST = ["origin_weibo_number", "origin_weibo_number", "retweeted_weibo_numbe
 
 INFLUENCE_TOTAL_THRESHOULD = [1000, 1000, 1000, 1000]
 INFLUENCE_TOTAL_LIST = ['origin_weibo_retweeted_total_number','origin_weibo_comment_total_number','retweeted_weibo_retweeted_total_number','retweeted_weibo_comment_total_number']
-INFLUENCE_TOTAL_CONCLUSION = [',原创微博被转发量高，属于热门信息发布者', ',原创微博被评论量高，发布的热门信息容易引发公众热议', ',转发微博被转发量高，属于热门信息传播者', ',转发微博被评论量高，属于事件参与者，容易引发公众热议']
+INFLUENCE_TOTAL_CONCLUSION = ['原创微博被转发量高', '原创微博被评论量高', '转发微博被转发量高', '转发微博被评论量高']
+UNDERLINE_CONCLUSION = ['属于热门信息发布者', '发布的热门信息容易引发公众热议', '属于热门信息传播者', '传播的热门信息容易引发公众热议']
 INFLUENCE_BRUST_THRESHOULD = [100, 100,100, 100]
 INFLUENCE_BRUST_LIST = ['origin_weibo_retweeted_brust_average','origin_weibo_comment_brust_average','retweeted_weibo_retweeted_brust_average','retweeted_weibo_comment_brust_average']
 INFLUENCE_BRUST_CONCLUSION = [',传播速度快', ',评论速度快', ',传播速度快', ',评论速度快']

@@ -4,11 +4,11 @@ import json
 import time
 import redis
 from elasticsearch import Elasticsearch
-from influence_appendix import aggregation, proportion, filter_mid
+from influence_appendix import aggregation, proportion, filter_mid, weiboinfo2url
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.global_utils import es_user_profile as es_profile
 from user_portrait.global_utils import es_user_portrait as es_user_portrait
-from user_portrait.time_utils import datetime2ts, ts2datetime
+from user_portrait.time_utils import datetime2ts, ts2datetime, ts2date
 #from influence_conclusion import retweeted_threshould, comment_threshould, influence_tag
 from user_portrait.parameter import INFLUENCE_RETWEETED_THRESHOLD as retweeted_threshold
 from user_portrait.parameter import INFLUENCE_COMMENT_THRESHOLD as comment_threshold
@@ -16,7 +16,7 @@ from user_portrait.parameter import INFLUENCE_TAG as influence_tag
 from user_portrait.parameter import pre_influence_index as pre_index
 from user_portrait.parameter import influence_doctype
 from user_portrait.parameter import BCI_LIST, INFLUENCE_TOTAL_THRESHOULD, INFLUENCE_TOTAL_LIST, INFLUENCE_BRUST_THRESHOULD, INFLUENCE_BRUST_LIST
-from user_portrait.parameter import CURRNET_INFLUENCE_THRESHOULD, CURRENT_INFLUENCE_CONCLUSION, INFLUENCE_TOTAL_CONCLUSION, INFLUENCE_BRUST_CONCLUSION
+from user_portrait.parameter import CURRNET_INFLUENCE_THRESHOULD, CURRENT_INFLUENCE_CONCLUSION, INFLUENCE_TOTAL_CONCLUSION, INFLUENCE_BRUST_CONCLUSION, UNDERLINE_CONCLUSION
 from user_portrait.global_utils import portrait_index_name as user_portrait
 from user_portrait.global_utils import es_flow_text as es
 from user_portrait.global_utils import flow_text_index_name_pre as pre_text_index
@@ -65,13 +65,14 @@ def get_user_influence(uid, date):
     result["total_count"] = total_count
     result["order_count"] = order_count + 1
 
-    return json.dumps(result)
+    return result
 
 
 def get_text(top_list, date, user_info, style):
 
 # input: [[mid1, no.1], [mid2, no.2], ['mid3', no.3]]
 # output: [[text1, no.1], [text2, no.2], [text3, no.3]]
+# mid, retweeted, comment, text, geo, timestamp, sentiment, mid_url
     results = []
     detail_list = ["origin_weibo_retweeted_detail", "origin_weibo_comment_detail", "retweeted_weibo_retweeted_detail", "retweeted_weibo_comment_detail"]
     index_flow_text = pre_text_index + date
@@ -79,7 +80,7 @@ def get_text(top_list, date, user_info, style):
         mid_list = []
         for i in range(len(top_list)):
             mid_list.append(top_list[i][0])
-        search_result = es.mget(index=index_flow_text, doc_type=flow_text_index_type, body={"ids":mid_list}, fields="text")["docs"]
+        search_result = es.mget(index=index_flow_text, doc_type=flow_text_index_type, body={"ids":mid_list})["docs"]
         for i in range(len(top_list)):
             temp = []
             temp.append(mid_list[i])
@@ -96,18 +97,14 @@ def get_text(top_list, date, user_info, style):
                 temp.append(json.loads(user_info[detail_list[2]]).get(top_list[i][0], 0))
                 temp.append(top_list[i][1])
             if search_result[i]["found"]:
-                temp.append(search_result[i]["fields"]["text"][0])
+                source = search_result[i]["_source"]
+                temp.append(source["text"])
+                temp.append(source["geo"])
+                temp.append(ts2date(source["timestamp"]))
+                temp.append(source["sentiment"])
+                temp.append(weiboinfo2url(source['uid'], source['mid']))
             else:
-                date = ts2datetime(datetime2ts(date)-24*3600)
-                index_flow_text = pre_text_index + date
-                try:
-                    temp_result = es.get(index=index_flow_text, doc_type=flow_text_index_type, id=top_list[i][0])
-                except:
-                    temp_result = {}
-                if temp_result.has_key("_source"):
-                    temp.append(temp_result["_source"]["text"])
-                else:
-                    temp.append("")
+                temp.extend(["", "", "", "", ""])
             results.append(temp)
     return results
 
@@ -145,7 +142,7 @@ def influenced_detail(uid, date, style):
     #detail_text["retweeted_retweeted"] = get_text(retweeted_retweeted, date)
     #detail_text["retweeted_comment"] = get_text(retweeted_comment, date)
 
-    return json.dumps(detail_text)
+    return detail_text
 
 def get_user_url(uid_list):
     results = []
@@ -233,7 +230,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
                 }
             }
         },
-        "size":1000000
+        "size":10000
     }
     #详细影响到的人 
     date1 = str(date).replace('-', '')
@@ -397,7 +394,7 @@ def statistics_influence_people(uid, date, style):
         comment_results["total_number"] = comment_total_number
         results = comment_results
 
-    return json.dumps(results)
+    return results
 
 
 def tag_vector(uid, date):
@@ -411,7 +408,7 @@ def tag_vector(uid, date):
     except:
         tag = influence_tag["0"]
         result.append(tag)
-        return json.dumps(result)
+        return result
 
     origin_retweeted = json.loads(bci_result["origin_weibo_retweeted_detail"])
     retweeted_retweeted = json.loads(bci_result["retweeted_weibo_retweeted_detail"])
@@ -431,7 +428,7 @@ def tag_vector(uid, date):
         else:
             tag = influence_tag['4']
     result.append(tag)
-    return json.dumps(result)
+    return result
 
 
 def comment_on_influence(uid, date):
@@ -439,13 +436,14 @@ def comment_on_influence(uid, date):
     index_name = pre_index + date1
     index_flow_text = pre_text_index + date
     result = []
+    underline = []
 
     try:
         bci_result = es_cluster.get(index=index_name, doc_type=influence_doctype, id=uid)["_source"]
     except:
         description = CURRENT_INFLUENCE_CONCLUSION['0']
         result.append(description)
-        return json.dumps(result)
+        return json.dumps([result, underline])
 
     user_index = bci_result['user_index']
     if user_index < CURRNET_INFLUENCE_THRESHOULD[0]:
@@ -460,15 +458,47 @@ def comment_on_influence(uid, date):
         description = CURRENT_INFLUENCE_CONCLUSION['4']
     else:
         description = CURRENT_INFLUENCE_CONCLUSION['5']
+    result.append(description)
 
     for i in range(4):
         if bci_result[INFLUENCE_TOTAL_LIST[i]] > INFLUENCE_TOTAL_THRESHOULD[i]:
-            description = description + INFLUENCE_TOTAL_CONCLUSION[i]
+            result.append(INFLUENCE_TOTAL_CONCLUSION[i])
             if bci_result[INFLUENCE_BRUST_LIST[i]] > INFLUENCE_BRUST_THRESHOULD[i]:
-                description = description + INFLUENCE_BRUST_CONCLUSION[i]
-    result.append(description)
-    return json.dumps(result)
+                result.append(INFLUENCE_BRUST_CONCLUSION[i])
+                underline.append(UNDERLINE_CONCLUSION[i])
+            else:
+                result.append('')
+                underline.append('')
+        else:
+            result.extend(['',''])
+            underline.append('')
 
+    return [result, underline]
+
+
+def influence_summary(uid, date):
+    result = []
+    current_influence = comment_on_influence(uid, date)
+    result.append([current_influence[0][0]])
+    result.append(current_influence[1])
+
+    retweeted_result = statistics_influence_people(uid, date, 0)
+    comment_result = statistics_influence_people(uid, date, 1)
+    domain = set()
+    topic = set()
+    for item in retweeted_result["domian"]:
+        domain.add(item[0])
+    for item in comment_result["domian"]:
+        domain.add(item[0])
+    for item in retweeted_result["topic"]:
+        topic.add(item[0])
+    for item in comment_result["topic"]:
+        topic.add(item[0])
+
+    result.append(list(domain))
+    result.append(list(topic))
+    print result
+    return result
 
 if __name__ == "__main__":
     #print influenced_detail("3396850362", "20130901")

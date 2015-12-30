@@ -11,9 +11,9 @@ from elasticsearch.helpers import scan
 
 reload(sys)
 sys.path.append('./../../')
-from global_utils import ES_CLUSTER_FLOW1, es_user_profile
-
-es = ES_CLUSTER_FLOW1
+from global_utils import ES_CLUSTER_FLOW1 as es
+from global_utils import es_user_profile
+from global_utils import portrait_index_name, portrait_index_type, copy_portrait_index_name, copy_portrait_index_type
 user_portrait = "user_portrait" # act as portrait database
 user_portrait_doctype = "user"
 index_destination = 'copy_user_portrait'
