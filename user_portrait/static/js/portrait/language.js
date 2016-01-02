@@ -15,7 +15,7 @@ $(function() {
   });
 $(".closeList").off("click").click(function(){
     $("#float-wrap").addClass("hidden");
-    
+    $("#more_topic").addClass("hidden");
     $("#more_keyWords").addClass("hidden");
     $("#more_hashtagWords").addClass("hidden");
     return false;
@@ -29,6 +29,11 @@ $("#showmore_keyWords").off("click").click(function(){
 $("#showmore_hashtagWords").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#more_hashtagWords").removeClass("hidden");
+        return false;
+    });
+$("#showmore_topic").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#more_topic").removeClass("hidden");
         return false;
     });
 function show_conclusion(data){
@@ -54,7 +59,7 @@ function Draw_keyword(data, div_name, more_div, more){
   var html = '';
 	$('#'+ more_div).empty();
   if(data.length == 0){
-     console.log(div_name);
+     //console.log(div_name);
       html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
       //$('#'+ more_div).append(html);
       $('#'+ div_name).append(html);
@@ -107,9 +112,9 @@ function get_radar_data (data) {
   var topic = data;
   var topic_name = [];
   var topic_value = [];
-  for(var key in topic){
-    topic_value.push(topic[key])
-    topic_name.push(key)
+  for(var i=0; i<topic.length;i++){
+    topic_value.push(topic[i][1])
+    topic_name.push(topic[i][0])
   };
   var topic_value2 = [];
   var topic_name2 = [];
@@ -133,6 +138,27 @@ function get_radar_data (data) {
   return topic_result;
 }
 function Draw_topic(data){
+  var topic = [];
+  var html = '';
+  $('#topic_WordList').empty();
+  if(data.length == 0){
+     //console.log(div_name);
+      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      //$('#'+ more_div).append(html);
+      $('#more_topic').append(html);
+      $('#showmore_topic').empty();
+  }else{
+      html = '';
+      html += '<table class="table table-striped table-bordered" style="width:450px;">';
+      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
+      for (var i = 0; i < data.length; i++) {
+         var s = i.toString();
+         var m = i + 1;
+         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
+      };
+      html += '</table>'; 
+      $('#topic_WordList').append(html);
+    };
   var topic_result = [];
   topic_result = get_radar_data(data);
   var topic_name = topic_result[0];
@@ -182,6 +208,7 @@ function Draw_topic(data){
   };
   myChart2.setOption(option);
 }
+
 function show_domain(data){
 
   // var html = '';
@@ -212,18 +239,18 @@ var option = {
             name:'树图',
             type:'tree',
             orient: 'horizontal',  // vertical horizontal
-            rootLocation: {x: 40, y: '50%'}, // 根节点位置  {x: 'center',y: 10}
-            nodePadding: 20,
+            rootLocation: {x: 30, y: 'center'}, // 根节点位置  {x: 'center',y: 10}
+            nodePadding: 50,
             symbol: 'circle',
-            symbolSize: 20,
+            symbolSize: 60,
             itemStyle: {
                 normal: {
                     label: {
-                        show: true,
+                        show: false,
                         position: 'inside',
                         textStyle: {
                             color: '#000',
-                            fontSize: 16,
+                            fontSize: 14,
                             font_family: "Microsoft YaHei UI"
                         }
                     },
@@ -235,7 +262,8 @@ var option = {
                 },
                 emphasis: {
                     label: {
-                        show: true
+                        show: false,
+                        fontSize: 14,
                     }
                 }
             },
@@ -243,11 +271,11 @@ var option = {
                 {
                     name: data4,
                     //value: 2,
-                    symbolSize: [0, 10],
+                    // symbolSize: [90, 70],
                     // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
                     itemStyle: {
                         normal: {
-                           color: '##DDDDDD',
+                           color: '#95C6E2',
                             label: {
                                 show: true
                             }
@@ -261,7 +289,7 @@ var option = {
                           value: 4,
                           itemStyle: {
                               normal: {
-                                  color: '#CCC',
+                                  color: '#77B1E2',
                                   label: {
                                       show: true,
                                       position: 'right'
@@ -283,7 +311,7 @@ var option = {
                           value: 4,
                           itemStyle: {
                               normal: {
-                                  color: '#999',
+                                  color: '#367FBD',
                                   label: {
                                       show: true,
                                       position: 'right'
@@ -305,7 +333,7 @@ var option = {
                           value: 4,
                           itemStyle: {
                               normal: {
-                                  color: '#999999',
+                                  color: '#31708F',
                                   label: {
                                       show: true,
                                       position: 'right'
@@ -327,7 +355,6 @@ var option = {
     ]
 };
    myChart1.setOption(option);               
-   //$("#preference_domain_title").append(html);
 }
 
 function show_results(data){
@@ -351,7 +378,7 @@ function show_results(data){
   show_domain(domain);
 
   var tag_vector = data.tag_vector;
-  console.log(tag_vector);
+  //console.log(tag_vector);
   for(var i=0; i<tag_vector.length;i++){
     if(tag_vector[i][1] == ''){
       tag_vector[i][1] = '暂无数据'
@@ -360,6 +387,7 @@ function show_results(data){
   }
   }
 
+//var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
 call_sync_ajax_request(prefrence_url, ajax_method, show_results);
 
