@@ -132,12 +132,12 @@ INFLUENCE_CONCLUSION = {
 
 CURRNET_INFLUENCE_THRESHOULD = [200,500,700,900,1100]
 CURRENT_INFLUENCE_CONCLUSION = {
-    "0": "该用户无影响力",
-    "1": "该用户影响力较低",
-    "2": "该用户影响力一般",
-    "3": "该用户影响力较高",
-    "4": "该用户影响力高",
-    "5": "该用户影响力极高"
+    "0": "无影响力",
+    "1": "影响力较低",
+    "2": "影响力一般",
+    "3": "影响力较高",
+    "4": "影响力高",
+    "5": "影响力极高"
     }
 
 ACTIVENESS_CONCLUSION = {
@@ -158,9 +158,9 @@ BCI_LIST = ["origin_weibo_number", "origin_weibo_number", "retweeted_weibo_numbe
 INFLUENCE_TOTAL_THRESHOULD = [1000, 1000, 1000, 1000]
 INFLUENCE_TOTAL_LIST = ['origin_weibo_retweeted_total_number','origin_weibo_comment_total_number','retweeted_weibo_retweeted_total_number','retweeted_weibo_comment_total_number']
 INFLUENCE_TOTAL_CONCLUSION = ['原创微博被转发量高', '原创微博被评论量高', '转发微博被转发量高', '转发微博被评论量高']
-UNDERLINE_CONCLUSION = ['属于热门信息发布者', '发布的热门信息容易引发公众热议', '属于热门信息传播者', '传播的热门信息容易引发公众热议']
+UNDERLINE_CONCLUSION = ['热门信息发布者', '发布的热门信息容易引发公众热议', '热门信息传播者', '传播的热门信息容易引发公众热议']
 INFLUENCE_BRUST_THRESHOULD = [100, 100,100, 100]
 INFLUENCE_BRUST_LIST = ['origin_weibo_retweeted_brust_average','origin_weibo_comment_brust_average','retweeted_weibo_retweeted_brust_average','retweeted_weibo_comment_brust_average']
-INFLUENCE_BRUST_CONCLUSION = [',传播速度快', ',评论速度快', ',传播速度快', ',评论速度快']
+INFLUENCE_BRUST_CONCLUSION = ['传播速度快', '评论速度快', '传播速度快', '评论速度快']
 
 
