@@ -128,7 +128,8 @@ def triple_classifier(tweet):
         entries = cut(cut_str, text.encode('utf-8'))
         entry = [e.decode('utf-8', 'ignore') for e in entries]
         keywords_list = entry
-
+        
+        '''
         bow = dictionary_1.doc2bow(entry)
         s = [1, 1]
         for pair in bow:
@@ -147,5 +148,7 @@ def triple_classifier(tweet):
                 sentiment = SAD
             elif s[2] > s[1] and s[2] > s[0]:
                 sentiment = ANGRY
+        '''
 
-    return sentiment, keywords_list
+    #return sentiment, keywords_list
+    return keywords_list
