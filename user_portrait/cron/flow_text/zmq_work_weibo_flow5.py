@@ -16,6 +16,7 @@ import redis
 from elasticsearch import Elasticsearch
 from datetime import datetime
 from triple_sentiment_classifier import triple_classifier
+from flow_psy import flow_psychology_classfiy
 
 reload(sys)
 sys.path.append('../../')
@@ -205,9 +206,9 @@ if __name__ == "__main__":
     ts = tb
     bulk_action = []
     now_date = ts2datetime(tb)
-    index_name_pre = flow_text_index_name_pre
+    index_name_pre = 'new_test_' + flow_text_index_name_pre
     index_type = flow_text_index_type
-    start_date = '2013-09-06'
+    start_date = '2013-09-07'
     now_index_name_date = start_date
     action = []
     xdata = []
@@ -224,8 +225,11 @@ if __name__ == "__main__":
             text = item['text']
             
             #add sentiment field to weibo
-            sentiment, keywords_list = triple_classifier(item)
-            item['sentiment'] = str(sentiment) # happy=1 angry=2 sad=3
+            #sentiment, keywords_list = triple_classifier(item)
+            #item['sentiment'] = str(sentiment) # happy=1 angry=2 sad=3
+            keywords_list  = triple_classifier(item)
+            sentiment = flow_psychology_classfiy(item['text'])
+            item['sentiment'] = sentiment
             #add key words to weibo
             keywords_dict, keywords_string = get_weibo_keywords(keywords_list)
             item['keywords_dict'] = json.dumps(keywords_dict) # use to compute

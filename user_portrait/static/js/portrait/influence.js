@@ -127,8 +127,8 @@ Draw_pie_all0:function(data){
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px;">';
     html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th>';
-    html += '<th colspan="4" style="text-align:center;">转发情况<u id="retweet_distribution" style="font-size:12px;color:#2FA4E7;margin-left:20px;cursor: pointer">查看详情</u></th>';
-    html += '<th colspan="4" style="text-align:center;">评论情况<u id="comment_distribution" style="font-size:12px;color:#2FA4E7;margin-left:20px;cursor: pointer">查看详情</u></th></tr>';
+    html += '<th colspan="4" style="text-align:center;">转发情况<u id="retweet_distribution" style="font-size:12px;color:#555555;margin-left:20px;cursor: pointer">查看详情</u></th>';
+    html += '<th colspan="4" style="text-align:center;">评论情况<u id="comment_distribution" style="font-size:12px;color:#555555;margin-left:20px;cursor: pointer">查看详情</u></th></tr>';
     html += '<tr><th style="text-align:center">转发总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th>';
     html += '<th style="text-align:center">评论总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发度</th></tr>';
     html += '<tr><th style="text-align:center">原创微博 ('+data['origin_weibo_number']+')</th>';
@@ -327,31 +327,78 @@ function Draw_get_top_weibo(data,div_name){
   $('#'+div_name).empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>用户在昨天未发布任何微博</span></div>";
-        $('#influence_weibo1').append(html);
     }else{
-        for(i=0;i<data.length;i++){
-            s = (i+1).toString();
-            //html += "<div style='height:85px;padding:12px 15px;width:100%;background-color:whitesmoke'>";
-
-            if(i%2 == 0){
-              html += "<div style='height:80px;padding:7px 15px;width:100%;background-color:whitesmoke'>";
-            }else{
-              html += "<div style='padding:0px 15px;width:100%;'>";
-            }
-            html += "<div style='width:100%;'>";
-            //html += "<img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'>";
-            html += s + "、<span>"+data[i]['3']+"</span>";
-            //html += "<div style='width:100%;padding:2px;'>";
-            // html += "<span style='margin:0 20px'>最高值:<span id='' style='color:red;'>"+data[i].zuigao+"</span></span>";
-            // html += "<span style='margin:0 20px;'>爆发度:<span id='' style='color:red;'>"+data[i].baofa+"</span></span>";
-            html += "<span style='float:right;color:#2FA4E7'><span class='retweet_count' style='margin-left:10px;cursor: pointer'><u><b>转发数("+data[i]['1']+")</b></u></span>";
-            html += "<span class='comment_count' style='margin-left:10px;margin-left:10px;cursor: pointer'><u><b>评论数("+data[i]['2']+")</b></u></span></span></div>";
-            html += "</div>";
-        }
-      $('#'+div_name).append(html);
-
-      
+    html += '<div id="weibo_list" style= " class="weibo_list weibo_list_height scrolls tang-scrollpanel">';
+    html += '<div id="content_control_height" class="tang-scrollpanel-wrapper">';
+    html += '<div class="tang-scrollpanel-content">';
+    html += '<ul>';
+  for(var i=0;i<data.length;i++){
+    s = (i+1).toString();
+    var weibo = data[i]
+    var mid = weibo[0];
+    var uid = weibo[9];
+    var name = weibo[10];
+    var date = weibo[5];
+    var text = weibo[3];
+    var geo = weibo[4];
+    var reposts_count = weibo[1];
+    var comments_count = weibo[2];
+    var weibo_link = weibo[7];
+    var user_link = weibo[8];
+    var profile_image_url = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+    var repost_tree_link = 'http://219.224.135.60:8080/show_graph/' + mid;
+    if (geo==''){
+       geo = '未知';
     }
+    var user_link = 'http://weibo.com/u/' + uid;
+    html += '<li class="item">';
+    html += '<div class="weibo_detail" style="width:100%">';
+    html += '<p style="text-align:left">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
+    html += '<div class="weibo_info"style="width:100%">';
+    html += '<div class="weibo_pz">';
+    html += '<a class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
+    html += '<a class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</a></div>';
+    html += '<div class="m">';
+    html += '<a class="undlin" target="_blank" href="' + weibo_link + '">' + date + '</a>&nbsp;-&nbsp;';
+    html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
+    html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;-&nbsp;';
+    html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '</li>';
+        }
+                                    
+    html += '<div id="TANGRAM_54__slider" class="tang-ui tang-slider tang-slider-vtl" style="height: 100%;">';
+    html += '<div id="TANGRAM_56__view" class="tang-view" style="width: 6px;">';
+    html += '<div class="tang-content"><div id="TANGRAM_56__inner" class="tang-inner"><div id="TANGRAM_56__process" class="tang-process tang-process-undefined" style="height: 0px;"></div></div></div>';
+    html += '<a id="TANGRAM_56__knob" href="javascript:;" class="tang-knob" style="top: 0%; left: 0px;"></a></div>';
+    html += '<div class="tang-corner tang-start" id="TANGRAM_54__arrowTop"></div><div class="tang-corner tang-last" id="TANGRAM_54__arrowBottom"></div></div>';
+
+    html += '</ul>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+        // for(i=0;i<data.length;i++){
+        //     s = (i+1).toString();
+        //     //html += "<div style='height:85px;padding:12px 15px;width:100%;background-color:whitesmoke'>";
+
+        //     if(i%2 == 0){
+        //       html += "<div style='height:80px;padding:7px 15px;width:100%;background-color:whitesmoke'>";
+        //     }else{
+        //       html += "<div style='padding:0px 15px;width:100%;'>";
+        //     }
+        //     html += "<div style='width:100%;'>";
+        //     //html += "<img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'>";
+        //     html += s + "、<span>"+data[i]['3']+"</span>";
+        //     //html += "<div style='width:100%;padding:2px;'>";
+        //     // html += "<span style='margin:0 20px'>最高值:<span id='' style='color:red;'>"+data[i].zuigao+"</span></span>";
+        //     // html += "<span style='margin:0 20px;'>爆发度:<span id='' style='color:red;'>"+data[i].baofa+"</span></span>";
+        //     html += "<span style='float:right;color:#2FA4E7'><span class='retweet_count' style='margin-left:10px;cursor: pointer'><u><b>转发数("+data[i]['1']+")</b></u></span>";
+        //     html += "<span class='comment_count' style='margin-left:10px;margin-left:10px;cursor: pointer'><u><b>评论数("+data[i]['2']+")</b></u></span></span></div>";
+        //     html += "</div>";       
+    }
+      $('#'+div_name).append(html);
   }
 
 function choose_dayorweek(url){
