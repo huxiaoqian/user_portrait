@@ -167,7 +167,7 @@ Draw_pie_all0:function(data){
     var data_set = [];
     data_set.push(data.in_portrait);
     data_set.push(data.out_portrait);
-    Influence_motal(data_set, 're_user_in_all', 're_user_out_all', 're_three_pie_all')
+    Influence_motal(data_set, 're_user_in_all', 're_user_out_all', 're_three_pie_all', 're_user_content_all')
 
     
   },
@@ -184,7 +184,7 @@ Draw_pie_all0:function(data){
     var data_set = [];
     data_set.push(data.in_portrait);
     data_set.push(data.out_portrait);
-    Influence_motal(data_set, 'cmt_user_in_all', 'cmt_user_out_all', 'cmt_three_pie_all')
+    Influence_motal(data_set, 'cmt_user_in_all', 'cmt_user_out_all', 'cmt_three_pie_all', 'cmt_user_content_all')
   },
 
   Draw_basic_influence:function(data){
@@ -247,7 +247,7 @@ Draw_pie_all0:function(data){
   },
 
   Single_users_influence_re:function(data){
-    Influence_motal(data.influence_users, 're_user_in', 're_user_out', 're_three_pie');
+    Influence_motal(data.influence_users, 're_user_in', 're_user_out', 're_three_pie', 're_user_content');
     $('#re_conclusion').empty();
     var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
     $('#re_conclusion').append(html);
@@ -288,7 +288,7 @@ Draw_pie_all0:function(data){
   },
 
   Single_users_influence_cmt:function(data){
-    Influence_motal(data.influence_users, 'cmt_user_in','cmt_user_out', 'cmt_three_pie');
+    Influence_motal(data.influence_users, 'cmt_user_in','cmt_user_out', 'cmt_three_pie', 'cmt_user_content');
     $('#cmt_conclusion').empty();
     var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
     $('#cmt_conclusion').append(html);
@@ -298,7 +298,7 @@ Draw_pie_all0:function(data){
   }
 }
 
-  function Influence_motal(data, div_name_in, div_name_out, del_div){         
+  function Influence_motal(data, div_name_in, div_name_out, del_div, del_div_attr){         
     $('#'+div_name_in).empty();
 
     var html = '';
@@ -307,6 +307,7 @@ Draw_pie_all0:function(data){
     if (data[0].length == 0){
       //$('#'+del_div).append('<h4>test</h4>');
       $('#'+del_div).remove();
+      $('#'+del_div_attr).css("height", "auto");
     }else{
       for (i=0;i<data[0].length;i++){
        var img_src = ''
@@ -363,73 +364,54 @@ Draw_pie_all0:function(data){
     if (data.length == 0){
       $('#'+div_name).append('<h4 style="margin-top:50%;margin-left:33%;font-size:12px;">暂无数据</h4>');
     }else{
-    var myChart = {};
-    myChart = echarts.init(document.getElementById(div_name));
-    //var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
-    var data_list = [];
-    var data_dict = {};
-    for (var i=0; i<data.length; i++){
-      data_dict.value = data[i][1].toFixed(2);
-      data_dict.name = data[i][0];
-      data_list.push(data_dict);
-      data_dict = {};
-    }
-     var option = {
+      var myChart = {};
+      myChart = echarts.init(document.getElementById(div_name));
+      //var data = {'type1':11,'type2':20,'type3':29,'type4':30,'type5':10};
+      var data_list = [];
+      var data_dict = {};
+      for (var i=0; i<data.length; i++){
+        data_dict.value = data[i][1].toFixed(2);
+        data_dict.name = data[i][0];
+        data_list.push(data_dict);
+        data_dict = {};
+      }
+      var option = {
         tooltip : {
           trigger: 'item',
           formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-         toolbox: {
-                         show : false,
-                         feature : {
-                             mark : {show: true},
-                             dataView : {show: true, readOnly: false},
-                             magicType : {
-                                 show: true, 
-                                 type: ['pie', 'funnel'],
-                                 option: {
-                                     funnel: {
-                                         x: '25%',
-                                         width: '50%',
-                                         funnelAlign: 'center',
-                                         max: 100
-                                     }
-                                 }
-                             },
-                             restore : {show: true},
-                             saveAsImage : {show: true}
-                         }
-                       },
-                       calculable : true,
-                       series : [
-                         {
-                             name:'访问来源',
-                             type:'pie',
-                             radius : ['20%', '40%'],
-                             itemStyle : {
-                                 normal : {
-                                     label : {
-                                         show : true
-                                     },
-                                     labelLine : {
-                                         show : true
-                                     }
-                                 },
-        emphasis : {
-       label : {
-      show : true,
-      position : 'center',
-      textStyle : {
-          fontSize : '14',
-       fontWeight : 'bold'
-       }
-      }
+
+        calculable : true,
+        series : [
+        {
+          name:'访问来源',
+          type:'pie',
+          radius : '35%',
+          center: ['55%', '45%'],
+          itemStyle : {
+            normal : {
+              label : {
+                show : true
+              },
+              labelLine : {
+                show : true
+              }
+            },
+            emphasis : {
+              label : {
+                show : true,
+                position : 'center',
+                textStyle : {
+                  fontSize : '14',
+                  fontWeight : 'bold'
+                }
+              }
+            }
+          },
+          data:data_list
         }
-      },
-      data:data_list
-     }
-    ]
-       }; 
+        ]
+      }; 
       myChart.setOption(option);
     }             
   }
@@ -496,18 +478,7 @@ function Draw_get_top_weibo(data,div_name){
   }
 
 function choose_dayorweek(url){
-$('input[name="choose_module"]').click(function(){                  
-  var index = $('input[name="choose_module"]:checked').val();
-  if(index == 1){
-    $('#influence_chart').empty();
-    Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);
-  };
-  if(index == 2){
-    $('#influence_chart').empty();
-    $('#influence_chart').append('adfbhdbvjhbsdvjh');
-    //Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);    
-  }
-})}
+}
 
 function click_action(){
   $(".closeList2").off("click").click(function(){
@@ -545,14 +516,27 @@ function click_action(){
 
 }
 
-
-var weibo2 = ['媒体','娱乐','北京','45',['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1'],['http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1','http://tp4.sinaimg.cn/1729736051/50/40018551765/1']]
-
 var Influence = new Influence();
 var influence_url = '/attribute/influence_trend/?uid='+parent.personalData.uid ;
 var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
-choose_dayorweek(influence_url);
+
+
+$('input[name="choose_module"]').click(function(){  
+  $('#influence_chart').empty();                
+  var index = $('input[name="choose_module"]:checked').val();
+  console.log(index);
+  if(index == 1){
+    console.log(influence_url)
+    alert("111111111111")   
+    // $('#influence_chart').append('adfbhdbvjhbsdvjh');
+    Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+  }
+  else{
+    $('#influence_chart').append('adfbhdbvjhbsdvjh');
+    //Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);    
+  }
+})
 
 var basic_influence_url = '/attribute/current_influence_comment/?uid=1220291284&date=2013-09-07';
 Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
