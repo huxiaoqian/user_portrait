@@ -465,7 +465,7 @@ Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence
 // Influence.Influence_motal(weibo2,div_name[1]);
 choose_dayorweek(influence_url);
 
-var basic_influence_url = '/attribute/current_influence_comment/?uid=1220291284&date=2013-09-04';
+var basic_influence_url = '/attribute/current_influence_comment/?uid=1220291284&date=2013-09-06';
 Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
 
 var user_influence_detail_url = '/attribute/user_influence_detail/?uid=1197161814&date=2013-09-01';
