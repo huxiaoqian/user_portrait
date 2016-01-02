@@ -7,7 +7,7 @@ import scws
 import re
 import heapq
 from config import re_cut,DS_DICT,DS_COUNT,s_label
-#from test_data import input_data2 #测试输入
+#from test_data import input_data2
 
 class TopkHeap(object):
     def __init__(self, k):
@@ -50,15 +50,24 @@ def find_label(text,ds_dict,ds_count):
             max_s = domain_s[k1]
             label_s = k1
 
-    return label_s
+    if label_s == 'other':
+        return 0
+    else:
+        return s_data.index(label_s)+1
 
 def flow_psychology_classfiy(text):#心理状态分类主函数
-
+    '''
+    返回结果：文本的情绪标签（int类型）
+    0：消极其他
+    1：生气
+    2：焦虑
+    3：悲伤
+    '''
     w_text = re_cut(text)
     if len(w_text):#非空
         label = find_label(w_text,DS_DICT,DS_COUNT)
     else:
-        label = 'other'
+        label = 0
     
     return label
 
@@ -66,7 +75,8 @@ if __name__ == '__main__':
     uid_weibo = input_data2()
     start = time.time()
     for text in uid_weibo:
-        domain = psychology_classfiy(text)
+        domain = flow_psychology_classfiy(text)
+        print domain
     end = time.time()
     print '%s seconds...' % (end-start)
     
