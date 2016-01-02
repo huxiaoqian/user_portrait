@@ -5,6 +5,78 @@
 <link href='/static/bower_components/fullcalendar/css_js/fullcalendar.print.css' rel='stylesheet' media='print'>
 
 <style>
+.weibo_list_height {
+    max-height: 670px;
+}
+.scrolls {
+    overflow: hidden;
+}
+.tang-scrollpanel {
+    overflow: hidden;
+}
+.tang-scrollpanel .tang-scrollpanel-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%!important;
+}
+.tang-scrollpanel .tang-scrollpanel-content {
+ /*   position: absolute;*/
+    left: 0;
+    top: 0;
+    width: 100%!important;
+}
+.tang-scrollpanel .tang-slider {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0;
+}
+.tang-scrollpanel .tang-slider-vtl {
+    height: 100%;
+}
+.soft_con2 div {
+    float: left;
+     margin: 0px 0px; 
+}
+/*.weibo_list li.item {
+    line-height: 18px;
+    border-bottom: 1px solid #f5f5f5;
+    padding: 9px 10px 10px 0;
+    min-height: 55px;
+    _height: 55px;
+}*/
+/*.weibo_face {
+    position: relative;
+    float: left;
+    width: 50px;
+    margin-top: 3px;
+}
+.weibo_list a {
+    text-decoration: none;
+}
+.weibo_face img {
+    width: 50px;
+    height: 50px;
+}*/
+.weibo_detail {
+    margin-left: 65px;
+}
+/*.weibo_list a.undlin {
+    text-decoration: underline;
+}*/
+.weibo_info {
+    margin-top: 7px;
+    color: #666;
+}
+.weibo_info .weibo_pz {
+    float: right;
+    color: #858585;
+    height: 18px;
+    line-height: 18px;
+}
+.weibo_info .m a {
+    color: #666;
+}
 #re_influence{
   position: fixed;
   left: 55%;
@@ -95,28 +167,32 @@ width:100%;
       <div style = 'font-size:16px'id = "all_influenced_users_style1"></div>
       <div class="box-content">
             <ul class="nav nav-tabs" id="myTab">
-                <li class="active" title="领域"><a href="#rewteet_origin">被转发的原创微博</a></li>
-                <li title="话题"><a href="#comment_origin">被评论的原创微博</a></li>
-                <li title="领域"><a href="#retweet_retweet">被转发的转发微博</a></li>
-                <li title="话题"><a href="#comment_retweet">被评论的转发微博</a></li>
+                <li class="active" title="领域"><a href="#rewteet_origin" style="font-size:15px">被转发的原创微博</a></li>
+                <li title="话题"><a href="#comment_origin" style="font-size:15px">被评论的原创微博</a></li>
+                <li title="领域"><a href="#retweet_retweet" style="font-size:15px">被转发的转发微博</a></li>
+                <li title="话题"><a href="#comment_retweet" style="font-size:15px">被评论的转发微博</a></li>
             </ul>
             <div id="myTabContent" class="tab-content">
-                <div class="tab-pane active" id="rewteet_origin" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo1'>
+                            <div class="tab-pane active" id="rewteet_origin" style="margin-top:10px">
+                                <div class="row category margin-bottom-20" id='influence_weibo1'>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="comment_origin" style="margin-top:10px">
+                                <div class="row category margin-bottom-20" id='influence_weibo2'>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="retweet_retweet" style="margin-top:10px">
+                                <div class="row category margin-bottom-20" id='influence_weibo3'>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="comment_retweet" style="margin-top:10px">
+                                <div class="row category margin-bottom-20" id='influence_weibo4'>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="tab-pane" id="comment_origin" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo2'>
-                    </div>
-                </div>
-                <div class="tab-pane" id="retweet_retweet" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo3'>
-                    </div>
-                </div>
-                <div class="tab-pane" id="comment_retweet" style="margin-top:10px">
-                    <div class="row category margin-bottom-20" id='influence_weibo4'>
-                    </div>
-                </div>
+                 </div>   
             </div>
       </div>
 

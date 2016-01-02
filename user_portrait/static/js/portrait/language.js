@@ -239,10 +239,10 @@ var option = {
             name:'树图',
             type:'tree',
             orient: 'horizontal',  // vertical horizontal
-            rootLocation: {x: 40, y: '50%'}, // 根节点位置  {x: 'center',y: 10}
-            nodePadding: 70,
+            rootLocation: {x: 30, y: 'center'}, // 根节点位置  {x: 'center',y: 10}
+            nodePadding: 50,
             symbol: 'circle',
-            symbolSize: 40,
+            symbolSize: 60,
             itemStyle: {
                 normal: {
                     label: {
@@ -250,7 +250,7 @@ var option = {
                         position: 'inside',
                         textStyle: {
                             color: '#000',
-                            fontSize: 16,
+                            fontSize: 14,
                             font_family: "Microsoft YaHei UI"
                         }
                     },
@@ -263,7 +263,7 @@ var option = {
                 emphasis: {
                     label: {
                         show: false,
-                        fontSize: 16,
+                        fontSize: 14,
                     }
                 }
             },
@@ -271,7 +271,7 @@ var option = {
                 {
                     name: data4,
                     //value: 2,
-                    symbolSize: [90, 70],
+                    // symbolSize: [90, 70],
                     // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
                     itemStyle: {
                         normal: {
