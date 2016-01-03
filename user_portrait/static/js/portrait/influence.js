@@ -523,18 +523,14 @@ Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence
 
 
 $('input[name="choose_module"]').click(function(){  
-  $('#influence_chart').empty();                
+  // $('#influence_chart').empty();                
   var index = $('input[name="choose_module"]:checked').val();
   console.log(index);
   if(index == 1){
-    console.log(influence_url)
-    alert("111111111111")   
-    // $('#influence_chart').append('adfbhdbvjhbsdvjh');
     Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
   }
   else{
-    $('#influence_chart').append('adfbhdbvjhbsdvjh');
-    //Influence.call_sync_ajax_request(url, Influence.ajax_method, Influence.Draw_influence);    
+    Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
   }
 })
 
