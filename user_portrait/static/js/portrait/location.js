@@ -58,8 +58,9 @@ pre_time.setHours(0,0,0);
 pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
 
-function geo_track(geo_data){
-	//console.log(geo_data);
+function geo_track(data){
+	console.log(data);
+    var geo_data = data.week_geo_track;
 	var date = [];
 	var citys = [];
 	for(var key in geo_data){

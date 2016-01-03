@@ -168,14 +168,10 @@
     }
 );
 }
-var url = '/attribute/location/?uid='+uid+'&time_type=month';
-activity_call_ajax_request(url, location_desc);
 
-function location_desc(data){
-    //console.log(data);
-    $('#locate_desc').html(data.description.join('')); //description
+function location_all(){
     var location_geo;
-    // loction table
+    // location table
     $('#total_location_rank').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -187,20 +183,60 @@ function location_desc(data){
     }
     html += '<th style="text-align:center"></th>';
     html += '</tr>';
-    //month
-    location_geo = data.all_top;
-    html += '<tr><th style="text-align:center">最近30天</th>';
-    for (var i = 0; i < location_geo.length; i++) {
-        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+
+    var url = '/attribute/location/?uid='+uid+'&time_type=day';
+    activity_call_ajax_request(url, location_day);
+    function location_day(data){
+        //day
+        location_geo = data.sort_results;
+        html += '<tr><th style="text-align:center">当日</th>';
+        for (var i = 0; i < location_geo.length; i++) {
+            html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        }
+        while (i < 5){
+            html += '<th style="text-align:center">-</th>';
+            i++;
+        }
+        html += '<th style="text-align:center">查看地图</th>';
+        html += '</tr>';
     }
-    while (i < 5){
-        html += '<th style="text-align:center">-</th>';
-        i++;
+    var url = '/attribute/location/?uid='+uid+'&time_type=week';
+    activity_call_ajax_request(url, location_week);
+    function location_week(data){
+        //week
+        location_geo = data.week_top;
+        html += '<tr><th style="text-align:center">最近7天</th>';
+        for (var i = 0; i < location_geo.length; i++) {
+            html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        }
+        while (i < 5){
+            html += '<th style="text-align:center">-</th>';
+            i++;
+        }
+        html += '<th style="text-align:center">查看地图</th>';
     }
-    html += '<th style="text-align:center">查看地图</th>';
-    html += '</tr>';
+    var url = '/attribute/location/?uid='+uid+'&time_type=month';
+    activity_call_ajax_request(url, location_month);
+
+    function location_month(data){
+        $('#locate_desc').html(data.description.join('')); //description
+        //month
+        location_geo = data.all_top;
+        html += '<tr><th style="text-align:center">最近30天</th>';
+        for (var i = 0; i < location_geo.length; i++) {
+            html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        }
+        while (i < 5){
+            html += '<th style="text-align:center">-</th>';
+            i++;
+        }
+        html += '<th style="text-align:center">查看地图</th>';
+        html += '</tr>';
+        // track map
+        month_process(data.month_track);
+    }
     html += '</table>'; 
     $('#total_location_rank').append(html);
-    // track map
-    month_process(data.month_track);
 }
+location_all();
+
