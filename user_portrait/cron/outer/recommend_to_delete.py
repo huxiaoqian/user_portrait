@@ -20,11 +20,12 @@ from global_utils import copy_portrait_index_name as index_destination
 from global_utils import copy_portrait_index_type as index_destination_doctype
 from filter_uid import all_delete_uid
 from time_utils import ts2datetime, datetime2ts
+from parameter import RECOMMEND_OUT_THRESHOULD
 
 es = ES_CLUSTER_FLOW1
 recommend_redis = R_RECOMMENTATION_OUT
 
-threshould = 3
+threshould = RECOMMEND_OUT_THRESHOULD
 #index_destination = "copy_user_portrait"
 #index_destination_doctype = "user"
 
