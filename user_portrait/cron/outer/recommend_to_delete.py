@@ -3,6 +3,7 @@
 """
 based on user activity, recommend to delete the user in portrait database
 
+recommend_delete_list:只保留一天记录，因为前一天未出库，又没有操作的用户在第二天还是会被推荐出来
 """
 
 import sys
@@ -15,14 +16,17 @@ from elasticsearch.helpers import scan
 reload(sys)
 sys.path.append('./../../')
 from global_utils import ES_CLUSTER_FLOW1, R_RECOMMENTATION_OUT
+from global_utils import copy_portrait_index_name as index_destination
+from global_utils import copy_portrait_index_type as index_destination_doctype
 from filter_uid import all_delete_uid
+from time_utils import ts2datetime, datetime2ts
 
 es = ES_CLUSTER_FLOW1
 recommend_redis = R_RECOMMENTATION_OUT
 
-threshould = 4
-index_destination = "copy_user_portrait"
-index_destination_doctype = "user"
+threshould = 3
+#index_destination = "copy_user_portrait"
+#index_destination_doctype = "user"
 
 def search_low_number(low_range, index_name=index_destination, index_type=index_destination_doctype):
     query_body = {
@@ -39,7 +43,8 @@ def search_low_number(low_range, index_name=index_destination, index_type=index_
                     }
                 }
             }
-        }
+        },
+        "size": 1000
     }
 
     results = es.search(index=index_name, doc_type=index_type, body=query_body)["hits"]["hits"]
@@ -53,19 +58,18 @@ def search_low_number(low_range, index_name=index_destination, index_type=index_
 
 def main():
     filter_uid = all_delete_uid()
-    record_time = time.strftime("%Y%m%d", time.localtime(time.time()))
+    #record_time = time.strftime("%Y%m%d", time.localtime(time.time()))
+    record_time = ts2datetime(time.time()) # 2013-09-08
+    former_time = ts2datetime(time.time() - 24*3600) # 2013-09-07
     recommend_list = search_low_number(threshould) # recommended user to delete in portrait database
     print len(recommend_list)
-    if recommend_list:
-        recommend_list = list(set(recommend_list).difference(filter_uid))
-        recommend_redis.hset("recommend_delete_list", record_time, json.dumps(recommend_list)) # lpush uid into a redis
+    recommend_list = list(set(recommend_list).difference(filter_uid))
+    recommend_redis.hset("recommend_delete_list", record_time, json.dumps(recommend_list)) # lpush uid into a redis
 
-        former_time = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-        recommend_redis.hdel("recommend_delete_list", former_time)
-        return 1
-    else:
-        print "no one to recommend"
-        return 0
+    #former_time = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
+    recommend_redis.hdel("recommend_delete_list", former_time)
+
+    return 1
 
 if __name__ == "__main__":
     main()

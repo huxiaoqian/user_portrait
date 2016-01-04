@@ -20,7 +20,7 @@ from user_portrait.global_utils import es_user_profile
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.time_utils import ts2datetime, datetime2ts
-
+from user_portrait.global_utils import portrait_index_name, portrait_index_type, profile_index_name, profile_index_type
 #test
 '''
 def save_uid2compute(uid_list):
@@ -201,7 +201,7 @@ def show_out_uid(fields):
         return out_list # no one is recommended to out
 
     return_list = []
-    detail = es.mget(index="user_portrait", doc_type="user", body={"ids":out_list}, _source=True)['docs']
+    detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
     filter_uid = all_delete_uid()
     for i in range(len(out_list)):
@@ -219,7 +219,7 @@ def show_out_uid(fields):
 
 def decide_out_uid(date, data):
     uid_list = []
-    now_date = time.strftime("%Y%m%d", time.localtime(time.time()))
+    now_date = date
     if data:
         uid_list = data.split(",") # decide to delete uids
         exist_data = r_out.hget("decide_delete_list", now_date)
@@ -239,33 +239,19 @@ def decide_out_uid(date, data):
     new_list = list(set(new_list).difference(filter_uid))
     r_out.hset("recommend_delete_list", date, json.dumps(new_list))
 
-    """
-    if uid_list:
-        temp = r_out.hget("history_delete_list", now_date)
-        if temp:
-            exist_data = json.loads(r_out.hget("history_delete_list", now_date))
-            uid_list.extend(exist_data)
-        r_out.hset("history_delete_list", now_date, json.dumps(uid_list))
-
-    """
     return 1
 
 
 def search_history_delete(date):
     return_list = []
-    if not date:
-        now_date = time.strftime('%Y%m%d',time.localtime(time.time()))
-    elif date:
-        now_date = date
-    else:
-        pass
+    now_date = date
 
     fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
     temp = r_out.hget("decide_delete_list", now_date)
     if temp:
         history_uid_list = json.loads(r_out.hget("decide_delete_list", now_date))
         if history_uid_list != []:
-            detail = es.mget(index="user_portrait", doc_type="user", body={"ids":history_uid_list}, _source=True)['docs']
+            detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":history_uid_list}, _source=True)['docs']
             for i in range(len(history_uid_list)):
                 detail_info = []
                 for item in fields:

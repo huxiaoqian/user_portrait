@@ -12,11 +12,7 @@ from mid2weibolink import weiboinfo2url
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 from user_portrait.global_utils import es_user_profile as es_profile # user profile es
 from user_portrait.global_utils import es_user_portrait as es_portrait # user portrait es
-
-index_name = "20130901"
-index_portrait_user = "user_index_profile" # record all users' activity
-user_index_profile = "user_index_profile"
-manage = "manage"
+from user_portrait.global_utils import profile_index_name, profile_index_type, portrait_index_name, portrait_index_type, copy_portrait_index_name, copy_portrait_index_type
 
 """
 based on user_index, search users in different range
@@ -117,8 +113,8 @@ def search_top_index(index_name, top_k=1, index_type="bci", top=False, sort_orde
         uid_list = []
         for item in search_result:
             uid_list.append(item['_id'])
-        profile_result = es_profile.mget(index="weibo_user",doc_type="user", body={"ids":uid_list}, _source=True)['docs']
-        portrait_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids":uid_list}, _source=True)['docs']
+        profile_result = es_profile.mget(index=profile_index_name,doc_type=profile_index_type, body={"ids":uid_list}, _source=True)['docs']
+        portrait_result = es_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":uid_list}, _source=True)['docs']
 
         result = []
         rank = 1
@@ -198,8 +194,8 @@ def search_max_single_field(field, index_name, doctype, top_k=3):
             uid = item.get('user','0')
             search_list.append(uid) # uid list
 
-        search_result = es_portrait.mget(index="user_portrait", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
-        profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
+        search_result = es_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids": search_list}, _source=True)["docs"]
+        profile_result = es_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids": search_list}, _source=True)["docs"]
 
         for i in range(len(search_result)):
             if search_result[i]['found']:
@@ -244,7 +240,7 @@ def time_series(date):
     print date_list
     return date_list
 
-def search_portrait_history_active_info(uid, date, index_name="copy_user_portrait", doctype="user"):
+def search_portrait_history_active_info(uid, date, index_name=copy_portrait_index_name, doctype=copy_portrait_index_name):
     # date.formate: 20130901
     date_list = time_series(date)
 
