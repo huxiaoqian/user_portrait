@@ -20,17 +20,40 @@
 </div>
     
   <div style="width:60%;" id="graph-domain">
-    <div id="test0" style="width:100%;font-size:16px;color:#777;">转发情况</div>
+    <div id="test0" style="width:100%;font-size:24px;">转发情况</div>
     <div id="test1" style="height:400px;width:570px;"></div>
     <!--<div id="test1-2" style="height:400px;width:400px;"></div>-->
   </div>
   <div style="width:40%;">
-    <div style='width:100%;margin-left:20px;'><span style='font-size:16px;color:#777'>领域(仅入库用户)</span><span type="button"data-toggle="modal" data-target="#field_more"  style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span></div>
-
+    <div style='width:100%;margin-left:20px;'><span style='font-size:24px;'>领域(仅入库用户)</span><span type="button"data-toggle="modal" data-target="#field_more"  style='font-size:16px;margin-left:110px;cursor: pointer'><u>查看更多</u></span></div>
     <div id="field" style="height:200px;width:380px;"></div>
-    <div style="width:100%;margin-left:20px;"><span style='font-size:16px;color:#777'>话题(仅入库用户)</span><span type="button"data-toggle="modal" data-target="#topic_more"  style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span></div>
+
+    <div style="width:100%;margin-left:20px;"><span style='font-size:24px;'>话题(仅入库用户)</span><span type="button"data-toggle="modal" data-target="#topic_more"  style='font-size:16px;margin-left:110px;cursor: pointer'><u>查看更多</u></span></div>
     <div id="topic" style="height:200px;width:380px;"></div>
   </div>
+
+<div class="box-content" style="width:50%;">
+  <div style="font-size:24px;width:100%px;">未入库用户信息</div>
+        <div id="out_list" style="margin-top:0px;overflow-y:auto;height:300px;"></div>
+        <div style="margin-top:0px;">
+          <input type="radio" name="compute-type" value="2" style="width:15px;height:15px;margin-left:30px;" checked >预约计算
+          <input type="radio" name="compute-type" value="1"  style="width:15px;height:15px;margin-left:30px;">立即计算
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-left: 190px;" name="out_list_button" id="out_list_button" title="推荐入库"  onclick="out_list_button();">推荐入库</button>
+        </div>
+</div>
+
+<div class="box-content" style="width:50%;">
+  <div style="font-size:24px;width:100%;">已入库用户信息</div>
+        <div id="in_list" style="margin-top:0px;overflow-y:auto;height:300px;"></div>
+        <div style="margin-top:0px;">
+          <span>群体名称：</span><input type="text" name="so_group_name" value="2" style="width:100px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" >
+          <span>备注：</span><input type="text" name="so_states" value="1"  style="width:100px;" placeholder="（可选）仅包含汉字、英文、数字和下划线" >
+            <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-left: 60px;" name="in_list_button" id="in_list_button" title="群体分析"  onclick="in_list_button();">群体分析</button>
+        </div>
+</div>
+
+
+
 
 
 <div class="modal fade" id="field_more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -65,11 +88,10 @@
   </div>
 </div>
 
-  
 
  
 <script type="text/javascript">
-     var select_graph = $('input[name="graph-type"]:checked').val();
+      var select_graph = $('input[name="graph-type"]:checked').val();
       var select_num=document.getElementById('num-range').value;
       // var uid0 = document.location.search.substr(1).split('&');
       // var uid1 = uid0[0].match(/uid=([^\"]*)/);
@@ -83,12 +105,10 @@
 <script src="/static/js/portrait/comment.js"></script>
 -->
 <script>
-      url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
-      Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+  url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
+  Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
   $(document).ready(function(){
-    console.log('asdf');
     $('#graph_button').click(function(){
-      console.log('asdfasgd');
       var select_graph = $('input[name="graph-type"]:checked').val();
       var select_num=document.getElementById('num-range').value;
       // var uid0 = document.location.search.substr(1).split('&');
@@ -139,5 +159,5 @@
       }      
     });
 
-          })
+          });
 </script>

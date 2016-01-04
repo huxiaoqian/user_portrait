@@ -8,34 +8,56 @@
         border: solid #FFE4B5 1px;   
     }   
 </style>
-<div style="width:100%;">
-<div style="width:300px;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span><h4 style="line-height:32px;" >该用户的主要情绪为<span id="con_emotion"></span></h4></div>
-<div id='select_time' style="font-weight:bold;margin:0px;margin-left:400px;font-size:12px;"></div>
-</div>
-<div style="width:680px;height:450px;margin:0px;">
-    <div style="font-size: 16px;width:400px;margin:0px;">情绪变动曲线</div>
+
+<div style="width:680px;height:470px;">
+    <div style="font-size: 24px;width:380px;">情绪变动曲线</div>
     <div style="margin-left: 170px;">
        <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
        <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
     </div>
     <div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
 </div>
+<div id='select_time' style="font-weight:bold;margin:0px;margin-left:20px;font-size:12px;"></div>
+
 <div style="width:280px;height:400px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
     <div id="thought_weibo_text" style="padding:0px 10px;">
     </div>
 </div>
+
+    <div style="width:100%;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);display:black;"></span><h4 style="line-height:32px;" >该用户的主要情绪为<span id="con_emotion"></span></h4></div>
+
+
 <div style="width:998px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
-		<div style="width:100%;font-size:16px;margin:0px;">倾向性<hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div style="width:100%;font-size:24px;margin:0px;">倾向性（每周更新）<hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="sen_trend" style="height:350px;width:450px;"></div>
 		</div>
 		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
-		<div style="width:100%;font-size:16px;margin:0px;">心理状态<hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div style="width:100%;font-size:24px;margin:0px;">心理状态<span type="button"data-toggle="modal" data-target="#psy_more"  style='font-size:16px;margin-left:300px;cursor: pointer'><u>查看更多</u></span><hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="pie_emotion" style="height:350px;width:450px;"></div>
 		</div>
 	</div>	
 </div>
+
+<div class="modal fade" id="psy_more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="position: absolute;margin-top: 100px;margin-left: 500px;float :none;width: 400px;">
+      <div class="modal-header" style="float:inherit;margin:initial;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">心理状态</h4>
+      </div>
+      <div class="modal-body" style="float:none;" id="psy0">
+      </div>
+      <div class="modal-footer" style="width: 380px;">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script src="/static/js/echarts-all.js"></script>
 <script type="text/javascript">
 function call_ajax_request(url, callback){
@@ -51,36 +73,35 @@ function Thought(){
   this.ajax_method = 'GET';
     }
 Thought.prototype = {   //获取数据，重新画表
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-Draw_emotion:function(data){
-    var items = data;
-    console.log(items);
-    if(items==null){
-        var say = document.getElementById('emotion');
-        say.innerHTML = '该用户暂无此数据';
-    }else{
-        con = document.getElementById('con_emotion');
-        con.innerHTML = items['description'][1];
-        emotions(items);
-        var time_init = new Date(items['time_list'][0]);
-        var times_init = time_init.getTime().toString().substr(0,10);
-        console.log(times_init);    
-        var html0 = '';
-        url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
-        call_ajax_request(url_content,th_draw_content);
-        $('#select_time').empty();  
-        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['time_list'][0]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
-        $('#select_time').append(html0);
-    }   
-}
+    call_sync_ajax_request:function(url, method, callback){
+      $.ajax({
+        url: url,
+        type: method,
+        dataType: 'json',
+        async: false,
+        success:callback
+      });
+    },
+    Draw_emotion:function(data){
+        var items = data;
+        if(items==null){
+            var say = document.getElementById('emotion');
+            say.innerHTML = '该用户暂无此数据';
+        }else{
+            con = document.getElementById('con_emotion');
+            con.innerHTML = items['description'][1];
+            emotions(items);
+            var time_init = new Date(items['time_list'][0]);
+            var times_init = time_init.getTime().toString().substr(0,10);
+            //console.log(times_init);    
+            var html0 = '';
+            url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
+            call_ajax_request(url_content,th_draw_content);
+            $('#select_time').empty();  
+            html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['time_list'][0]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
+            $('#select_time').append(html0);
+        }   
+    }
 }
 
 var Thought = new Thought();
@@ -92,6 +113,7 @@ Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
 url_think = '/attribute/tendency_psy/?uid='+uid;
 call_ajax_request(url_think,draw_think);
 call_ajax_request(url_think,draw_trend);
+//call_ajax_request(url_think,draw_more_psy);
 
 
 function choose_time(){            
@@ -118,15 +140,17 @@ function th_draw_content(data){
 
 function emotions(data){
     var times = [];
+    var time_name = [];
     if (index =='week'){
         times = data['time_list'];}
     else{
         for (var t in data['time_list']){
-            console.log(data['time_list'][t]);
+            //console.log(data['time_list'][t]);
             times.push(data['time_list'][t].substr(11,5));
         }
     }
-    console.log(times);
+    time_name = data['time_list'];
+    //console.log(times);
     var names = ['中性','积极','悲伤','愤怒']; 
     var data0 = data['trend_result']['0'];
     var data1 = data['trend_result']['1'];
@@ -142,7 +166,7 @@ function emotions(data){
         nods['data'] = datas[i];
         nodcontent.push(nods);
     }
-    console.log(nodcontent[0]);
+    //console.log(nodcontent[0]);
 
     var myChart1 = echarts.init(document.getElementById('emotion'));
     var option = {
@@ -184,16 +208,13 @@ function emotions(data){
         function(ec){
             var ecConfig = require('echarts/config');
             function focus(param) {
-                console.log(param);
                 var sentiment = param.seriesIndex;
-                var date = new Date(param.name);
+                var date = new Date(time_name[param.dataIndex]);
                 var starts_ts = date.getTime().toString().substr(0,10);
-                console.log(index);
                 if(index == 'week'){
                 var start_ts = parseInt(starts_ts)-28800;                   
                 }
                 else if(index == 'day'){var start_ts = starts_ts;}
-                console.log(start_ts);
                 ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({
                       url: ajax_url,
@@ -204,7 +225,7 @@ function emotions(data){
                     });
                 var html0 = '';
                 $('#select_time').empty();  
-                html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+param.name+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>"+names[sentiment]+'</div>';
+                html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+time_name[param.dataIndex]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>"+names[sentiment]+'</div>';
                 $('#select_time').append(html0);
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
@@ -214,7 +235,6 @@ function emotions(data){
 }
   
 function draw_think(data){
-    console.log(data);
     var first = data['psy_first'];
     var second = data['psy_second'];
     var first_name = ['积极','消极','中性'];
@@ -223,12 +243,12 @@ function draw_think(data){
     var second_content = [];
     var nod = {};
     var neg = 0;
-    console.log(first);
     var i = 0;
     for(var key in first){
         var nod = {};
         nod['name'] = first_name[i];
         nod['value'] = first[key].toFixed(2);
+        nod['init'] = key;
         first_content.push(nod);
         if(key == 'negemo'){
             neg = first[key];
@@ -237,6 +257,7 @@ function draw_think(data){
                 var nod = {};
                 nod['name'] = second_name[j];
                 nod['value'] = (second[keys] * neg).toFixed(2);
+                nod['init'] = keys;
                 second_content.push(nod);
                 j = j + 1;
                 //second_name.push(key);
@@ -248,8 +269,61 @@ function draw_think(data){
         i = i + 1;
         //first_name.push(key);
     }
-    console.log(first_content);
-var myChart = echarts.init(document.getElementById('pie_emotion'));
+    var change = data['psy_change'];
+    var self_0 = '';
+    var compare_0 = '';
+    $('#psy0').empty();
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">情绪</th><th style="text-align:center">当前值</th></tr>';
+    for (var i in second_content){
+        for(var key in change){
+            if (key == second_content[i]['init']){
+                if(change[key][0]==0){
+                    self_0='/static/img/stable.png';
+                }else if(change[key][0]==1){
+                    self_0='/static/img/up.png';
+                }else if(change[key][0]==-1){
+                    self_0='/static/img/down.png';
+                }
+                if(change[key][1]==0){
+                    compare_0='';
+                }else if(change[key][1]==1){
+                    compare_0='（高于平均水平）';
+                }else if(change[key][1]==-1){
+                    compare_0='（低于平均水平）';
+                }
+            }
+        }
+        html += '<tr><th style="text-align:center">' + second_content[i]['name'] + '</th><th style="text-align:center">' + second_content[i]['value'] +'<img style="height:10px;margin:0px;" src='+self_0+'>'+compare_0+ '</th></tr>';
+        if (i ==0){
+            var key = 'negemo';
+                if(change[key][0]==0){
+                    self_0='/static/img/stable.png';
+                }else if(change[key][0]==1){
+                    self_0='/static/img/up.png';
+                }else if(change[key][0]==-1){
+                    self_0='/static/img/down.png';
+                }
+                if(change[key][1]==0){
+                    compare_0='';
+                }else if(change[key][1]==1){
+                    compare_0='（高于平均水平）';
+                }else if(change[key][1]==-1){
+                    compare_0='（低于平均水平）';
+                }
+        
+        html += '<tr><th style="text-align:center">' + first_content[1]['name'] + '</th><th style="text-align:center">' + first_content[1]['value'] +'<img style="height:10px;margin:0px;" src='+self_0+'>'+compare_0+ '</th></tr>';
+         }
+    }
+
+    
+    html += '</table>'; 
+    $('#psy0').append(html);  
+
+
+
+    var myChart = echarts.init(document.getElementById('pie_emotion'));
     var option = {
     tooltip : {
         trigger: 'item',
@@ -330,20 +404,17 @@ var myChart = echarts.init(document.getElementById('pie_emotion'));
 }
 
 function draw_trend(data){
-    var trends = data['tendency'];
+    
     var nods = [];
     var nod = {};
     var nodcontent = [];
     var nodcon0 = {};
-    var i = 0;
-    for(var i in trends){
-        var nod = {};
-        nod['name'] = i;
-        nod['value'] = trends[i];
-        nods.push(nod);
-    }
+    var nod = {};
+    nod['name'] = 'tendency';
+    nod['value'] = data['tendency'];
+    nods.push(nod);
+    
     for (i=0;i<nods.length;i++){
-        console.log(nods.length);
         var nodcon0 = {};
         nodcon0['name'] = i;
         nodcon0['type'] = 'gauge';
@@ -355,7 +426,6 @@ function draw_trend(data){
         nodcontent.push(nodcon0);
     }
 
-    console.log(nodcontent);
     var myChart = echarts.init(document.getElementById('sen_trend'));
     var option = {
     tooltip : {
@@ -370,8 +440,8 @@ function draw_trend(data){
         }
     },
     series : nodcontent
-};
+    };
        myChart.setOption(option);              
-
 }
+    
 </script>

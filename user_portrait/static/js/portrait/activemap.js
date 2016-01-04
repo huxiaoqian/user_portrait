@@ -1,4 +1,4 @@
-﻿function month_process(data){
+﻿function month_process(data, flag){
     require.config({
         paths: {
             echarts: '/static/js/bmap/js'
@@ -33,15 +33,18 @@
         var point = new BMap.Point(startPoint.x, startPoint.y);
         map.centerAndZoom(point, 5);
         map.enableScrollWheelZoom(true);
-        console.log(data);
+        //console.log(data);
         // process
         var timelist = new Array();
         var geolist = new Array();
+        var addedlist = new Array();
         for (var i = 0; i < data.length; i++){
             var time_geo = data[i];
             if (time_geo[1] != ''){
                 timelist.push(time_geo[0]);
-                geolist.push(time_geo[1].split('\t').pop());
+                var city_city = time_geo[1].split('\t').pop();
+                geolist.push(city_city);
+                addedlist[city_city] = '';
             }
         }
         // marker
@@ -67,7 +70,8 @@
                 if (point){
                     var fixpoint= new BMap.Point(point.lng+3.5,point.lat-0.5);
                     var marker = new BMap.Marker(fixpoint);
-                    marker.setTitle(geoname+','+timename);
+                    addedlist[geoname] = addedlist[geoname] + ',' + timename;
+                    marker.setTitle(geoname+addedlist[geoname]);
                     map.addOverlay(marker);
                     newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
                 }
@@ -78,12 +82,16 @@
         }
         function drawline(){
             var linklist = new Array();
-            var last_geo = geolist[0];
-            for (var i = 1; i < geolist.length; i++){
-                linklist.push([{name:last_geo},{name:geolist[i], value:90}]);
-                last_geo = geolist[i];
+            if (flag == true){
+                var last_geo = geolist[0];
+                for (var i = 1; i < geolist.length; i++){
+                    linklist.push([{name:last_geo},{name:geolist[i], value:90}]);
+                    last_geo = geolist[i];
+                }
             }
-            console.log(linklist);
+            else{
+            }
+            //console.log(linklist);
             //linklist = [[{name:'北京'}, {name:'南宁',value:90}],[{name:'北京'}, {name:'南昌',value:90}],[{name:'北京'}, {name:'拉萨',value:90}]];
             //console.log(linklist);
             var option = {
@@ -168,14 +176,10 @@
     }
 );
 }
-var url = '/attribute/location/?uid='+uid+'&time_type=month';
-activity_call_ajax_request(url, location_desc);
 
-function location_desc(data){
-    //console.log(data);
-    $('#locate_desc').html(data.description.join('')); //description
+function location_all(){
     var location_geo;
-    // loction table
+    // location table
     $('#total_location_rank').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -187,20 +191,97 @@ function location_desc(data){
     }
     html += '<th style="text-align:center"></th>';
     html += '</tr>';
-    //month
-    location_geo = data.all_top;
-    html += '<tr><th style="text-align:center">最近30天</th>';
-    for (var i = 0; i < location_geo.length; i++) {
-        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+
+    var url = '/attribute/location/?uid='+uid+'&time_type=day';
+    var daily_location_map_data = new Array();
+    activity_call_ajax_request(url, location_day);
+    function location_day(data){
+        //day
+        location_geo = data.sort_results;
+        html += '<tr><th style="text-align:center">当日</th>';
+        for (var i = 0; i < location_geo.length; i++) {
+            daily_location_map_data.push(['top'+(i+1), location_geo[i][0]]);
+            html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        }
+        while (i < 5){
+            html += '<th style="text-align:center">-</th>';
+            i++;
+        }
+        html += '<th style="text-align:center"><a id="daily_location_map" href="#map">查看地图</a></th>';
+        html += '</tr>';
     }
-    while (i < 5){
-        html += '<th style="text-align:center">-</th>';
-        i++;
+    var url = '/attribute/location/?uid='+uid+'&time_type=week';
+    var weekly_location_map_data = new Array();
+    activity_call_ajax_request(url, location_week);
+    function location_week(data){
+        //week
+        location_geo = data.week_top;
+        html += '<tr><th style="text-align:center">最近7天</th>';
+        for (var i = 0; i < location_geo.length; i++) {
+            weekly_location_map_data.push(['top'+(i+1), location_geo[i][0]]);
+            html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        }
+        while (i < 5){
+            html += '<th style="text-align:center">-</th>';
+            i++;
+        }
+        html += '<th style="text-align:center"><a id="weekly_location_map" href="#map">查看地图</a></th>';
     }
-    html += '<th style="text-align:center">查看地图</th>';
-    html += '</tr>';
+    var url = '/attribute/location/?uid='+uid+'&time_type=month';
+    var monthly_location_map_data = new Array();
+    activity_call_ajax_request(url, location_month);
+    function location_month(data){
+        //console.log(data);
+        $('#locate_desc').html(data.description.join('')); //description
+        //month
+        location_geo = data.all_top;
+        html += '<tr><th style="text-align:center">最近30天</th>';
+        for (var i = 0; i < location_geo.length; i++) {
+            monthly_location_map_data.push(['top'+(i+1), location_geo[i][0]]);
+            html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        }
+        while (i < 5){
+            html += '<th style="text-align:center">-</th>';
+            i++;
+        }
+        html += '<th style="text-align:center"><a id="monthly_location_map" href="#map">查看地图</a></th>';
+        html += '</tr>';
+        // track map
+        month_process(data.month_track, true);
+        bind_map();
+        function bind_map(){
+            $('#month_track').click(function(){
+                month_process(data.month_track, true);
+            });
+            $('#total_daily_ip_map').click(function(){
+                month_process(daily_map_data, false);
+            });
+            $('#total_weekly_ip_map').click(function(){
+                month_process(weekly_map_data, false);
+            });
+            $('#span_daily_ip_map').click(function(){
+                month_process(span_daily_map_data, true);
+            });
+            $('#span_weekly_ip_map').click(function(){
+                month_process(span_weekly_map_data, true);
+            });
+        }
+    }
     html += '</table>'; 
     $('#total_location_rank').append(html);
-    // track map
-    month_process(data.month_track);
+    bind_location_map();
+    function bind_location_map(){
+        $('#daily_location_map').click(function(){
+            month_process(daily_location_map_data, false);
+        });
+        $('#weekly_location_map').click(function(){
+            month_process(weekly_location_map_data, false);
+        });
+        $('#monthly_location_map').click(function(){
+            month_process(monthly_location_map_data, false);
+        });
+    }
+
 }
+location_all();
+
