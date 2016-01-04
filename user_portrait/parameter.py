@@ -59,6 +59,10 @@ psy_description_dict = {
         '3':u'心理状态平稳正常'
         }
 
+# recommend out threshould
+RECOMMEND_OUT_THRESHOULD = 30
+
+
 #attribute: influence index and conclusion
 INFLUENCE_RETWEETED_THRESHOLD = 500
 INFLUENCE_COMMENT_THRESHOLD = 500
