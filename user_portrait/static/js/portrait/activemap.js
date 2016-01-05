@@ -197,6 +197,10 @@ function location_all(){
     activity_call_ajax_request(url, location_day);
     function location_day(data){
         //day
+        //console.log(data);
+        var tag_vector = data.tag_vector;
+        global_tag_vector.push(tag_vector);
+
         location_geo = data.sort_results;
         html += '<tr><th style="text-align:center">当日</th>';
         for (var i = 0; i < location_geo.length; i++) {
@@ -232,7 +236,7 @@ function location_all(){
     activity_call_ajax_request(url, location_month);
     function location_month(data){
         //console.log(data);
-        $('#locate_desc').html(data.description.join('')); //description
+        $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>"); //description
         //month
         location_geo = data.all_top;
         html += '<tr><th style="text-align:center">最近30天</th>';

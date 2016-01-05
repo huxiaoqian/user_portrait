@@ -126,7 +126,10 @@ function  active_chart(data){
        time.innerHTML = x;
     }
     */
-    $('#saysay').html(data.description); //description
+    var this_desc= '';
+    this_desc += "<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>"; //description
+    this_desc += "<span>" + data.description[2] + "</span><span style='color:red;'>" + data.description[3] + "</span>"; //description
+    $('#saysay').html(this_desc);
     if (global_time_type == 'day'){
        week_chart(data.day_trend);
     }
@@ -315,7 +318,11 @@ function draw_daily_ip_table(ip_data){
     }
     //var div_name = ['daily_ip','weekly_ip'];
     //console.log(ip_data);
-    $('#ip_desc').html(ip_data.description);
+    var this_desc = '';
+    this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1] + "</span>"; //description
+    this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3] + "</span>"; //description
+    this_desc += "<span>" + ip_data.description[4] + "</span><span style='color:red;'>" + ip_data.description[5] + "</span>"; //description
+    $('#ip_desc').html(this_desc);
     var location_geo;
     // ip table
     $('#total_IP_rank').empty();
@@ -441,8 +448,9 @@ var url = '/attribute/online_pattern/?uid='+uid;
 activity_call_ajax_request(url,draw_online_pattern);
 
 function draw_activeness_chart(data){
-    $('#activeness_desc').html(data.description.join(''));
+    $('#activeness_desc').html("<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>");
     //console.log(data);
+    global_tag_vector.push(['活跃类型', data.tag_vector]);
     var data_time = [];
     var data_count = [];
     var timeline = data.time_line;

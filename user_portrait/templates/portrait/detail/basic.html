@@ -38,11 +38,13 @@
 .weibo_detail {
     margin-left: 65px;
     margin-top: 5px;
+    margin:0;
 }
 
 .weibo_info {
-    margin-top: 7px;
+    /*margin-top: 7px;*/
     color: #666;
+    margin:0;
 }
 .weibo_info .weibo_pz {
     float: right;
@@ -63,7 +65,7 @@
   border: 1px solid #AA8BE8;
   /*height: 600px;*/
   margin-left: -520px;
-  font_family: "Microsoft YaHei UI";
+  font-family: "Microsoft YaHei UI";
 }
 #cmt_influence{
   position: fixed;
@@ -75,7 +77,7 @@
   border: 1px solid #AA8BE8;
   /*height: 600px;*/
   margin-left: -520px;
-  font_family: "Microsoft YaHei UI";
+  font-family:"Microsoft YaHei UI";
 }
 #retweet_distribution_content{
   position: fixed;
@@ -86,7 +88,7 @@
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8;
   margin-left: -520px;
-  font_family: "Microsoft YaHei UI";
+  font-family: "Microsoft YaHei UI";
 }
 #comment_distribution_content{
   position: fixed;
@@ -97,7 +99,7 @@
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8; 
   margin-left: -520px;
-  font_family: "Microsoft YaHei UI";
+  font-family: "Microsoft YaHei UI";
 }
 .title{
   font-size: 20px;
@@ -140,34 +142,34 @@ width:100%;
       <h4 id="influence_conclusion_all" style="line-height:40px;"></h4>
   </div>
   <div id="yesterday_influence" style="width:1000px;float:left;">
-    <h3>昨日影响力</h3>
+    <h3>昨日影响力<span id="influence_index" style="color:red"></h3>
     <hr>
     <div id = "influence_table" style="width:100%;margin-bottom:-15px;"></div>
     <div style = 'font-size:16px' id = "all_influenced_users_style0"></div>
     <div style = 'font-size:16px'id = "all_influenced_users_style1"></div>
-    <div class="box-content">
-      <ul class="nav nav-tabs" id="myTab">
+    <div class="box-content" style="padding:0;margin:0;">
+      <ul class="nav nav-tabs" id="myTab" style="margin:10px 0;">
         <li class="active" title="领域"><a href="#rewteet_origin" style="font-size:15px">被转发的原创微博</a></li>
         <li title="话题"><a href="#comment_origin" style="font-size:15px">被评论的原创微博</a></li>
         <li title="领域"><a href="#retweet_retweet" style="font-size:15px">被转发的转发微博</a></li>
         <li title="话题"><a href="#comment_retweet" style="font-size:15px">被评论的转发微博</a></li>
       </ul>
-      <div id="myTabContent" class="tab-content">
-        <div class="tab-pane active" id="rewteet_origin" style="margin-top:10px">
-          <div class="row category margin-bottom-20" id='influence_weibo1'></div>
+      <div id="myTabContent" class="tab-content" style="margin:0;width:1000px;background-color:whitesmoke;">
+        <div class="tab-pane active" id="rewteet_origin" style="margin-top:10px;margin-bottom:0;">
+          <div class="row category margin-bottom-20" id='influence_weibo1' style="margin:0;"></div>
         </div>
-        <div class="tab-pane" id="comment_origin" style="margin-top:10px">
-          <div class="row category margin-bottom-20" id='influence_weibo2'></div>
+        <div class="tab-pane" id="comment_origin" style="margin-top:10px;margin-bottom:0;">
+          <div class="row category margin-bottom-20" id='influence_weibo2' style="margin:0;"></div>
         </div>
-        <div class="tab-pane" id="retweet_retweet" style="margin-top:10px">
-           <div class="row category margin-bottom-20" id='influence_weibo3'></div>
+        <div class="tab-pane" id="retweet_retweet" style="margin-top:10px;margin-bottom:0;">
+           <div class="row category margin-bottom-20" id='influence_weibo3' style="margin:0;"></div>
         </div>
-        <div class="tab-pane" id="comment_retweet" style="margin-top:10px">
-          <div class="row category margin-bottom-20" id='influence_weibo4'></div>
+        <div class="tab-pane" id="comment_retweet" style="margin-top:10px;margin-bottom:0;">
+          <div class="row category margin-bottom-20" id='influence_weibo4' style="margin:0;"></div>
         </div>
       </div>
     </div>
-    <div id="influence_conclusion" style="margin-bottom:-10px;">
+    <div id="influence_conclusion" style="margin:0px;">
       <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
       <h4 id="influence_conclusion_c" style="line-height:40px;"></h4>
     </div>

@@ -237,6 +237,11 @@ Draw_pie_all0:function(data){
     html += '</tr>';
     html += '</table>';
     $('#influence_table').append(html);
+
+    var html_index='';
+    html_index += '(' + data['order_count'] + '/' +data['total_count'] + ')';
+    console.log(html_index);
+    $('#influence_index').append(html_index);
   },
 
   Influence_tag_vector:function(data){
@@ -272,7 +277,7 @@ Draw_pie_all0:function(data){
     if(data[1][3]!= ''){
       html +='<span style="color:red">'+ data[1][3] +'</span>，';
     };
-    html+= '所属的领域有';
+    html+= '所属的领域为';
     var domain_len = data[2].length
     for(var i = 0; i<domain_len-1;i++){
       html += '<span style="color:red">'+ data[2][i]+'</span>、';
@@ -303,11 +308,12 @@ Draw_pie_all0:function(data){
 
     var html = '';
     //html += '<hr style="margin-top:-10px;">';
-    html += '<h4>已入库用户('+data[0].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
+    html += '<h4>已入库用户('+data[0].length+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
     if (data[0].length == 0){
       //$('#'+del_div).append('<h4>test</h4>');
       $('#'+del_div).remove();
       $('#'+del_div_attr).css("height", "auto");
+      $('#'+del_div_attr).css("overflow-y", "auto");
     }else{
       for (i=0;i<data[0].length;i++){
        var img_src = ''
@@ -334,7 +340,7 @@ Draw_pie_all0:function(data){
 
     $('#'+div_name_out).empty();
     var html2 = '';
-    html2 += '<hr><h4>未入库用户('+data[1].length+')</h4><p style="text-align:left;padding: 0px 10px;">';
+    html2 += '<hr><h4>未入库用户('+data[1].length+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
     if (data[1].length == 0){
     }else{
       for (i=0;i<data[1].length;i++){
@@ -422,9 +428,9 @@ function Draw_get_top_weibo(data,div_name){
     if(data[0][3]==''){
         html += "<div style='width:100%;height:100px;'>用户在昨天未发布任何微博</div>";
     }else{
-      html += '<div id="weibo_list" class="weibo_list weibo_list_height scrolls tang-scrollpanel">';
-      html += '<div id="content_control_height" class="tang-scrollpanel-wrapper">';
-      html += '<div class="tang-scrollpanel-content">';
+      html += '<div id="weibo_list" class="weibo_list weibo_list_height scrolls tang-scrollpanel" style="margin:0;">';
+      html += '<div id="content_control_height" class="tang-scrollpanel-wrapper" style="margin:0;">';
+      html += '<div class="tang-scrollpanel-content" style="margin:0;">';
       html += '<ul>';
       for(var i=0;i<data.length;i++){
         s = (i+1).toString();
@@ -447,13 +453,13 @@ function Draw_get_top_weibo(data,div_name){
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail" style="width:100%">';
-        html += '<p style="text-align:left">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
         html += '<div class="weibo_info"style="width:1000px">';
         html += '<div class="weibo_pz">';
         html += '<a class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
         html += '<a class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</a></div>';
         html += '<div class="m">';
-        html += '<a class="undlin" target="_blank" href="' + weibo_link + '">' + date + '</a>&nbsp;-&nbsp;';
+        html += '<u>' + date + '</u>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
