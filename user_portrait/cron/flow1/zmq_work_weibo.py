@@ -104,7 +104,9 @@ if __name__ == "__main__":
 
     controller = context.socket(zmq.SUB)
     controller.connect("tcp://%s:%s" %(ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1))
-
+    poller = zmq.Poller()
+    poller.register(controller, zmq.POLLIN)
+    controller.setsockopt(zmq.SUBSCRIBE, "")
     cluster_redis = R_CLUSTER_FLOW1
     f = open("cluster_error.txt", "wb")
 
@@ -133,6 +135,19 @@ if __name__ == "__main__":
                 print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
                 ts = te
 
-            if count % 100000 == 0:
-                print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 
-                ts = te
+                event = poller.poll(0)
+                if event:
+                    socks = dict(poller.poll(0))
+                else:
+                    socks = None
+                if socks and socks.get(controller) == zmq.POLLIN:
+                    item = controller.recv()
+                    if str(item) == "KILL":
+                        print item
+                        exit(0)
+                else:
+                    pass
+
+                if count % 100000 == 0:
+                    print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 
+                    ts = te

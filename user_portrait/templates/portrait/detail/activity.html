@@ -35,11 +35,11 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
     <div id="" style="font-size:10px;font-weight:bolder;width:300px;margin-top:10px;" class="">
             <div style="margin-left:20px;">
                 <span >当前选择日期</span>
-                <span id="date_zh"></span>
+                <span id="date_zh" style="color:brown;"></span>
             </div>
             <div style="float:right;margin-right:40px;margin-left:10px;">
                 <span>时间段</span>
-                <span id="time_zh">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span id="time_zh" style="color:brown;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </div>
             <!--
             <button style="margin-top:8px;margin-left:2px;background-color:blue;color:white;" id="choose_date">确定</button>
@@ -72,7 +72,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
     </div>
     <div style="width:100%;">
         <div><span style='font-size:16px;color:#777'>汇总地理位置排名</span></div>
-         <div class="table-responsive"id='total_location_rank' style='overflow-x:hidden;width:100%;height:135px;float:left;'>
+         <div class="table-responsive"id='total_location_rank' style='overflow-x:hidden;width:100%;height:160px;float:left;'>
         </div>
     </div>
     <div style="width:100%;">
@@ -93,7 +93,7 @@ body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";}
         </ul>
     </div>
 
-    <div style="width:100%;font-size:16px;color:#777;margin-top:30px;">当月轨迹活动</div>
+    <div style="width:100%;font-size:16px;color:#777;margin-top:30px;">当月轨迹活动<a id="month_track" href="#map" style="margin-left:20px;font-size:14px;cursor:pointer;">刷新</a></div>
     <div id="map" style="float:left;width:100%;height:750px;margin-top:20px;"></div>
 
     <!--

@@ -58,8 +58,9 @@ pre_time.setHours(0,0,0);
 pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
 
-function geo_track(geo_data){
-	//console.log(geo_data);
+function geo_track(data){
+	//console.log(data);
+    var geo_data = data.week_geo_track;
 	var date = [];
 	var citys = [];
 	for(var key in geo_data){
@@ -284,7 +285,7 @@ function point2weibo(xnum, ts){
     $('#time_zh').html(delta);
 }
 function draw_content(data){
-    console.log(data);
+    //console.log(data);
     var html = '';
     $('#weibo_text').empty();
     if(data==''){
@@ -301,6 +302,10 @@ function draw_content(data){
 var url = '/attribute/activity/?uid=' + uid;
 var global_active_data;
 activity_call_ajax_request(url, active_chart);
+var daily_map_data = new Array();
+var weekly_map_data = new Array();
+var span_daily_map_data = new Array();
+var span_weekly_map_data = new Array();
 
 function draw_daily_ip_table(ip_data){
     var tag_vector = ip_data.tag_vector;
@@ -329,26 +334,31 @@ function draw_daily_ip_table(ip_data){
     html += '<tr><th style="text-align:center">当日</th>';
     for (var i = 0; i < location_geo.length; i++) {
         if (i == 5) break;
-        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        daily_map_data.push(['top'+(i+1),location_geo[i][2]]);
+        var ip_city = location_geo[i][2].split('\t').pop();
+        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + ip_city + ',' + location_geo[i][1] + ')</th>';
     }
     while (i < 5){
         html += '<th style="text-align:center">-</th>';
         i++;
     }
-    html += '<th style="text-align:center">查看地图</th>';
+    html += '<th style="text-align:center"><a id="total_daily_ip_map" href="#map">查看地图</a></th>';
     html += '</tr>';
+
     //week
     location_geo = ip_data.all_week_top;
     html += '<tr><th style="text-align:center">最近7天</th>';
     for (var i = 0; i < location_geo.length; i++) {
         if (i == 5) break;
-        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + location_geo[i][1] + ')</th>';
+        weekly_map_data.push(['top'+(i+1),location_geo[i][2]]);
+        var ip_city = location_geo[i][2].split('\t').pop();
+        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + ip_city + ',' + location_geo[i][1] + ')</th>';
     }
     while (i < 5){
         html += '<th style="text-align:center">-</th>';
         i++;
     }
-    html += '<th style="text-align:center">查看地图</th>';
+    html += '<th style="text-align:center"><a id="total_weekly_ip_map" href="#map">查看地图</a></th>';
     html += '</tr>';
     html += '</table>'; 
     $('#total_IP_rank').append(html);
@@ -368,8 +378,10 @@ function draw_daily_ip_table(ip_data){
        html += '<th style="text-align:center">';
        if ((i in location_geo) && (location_geo[i].length != 0)){
            top_two = location_geo[i];
+           span_daily_map_data.push(['时段'+(i+1),location_geo[i][0][2]]);
            for (var j = 0;j < top_two.length;j++){
-               html += top_two[j][0] + '(' + top_two[j][1] + ')';
+               var ip_city = top_two[j][2].split('\t').pop();
+               html += top_two[j][0] + '(' + ip_city + ',' + top_two[j][1] + ')';
            }
        }
        else{
@@ -377,7 +389,7 @@ function draw_daily_ip_table(ip_data){
        }
        html += '</th>';
     };
-    html += '<th style="text-align:center">查看地图</th>';
+    html += '<th style="text-align:center"><a id="span_daily_ip_map" href="#map">查看地图</a></th>';
     html += '</tr>';
     location_geo = ip_data.week_ip;
     html += '<tr>';
@@ -387,8 +399,10 @@ function draw_daily_ip_table(ip_data){
        html += '<th style="text-align:center">';
        if ((i in location_geo) && (location_geo[i].length != 0)){
            top_two = location_geo[i];
+           span_weekly_map_data.push(['时段'+(i+1),location_geo[i][0][2]]);
            for (var j = 0;j < top_two.length;j++){
-               html += top_two[j][0] + '(' + top_two[j][1] + ')';
+               var ip_city = top_two[j][2].split('\t').pop();
+               html += top_two[j][0] + '(' + ip_city + ',' + top_two[j][1] + ')';
            }
        }
        else{
@@ -396,7 +410,7 @@ function draw_daily_ip_table(ip_data){
        }
        html += '</th>';
     };
-    html += '<th style="text-align:center">查看地图</th>';
+    html += '<th style="text-align:center"><a href="#map" id="span_weekly_ip_map">查看地图</a></th>';
     html += '</tr>';
     html += '</table>'; 
     $('#span_ip').append(html);                  

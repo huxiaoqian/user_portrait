@@ -270,7 +270,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
             for iter_mid in retweeted_retweeted_mid:
                 query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
         else:
-            iter_mid = origin_retweeted_mid[0]
+            iter_mid =retweeted_retweeted_mid
             query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term": {"root_mid": iter_mid}})
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term":{"message_type": message_type}},{"term": {"directed_uid": uid}}])
         retweeted_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
