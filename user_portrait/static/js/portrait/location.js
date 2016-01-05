@@ -126,7 +126,10 @@ function  active_chart(data){
        time.innerHTML = x;
     }
     */
-    $('#saysay').html(data.description); //description
+    var this_desc= '';
+    this_desc += "<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>"; //description
+    this_desc += "<span>" + data.description[2] + "</span><span style='color:red;'>" + data.description[3] + "</span>"; //description
+    $('#saysay').html(this_desc);
     if (global_time_type == 'day'){
        week_chart(data.day_trend);
     }
@@ -315,6 +318,7 @@ function draw_daily_ip_table(ip_data){
     }
     //var div_name = ['daily_ip','weekly_ip'];
     //console.log(ip_data);
+    console.log(ip_data.description);
     $('#ip_desc').html(ip_data.description);
     var location_geo;
     // ip table
