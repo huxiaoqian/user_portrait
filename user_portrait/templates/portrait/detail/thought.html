@@ -8,23 +8,22 @@
         border: solid #FFE4B5 1px;   
     }   
 </style>
-
+<div style="width:1000px;margin-bottom:0px;"><h3>情绪变动曲线</h3><hr style="width:1000px;"></div>
 <div style="width:680px;height:470px;">
-    <div style="font-size: 24px;width:380px;">情绪变动曲线</div>
-    <div style="margin-left: 170px;">
+    <div style="float: right;">
        <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
-       <input type="radio" name="time-type" value='week'  onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
+       <input type="radio" name="time-type" value='week' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
     </div>
     <div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
 </div>
 <div id='select_time' style="font-weight:bold;margin:0px;margin-left:20px;font-size:12px;"></div>
 
-<div style="width:280px;height:400px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
+<div style="width:280px;height:340px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
     <div id="thought_weibo_text" style="padding:0px 10px;">
     </div>
 </div>
 
-    <div style="width:100%;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);display:black;"></span><h4 style="line-height:32px;" >该用户的主要情绪为<span id="con_emotion"></span></h4></div>
+    <div style="width:100%;"><span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);display:black;"></span><h4 style="line-height:32px;" ><span  id="con_emotion0"></span><span style="color:red;" id="con_emotion"></span></h4></div>
 
 
 <div style="width:998px;">
@@ -34,7 +33,7 @@
 		<div id="sen_trend" style="height:350px;width:450px;"></div>
 		</div>
 		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
-		<div style="width:100%;font-size:24px;margin:0px;">心理状态<span type="button"data-toggle="modal" data-target="#psy_more"  style='font-size:16px;margin-left:300px;cursor: pointer'><u>查看更多</u></span><hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div style="width:100%;font-size:24px;margin:0px;">心理状态<span type="button"data-toggle="modal" data-target="#psy_more"  style='font-size:16px;margin-left:270px;cursor: pointer'><u>查看更多</u></span><hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="pie_emotion" style="height:350px;width:450px;"></div>
 		</div>
 	</div>	
@@ -88,6 +87,8 @@ Thought.prototype = {   //获取数据，重新画表
             var say = document.getElementById('emotion');
             say.innerHTML = '该用户暂无此数据';
         }else{
+            con0 = document.getElementById('con_emotion0');
+            con0.innerHTML = items['description'][0];
             con = document.getElementById('con_emotion');
             con.innerHTML = items['description'][1];
             emotions(items);
@@ -177,7 +178,7 @@ function emotions(data){
         data:names
     },
     toolbox: {
-        show : true,
+        show : false,
         feature : {
             mark : {show: true},
             dataView : {show: true, readOnly: false},
@@ -235,6 +236,14 @@ function emotions(data){
 }
   
 function draw_think(data){
+    console.log(data['description']);
+    // if(items==null){
+    //     var say = document.getElementById('emotion');
+    //     say.innerHTML = '该用户暂无此数据';
+    // }else{
+    //     con = document.getElementById('con_emotion');
+    //     con.innerHTML = items['description'][1];  
+    //     }  
     var first = data['psy_first'];
     var second = data['psy_second'];
     var first_name = ['积极','消极','中性'];
@@ -287,7 +296,7 @@ function draw_think(data){
                     self_0='/static/img/down.png';
                 }
                 if(change[key][1]==0){
-                    compare_0='';
+                    compare_0='（与平均水平持平）';
                 }else if(change[key][1]==1){
                     compare_0='（高于平均水平）';
                 }else if(change[key][1]==-1){
@@ -306,7 +315,7 @@ function draw_think(data){
                     self_0='/static/img/down.png';
                 }
                 if(change[key][1]==0){
-                    compare_0='';
+                    compare_0='（与平均水平持平）';
                 }else if(change[key][1]==1){
                     compare_0='（高于平均水平）';
                 }else if(change[key][1]==-1){
