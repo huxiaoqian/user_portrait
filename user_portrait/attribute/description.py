@@ -109,11 +109,13 @@ def conclusion_on_influence(uid):
     # test
     index_name = "this_is_a_copy_user_portrait"
     index_type = "manage"
+    total_number = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type)["count"]
+
     try:
         influ_result = es.get(index=index_name, doc_type=index_type, id=uid)['_source']
     except:
         influ_result = {}
-        result = [0, 0, 0, 0] # aver_activeness, sotred, aver_influence, sorted
+        result = [0, 0, 0, 0, total_number] # aver_activeness, sotred, aver_influence, sorted
         return result
 
     aver_activeness = influ_result.get("aver_activeness", 0)
@@ -168,8 +170,7 @@ def conclusion_on_influence(uid):
     influence_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=influence_query_body)['count']
     activeness_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=activeness_query_body)['count']
 
-    result = [aver_activeness*100.0/top_activeness, activeness_count, aver_influence*100.0/top_influence, influence_count]
-    print aver_activeness, top_activeness, aver_influence, top_influence
+    result = [aver_activeness*100.0/top_activeness, activeness_count, aver_influence*100.0/top_influence, influence_count, total_number]
     return result
 
 # version: 2015-12-22
