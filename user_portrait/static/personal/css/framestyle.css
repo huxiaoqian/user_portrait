@@ -1,5 +1,5 @@
 #basicwrapper{
-    height:880px;
+    height:900px;
 }
 #basicwrapper h1, #basicwrapper h2, #basicwrapper h3 {
 	margin: 0;
@@ -50,7 +50,7 @@ a {
 }
 
 .framepost {
-    height:600px;
+    height:630px;
 	margin-bottom: 25px;
 	padding: 0px;
 	background: #FFFFFF;
