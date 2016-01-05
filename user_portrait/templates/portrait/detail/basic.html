@@ -39,6 +39,8 @@
     margin-left: 65px;
     margin-top: 5px;
     margin:0;
+    width: 100%;
+    padding: 0 10px;
 }
 
 .weibo_info {
@@ -60,7 +62,7 @@
   left: 55%;
   top: 5%;
   z-index: 1002;
-  width: 900px;
+  width: 965px;
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8;
   /*height: 600px;*/
@@ -72,7 +74,7 @@
   left: 55%;
   top: 5%;
   z-index: 1002;
-  width: 900px;
+  width: 965px;
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8;
   /*height: 600px;*/
@@ -84,7 +86,7 @@
   left: 55%;
   top: 5%;
   z-index: 1002;
-  width: 900px;
+  width: 965px;
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8;
   margin-left: -520px;
@@ -95,7 +97,7 @@
   left: 55%;
   top: 5%;
   z-index: 1002;
-  width: 900px;
+  width: 965px;
   background: #FFF none repeat scroll 0% 0%;
   border: 1px solid #AA8BE8; 
   margin-left: -520px;
@@ -112,25 +114,29 @@
 height:500px;
 overflow-y:scroll;
 width:100%;
+margin-top:0px;
 }
 #re_user_content{
 height:500px;
 overflow-y:scroll;
 width:100%;
+margin-top:0px;
 }
 #cmt_user_content_all{
 height:500px;
 overflow-y:scroll;
 width:100%;
+margin-top:0px;
 }
 #cmt_user_content{
 height:500px;
 overflow-y:scroll;
 width:100%;
+margin-top:0px;
 }
 .user_title{
-  margin-left: 119px;
-  margin-right: 98px;
+  margin-left: 105px;
+  margin-right: 131px;
   margin-bottom: -10px;
   font-size: 16px;
 }
@@ -142,7 +148,7 @@ width:100%;
       <h4 id="influence_conclusion_all" style="line-height:40px;"></h4>
   </div>
   <div id="yesterday_influence" style="width:1000px;float:left;">
-    <h3>昨日影响力<span id="influence_index" style="color:red"></h3>
+    <h3>昨日影响力 (No.<span id="influence_index" style="color:red"></span>)</h3>
     <hr>
     <div id = "influence_table" style="width:100%;margin-bottom:-15px;"></div>
     <div style = 'font-size:16px' id = "all_influenced_users_style0"></div>
@@ -169,7 +175,7 @@ width:100%;
         </div>
       </div>
     </div>
-    <div id="influence_conclusion" style="margin:0px;">
+    <div id="influence_conclusion" style="margin:0px;width:100%;">
       <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
       <h4 id="influence_conclusion_c" style="line-height:40px;"></h4>
     </div>
@@ -191,27 +197,27 @@ width:100%;
 <div id="float-wrap" class="hidden"></div>
 <div id="re_influence" class="hidden">
   <h3 class="title">转发用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
-  <div id="re_user_content" style="padding:10px;align:left;">
-    <div id="re_user_in" style="padding:10px;align:left;"></div>
+  <div id="re_user_content" style="padding:0 10px;">
+    <div id="re_user_in" style="padding:0 10px;align:left;"></div>
     <div id="re_three_pie">
-    <h4 id="re_conclusion"></h4><br>
+    <h4 id="re_conclusion" style="margin-left:10px;"></h4><br>
     <p style="margin-bottom: -35px;font-size: 16px;">
       <span class = "user_title">领域分布</span>
       <span class = "user_title">话题分布</span>
       <span class = "user_title">地域分布</span>
     </p>
-    <div id="re_user_domain" style="width:260px;height:250px; margin:5px;float:left;"></div>
-    <div id="re_user_topic" style="width:295px;height:250px;float:left; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
-    <div id="re_user_geo" style="width:275px;height:250px; margin:5px;float:left;"></div>
+    <div id="re_user_domain" style="width:270px;height:250px; margin:5px;float:left;"></div>
+    <div id="re_user_topic" style="width:310px;height:250px;float:left; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+    <div id="re_user_geo" style="width:305px;height:250px; margin:5px;float:left;"></div>
     </div>
-    <div id="re_user_out" style="padding:10px;align:left;"></div>
+    <div id="re_user_out" style="padding:0 10px;margin-top:-25px;"></div>
   </div>
 </div>
 
 <div id="cmt_influence" class="hidden">
     <h3 class="title">评论用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
-    <div id="cmt_user_content" style="padding:10px;align:left;">
-      <div id="cmt_user_in" style="padding:10px;align:left;"></div>
+    <div id="cmt_user_content" style="padding:0 10px;">
+      <div id="cmt_user_in" style="padding:0 10px;align:left;"></div>
       <div id="cmt_three_pie">
         <h4 id="cmt_conclusion"></h4><br>
         <p style="margin-bottom: -35px;font-size: 16px;">
@@ -219,19 +225,19 @@ width:100%;
           <span class = "user_title">话题分布</span>
           <span class = "user_title">地域分布</span>
         </p>
-        <div id="cmt_user_domain" style="width:260px;height:250px; margin:5px;float:left;"></div>
-        <div id="cmt_user_topic" style="width:295px;height:250px; margin:5px;float:left;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
-        <div id="cmt_user_geo" style="width:275px;height:250px; margin:5px;float:left;"></div>
+        <div id="cmt_user_domain" style="width:270px;height:250px; margin:5px;float:left;"></div>
+        <div id="cmt_user_topic" style="width:310px;height:250px; margin:5px;float:left;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+        <div id="cmt_user_geo" style="width:305px;height:250px; margin:5px;float:left;"></div>
         <hr style="margin-top:-10px;">
       </div>  
-      <div id="cmt_user_out" style="padding:10px;align:left;"></div>
+      <div id="cmt_user_out" style="padding:0 10px;margin-top:-25px;"></div>
     </div>
 </div>
 
 <div id="retweet_distribution_content" class="hidden">
   <h3 class="title">转发用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
-  <div id="re_user_content_all" style="padding:10px;align:left;">
-    <div id="re_user_in_all" style="padding:10px;align:left;"></div>
+  <div id="re_user_content_all" style="padding:0 10px;">
+    <div id="re_user_in_all" style="padding:0 10px;align:left;"></div>
     <div id="re_three_pie_all">
       <h4 id="all_re_conclusion" style="margin-left:30px;"></h4><br>
       <p style="margin-bottom: -35px;font-size: 16px;">
@@ -239,19 +245,19 @@ width:100%;
         <span class = "user_title">话题分布</span>
         <span class = "user_title">地域分布</span>
       </p>    
-      <div id="re_user_domain_all" style="width:260px;height:250px; margin:5px;float:left;"></div>
-      <div id="re_user_topic_all" style="width:295px;height:250px; margin:5px;float:left;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
-      <div id="re_user_geo_all" style="width:275px;height:250px; margin:5px;float:left;"></div>
+      <div id="re_user_domain_all" style="width:270px;height:250px; margin:5px;float:left;"></div>
+      <div id="re_user_topic_all" style="width:310px;height:250px; margin:5px;float:left;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+      <div id="re_user_geo_all" style="width:305px;height:250px; margin:5px;float:left;"></div>
       <hr style="margin-top:-10px;">
     </div>  
-    <div id="re_user_out_all" style="padding:10px;align:left;float:left;"></div>
+    <div id="re_user_out_all" style="padding:0 10px;margin-top:-25px;float:left;"></div>
   </div>
 </div>
 
 <div id="comment_distribution_content" class="hidden">
     <h3 class="title">评论用户情况<a href="javascript:void(0)" class="closeList2" id="close"></a></h3>
-    <div id="cmt_user_content_all" style="padding:10px;align:left;">
-      <div id="cmt_user_in_all" style="padding:10px;float:left;"></div>
+    <div id="cmt_user_content_all" style="padding:0 10px;">
+      <div id="cmt_user_in_all" style="padding:0 10px;float:left;"></div>
       <div id="cmt_three_pie_all">
         <h4 id="all_cmt_conclusion"></h4><br>
         <p style="margin-bottom: -35px;font-size: 16px;">
@@ -259,11 +265,11 @@ width:100%;
           <span class = "user_title">话题分布</span>
           <span class = "user_title">地域分布</span>
         </p>
-        <div id="cmt_user_domain_all" style="width:260px;height:250px;float:left; margin:5px;"></div>
-        <div id="cmt_user_topic_all" style="width:295px;height:250px;float:left; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
-        <div id="cmt_user_geo_all" style="width:275px;height:250px;float:left; margin:5px;"></div>
+        <div id="cmt_user_domain_all" style="width:270px;height:250px;float:left; margin:5px;"></div>
+        <div id="cmt_user_topic_all" style="width:310px;height:250px;float:left; margin:5px;border-left:1px #DDD solid;border-right:1px #DDD solid;"></div>
+        <div id="cmt_user_geo_all" style="width:305px;height:250px;float:left; margin:5px;"></div>
       </div>
-    <div id="cmt_user_out_all" style="float:left;padding:10px;"></div>
+    <div id="cmt_user_out_all" style="float:left;padding:0 10px;margin-top:-25px;"></div>
   </div>
 </div>
 
