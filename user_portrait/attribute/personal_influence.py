@@ -270,7 +270,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
             for iter_mid in retweeted_retweeted_mid:
                 query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"root_mid": iter_mid}})
         else:
-            iter_mid =retweeted_retweeted_mid
+            iter_mid =retweeted_retweeted_mid[0]
             query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term": {"root_mid": iter_mid}})
         query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term":{"message_type": message_type}},{"term": {"directed_uid": uid}}])
         retweeted_retweeted_result = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"])["hits"]["hits"]
@@ -289,6 +289,7 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     count = 0
     retweeted_uid_list.extend(origin_retweeted_uid)
     retweeted_uid_list.extend(retweeted_retweeted_uid)
+    retweeted_uid_list = list(set(retweeted_uid_list) - set([uid])) # filter uids
     if retweeted_uid_list:
         user_portrait_result = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": retweeted_uid_list}, fields=["domain", "topic_string", "activity_geo_dict","importance", "influence"])["docs"]
         for item in user_portrait_result:
@@ -326,6 +327,8 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     temp_list = []
     for item in in_portrait:
         temp_list.append(item[0])
+    print temp_list[:20]
+    print out_portrait[:20]
     retweeted_results['in_portrait_number'] = len(temp_list)
     retweeted_results['out_portrait_number'] = len(out_portrait)
     in_portrait_url = get_user_url(temp_list[:default_number])
@@ -339,9 +342,20 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
 # 用于调用，某条微博的影响力，人和分布
 def detail_weibo_influence(uid, mid, style, date, number):
     results = dict()
-    influence_users = influenced_people(uid, mid, style, date, number)
+    date1 = str(date).replace('-', '')
+    index_name = pre_index + date1
+    text_index = pre_text_index + date
+    text_result = es.get(index=text_index, doc_type=flow_text_index_type, id=mid)["_source"]
+    root_mid = text_result.get("root_mid", mid)
+    print mid
+    print root_mid
+    influence_users = influenced_people(uid, root_mid, style, date, number)
     results["influence_users"] = influence_users
-    influence_distribution = influenced_user_detail(uid, date, [mid], [mid], style)
+    if int(style) == 0:
+        message_type = 3
+    else:
+        message_type = 2
+    influence_distribution = influenced_user_detail(uid, date, [root_mid], [root_mid], message_type)
     results["influence_distribution"] = influence_distribution
     return results
 
@@ -395,11 +409,23 @@ def statistics_influence_people(uid, date, style):
 
 
     if int(style) == 0: # retweeted
-        retweeted_results = influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_mid, 3)
+        retweeted_origin = []
+        if retweeted_retweeted_mid:
+            text_result = es.mget(index=index_flow_text, doc_type=flow_text_index_type, body={"ids": retweeted_retweeted_mid})["docs"]
+            for item in text_result:
+                mid = item.get("source", {}).get("root_mid", '0')
+                retweeted_origin.append(mid)
+        retweeted_results = influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_origin, 3)
         retweeted_results["total_number"] = retweeted_total_number
         results = retweeted_results
     else:
-        comment_results = influenced_user_detail(uid, date, origin_comment_mid, retweeted_comment_mid, 2)
+        retweeted_origin = []
+        if retweeted_comment_mid:
+            text_result = es.mget(index=index_flow_text, doc_type=flow_text_index_type, body={"ids": retweeted_comment_mid})["docs"]
+            for item in text_result:
+                mid = item.get("source", {}).get("root_mid", '0')
+                retweeted_origin.append(mid)
+        comment_results = influenced_user_detail(uid, date, origin_comment_mid, retweeted_origin, 2)
         comment_results["total_number"] = comment_total_number
         results = comment_results
 
