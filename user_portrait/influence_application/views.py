@@ -12,9 +12,11 @@ from search_vary_index_function import query_vary_top_k
 from search_tag_in_portrait import search_tag
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
 from influence_description import influence_description
+from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type, portrait_index_name, portrait_index_type
+from user_portrait.parameter import pre_influence_index, influence_doctype
 
-portrait_index = "copy_user_portrait" # user_portrait_database
-portrait_type = "user"
+portrait_index = copy_portrait_index_name
+portrait_type = copy_portrait_index_type
 
 mod = Blueprint('influence_application', __name__, url_prefix='/influence_application')
 
@@ -25,7 +27,7 @@ def ajax_search_influence():
     index = request.args.get('index', 1) # 1: influence rank, 2: hot origin weibo retweeted, 3: hot origin weibo comment, 4: hot origin weibo retweeted brust, 5: hot origin weibo comment brust
     domain = request.args.get('domain', 0) # 0: all active rank, 1: portrait active rank
 
-    index_name = str(date).replace('-','')
+    index_name = pre_influence_index + str(date).replace('-','')
     number = int(number)
     index = int(index)
     domain = int(domain)
@@ -79,7 +81,7 @@ def ajax_specified_user_active():
     results = []
 
     if date and uid:
-        index_name = date.replace('-','')
+        index_name = pre_influence_index + date.replace('-','')
         list_1 = []
         uid_list = [item for item in uid.split(',')]
         result = search_influence_detail(uid_list, index_name, "bci") 
@@ -98,7 +100,7 @@ def ajax_user_index_distribution():
     if not date:
         results = []
     else:
-        index_name = date.replace('-','')
+        index_name = pre_influence_index + date.replace('-','')
         results = user_index_range_distribution(index_name, "bci", "user_index")
 
     return json.dumps(results)
@@ -112,22 +114,10 @@ def ajax_portrait_user_index_distribution():
         results = []
     else:
         date = date.replace('-','')
-        results = user_index_range_distribution("copy_user_portrait","user", date)
+        results = user_index_range_distribution(copy_portrait_index_name, copy_portrait_index_type, date)
 
     return json.dumps(results)
 
-"""
-@mod.route('/portrait_user_domain_rank/')
-def ajax_portrait_user_domain_rank():
-    results = []
-    date = request.args.get('date', '')
-    domain = request.args.get('domain', '')
-    number = request.args.get('number', '')
-    if date and domain:
-        results = portrait_user_domain_rank(date, domain, number)
-
-    return json.dumps(results)
-"""
 
 
 @mod.route('/portrait_history_active/')
@@ -163,20 +153,17 @@ def ajax_portrait_user_in_vary():
     return json.dumps(results)
 
 
-@mod.route('/portrait_user_tag/')
-def ajax_portrait_user_tag():
+@mod.route('/portrait_user_domain/')
+def ajax_portrait_user_domain():
     number = int(request.args.get('number', 10)) # "10"
     date = request.args.get('date', '') # 2013-09-01
     date = date.replace('-','')
 
-    tag = request.args.get('tag', '') # topic
-    tag_value = request.args.get('tag_value', '') # education
-    search_dict = {}
-    search_dict[tag] = tag_value
-    print search_dict
+    tag = request.args.get('domain', '') # domain
+    index_name = pre_influence_index + date
 
-    if date and tag and tag_value:
-        results = search_tag(es, number, date, "bci", "user_portrait", "user", search_dict)
+    if date and tag:
+        results = search_tag(es, number, index_name, "bci", portrait_index_name, portrait_index_type, tag)
         return json.dumps(results)
 
     results = []

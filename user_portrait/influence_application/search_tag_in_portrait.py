@@ -16,7 +16,7 @@ from user_portrait.global_utils import es_user_profile as es_profile
 from rank_portrait_in_active_user import search_k
 
 
-def search_tag(es, number, active_index, active_type, portrait_index, portrait_type, field_dict):
+def search_tag(es, number, active_index, active_type, portrait_index, portrait_type, tag):
 
     #field_dict = {"domain":"art"}
     return_list = []
@@ -27,18 +27,17 @@ def search_tag(es, number, active_index, active_type, portrait_index, portrait_t
 
     while 1:
         search_list = []
-        user_list = search_k(es, active_index, active_type, start, "user_index", 1000)
-        start += 1000
+        user_list = search_k(es, active_index, active_type, start, "user_index", 10000)
+        start += 10000
         for item in user_list:
             uid = item.get('user', '0')
             search_list.append(uid) # uid list
 
         search_result = es_portrait.mget(index=portrait_index, doc_type=portrait_type, body={"ids": search_list}, _source=True)["docs"]
         profile_result = es_profile.mget(index="weibo_user", doc_type="user", body={"ids": search_list}, _source=True)["docs"]
-
         for item in search_result:
             count_s += 1
-            if item['found'] and field_dict.values()[0] in item['_source'][field_dict.keys()[0]]:
+            if item['found'] and tag in item['_source']['domain']:
                 info = ['','','','','','','']
                 info[0] = rank
                 index = search_result.index(item)
@@ -57,8 +56,8 @@ def search_tag(es, number, active_index, active_type, portrait_index, portrait_t
                 if rank >= int(number)+1:
                    return return_list
 
-        if count_s > 10000:
+        if count_s > 100000:
             return return_list
 
-if __name__ == "__main__":
-    print search_tag(es, 10, "20130901", "bci", "user_portrait", "user", {"topic":"education"}) 
+
+

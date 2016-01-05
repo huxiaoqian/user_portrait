@@ -42,64 +42,53 @@ index_info = {
                     "index": "no"
                 },
                 'origin_weibo_retweeted_average_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_comment_brust_n': {
                     "type": "string",
                     "index": "no"
                 },
                 'origin_weibo_comment_top_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_comment_brust_average': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_retweeted_brust_average': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_top_retweeted_id': {
                     "type": "string",
                     "index": "no"
                 },
                 'retweeted_weibo_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_comment_top_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'user_friendsnum': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_top_comment_id': {
                     "type": "string",
                     "index": "no"
                 },
                 'retweeted_weibo_retweeted_total_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_retweeted_average_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_retweeted_total_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_top_comment_id': {
                     "type": "string",
                     "index": "no"
                 },
                 'user_fansnum': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_comment_brust_n': {
                     "type": "string",
@@ -110,48 +99,38 @@ index_info = {
                     "index": "no"
                 },
                 'origin_weibo_comment_average_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_retweeted_brust_average': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_retweeted_top_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'comment_weibo_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_retweeted_brust_n': {
                     "type": "string",
                     "index": "no"
                 },
                 'retweeted_weibo_retweeted_top_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_comment_total_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_comment_brust_average': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'origin_weibo_comment_total_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 },
                 'retweeted_weibo_comment_average_number': {
-                    "type": "string",
-                    "index": "not_analyzed"
+                    "type": "long",
                 } 
 
             }

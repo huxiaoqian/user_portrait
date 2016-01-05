@@ -4,9 +4,9 @@ import sys
 from elasticsearch import Elasticsearch
 
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es
-
-index_destination = "copy_user_portrait" # attention
-index_destination_doctype = "user"
+from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type
+index_destination = copy_portrait_index_name  # attention
+index_destination_doctype = copy_portrait_index_type
 
 def expand_update_action(data):
     _id = data['uid']
