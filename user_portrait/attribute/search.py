@@ -1170,7 +1170,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     job_ip_string = ''
     for item in sort_job_dict:
         job_ip_string += item[0]
-        job_ip_string += u','
+        job_ip_string += u' '
         job_ip.append([item[0]])
 
     conclusion.append(job_ip_string)
