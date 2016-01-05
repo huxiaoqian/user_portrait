@@ -1151,7 +1151,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     #get job and home ip
     job_ip = []
     home_ip = []
-    conclusion = u'该用户的家庭IP为'
+    conclusion = [u'该用户的家庭IP为']
     sort_week_result = sorted(week_result.items(), key=lambda x:x[0])
     #print 'sort_week_result:', sort_week_result
     job_segment_dict = union_dict(sort_week_result[2][1], sort_week_result[3][1]) # 8:00-12:00 and 12:00-16:00
@@ -1160,14 +1160,19 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     sort_home_dict = sorted(home_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
 
     for item in sort_home_dict:
-        conclusion += item[0]
-        conclusion += u','
+        #conclusion += item[0]
+        #conclusion += u','
+        conclusion.append(item[0])
+        conclusion.append(u' ')
         home_ip.append(item[0])
 
-    conclusion += u'工作IP为'
+    #conclusion += u'工作IP为'
+    conclusion.append( u'工作IP为')
     for item in sort_job_dict:
-        conclusion += item[0]
-        conclusion += u','
+        #conclusion += item[0]
+        #conclusion += u','
+        conclusion.append(item[0])
+        conclusion.append(u' ')
         job_ip.append([item[0]])
 
     #get abnormal use IP
@@ -1177,14 +1182,16 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     if len(abnormal_set)==0:
         return conclusion[:-1], home_ip, job_ip
     else:
-        conclusion += u'异常使用的IP为'
+        conclusion.append(u'异常使用的IP为')
     abnormal_dict = dict()
     for abnormal_ip in list(abnormal_set):
         abnormal_dict[abnormal_ip] = all_day_top[abnormal_ip]
     sort_abnormal_dict = sorted(abnormal_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     for item in sort_abnormal_dict:
-        conclusion += item[0]
-        conclusion += ','
+        #conclusion += item[0]
+        #conclusion += ','
+        conclusion.append(item[0])
+        conclusion.append(u' ')
     conclusion = conclusion[:-1]
     #print 'conclusion:', conclusion, home_ip, job_ip
     return conclusion, home_ip, job_ip
@@ -1739,7 +1746,7 @@ def search_preference_attribute(uid):
     except:
         top_hashtag = ''
     try:
-        top_topic = sort_topic[0][0]
+        top_topic = sort_topic_ch_dict[0][0]
     except:
         top_topic = ''
     tag_vector_list = [[u'hashtag',top_hashtag], [u'领域',domain], [u'话题', top_topic]]
