@@ -20,7 +20,7 @@ from parameter import pre_influence_index, influence_doctype
 es = ES_CLUSTER_FLOW1
 cluster_redis = R_CLUSTER_FLOW1
 
-def compute(user_set):
+def compute(user_set, bulk_action):
     count_c = 0
 
     weibo_redis = R_CLUSTER_FLOW1
@@ -160,7 +160,7 @@ def compute(user_set):
 if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130907"
+    es_index = "20130901"
     es_index = pre_influence_index + es_index
     bool = es.indices.exists(index=es_index)
     print bool
