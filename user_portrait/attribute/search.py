@@ -44,7 +44,7 @@ from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TR
                                     INFLUENCE_TREND_AVE_MAX_THRESHOLD, INFLUENCE_TREND_DESCRIPTION_TEXT
 from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
                                     ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
-from user_portrait.parameter import SENTIMENT_DICT
+from user_portrait.parameter import SENTIMENT_DICT,  ACTIVENESS_TREND_TAG_VECTOR
 
 r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -1158,22 +1158,22 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     home_segment_dict = union_dict(sort_week_result[0][1], sort_week_result[5][1]) # 0:00-4:00 and 20:00-24:00
     sort_job_dict = sorted(job_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     sort_home_dict = sorted(home_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
-
+    
+    home_ip_string = ''
     for item in sort_home_dict:
-        #conclusion += item[0]
-        #conclusion += u','
-        conclusion.append(item[0])
-        conclusion.append(u' ')
+        home_ip_string += item[0]
+        home_ip_string += ' '
         home_ip.append(item[0])
+    conclusion.append(home_ip_string)
 
-    #conclusion += u'工作IP为'
-    conclusion.append( u'工作IP为')
+    conclusion.append( u',工作IP为')
+    job_ip_string = ''
     for item in sort_job_dict:
-        #conclusion += item[0]
-        #conclusion += u','
-        conclusion.append(item[0])
-        conclusion.append(u' ')
+        job_ip_string += item[0]
+        job_ip_string += u','
         job_ip.append([item[0]])
+
+    conclusion.append(job_ip_string)
 
     #get abnormal use IP
     day_ip_set = set(all_day_top.keys())
@@ -1182,17 +1182,17 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     if len(abnormal_set)==0:
         return conclusion[:-1], home_ip, job_ip
     else:
-        conclusion.append(u'异常使用的IP为')
+        conclusion.append(u',异常使用的IP为')
     abnormal_dict = dict()
     for abnormal_ip in list(abnormal_set):
         abnormal_dict[abnormal_ip] = all_day_top[abnormal_ip]
     sort_abnormal_dict = sorted(abnormal_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
+    abnormal_ip_string = ''
     for item in sort_abnormal_dict:
-        #conclusion += item[0]
-        #conclusion += ','
-        conclusion.append(item[0])
-        conclusion.append(u' ')
-    conclusion = conclusion[:-1]
+        abnormal_ip_string += item[0]
+        abnormal_ip_string += ' '
+
+    conclusion.append(abnormal_ip_string)
     #print 'conclusion:', conclusion, home_ip, job_ip
     return conclusion, home_ip, job_ip
 
@@ -1325,7 +1325,7 @@ def search_activity(now_ts, uid):
     activity_result['week_trend'] = sort_week_weibo_count
     activity_result['activity_time'] = sort_segment_list[:2]
     activity_result['description'] = description
-    activity_result['tag_vector'] = [[u'活跃时间', sort_segment_list[:1]], [u'活跃类型', active_type]]
+    activity_result['tag_vector'] = [[u'活跃时间', sort_segment_list[:1]], [u'活动类型', active_type]]
     return activity_result
 
 
@@ -2280,28 +2280,35 @@ def get_activeness_trend(uid):
     max_activeness = max(value_list)
     min_activeness = min(value_list)
     ave_activeness = sum(value_list) / float(len(value_list))
+    
     if max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['0']
+        tag_vector =  ACTIVENESS_TREND_TAG_VECTOR['0']
         #u'活跃度较高, 且保持平稳'
     elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MAX_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['1']
+        tag_vector =  ACTIVENESS_TREND_TAG_VECTOR['1']
         #u'活跃度较高, 且波动性较大'
     elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['2']
+        tag_vector =  ACTIVENESS_TREND_TAG_VECTOR['2']
         #u'活跃度一般, 且保持平稳'
     elif max_activeness - min_activeness > ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MAX_THRESHOLD and ave_activeness >= ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['3']
+        tag_vector =  ACTIVENESS_TREND_TAG_VECTOR['3']
         #u'活跃度一般, 且波动性较大'
     elif max_activeness - min_activeness <= ACTIVENESS_TREND_SPAN_THRESHOLD and ave_activeness < ACTIVENESS_TREND_AVE_MIN_THRESHOLD:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['4']
+        tag_vector =  ACTIVENESS_TREND_TAG_VECTOR['4']
         #u'活跃度较低, 且保持平稳'
     else:
         mark = ACTIVENESS_TREND_DESCRIPTION_TEXT['5']
+        tag_vector =  ACTIVENESS_TREND_TAG_VECTOR['5']
         #u'活跃度较低, 且波动性较大'
 
     description = [u'该用户', mark]
 
-    return {'time_line':time_list, 'activeness':activeness_list, 'description':description}
+    return {'time_line':time_list, 'activeness':activeness_list, 'description':description, 'tag_vector': tag_vector}
 
 #use to get influence_trend
 #write in version: 15-12-08
