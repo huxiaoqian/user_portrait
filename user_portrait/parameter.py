@@ -59,6 +59,10 @@ psy_description_dict = {
         '3':u'心理状态平稳正常'
         }
 
+# recommend out threshould
+RECOMMEND_OUT_THRESHOULD = 30
+
+
 #attribute: influence index and conclusion
 INFLUENCE_RETWEETED_THRESHOLD = 500
 INFLUENCE_COMMENT_THRESHOLD = 500
@@ -96,6 +100,14 @@ ACTIVENESS_TREND_DESCRIPTION_TEXT = {
         '5': '活跃度较低, 且波动性较大'
     }
 
+ACTIVENESS_TREND_TAG_VECTOR = {
+         '0': u'活跃度高且平稳',
+         '1': u'活跃度高且波动性大',
+         '2': u'活跃度一般且平稳',
+         '3': u'活跃度一般且波动性大',
+         '4': u'活跃度低且平稳',
+         '5': '活跃度低且波动性大'
+    }
 
 #cron/text_attribute/topic
 TOPIC_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/topic'

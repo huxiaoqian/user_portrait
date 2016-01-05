@@ -32,7 +32,7 @@ $(function(){
 			}
             });
          */
-        console.log(x+'clicked');
+        //console.log(x+'clicked');
 		if(x==0){
 		   $("#xzgl").css({"display":"block"}).siblings().css({"display":"none"});
 		   $(".soft_con1").css({"background":" url(/static/personal/images/line_select_001.gif)"});
@@ -107,8 +107,8 @@ $(function(){
                             <span class="fleft lineh42 mright38" id="userFriend" ></span>
                         </div>
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">在线方式</span>
-                            <span class="fleft lineh42 mright38" id="userOnline" ></span>
+                            <span class="fleft lineh42 mright38">微博数</span>
+                            <span class="fleft lineh42 mright38" id="userWeibo" ></span>
                         </div>
                     </div>
                 </div>
@@ -127,7 +127,8 @@ $(function(){
                     </div>
                     <div class="power">
                         <span class="activePower" style="color:black;">历史状态&nbsp;&nbsp;</span>
-                        <span id="histactive" class="activePower lightw"></span>
+                        <span class="activePower lightw">活跃度：</span><span class="red" id="histAPnum">100</span>（No.<span id="histAPrank"></span>/<span id="histAPsum">5948</span>）
+                        <span class="influencePower lightw">影响力：</span><span class=" red" id="histFPnum">100</span>（No.<span id="histFPrank"></span>/<span id="histFPsum">5948</span>）
                     </div>
                     <div class="m-wrap" style="margin-top;0px;">
                         <ul id="vector_table"class="clearfix">
@@ -167,19 +168,6 @@ $(function(){
                         </div>
                     </ul>
                 </li>
-                <!--
-				<li>
-					<h2>Categories</h2>
-					<ul>
-						<li><a href="#">Aliquam libero</a></li>
-						<li><a href="#">Consectetuer adipiscing elit</a></li>
-						<li><a href="#">Metus aliquam pellentesque</a></li>
-						<li><a href="#">Suspendisse iaculis mauris</a></li>
-						<li><a href="#">Urnanet non molestie semper</a></li>
-						<li><a href="#">Proin gravida orci porttitor</a></li>
-					</ul>
-                    </li>
-                -->
 			</ul>
 		</div>
 		<!-- end #sidebar -->
@@ -211,7 +199,7 @@ Personal.prototype = {   //群组搜索
 	},
 	personData:function(data){
 		personalData = data ;
-        console.log(data);
+        //console.log(data);
         var contact_url = '/index/contact/?uid=' + uid;
         $('#contact').attr('href', contact_url)
         var homepage_url = 'http://weibo.com/u/' + uid;
@@ -315,9 +303,9 @@ Personal.prototype = {   //群组搜索
             friends.innerHTML = "无此数据";
         }
             
-        var pattern = document.getElementById('userOnline');
-        if(personalData.online_pattern[0][0]){
-            pattern.innerHTML = personalData.online_pattern[0][0];
+        var pattern = document.getElementById('userWeibo');
+        if(personalData.statusnum){
+            pattern.innerHTML = personalData.statusnum;
         }else{
             pattern.innerHTML = "无此数据";
         }
@@ -333,8 +321,13 @@ Personal.prototype = {   //群组搜索
         }
     },
     historyData:function(data){
-        //console.log(data);
-        $('#histactive').html(data[0]+'，且'+data[1]);
+        console.log(data);
+        $('#histAPnum').html(data[0][0].toFixed(2));
+        $('#histAPrank').html(data[0][1]);
+        //$('#histAPsum').html(data[0][4]);
+        $('#histFPnum').html(data[0][2].toFixed(2));
+        $('#histFPrank').html(data[0][3]);
+        //$('#histFPsum').html(data[0][4]);
     },
 }
 var global_tag_vector = new Array(); //全局标签化向量
@@ -352,14 +345,14 @@ var url = "/attribute/current_tag_vector/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, currentData);
 
 function currentData(data){
-    console.log(data);
+    //console.log(data);
     global_tag_vector.push(['昨日影响力评价',data[0]]);
 }
 function bind_remark_edit(Personal){
     $('#extraDetail').click(function(){
         var td = $(this);
         var txt = td.html();
-        var input = "<input id='editremark' style='width:300px;' type='text' value='" + txt + "'/>";
+        var input = "<input id='editremark' style='width:200px;' type='text' value='" + txt + "'/>";
         td.html(input);
         $('#editremark').click(function(){
             return false;
@@ -378,7 +371,7 @@ function bind_remark_edit(Personal){
                 if (newtxt != txt){
                     var url = '/attribute/edit_remark/?uid=' + uid + '&remark=' + newtxt;
                     Personal.call_sync_ajax_request(url, Personal.ajax_method, confirm_edit);
-                    console.log('diff');
+                    //console.log('diff');
                 }
             }
         }).bind('keydown', function(e){
@@ -398,7 +391,7 @@ function bind_remark_edit(Personal){
             if (newtxt != txt){
                 var url = '/attribute/edit_remark/?uid=' + uid + '&remark=' + newtxt;
                 Personal.call_sync_ajax_request(url, Personal.ajax_method, confirm_edit);
-                console.log('diff');
+                //console.log('diff');
             }
         });
         function confirm_edit(data){
@@ -465,8 +458,8 @@ bind_remark_edit(Personal);
         html += unit[0] + '</span><span class="pt_detail">';
         html += unit[1] + '</span></li>';
     }
-    console.log('tagvector');
-    console.log(global_tag_vector);
+    //console.log('tagvector');
+    //console.log(global_tag_vector);
     $('#vector_table').html(html);
 </script>
 {% endblock Own_js%}

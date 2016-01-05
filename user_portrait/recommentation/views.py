@@ -126,7 +126,6 @@ def ajax_identify_out():
     date = request.args.get("date", '') # date, 2015-07-25
     data = request.args.get('data', '') # uid,uid,uid
     if date and data:
-        date = date.replace('-','')
         results = decide_out_uid(date, data)
 
     return json.dumps(results)
@@ -136,7 +135,6 @@ def ajax_identify_out():
 def ajax_history_delete():
     results = {}
     date = request.args.get('date', '') # date 2013-09-01
-    date = date.replace('-', '')
     results = search_history_delete(date)
 
     return results # return {"20150715": "[uid]"}
@@ -149,17 +147,11 @@ def ajax_cancel_delete():
         return "no one cancelled"
     else:
         uid_list = data.split(',')
-        date = date.replace('-','')
         delete_list = json.loads(r_out.hget('decide_delete_list',date))
         revise_list = list(set(delete_list).difference(set(uid_list)))
         r_out.hset('decide_delete_list', date, json.dumps(revise_list))
 
-        """
-        delete_list = json.loads(r_out.hget('history_delete_list',date))
-        revise_list = list(set(delete_list).difference(set(uid_list)))
-        r_out.hset('history_delete_list',date, json.dumps(revise_list))
-        """
-        #update_record_index(uid_list) temporary 
+        update_record_index(uid_list) #temporary 
 
     return json.dumps(1)
 
@@ -171,7 +163,6 @@ def ajax_search_delete():
     if not date or not uid_list:
         return "no define date or uid_list"
     else:
-        date = str(date).replace('-','')
         remove_list = str(uid_list).split(',')
 
         temp = r_out.hget('decide_delete_list', date)
@@ -179,13 +170,6 @@ def ajax_search_delete():
             exist_data = json.loads(r_out.hget('decide_delete_list',date))
             remove_list.extend(exist_data)
         r_out.hset('decide_delete_list', date, json.dumps(remove_list))
-
-        delete_list = str(uid_list).split(',')
-        temp = r_out.hget('history_delete_list', date)
-        if temp:
-            exist_data = json.loads(r_out.hget('history_delete_list',date))
-            delete_list.extend(exist_data)
-        r_out.hset('history_delete_list',date, json.dumps(delete_list))
 
     return json.dumps(1)
 
@@ -197,14 +181,13 @@ def ajax_cancel_recommend_out():
     if not date or not uid_list:
         return "no define date or uid_list"
     else:
-        date = str(date).replace('-','')
         uid_list = str(uid_list).split(',')
 
         recommend_list = json.loads(r_out.hget('recommend_delete_list',date))
         revise_list = list(set(recommend_list).difference(set(uid_list)))
         r_out.hset('recommend_delete_list',date, json.dumps(revise_list))
 
-        #update_record_index(uid_list)
+        update_record_index(uid_list) # 更改low number使之不再推荐
 
     return json.dumps(1)
 

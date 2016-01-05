@@ -71,7 +71,8 @@ def active_time_description(result):
 
     pd = {'0':'夜猫子','1':'早起刷微博','2':'工作时间刷微博','3':'午休时间刷微博','4':'上班时间刷微博','5':'下班途中刷微博','6':'晚间休息刷微博'}
  
-    description = '用户属于%s类型，活跃时间主要集中在%s' % (pd[segment], definition)
+    #description = '用户属于%s类型，活跃时间主要集中在%s' % (pd[segment], definition)
+    description = ['用户属于', pd[segment], '类型，活跃时间主要集中在', definition]
 
     return description, pd[segment]
 
