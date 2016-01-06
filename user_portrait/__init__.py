@@ -14,6 +14,7 @@ from user_portrait.overview.views import mod as overviewModule
 from user_portrait.influence_application.views import mod as influenceModule
 from user_portrait.login.views import mod as loginModule
 from user_portrait.group.views import mod as groupModule
+from user_portrait.detect.views import mod as detectModule
 from user_portrait.tag.views import mod as tagModule
 from user_portrait.weibo.views import mod as weiboModule
 
@@ -33,6 +34,7 @@ def create_app():
     app.register_blueprint(influenceModule)
     app.register_blueprint(loginModule)
     app.register_blueprint(groupModule)
+    app.register_blueprint(detectModule)
     app.register_blueprint(tagModule)
     app.register_blueprint(weiboModule)
     # the debug toolbar is only enabled in debug mode
