@@ -614,7 +614,7 @@ def ajax_history_activeness_influence():
     uid = str(uid)
 
     results = []
-    results.append(conclusion_on_influence(uid))
+    results = conclusion_on_influence(uid)
 
     return json.dumps(results)
 

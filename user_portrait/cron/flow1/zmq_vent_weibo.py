@@ -62,7 +62,6 @@ if __name__=="__main__":
                 total_count = 0
                 total_cost = 0
                 total_count, total_cost = send_weibo(sender, poller, controller, total_count, total_cost)
-                break
             else:
                 pass
         else:

@@ -118,17 +118,18 @@ $(function(){
             <div class="framepost">
                 <h2 class="title">系统画像信息</h2>
                 <div class="entry">
-                    <div class="power" style="height:85px;">
+                    <div class="power" style="height:60px;line-height:30px;">
                         <span class="activePower" style="color:black;">当前状态&nbsp;&nbsp;</span>
                         <span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（No.<span id="APrank"></span>/<span id="APsum"></span>）
                         <span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
-                        <br/><br/>
+                        <br/>
                         <span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（No.<span id="FPrank"></span>/<span id="FPsum"></span>）
                     </div>
-                    <div class="power">
+                    <div class="power" style="height:60px;line-height:30px;">
                         <span class="activePower" style="color:black;">历史状态&nbsp;&nbsp;</span>
-                        <span class="activePower lightw">活跃度：</span><span class="red" id="histAPnum">100</span>（No.<span id="histAPrank"></span>/<span id="histAPsum">5948</span>）
-                        <span class="influencePower lightw">影响力：</span><span class=" red" id="histFPnum">100</span>（No.<span id="histFPrank"></span>/<span id="histFPsum">5948</span>）
+                        <span class="activePower lightw">活跃度：</span><span class="red" id="histAPnum">100</span>（No.<span id="histAPrank"></span>/<span id="histAPsum"></span>）
+                        <br/>
+                        <span class="influencePower lightw">影响力：</span><span class=" red" id="histFPnum">100</span>（No.<span id="histFPrank"></span>/<span id="histFPsum"></span>）
                     </div>
                     <div class="m-wrap" style="margin-top;0px;">
                         <ul id="vector_table"class="clearfix">
@@ -322,12 +323,12 @@ Personal.prototype = {   //群组搜索
     },
     historyData:function(data){
         console.log(data);
-        $('#histAPnum').html(data[0][0].toFixed(2));
-        $('#histAPrank').html(data[0][1]);
-        //$('#histAPsum').html(data[0][4]);
-        $('#histFPnum').html(data[0][2].toFixed(2));
-        $('#histFPrank').html(data[0][3]);
-        //$('#histFPsum').html(data[0][4]);
+        $('#histAPnum').html(data[0].toFixed(2));
+        $('#histAPrank').html(data[1]);
+        $('#histAPsum').html(data[4]);
+        $('#histFPnum').html(data[2].toFixed(2));
+        $('#histFPrank').html(data[3]);
+        $('#histFPsum').html(data[4]);
     },
 }
 var global_tag_vector = new Array(); //全局标签化向量
