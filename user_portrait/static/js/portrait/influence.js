@@ -1,4 +1,4 @@
-function Influence(){
+﻿function Influence(){
   this.ajax_method = 'GET';
 }
 Influence.prototype = {   //获取数据，重新画表

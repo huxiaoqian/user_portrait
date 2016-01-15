@@ -50,7 +50,8 @@ function attention(data,UserID,UserName,texts){
             nod['category'] = 2;
             nod['name'] = out_data[i][0];
             nod['label'] = out_data[i][1];
-            nod['value'] = out_data[i][3];
+            nod['value'] = 1;
+            //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
     }
     for (i=0;i<in_data.length;i++){
@@ -59,7 +60,8 @@ function attention(data,UserID,UserName,texts){
             nod['category'] = 1;
             nod['name'] = in_data[i][0]
             nod['label'] = in_data[i][1];
-            nod['value'] = in_data[i][4];
+            nod['value'] = 1;
+            //nod['value'] = in_data[i][4];
             nodeContent.push(nod);
     }    
     var linkline =[];
@@ -217,7 +219,7 @@ function draw_topic(data){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
     for (var key in datas) {
-       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + datas[key][0] + '</th><th style="text-align:center">' + datas[key][1] +  '</th></tr>';
        i = i + 1;
        if(i >=6 ){
         break;
@@ -228,6 +230,7 @@ function draw_topic(data){
 }
 
 function draw_more_topic(data){
+    console.log('aaa');
     $('#topic0').empty();
     var datas = data['topic'];
     html = '';
@@ -235,7 +238,7 @@ function draw_more_topic(data){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
     for (var key in datas) {
-       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + datas[key][0] + '</th><th style="text-align:center">' + datas[key][1] +  '</th></tr>';
     i = i + 1;
   }
     html += '</table>'; 
@@ -250,7 +253,7 @@ function draw_field(data){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
     for (var key in datas) {
-       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + datas[key][0] + '</th><th style="text-align:center">' + datas[key][1] +  '</th></tr>';
        i = i + 1;
        if(i >=6 ){
         break;
@@ -268,7 +271,7 @@ function draw_more_field(data){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
     for (var key in datas) {
-       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + key + '</th><th style="text-align:center">' + datas[key] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + datas[key][0] + '</th><th style="text-align:center">' + datas[key][1] +  '</th></tr>';
     i = i + 1;
   }
     html += '</table>'; 
@@ -315,9 +318,9 @@ function draw_in_list(data){
       html += '<tr id=' + item[0] +'>';
       html += '<td class="center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
       html += '<td class="center" style="width:150px;">'+ item[1] +'</td>';
-      html += '<td class="center" >'+ item[2].toFixed(2) +'</td>';
-      html += '<td class="center" >'+ item[3].toFixed(2) +'</td>';
-      html += '<td class="center" >'+ item[4] +'</td>';
+      html += '<td class="center" style="width:70px;">'+ item[2].toFixed(2) +'</td>';
+      html += '<td class="center" style="width:70px;">'+ item[3].toFixed(2) +'</td>';
+      html += '<td class="center" style="width:70px;">'+ item[4] +'</td>';
       html += '<td class="center"><input name="in_list_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
       html += '</tr>';
     }
@@ -349,23 +352,15 @@ function out_list_button(){
     }
   }
   else{
-      compute_time = '1';
       var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
       if(sure==true){
-          //console.log(compute_time);
-          $('#recommend').empty();
-          var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
-          $('#recommend').append(waiting_html);
-
-        var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + uids_trans + '&status=' + compute_time;
-          //console.log(recommend_confirm_url);
-          draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);    
-          var url_recommend_new = '/recommentation/show_in/?date=' + $("#recommend_date_select").val();
-          draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
-          draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
-        var url_history_new = '/recommentation/show_compute/?date=' + $("#history_date_select").val();
-          draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
-          draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);
+        // $('#out_list').empty();
+        // var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
+        // $('#out_list').append(waiting_html);
+        var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids + '&status=' + compute_type;
+        Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
+        var url0 = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
+        Attention.call_sync_ajax_request(url0, Attention.ajax_method, Attention.Draw_attention);
       }    
   }
 }
