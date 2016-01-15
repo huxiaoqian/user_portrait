@@ -508,14 +508,14 @@ function click_action(){
       $("#retweet_distribution").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#retweet_distribution_content").removeClass("hidden");
-        var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=0';
+        var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid=1182391231&date=2013-09-07&style=0';
         Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
         return false;
       });
       $("#comment_distribution").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#comment_distribution_content").removeClass("hidden");
-        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1218353337&date=2013-09-02&style=1';
+        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1182391231&date=2013-09-07&style=1';
         Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
