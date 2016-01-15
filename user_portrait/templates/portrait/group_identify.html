@@ -1,0 +1,67 @@
+{% extends "tbase.html" %}
+    {% block title %}群体分析{% endblock title %}
+    {% block css %}
+        {{ super() }}
+        <link href="/static/css/group_pattern.css" type="text/css" rel="stylesheet" />
+    {% endblock css %}
+    {% block main %}
+    <h4 class="page-header">群体分析</h4>
+    <div class="box-content">
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active" title="群体发现"><a id="tab_discovery" href="#">群体发现</a></li>
+            <li title="群体分析任务管理"><a id="tab_manage" href="#">群体分析任务管理</a></li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div id="content_discovery" class="tab-pane active" style="margin-top:10px">
+                <div class="tabshow">
+                    <div class="tabTagBox">
+                        <ul class="tabTagList">
+                            <li id="tag01" class="current">服装行业</li>
+                            <li id="tag02">旅游行业</li>
+                            <li id="tag03">房地产行业</li>
+                            <li id="tag05">汽车用品</li>
+                        </ul>
+                    </div>
+                    <div class="tabcon">
+                        <h2>种子用户群体发现</h2>
+                        {% include "portrait/group/seed_user.html"%}
+                    </div>
+                    
+                    <div class="tabcon" style="display:none;">
+                        <h2>特定属性及模式</h2>
+                    </div>
+                    
+                    <div class="tabcon" style="display:none;">
+                        <h2>特定事件及模式</h2>
+                    </div>
+                    
+                    <div class="tabcon" style="display:none;">
+                        <h2>社会感知</h2>
+                    </div>
+                </div><!--tabshow end-->
+            </div>
+            <div id="content_manage" class="tab-pane" style="margin-top:10px">
+            </div>
+        </div>
+    </div>
+    {% endblock main %}
+    {% block Own_js %}
+        {{ super() }}
+        <script>
+            $('#tab_discovery').click(function(){
+                if ($(this).parent('li').hasClass("active")) return;
+                $(this).parent('li').siblings().removeClass('active');
+                $(this).parent('li').addClass('active');
+                $('#content_discovery').css('display', 'block');
+                $('#content_manage').css('display', 'none');
+            });
+            $('#tab_manage').click(function(){
+                if ($(this).parent('li').hasClass("active")) return;
+                $(this).parent('li').siblings().removeClass('active');
+                $(this).parent('li').addClass('active');
+                $('#content_discovery').css('display', 'none');
+                $('#content_manage').css('display', 'block');
+            });
+        </script>
+        <script type="text/javascript" src="/static/js/portrait/group_pattern.js"></script>
+    {% endblock Own_js %}
