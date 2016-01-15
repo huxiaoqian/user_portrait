@@ -175,4 +175,13 @@ INFLUENCE_BRUST_THRESHOULD = [100, 100,100, 100]
 INFLUENCE_BRUST_LIST = ['origin_weibo_retweeted_brust_average','origin_weibo_comment_brust_average','retweeted_weibo_retweeted_brust_average','retweeted_weibo_comment_brust_average']
 INFLUENCE_BRUST_CONCLUSION = ['传播速度快', '评论速度快', '传播速度快', '评论速度快']
 
-
+#group detect: query information
+DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
+                          'activity_geo', 'tendency', 'tag', 'remark']
+DETECT_QUERY_STRUCTURE = ['retweet', 'comment', 'hop']
+DETECT_QUERY_FILTER = ['count', 'influence', 'importance']
+DETECT_DEFAULT_WEIGHT = 0.5
+DETECT_DEFAULT_MARK = '0'
+DETECT_DEFAULT_COUNT = 100
+DETECT_FILTER_VALUE_FROM = 50
+DETECT_FILTER_VALUE_TO = 100
