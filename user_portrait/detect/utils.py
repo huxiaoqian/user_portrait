@@ -11,12 +11,40 @@ from user_portrait.global_utils import retweet_index_name_pre, retweet_index_typ
                                        comment_index_name_pre, comment_index_type,\
                                        be_comment_index_name_pre, be_comment_index_type
 
-#user to detect group by single-person
+#use to save detect task
 #input: {}
 #output: {}
-def single_detect():
+def save_detect_task():
     results = {}
-    #step1: identify the uid or uname is right
-    #step2: get user by three type parameter
+    save_detect2es()
+    save_detect2redis()
     return results
 
+
+#use to save parameter and task information to group redis queue
+#input: {}
+#output: {}
+def save_detect2redis():
+    results = {}
+    return results
+
+#use to save parameter and task information to group es
+#input: {}
+#output: {}
+def save_detect2es():
+    results = {}
+    return results
+
+#use to show detect task information
+#input: {}
+#output: {}
+def show_detect_task():
+    results = {}
+    return results
+
+#use to add detect task having been done to group analysis
+#input:{}
+#output: {}
+def detect2analysis():
+    results = {}
+    return results
