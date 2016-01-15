@@ -21,7 +21,7 @@ mod = Blueprint('detect', __name__, url_prefix='/detect')
 @mod.route('/single_person/')
 def ajax_single_person():
     results = {}
-    query_dict = {}   #query_dict = {'task_information':{}, 'seed_user':{},'attribute':[],'attribute_weight': 0.5,'struture':[], 'structure_weight': 0.5, 'filter':{}}
+    query_dict = {}   #query_dict = {'seed_user':{},'attribute':[],'attribute_weight': 0.5,'struture':[], 'structure_weight': 0.5, 'filter':{}}
     condition_num = 0 #condition_num != 0
     #get seed user uname or uid
     seed_user_dict = {}
@@ -77,14 +77,19 @@ def ajax_single_person():
         return 'valid input for count'
     query_dict['filter'] = filter_dict
     #get detect task information
-    task_name = request.args.get('task_name', '')
-    submit_date = time.time()
-    state = request.args.get('state', '')
-    submit_user = request.args.get('submit_user', 'admin')
-    task_information_dict = {'task_name':task_name, 'submit_date':submit_date, 'state':state, 'submit_user':submit_user}
+    task_information_dict['task_name'] = request.args.get('task_name', '')
+    task_information_dict['submit_date'] = int(time.time())
+    task_information_dict['state'] = request.args.get('state', '')
+    task_information_dict['submit_user'] = request.args.get('submit_user', 'admin')
+    task_information_dict['task_type'] = 'detect'   #type: detect/analysis
+    task_information_dict['detect_type'] = 'single' #type: single/multi/attribute/event
+    task_information_dict['detect_process'] = 0     #type: 0/20/50/70/100
+    
     #save task information
-    query_dict['task_information'] = task_information_dict
-    status = save_detect_single_task(query_dict)
+    input_dict = {}
+    input_dict['task_information'] = task_information_dict
+    input_dict['query_condition'] = query_dict
+    status = save_detect_single_task(input_dict)
     
     return status
 
@@ -95,9 +100,9 @@ def ajax_multi_person():
     upload_data = request.form['upload_data']
     task_name = request.form['task_name']
     state = request.form['state']
-    now_ts = time.time()
-    now_date = ts2datetime(now_ts)
-    results = save_detect_task()
+    now_ts = int(time.time())
+    
+    results = save_detect_multi_task()
     return results
 
 #use to group detect by attribute or pattern
