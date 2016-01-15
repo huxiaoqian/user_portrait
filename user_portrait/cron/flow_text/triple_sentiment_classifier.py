@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
-#  gathering snmp data
-#from __future__ import division
 import re
 import opencc
 import os
+import time
+import csv
 from gensim import corpora
-#import cPickle as pickle
 from utils import load_scws, cut, load_emotion_words
+from flow_psy import flow_psychology_classfiy
+#from test_data import input_data2 #测试输入
 
 AB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
@@ -56,7 +57,7 @@ with open(os.path.join(AB_PATH, '4groups.csv')) as f:
 
 HAPPY = 1
 ANGRY = 2
-SAD = 3
+SAD = 4
 
 
 def emoticon(text):
@@ -109,27 +110,40 @@ with open(os.path.join(AB_PATH, 'triple_polarity_1.txt')) as f:
 
 
 def triple_classifier(tweet):
+    '''
+    输出结果：
+    0 中性
+    1 积极
+    2 生气
+    3 焦虑
+    4 悲伤
+    5 厌恶
+    6 消极其他
+    '''
     sentiment = 0
     text = tweet['text']  # encode
     keywords_list = []
 
-    #if_empty_retweet = if_empty_retweet_weibo(tweet)
-    #if if_empty_retweet:
-    #    text = tweet['retweeted_status']['text']
-
-    # if_emoticoned = if_emoticoned_weibo(tweet)
-    # if if_emoticoned == 1:
     emoticon_sentiment = emoticon(text)
     if emoticon_sentiment != 0:
-        sentiment = emoticon_sentiment
-        text = u''
+        entries = cut(cut_str, text.encode('utf-8'))
+        entry = [e.decode('utf-8', 'ignore') for e in entries]
+        keywords_list = entry
+        if emoticon_sentiment == HAPPY:
+            sentiment = emoticon_sentiment
+            text = u''
+        else:
+            sentiment = flow_psychology_classfiy(text)
+            if sentiment == 0:
+                sentiment = emoticon_sentiment
+            text = u''
     
     if text != u'':
         entries = cut(cut_str, text.encode('utf-8'))
         entry = [e.decode('utf-8', 'ignore') for e in entries]
         keywords_list = entry
         
-        '''
+        
         bow = dictionary_1.doc2bow(entry)
         s = [1, 1]
         for pair in bow:
@@ -144,11 +158,37 @@ def triple_classifier(tweet):
                 s[2] = s[2] * (step2_score[pair[0]][2] ** pair[1])
             if s[0] > s[1] and s[0] > s[2]:
                 sentiment = HAPPY
-            elif s[1] > s[0] and s[1] > s[2]:
-                sentiment = SAD
-            elif s[2] > s[1] and s[2] > s[0]:
-                sentiment = ANGRY
-        '''
+            else:
+                sentiment = flow_psychology_classfiy(text)
+                if sentiment == 0:
+                    if s[1] > s[0] and s[1] > s[2]:
+                        sentiment = SAD
+                    elif s[2] > s[1] and s[2] > s[0]:
+                        sentiment = ANGRY
+                    else:
+                        sentiment = 6
+        else:
+            sentiment = 0
+        
 
-    #return sentiment, keywords_list
-    return keywords_list
+    return sentiment, keywords_list
+
+##def write_result(uid_weibo,result,label_list):
+##
+##    with open('./result/result_20160113.csv', 'wb') as f:
+##        writer = csv.writer(f)
+##        for i in range(0,len(uid_weibo)):
+##            writer.writerow((uid_weibo[i],result[i],label_list[i]))        
+##
+##if __name__ == '__main__':
+##    uid_weibo,label_list = input_data2()
+##    start = time.time()
+##    result = []
+##    for text in uid_weibo:
+##        domain, keywords_list = triple_classifier(text)
+##        result.append(domain)
+##    end = time.time()
+##    print '%s seconds...' % (end-start)
+##    print len(uid_weibo)
+##
+##    write_result(uid_weibo,result,label_list)
