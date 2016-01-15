@@ -2,7 +2,16 @@
     {% block title %}群体分析{% endblock title %}
     {% block css %}
         {{ super() }}
-        <link href="/static/css/group_pattern.css" type="text/css" rel="stylesheet" />
+        <style>
+            .wrapper{max-width: 800px;height: 400px;margin: 10px auto;background: #fff;box-shadow: 0 2px 2px #f2f2f2;position: relative;}
+            #tab{width: 200px;height:400px;}
+            #tab_left,#tab_con{margin: 10px;background: #fff;} #tab,#tab_con{float: left;}
+            #tab_left{width:180px;height:380px;}
+            #tab_left li{list-style-type: none;font-size: 20px;text-align: center;border-top: 1px solid #ccc;}
+            #tab_left li a{color: #000;text-decoration: none;line-height: 94px;width: 180px;height: 94px;display: block;background: #fff;text-shadow:1px 1px 2px #ccc;border-left: 1px solid #ccc;}
+            #tab_left li a:hover{background: #f1f1f1;text-decoration: none;border-left: 1px solid #f00;opacity: 0.4;color: #f00;text-shadow:1px 1px 2px #ccc;}
+            #tab_con{width: 580px;height: 380px;overflow: hidden;}
+        </style>
     {% endblock css %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
@@ -13,32 +22,31 @@
         </ul>
         <div id="myTabContent" class="tab-content">
             <div id="content_discovery" class="tab-pane active" style="margin-top:10px">
-                <div class="tabshow">
-                    <div class="tabTagBox">
-                        <ul class="tabTagList">
-                            <li id="tag01" class="current">服装行业</li>
-                            <li id="tag02">旅游行业</li>
-                            <li id="tag03">房地产行业</li>
-                            <li id="tag05">汽车用品</li>
+                <div class="wrapper">
+                    <div id="tab">
+                        <ul id="tab_left">
+                            <li id="tab_left_1"><a href="#">Tab1</a></li>
+                            <li id="tab_left_2"><a href="#">Tab2</a></li>
+                            <li id="tab_left_3"><a href="#">Tab3</a></li>
+                            <li id="tab_left_4" style="border-bottom:1px solid #ccc;"><a href="#">Tab4</a></li>
                         </ul>
                     </div>
-                    <div class="tabcon">
-                        <h2>种子用户群体发现</h2>
-                        {% include "portrait/group/seed_user.html"%}
+                    <div id="tab_con">
+                        <div id="tab_con_1">
+                            <h2>种子用户群体发现</h2>
+                            {% include "portrait/group/seed_user.html"%}
+                        </div>
+                        <div id="tab_con_2">
+                            <h2>特定属性及模式</h2>
+                        </div>
+                        <div id="tab_con_3">
+                            <h2>特定事件及模式</h2>
+                        </div>
+                        <div id="tab_con_4">
+                            <h2>社会感知</h2>
+                        </div>
                     </div>
-                    
-                    <div class="tabcon" style="display:none;">
-                        <h2>特定属性及模式</h2>
-                    </div>
-                    
-                    <div class="tabcon" style="display:none;">
-                        <h2>特定事件及模式</h2>
-                    </div>
-                    
-                    <div class="tabcon" style="display:none;">
-                        <h2>社会感知</h2>
-                    </div>
-                </div><!--tabshow end-->
+                </div>
             </div>
             <div id="content_manage" class="tab-pane" style="margin-top:10px">
             </div>
@@ -48,19 +56,31 @@
     {% block Own_js %}
         {{ super() }}
         <script>
-            $('#tab_discovery').click(function(){
-                if ($(this).parent('li').hasClass("active")) return;
-                $(this).parent('li').siblings().removeClass('active');
-                $(this).parent('li').addClass('active');
-                $('#content_discovery').css('display', 'block');
-                $('#content_manage').css('display', 'none');
-            });
-            $('#tab_manage').click(function(){
-                if ($(this).parent('li').hasClass("active")) return;
-                $(this).parent('li').siblings().removeClass('active');
-                $(this).parent('li').addClass('active');
-                $('#content_discovery').css('display', 'none');
-                $('#content_manage').css('display', 'block');
+            $(function(){
+                $("#tab_left_1").hover(function(){
+                    $("#tab_con_1").fadeIn(600);
+                    $("#tab_con_2").hide();
+                    $("#tab_con_3").hide();
+                    $("#tab_con_4").hide();
+                });
+                $("#tab_left_2").hover(function(){
+                    $("#tab_con_1").hide();
+                    $("#tab_con_3").hide();
+                    $("#tab_con_4").hide();
+                    $("#tab_con_2").fadeIn(600);
+                });
+                $("#tab_left_3").hover(function(){
+                    $("#tab_con_2").hide();
+                    $("#tab_con_1").hide();
+                    $("#tab_con_4").hide();
+                    $("#tab_con_3").fadeIn(600);
+                });
+                $("#tab_left_4").hover(function(){
+                    $("#tab_con_1").hide();
+                    $("#tab_con_2").hide();
+                    $("#tab_con_3").hide();
+                    $("#tab_con_4").fadeIn(600);
+                });
             });
         </script>
         <script type="text/javascript" src="/static/js/portrait/group_pattern.js"></script>
