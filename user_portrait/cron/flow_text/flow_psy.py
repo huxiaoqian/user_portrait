@@ -6,8 +6,7 @@ import csv
 import scws
 import re
 import heapq
-from config import re_cut,DS_DICT,DS_COUNT,s_label
-#from test_data import input_data2
+from config import re_cut,DZ_DICT,DZ_COUNT
 
 class TopkHeap(object):
     def __init__(self, k):
@@ -36,7 +35,7 @@ def start_p(data_time):
 def find_label(text,ds_dict,ds_count):
     #change text type from unicode to utf-8
     text = text.encode('utf-8')
-    s_data = ['anger','anx','sad']#第二层分类标签
+    s_data = ['anger','anx','sad','awful']#第二层分类标签
     domain_s = start_p(s_data)
 
     for d_k,d_v in ds_dict.iteritems():
@@ -53,30 +52,41 @@ def find_label(text,ds_dict,ds_count):
     if label_s == 'other':
         return 0
     else:
-        return s_data.index(label_s)+1
+        return s_data.index(label_s)+2
 
 def flow_psychology_classfiy(text):#心理状态分类主函数
     '''
     返回结果：文本的情绪标签（int类型）
-    0：消极其他
-    1：生气
-    2：焦虑
-    3：悲伤
+    0 消极其他
+    2 生气
+    3 焦虑
+    4 悲伤
+    5 厌恶
     '''
     w_text = re_cut(text)
     if len(w_text):#非空
-        label = find_label(w_text,DS_DICT,DS_COUNT)
+        label = find_label(w_text,DZ_DICT,DZ_COUNT)
     else:
         label = 0
     
     return label
 
-if __name__ == '__main__':
-    uid_weibo = input_data2()
-    start = time.time()
-    for text in uid_weibo:
-        domain = flow_psychology_classfiy(text)
-        print domain
-    end = time.time()
-    print '%s seconds...' % (end-start)
+##def write_result(uid_weibo,result):
+##
+##    with open('./result/result_20160113.csv', 'wb') as f:
+##        writer = csv.writer(f)
+##        for i in range(0,len(uid_weibo)):
+##            writer.writerow((uid_weibo[i],result[i]))        
+##
+##if __name__ == '__main__':
+##    uid_weibo = input_data2()
+##    start = time.time()
+##    result = []
+##    for text in uid_weibo:
+##        domain = flow_psychology_classfiy(text)
+##        result.append(domain)
+##    end = time.time()
+##    print '%s seconds...' % (end-start)
+##
+##    write_result(uid_weibo,result)
     

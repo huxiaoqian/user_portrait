@@ -63,6 +63,8 @@ R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7
 # type1 list: group_task  index   group_task_basic_information
 # type2 list: group_task_name index group_task_members
 R_GROUP = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
+group_detect_queue_name = 'group_detect_task'
+group_analysis_queue_name = 'group_analysis_task'
 
 # use to recomment 
 #two types hash
@@ -87,6 +89,7 @@ UPDATE_WEEK_REDIS_KEY = 'update_week'
 es_user_profile = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 es_user_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 6000)
 es_flow_text = Elasticsearch(FLOW_TEXT_ES_HOST, timeout=600)
+es_group_result = Elasticsearch(USER_PORTRAIT_ES_HOST, time_out=600)
 
 # elasticsearch index_name and index_type
 profile_index_name = 'weibo_user'  # user profile es
@@ -108,6 +111,9 @@ be_comment_index_type = 'user'
 # es for activeness history, influence history and pagerank
 copy_portrait_index_name = 'this_is_a_copy_user_portrait'
 copy_portrait_index_type = 'manage'
+# es for group detect and analysis
+group_index_name = 'group_module'
+group_index_type = 'group'
 
 #use to load balck words of weibo keywords
 BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black.txt'
