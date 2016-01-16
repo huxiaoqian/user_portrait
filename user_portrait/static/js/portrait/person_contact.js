@@ -376,11 +376,11 @@ function get_choose_data(uid){
     });
     $('[type="radio"]').each(function(){
         if($(this).is(':checked')){
-            filed = $(this).attr('id');
+            field = $(this).attr('id');
         }
     });
     if(isflag == 1){
-    url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +filed ;
+    url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +field ;
     }
     else{
         url = '';
