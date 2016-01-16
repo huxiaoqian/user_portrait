@@ -176,3 +176,6 @@ INFLUENCE_BRUST_LIST = ['origin_weibo_retweeted_brust_average','origin_weibo_com
 INFLUENCE_BRUST_CONCLUSION = ['传播速度快', '评论速度快', '传播速度快', '评论速度快']
 
 
+# social sensoring time interval
+SOCIAL_SENSOR_TIME_INTERVAL = 1800
+SOCIAL_SENSOR_FORWARD_RANGE = 21600

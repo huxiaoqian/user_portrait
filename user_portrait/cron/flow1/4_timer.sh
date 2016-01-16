@@ -15,6 +15,6 @@ tmux send-keys -t work:es2 'python redis_to_es.py' C-m
 tmux send-keys -t work:es3 'python redis_to_es.py' C-m
 tmux send-keys -t work:es4 'python redis_to_es.py' C-m
 
-ps -ef |grep zmq_work_weibo.py| grep -v grep | cut -c 9-15|xargs kill -s 9
-ps -ef |grep zmq_vent_weibo.py| grep -v grep | cut -c 9-15|xargs kill -s 9
+#ps -ef |grep zmq_work_weibo.py| grep -v grep | cut -c 9-15|xargs kill -s 9
+#ps -ef |grep zmq_vent_weibo.py| grep -v grep | cut -c 9-15|xargs kill -s 9
 
