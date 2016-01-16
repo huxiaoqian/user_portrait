@@ -1,4 +1,4 @@
-﻿function Influence(){
+function Influence(){
   this.ajax_method = 'GET';
 }
 Influence.prototype = {   //获取数据，重新画表
@@ -82,57 +82,6 @@ Influence.prototype = {   //获取数据，重新画表
           
       ]
     };
-                    
-        
-    // var option = {
-    //     tooltip : {
-    //         trigger: 'axis'
-    //     },
-    //     toolbox: {
-    //     show : true,
-    //     feature : {
-    //         mark : {show: true},
-    //         dataView : {show: true, readOnly: false},
-    //         magicType : {show: true, type: ['line', 'bar']},
-    //         restore : {show: true},
-    //         saveAsImage : {show: true}
-    //     }
-    //     },
-    //     calculable : true,
-    //     xAxis : [
-    //         {
-    //             type : 'category',
-    //             boundaryGap : false,
-    //             data : item_x
-    //         }
-    //     ],
-    //     yAxis : [
-    //         {
-    //             type : 'value'
-    //         }
-    //     ],
-    //     series : [
-    //         {
-                
-    //             type:'line',
-    //             data:dataFixed,
-    //             markPoint : {
-    //                 data : [
-    //                     {type : 'max', name: '最大值'},
-    //                     {type : 'min', name: '最小值'}
-    //                 ]
-    //             },
-    //             markLine : {
-    //                 data : [
-    //                     {type : 'average', name: '平均值'}
-    //                 ]
-    //             }
-    //         },
-    //     ]
-    // };
-
-
-
         // 为echarts对象加载数据 
         myChart.setOption(option); 
     },
@@ -189,10 +138,14 @@ Draw_pie_all0:function(data){
 
   Draw_basic_influence:function(data){
     $('#influence_conclusion_c').empty();
-    var html=''
+    var html='';
     html += '该用户<span style="color:red">'+data[0][0]+'</span>。';
-    if(data[0][1]!= ''){
-      html += data[0][1]+'，'+data[0][2]+'，'+'属于<span style="color:red">'+data[1][0]+'</span>。';
+    if(data[0][1] != ''){
+      //html += data[0][1]+'，'+data[0][2]+'，';
+      html += '<span style="color:red">'+data[0][1]+'</span>';
+    }
+    if(data[1][0] != ''){
+      html += '属于<span style="color:red">'+data[1][0]+'</span>。';
     }
     if(data[0][3]!= ''){
       html += data[0][3]+'，'+data[0][4]+'，'+'<span style="color:red">'+data[1][1]+'</span>。';
@@ -240,7 +193,7 @@ Draw_pie_all0:function(data){
 
     var html_index='';
     html_index +=  data['order_count'] + '/' +data['total_count'] ;
-    console.log(html_index);
+    //console.log(html_index);
     $('#influence_index').append(html_index);
   },
 
@@ -508,14 +461,14 @@ function click_action(){
       $("#retweet_distribution").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#retweet_distribution_content").removeClass("hidden");
-        var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid=1182391231&date=2013-09-07&style=0';
+        var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date=2013-09-07&style=0';
         Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
         return false;
       });
       $("#comment_distribution").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#comment_distribution_content").removeClass("hidden");
-        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1182391231&date=2013-09-07&style=1';
+        var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid +'&date=2013-09-07&style=1';
         Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
@@ -540,35 +493,35 @@ $('input[name="choose_module"]').click(function(){
   }
 })
 
-var basic_influence_url = '/attribute/current_influence_comment/?uid=1182391231&date=2013-09-07';
+var basic_influence_url = '/attribute/current_influence_comment/?uid='+parent.personalData.uid+'&date=2013-09-07';
 Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
 
-var user_influence_detail_url = '/attribute/user_influence_detail/?uid=1182391231&date=2013-09-07';
+var user_influence_detail_url = '/attribute/user_influence_detail/?uid='+parent.personalData.uid+'&date=2013-09-07';
 Influence.call_sync_ajax_request(user_influence_detail_url, Influence.ajax_method, Influence.Draw_user_influence_detail);
 
 
-var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid=1182391231&date=2013-09-07&style=0';
+var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date=2013-09-07&style=0';
 Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_all_influenced_users_style0);
-var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid=1182391231&date=2013-09-07&style=1';
+var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date=2013-09-07&style=1';
 Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_all_influenced_users_style1);
 
-var influenced_users_url_re = '/attribute/influenced_users/?uid=1182391231&date=2013-09-07&style=0&mid=3619697033757295';
+var influenced_users_url_re = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date=2013-09-07&style=0&mid=3619697033757295';
 Influence.call_sync_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
-var influenced_users_url_cmt = '/attribute/influenced_users/?uid=1182391231&date=2013-09-07&style=1&mid=3619697033757295';
+var influenced_users_url_cmt = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date=2013-09-07&style=1&mid=3619697033757295';
 Influence.call_sync_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
 
-var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-07&style=0';
+var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date=2013-09-07&style=0';
 Influence.call_sync_ajax_request(get_top_weibo_url_style0, Influence.ajax_method, Influence.Draw_get_top_weibo1);
-var get_top_weibo_url_style1 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-07&style=1';
+var get_top_weibo_url_style1 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date=2013-09-07&style=1';
 Influence.call_sync_ajax_request(get_top_weibo_url_style1, Influence.ajax_method, Influence.Draw_get_top_weibo2);
-var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-07&style=2';
+var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date=2013-09-07&style=2';
 Influence.call_sync_ajax_request(get_top_weibo_url_style2, Influence.ajax_method, Influence.Draw_get_top_weibo3);
-var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid=1182391231&date=2013-09-07&style=3';
+var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date=2013-09-07&style=3';
 Influence.call_sync_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
-var influence_tag_url = '/attribute/current_tag_vector/?uid=1182391231&date=2013-09-07';
+var influence_tag_url = '/attribute/current_tag_vector/?uid='+parent.personalData.uid+'&date=2013-09-07';
 Influence.call_sync_ajax_request(influence_tag_url, Influence.ajax_method, Influence.Influence_tag_vector);
 click_action();
-var summary_influence_url = '/attribute/summary_influence/?uid=1182391231&date=2013-09-07';
+var summary_influence_url = '/attribute/summary_influence/?uid='+parent.personalData.uid+'&date=2013-09-07';
 Influence.call_sync_ajax_request(summary_influence_url, Influence.ajax_method, Influence.Draw_conclusion);
 
       
