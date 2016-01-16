@@ -9,7 +9,7 @@ from user_portrait.global_utils import es_group_result, group_index_name, group_
 from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
 from user_portrait.global_utils import es_user_profile, profile_index_name, profile_index_type
 from user_portrait.global_utils import R_GROUP as r_group
-from user_portrait.global_utils import group_detect_queue_name
+from user_portrait.global_utils import group_detect_queue_name, group_analysis_queue_name
 from user_portrait.global_utils import retweet_index_name_pre, retweet_index_type,\
                                        be_retweet_index_name_pre, be_retweet_index_type,\
                                        comment_index_name_pre, comment_index_type,\
@@ -158,13 +158,24 @@ def save_detect_task():
     return results
 
 
-#use to save parameter and task information to group redis queue
+#use to save parameter and task information to group redis queue---detect
 #input: input_dict 
 #output: status True/False
 def save_detect2redis(input_dict):
     status = True
     try:
         r_group.lpush(group_detect_queue_name, json.dumps(input_dict))
+    except:
+        status = False
+    return status
+
+#use to save parameter and task information to group redis queue---analysis
+#input: input_dict
+#output: status True/False
+def save_compute2redis(input_dict):
+    status = True
+    try:
+        r_group.lpush(group_analysis_queue_name, json.dumps(inoput_dict))
     except:
         status = False
     return status
@@ -184,6 +195,23 @@ def save_detect2es(input_dict):
     except:
         status = False
     
+    return status
+
+#use to save parameter and task information to group es
+#input: input_dict
+#output: status True/False
+def save_compute2es(input_dict):
+    add_dict = {}
+    status = True
+    add_dict = dict(add_dict, **input_dict['task_information'])
+    task_name = input_dict['task_information']['task_name']
+    add_dict['query_condition'] = json.dumps(input_dict['query_condition'])
+    try:
+        es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=add_dict)
+        print 'success add compute task es'
+    except:
+        status = False
+
     return status
 
 #use to show detect task information
