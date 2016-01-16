@@ -63,7 +63,8 @@ R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7
 # type1 list: group_task  index   group_task_basic_information
 # type2 list: group_task_name index group_task_members
 R_GROUP = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
-group_detect_queue_name = 'group_detect'
+group_detect_queue_name = 'group_detect_task'
+group_analysis_queue_name = 'group_analysis_task'
 
 # use to recomment 
 #two types hash
