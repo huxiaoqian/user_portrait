@@ -15,7 +15,7 @@ def loading():
 
     return render_template('portrait/overview.html')
 
-@mod.route('/group_identify/')
+@mod.route('/group/')
 def group_identify():
     return render_template('portrait/group_identify.html')
 @mod.route('/group_analysis/')

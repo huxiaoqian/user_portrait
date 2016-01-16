@@ -4,46 +4,43 @@
         {{ super() }}
         <style>
             .wrapper{height: 400px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
-            #tab{width: 200px;height:400px;}
-            #tab_left,#tab_con{margin: 10px;background: #fff;} #tab,#tab_con{float: left;}
+            #tab{width: 180px;height:400px;}
+            #tab_left,#tab_con{margin: 0px;background: #fff;} #tab,#tab_con{float: left;}
             #tab_left{width:180px;height:380px;}
             #tab_left li{list-style-type: none;font-size: 20px;text-align: center;border-top: 1px solid #ccc;}
-            #tab_left li a{color: #000;text-decoration: none;line-height: 94px;width: 180px;height: 70px;display: block;background: #fff;text-shadow:1px 1px 2px #ccc;border-left: 1px solid #ccc;}
-            #tab_left li a:hover{background: #f1f1f1;text-decoration: none;border-left: 1px solid #f00;opacity: 0.4;color: #f00;text-shadow:1px 1px 2px #ccc;}
-            #tab_con{width: 760px;height: 380px;overflow: hidden;}
+            #tab_left li a{color: #000;opacity:0.7;text-decoration: none;line-height: 80px;width: 180px;height: 70px;display: block;background: #fff;text-shadow:1px 1px 2px #ccc;border-left: 1px solid #ccc;}
+            #tab_left li.current a{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
+            #tab_left li a:hover{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
+            #tab_con{width: 820px;height: 380px;overflow: hidden;}
         </style>
     {% endblock css %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
     <div class="box-content">
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active" title="群体发现"><a id="tab_discovery" href="#">群体发现</a></li>
-            <li title="群体分析任务管理"><a id="tab_manage" href="#">群体分析任务管理</a></li>
+            <li class="active"><a id="tab_discovery" href="#">群体发现任务</a></li>
+            <li><a id="tab_manage" href="#">群体分析任务</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
             <div id="content_discovery" class="tab-pane active" style="margin-top:10px">
                 <div class="wrapper">
                     <div id="tab">
                         <ul id="tab_left">
-                            <li id="tab_left_1"><a href="#">Tab1</a></li>
-                            <li id="tab_left_2"><a href="#">Tab2</a></li>
-                            <li id="tab_left_3"><a href="#">Tab3</a></li>
-                            <li id="tab_left_4" style="border-bottom:1px solid #ccc;"><a href="#">Tab4</a></li>
+                            <li id="tab_left_1" class="current"><a href="#tab_con">种子用户群体发现</a></li>
+                            <li id="tab_left_2"><a href="#tab_con">特定属性及模式</a></li>
+                            <li id="tab_left_3"><a href="#tab_con">特定事件及模式</a></li>
+                            <li id="tab_left_4" style="border-bottom:1px solid #ccc;"><a href="#tab_con">社会感知</a></li>
                         </ul>
                     </div>
                     <div id="tab_con">
                         <div id="tab_con_1">
-                            <h2>种子用户群体发现</h2>
                             {% include "portrait/group/seed_user.html"%}
                         </div>
                         <div id="tab_con_2" style='display:none'>
-                            <h2>特定属性及模式</h2>
                         </div>
                         <div id="tab_con_3" style='display:none'>
-                            <h2>特定事件及模式</h2>
                         </div>
                         <div id="tab_con_4" style='display:none'>
-                            <h2>社会感知</h2>
                         </div>
                     </div>
                 </div>
@@ -58,24 +55,36 @@
         <script>
             $(function(){
                 $("#tab_left_1").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
                     $("#tab_con_1").fadeIn(600);
                     $("#tab_con_2").hide();
                     $("#tab_con_3").hide();
                     $("#tab_con_4").hide();
                 });
                 $("#tab_left_2").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
                     $("#tab_con_1").hide();
                     $("#tab_con_3").hide();
                     $("#tab_con_4").hide();
                     $("#tab_con_2").fadeIn(600);
                 });
                 $("#tab_left_3").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
                     $("#tab_con_2").hide();
                     $("#tab_con_1").hide();
                     $("#tab_con_4").hide();
                     $("#tab_con_3").fadeIn(600);
                 });
                 $("#tab_left_4").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
                     $("#tab_con_1").hide();
                     $("#tab_con_2").hide();
                     $("#tab_con_3").hide();
