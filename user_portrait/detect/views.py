@@ -13,7 +13,8 @@ from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.parameter import DETECT_QUERY_ATTRIBUTE, DETECT_QUERY_STRUCTURE,\
                                     DETECT_QUERY_FILTER, DETECT_DEFAULT_WEIGHT, \
                                     DETECT_DEFAULT_MARK, DETECT_DEFAULT_COUNT, \
-                                    DETECT_FILTER_VALUE_FROM, DETECT_FILTER_VALUE_TO
+                                    DETECT_FILTER_VALUE_FROM, DETECT_FILTER_VALUE_TO, \
+                                    DETECT_TEXT_FUZZ_ITEM, DETECT_TEXT_RANGE_ITEM
 from user_portrait.parameter import DETECT_ATTRIBUTE_FUZZ_ITEM, DETECT_ATTRIBUTE_SELECT_ITEM ,\
                                     DETECT_PATTERN_FUZZ_ITEM, DETECT_PATTERN_SELECT_ITEM ,\
                                     DETECT_PATTERN_RANGE_ITEM, DETECT_EVENT_ATTRIBUTE,\
@@ -26,7 +27,7 @@ mod = Blueprint('detect', __name__, url_prefix='/detect')
 @mod.route('/single_person/')
 def ajax_single_person():
     results = {}
-    query_dict = {}   #query_dict = {'seed_user':{},'attribute':[],'attribute_weight': 0.5,'struture':[], 'structure_weight': 0.5, 'filter':{}}
+    query_dict = {}   #query_dict = {'seed_user':{},'attribute':[],'attribute_weight': 0.5,'struture':[], 'structure_weight': 0.5, 'TEXT':{},'filter':{}}
     condition_num = 0 #condition_num != 0
     #get seed user uname or uid
     seed_user_dict = {}
@@ -63,6 +64,22 @@ def ajax_single_person():
         attribute_weight = 0
     query_dict['structure'] = structure_list
     query_dict['structure_weight'] = structure_weight
+    #get query_dict: text
+    text_query_list = []
+    for text_item in DETECT_TEXT_FUZZ_ITEM:
+        item_value_string = request.args.get(text_item, '') # a string joint by ','
+        item_value_list = item_value_string.split(',')
+        nest_body_list = []
+        for item_value in item_value_list:
+            nest_body_list.append({'wildcard':{text_item: '*'+item_value+'*'}})
+        text_query_list.append({'bool':{'should':nest_body_list}})
+    for text_item in DETECT_TEXT_RANGE_ITEM:
+        item_value_from = request.args.get(text_item+'_from', '')
+        item_value_to = request.args.get(text_item+'_to', '')
+        if int(item_value_from) > int(ite_value_to) or (not item_value_from) or (item_value_to):
+            return 'invalid input for range'
+        text_query_list.append({'range':{text_item:{'from':item_value_from, 'to':item_value_to}}})
+    query_dict['text'] = text_query_list
     #identify the query condition num at least one
     if attribute_condition_num + stucture_condition_num == 0:
         return 'no query condition'
@@ -102,7 +119,7 @@ def ajax_single_person():
 @mod.route('/multi_person/', methods=['GET', 'POST'])
 def ajax_multi_person():
     results = {}
-    query_dict = {} # query_dict = {'attribute':[], 'attribute_weight':0.5, 'structure':[], 'structure_weight':0.5, 'filter':{}}
+    query_dict = {} # query_dict = {'attribute':[], 'attribute_weight':0.5, 'structure':[], 'structure_weight':0.5, 'text':{} ,'filter':{}}
     task_information_dict = {} # task_information_dict = {'uid_list':[], 'task_name':xx, 'state':xx, 'submit_user':xx}
     #upload user list
     upload_data = request.form['upload_data']
@@ -156,6 +173,23 @@ def ajax_multi_person():
             structure_weight = 0
         query_dict['structure_weight'] = structure_weight
         query_dict['structure'] = structure_list
+        #get query_dict: text
+        text_query_list = []
+        for text_item in DETECT_TEXT_FUZZ_ITEM:
+            item_value_string = request.args.get(text_item, '') # a string joint by ','
+            item_value_list = item_value_string.split(',')
+            nest_body_list = []
+            for item_value in item_value_list:
+                nest_body_list.append({'wildcard':{text_item: '*'+item_value+'*'}})
+            text_query_list.append({'bool':{'should':nest_body_list}})
+        for text_item in DETECT_TEXT_RANGE_ITEM:
+            item_value_from = request.args.get(text_item+'_from', '')
+            item_value_to = request.args.get(text_item+'_to', '')
+            if int(item_value_from) > int(ite_value_to) or (not item_value_from) or (item_value_to):
+                return 'invalid input for range'
+            text_query_list.append({'range':{text_item:{'from':item_value_from, 'to':item_value_to}}})
+        query_dict['text'] = text_query_list
+        #identify the comdition num at least 1
         if attribute_condition_num + structure_condition_num == 0:
             return 'no query condition'
         #get query dict: filter
@@ -206,10 +240,17 @@ def ajax_attribute_pattern():
         attribute_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
     #step1.2: select item
     for item in DETECT_ATTRIBUTE_SELECT_ITEM:
-        item_value = request.args.get(item, '')
-        if item_value:
-            attribute_condition_num += 1
-        attribute_query_list.append({'match':{item: item_value}})
+        if item=='tag':
+            item_name = request.args.get(item+'_name', '')
+            item_value = request.args.get(item+'_value', '')
+            if item_name and item_value:
+                attribute_condition_num += 1
+            attribute_query_list.append({'match':{item_name: item_value}})
+        else:
+            item_value = request.args.get(item, '')
+            if item_value:
+                attribute_condition_num += 1
+            attribute_query_list.append({'match':{item: item_value}})
     query_dict['attribute'] = attribute_query_list
     #step2:get pattern query list
     #step2.1: fuzz item
@@ -288,10 +329,14 @@ def ajax_event_detect():
     #step2: get event query dict
     #step2.1: get event fuzz item
     for item in DETECT_TEXT_FUZZ_ITEM:
-        item_value = request.args.get(item, '')
-        if item_value:
+        item_value_string = request.args.get(item, '')
+        item_value_list = item_value_string.split(',')
+        nest_body_list = []
+        for item_value in item_value_list:
+            nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
+        event_query_list.append({'bool':{'should':nest_body_list}})
+        if len(item_value_list):
             query_condition_num += 1
-        event_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
     #step2.2: get event range item
     for item in DETECT_TEXT_RANGE_ITEM:
         item_value_from = request.args.get(item+'_from', '')
