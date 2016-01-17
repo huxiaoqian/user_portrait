@@ -178,6 +178,7 @@ INFLUENCE_BRUST_CONCLUSION = ['传播速度快', '评论速度快', '传播速�
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
                           'activity_geo', 'tendency', 'tag', 'remark']
+DETECT_QUERY_ATTRIBUTE_MULTI = ['topic_string', 'keywords_string', 'hashtag']
 DETECT_QUERY_STRUCTURE = ['retweet', 'comment', 'hop']
 DETECT_QUERY_FILTER = ['count', 'influence', 'importance']
 DETECT_DEFAULT_WEIGHT = 0.5
