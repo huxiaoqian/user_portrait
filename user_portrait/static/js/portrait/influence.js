@@ -237,18 +237,22 @@ Draw_pie_all0:function(data){
     if(data[1][3]!= ''){
       html +='<span style="color:red">'+ data[1][3] +'</span>，';
     };
-    html+= '所影响的领域为';
-    var domain_len = data[2].length
-    for(var i = 0; i<domain_len-1;i++){
-      html += '<span style="color:red">'+ data[2][i]+'</span>、';
+    if(data[2] != ''){
+      html+= '所影响的领域为';
+      var domain_len = data[2].length
+      for(var i = 0; i<domain_len-1;i++){
+       html += '<span style="color:red">'+ data[2][i]+'</span>、';
+       }
+      html +='<span style="color:red">'+ data[2][domain_len-1] +'</span>。';
     }
-    html +='<span style="color:red">'+ data[2][domain_len-1] +'</span>。';
-    html+= '影响的话题有';
-    var topic_len = data[3].length
-    for(var i = 0; i<topic_len-1;i++){
-      html += '<span style="color:red">'+ data[3][i]+'</span>、';
+    if(data[3] != ''){
+      html+= '影响的话题有';
+      var topic_len = data[3].length
+      for(var i = 0; i<topic_len-1;i++){
+        html += '<span style="color:red">'+ data[3][i]+'</span>、';
+      }
+       html +='<span style="color:red">'+ data[3][topic_len-1] +'</span>。';
     }
-    html +='<span style="color:red">'+ data[3][topic_len-1] +'</span>。';
     $('#influence_conclusion_all').append(html);
   },
 
@@ -361,7 +365,8 @@ Draw_pie_all0:function(data){
                 show : true
               },
               labelLine : {
-                show : true
+                show : true,
+                length : 100
               }
             },
             emphasis : {
