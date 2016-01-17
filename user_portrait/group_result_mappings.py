@@ -23,8 +23,36 @@ index_info = {
                     'type':'long'
                     },
                 'submit_date':{
-                    'type':'string',
+                    'type': 'long'
+                    },
+                'submit_user':{
+                    'type': 'string',
                     'index': 'not_analyzed'
+                    },
+                'task_type':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                    },
+                'detect_type':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                    },
+                'detect_process':{
+                    'type': 'long'
+                    },
+                'query_condition':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                    },
+                'uid_list':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                    },
+                'count':{
+                    'type': 'long'
+                    },
+                'status':{
+                    'type': 'long'
                     }
                 }
             }
@@ -33,5 +61,5 @@ index_info = {
 
 es = Elasticsearch('219.224.135.93')
 
-es.indices.create(index='group_result', body=index_info, ignore=400)
+es.indices.create(index='group_manage', body=index_info, ignore=400)
 

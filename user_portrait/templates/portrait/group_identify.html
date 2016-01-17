@@ -2,6 +2,7 @@
     {% block title %}群体分析{% endblock title %}
     {% block css %}
         {{ super() }}
+        <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
         <style>
             .wrapper{height: 400px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
             #tab{width: 180px;height:400px;}
@@ -14,6 +15,10 @@
             #tab_con{width: 820px;height: 380px;overflow: hidden;}
         </style>
     {% endblock css %}
+    {% block head_js %}
+        {{ super() }}
+        <script src="/static/js/jquery.datetimepicker.js"></script>
+    {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
     <div class="box-content">
@@ -38,8 +43,10 @@
 
                         </div>
                         <div id="tab_con_2" style='display:none'>
+                            {% include "portrait/group/attribute_pattern.html"%}
                         </div>
                         <div id="tab_con_3" style='display:none'>
+                            {% include "portrait/group/event_pattern.html"%}
                         </div>
                         <div id="tab_con_4" style='display:none'>
                         </div>

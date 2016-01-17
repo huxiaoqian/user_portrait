@@ -178,6 +178,7 @@ INFLUENCE_BRUST_CONCLUSION = ['传播速度快', '评论速度快', '传播速�
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
                           'activity_geo', 'tendency', 'tag', 'remark']
+DETECT_QUERY_ATTRIBUTE_MULTI = ['topic_string', 'keywords_string', 'hashtag']
 DETECT_QUERY_STRUCTURE = ['retweet', 'comment', 'hop']
 DETECT_QUERY_FILTER = ['count', 'influence', 'importance']
 DETECT_DEFAULT_WEIGHT = 0.5
@@ -186,9 +187,12 @@ DETECT_DEFAULT_COUNT = 100
 DETECT_FILTER_VALUE_FROM = 50
 DETECT_FILTER_VALUE_TO = 100
 DETECT_ITER_COUNT = 100
+DETECT_TEXT_FUZZ_ITEM = ['keywords_string']
+DETECT_TEXT_RANGE_ITEM = ['timestamp']
 #group detect: attribute detect
-DETECT_ATTRIBUTE_FUZZ_ITEM = ['location', 'activity_geo', 'topic_string', 'keywords_string','hashtag', 'remark']
-DETECT_ATTRIBUTE_SELECT_ITEM = ['domain', 'tendency', 'tag']
+DETECT_ATTRIBUTE_FUZZ_ITEM = ['location', 'activity_geo', 'keywords_string','hashtag', 'remark']
+DETECT_ATTRIBUTE_MULTI_ITEM = ['topic_string', 'domain']
+DETECT_ATTRIBUTE_SELECT_ITEM = ['tendency', 'tag']
 DETECT_PATTERN_FUZZ_ITEM = ['geo']
 DETECT_PATTERN_SELECT_ITEM = ['message_type', 'ip', 'sentiment']
 DETECT_PATTERN_RANGE_ITEM = ['timestamp']

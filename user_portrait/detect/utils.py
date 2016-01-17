@@ -14,7 +14,8 @@ from user_portrait.global_utils import retweet_index_name_pre, retweet_index_typ
                                        be_retweet_index_name_pre, be_retweet_index_type,\
                                        comment_index_name_pre, comment_index_type,\
                                        be_comment_index_name_pre, be_comment_index_type
-from user_portrait.parameter import DETECT_ITER_COUNT
+from user_portrait.parameter import DETECT_ITER_COUNT, MAX_VALUE
+from user_portrait.time_utils import ts2datetime, datetime2ts
 
 #test
 portrait_index_name = 'user_portrait_1222'
@@ -27,7 +28,7 @@ def save_detect_single_task(input_dict):
     results = {}
     #step1: identify the seed user is in user_portrait
     seed_user = input_dict['query_condition']['seed_user']
-    query = {}
+    query = []
     query_list = []
     for user_item in seed_user:
         query_list.append({'wildcard':{user_item: '*'+seed_user[user_item]+'*'}})
@@ -38,7 +39,7 @@ def save_detect_single_task(input_dict):
     except Exception, e:
         raise e
     try:
-        seed_user_source = seed_user_result['_source']
+        seed_user_source = seed_user_result[0]['_source']
     except:
         return 'seed user invalid'
 
@@ -157,7 +158,7 @@ def save_detect_multi_task(input_dict, extend_mark):
 #input: input_dict {'task_information':{}, 'query_dict':{}}
 #output: status True/False
 def save_detect_attribute_task(input_dict):
-    results = {}
+    status = True
     #step1: identify the detect task name id valid---is not in group es
     task_information = input_dict['task_information']
     task_name = task_information['task_name']
@@ -167,6 +168,8 @@ def save_detect_attribute_task(input_dict):
         task_exist_result = {}
     if task_exist_result != {}:
         return 'task name invalid'
+    #print 'input_dict:', input_dict
+    
     #step2: save to es
     es_status = save_detect2es(input_dict)
     #step3: save to redis
@@ -176,14 +179,15 @@ def save_detect_attribute_task(input_dict):
         status = True
     else:
         status = False
+    
 
     return status
 
 #use to save detect event task
 #input: input_dict {'task_information':{}, 'query_dict':{}}
 #output: status True/False
-def save_detect_event_task():
-    results = {}
+def save_detect_event_task(input_dict):
+    status = True
     #step1:identify the task name is valid----is not in group es
     task_information = input_dict['task_information']
     task_name = task_information['task_name']
@@ -193,6 +197,8 @@ def save_detect_event_task():
         task_exist_result = {}
     if task_exist_result != {}:
         return 'task name invalid'
+    #print 'input_dict:', input_dict
+    
     #step2:save to es
     es_status = save_detect2es(input_dict)
     #step3:save to redis
@@ -202,7 +208,7 @@ def save_detect_event_task():
         status = True
     else:
         status = False
-
+    
     return status
 
 
@@ -224,6 +230,7 @@ def save_compute2redis(input_dict):
     status = True
     try:
         r_group.lpush(group_analysis_queue_name, json.dumps(input_dict))
+        print 'success add detect task to redis queue'
     except:
         status = False
     return status
@@ -263,15 +270,112 @@ def save_compute2es(input_dict):
     return status
 
 #use to show detect task information
-#input: {}
-#output: {}
+#input: NULL
+#output: detect task list
 def show_detect_task():
-    results = {}
+    results = []
+    query = [{'match':{'task_type': 'detect'}}]
+    try:
+        search_results = es_group_result.search(index=group_index_name, doc_type=group_index_type, \
+                body={'query':{'bool':{'must':query}}, 'sort':[{'submit_date': 'desc'}], 'size':MAX_VALUE})['hits']['hits']
+    except:
+        search_results = []
+    for group_item in search_results:
+        source = group_item['_source']
+        task_name = source['task_name']
+        submit_date = ts2datetime(int(source['submit_date']))
+        submit_user = source['submit_user']
+        detect_type = source['detect_type']
+        state = source['state']
+        process = source['detect_process']
+        results.append([task_name, submit_user, submit_date, detect_type, state, process])
+
     return results
 
+
+#use to show detect task result
+#input: task_name
+#output: uid_list
+def show_detect_result(task_name):
+    user_result = []
+    #step1:identify the task name id exist
+    try:
+        task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
+    except:
+        task_exist_result = {}
+    if task_exist_result == {}:
+        return 'task name is not exist'
+    #step2:get uid list
+    uid_list = task_exist_result['uid_list']
+    #step3:get user evaluation information---uid/uname/activeness/importance/influence
+    iter_count = 0
+    uid_count = len(uid_list)
+    while iter_count < uid_count:
+        iter_user_list = uid_list[iter_count: iter_count+DETECT_ITER_COUNT]
+        try:
+            portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                                                    body={'ids':iter_user_list}, _source=True)['docs']
+        except:
+            portrait_result = []
+        for item in portrait_result:
+            uid = item['_id']
+            if item['found']==True:
+                source = item['_source']
+                uname = source['uname']
+                activeness = source['activeness']
+                importance = source['importance']
+                influence = source['influence']
+            else:
+                uname = u'未知'
+                activeness = u'未知'
+                importance = u'未知'
+                influence = u'未知'
+            user_result.append([uid, uname, activeness, importance, influence])
+    sort_user_result = sorted(user_result, key=lambda x:x[4], reverse=True)
+
+    return sort_user_result
+
+
 #use to add detect task having been done to group analysis
-#input:{}
-#output: {}
-def detect2analysis():
+#input:  input_data  {'task_name':xx, 'uid_list':[]}
+#output: status
+def detect2analysis(input_data):
     results = {}
+    status = True
+    task_name = input_data['task_name']
+    uid_list = input_data['uid_list']
+    #step1: identify the task is exist
+    try:
+        task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
+    except:
+        task_exist_result = {}
+    if task_exist_result == {}:
+        return 'task name is not exsit'
+    #step2: update task uid list
+    task_exist_result['uid_list'] = json.dumps(uid_list)
+    #step3: update task_type in es
+    task_exist_result['status'] = 0 # mark the compute status
+    task_exist_result['count'] = len(uid_list)
+    task_exist_result['task_type'] = 'analysis'
+    es_status = save_compute2es(task_exist_result)
+    #step4: add task to analysis queue
+    redis_status = save_compute2redis(task_exist_result)
+    #identify the operation status
+    if es_status==True and redis_status==True:
+        status = True
+    else:
+        status = False
+
     return results
+
+#use to delete detect task
+#input: task_name
+#output: status
+def delete_task(task_name):
+    status = True
+    try:
+        result = es_group_result.delete(index=group_index_name, doc_type=group_index_type, id=task_name)
+    except Exception, e:
+        raise e
+    
+    return status
