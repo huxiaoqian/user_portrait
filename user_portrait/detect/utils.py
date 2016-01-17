@@ -15,6 +15,7 @@ from user_portrait.global_utils import retweet_index_name_pre, retweet_index_typ
                                        comment_index_name_pre, comment_index_type,\
                                        be_comment_index_name_pre, be_comment_index_type
 from user_portrait.parameter import DETECT_ITER_COUNT
+
 #test
 portrait_index_name = 'user_portrait_1222'
 portrait_index_type = 'user'
@@ -26,7 +27,7 @@ def save_detect_single_task(input_dict):
     results = {}
     #step1: identify the seed user is in user_portrait
     seed_user = input_dict['query_condition']['seed_user']
-    query = {}
+    query = []
     query_list = []
     for user_item in seed_user:
         query_list.append({'wildcard':{user_item: '*'+seed_user[user_item]+'*'}})
@@ -37,7 +38,7 @@ def save_detect_single_task(input_dict):
     except Exception, e:
         raise e
     try:
-        seed_user_source = seed_user_result['_source']
+        seed_user_source = seed_user_result[0]['_source']
     except:
         return 'seed user invalid'
 
@@ -152,10 +153,57 @@ def save_detect_multi_task(input_dict, extend_mark):
         
     return status, out_user_list
 
-
-def save_detect_task():
+#use to save detect attribute task
+#input: input_dict {'task_information':{}, 'query_dict':{}}
+#output: status True/False
+def save_detect_attribute_task(input_dict):
     results = {}
-    return results
+    #step1: identify the detect task name id valid---is not in group es
+    task_information = input_dict['task_information']
+    task_name = task_information['task_name']
+    try:
+        task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)
+    except:
+        task_exist_result = {}
+    if task_exist_result != {}:
+        return 'task name invalid'
+    #step2: save to es
+    es_status = save_detect2es(input_dict)
+    #step3: save to redis
+    redis_status = save_detect2redis(input_dict)
+    #identify the operation status
+    if es_status==True and redis_status==True:
+        status = True
+    else:
+        status = False
+
+    return status
+
+#use to save detect event task
+#input: input_dict {'task_information':{}, 'query_dict':{}}
+#output: status True/False
+def save_detect_event_task():
+    results = {}
+    #step1:identify the task name is valid----is not in group es
+    task_information = input_dict['task_information']
+    task_name = task_information['task_name']
+    try:
+        task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)
+    except:
+        task_exist_result = {}
+    if task_exist_result != {}:
+        return 'task name invalid'
+    #step2:save to es
+    es_status = save_detect2es(input_dict)
+    #step3:save to redis
+    redis_status = save_detect2redis(input_dict)
+    #identify the operation status
+    if es_status==True and redis_status==True:
+        status = True
+    else:
+        status = False
+
+    return status
 
 
 #use to save parameter and task information to group redis queue---detect
@@ -175,7 +223,7 @@ def save_detect2redis(input_dict):
 def save_compute2redis(input_dict):
     status = True
     try:
-        r_group.lpush(group_analysis_queue_name, json.dumps(inoput_dict))
+        r_group.lpush(group_analysis_queue_name, json.dumps(input_dict))
     except:
         status = False
     return status
@@ -227,3 +275,15 @@ def show_detect_task():
 def detect2analysis():
     results = {}
     return results
+
+#use to delete detect task
+#input: task_name
+#output: status
+def delete_task(task_name):
+    status = True
+    try:
+        result = es_group_result.delete(index=group_index_name, doc_type=group_index_type, id=task_name)
+    except Exception, e:
+        raise e
+    
+    return status

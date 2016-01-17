@@ -1,3 +1,160 @@
 <div id="seed_user">
-    1
+    <div class="box col-md-12" style="padding:0px;margin:0px;">
+        <div class="box-inner" id = 'box-height'>
+            <div class="box-content" style="height:284px">
+                <input id="uid_uname" type='text' class="form-control" style='width:27%; margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
+                <div id="attribute" class="col-md-12">
+                    <label class='control-label' style='padding-top:5px;'>属性（权重从1到10）：
+                         <input id="attr_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='1'>
+                    </label>
+                    <div class='controls'>
+                        <div class='col-md-12' style="margin-bottom:4px">
+                            <div class='col-lg-2'>
+                                <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="location">注册地</span>                             
+                            </div>
+                             <div class='col-lg-2'>
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="area">领域</span>
+                            </div>
+                             <div class='col-lg-2'>
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="topic">话题</span>
+                            </div>
+                            <div class='col-lg-2'>
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="activity_location">活跃地</span>
+                            </div>
+                            <div class='col-lg-2'>
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="keywords">关键词</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tendention">倾向性</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status">心理状态</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tag">自定义标签</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="structure" class="col-md-12" style="padding-top:5px">
+                    <label class='control-label'>结构（权重从1到10）：
+                         <input id="stru_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='1'>
+                    </label>
+                    <div class='controls'>
+                        <div class='col-md-12'>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="repost">转发关系</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="comment">评论关系</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' id="hop_checkbox"class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hop">跳数</span>
+                            </div>
+                            <div class='col-lg-3'>
+                                <input type='radio' name="hop_choose" value='1' checked='checked' disabled>
+                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >1</span>
+                                <input type='radio' name="hop_choose" value='2' disabled>
+                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="extension" class="col-md-12" style="padding-top:5px">
+                    <label class='control-label'>扩展规则
+                    </label>
+                    <div class='controls'>
+                        <div class='col-md-12'>
+                            <!--
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="repost">转发关系</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="comment">评论关系</span>
+                            </div>
+                            <div class='col-lg-2' >
+                                <input type='checkbox' id="step_checkbox"class='inline-checkbox' value='option1'>
+                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="step">步长</span>
+                            </div>
+                            <div class='col-lg-3'>
+                                <input type='radio' name="step_choose" value='1' checked='checked' disabled>
+                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >1</span>
+                                <input type='radio' name="step_choose" value='2' disabled>
+                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >2</span>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" style='margin-top:11px'>
+                    <div class='col-md-12' style='text-align:right; padding-right:35px'>
+                        <span id="seed_user_commit" onclick="seed_user_data();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+$('#seed_user #hop_checkbox').click(function(){
+    if($(this).is(':checked')){
+        $('#seed_user [name="hop_choose"]').attr('disabled',false);
+    }
+    else{
+        $('#seed_user [name="hop_choose"]').attr('disabled', true);
+    }
+});
+
+//获取选择的条件，把参数传出获取返回值
+function seed_user_data(){
+    var url = '/manage/imagine/?keywords=';
+    var keywords = new Array();
+    var structure = new Array();
+    var weight = new Array();
+    $('#seed_user #attribute .inline-checkbox').each(function(){
+        if($(this).is(':checked')){
+            keywords.push($(this).next().attr('id'));
+        }
+    });
+    url += keywords.join(',') + '&structure=';
+    $('#seed_user #structure .inline-checkbox').each(function(){
+        if($(this).is(':checked')){
+            structure.push($(this).next().attr('id'));
+        }
+    });
+    url += structure.join(',');
+    console.log($('#seed_user #attr_weight').val());
+    console.log($('#seed_user #stru_weight').val());
+    console.log($('#seed_user #uid_uname').val());
+    if ($('#seed_user #hop_checkbox').is(':checked')){
+        console.log($('#seed_user [name="hop_choose"]:checked').val());
+    }
+    /*
+    $('#seed_user[name="step_choose"]').each(function(){
+        if($(this).is(':checked')){
+            field = $(this).attr('id');
+        }
+    });
+    */
+    console.log(url);
+    return url;
+}
+
+</script>
