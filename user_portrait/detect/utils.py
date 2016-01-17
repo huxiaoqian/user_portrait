@@ -27,7 +27,7 @@ def save_detect_single_task(input_dict):
     results = {}
     #step1: identify the seed user is in user_portrait
     seed_user = input_dict['query_condition']['seed_user']
-    query = {}
+    query = []
     query_list = []
     for user_item in seed_user:
         query_list.append({'wildcard':{user_item: '*'+seed_user[user_item]+'*'}})
@@ -38,7 +38,7 @@ def save_detect_single_task(input_dict):
     except Exception, e:
         raise e
     try:
-        seed_user_source = seed_user_result['_source']
+        seed_user_source = seed_user_result[0]['_source']
     except:
         return 'seed user invalid'
 
@@ -275,3 +275,15 @@ def show_detect_task():
 def detect2analysis():
     results = {}
     return results
+
+#use to delete detect task
+#input: task_name
+#output: status
+def delete_task(task_name):
+    status = True
+    try:
+        result = es_group_result.delete(index=group_index_name, doc_type=group_index_type, id=task_name)
+    except Exception, e:
+        raise e
+    
+    return status
