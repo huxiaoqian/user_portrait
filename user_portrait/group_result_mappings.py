@@ -43,6 +43,16 @@ index_info = {
                 'query_condition':{
                     'type': 'string',
                     'index': 'not_analyzed'
+                    },
+                'uid_list':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                    },
+                'count':{
+                    'type': 'long'
+                    },
+                'status':{
+                    'type': 'long'
                     }
                 }
             }

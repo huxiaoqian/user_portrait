@@ -189,8 +189,9 @@ DETECT_ITER_COUNT = 100
 DETECT_TEXT_FUZZ_ITEM = ['keywords_string']
 DETECT_TEXT_RANGE_ITEM = ['timestamp']
 #group detect: attribute detect
-DETECT_ATTRIBUTE_FUZZ_ITEM = ['location', 'activity_geo', 'topic_string', 'keywords_string','hashtag', 'remark']
-DETECT_ATTRIBUTE_SELECT_ITEM = ['domain', 'tendency', 'tag']
+DETECT_ATTRIBUTE_FUZZ_ITEM = ['location', 'activity_geo', 'keywords_string','hashtag', 'remark']
+DETECT_ATTRIBUTE_MULTI_ITEM = ['topic_string', 'domain']
+DETECT_ATTRIBUTE_SELECT_ITEM = ['tendency', 'tag']
 DETECT_PATTERN_FUZZ_ITEM = ['geo']
 DETECT_PATTERN_SELECT_ITEM = ['message_type', 'ip', 'sentiment']
 DETECT_PATTERN_RANGE_ITEM = ['timestamp']
