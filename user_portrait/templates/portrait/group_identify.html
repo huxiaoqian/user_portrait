@@ -39,7 +39,8 @@
                     </div>
                     <div id="tab_con">
                         <div id="tab_con_1">
-                            {% include "portrait/group/seed_user.html"%}
+                            {% include "portrait/group/seed_user.html"%}
+
                         </div>
                         <div id="tab_con_2" style='display:none'>
                             {% include "portrait/group/attribute_pattern.html"%}
@@ -51,11 +52,60 @@
                         </div>
                     </div>
                 </div>
+                <div >
+                    <div id="dis_table">
+                    </div>
+                </div>
             </div>
             <div id="content_manage" class="tab-pane" style="margin-top:10px">
+
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="group_control" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">提交监控任务</h4>
+          </div>
+          <div class="modal-body">
+            <span>群体名称：</span><span style="margin-left:10px"><input type="text" name="group_name" style="width:270px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" /></span>
+            <span style="margin-left:10px;">备注：</span>
+            <span style="float:right"><input type="text" name="remark" style="width:400px" placeholder="（可选）仅包含汉字、英文、数字和下划线" /></span>
+            <div id="group_control_confirm" style="margin-top:30px"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="group_analyze" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">提交分析任务</h4>
+          </div>
+          <div class="modal-body">
+            <span>群体名称：</span><span style="margin-left:10px"><input type="text" name="group_name" style="width:270px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" /></span>
+            <span style="margin-left:10px;">备注：</span>
+            <span style="float:right"><input type="text" name="remark" style="width:400px" placeholder="（可选）仅包含汉字、英文、数字和下划线" /></span>
+            <div id="group_analyze_confirm" style="margin-top:30px"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     {% endblock main %}
     {% block Own_js %}
         {{ super() }}
@@ -113,5 +163,6 @@
                 });
             });
         </script>
+        <script type="text/javascript" src="/static/js/portrait/group_identify_task.js"></script>
         <script type="text/javascript" src="/static/js/portrait/group_pattern.js"></script>
     {% endblock Own_js %}
