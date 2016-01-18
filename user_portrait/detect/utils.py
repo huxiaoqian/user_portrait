@@ -301,7 +301,7 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
     if task_name:
         task_name_list = task_name.split(' ')
         for item in task_name_list:
-            query_append({'wildcard':{'task_name': '*'+item+'*'}})
+            query.append({'wildcard':{'task_name': '*'+item+'*'}})
             condition_num += 1
     if submit_date:
         submit_date_ts = ts2datetime(ts)
@@ -322,7 +322,28 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
         nest_body_list = []
         for type_item in detect_type_list:
             nest_body_list.append({'wildcard':{'detect_type': '*'+type_item+'*'}})
-        query_type.append({'bool':{'should': nest_body_list}})
+        query.append({'bool':{'should': nest_body_list}})
+        condition_num += 1
+    if submit_user:
+        query.append({'wildcard':{'submit_user': '*'+submit_user+'*'}})
+        condition_num += 1
+    try:
+        search_result = es_group_result.search(index=group_index_name, doc_type=group_index_type, \
+                    body={'query':{'bool': {'must': query}}, 'sort':[{'submit_date': {'order': 'desc'}}], 'size':MAX_VALUE})['hits']['hits']
+    except:
+        search_result = []
+    #get group information table
+    for group_item in search_result:
+        source = group_item['_source']
+        task_name = source['task_name']
+        submit_date = ts2datetime(int(source['submit_date']))
+        submit_user = source['submit_user']
+        detect_type = source['detect_type']
+        state = source['state']
+        process = source['detect_process']
+
+        results.append([task_name, submit_user, submit_date, detect_type, state, process])
+        
     return results
 
 
