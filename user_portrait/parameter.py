@@ -189,7 +189,8 @@ DETECT_FILTER_VALUE_TO = 100
 DETECT_ITER_COUNT = 100
 DETECT_TEXT_FUZZ_ITEM = ['keywords_string']
 DETECT_TEXT_RANGE_ITEM = ['timestamp']
-MAX_DETECT_COUNT = 300
+MAX_DETECT_COUNT = 900
+DETECT_COUNT_EXPAND = 3
 #group detect: attribute detect
 DETECT_ATTRIBUTE_FUZZ_ITEM = ['location', 'activity_geo', 'keywords_string','hashtag', 'remark']
 DETECT_ATTRIBUTE_MULTI_ITEM = ['topic_string', 'domain']

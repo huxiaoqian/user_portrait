@@ -14,7 +14,8 @@ from global_utils import es_retweet, retweet_index_name_pre, retweet_index_type,
 from global_utils import es_comment, comment_index_name_pre, comment_index_type,\
                          be_comment_index_name_pre, be_comment_index_type
 from global_utils import R_BEGIN_TIME
-from parameter import DETECT_QUERY_ATTRIBUTE_MULTI, MAX_DETECT_COUNT, DAY
+from parameter import DETECT_QUERY_ATTRIBUTE_MULTI, MAX_DETECT_COUNT, DAY,\
+                      DETECT_COUNT_EXPAND
 from time_utils import ts2datetime, datetime2ts
 
 
@@ -82,8 +83,8 @@ def union_dict(*objs):
 
 #use to get structure user
 #input: seed_uid_list
-#output: dict {uid:[count, rank]}
-def get_structure_user(seed_uid_list, structure_dict):
+#output: in_portrait_result [uid1, uid2, uid3,...] ranked by iteraction count and meet the filter dict
+def get_structure_user(seed_uid_list, structure_dict, filter_dict):
     structure_user_dict = {}
     retweet_mark = int(structure_dict['retweet'])
     comment_mark = int(structure_dict['comment'])
@@ -96,9 +97,11 @@ def get_structure_user(seed_uid_list, structure_dict):
     #iter to find seed uid list retweet/be_retweet/comment/be_comment user set by hop
     iter_hop_user_list = seed_uid_list
     iter_count = 0
+    all_union_result = dict()
     while iter_count < hop:   # hop number control
         iter_hop_count += 1
         search_user_count = len(iter_hop_user_list)
+        hop_union_result = dict()
         while iter_search_count < search_user_count:
             iter_search_user_list = iter_hop_user_list[iter_search_count: iter_search_count + DETECT_ITER_COUNT]
             #step1: mget retweet and be_retweet
@@ -135,6 +138,7 @@ def get_structure_user(seed_uid_list, structure_dict):
                     be_comment_result = []
             #step3: union retweet/be_retweet/comment/be_comment result
             union_count = 0
+            
             for iter_search_uid in iter_search_user_list:
                 try:
                     uid_retweet_dict = json.loads(retweet_result[union_count]['uid_retweet'])
@@ -154,15 +158,98 @@ def get_structure_user(seed_uid_list, structure_dict):
                     uid_be_comment_dict = {}
                 #union four type user set
                 union_result = union_dict(uid_retweet_dict, uid_be_retweet_dict, uid_comment_dict, uid_be_comment_dict)
-
-
-
+                hop_union_result = union_dict(hop_union_result, union_result)
             #step4: add iter search count
             iter_search_count += DETECT_ITER_COUNT
 
+        #pop seed uid self
+        for iter_hop_user_item in iter_hop_user_list:
+            hop_union_result.pop(iter_hop_user_item)
+        #get new iter_hop_user_list
+        iter_hop_user_list = hop_union_result.keys()
+        #get all union result
+        all_union_result = union_dict(all_union_result, hop_union_result)
+    
+    #step5: identify the who is in user_portrait
+    sort_all_union_result = sorted(all_union_result.items(), key=lambda x:x[1], reverse=True)
+    iter_count = 0
+    all_count = len(sort_all_union_result)
+    in_portrait_result = []
+    filter_importance_from = filter_dict['importance']['from']
+    filter_importance_to = filter_dict['importance']['to']
+    filter_influence_from = filter_dict['influence']['from']
+    filter_influence_to = filter_dict['influence']['to']
+    while iter_count < all_count:
+        iter_user_list = [item[0] for item in sort_all_union_result[iter_count:iter_count + DETECT_ITER_COUNT]]
+        try:
+            portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                    body={'ids':iter_user_list}, _source=True)['docs']
+        except:
+            portrait_result = []
+        for portrait_item in portrait_result:
+            if portrait_item['found'] == True:
+                if portrait_item['importance'] >= filter_importance_from and portrait_item['importance'] <= filter_importance_to:
+                    if portrait_item['influence'] <= filter_influence_from and portrait_item['influence'] >= filter_influence_to:
+                        uid = portrait_item['_id']
+                        in_portrait_result.append(uid)
+        if len(in_portrait_result) > (filter_dict['count'] * DETECT_COUNT_EXPAND)
+            break
 
-    return structure_user_set
+    return in_portrait_result
 
+
+#use to union attribute result and structure result
+#input:attribute_user_reslt [user_dict1, user_dict2,...] ranked by similarity
+#input:structure result [uid1, uid2,....] ranked by interaction count
+def union_attribute_structure(attribute_user_result, structure_result, attribute_weight, structure_weight):
+    union_result = dict()
+    #step1:trans structure result list to dict {uid1:rank1, uid2:rank2....}
+    structure_user_result = dict()
+    for item_rank in range(0, len(structrue_result)):
+        uid = structure_result[item_rank]
+        structure_user_result[uid] = item_rank
+    #step2:use attribute weight and structure weight to score for user
+    attribute_rank = 0
+    attribute_normal_index = float(1) / len(attribute_user_result)
+    structure_normal_index = float(1) / len(structure_user_result)
+    attribute_count = len(attribute_user_result)
+    structure_count = len(structure_count)
+    for attribute_item in attribute_user_result:
+        uid = attribute_item['_id']
+        structure_rank = structure_user_result[uid]
+        new_score = attribute_weight*((attribute_count - attribute_rank)*attribute_normal_index) + \
+                    structure_weight*((structure_count - structure_rank)*structure_normal_index)
+        union_result[uid] = new_score
+    #step3:sort user by new score
+    sort_union_result = sorted(union_result.items(), key=lambda x:x[1], reverse=True)
+
+    return sort_union_result
+
+#use to filter event for single or multi detect task
+#input: all_union_user, event_condition_dict
+#output: user_list (who meet the filter condition)
+def filter_event(all_union_user, event_condition_list):
+    user_result = []
+    new_event_condition_list = []
+    #step1: adjust the date condition for date
+    for event_condition_item in event_condition_dict:
+        if 'range' in event_condition_item:
+            range_dict = event_condition_item['range']
+            from_ts = range_dict['from']
+            to_ts = range_dict['to']
+            from_date_ts = datetime2ts(ts2datetime(from_ts))
+            to_date_ts = datetime2ts(ts2datetime(to_ts))
+            new_range_dict_list = []
+            if from_date_ts != to_date_ts:
+                iter_date_ts = from_date_ts
+                while iter_date_ts <= to_date_ts:
+                    iter_next_date_ts = iter_date_ts + DAY
+                    new_range_dict_list.append('range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}})
+                    iter_date_ts = iter_next_date_ts
+            else:
+                new_range_dict_list = [{'range':{}}]
+    #step2: iter to search user who publish weibo use keywords_string
+    return user_result
 
 
 #use to detect group by single-person
@@ -202,7 +289,7 @@ def single_detect(input_dict):
     count = MAX_DETECT_COUNT
     for filter_item in filter_dict:
         if filter_item == 'count':
-            count = filter_dict[filter_item]
+            count = filter_dict[filter_item] * DETECT_COUNT_EXPAND
         else:
             filter_value_from = filter_dict[filter_item]['from']
             filter_value_to = filter_dict[filter_item]['to']
@@ -212,9 +299,14 @@ def single_detect(input_dict):
             body={'query':{'bool':{'must':attribute_query_list}}, 'size': count})['hits']['hits']
 
     #step3: search structure user set
-    structure_user_result = get_structure_user([seed_uid], structure_dict)
-    #step4: union search and structure user set
+    structure_user_result = get_structure_user([seed_uid], structure_dict, filter_dict)
+    #step4: union attribtue and structure user set
+    attribute_weight = query_condition_dict['attribute_weight']
+    structure_weight = query_condition_dict['structure_weight']
+    all_union_user = union_attribtue_structure(attribute_user_result, structure_user_result)
     #step5: filter user by event
+    event_condition_list = query_condition['text']
+    filter_user_list = filter_event(all_union_user, event_condition_list)
     #step6: filter by count
     return results
 
