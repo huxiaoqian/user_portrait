@@ -232,7 +232,8 @@ def filter_event(all_union_user, event_condition_list):
     user_result = []
     new_event_condition_list = []
     #step1: adjust the date condition for date
-    for event_condition_item in event_condition_dict:
+    new_event_condition_list = []
+    for event_condition_item in event_condition_list:
         if 'range' in event_condition_item:
             range_dict = event_condition_item['range']
             from_ts = range_dict['from']
@@ -246,10 +247,56 @@ def filter_event(all_union_user, event_condition_list):
                     iter_next_date_ts = iter_date_ts + DAY
                     new_range_dict_list.append('range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}})
                     iter_date_ts = iter_next_date_ts
+                if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
+                    new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
+                if new_range_dict_list[-1]['range']['timestamp']['to'] > to_ts:
+                    new_range_dict_list[-1]['range']['timestamp']['to'] = to_ts
             else:
-                new_range_dict_list = [{'range':{}}]
+                new_range_dict_list = [{'range':{'timestamp':{'from':from_ts, 'to':to_ts}}}]
+        else:
+            new_event_condition_list.append(event_condition_item)
+
     #step2: iter to search user who publish weibo use keywords_string
-    return user_result
+    #step2.1: split user to bulk action
+    #step2.2: iter to search user meet condition weibo for different day
+    user_count = len(all_union_user)
+    iter_count = 0
+    while iter_count < user_count:
+        iter_user_list = [union_item[0] for union_item in all_union_user[iter_count:iter_count + DETECT_ITER_COUNT]]
+        #get uid nest_body_list
+        nest_body_list = []
+        for iter_user in iter_userlist:
+            nest_body_list.append({'term':{'uid': iter_user}})
+        iter_user_event_condition_list = new_event_condition_list
+        iter_user_event_condition_list.append({'bool':{'should': nest_body_list}})
+        #iter date to search different flow_text es
+        hit_user_set = set()
+        for range_item in new_range_dict_list:
+            iter_date_event_condition_list = iter_user_event_condition_list
+            iter_date_event_condition_list.append(range_item)
+            range_from_ts = range_item['range']['timestamp']['from']
+            range_from_date = int(ts2date(range_from_ts))
+            flow_index_name = flow_text_index_name_pre + range_from_date
+            try:
+                flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
+                        body={'query':{'bool':{'must':iter_user_event_condition_list}}}, 'size':MAX_VALUE)['hits']['hits']
+            except:
+                flow_text_exist = []
+            #get hit user set
+            for flow_text_item in flow_text_exist:
+                uid = flow_text_item['_id']
+                hit_user_set.add(uid)
+
+        iter_count += DETECT_ITER_COUNT
+    #identify the hit user list ranked by score
+    rank_hit_user = []
+    for user_item in all_union_user:
+        uid = user_item[0]
+        uid_set = set(uid)
+        if len(uid_set & hit_user_set) != 0:
+            rank_hit_user.append(uid)
+
+    return rank_hit_user
 
 
 #use to detect group by single-person
@@ -308,6 +355,8 @@ def single_detect(input_dict):
     event_condition_list = query_condition['text']
     filter_user_list = filter_event(all_union_user, event_condition_list)
     #step6: filter by count
+    count = filter_dict['count']
+    result = filter_user_list[:count]
     return results
 
 #use to detect group by multi-person

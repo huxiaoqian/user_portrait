@@ -8,7 +8,7 @@ from flask import Blueprint, url_for, render_template, request,\
 from utils import save_detect_single_task, save_detect_multi_task ,\
                   save_detect_attribute_task, save_detect_event_task, \
                   show_detect_task, detect2analysis, delete_task, \
-                  show_detect_result
+                  show_detect_result, search_detect_task
 
 from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.parameter import DETECT_QUERY_ATTRIBUTE, DETECT_QUERY_STRUCTURE,\
@@ -435,6 +435,19 @@ def ajax_show_detect_task():
     results = show_detect_task()
     return json.dumps(results)
 
+#use to search group detect task
+#input: search condition
+#output: group detect task information list
+@mod.route('/search_detect_task/')
+def ajax_search_detect_task():
+    task_name = request.args.get('task_name', '')
+    submit_date = request.args.get('submit_date', '')
+    state = request.args.get('state', '')
+    process = request.args.get('process', '')
+    detect_type = request.args.get('detect_type', '')
+    submit_user = request.args.get('submit_user', '')
+    results = search_detect_task(task_name, submit_date, state, process, detect_type, submit_user)
+    return json.dumps(results)
 
 #use to show group detect task result
 #input: task_name
@@ -445,6 +458,7 @@ def ajax_show_detect_result():
     task_name = request.args.get('task_name', '')
     results = show_detect_result()
     return json.dumps(results)
+
 
 #use to add detect task having been done to group analysis
 #input: task_name, identify_uid_list
