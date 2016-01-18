@@ -289,10 +289,14 @@ def ajax_attribute_pattern():
             pattern_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
     #step2.2: select item
     for item in DETECT_PATTERN_SELECT_ITEM:
-        item_value = request.args.get(item, '')
-        if item_value:
+        item_value_string = request.args.get(item, '')
+        if item_value_string != '':
+            item_value_list = item_value_string.split(',')
+            nest_body_list = []
+            for item_value in item_value_list:
+                nest_body_list.append({'wildcard': {item: '*'+item_value+'*'}})
             pattern_condition_num += 1
-            pattern_query_list.append({'match':{item: item_value}})
+            pattern_query_list.append({'bool':{'should': nest_body_list}})
     #step2.3: range item
     for item in DETECT_PATTERN_RANGE_ITEM:
         item_value_from = request.args.get(item+'_from', '')
