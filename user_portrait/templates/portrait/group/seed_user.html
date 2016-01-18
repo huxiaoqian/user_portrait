@@ -1,7 +1,7 @@
 <div id="seed_user">
     <div class="box col-md-12" style="padding:0px;margin:0px;">
         <div class="box-inner" id = 'box-height'>
-            <div class="box-content" style="height:370px">
+            <div class="box-content" style="height:420px">
                 <input id="uid_uname" type='text' class="form-control" style='width:27%; margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
                 <div id="attribute" class="col-md-12">
                     <label class='control-label' style='padding-top:5px;'>属性（权重从1到10）：
@@ -128,9 +128,26 @@
                         </div>
                     </div>
                 </div>
+                <hr style='width:800px;margin-bottom:0px;'>
+                <div id="information" class="col-md-12" style="padding-top:5px">
+                    <label class='control-label'>群组信息
+                    </label>
+                    <div class='controls'>
+                        <div class='col-md-12' style='padding:0px;'>
+                            <div class='col-lg-6' style='padding:0px;'>
+                                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
+                                 <input id="first_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                            </div>
+                            <div class='col-lg-6' style='padding:0px;'>
+                                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                                 <input id="first_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12" style='margin-top:11px'>
                     <div class='col-md-12' style='text-align:right; padding-right:35px'>
-                        <span id="seed_user_commit" onclick="seed_user_data();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
+                        <span id="seed_user_commit" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
                     </div>
                 </div>
             </div>
@@ -138,18 +155,52 @@
     </div>
 </div>
 <script>
-$('#seed_user #hop_checkbox').click(function(){
-    if($(this).is(':checked')){
-        $('#seed_user [name="hop_choose"]').attr('disabled',false);
-    }
-    else{
-        $('#seed_user [name="hop_choose"]').attr('disabled', true);
-    }
-});
+function bind_button_click(){
+    $('#seed_user #hop_checkbox').click(function(){
+        if($(this).is(':checked')){
+            $('#seed_user [name="hop_choose"]').attr('disabled',false);
+        }
+        else{
+            $('#seed_user [name="hop_choose"]').attr('disabled', true);
+        }
+    });
+    $('#seed_user #seed_user_commit').click(function(){
+        var valid = seed_user_check();
+        if (valid){
+            console.log('hehrh');
+            seed_user_data();
+        }
+    });
+}
 //$('#seed_user #events_from').datetimepicker();
 $('#seed_user #events_from').datetimepicker({value:'2015/04/15 05:03',step:10});
 $('#seed_user #events_to').datetimepicker({value:'2015/04/15 05:03',step:10});
+bind_button_click();
 
+function seed_user_check(){             // check validation 
+  //group_information check starts  
+  var group_name = $('#seed_user #first_name').val();
+  var remark = $('#seed_user #first_remarks').val();
+  console.log(group_name, remark);
+  if (group_name.length == 0){
+      alert('群体名称不能为空');
+      return false;
+  }
+
+  var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+    return false;
+  }
+  if ((remark.length > 0) && (!remark.match(reg))){
+    alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+    return false;
+  }
+  //other form check starts
+  
+  return true;
+
+}
 //获取选择的条件，把参数传出获取返回值
 function seed_user_data(){
     var url = '/manage/imagine/?keywords=';
