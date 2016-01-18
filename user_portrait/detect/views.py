@@ -7,7 +7,8 @@ from flask import Blueprint, url_for, render_template, request,\
                   abort, flash, session, redirect, send_from_directory
 from utils import save_detect_single_task, save_detect_multi_task ,\
                   save_detect_attribute_task, save_detect_event_task, \
-                  show_detect_task, detect2analysis, delete_task
+                  show_detect_task, detect2analysis, delete_task, \
+                  show_detect_result, search_detect_task
 
 from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.parameter import DETECT_QUERY_ATTRIBUTE, DETECT_QUERY_STRUCTURE,\
@@ -15,11 +16,13 @@ from user_portrait.parameter import DETECT_QUERY_ATTRIBUTE, DETECT_QUERY_STRUCTU
                                     DETECT_DEFAULT_MARK, DETECT_DEFAULT_COUNT, \
                                     DETECT_FILTER_VALUE_FROM, DETECT_FILTER_VALUE_TO, \
                                     DETECT_TEXT_FUZZ_ITEM, DETECT_TEXT_RANGE_ITEM
-from user_portrait.parameter import DETECT_ATTRIBUTE_FUZZ_ITEM, DETECT_ATTRIBUTE_SELECT_ITEM ,\
+from user_portrait.parameter import DETECT_ATTRIBUTE_FUZZ_ITEM, DETECT_ATTRIBUTE_MULTI_ITEM, \
+                                    DETECT_ATTRIBUTE_SELECT_ITEM ,\
                                     DETECT_PATTERN_FUZZ_ITEM, DETECT_PATTERN_SELECT_ITEM ,\
                                     DETECT_PATTERN_RANGE_ITEM, DETECT_EVENT_ATTRIBUTE,\
                                     DETECT_EVENT_TEXT_FUZZ_ITEM, DETECT_EVENT_TEXT_RANGE_ITEM
-from user_portrait.time_utils import ts2datetime
+from user_portrait.parameter import DAY
+from user_portrait.time_utils import ts2datetime, datetime2ts
 
 mod = Blueprint('detect', __name__, url_prefix='/detect')
 
@@ -122,8 +125,7 @@ def ajax_single_person():
     input_dict['query_condition'] = query_dict
     
     status = save_detect_single_task(input_dict)
-    #test
-    print 'input_dict:', input_dict
+    
     return json.dumps(status)
 
 # use to upload file to multi-person group detection
@@ -147,7 +149,7 @@ def ajax_multi_person():
     task_information_dict['task_name'] = request.form['task_name']
     task_information_dict['state'] = request.form['state']
     task_information_dict['submit_date'] = int(time.time())
-    task_information_dict['submit_user'] = request.form['submit_user', '']
+    task_information_dict['submit_user'] = request.form['submit_user', 'admin']
     #identify whether to extend
     extend_mark = request.form['extend'] # extend_mark = 0/1
     if extend_mark == '0':
@@ -172,11 +174,13 @@ def ajax_multi_person():
         query_dict['attribute_weight'] = attribute_weight
         query_dict['attribute'] = attribute_list
         #get query dict: structure
-        structure_list = []
+        structure_list = {}
         for structure_item in DETECT_QUERY_STRUCTURE:
             structure_mark = request.form[attribute_item]
-            if structure_mark == '1':
-                structure_list.append(structure_item)
+            strucutre_list[structure_item] = structure_mark
+            if structure_mark != '0':
+                structure_condition_num += 1
+        
         structure_condition_num = len(structure_list)
         if structure_condition_num != 0:
             structure_weight = request.form['structure_weight']
@@ -187,7 +191,7 @@ def ajax_multi_person():
         #get query_dict: text
         text_query_list = []
         for text_item in DETECT_TEXT_FUZZ_ITEM:
-            item_value_string = request.form[text_item] # a string joint by ','
+            item_value_string = request.form[text_item] # a string joint by ' '
             item_value_list = item_value_string.split(' ')
             nest_body_list = []
             if len(item_value_list)>0 and item_value_string != '':
@@ -251,20 +255,30 @@ def ajax_attribute_pattern():
         item_value = request.args.get(item, '')
         if item_value:
             attribute_condition_num += 1
-        attribute_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
-    #step1.2: select item
+            attribute_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
+    #step1.2: multi select item
+    for item in DETECT_ATTRIBUTE_MULTI_ITEM:
+        nest_body_list = []
+        item_value_string = request.args.get(item, '')
+        if item_value_string != '':
+            item_value_list = item_value_string.split(',')
+            for item_value in item_value_list:
+                nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
+            attribute_query_list.append({'bool':{'should': nest_body_list}})
+            attribute_condition_num += 1
+    #step1.3: select item
     for item in DETECT_ATTRIBUTE_SELECT_ITEM:
         if item=='tag':
             item_name = request.args.get(item+'_name', '')
             item_value = request.args.get(item+'_value', '')
             if item_name and item_value:
                 attribute_condition_num += 1
-            attribute_query_list.append({'match':{item_name: item_value}})
+                attribute_query_list.append({'match':{item_name: item_value}})
         else:
             item_value = request.args.get(item, '')
             if item_value:
                 attribute_condition_num += 1
-            attribute_query_list.append({'match':{item: item_value}})
+                attribute_query_list.append({'match':{item: item_value}})
     query_dict['attribute'] = attribute_query_list
     #step2:get pattern query list
     #step2.1: fuzz item
@@ -272,24 +286,30 @@ def ajax_attribute_pattern():
         item_value  = request.args.get(item, '')
         if item_value:
             pattern_condition_num += 1
-        pattern_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
+            pattern_query_list.append({'wildcard':{item: '*'+item_value+'*'}})
     #step2.2: select item
     for item in DETECT_PATTERN_SELECT_ITEM:
-        item_value = request.args.get(item, '')
-        if item_value:
+        item_value_string = request.args.get(item, '')
+        if item_value_string != '':
+            item_value_list = item_value_string.split(',')
+            nest_body_list = []
+            for item_value in item_value_list:
+                nest_body_list.append({'wildcard': {item: '*'+item_value+'*'}})
             pattern_condition_num += 1
-        pattern_query_list.append({'match':{item: item_value}})
+            pattern_query_list.append({'bool':{'should': nest_body_list}})
     #step2.3: range item
     for item in DETECT_PATTERN_RANGE_ITEM:
         item_value_from = request.args.get(item+'_from', '')
         item_value_to = request.args.get(item+'_to', '')
-        if item_value_from and item_value_to:
+        if item_value_from != '' and item_value_to != '':
             pattern_condition_num += 1
-        pattern_query_list.append({'range':{item:{'from': item_value_from, 'to':item_value_to}}})
-        if int(item_value_from) > int(item_value_to) or (not item_value_from) or (not item_value_to):
-            return 'invalid input for range'
+            if int(item_value_from) > int(item_value_to):
+                return 'invalid input for condition'
+            else:
+                pattern_query_list.append({'range':{item:{'from': item_value_from, 'to':item_value_to}}})
+        
     #identify attribute and pattern condition num >= 1
-    if attribute_condition + pattern_condition_num < 1:
+    if attribute_condition_num + pattern_condition_num < 1:
         return 'invalid input for condition'
     query_dict['pattern'] = pattern_query_list
     #step3:get filter query dict
@@ -298,8 +318,8 @@ def ajax_attribute_pattern():
         if filter_item=='count':
             filter_item_value = request.args.get(filter_item, DETECT_DEFAULT_COUNT)
         else:
-            filter_item_from = request.args.get(filter_item+'_from', DEFAULT_FILTER_VALUE_FROM)
-            filter_item_to = request.args.get(filter_item+'_to', DEFAULT_FILTER_VALUE_TO)
+            filter_item_from = request.args.get(filter_item+'_from', DETECT_FILTER_VALUE_FROM)
+            filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to):
                 return 'invalid input for filter'
             filter_item_value = {'from': filter_item_from, 'to':filter_item_to}
@@ -311,7 +331,7 @@ def ajax_attribute_pattern():
     task_information_dict = {}
     task_information_dict['task_name'] = request.args.get('task_name', '')
     task_information_dict['state'] = request.args.get('state', '')
-    task_information_dict['submit_user'] = request.args.get('submit_user', '')
+    task_information_dict['submit_user'] = request.args.get('submit_user', 'admin')
     task_information_dict['submit_date'] = int(time.time())
     task_information_dict['task_type'] = 'detect'
     task_information_dict['detect_type'] = 'attribute'
@@ -319,10 +339,10 @@ def ajax_attribute_pattern():
     #save task information
     input_dict = {}
     input_dict['task_information'] = task_information_dict
-    input_dict['query_dict'] = query_dict
+    input_dict['query_condition'] = query_dict
 
-    results = save_detect_attribute_task(input_dict)
-    return results
+    status = save_detect_attribute_task(input_dict)
+    return json.dumps(status)
 
 #use to group detect by event
 @mod.route('/event/')
@@ -335,34 +355,45 @@ def ajax_event_detect():
     query_condition_num = 0
     #step1: get attribtue query dict
     for item in DETECT_EVENT_ATTRIBUTE:
-        item_value = request.args.get(item, '')
-        if item_value:
+        item_value_string = request.args.get(item, '')
+        if item_value_string != '':
+            item_value_list = item_value_string.split(',')
+            nest_body_list = []
+            for item_value in item_value_list:
+                nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
             query_condition_num += 1
-        attribute_query_list.append({'match':{item: item_value}})
+            attribute_query_list.append({'bool':{'should': nest_body_list}})
+
     query_dict['attribute']  = attribute_query_list
     #step2: get event query dict
     #step2.1: get event fuzz item
     for item in DETECT_TEXT_FUZZ_ITEM:
         item_value_string = request.args.get(item, '')
-        item_value_list = item_value_string.split(',')
+        item_value_list = item_value_string.split(' ')
         nest_body_list = []
-        for item_value in item_value_list:
-            nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
-        event_query_list.append({'bool':{'should':nest_body_list}})
-        if len(item_value_list):
+        if item_value_string != '':
+            for item_value in item_value_list:
+                nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
+            event_query_list.append({'bool':{'should':nest_body_list}})
             query_condition_num += 1
+
     #step2.2: get event range item
-    for item in DETECT_TEXT_RANGE_ITEM:
-        item_value_from = request.args.get(item+'_from', '')
-        item_value_to = request.args.get(item+'_to', '')
-        if int(item_value_from) > int(item_value_to) or (not item_value_from) or (not item_value_to):
-            return 'invalid input for event'
+    for item in DETECT_EVENT_TEXT_RANGE_ITEM:
+        now_time = int(time.time())
+        now_date_ts = datetime2ts(ts2datetime(now_time))
+        item_value_from = request.args.get(item+'_from', now_date_ts - DAY)
+        item_value_to = request.args.get(item+'_to', now_date_ts)
+        if item_value_from != '' and item_value_to != '':
+            if int(item_value_from) > int(item_value_to):
+                return 'invalid input for range'
+            else:
+                query_condition_num += 1
+                event_query_list.append({'range':{item: {'from': int(item_value_from), 'to':int(item_value_to)}}})
         else:
-            query_condition_num += 1
-        event_query_list.append({'range':{item: {'from': int(item_value_from), 'to':int(item_value_to)}}})
+            return 'invalid input for range'
     query_dict['event'] =  event_query_list
     #identify the query condition at least 1
-    if query_conditon_num < 1:
+    if query_condition_num < 1:
         return 'invalid input for query'
     #step3: get filter dict
     filter_dict = {}
@@ -370,8 +401,8 @@ def ajax_event_detect():
         if filter_item == 'count':
             filter_item_value = request.args.get(filter_item, DETECT_DEFAULT_COUNT)
         else:
-            filter_item_from = request.args.get(filter_item+'_from', DETECT_DEFAULT_VALUE_FROM)
-            filter_item_to = request.args.get(filter_item+'_to', DETECT_DEFAULT_VALUE_TO)
+            filter_item_from = request.args.get(filter_item+'_from', DETECT_FILTER_VALUE_FROM)
+            filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to) or (not item_value_from) or (not item_value_to):
                 return 'invalid input for filter'
             filter_item_value = {'from': int(filter_item_from), 'to': int(filter_item_to)}
@@ -384,7 +415,7 @@ def ajax_event_detect():
     task_information_dict['task_name'] = request.args.get('task_name', '')
     task_information_dict['submit_date'] = int(time.time())
     task_information_dict['state'] = request.args.get('state', '')
-    task_information_dict['submit_user'] = request.args.get('submit_user', '')
+    task_information_dict['submit_user'] = request.args.get('submit_user', 'admin')
     task_information_dict['task_type'] = 'detect'
     task_information_dict['detect_type'] = 'event'
     task_information_dict['detect_process'] = 0
@@ -395,21 +426,49 @@ def ajax_event_detect():
 
     status = save_detect_event_task(input_dict)
     
-    return status
+    return json.dumps(status)
 
 #use to show group detect task information
+#output: group detect task information list
 @mod.route('/show_detect_task/')
 def ajax_show_detect_task():
-    results = {}
     results = show_detect_task()
-    return results
+    return json.dumps(results)
+
+#use to search group detect task
+#input: search condition
+#output: group detect task information list
+@mod.route('/search_detect_task/')
+def ajax_search_detect_task():
+    task_name = request.args.get('task_name', '')
+    submit_date = request.args.get('submit_date', '')
+    state = request.args.get('state', '')
+    process = request.args.get('process', '')
+    detect_type = request.args.get('detect_type', '')
+    submit_user = request.args.get('submit_user', '')
+    results = search_detect_task(task_name, submit_date, state, process, detect_type, submit_user)
+    return json.dumps(results)
+
+#use to show group detect task result
+#input: task_name
+#output: uid list
+@mod.route('/show_detect_result/')
+def ajax_show_detect_result():
+    results = {}
+    task_name = request.args.get('task_name', '')
+    results = show_detect_result()
+    return json.dumps(results)
+
 
 #use to add detect task having been done to group analysis
-@mod.route('/add_detect2analysis/')
+#input: task_name, identify_uid_list
+#output: results
+@mod.route('/add_detect2analysis/',methods=['GET', 'POST'])
 def ajax_add_detect2analysis():
-    results = {}
-    results = detect2analysis()
-    return results
+    input_data = request.args.get_json() #input_data = {'uid_list':[], 'task_name':xx}
+    results = detect2analysis(input_data)
+
+    return json.dumps(results)
 
 #use to delete detect task
 @mod.route('/delete_task/')

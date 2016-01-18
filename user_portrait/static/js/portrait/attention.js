@@ -372,7 +372,8 @@ function in_list_button(){
   })
   console.log(group_confirm_uids);
   var group_ajax_url = '/group/submit_task/';
-  var group_url = '/index/group_result/';
+  //var group_url = '/index/group_result/';
+  var group_url = '/index/group/';
   var group_name = $('input[name="so_group_name"]').val();
   var remark = $('input[name="so_states"]').val();
   console.log(group_name, remark);
