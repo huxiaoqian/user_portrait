@@ -315,7 +315,7 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
             query.append({'wildcard':{'state': '*'+item+'*'}})
             condition_num += 1
     if process:
-        query.append({'range':{'process':{'from': int(process), 'to': MAX_PROCESS}}})
+        query.append({'range':{'detect_process':{'from': int(process), 'to': MAX_PROCESS}}})
         condition_num += 1
     if detect_type:
         detect_type_list = detect_type.split(',')

@@ -332,6 +332,7 @@ def single_detect(input_dict):
                 attribute_query_list.append({'bool':{'should': nest_body_list}})
             else:
                 attribute_query_list.append({'wildcard': {query_item: '*'+attribute_value+'*'}})
+    
     #step2.2: add filter query condition
     count = MAX_DETECT_COUNT
     for filter_item in filter_dict:
@@ -344,6 +345,11 @@ def single_detect(input_dict):
     
     attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
             body={'query':{'bool':{'must':attribute_query_list}}, 'size': count})['hits']['hits']
+    #step2.3: change process proportion
+    process_mark = change_process_proportion(task_name, 25)
+    if process_mark == False:
+        print 'task %s have been delete' % task_name
+        return 'have been delete'
 
     #step3: search structure user set
     structure_user_result = get_structure_user([seed_uid], structure_dict, filter_dict)
@@ -418,6 +424,7 @@ def change_process_proportion(task_name, proportion):
     except:
         task_exist_result = {}
         print 'task is not exist'
+        return 'task is not exist'
     if task_exist_result != {}:
         task_exist_result['process'] = proportion
         es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=task_exist_result)

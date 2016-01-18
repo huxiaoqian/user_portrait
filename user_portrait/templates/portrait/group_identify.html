@@ -3,7 +3,7 @@
     {% block css %}
         {{ super() }}
         <style>
-            .wrapper{height: 400px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
+            .wrapper{margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
             #tab{width: 180px;height:400px;}
             #tab_left,#tab_con{margin: 0px;background: #fff;} #tab,#tab_con{float: left;}
             #tab_left{width:180px;height:380px;}
@@ -11,7 +11,7 @@
             #tab_left li a{color: #000;opacity:0.7;text-decoration: none;line-height: 80px;width: 180px;height: 70px;display: block;background: #fff;text-shadow:1px 1px 2px #ccc;border-left: 1px solid #ccc;}
             #tab_left li.current a{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
             #tab_left li a:hover{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
-            #tab_con{width: 820px;height: 380px;overflow: hidden;}
+            #tab_con{width: 820px;overflow: hidden;}
         </style>
     {% endblock css %}
     {% block main %}
