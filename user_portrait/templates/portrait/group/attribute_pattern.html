@@ -18,9 +18,9 @@
 }
 
 </style>
-<div id="attribute_pattern" style="height:700px;">
+<div id="attribute_pattern" style="height:520px;">
 	<div class="box col-md-12" style="padding:0px;margin:0px;">
-        <div class="box-inner" id = 'box-height' style="height:620px;">
+        <div class="box-inner" id = 'box-height' style="height:500px;">
             <div class="box-content">
 					<div class="cols" style="margin-top:5px;" id="basic">
 						<b class='control-label' style='padding-top:5px;'>属性</b>
@@ -115,7 +115,7 @@
                         <div class='col-md-12' style="margin-bottom:4px">
                         	<span style="float:left;line-height: 27px;">话题</span>
                             <div class='col-lg-2'>
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
+                                <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
                                 <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="technology">科技类</span>
                             </div>
                              <div class='col-lg-2'>
@@ -181,7 +181,7 @@
                                     <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="religion">政治类_宗教</span>
                                 </div>
                                 <div class='col-lg-2' style="margin-left:0px;">
-                                    <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
+                                    <input type='checkbox' class='inline-checkbox' value='option1'>
                                     <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="entertainment">文体类_娱乐</span>
                                  </div>
                                 <div class='col-lg-2' >
@@ -271,6 +271,23 @@
 
 	                    </div>
                		</div>
+                    <hr style='width:800px;margin-bottom:0px;'>
+                        <div id="information" class="col-md-12" style="padding-top:5px">
+                            <label class='control-label'>群组信息
+                            </label>
+                            <div class='controls'>
+                                <div class='col-md-12' style='padding:0px;'>
+                                    <div class='col-lg-6' style='padding:0px;'>
+                                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
+                                         <input id="first_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                                    </div>
+                                    <div class='col-lg-6' style='padding:0px;'>
+                                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                                         <input id="first_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                		<div class="cols" style='margin-top:11px'>
                       <div class='col-md-12' style='text-align:right; padding-right:120px'>
                        	 <span id="attribute_pattern_commit" onclick="submit_results2();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
@@ -283,7 +300,6 @@
 </div>
 
 <script type="text/javascript">
-    //count1= 0
     function show_more(){
         $("#attribute_pattern #more_domain").removeClass("hidden");
         $("#attribute_pattern #domain_show").addClass("hidden");
@@ -301,15 +317,16 @@
         $("#attribute_pattern #topic_show").removeClass("hidden");
     }
     attribute_chosen_tag = new Array();
-	function attribute_add_tag() {   	
+	function attribute_add_tag() {  
+        $('#attribute_pattern #box-height').css("height", "520px"); 
+        $('#attribute_pattern ').css("height", "540px"); 	
         var type = $('#attribute_pattern [name=tag_type]').val();
         var name = $('#attribute_pattern [name=tag_name]').val();
         var check_str = type + ':' + name;
-        //console.log(check_str);
         if (attribute_chosen_tag[check_str] != undefined){
         }
         else{
-        	//console.log(attribute_chosen_tag[check_str]);
+
             var html = '';
             html += '<span class="mouse" style="margin-right:40px;"><span class="tag_str">'+ check_str;
             html += '</span>&nbsp;<a class="cross" href="#">X</a></span>';
@@ -317,9 +334,7 @@
             attribute_chosen_tag[check_str] = 1;
             $('#attribute_pattern .mouse>a').click(function(){
                 var text = $(this).prev().html();
-                //console.log(text);
                 text = text.split('&')[0];
-                //console.log(text.text());
                 attribute_chosen_tag[text] = undefined;
                 $(this).parent().remove();
             });
@@ -357,8 +372,9 @@
         $('#attribute_pattern #basic .form-control').each(function(){
             var id = $(this).attr("id");
             var content = $(this).val();
-            basic += id +'='+ content + '&';
-            //console.log(id);
+            if(content != ''){
+                basic += id +'='+ content + '&';
+            }
         });
 	    url_attribute += '&'+basic;
         $('#attribute_pattern #domain .inline-checkbox').each(function(){
@@ -376,7 +392,6 @@
         
         $('#attribute_pattern #attribute_tags .tag_str').each(function(){           
             var tag = $(this).text();
-            //console.log(tag);
             var tag_url = '';
             var tag_string = [];
             var tag_divide = tag.split(":");
