@@ -2,9 +2,8 @@
     {% block title %}群体分析{% endblock title %}
     {% block css %}
         {{ super() }}
-        <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
         <style>
-            .wrapper{margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
+            .wrapper{min-height:550px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
             #tab{width: 180px;height:400px;}
             #tab_left,#tab_con{margin: 0px;background: #fff;} #tab,#tab_con{float: left;}
             #tab_left{width:180px;height:380px;}
@@ -14,10 +13,11 @@
             #tab_left li a:hover{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
             #tab_con{width: 820px;overflow: hidden;}
         </style>
+        <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"></script>
     {% endblock css %}
     {% block head_js %}
         {{ super() }}
-        <script src="/static/js/jquery.datetimepicker.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
@@ -43,10 +43,9 @@
 
                         </div>
                         <div id="tab_con_2" style='display:none'>
-                            {% include "portrait/group/attribute_pattern.html"%}
+                            {% include "portrait/group/attribute_pattern.html"%}
                         </div>
                         <div id="tab_con_3" style='display:none'>
-                            {% include "portrait/group/event_pattern.html"%}
                         </div>
                         <div id="tab_con_4" style='display:none'>
                         </div>
@@ -71,9 +70,9 @@
             <h4 class="modal-title" id="myModalLabel">提交监控任务</h4>
           </div>
           <div class="modal-body">
-            <span>群体名称：</span><span style="margin-left:10px"><input type="text" name="group_name" style="width:270px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" /></span>
+            <span>群体名称：</span><span id="group_name0" style="margin-left:10px;margin-right:250px;"></span>
             <span style="margin-left:10px;">备注：</span>
-            <span style="float:right"><input type="text" name="remark" style="width:400px" placeholder="（可选）仅包含汉字、英文、数字和下划线" /></span>
+            <span id="remark0" style="width:400px"></span>
             <div id="group_control_confirm" style="margin-top:30px"></div>
           </div>
           <div class="modal-footer">
@@ -92,9 +91,9 @@
             <h4 class="modal-title" id="myModalLabel">提交分析任务</h4>
           </div>
           <div class="modal-body">
-            <span>群体名称：</span><span style="margin-left:10px"><input type="text" name="group_name" style="width:270px;"placeholder="（必填）仅包含汉字、英文、数字和下划线" /></span>
+            <span>群体名称：</span><span id="group_name0" style="margin-left:10px;margin-right:250px;"></span>
             <span style="margin-left:10px;">备注：</span>
-            <span style="float:right"><input type="text" name="remark" style="width:400px" placeholder="（可选）仅包含汉字、英文、数字和下划线" /></span>
+            <span id="remark0" style="width:400px"></span>
             <div id="group_analyze_confirm" style="margin-top:30px"></div>
           </div>
           <div class="modal-footer">
@@ -105,6 +104,36 @@
       </div>
     </div>
 
+    <div class="modal fade" id="table_search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">搜索条件</h4>
+          </div>
+          <div class="modal-body">
+            <div style='width:300px;margin: 0px auto;'>
+                <div style="margin-top:5px;">群组名称：<input type="text"  id="groupName" class="input searchinput" name="task_name" placeholder="请输入群组名称" style="float: right;width: 175px;"/></div>
+                <div style="margin-top:5px;">备注：<input type="text" id="groupState" class="input searchinput" name="state" placeholder="请输入备注"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:5px;">时间：<input type="text" id="groupState" class="input searchinput" name="submit_date" placeholder="请输入时间2015-07-15"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:5px;">提交用户：<input type="text"  id="submitUser" class="input searchinput" name="submit_user" placeholder="请输入提交用户"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:5px;">发现任务类型：
+                        <select  name="detect_type" class="searchinput" style="width:174px;height:24px;float: right;">
+                        <option value="single" selected = "selected">单种子用户群体发现</option>
+                        <option value="multi">多种子用户群体发现 </option>
+                        <option value="attribute">特定属性及模式群体发现</option>
+                        <option value="event">特定事件群体发现</option>
+                        <option value="sense">社会感知自动群体发现</option>
+                        </select></div>
+            </div>  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_search_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {% endblock main %}
     {% block Own_js %}
