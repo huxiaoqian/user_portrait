@@ -11,7 +11,8 @@
 	padding: 0 5px;
 }
 #pattern_select .input-group-addon{
-	padding: 0 5px;
+/*	padding: 0 5px;*/
+    margin: 15px;
 }
 #attribute_pattern .cols{
     margin-top: 5px;
@@ -19,7 +20,7 @@
 
 </style>
 <div id="attribute_pattern" style="height:520px;">
-	<div class="box col-md-12" style="padding:0px;margin:0px;">
+	<div class="box col-md-12" style="">
         <div class="box-inner" id = 'box-height' style="height:500px;">
             <div class="box-content">
 					<div class="cols" style="margin-top:5px;" id="basic">
@@ -50,7 +51,7 @@
                         </div>
 					</div>
 					<div class='cols' style="margin:0px;">
-                        <div class='col-md-12' style="margin-bottom:0px"  id="domain">
+                        <div class='col-md-12'   id="domain">
                         	<span style="float:left;line-height: 27px;">领域</span>
                             <div class='col-lg-2' style="margin-left:0px;">
                                 <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
@@ -112,7 +113,7 @@
                         </div>
                     </div>
 					<div class='cols' style="margin-top:5px;" id="topic_string">
-                        <div class='col-md-12' style="margin-bottom:4px">
+                        <div class='col-md-12'>
                         	<span style="float:left;line-height: 27px;">话题</span>
                             <div class='col-lg-2'>
                                 <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
@@ -206,14 +207,14 @@
 					
                		<div class="cols" id="pattern_select">
                			<b class='control-label' style='padding-top:5px;'>模式</b>
-						<div class='col-md-12' style="margin:5px 0;">
+						<div class='col-md-12'>
 							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;padding-left:0px;" id="geo">所处城市</span>
 							<input id="" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
 							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;margin-left:40px;" id="ip">ip地址</span>
 							<input id="" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：127.0.0.1'>
 						</div>
 						<br>
-						<div class='col-md-12' style="margin:5px 0;" id="message_type">
+						<div class='col-md-12'  id="message_type">
 							<span style="float:left;color:#555;">微博类型</span>
                             <div class='col-lg-2' style="margin-left:10px;">
                                 <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
@@ -297,7 +298,7 @@
         </div>
     </div>
 </div>
-</div>
+
 
 <script type="text/javascript">
     function show_more(){
@@ -388,7 +389,7 @@
                 topic_string.push($(this).next().text());
             }
         });
-        url_attribute += topic_string.join(',')+'&tag=';
+        url_attribute += topic_string.join(',');
         
         $('#attribute_pattern #attribute_tags .tag_str').each(function(){           
             var tag = $(this).text();
