@@ -245,7 +245,7 @@ def filter_event(all_union_user, event_condition_list):
                 iter_date_ts = from_date_ts
                 while iter_date_ts <= to_date_ts:
                     iter_next_date_ts = iter_date_ts + DAY
-                    new_range_dict_list.append('range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}})
+                    new_range_dict_list.append({'range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}}})
                     iter_date_ts = iter_next_date_ts
                 if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
                     new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
@@ -261,30 +261,30 @@ def filter_event(all_union_user, event_condition_list):
     #step2.2: iter to search user meet condition weibo for different day
     user_count = len(all_union_user)
     iter_count = 0
+    hit_user_set = set()
     while iter_count < user_count:
         iter_user_list = [union_item[0] for union_item in all_union_user[iter_count:iter_count + DETECT_ITER_COUNT]]
         #get uid nest_body_list
         nest_body_list = []
-        for iter_user in iter_userlist:
+        for iter_user in iter_user_list:
             nest_body_list.append({'term':{'uid': iter_user}})
         iter_user_event_condition_list = new_event_condition_list
         iter_user_event_condition_list.append({'bool':{'should': nest_body_list}})
         #iter date to search different flow_text es
-        hit_user_set = set()
         for range_item in new_range_dict_list:
             iter_date_event_condition_list = iter_user_event_condition_list
             iter_date_event_condition_list.append(range_item)
             range_from_ts = range_item['range']['timestamp']['from']
-            range_from_date = int(ts2date(range_from_ts))
+            range_from_date = ts2date(range_from_ts)
             flow_index_name = flow_text_index_name_pre + range_from_date
             try:
                 flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
-                        body={'query':{'bool':{'must':iter_user_event_condition_list}}}, 'size':MAX_VALUE)['hits']['hits']
+                        body={'query':{'bool':{'must':iter_date_event_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
             except:
                 flow_text_exist = []
             #get hit user set
             for flow_text_item in flow_text_exist:
-                uid = flow_text_item['_id']
+                uid = flow_text_item['fields']['uid'][0]
                 hit_user_set.add(uid)
 
         iter_count += DETECT_ITER_COUNT
@@ -565,9 +565,70 @@ def multi_detect(input_dict):
 def attribute_filter_pattern(user_portrait_result, pattern_list):
     results = {}
     #step1: adjust the date condition for date
+    new_pattern_list = []
+    new_range_dict_list = []
+    for pattern_item in pattern_list:
+        if 'range' in pattern_item:
+            range_dict = pattern_item['range']
+            from_ts = range_dict['from']
+            to_ts = range_dict['to']
+            from_date_ts = datetime2ts(ts2datetime(from_ts))
+            to_date_ts = datetime2ts(ts2datetime(to_ts))
+            if from_date_ts != to_date_ts:
+                iter_date_ts = from_date_ts
+                while iter_date_ts <= to_date_ts:
+                    iter_next_date_ts = iter_date_ts + DAY
+                    new_range_dict_list.append({'range':{'timestamp': {'from': iter_date_ts, 'to':iter_next_date_ts}}})
+                    iter_date_ts = iter_next_date_ts
+                if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
+                    new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
+                if new_range_dict_list[-1]['range']['timestamp']['to'] > to_ts:
+                    new_range_dict_list[-1]['range']['timestamp']['to'] = to_ts
+            else:
+                new_range_dict_list = [{'range':{'timestamp':{'from':from_ts, 'to':to_ts}}}]
+        else:
+            new_pattern_list.append(pattern_item)
+    #step2: iter to search user who pulish weibo meet pattern list
     #step2.1: split user to bulk action
-    #step2.2: iter to search user meet pattern condition for different dat
-    return results
+    #step2.2: iter to search user meet pattern condition for different date
+    user_count = len(user_portrait_result)
+    iter_count = 0
+    hit_user_set = set()
+    while iter_count < user_count:
+        iter_user_list = [portrait_item[0] for portrait_item in user_portrait_result[iter_count: iter_count+DETECT_ITER_COUNT]]
+        #get uid nest_body_list
+        nest_body_list = []
+        for iter_user in iter_user_list:
+            nest_body_list.append({'term': {'uid': iter_user}})
+        iter_user_pattern_condition_list = new_pattern_dict_list
+        iter_user_pattern_condition_list.append({'bool':{'should': nest_body_list}})
+        #iter date to search different flow_text es
+        for range_item in new_range_dict_list:
+            iter_date_pattern_condition_list = iter_user_patter_condition_list
+            iter_date_pattern_condition_list.append(range_item)
+            range_from_ts = range_item['range']['timestamp']['from']
+            range_from_date = ts2date(range_from_ts)
+            flow_index_name = flow_text_index_name_pre + range_from_date
+            try:
+                flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
+                        body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
+            except:
+                flow_text_exist = []
+            #get hit user set
+            for flow_text_item in flow_text_exist:
+                uid = flow_text_item['fields']['uid'][0]
+                hit_user_set.add(uid)
+
+        iter_count += DETECT_ITER_COUNT
+    #identify the hit user list ranked by score
+    rank_hit_user = []
+    for user_item in user_portrait_result:
+        uid = user_item['_id']
+        uid_set = set(uid)
+        if len(uid_set & hit_user_set) != 0:
+            rank_hit_user.append(uid)
+        
+    return rank_hit_user
 
 
 #use to deal attribute_pattern detect type2----no attribute condition, just use pattern condition
@@ -576,8 +637,48 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
 def pattern_filter_attribute(pattern_list, filter_dict):
     results = {}
     #step1: adjust the date condition for date
+    new_pattern_list = []
+    new_range_dict_list = []
+    for pattern_item in pattern_list:
+        if 'range' in pattern_item:
+            range_dict = pattern_item['range']
+            from_ts = range_dict['from']
+            to_ts = range_dict['to']
+            from_date_ts = datetime2ts(ts2datetime(from_ts))
+            to_date_ts = datetime2ts(ts2datetime(to_ts))
+            if from_date_ts != to_date_ts:
+                iter_date_ts = from_date_ts
+                while iter_date_ts <= to_date_ts:
+                    iter_next_date_ts = iter_date_ts + DAY
+                    new_range_dict_list.append({'range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}}})
+                    iter_date_ts = iter_next_date_ts
+                if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
+                    new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
+                if new_range_dict_list[-1]['range']['timestamp']['to'] > to_ts:
+                    new_range_dict_list[-1]['range']['timestamp']['to'] = to_ts
+            else:
+                new_range_dict_list = [{'range': {'timestamp':{'from': from_ts, 'to': to_ts}}}]
+        else:
+            new_pattern_list.append(patter_item)
     #step2.1: iter to search user who meet pattern condition
     #step2.2: filter who is in user_portrait and meet filter_dict
+    for range_item in new_range_dict_list:
+        iter_date_pattern_condition_list = new_pattern_list
+        iter_date_pattern_condition_list.append(range_item)
+        range_from_ts = range_item['range']['timestamp']['from']
+        range_from_date = ts2date(range_from_ts)
+        flow_index_name = flow_text_index_name_pre + range_from_date
+        try:
+            flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type,\
+                    body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size': MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
+        except:
+            flow_text_exist = []
+        #pattern user set
+        pattern_user_set = set([flow_text_item['fields']['uid'][0] for flow_text_item in flow_text_exist])
+        pattern_user_list = list(pattern_user_set)
+        #filter by user_portrait filter dict by bulk action
+
+
 
     return results
 
