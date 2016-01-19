@@ -347,30 +347,68 @@ def single_detect(input_dict):
             body={'query':{'bool':{'must':attribute_query_list}}, 'size': count})['hits']['hits']
     #step2.3: change process proportion
     process_mark = change_process_proportion(task_name, 25)
-    if process_mark == False:
+    if process_mark == 'task is not exist':
         print 'task %s have been delete' % task_name
-        return 'have been delete'
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
 
     #step3: search structure user set
+    #step3.1: search structure user result
     structure_user_result = get_structure_user([seed_uid], structure_dict, filter_dict)
+    #step3.2: change process proportion
+    process_mark = change_process_proportion(task_name, 50)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step4: union attribtue and structure user set
     attribute_weight = query_condition_dict['attribute_weight']
     structure_weight = query_condition_dict['structure_weight']
     all_union_user = union_attribtue_structure(attribute_user_result, structure_user_result)
     #step5: filter user by event
     event_condition_list = query_condition['text']
+    #step5.1: filter user list
     filter_user_list = filter_event(all_union_user, event_condition_list)
+    #step5.2: change process proportion
+    process_mark = change_process_proportion(task_name, 75)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step6: filter by count
     count = filter_dict['count']
     result = filter_user_list[:count]
+    results = [seed_uid].extend(result)
     return results
+
+
+
+#use to get seed user attribute
+#input: seed_user_list
+#output: results
+def get_seed_user_attribute():
+    results = {}
+    return results
+
+
 
 #use to detect group by multi-person
 #input: {}
 #output: {}
-def multi_detect():
+def multi_detect(detect_task_information):
     results = {}
+    task_information_dict = input_dict['task_information']
+    task_name = task_information_dict['task_name']
+    task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        return 'task is not exist'
     #step1: get seed users attribute
+    seed_user_attribute = get_seed_user_attribute()
     #step2: search attribute user set
     #step3: search structure user set
     #step4: union search and structure user set
@@ -409,6 +447,7 @@ def save_detect_results(detect_results):
         task_exist_result = {}
     if task_exist_result != {}:
         task_exist_result['uid_list'] = json.dumps(detect_results)
+        task_exist_result['detect_process'] = 100
         es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=task_exist_result)
         mark = True
 
