@@ -14,7 +14,7 @@ from user_portrait.global_utils import retweet_index_name_pre, retweet_index_typ
                                        be_retweet_index_name_pre, be_retweet_index_type,\
                                        comment_index_name_pre, comment_index_type,\
                                        be_comment_index_name_pre, be_comment_index_type
-from user_portrait.parameter import DETECT_ITER_COUNT, MAX_VALUE
+from user_portrait.parameter import DETECT_ITER_COUNT, MAX_VALUE, MAX_PROCESS
 from user_portrait.time_utils import ts2datetime, datetime2ts
 
 #test
@@ -292,6 +292,61 @@ def show_detect_task():
 
     return results
 
+#use to search detect task information
+#input: task_name, 
+def search_detect_task(task_name, submit_date, state, process, detect_type, submit_user):
+    results = []
+    query = [{'match':{'task_type': 'detect'}}]
+    condition_num = 0
+    if task_name:
+        task_name_list = task_name.split(' ')
+        for item in task_name_list:
+            query.append({'wildcard':{'task_name': '*'+item+'*'}})
+            condition_num += 1
+    if submit_date:
+        submit_date_ts = ts2datetime(ts)
+        submit_date_from = submit_date_ts
+        submit_date_to = submit_date_ts + DAY
+        query.append({'range':{'timestamp':{'from':submit_date_from, 'to':submit_date_to}}})
+        condition_num += 1
+    if state:
+        state_list = state.split(' ')
+        for item in state_list:
+            query.append({'wildcard':{'state': '*'+item+'*'}})
+            condition_num += 1
+    if process:
+        query.append({'range':{'detect_process':{'from': int(process), 'to': MAX_PROCESS}}})
+        condition_num += 1
+    if detect_type:
+        detect_type_list = detect_type.split(',')
+        nest_body_list = []
+        for type_item in detect_type_list:
+            nest_body_list.append({'wildcard':{'detect_type': '*'+type_item+'*'}})
+        query.append({'bool':{'should': nest_body_list}})
+        condition_num += 1
+    if submit_user:
+        query.append({'wildcard':{'submit_user': '*'+submit_user+'*'}})
+        condition_num += 1
+    try:
+        search_result = es_group_result.search(index=group_index_name, doc_type=group_index_type, \
+                    body={'query':{'bool': {'must': query}}, 'sort':[{'submit_date': {'order': 'desc'}}], 'size':MAX_VALUE})['hits']['hits']
+    except:
+        search_result = []
+    #get group information table
+    for group_item in search_result:
+        source = group_item['_source']
+        task_name = source['task_name']
+        submit_date = ts2datetime(int(source['submit_date']))
+        submit_user = source['submit_user']
+        detect_type = source['detect_type']
+        state = source['state']
+        process = source['detect_process']
+
+        results.append([task_name, submit_user, submit_date, detect_type, state, process])
+        
+    return results
+
+
 
 #use to show detect task result
 #input: task_name
@@ -379,3 +434,4 @@ def delete_task(task_name):
         raise e
     
     return status
+

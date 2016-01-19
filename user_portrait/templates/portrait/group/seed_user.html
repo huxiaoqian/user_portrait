@@ -1,194 +1,319 @@
 <div id="seed_user">
     <div class="box col-md-12" style="padding:0px;margin:0px;">
         <div class="box-inner" id = 'box-height'>
-            <div class="box-content" style="height:370px">
-                <input id="uid_uname" type='text' class="form-control" style='width:27%; margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
-                <div id="attribute" class="col-md-12">
-                    <label class='control-label' style='padding-top:5px;'>属性（权重从1到10）：
-                         <input id="attr_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='1'>
-                    </label>
-                    <div class='controls'>
-                        <div class='col-md-12' style="margin-bottom:4px">
-                            <div class='col-lg-2'>
-                                <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="location">注册地</span>                             
-                            </div>
-                             <div class='col-lg-2'>
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="area">领域</span>
-                            </div>
-                             <div class='col-lg-2'>
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="topic">话题</span>
-                            </div>
-                            <div class='col-lg-2'>
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="activity_location">活跃地</span>
-                            </div>
-                            <div class='col-lg-2'>
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
-                            </div>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="keywords">关键词</span>
-                            </div>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tendention">倾向性</span>
-                            </div>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status">心理状态</span>
-                            </div>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tag">自定义标签</span>
-                            </div>
-                        </div>
+            <div class='col-md-12' style="margin-bottom:4px">
+                <div class='col-lg-6' style='margin-left:195px;font-size:32px;'>
+                    <input type='radio' name="mode_choose" value='single_user' checked='checked'>
+                    <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >单个种子用户</span>
+                    <input type='radio' name="mode_choose" value='multi_user'>
+                    <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >多个种子用户</span>
+                </div>
+            </div>
+            <hr style='width:800px;margin-bottom:0px;'>
+            <div id='single_user_ext' class="box-content" style="height:440px">
+                <input id="uid_uname" type='text' class="form-control" style='width:27%;margin:10px 15px;margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
+                <div id='single_user'></div>
+            </div>
+            <div id='multi_user_ext' class="box-content" style="display:none">
+				<form enctype="multipart/form-data" method="post" style="float:left;margin:10px 15px;height:25px;">
+                    <input type="file" id="seed_file_upload" class="fleft" style='border:1px solid #999' onchange="handleFileSelect(this.files)"/>  
+                    <input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
+                </form>
+                <div class='col-lg-5' style='margin:10px 55px;'>
+                    <span class="input-group-addon" style="width:120px;border:1px solid white;background-color:white;display:inline-block">是否进行扩展：</span>
+                    <input type='radio' name="ext_choose" value='1' checked='checked'>
+                    <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >否</span>
+                    <input type='radio' name="ext_choose" value='2'>
+                    <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >是</span>
+                </div>
+                <div id='multi_user'></div>
+            </div>
+        </div>
+    </div>
+    <div id='seed_user_ext' class="box-content" style="height:420px;display:none">
+        <div id="attribute" class="col-md-12">
+            <label class='control-label' style='padding-top:5px;'>属性（权重从1到10）：
+                 <input id="attr_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='1'>
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style="margin-bottom:4px">
+                    <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="location">注册地</span>                             
+                    </div>
+                     <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="area">领域</span>
+                    </div>
+                     <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="topic">话题</span>
+                    </div>
+                    <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="activity_location">活跃地</span>
+                    </div>
+                    <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="keywords">关键词</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tendention">倾向性</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status">心理状态</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tag">自定义标签</span>
                     </div>
                 </div>
-                <div id="structure" class="col-md-12" style="padding-top:5px">
-                    <label class='control-label'>结构（权重从1到10）：
-                         <input id="stru_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='1'>
-                    </label>
-                    <div class='controls'>
-                        <div class='col-md-12'>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="repost">转发关系</span>
-                            </div>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="comment">评论关系</span>
-                            </div>
-                            <div class='col-lg-2' >
-                                <input type='checkbox' id="hop_checkbox"class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hop">跳数</span>
-                            </div>
-                            <div class='col-lg-3'>
-                                <input type='radio' name="hop_choose" value='1' checked='checked' disabled>
-                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >1</span>
-                                <input type='radio' name="hop_choose" value='2' disabled>
-                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >2</span>
-                            </div>
-                        </div>
+            </div>
+        </div>
+        <div id="structure" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>结构（权重从1到10）：
+                 <input id="stru_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='1'>
+            </label>
+            <div class='controls'>
+                <div class='col-md-12'>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="repost">转发关系</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="comment">评论关系</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' id="hop_checkbox"class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hop">跳数</span>
+                    </div>
+                    <div class='col-lg-3'>
+                        <input type='radio' name="hop_choose" value='1' checked='checked' disabled>
+                        <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >1</span>
+                        <input type='radio' name="hop_choose" value='2' disabled>
+                        <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >2</span>
                     </div>
                 </div>
-                <div id="events" class="col-md-12" style="padding-top:5px">
-                    <label class='control-label'>参与事件筛选
-                    </label>
-                    <div class='controls'>
-                        <div class='col-md-12' style='padding:0px;'>
-                            <div class='col-lg-4' >
-                                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">关键词</span>
-                                 <input id="events_keywords" type='text' class="form-control" style='width:65%; display:inline-block;height:25px' placeholder='多个词用空格隔开'>
-                            </div>
-                            <div class='col-lg-7' >
-                                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">时间</span>
-                                 <input id="events_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>&nbsp;-&nbsp;
-                                 <input id="events_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
-                            </div>
-                            <!--
-                            <div class='col-lg-2' >
-                                <input type='checkbox' class='inline-checkbox' value='option1'>
-                                <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="repost">转发关系</span>
-                            </div>
-                            <div class='col-lg-3'>
-                                <input type='radio' name="step_choose" value='1' checked='checked' disabled>
-                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >1</span>
-                                <input type='radio' name="step_choose" value='2' disabled>
-                                <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >2</span>
-                            </div>
-                            -->
-                        </div>
+            </div>
+        </div>
+        <div id="events" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>参与事件筛选
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;'>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">关键词</span>
+                         <input id="events_keywords" type='text' class="form-control" style='width:65%; display:inline-block;height:25px' placeholder='多个词用空格隔开'>
+                    </div>
+                    <div class='col-lg-7' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">时间</span>
+                         <input id="events_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>&nbsp;-&nbsp;
+                         <input id="events_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
                     </div>
                 </div>
-                <div id="extension" class="col-md-12" style="padding-top:5px">
-                    <label class='control-label'>扩展规则
-                    </label>
-                    <div class='controls'>
-                        <div class='col-md-12' style='padding:0px;'>
-                            <div class='col-lg-4' >
-                                <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
-                                <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
-                                    0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
-                                </span>
-                            </div>
-                            <div class='col-lg-4' >
-                                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
-                                 <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
-                                 <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
-                            </div>
-                            <div class='col-lg-4' >
-                                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
-                                 <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
-                                 <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
-                            </div>
-                        </div>
+            </div>
+        </div>
+        <div id="extension" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>扩展规则
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;'>
+                    <div class='col-lg-4' >
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
+                        <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
+                            0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
+                        </span>
+                    </div>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
+                         <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                         <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                    </div>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
+                         <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                         <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
                     </div>
                 </div>
-                <div class="col-md-12" style='margin-top:11px'>
-                    <div class='col-md-12' style='text-align:right; padding-right:35px'>
-                        <span id="seed_user_commit" onclick="seed_user_data();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
+            </div>
+        </div>
+        <hr style='width:800px;margin-bottom:0px;'>
+        <div id="information" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>群组信息
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;'>
+                    <div class='col-lg-6' style='padding:0px;'>
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
+                         <input id="first_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                    </div>
+                    <div class='col-lg-6' style='padding:0px;'>
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                         <input id="first_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-md-12" style='margin-top:11px'>
+            <div class='col-md-12' style='text-align:right; padding-right:35px'>
+                <span id="seed_user_commit" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
             </div>
         </div>
     </div>
 </div>
 <script>
-$('#seed_user #hop_checkbox').click(function(){
-    if($(this).is(':checked')){
-        $('#seed_user [name="hop_choose"]').attr('disabled',false);
+function bind_button_click(){
+    $('#seed_user #'+seed_user_option+' #hop_checkbox').click(function(){
+        if($(this).is(':checked')){
+            $('#seed_user #'+seed_user_option+' [name="hop_choose"]').attr('disabled',false);
+        }
+        else{
+            $('#seed_user #'+seed_user_option+' [name="hop_choose"]').attr('disabled', true);
+        }
+    });
+    $('#seed_user #'+seed_user_option+' #seed_user_commit').click(function(){
+        var valid = seed_user_check();
+        if (valid){
+            seed_user_data();
+        }
+    });
+    if (seed_user_option == 'multi_user'){
+        var fileInput = document.getElementById('seed_file_upload');
+        fileInput.addEventListener('change', function () {
+        // 检查文件是否选择:
+            if (!fileInput.value) {
+                alert('没有选择文件');
+                return;
+            }
+            // 获取File引用:
+            var file = fileInput.value;
+            //alert(file);
+            if ((file.endsWith('.csv')) || (file.endsWith('.txt'))) {
+                //alert('Can only upload csv or txt file.');
+                return false;
+            }else{
+                alert('Can only upload csv or txt file.');
+            }
+        });
+        $('#seed_user #multi_user_ext [name="ext_choose"]').change(function(){
+            var ext_flag = $('#seed_user #multi_user_ext [name="ext_choose"]:checked').val();
+            if (ext_flag == 1){
+                $('#seed_user #multi_user #attribute').css('display','none');
+                $('#seed_user #multi_user #structure').css('display','none');
+                $('#seed_user #multi_user #events').css('display','none');
+                $('#seed_user #multi_user #extension').css('display','none');
+                $('#seed_user #multi_user').css('height','233px');
+            }
+            else{
+                $('#seed_user #multi_user #attribute').css('display','block');
+                $('#seed_user #multi_user #structure').css('display','block');
+                $('#seed_user #multi_user #events').css('display','block');
+                $('#seed_user #multi_user #extension').css('display','block');
+                $('#seed_user #multi_user').css('height','440px');
+            }
+        });
+    }
+}
+
+function seed_user_init(){
+    if (!seed_user_flag){
+        var html = $('#seed_user #seed_user_ext').html();
+        $('#seed_user #'+seed_user_option).html(html);
+        //$('#seed_user #events_from').datetimepicker();
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:'2015/04/15 05:03',step:10});
+        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:'2015/04/15 05:03',step:10});
+        if (seed_user_option == 'multi_user'){
+            $('#seed_user #multi_user #attribute').css('display','none');
+            $('#seed_user #multi_user #structure').css('display','none');
+            $('#seed_user #multi_user #events').css('display','none');
+            $('#seed_user #multi_user #extension').css('display','none');
+            $('#seed_user #multi_user').css('height','233px');
+        }
+    }    
+    bind_button_click();
+}
+
+var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
+var seed_user_flag = false;
+seed_user_init();
+$('#seed_user [name="mode_choose"]').change(function(){
+    seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
+    if (seed_user_option == 'single_user'){
+        $('#seed_user #single_user_ext').css('display','block');
+        $('#seed_user #multi_user_ext').css('display','none');
     }
     else{
-        $('#seed_user [name="hop_choose"]').attr('disabled', true);
+        $('#seed_user #single_user_ext').css('display','none');
+        $('#seed_user #multi_user_ext').css('display','block');
     }
+    seed_user_init();
+    if (!seed_user_flag) seed_user_flag = true; // no more html init
 });
-//$('#seed_user #events_from').datetimepicker();
-$('#seed_user #events_from').datetimepicker({value:'2015/04/15 05:03',step:10});
-$('#seed_user #events_to').datetimepicker({value:'2015/04/15 05:03',step:10});
 
+function seed_user_check(){             // check validation 
+  //group_information check starts  
+  var group_name = $('#seed_user #'+seed_user_option+' #first_name').val();
+  var remark = $('#seed_user #'+seed_user_option+' #first_remarks').val();
+  console.log(group_name, remark);
+  if (group_name.length == 0){
+      alert('群体名称不能为空');
+      return false;
+  }
+
+  var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+    return false;
+  }
+  if ((remark.length > 0) && (!remark.match(reg))){
+    alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+    return false;
+  }
+  //other form check starts multi/single
+  return true;
+
+}
 //获取选择的条件，把参数传出获取返回值
 function seed_user_data(){
+    if (seed_user_option == 'single_user'){
+        console.log($('#seed_user #uid_uname').val());
+    }
     var url = '/manage/imagine/?keywords=';
     var keywords = new Array();
     var structure = new Array();
     var weight = new Array();
-    $('#seed_user #attribute .inline-checkbox').each(function(){
+    $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
         if($(this).is(':checked')){
             keywords.push($(this).next().attr('id'));
         }
     });
     url += keywords.join(',') + '&structure=';
-    $('#seed_user #structure .inline-checkbox').each(function(){
+    $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
         if($(this).is(':checked')){
             structure.push($(this).next().attr('id'));
         }
     });
     url += structure.join(',');
-    console.log($('#seed_user #attr_weight').val());
-    console.log($('#seed_user #stru_weight').val());
-    console.log($('#seed_user #uid_uname').val());
-    console.log($('#seed_user #num-range').val());
-    console.log($('#seed_user #influ_from').val());
-    console.log($('#seed_user #influ_to').val());
-    console.log($('#seed_user #impor_from').val());
-    console.log($('#seed_user #impor_to').val());
-    console.log($('#seed_user #events_keywords').val());
-    seed_user_timepicker($('#seed_user #events_from').val());
-    seed_user_timepicker($('#seed_user #events_to').val());
-    if ($('#seed_user #hop_checkbox').is(':checked')){
-        console.log($('#seed_user [name="hop_choose"]:checked').val());
+    console.log($('#seed_user #'+seed_user_option+' #attr_weight').val());
+    console.log($('#seed_user #'+seed_user_option+' #stru_weight').val());
+    console.log($('#seed_user #'+seed_user_option+' #num-range').val());
+    console.log($('#seed_user #'+seed_user_option+' #influ_from').val());
+    console.log($('#seed_user #'+seed_user_option+' #influ_to').val());
+    console.log($('#seed_user #'+seed_user_option+' #impor_from').val());
+    console.log($('#seed_user #'+seed_user_option+' #impor_to').val());
+    console.log($('#seed_user #'+seed_user_option+' #events_keywords').val());
+    seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+    seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    if ($('#seed_user #'+seed_user_option+' #hop_checkbox').is(':checked')){
+        console.log($('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val());
     }
-    /*
-    $('#seed_user[name="step_choose"]').each(function(){
-        if($(this).is(':checked')){
-            field = $(this).attr('id');
-        }
-    });
-    */
     console.log(url);
     return url;
 }
@@ -206,6 +331,34 @@ function seed_user_timepicker(str){
     final_date.setHours(hh,minute);
     final_date = Math.floor(final_date.getTime()/1000);
     console.log(final_date);
+}
+
+function handleFileSelect(evt){
+    var files = evt;
+    /*
+    var task_name = $('#file_task_name').val();
+    var state = $('#file_state').val();
+    for(var i=0,f;f=files[i];i++){
+        var reader = new FileReader();
+        reader.onload = function (oFREvent) {
+            var a = oFREvent.target.result;	
+            console.log(a);
+            $.ajax({   
+                type:"POST",  
+                url:"/group/upload_file/",
+                dataType: "json",
+                async:false,
+                data:{upload_data:a,task_name:task_name,state:state},
+                success: function(){
+                            var show_url = "/group/show_task/";
+                            //Group_result.call_sync_ajax_request(show_url,Group_result.ajax_method,Group_result.Draw_resultTable);
+                }
+            });
+            location.reload();
+        };            
+        reader.readAsText(f,'GB2312');                                                        
+    }
+    */
 }
 
 </script>
