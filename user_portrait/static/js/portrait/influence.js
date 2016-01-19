@@ -212,7 +212,7 @@ Draw_pie_all0:function(data){
   },
 
   Single_users_influence_re:function(data){
-    Influence_motal(data.influence_users, 're_user_in', 're_user_out', 're_three_pie', 're_user_content');
+    Influence_motal(data, 're_user_in', 're_user_out', 're_three_pie', 're_user_content');
     $('#re_conclusion').empty();
     var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
     $('#re_conclusion').append(html);
@@ -366,7 +366,7 @@ Draw_pie_all0:function(data){
               },
               labelLine : {
                 show : true,
-                length : 100
+                length : 5
               }
             },
             emphasis : {
@@ -467,6 +467,7 @@ function click_action(){
         $("#re_influence").removeClass("hidden");
         var mid = $(this).prev(".hidden").text();
         var influenced_users_url_re = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date=2013-09-07&style=0&mid='+mid;
+        console.log(influenced_users_url_re);
         Influence.call_sync_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
         return false;
       });
