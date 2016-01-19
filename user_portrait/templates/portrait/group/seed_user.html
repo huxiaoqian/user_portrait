@@ -16,8 +16,8 @@
             </div>
             <div id='multi_user_ext' class="box-content" style="display:none">
 				<form enctype="multipart/form-data" method="post" style="float:left;margin:10px 15px;height:25px;">
-                    <input type="file" id="seed_file_upload" class="fleft" style='border:1px solid #999' onchange="handleFileSelect(this.files)"/>  
-                    <input type="submit" value="上传" id="uploadbtn1" class="fleft"/>
+                    <input type="file" id="seed_file_upload" class="fleft" style='border:1px solid #999'/>  
+                    <input type="button" value="上传" id="uploadbtn" class="fleft"/>
                 </form>
                 <div class='col-lg-5' style='margin:10px 55px;'>
                     <span class="input-group-addon" style="width:120px;border:1px solid white;background-color:white;display:inline-block">是否进行扩展：</span>
@@ -26,11 +26,17 @@
                     <input type='radio' name="ext_choose" value='2'>
                     <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >是</span>
                 </div>
+                <div class="col-lg-9" id="file_status" style="display:none;padding:0px;">
+                    <span class="input-group-addon" style="color:#2c3251;font-weight:bold;width:120px;border:1px solid white;background-color:white;display:inline-block">上传成功！</span>
+                    <span id="add_file" class="input-group-addon" style="width:250px;border:1px solid white;background-color:white;display:inline-block" ></span>
+                    <a id="delete_file" style="cursor:pointer;">删除</a>
+                </div>
                 <div id='multi_user'></div>
             </div>
         </div>
     </div>
     <div id='seed_user_ext' class="box-content" style="height:420px;display:none">
+        <hr style='width:800px;margin:0px;'>
         <div id="attribute" class="col-md-12">
             <label class='control-label' style='padding-top:5px;'>属性（权重从0到1）：
                  <input id="attr_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='0.5'>
@@ -143,8 +149,8 @@
                     </div>
                 </div>
             </div>
+            <hr style='width:800px;margin-bottom:0px;margin-left:-15px;'>
         </div>
-        <hr style='width:800px;margin-bottom:0px;'>
         <div id="information" class="col-md-12" style="padding-top:5px">
             <label class='control-label'>群组信息
             </label>
