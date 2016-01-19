@@ -313,7 +313,7 @@ def single_detect(input_dict):
 
     seed_user_dict = input_dict['seed_user']
     query_condition_dict = input_dict['query_condition']
-    filter_dict = input_dict['filter']
+    filter_dict = query_condition_dict['filter']
     structure_dict = input_dict['structure_dict']
     #step1: get seed user portrait result
     user_portrait = get_single_user_portrait(seed_user_dict)
@@ -480,7 +480,7 @@ def get_seed_user_attribute(seed_user_list, attribute_list):
 #use to detect group by multi-person
 #input: detect_task_information
 #output: detect user list (contain submit uid list)
-def multi_detect(detect_task_information):
+def multi_detect(input_dict):
     results = {}
     task_information_dict = input_dict['task_information']
     task_name = task_information_dict['task_name']
@@ -489,7 +489,7 @@ def multi_detect(detect_task_information):
         print 'task %s have been delete' % task_name
         return 'task is not exist'
     query_condition_dict = input_dict['query_condition']
-    filter_dict = input_dict['filter']
+    filter_dict = query_condition_dict['filter']
     structure_dict = input_dict['structure_dict']
     #step1.1: get seed users attribute
     attribute_list = query_condition_dict['attribute']
@@ -558,14 +558,95 @@ def multi_detect(detect_task_information):
 
     return results
 
-#use to detect group by attribute or pattern
-#input: {}
-#output: {}
-def attribute_pattern_detect():
+
+#use to deal attribute_pattern detect type1----have attribute condition and filter by pattern
+#input: attribute_user_result, pattern_list
+#ouput: results --- ranked by attribute similarity score
+def attribute_filter_pattern(user_portrait_result, pattern_list):
     results = {}
-    #step1: search text user set(who is in user_portrait)
-    #step2: search attribute user
-    #step3: filter by count and evaluation index
+    #step1: adjust the date condition for date
+    #step2.1: split user to bulk action
+    #step2.2: iter to search user meet pattern condition for different dat
+    return results
+
+
+#use to deal attribute_pattern detect type2----no attribute condition, just use pattern condition
+#input: pattern_list, filter_dict
+#output: results --- ranked by filter condition influence or importance
+def pattern_filter_attribute(pattern_list, filter_dict):
+    results = {}
+    #step1: adjust the date condition for date
+    #step2.1: iter to search user who meet pattern condition
+    #step2.2: filter who is in user_portrait and meet filter_dict
+
+    return results
+
+
+#use to detect group by attribute or pattern
+#input: detect_task_information
+#output: detect user list
+#deal two scen---1) have attribute condition and filter by pattern 
+#                2)no attribute condition, just use pattern condition
+def attribute_pattern_detect(input_dict):
+    results = {}
+    task_information_dict = input_dict['task_information']
+    task_name = task_information_dict['task_name']
+    task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    query_condition_dict = input_dict['query_condition']
+    filter_dict = query_condition_dict['filter']
+    attribute_list = query_condition_dict['attribute']
+    pattern_list = query_condtion_dict['pattern']
+    if len(attribute_list) != 0:
+        #type1:have attribute condition and filter by pattern
+        #step1: search user_portrait by attribute condition and filter condition
+        count = MAX_DETECT_COUNT
+        for filter_item in filter_dict:
+            if filter_item == 'count':
+                count = filter_dict[filter_item] * DETECT_COUNT_EXPAND
+            else:
+                filter_value_from = filter_dict[filter_item]['from']
+                filter_value_to = filter_dict[filter_item]['to']
+                attribute_list.append({'range':{filter_item: {'from': filter_value_from, 'to': filter_value_to}}})
+        try:
+            user_portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type ,\
+                    body={'query':{'bool':{'must': attribute_list}}, 'size':count})['hits']['hits']
+        except:
+            user_portrait_result = []
+        #step1.2:change process proportion
+        procss_mark = change_process_proportion(task_name, 30)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+
+        #step2: filter user by pattern condition
+        filter_user_result = attribute_filter_pattern(user_portrait_result, pattern_list)
+        #step2.2:change process proportion
+        process_mark = change_process_proportion(task_name, 60)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+    else:
+        #type2: no attribute condition, just use pattern condition
+        #step1: search pattern list and filter by in-user_portrait and filter_dict
+        filter_user_result = pattern_filter_portrait(pattern_list, filter_dict)
+        #step2.2: change process proportion
+        process_mark = change_process_proportion(task_name, 60)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+    
+    #step3: filter user list by filter count
+    count = filter_dict['count']
+    results = filter_suer_result[:count]
     return results
 
 #use to detect group by event
