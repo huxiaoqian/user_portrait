@@ -753,10 +753,14 @@ def attribute_pattern_detect(input_dict):
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
-
-        #step2: filter user by pattern condition
-        filter_user_result = attribute_filter_pattern(user_portrait_result, pattern_list)
-        #step2.2:change process proportion
+        if len(pattern_list) != 0:
+            #step2: filter user by pattern condition
+            filter_user_result = attribute_filter_pattern(user_portrait_result, pattern_list)
+            #step2.2:change process proportion
+        else:
+            #step2: get user_list from user_portrait_result
+            filter_user_result = [item['_id'] for item in user_portrait_result]
+        #change process mrak
         process_mark = change_process_proportion(task_name, 60)
         if process_mark == 'task is not exist':
             print 'task %s have been delete' % task_name
@@ -777,17 +781,80 @@ def attribute_pattern_detect(input_dict):
     
     #step3: filter user list by filter count
     count = filter_dict['count']
-    results = filter_suer_result[:count]
+    results = filter_user_result[:count]
     return results
 
+
+
 #use to detect group by event
-#input: {}
-#output: {}
-def event_detect():
+#input: input_dict
+#output: user list ranked by evaluation index--influence
+#deal two scen---1)have attribute condition and filter by flow_text
+#             ---2)no attribtue condition, just flow_text condition
+def event_detect(input_dict):
     results = {}
-    #step1: search text user set
-    #step2: filter user by domain or topic
-    #step3: filter by count and evaluation index
+    task_information_dict = input_dict['task_information']
+    task_name = task_information_dict['task_name']
+    task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    query_condition_dict = input_dict['query_condition']
+    filter_dict = query_condition_dict['filter']
+    attribute_list = query_condition_dict['attribute']
+    event_list = query_condition_dict['pattern']
+    if len(attribute_list) != 0:
+        #step1: get user by attribute user_portrait condition
+        count = MAX_DETECT_COUNT
+        for filter_item in filter_dict:
+            if filter_item == 'count':
+                count = filter_dict[filter_item] * DETECT_COUNT_EXPAND
+            else:
+                filter_value_from = filter_dict[filter_item]['from']
+                filter_value_to = filter_dict[filter_item]['to']
+                attribute_list.append({'range':{filter_item: {'from': filter_value_from, 'to': filter_value_to}}})
+        try:
+            user_portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
+                    body={'query':{'bool': {'must':attribute_list}}, 'sort':[{'influence': {'order': 'desc'}}],'size':count})['hits']['hits']
+        except:
+            user_portrait_result = []
+        #change process proportion
+        process_mark = change_process_proportion(task_name, 30)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+
+        if len(event_list) != 0:
+            #type1: have attribute condition and filter by flow_text
+            #step2.1: filter by event--text
+            filter_user_list = attribute_filter_pattern(user_portrait_result, event_list)
+        else:
+            #step2.2: get uid list from user_portrait_result
+            filter_user_list = [item['_id'] for item in user_portrait_result]
+        #change process proportion
+        process_mark = change_process_proportion(task_name, 60)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+    else:
+        #type2: no attribute condition, just flow_text condition
+        filter_user_list = pattern_filter_attribute(event_list, filter_dict)
+        #change process proportion
+        process_mark = change_process_proportion(task_name, 60)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+
+    #step3: filter user list by filter count
+    count = filter_dict['count']
+    results = fitler_user_list[:count]
+
     return results
 
 #use to save detect results to es
