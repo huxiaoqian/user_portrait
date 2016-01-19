@@ -245,7 +245,7 @@ def filter_event(all_union_user, event_condition_list):
                 iter_date_ts = from_date_ts
                 while iter_date_ts <= to_date_ts:
                     iter_next_date_ts = iter_date_ts + DAY
-                    new_range_dict_list.append('range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}})
+                    new_range_dict_list.append({'range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}}})
                     iter_date_ts = iter_next_date_ts
                 if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
                     new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
@@ -261,30 +261,30 @@ def filter_event(all_union_user, event_condition_list):
     #step2.2: iter to search user meet condition weibo for different day
     user_count = len(all_union_user)
     iter_count = 0
+    hit_user_set = set()
     while iter_count < user_count:
         iter_user_list = [union_item[0] for union_item in all_union_user[iter_count:iter_count + DETECT_ITER_COUNT]]
         #get uid nest_body_list
         nest_body_list = []
-        for iter_user in iter_userlist:
+        for iter_user in iter_user_list:
             nest_body_list.append({'term':{'uid': iter_user}})
         iter_user_event_condition_list = new_event_condition_list
         iter_user_event_condition_list.append({'bool':{'should': nest_body_list}})
         #iter date to search different flow_text es
-        hit_user_set = set()
         for range_item in new_range_dict_list:
             iter_date_event_condition_list = iter_user_event_condition_list
             iter_date_event_condition_list.append(range_item)
             range_from_ts = range_item['range']['timestamp']['from']
-            range_from_date = int(ts2date(range_from_ts))
+            range_from_date = ts2date(range_from_ts)
             flow_index_name = flow_text_index_name_pre + range_from_date
             try:
                 flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
-                        body={'query':{'bool':{'must':iter_user_event_condition_list}}}, 'size':MAX_VALUE)['hits']['hits']
+                        body={'query':{'bool':{'must':iter_date_event_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
             except:
                 flow_text_exist = []
             #get hit user set
             for flow_text_item in flow_text_exist:
-                uid = flow_text_item['_id']
+                uid = flow_text_item['fields']['uid'][0]
                 hit_user_set.add(uid)
 
         iter_count += DETECT_ITER_COUNT
@@ -307,9 +307,13 @@ def single_detect(input_dict):
     task_information_dict = input_dict['task_information']
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        print 'task %s have been delete'
+        return 'task is not exist'
+
     seed_user_dict = input_dict['seed_user']
     query_condition_dict = input_dict['query_condition']
-    filter_dict = input_dict['filter']
+    filter_dict = query_condition_dict['filter']
     structure_dict = input_dict['structure_dict']
     #step1: get seed user portrait result
     user_portrait = get_single_user_portrait(seed_user_dict)
@@ -389,41 +393,391 @@ def single_detect(input_dict):
 
 
 #use to get seed user attribute
-#input: seed_user_list
+#input: seed_user_list, attribute_list
 #output: results
-def get_seed_user_attribute():
+def get_seed_user_attribute(seed_user_list, attribute_list):
     results = {}
-    return results
+    attribute_query_list = []
+    #step1: mget user result from user_portrait
+    try:
+        seed_user_portrait = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                body={'ids':seed_user_list}, _source=True)['docs']
+    except:
+        seed_user_portrait = []
+    #init results dict---result={'location':{}, 'domain':{}, ...}
+    for attribute_item in attribute_list:
+        results[attribute_item] = {}
+    #step2: compute attribute result about attribute_list
+    for seed_user_item in seed_user_portrait:
+        uid = seed_user_item['_id']
+        if seed_user_item['found'] == True:
+            #static the attribute
+            #step2.1: location
+            if 'location' in attribute_list:
+                location_value = seed_user_item['location']
+                try:
+                    results['location'][location_value] += 1
+                except:
+                    results['location'][location_value] = 1
+            #step2.2: domain
+            if 'domain' in attribute_list:
+                domain_value = seed_user_item['domain']
+                try:
+                    results['domain'][domain_value] += 1
+                except:
+                    results['domain'][domain_value] = 1
+            #step2.3: topic_string
+            if 'topic_string' in attribute_list:
+                topic_value_string = seed_user_item['topic_string']
+                topic_value_list = topic_value_string.split('&')
+                for topic_item in topic_value_list:
+                    try:
+                        results['topic_string'][topic_item] += 1
+                    except:
+                        results['topic_string'][topic_item] = 1
+            #step2.4: keywords_string
+            if 'keywords_string' in attribute_list:
+                keywords_value_string = seed_user_item['keywords_string']
+                keywords_value_list = keywords_value_string.split('&')
+                for keywords_item in keywords_value_list:
+                    try:
+                        results['keywords_string'][keywords_item] += 1
+                    except:
+                        results['keywords_string'][keywords_item] = 1
+            #step2.5: hashtag
+            if 'hashtag' in attribute_list:
+                hashtag_value_string = seed_user_item['hashtag']
+                hashtag_value_list = hashtag_value_string.split('&')
+                for hashtag_item in hashtag_value_list:
+                    try:
+                        results['hashtag'][hashtag_item] += 1
+                    except:
+                        results['hashtag'][hashtag_item] = 1
+            #step2.6: activity_geo
+            if 'activity_geo' in attribute_list:
+                activity_geo_dict = json.loads(seed_user_item['activity_geo_dict'])[-1]
+                for activity_geo_item in activity_geo_dict:
+                    try:
+                        results['activity_geo'][activity_geo_item] += 1
+                    except:
+                        results['activity_geo'][activity_geo_item] = 1
+            #step2.7: tendency
+            #step2.8: tag
+            #step2.9: remark
+    #step3: get search attribtue value-- new attribute query condition
+    new_attribute_query_condition = []
+    for item in results:
+        iter_dict = results[item]
+        sort_item_dict = sorted(iter_dict.items(), key=lambda x:x[1], reverse=True)
+        nest_body_list = []
+        for query_item in sort_item_dict[:3]:
+            item_value = query_item[0]
+            nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
+        new_attribute_query_condition.append({'bool':{'should': nes_body_list}})
 
-
+    return new_attribute_query_condition
 
 #use to detect group by multi-person
-#input: {}
-#output: {}
-def multi_detect(detect_task_information):
+#input: detect_task_information
+#output: detect user list (contain submit uid list)
+def multi_detect(input_dict):
     results = {}
     task_information_dict = input_dict['task_information']
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
     if task_exist_mark == False:
+        print 'task %s have been delete' % task_name
         return 'task is not exist'
-    #step1: get seed users attribute
-    seed_user_attribute = get_seed_user_attribute()
+    query_condition_dict = input_dict['query_condition']
+    filter_dict = query_condition_dict['filter']
+    structure_dict = input_dict['structure_dict']
+    #step1.1: get seed users attribute
+    attribute_list = query_condition_dict['attribute']
+    seed_user_list = task_information_dict['uid_list']
+    attribute_query_condition = get_seed_user_attribute(seed_user_list, attribute_list)
+    #step1.2: change process proportion
+    process_mark = change_process_proportion(task_name, 20)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step2: search attribute user set
+    #step2.1: add filter condition
+    count = MX_DETECT_COUNT
+    for filter_item in filter_dict:
+        if filter_item == 'count':
+            count = filter_dict[filter_item] * DETECT_COUNT_EXPAND
+        else:
+            filter_value_from = filter_dict[filter_item]['from']
+            filter_value_to = filter_dict[filter_item]['to']
+            attribute_query_condition.append({'range':{filter_item: {'from':filter_value_from, 'to':filter_value_to}}})
+    #step2.2: search user_portriait condition
+    attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type ,\
+            body={'query':{'bool':{'must':attirbute_query_condition}}, 'size':count})['hits']['hits']
+
+    #step2.3: change process proportion
+    process_mark = change_process_proportion(task_name, 40)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task id not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step3: search structure user set
+    #step 3.1: structure user
+    structure_user_result = get_structure_user(seed_user_list, structure_dict, filter_dict)
+    #step3.2: change process proportion
+    process_mark = change_process_proportion(task_name, 60)
+    if process_mark == 'task is not exist':
+        print 'task %s have been exist' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step4: union search and structure user set
+    attribute_weight = query_condition_dict['attribute_weight']
+    structure_weight = query_condtion_dict['structure_weight']
+    all_union_user = union_attribute_structure(attribute_user_result, structure_user_result)
     #step5: filter user by event
-    #step6: filter by count and evaluation index
+    event_condtion_list = query_condition['text']
+    #step5.1: filter user list
+    filter_user_list = filter_event(all_union_user, event_condition_list)
+    #step5.2: change process proportion
+    process_mark = change_process_proportion(task_name, 80)
+    if process_mark == 'task is not exist':
+        print 'task  %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+    #step6: filter by count
+    count = filter_dict['count']
+    result = filter_user_list[:count]
+    result = seed_user_list.extend(result)
+
     return results
 
-#use to detect group by attribute or pattern
-#input: {}
-#output: {}
-def attribute_pattern_detect():
+
+#use to deal attribute_pattern detect type1----have attribute condition and filter by pattern
+#input: attribute_user_result, pattern_list
+#ouput: results --- ranked by attribute similarity score
+def attribute_filter_pattern(user_portrait_result, pattern_list):
     results = {}
-    #step1: search text user set(who is in user_portrait)
-    #step2: search attribute user
-    #step3: filter by count and evaluation index
+    #step1: adjust the date condition for date
+    new_pattern_list = []
+    new_range_dict_list = []
+    for pattern_item in pattern_list:
+        if 'range' in pattern_item:
+            range_dict = pattern_item['range']
+            from_ts = range_dict['from']
+            to_ts = range_dict['to']
+            from_date_ts = datetime2ts(ts2datetime(from_ts))
+            to_date_ts = datetime2ts(ts2datetime(to_ts))
+            if from_date_ts != to_date_ts:
+                iter_date_ts = from_date_ts
+                while iter_date_ts <= to_date_ts:
+                    iter_next_date_ts = iter_date_ts + DAY
+                    new_range_dict_list.append({'range':{'timestamp': {'from': iter_date_ts, 'to':iter_next_date_ts}}})
+                    iter_date_ts = iter_next_date_ts
+                if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
+                    new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
+                if new_range_dict_list[-1]['range']['timestamp']['to'] > to_ts:
+                    new_range_dict_list[-1]['range']['timestamp']['to'] = to_ts
+            else:
+                new_range_dict_list = [{'range':{'timestamp':{'from':from_ts, 'to':to_ts}}}]
+        else:
+            new_pattern_list.append(pattern_item)
+    #step2: iter to search user who pulish weibo meet pattern list
+    #step2.1: split user to bulk action
+    #step2.2: iter to search user meet pattern condition for different date
+    user_count = len(user_portrait_result)
+    iter_count = 0
+    hit_user_set = set()
+    while iter_count < user_count:
+        iter_user_list = [portrait_item[0] for portrait_item in user_portrait_result[iter_count: iter_count+DETECT_ITER_COUNT]]
+        #get uid nest_body_list
+        nest_body_list = []
+        for iter_user in iter_user_list:
+            nest_body_list.append({'term': {'uid': iter_user}})
+        iter_user_pattern_condition_list = new_pattern_dict_list
+        iter_user_pattern_condition_list.append({'bool':{'should': nest_body_list}})
+        #iter date to search different flow_text es
+        for range_item in new_range_dict_list:
+            iter_date_pattern_condition_list = iter_user_patter_condition_list
+            iter_date_pattern_condition_list.append(range_item)
+            range_from_ts = range_item['range']['timestamp']['from']
+            range_from_date = ts2date(range_from_ts)
+            flow_index_name = flow_text_index_name_pre + range_from_date
+            try:
+                flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
+                        body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
+            except:
+                flow_text_exist = []
+            #get hit user set
+            for flow_text_item in flow_text_exist:
+                uid = flow_text_item['fields']['uid'][0]
+                hit_user_set.add(uid)
+
+        iter_count += DETECT_ITER_COUNT
+    #identify the hit user list ranked by score
+    rank_hit_user = []
+    for user_item in user_portrait_result:
+        uid = user_item['_id']
+        uid_set = set(uid)
+        if len(uid_set & hit_user_set) != 0:
+            rank_hit_user.append(uid)
+        
+    return rank_hit_user
+
+
+#use to deal attribute_pattern detect type2----no attribute condition, just use pattern condition
+#input: pattern_list, filter_dict
+#output: results --- ranked by filter condition influence or importance
+def pattern_filter_attribute(pattern_list, filter_dict):
+    results = {}
+    #step1: adjust the date condition for date
+    new_pattern_list = []
+    new_range_dict_list = []
+    for pattern_item in pattern_list:
+        if 'range' in pattern_item:
+            range_dict = pattern_item['range']
+            from_ts = range_dict['from']
+            to_ts = range_dict['to']
+            from_date_ts = datetime2ts(ts2datetime(from_ts))
+            to_date_ts = datetime2ts(ts2datetime(to_ts))
+            if from_date_ts != to_date_ts:
+                iter_date_ts = from_date_ts
+                while iter_date_ts <= to_date_ts:
+                    iter_next_date_ts = iter_date_ts + DAY
+                    new_range_dict_list.append({'range':{'timestamp':{'from':iter_date_ts, 'to':iter_next_date_ts}}})
+                    iter_date_ts = iter_next_date_ts
+                if new_range_dict_list[0]['range']['timestamp']['from'] < from_ts:
+                    new_range_dict_list[0]['range']['timestamp']['from'] = from_ts
+                if new_range_dict_list[-1]['range']['timestamp']['to'] > to_ts:
+                    new_range_dict_list[-1]['range']['timestamp']['to'] = to_ts
+            else:
+                new_range_dict_list = [{'range': {'timestamp':{'from': from_ts, 'to': to_ts}}}]
+        else:
+            new_pattern_list.append(patter_item)
+    #step2.1: iter to search user who meet pattern condition
+    #step2.2: filter who is in user_portrait and meet filter_dict
+    all_hit_user = {}
+    for range_item in new_range_dict_list:
+        iter_date_pattern_condition_list = new_pattern_list
+        iter_date_pattern_condition_list.append(range_item)
+        range_from_ts = range_item['range']['timestamp']['from']
+        range_from_date = ts2date(range_from_ts)
+        flow_index_name = flow_text_index_name_pre + range_from_date
+        try:
+            flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type,\
+                    body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size': MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
+        except:
+            flow_text_exist = []
+        #pattern user set
+        pattern_user_set = set([flow_text_item['fields']['uid'][0] for flow_text_item in flow_text_exist])
+        pattern_user_list = list(pattern_user_set)
+        #filter by user_portrait filter dict by bulk action
+        patter_user_count = len(pattern_user_list)
+        iter_count = 0
+        #add filter dict
+        inter_portrait_condition_list = []
+        inter_portrait_condition_list.append({'range':{'importance':{'from': filter_dict['importance']['from'], 'to': filter_dict['importance']['to']}}})
+        inter_portrait_condition_list.append({'range':{'importance':{'from': filter_dict['influence']['from'], 'to':filter_dict['influence']['to']}}})
+        while iter_count < pattern_user_count:
+            iter_user_list = pattern_user_list[iter_count: iter_count + DETECT_ITER_COUNT]
+            #get uid nest_body_list
+            nest_body_list = []
+            for iter_user in iter_user_list:
+                nest_body_list.append({'term': iter_user})
+            iter_portrait_condition_list.append({'bool':{'should': nest_body_list}})
+            #search user in user_portrait
+            try:
+                in_portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type,\
+                        body={'query':{'bool':{'must': iter_portrait_condition_list}}, 'size': MAX_VALUE}, _source=False, fields=['influence','importance'])['hits']['hits']
+            except:
+                in_portrait_result = []
+
+            #add to all hit user
+            for in_portrait_item in in_portrait_result:
+                all_hit_user[in_portrait_item['_id']] = [in_portrait_item['fields']['influence'][0], in_portrait_item['fields']['importance'][0]]
+            
+            iter_count += DETECT_ITER_COUNT
+    
+    #sort all hit user by influence
+    count = filter_dict['count']
+    sort_all_hit_user = sorted(all_hit_user.items(), key=lambda x:x[1][0], reverse=True)[:count]
+    #detect user list ranked by iinfluence
+    rank_user_list = [sort_item[0] for sort_item in sort_all_hit_user]
+
+    return rank_user_list
+
+
+#use to detect group by attribute or pattern
+#input: detect_task_information
+#output: detect user list
+#deal two scen---1) have attribute condition and filter by pattern 
+#                2)no attribute condition, just use pattern condition
+def attribute_pattern_detect(input_dict):
+    results = {}
+    task_information_dict = input_dict['task_information']
+    task_name = task_information_dict['task_name']
+    task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    query_condition_dict = input_dict['query_condition']
+    filter_dict = query_condition_dict['filter']
+    attribute_list = query_condition_dict['attribute']
+    pattern_list = query_condtion_dict['pattern']
+    if len(attribute_list) != 0:
+        #type1:have attribute condition and filter by pattern
+        #step1: search user_portrait by attribute condition and filter condition
+        count = MAX_DETECT_COUNT
+        for filter_item in filter_dict:
+            if filter_item == 'count':
+                count = filter_dict[filter_item] * DETECT_COUNT_EXPAND
+            else:
+                filter_value_from = filter_dict[filter_item]['from']
+                filter_value_to = filter_dict[filter_item]['to']
+                attribute_list.append({'range':{filter_item: {'from': filter_value_from, 'to': filter_value_to}}})
+        try:
+            user_portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type ,\
+                    body={'query':{'bool':{'must': attribute_list}}, 'size':count})['hits']['hits']
+        except:
+            user_portrait_result = []
+        #step1.2:change process proportion
+        procss_mark = change_process_proportion(task_name, 30)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+
+        #step2: filter user by pattern condition
+        filter_user_result = attribute_filter_pattern(user_portrait_result, pattern_list)
+        #step2.2:change process proportion
+        process_mark = change_process_proportion(task_name, 60)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+    else:
+        #type2: no attribute condition, just use pattern condition
+        #step1: search pattern list and filter by in-user_portrait and filter_dict
+        filter_user_result = pattern_filter_portrait(pattern_list, filter_dict)
+        #step2.2: change process proportion
+        process_mark = change_process_proportion(task_name, 60)
+        if process_mark == 'task is not exist':
+            print 'task %s have been delete' % task_name
+            return 'task is not exist'
+        elif process_mark == False:
+            return process_mark
+    
+    #step3: filter user list by filter count
+    count = filter_dict['count']
+    results = filter_suer_result[:count]
     return results
 
 #use to detect group by event
