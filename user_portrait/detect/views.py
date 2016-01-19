@@ -269,8 +269,12 @@ def ajax_attribute_pattern():
     #step1.3: select item
     for item in DETECT_ATTRIBUTE_SELECT_ITEM:
         if item=='tag':
-            item_name = request.args.get(item+'_name', '')
-            item_value = request.args.get(item+'_value', '')
+            tag_string = request.args.get(item, '')
+            tag_string_list = tag_string.split(',')
+            for tag_item in tag_string_list:
+                tag_item_list = tag_item.split('-')
+                item_name = tag_item_list[0]
+                item_value = tag_item_list[1]
             if item_name and item_value:
                 attribute_condition_num += 1
                 attribute_query_list.append({'match':{item_name: item_value}})
