@@ -17,6 +17,7 @@ Draw_resultTable: function(data){
     $('#content_manage').empty();
     var item = data;
 	var html = '';
+	html += '<a id="turnback" href="" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>发现方式</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
@@ -49,17 +50,20 @@ Draw_dis_Table:function(data){
 	var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
-	html += '<tr><td>名称</td><td>人</td><td>20160107</td><td>发现</td><td>1</td><td> </td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+	for (i=0;i<data.length;i++){
+		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+data[i][3]+'</td><td>'+data[i][1]+'</td><td> </td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+	}
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
-}
+	}
 
 }
 var Group_identify_task = new Group_identify_task();
-url = '/group/show_task/' 
+url = '/group/show_task/'; 
 Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
-Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
+deurl= '/detect/show_detect_task/';
+Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
 
 function Group_delete_task(){
 	 this.url = "/group/delete_group_task/?";
@@ -87,7 +91,7 @@ function deleteGroup(that){
 			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
 			//window.location.href = url;
-			that.call_sync_ajax_request(url,that.ajax_method,that.del);
+			//that.call_sync_ajax_request(url,that.ajax_method,that.del);
 		}
 	});	
 }
@@ -109,9 +113,14 @@ $('a[id^="commit_control"]').click(function(){
 function submit_analyze(that){
 	$('a[id^="group_commit_analyze"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-		url = url + 'task_name=' + temp;
+		url = "/detect/show_detect_result/?task_name=" + temp;
 		//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
 		draw_table('1',"#group_analyze_confirm");
+		remark0 = $(this).parent().prev().prev().html();
+		//document.getElementById('group_name0').innerHTML=temp;
+		//document.getElementById('remark0').innerHTML=remark0;
+		$('span[id^="group_name0"]').html(temp);
+		$('span[id^="remark0"]').html(remark0);
 		$('#group_analyze').modal();
 	});	
 }
@@ -123,9 +132,7 @@ function submit_control(that){
 		url = url + 'task_name=' + temp;
 		//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
 		draw_table('1',"#group_control_confirm");
-			console.log(1);
 		$('#group_control').modal();
-			console.log(2);
 	});	
 }
 
@@ -155,4 +162,44 @@ function delRow(obj){
     Row = Row.parentNode;
   }
   Row.parentNode.removeChild(Row);
+}
+
+function group_analyze_confirm_button(){
+  	var group_confirm_uids = [];
+  	$('[name="analyze_list_option"]').each(function(){
+  	    group_confirm_uids.push($(this).text());
+  	});
+  	console.log(group_confirm_uids);
+  	var group_ajax_url = '/detect/add_detect2analysis/';
+  	var group_url = '/index/group_result/';
+  	var group_name = $('#group_name0').text();
+  	console.log(group_name);
+  	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
+  	console.log(job);
+  	// $.ajax({
+  	//     type:'POST',
+  	//     url: group_ajax_url,
+  	//     contentType:"application/json",
+  	//     data: JSON.stringify(job),
+  	//     dataType: "json",
+  	//     success: callback
+  	// });
+  	function callback(data){
+  	    console.log(data);
+  	    if (data == '1'){
+  	        window.location.href = group_url;
+  	    }
+  	    else{
+  	        alert('已存在相同名称的群体分析任务,请重试一次!');
+  	    }
+  	}
+}
+
+function group_search_button(){ //表单搜索
+	var task_name = $('input[name="task_name"]').val();
+	var submit_date = $('input[name="submit_date"]').val();
+	var state = $('input[name="state"]').val();
+	var detect_type = $('select[name="detect_type"] option:selected').val();
+	var submit_user = $('input[name="submit_user"]').val();
+	console.log(task_name,submit_date,state,detect_type,submit_user);
 }
