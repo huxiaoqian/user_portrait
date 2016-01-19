@@ -13,7 +13,12 @@
             #tab_left li a:hover{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
             #tab_con{width: 820px;height: 380px;overflow: hidden;} 
         </style>
+        <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"></script>
     {% endblock css %}
+    {% block head_js %}
+        {{ super() }}
+        <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+    {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
     <div class="box-content">
@@ -38,6 +43,7 @@
 
                         </div>
                         <div id="tab_con_2" style='display:none'>
+                            {% include "portrait/group/attribute_pattern.html"%}
                         </div>
                         <div id="tab_con_3" style='display:none'>
                         </div>

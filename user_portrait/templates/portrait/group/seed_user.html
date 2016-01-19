@@ -9,7 +9,7 @@
                     <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >多个种子用户</span>
                 </div>
             </div>
-            <hr style='width:800px;margin-bottom:0px;'>
+            <hr style='width:800px;margin-bottom:0px;margin-left:10px;'>
             <div id='single_user_ext' class="box-content" style="height:440px">
                 <input id="uid_uname" type='text' class="form-control" style='width:27%;margin:10px 15px;margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
                 <div id='single_user'></div>
@@ -227,6 +227,7 @@ function seed_user_init(){
         var html = $('#seed_user #seed_user_ext').html();
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
+        console.log(seed_user_option);
         $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:'2015/04/15 05:03',step:10});
         $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:'2015/04/15 05:03',step:10});
         if (seed_user_option == 'multi_user'){

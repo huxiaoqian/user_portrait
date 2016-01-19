@@ -168,7 +168,7 @@ def ajax_multi_person():
                 attribute_list.append(attribute_item)
         attribute_condition_num = len(attribute_list)
         if attribute_condition_num != 0:
-            attribute_weight = request.form['attribtue_weight']
+            attribute_weight = request.form['attribute_weight']
         else:
             attribute_weight = 0
         query_dict['attribute_weight'] = attribute_weight

@@ -307,6 +307,10 @@ def single_detect(input_dict):
     task_information_dict = input_dict['task_information']
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        print 'task %s have been delete'
+        return 'task is not exist'
+
     seed_user_dict = input_dict['seed_user']
     query_condition_dict = input_dict['query_condition']
     filter_dict = input_dict['filter']
@@ -347,35 +351,211 @@ def single_detect(input_dict):
             body={'query':{'bool':{'must':attribute_query_list}}, 'size': count})['hits']['hits']
     #step2.3: change process proportion
     process_mark = change_process_proportion(task_name, 25)
-    if process_mark == False:
+    if process_mark == 'task is not exist':
         print 'task %s have been delete' % task_name
-        return 'have been delete'
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
 
     #step3: search structure user set
+    #step3.1: search structure user result
     structure_user_result = get_structure_user([seed_uid], structure_dict, filter_dict)
+    #step3.2: change process proportion
+    process_mark = change_process_proportion(task_name, 50)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step4: union attribtue and structure user set
     attribute_weight = query_condition_dict['attribute_weight']
     structure_weight = query_condition_dict['structure_weight']
     all_union_user = union_attribtue_structure(attribute_user_result, structure_user_result)
     #step5: filter user by event
     event_condition_list = query_condition['text']
+    #step5.1: filter user list
     filter_user_list = filter_event(all_union_user, event_condition_list)
+    #step5.2: change process proportion
+    process_mark = change_process_proportion(task_name, 75)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step6: filter by count
     count = filter_dict['count']
     result = filter_user_list[:count]
+    results = [seed_uid].extend(result)
     return results
 
-#use to detect group by multi-person
-#input: {}
-#output: {}
-def multi_detect():
+
+
+#use to get seed user attribute
+#input: seed_user_list, attribute_list
+#output: results
+def get_seed_user_attribute(seed_user_list, attribute_list):
     results = {}
-    #step1: get seed users attribute
+    attribute_query_list = []
+    #step1: mget user result from user_portrait
+    try:
+        seed_user_portrait = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                body={'ids':seed_user_list}, _source=True)['docs']
+    except:
+        seed_user_portrait = []
+    #init results dict---result={'location':{}, 'domain':{}, ...}
+    for attribute_item in attribute_list:
+        results[attribute_item] = {}
+    #step2: compute attribute result about attribute_list
+    for seed_user_item in seed_user_portrait:
+        uid = seed_user_item['_id']
+        if seed_user_item['found'] == True:
+            #static the attribute
+            #step2.1: location
+            if 'location' in attribute_list:
+                location_value = seed_user_item['location']
+                try:
+                    results['location'][location_value] += 1
+                except:
+                    results['location'][location_value] = 1
+            #step2.2: domain
+            if 'domain' in attribute_list:
+                domain_value = seed_user_item['domain']
+                try:
+                    results['domain'][domain_value] += 1
+                except:
+                    results['domain'][domain_value] = 1
+            #step2.3: topic_string
+            if 'topic_string' in attribute_list:
+                topic_value_string = seed_user_item['topic_string']
+                topic_value_list = topic_value_string.split('&')
+                for topic_item in topic_value_list:
+                    try:
+                        results['topic_string'][topic_item] += 1
+                    except:
+                        results['topic_string'][topic_item] = 1
+            #step2.4: keywords_string
+            if 'keywords_string' in attribute_list:
+                keywords_value_string = seed_user_item['keywords_string']
+                keywords_value_list = keywords_value_string.split('&')
+                for keywords_item in keywords_value_list:
+                    try:
+                        results['keywords_string'][keywords_item] += 1
+                    except:
+                        results['keywords_string'][keywords_item] = 1
+            #step2.5: hashtag
+            if 'hashtag' in attribute_list:
+                hashtag_value_string = seed_user_item['hashtag']
+                hashtag_value_list = hashtag_value_string.split('&')
+                for hashtag_item in hashtag_value_list:
+                    try:
+                        results['hashtag'][hashtag_item] += 1
+                    except:
+                        results['hashtag'][hashtag_item] = 1
+            #step2.6: activity_geo
+            if 'activity_geo' in attribute_list:
+                activity_geo_dict = json.loads(seed_user_item['activity_geo_dict'])[-1]
+                for activity_geo_item in activity_geo_dict:
+                    try:
+                        results['activity_geo'][activity_geo_item] += 1
+                    except:
+                        results['activity_geo'][activity_geo_item] = 1
+            #step2.7: tendency
+            #step2.8: tag
+            #step2.9: remark
+    #step3: get search attribtue value-- new attribute query condition
+    new_attribute_query_condition = []
+    for item in results:
+        iter_dict = results[item]
+        sort_item_dict = sorted(iter_dict.items(), key=lambda x:x[1], reverse=True)
+        nest_body_list = []
+        for query_item in sort_item_dict[:3]:
+            item_value = query_item[0]
+            nest_body_list.append({'wildcard':{item: '*'+item_value+'*'}})
+        new_attribute_query_condition.append({'bool':{'should': nes_body_list}})
+
+    return new_attribute_query_condition
+
+#use to detect group by multi-person
+#input: detect_task_information
+#output: detect user list (contain submit uid list)
+def multi_detect(detect_task_information):
+    results = {}
+    task_information_dict = input_dict['task_information']
+    task_name = task_information_dict['task_name']
+    task_exist_mark = identify_task_exist(task_name)
+    if task_exist_mark == False:
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    query_condition_dict = input_dict['query_condition']
+    filter_dict = input_dict['filter']
+    structure_dict = input_dict['structure_dict']
+    #step1.1: get seed users attribute
+    attribute_list = query_condition_dict['attribute']
+    seed_user_list = task_information_dict['uid_list']
+    attribute_query_condition = get_seed_user_attribute(seed_user_list, attribute_list)
+    #step1.2: change process proportion
+    process_mark = change_process_proportion(task_name, 20)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step2: search attribute user set
+    #step2.1: add filter condition
+    count = MX_DETECT_COUNT
+    for filter_item in filter_dict:
+        if filter_item == 'count':
+            count = filter_dict[filter_item] * DETECT_COUNT_EXPAND
+        else:
+            filter_value_from = filter_dict[filter_item]['from']
+            filter_value_to = filter_dict[filter_item]['to']
+            attribute_query_condition.append({'range':{filter_item: {'from':filter_value_from, 'to':filter_value_to}}})
+    #step2.2: search user_portriait condition
+    attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type ,\
+            body={'query':{'bool':{'must':attirbute_query_condition}}, 'size':count})['hits']['hits']
+
+    #step2.3: change process proportion
+    process_mark = change_process_proportion(task_name, 40)
+    if process_mark == 'task is not exist':
+        print 'task %s have been delete' % task_name
+        return 'task id not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step3: search structure user set
+    #step 3.1: structure user
+    structure_user_result = get_structure_user(seed_user_list, structure_dict, filter_dict)
+    #step3.2: change process proportion
+    process_mark = change_process_proportion(task_name, 60)
+    if process_mark == 'task is not exist':
+        print 'task %s have been exist' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+
     #step4: union search and structure user set
+    attribute_weight = query_condition_dict['attribute_weight']
+    structure_weight = query_condtion_dict['structure_weight']
+    all_union_user = union_attribute_structure(attribute_user_result, structure_user_result)
     #step5: filter user by event
-    #step6: filter by count and evaluation index
+    event_condtion_list = query_condition['text']
+    #step5.1: filter user list
+    filter_user_list = filter_event(all_union_user, event_condition_list)
+    #step5.2: change process proportion
+    process_mark = change_process_proportion(task_name, 80)
+    if process_mark == 'task is not exist':
+        print 'task  %s have been delete' % task_name
+        return 'task is not exist'
+    elif process_mark == False:
+        return process_mark
+    #step6: filter by count
+    count = filter_dict['count']
+    result = filter_user_list[:count]
+    result = seed_user_list.extend(result)
+
     return results
 
 #use to detect group by attribute or pattern
@@ -409,6 +589,7 @@ def save_detect_results(detect_results):
         task_exist_result = {}
     if task_exist_result != {}:
         task_exist_result['uid_list'] = json.dumps(detect_results)
+        task_exist_result['detect_process'] = 100
         es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=task_exist_result)
         mark = True
 
