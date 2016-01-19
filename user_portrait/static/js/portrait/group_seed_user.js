@@ -1,3 +1,23 @@
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
 function bind_button_click(){
     $('#seed_user #'+seed_user_option+' #hop_checkbox').click(function(){
         if($(this).is(':checked')){
@@ -87,8 +107,8 @@ function seed_user_init(){
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
         console.log(seed_user_option);
-        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:'2015/04/15 05:03',step:10});
-        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:'2015/04/15 05:03',step:10});
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:current_date,maxDate:max_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,maxDate:max_date,step:10});
         if (seed_user_option == 'multi_user'){
             $('#seed_user #multi_user #attribute').css('display','none');
             $('#seed_user #multi_user #structure').css('display','none');
@@ -99,6 +119,15 @@ function seed_user_init(){
         bind_button_click();
     }    
 }
+
+var max_date = new Date().format('yyyyMMdd');
+var current_date = new Date().format('yyyy/MM/dd hh:mm');
+var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+var min_date_ms = new Date()
+min_date_ms.setTime(min_date_time*1000);
+var min_date = min_date_ms.format('yyyyMMdd');
+console.log(current_date);
+console.log(min_date);
 
 var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
 var seed_user_flag = false;
