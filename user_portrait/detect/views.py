@@ -54,6 +54,7 @@ def ajax_single_person():
             attribute_condition_num += 1
     attribute_condition_num = len(attribute_list)
     attribute_weight = request.args.get('attribute_weight', DETECT_DEFAULT_WEIGHT) #default weight: 0.5
+    attribute_weight = float(attribute_weight)
     if attribute_condition_num==0:
         attribute_weight = 0
     query_dict['attribute'] = attribute_list
@@ -67,6 +68,7 @@ def ajax_single_person():
             structure_condition_num += 1
     struture_condition_num = len(structure_list)
     structure_weight = request.args.get('structure_weight', DETECT_DEFAULT_WEIGHT) #default weight 0.5
+    structure_weight = float(atructure_weight)
     if struture_condition_num==0:
         attribute_weight = 0
     query_dict['structure'] = structure_list
@@ -88,7 +90,7 @@ def ajax_single_person():
             if int(item_value_from) > int(item_value_to):
                 return 'invalid input for range'
             else:
-                text_query_list.append({'range':{text_item:{'from':item_value_from, 'to':item_value_to}}})
+                text_query_list.append({'range':{text_item:{'from':int(item_value_from), 'to':int(item_value_to)}}})
 
     query_dict['text'] = text_query_list
     #identify the query condition num at least one
@@ -99,12 +101,13 @@ def ajax_single_person():
     for filter_item in DETECT_QUERY_FILTER:
         if filter_item=='count':
             filter_item_value = request.args.get(filter_item, DETECT_DEFAULT_COUNT)
+            filter_item_value = int(filter_item_value)
         else:
             filter_item_from = request.args.get(filter_item+'_from', DETECT_FILTER_VALUE_FROM)
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to):
                 return 'invalid input for filter'
-            filter_item_value = {'from': filter_item_from, 'to': filter_item_to}
+            filter_item_value = {'from': int(filter_item_from), 'to': int(filter_item_to)}
         filter_dict[filter_item] = filter_item_value
     if filter_dict['count'] == 0:
         return 'invalid input for count'
@@ -171,7 +174,7 @@ def ajax_multi_person():
             attribute_weight = request.form['attribute_weight']
         else:
             attribute_weight = 0
-        query_dict['attribute_weight'] = attribute_weight
+        query_dict['attribute_weight'] = float(attribute_weight)
         query_dict['attribute'] = attribute_list
         #get query dict: structure
         structure_list = {}
@@ -186,7 +189,7 @@ def ajax_multi_person():
             structure_weight = request.form['structure_weight']
         else:
             structure_weight = 0
-        query_dict['structure_weight'] = structure_weight
+        query_dict['structure_weight'] = float(structure_weight)
         query_dict['structure'] = structure_list
         #get query_dict: text
         text_query_list = []
@@ -205,7 +208,7 @@ def ajax_multi_person():
                 if int(item_value_from) > int(ite_value_to):
                     return 'invalid input for range'
                 else:
-                    text_query_list.append({'range':{text_item:{'from':item_value_from, 'to':item_value_to}}})
+                    text_query_list.append({'range':{text_item:{'from':int(item_value_from), 'to':int(item_value_to)}}})
         query_dict['text'] = text_query_list
         #identify the comdition num at least 1
         if attribute_condition_num + structure_condition_num == 0:
@@ -216,6 +219,7 @@ def ajax_multi_person():
         for filter_item in DETECT_QUERY_FILTER:
             if filter_item == 'count':
                 filter_item_value = request.form[filter_item]
+                filter_item_value = int(filter_item_value)
                 if filter_item_value != '0':
                     filter_condition_num += 1
             else:
@@ -225,7 +229,7 @@ def ajax_multi_person():
                     return 'valid input for filter'
                 if filter_item_to != '0':
                     filter_condition_num += 1
-                filter_item_value = {'from':filter_item_from, 'to':filter_item_to}
+                filter_item_value = {'from':int(filter_item_from), 'to':int(filter_item_to)}
             filter_dict[filter_item] = filter_item_value
         if filter_condition_num == 0:
             return 'valid input for filter'
@@ -311,7 +315,7 @@ def ajax_attribute_pattern():
             if int(item_value_from) > int(item_value_to):
                 return 'invalid input for condition'
             else:
-                pattern_query_list.append({'range':{item:{'from': item_value_from, 'to':item_value_to}}})
+                pattern_query_list.append({'range':{item:{'from': int(item_value_from), 'to':int(item_value_to)}}})
         
     #identify attribute and pattern condition num >= 1
     if attribute_condition_num + pattern_condition_num < 1:
@@ -322,12 +326,13 @@ def ajax_attribute_pattern():
     for filter_item in DETECT_QUERY_FILTER:
         if filter_item=='count':
             filter_item_value = request.args.get(filter_item, DETECT_DEFAULT_COUNT)
+            filter_item_value = int(filter_item_value)
         else:
             filter_item_from = request.args.get(filter_item+'_from', DETECT_FILTER_VALUE_FROM)
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to):
                 return 'invalid input for filter'
-            filter_item_value = {'from': filter_item_from, 'to':filter_item_to}
+            filter_item_value = {'from': int(filter_item_from), 'to':int(filter_item_to)}
         filter_dict[filter_item] = filter_item_value
     if filter_dict['count'] == 0:
         return 'invalid input for count'

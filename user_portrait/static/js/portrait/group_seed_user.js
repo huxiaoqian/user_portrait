@@ -64,9 +64,14 @@ function bind_button_click(){
         }
     });
     if (seed_user_option == 'multi_user'){
-        var fileInput = document.getElementById('seed_file_upload');
-        fileInput.addEventListener('change', function () {
-        // 检查文件是否选择:
+        $('#seed_user #multi_user_ext #delete_file').click(function(){
+            seed_user_files = undefined;
+            $('#seed_user #multi_user_ext #file_status').css('display', 'none');
+        });
+        $('#seed_user #multi_user_ext #uploadbtn').click(function(){
+            var fileInput = document.getElementById('seed_file_upload');
+            // 检查文件是否选择:
+            console.log(fileInput.value);
             if (!fileInput.value) {
                 alert('没有选择文件');
                 return;
@@ -75,10 +80,14 @@ function bind_button_click(){
             var file = fileInput.value;
             //alert(file);
             if ((file.endsWith('.csv')) || (file.endsWith('.txt'))) {
-                //alert('Can only upload csv or txt file.');
+                console.log('success');
+                seed_user_files = fileInput.files;
+                $('#seed_user #multi_user_ext #add_file').html(file);
+                $('#seed_user #multi_user_ext #file_status').css('display', 'block');
                 return false;
             }else{
                 alert('Can only upload csv or txt file.');
+                return;
             }
         });
         $('#seed_user #multi_user_ext [name="ext_choose"]').change(function(){
@@ -107,8 +116,8 @@ function seed_user_init(){
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
         console.log(seed_user_option);
-        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:current_date,maxDate:max_date,step:10});
-        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,maxDate:max_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
         if (seed_user_option == 'multi_user'){
             $('#seed_user #multi_user #attribute').css('display','none');
             $('#seed_user #multi_user #structure').css('display','none');
@@ -120,12 +129,10 @@ function seed_user_init(){
     }    
 }
 
-var max_date = new Date().format('yyyyMMdd');
+var seed_user_files = undefined;
+var max_date = '+1970/01/01';
+var min_date = '-1970/01/30';
 var current_date = new Date().format('yyyy/MM/dd hh:mm');
-var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-var min_date_ms = new Date()
-min_date_ms.setTime(min_date_time*1000);
-var min_date = min_date_ms.format('yyyyMMdd');
 console.log(current_date);
 console.log(min_date);
 

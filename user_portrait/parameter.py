@@ -187,7 +187,7 @@ DETECT_DEFAULT_COUNT = 100
 DETECT_FILTER_VALUE_FROM = 50
 DETECT_FILTER_VALUE_TO = 100
 DETECT_ITER_COUNT = 100
-DETECT_TEXT_FUZZ_ITEM = ['keywords_string']
+DETECT_TEXT_FUZZ_ITEM = ['text']
 DETECT_TEXT_RANGE_ITEM = ['timestamp']
 MAX_DETECT_COUNT = 900
 DETECT_COUNT_EXPAND = 3
@@ -201,5 +201,10 @@ DETECT_PATTERN_SELECT_ITEM = ['message_type', 'sentiment']
 DETECT_PATTERN_RANGE_ITEM = ['timestamp']
 #group detect: event detect
 DETECT_EVENT_ATTRIBUTE = ['topic_string', 'domain']
-DETECT_EVENT_TEXT_FUZZ_ITEM = ['keywords_string']
+DETECT_EVENT_TEXT_FUZZ_ITEM = ['text']
 DETECT_EVENT_TEXT_RANGE_ITEM = ['timestamp']
+#identify user attribute list
+IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influence', 'domain_v3', \
+        'online_pattern', 'keywords_string', 'topic', 'activity_geo', 'uname', 'hashtag', 'keywords', 'fansnum', \
+        'psycho_status', 'tendency', 'photo_url', 'verified', 'statusnum', 'gender', 'topic_string',\
+        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark']

@@ -113,6 +113,14 @@ index_info = {
                 },
                 "friendsnum": {
                     "type": "long"
+                }, 
+                'group':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                },
+                'remark':{
+                    'type': 'string',
+                    'index': 'not_analyzed'
                 }
             }
         }
