@@ -227,6 +227,7 @@ function seed_user_init(){
         var html = $('#seed_user #seed_user_ext').html();
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
+        console.log(seed_user_option);
         $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:'2015/04/15 05:03',step:10});
         $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:'2015/04/15 05:03',step:10});
         if (seed_user_option == 'multi_user'){
