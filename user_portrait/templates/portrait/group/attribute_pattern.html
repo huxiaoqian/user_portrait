@@ -1,4 +1,7 @@
 <style type="text/css">
+#attribute_pattern{
+  color:#555;
+}
 #attribute_pattern .col-lg-2{
 	padding: 0 15px;
 }
@@ -120,7 +123,7 @@
               </div>
             </div>
           </div>
-					<div class='cols' style="margin-top:-15px;padding-left:28px;" id="topic_string">
+					<div class='cols' style="margin-top:-10px;padding-left:28px;" id="topic_string">
             <div class='col-md-12'>
               <span style="float:left;line-height: 27px;margin-right:15px">话题</span>
               <div class='col-lg-2'>
@@ -217,8 +220,10 @@
 						<div class='col-md-12'   style=' margin-left: 15px;'>
 							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;padding-left:0px;" id="">所处城市</span>
 							<input id="geo" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
-							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;margin-left:40px;" id="">ip地址</span>
+							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">ip地址</span>
 							<input id="ip" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：127.0.0.1'>
+              <span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">倾向性</span>
+              <input id="tendency" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='倾向性'>
 						</div>
 						<br>
 						<div class='col-md-12'  id="message_type" style="margin-top:10px;margin-left: 15px;">
@@ -268,24 +273,47 @@
                 <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="">消极其他</span>
               </div>
             </div>
-            <div class='col-md-12' style="margin:5px -5px;">
+            <div class='col-md-12' style="margin:0px 0px 10px 0px;">
 	            <span class="input-group-addon" style="width:100px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;margin-left: 15px;">微博发布时间</span>
 	            <input id="weibo_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px;margin-left:10px;'>&nbsp;-&nbsp;
 	            <input id="weibo_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
-
 	          </div>
+            <div id="extension" class="col-md-12" style="padding-top:5px;padding-left:0px;">
+            <label class='control-label'>扩展规则
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;margin-left: -5px;'>
+                    <div class='col-lg-4' >
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
+                        <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
+                            0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
+                        </span>
+                    </div>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
+                         <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                         <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                    </div>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
+                         <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                         <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                    </div>
+                </div>
+            </div>
+        </div>
             <hr style='width:800px;margin-bottom:0px;'>
-            <div id="information" class="col-md-12" style="padding-top:5px">
+            <div id="information" class="col-md-12" style="padding-top:5px;padding-left:0px;">
               <label class='control-label'>群组信息</label>
               <div class='controls'>
-                <div class='col-md-12' style='padding:0px;'>
-                  <div class='col-lg-6' style='padding:0px;'>
+                <div class='col-md-12' style='padding:0px;margin-left: 5px;'>
+                  <div class='col-lg-6' style='padding:0px;width:48%;'>
                     <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block;margin-left: 5px;">名称</span>
-                    <input id="first_name" type='text' class="form-control" style='width:79%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                    <input id="first_name" type='text' class="form-control" style='width:78%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
                   </div>
                   <div class='col-lg-6' style='padding:0px;'>
                     <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
-                    <input id="first_remarks" type='text' class="form-control" style='width:78%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+                    <input id="first_remarks" type='text' class="form-control" style='width:76%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
                   </div>
                 </div>
               </div>
@@ -344,11 +372,38 @@
         }
 	}
 
-	$('#attribute_pattern #weibo_from').datetimepicker({value:'2016/01/11 00:00',step:10});
-	$('#attribute_pattern #weibo_to').datetimepicker({value:'2016/01/17 00:00',step:10});
-	var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
-	var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
-  console.log(time_from);
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
+
+  var max_date = new Date().format('yyyyMMdd');
+  var current_date = new Date().format('yyyy/MM/dd hh:mm');
+  var from_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24;
+  var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+  var min_date_ms = new Date()
+  min_date_ms.setTime(from_date_time*1000);
+  var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
+
+	$('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10});
+	$('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10});
+  //console.log(time_from);
 	function attribute_pattern_timepicker(str){
 	    var date_time = str.split(' ');
 	    var dates = date_time[0].split('/');
@@ -362,7 +417,7 @@
 	    final_date.setFullYear(yy,mm,dd);
 	    final_date.setHours(hh,minute);
 	    final_date = Math.floor(final_date.getTime()/1000);
-	    console.log(final_date);
+	    //console.log(final_date);
 	}
 
 function attribute_pattern_check(){             // check validation 
@@ -370,7 +425,21 @@ function attribute_pattern_check(){             // check validation
   var group_name = $('#attribute_pattern #first_name').val();
   var remark = $('#attribute_pattern #first_remarks').val();
   var location = $('#attribute_pattern #location').val();
-  console.log(group_name, remark);
+  var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
+  var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
+  var num_range_count = $('#attribute_pattern #num-range').val();
+  if(num_range_count ==0 ){
+    alert('扩展规则中人数不能为0！')
+  }
+  if(time_from > time_to){
+    alert('选择发布微博的起止时间错误，请重新选择！');
+    return false;
+  }
+  if(min_date_time > time_from){
+    alert('请选择近一个月内的时间！');
+    return false;
+  }
+  //console.log(group_name, remark);
   if (group_name.length == 0){
       alert('群体名称不能为空');
       return false;
@@ -394,7 +463,7 @@ function attribute_pattern_check(){             // check validation
 	function submit_results2(){
     var flag = attribute_pattern_check();
     if(flag){
-      var url_attribute = '/attribute_pattern/?';
+      var url_attribute = '/detect/attribute_pattern/?';
       var domain = new Array(); 
       var topic_string = new Array();
       var basic_url = '';
@@ -493,9 +562,79 @@ function attribute_pattern_check(){             // check validation
       timestamp_to_url = 'timestamp_to=' + time_to;
       url_all.push(timestamp_to_url);
 
-      url_attribute += url_all.join('&');
+      var task_name_url = ''
+      var task_name_id = 'task_name'
+      var task_name_content = $('#attribute_pattern #first_name').val();
+      if(task_name_content != ''){
+        task_name_url =task_name_id +'='+ task_name_content;
+        url_all.push(task_name_url);
+      }
+
+      var first_remarks_url = ''
+      var first_remarks_id = 'state'
+      var first_remarks_content = $('#attribute_pattern #first_remarks').val();
+      if(first_remarks_content != ''){
+        first_remarks_url = first_remarks_id +'='+ first_remarks_content;
+        url_all.push(first_remarks_url);
+      }
+
+      var num_range_url = '';
+      var num_range_count = $('#attribute_pattern #num-range').val();
+      //console.log(num_range_count);
+      num_range_url = 'count=' + num_range_count;
+      url_all.push(num_range_url);
+
+      var influ_from_url ='';
+      var influ_from_val = $('#attribute_pattern #influ_from').val();
+      influ_from_url = 'influence_from=' + influ_from_val;
+      url_all.push(influ_from_url);
+
+      var influ_to_url ='';
+      var influ_to_val = $('#attribute_pattern #influ_to').val();
+      influ_to_url = 'influence_to=' + influ_to_val;
+      url_all.push(influ_to_url);
+
+      var important_from_url ='';
+      var important_from_val = $('#attribute_pattern #impor_from').val();
+      important_from_url = 'important_from=' + important_from_val;
+      url_all.push(important_from_url);
+
+      var important_to_url ='';
+      var important_to_val = $('#attribute_pattern #impor_to').val();
+      important_to_url = 'important_to=' + important_to_val;
+      url_all.push(important_to_url);
+
+
+      url_attribute += url_all.join('&') + '&submit_user=admin';
       console.log(url_attribute);
-    }
-		
+
+      $.ajax({
+        type:'GET',
+        url: url_attribute,
+        contentType:"application/json",
+        dataType: "json",
+        success: callback
+      });
+      
+    }	
 	}
+  function callback(data){
+        console.log(data);
+        if (data == 'true'){
+          window.location.href=window.location.href;
+            // window.location.href = group_url;
+        } 
+        if(data =='task name invalid'){
+            alert('已存在相同名称的群体分析任务,请重试!');
+        }
+        if(data =='invalid input for condition'){
+          alert('请至少选择一个分析条件！');
+        }
+        if(data == 'invalid input for filter'){
+          alert('请输入合理的影响力或重要度范围！');
+        }
+        if(data == 'invalid input for count'){
+          alert('请选择合理的人数！')
+        }
+      }
 </script>
