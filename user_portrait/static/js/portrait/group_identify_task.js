@@ -13,11 +13,11 @@ Group_identify_task.prototype = {   //获取数据，重新画表
   },
 
 Draw_resultTable: function(data){
-    //console.log(data);
+    console.log('bbb');
     $('#content_manage').empty();
     var item = data;
 	var html = '';
-	html += '<a id="turnback" href="" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
+	html += '<a id="turnback"  href="javascript:void()" onclick="redraw_result()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>发现方式</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
@@ -50,8 +50,10 @@ Draw_dis_Table:function(data){
 	var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
+	j = 40;
 	for (i=0;i<data.length;i++){
-		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+data[i][3]+'</td><td>'+data[i][1]+'</td><td> </td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+data[i][3]+'</td><td>'+data[i][1]+'</td><td><progress value="'+j+'" max="100"></progress>&nbsp;&nbsp;'+j+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+		j += 10;
 	}
 	html += '</tbody>';
 	html += '</table>';
@@ -60,10 +62,17 @@ Draw_dis_Table:function(data){
 
 }
 var Group_identify_task = new Group_identify_task();
-url = '/group/show_task/'; 
-Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
-deurl= '/detect/show_detect_task/';
-Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
+function redraw_result(){
+	url = '/group/show_task/'; 
+	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
+}
+window.setInterval(redraw,3000);
+function redraw(){
+	deurl= '/detect/show_detect_task/';
+	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
+}
+redraw();
+redraw_result();
 
 function Group_delete_task(){
 	 this.url = "/group/delete_group_task/?";
@@ -107,21 +116,32 @@ $('a[id^="commit_control"]').click(function(){
 		
 		}
 	}
-	);
+);
+// $('#turnback').click(function(){
+// 	console.log('sdf');
+// 	url = '/group/show_task/'; 
+// 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
+// });
 
 
 function submit_analyze(that){
 	$('a[id^="group_commit_analyze"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-		url = "/detect/show_detect_result/?task_name=" + temp;
-		//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
-		draw_table('1',"#group_analyze_confirm");
-		remark0 = $(this).parent().prev().prev().html();
-		//document.getElementById('group_name0').innerHTML=temp;
-		//document.getElementById('remark0').innerHTML=remark0;
-		$('span[id^="group_name0"]').html(temp);
-		$('span[id^="remark0"]').html(remark0);
-		$('#group_analyze').modal();
+		var percent = $(this).parent().prev().val();
+		if(percent < 1){
+			alert('进度没有达到100%，无法提交分析任务！');
+		}
+		else{
+			url = "/detect/show_detect_result/?task_name=" + temp;
+			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
+			draw_table('1',"#group_analyze_confirm");
+			remark0 = $(this).parent().prev().prev().html();
+			//document.getElementById('group_name0').innerHTML=temp;
+			//document.getElementById('remark0').innerHTML=remark0;
+			$('span[id^="group_name0"]').html(temp);
+			$('span[id^="remark0"]').html(remark0);
+			$('#group_analyze').modal();
+		}
 	});	
 }
 
@@ -129,10 +149,16 @@ function submit_control(that){
 	$('a[id^="group_commit_control"]').click(function(e){
 		console.log('aaaa');
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-		url = url + 'task_name=' + temp;
-		//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
-		draw_table('1',"#group_control_confirm");
-		$('#group_control').modal();
+		var percent = $(this).parent().prev().val();
+		if(percent < 1){
+			alert('进度没有达到100%，无法提交监控任务！');
+		}
+		else{
+			url = url + 'task_name=' + temp;
+			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
+			draw_table('1',"#group_control_confirm");
+			$('#group_control').modal();
+		}
 	});	
 }
 
