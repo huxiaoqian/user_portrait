@@ -662,6 +662,7 @@ def pattern_filter_attribute(pattern_list, filter_dict):
             new_pattern_list.append(patter_item)
     #step2.1: iter to search user who meet pattern condition
     #step2.2: filter who is in user_portrait and meet filter_dict
+    all_hit_user = {}
     for range_item in new_range_dict_list:
         iter_date_pattern_condition_list = new_pattern_list
         iter_date_pattern_condition_list.append(range_item)
@@ -677,10 +678,39 @@ def pattern_filter_attribute(pattern_list, filter_dict):
         pattern_user_set = set([flow_text_item['fields']['uid'][0] for flow_text_item in flow_text_exist])
         pattern_user_list = list(pattern_user_set)
         #filter by user_portrait filter dict by bulk action
+        patter_user_count = len(pattern_user_list)
+        iter_count = 0
+        #add filter dict
+        inter_portrait_condition_list = []
+        inter_portrait_condition_list.append({'range':{'importance':{'from': filter_dict['importance']['from'], 'to': filter_dict['importance']['to']}}})
+        inter_portrait_condition_list.append({'range':{'importance':{'from': filter_dict['influence']['from'], 'to':filter_dict['influence']['to']}}})
+        while iter_count < pattern_user_count:
+            iter_user_list = pattern_user_list[iter_count: iter_count + DETECT_ITER_COUNT]
+            #get uid nest_body_list
+            nest_body_list = []
+            for iter_user in iter_user_list:
+                nest_body_list.append({'term': iter_user})
+            iter_portrait_condition_list.append({'bool':{'should': nest_body_list}})
+            #search user in user_portrait
+            try:
+                in_portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type,\
+                        body={'query':{'bool':{'must': iter_portrait_condition_list}}, 'size': MAX_VALUE}, _source=False, fields=['influence','importance'])['hits']['hits']
+            except:
+                in_portrait_result = []
 
+            #add to all hit user
+            for in_portrait_item in in_portrait_result:
+                all_hit_user[in_portrait_item['_id']] = [in_portrait_item['fields']['influence'][0], in_portrait_item['fields']['importance'][0]]
+            
+            iter_count += DETECT_ITER_COUNT
+    
+    #sort all hit user by influence
+    count = filter_dict['count']
+    sort_all_hit_user = sorted(all_hit_user.items(), key=lambda x:x[1][0], reverse=True)[:count]
+    #detect user list ranked by iinfluence
+    rank_user_list = [sort_item[0] for sort_item in sort_all_hit_user]
 
-
-    return results
+    return rank_user_list
 
 
 #use to detect group by attribute or pattern
