@@ -30,13 +30,18 @@ function bind_button_click(){
     $('#seed_user #'+seed_user_option+' #seed_user_commit').click(function(){
         var valid = seed_user_check();
         if (valid){
-            var seed_user_url = seed_user_data();
-            $.ajax({
-                type:'GET',
-                url:seed_user_url,
-                dataType:'json',
-                success:seed_user_callback
-            });
+            if (seed_user_option == 'single_user'){
+                var seed_user_url = seed_single_user_data();
+                $.ajax({
+                    type:'GET',
+                    url:seed_user_url,
+                    dataType:'json',
+                    success:seed_single_user_callback
+                });
+            }
+            else{
+                seed_multi_user_data();
+            }
         }
     });
     $('#seed_user #'+seed_user_option+' #attr_weight').change(function(){
@@ -159,24 +164,6 @@ $('#seed_user [name="mode_choose"]').change(function(){
 });
 
 function seed_user_check(){             // check validation 
-    //group_information check starts  
-    var group_name = $('#seed_user #'+seed_user_option+' #first_name').val();
-    var remark = $('#seed_user #'+seed_user_option+' #first_remarks').val();
-    console.log(group_name, remark);
-    if (group_name.length == 0){
-        alert('群体名称不能为空');
-        return false;
-    }
-
-    var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
-    if (!group_name.match(reg)){
-        alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
-        return false;
-    }
-    if ((remark.length > 0) && (!remark.match(reg))){
-        alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
-        return false;
-    }
     //other form check starts
     if ((seed_user_option == 'multi_user') && ($('#seed_user #multi_user_ext [name="ext_choose"]:checked').val() == 1)){
         if (seed_user_files == undefined){
@@ -233,27 +220,60 @@ function seed_user_check(){             // check validation
             }
         }
     }
+    //group_information check starts  
+    var group_name = $('#seed_user #'+seed_user_option+' #first_name').val();
+    var remark = $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    console.log(group_name, remark);
+    if (group_name.length == 0){
+        alert('群体名称不能为空');
+        return false;
+    }
 
+    var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+    if (!group_name.match(reg)){
+        alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
+    if ((remark.length > 0) && (!remark.match(reg))){
+        alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
   return true;
-
 }
-function seed_user_callback(data){
+function seed_single_user_callback(data){
     console.log(data);
     if (data == 'seed user invalid') alert('人物库中不存在该用户！');
     if (data == 'task name invalid') alert('请输入合法的任务名称！');
     if (data == 'no query condition') alert('请选择搜索条件！');
 }
 //获取选择的条件，把参数传出获取返回值
-function seed_user_data(){
+function seed_single_user_data(){
     var url = '';
-    if (seed_user_option == 'single_user'){  //single_user
-        url += '/detect/single_person/?';
-        var uid_uname = $('#seed_user #uid_uname').val();
-        url += 'seed_uname=' + uid_uname;
-        url += '&seed_uid=' + uid_uname;
-        //attribute
-        url += '&attribute_weight=' + $('#seed_user #'+seed_user_option+' #attr_weight').val();
-        $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
+    url += '/detect/single_person/?';
+    var uid_uname = $('#seed_user #uid_uname').val();
+    url += 'seed_uname=' + uid_uname;
+    url += '&seed_uid=' + uid_uname;
+    //attribute
+    url += '&attribute_weight=' + $('#seed_user #'+seed_user_option+' #attr_weight').val();
+    $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
+        if($(this).is(':checked')){
+            url += '&' + $(this).next().attr('id') + '=1';
+        }
+        /* default 0
+        else{
+            url += '&' + $(this).next().attr('id') + '=0';
+        }
+        */
+    });
+    //structure
+    url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
+    $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
+        if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
+            if ($(this).is(':checked')){
+                url += '&hop=' + $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
+            }
+        }
+        else{
             if($(this).is(':checked')){
                 url += '&' + $(this).next().attr('id') + '=1';
             }
@@ -262,45 +282,73 @@ function seed_user_data(){
                 url += '&' + $(this).next().attr('id') + '=0';
             }
             */
-        });
-        //structure
-        url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
-        $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
-            if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
-                if ($(this).is(':checked')){
-                    url += '&hop=' + $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
-                }
-            }
-            else{
-                if($(this).is(':checked')){
-                    url += '&' + $(this).next().attr('id') + '=1';
-                }
-                /* default 0
-                else{
-                    url += '&' + $(this).next().attr('id') + '=0';
-                }
-                */
-            }
-        });
-        //events
-        url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
-        url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-        url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
-        //extension
-        url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
-        url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
-        url += '&influence_to=' + $('#seed_user #'+seed_user_option+' #influ_to').val();
-        url += '&importance_from=' + $('#seed_user #'+seed_user_option+' #impor_from').val();
-        url += '&importance_to=' + $('#seed_user #'+seed_user_option+' #impor_to').val();
-    }
-    else{           //multi_user
-    }
+        }
+    });
+    //events
+    url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
+    url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+    url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    //extension
+    url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
+    url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
+    url += '&influence_to=' + $('#seed_user #'+seed_user_option+' #influ_to').val();
+    url += '&importance_from=' + $('#seed_user #'+seed_user_option+' #impor_from').val();
+    url += '&importance_to=' + $('#seed_user #'+seed_user_option+' #impor_to').val();
     // group_task
     url += '&task_name=' + $('#seed_user #'+seed_user_option+' #first_name').val();
     url += '&state=' + $('#seed_user #'+seed_user_option+' #first_remarks').val();
     url += '&submit_user=admin';
     console.log(url);
     return url;
+}
+function seed_multi_user_data(){
+    var url = '/detect/multi_person/';
+    var upload_job = new Array();
+    handleFileSelect(upload_job);
+    /*
+    //attribute
+    url += '&attribute_weight=' + $('#seed_user #'+seed_user_option+' #attr_weight').val();
+    $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
+        if($(this).is(':checked')){
+            url += '&' + $(this).next().attr('id') + '=1';
+        }
+        else{
+            url += '&' + $(this).next().attr('id') + '=0';
+        }
+    });
+    //structure
+    url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
+    $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
+        if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
+            if ($(this).is(':checked')){
+                url += '&hop=' + $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
+            }
+        }
+        else{
+            if($(this).is(':checked')){
+                url += '&' + $(this).next().attr('id') + '=1';
+            }
+            else{
+                url += '&' + $(this).next().attr('id') + '=0';
+            }
+        }
+    });
+    //events
+    url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
+    url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+    url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    //extension
+    url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
+    url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
+    url += '&influence_to=' + $('#seed_user #'+seed_user_option+' #influ_to').val();
+    url += '&importance_from=' + $('#seed_user #'+seed_user_option+' #impor_from').val();
+    url += '&importance_to=' + $('#seed_user #'+seed_user_option+' #impor_to').val();
+    // group_task
+    url += '&task_name=' + $('#seed_user #'+seed_user_option+' #first_name').val();
+    url += '&state=' + $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    url += '&submit_user=admin';
+    console.log(url);
+    */
 }
 function seed_user_timepicker(str){
     var date_time = str.split(' ');
@@ -319,31 +367,28 @@ function seed_user_timepicker(str){
     return final_date;
 }
 
-function handleFileSelect(evt){
-    var files = evt;
-    /*
-    var task_name = $('#file_task_name').val();
-    var state = $('#file_state').val();
+function handleFileSelect(upload_job){
+    var files = seed_user_files;
     for(var i=0,f;f=files[i];i++){
         var reader = new FileReader();
         reader.onload = function (oFREvent) {
-            var a = oFREvent.target.result;	
+            var a = oFREvent.target.result;
             console.log(a);
+            upload_job['upload_data'] = a;
+            console.log(upload_job);
+            /*
             $.ajax({   
                 type:"POST",  
                 url:"/group/upload_file/",
                 dataType: "json",
-                async:false,
-                data:{upload_data:a,task_name:task_name,state:state},
+                data:JSON.stringify(job),
                 success: function(){
                             var show_url = "/group/show_task/";
-                            //Group_result.call_sync_ajax_request(show_url,Group_result.ajax_method,Group_result.Draw_resultTable);
                 }
             });
-            location.reload();
+            */
         };            
         reader.readAsText(f,'GB2312');                                                        
     }
-    */
 }
 
