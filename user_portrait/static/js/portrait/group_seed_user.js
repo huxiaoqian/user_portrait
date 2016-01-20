@@ -115,9 +115,6 @@ function bind_button_click(){
         });
     }
 }
-function seed_user_callback(data){
-    console.log(data);
-}
 function seed_user_init(){
     if (!seed_user_flag){
         var html = $('#seed_user #seed_user_ext').html();
@@ -225,6 +222,10 @@ function seed_user_check(){             // check validation
             alert('时间输入不合法！');
             return false;
         }
+        if ($('#seed_user #'+seed_user_option+' #num-range').val() == 0){
+            alert('人数不能为0！');
+            return false;
+        }
         if ($('#seed_user #'+seed_user_option+' #hop_checkbox').is(':checked')){
             if ($('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val() == undefined){
                 alert('请选择跳数！');
@@ -236,10 +237,17 @@ function seed_user_check(){             // check validation
   return true;
 
 }
+function seed_user_callback(data){
+    console.log(data);
+    if (data == 'seed user invalid') alert('人物库中不存在该用户！');
+    if (data == 'task name invalid') alert('请输入合法的任务名称！');
+    if (data == 'no query condition') alert('请选择搜索条件！');
+}
 //获取选择的条件，把参数传出获取返回值
 function seed_user_data(){
-    if (seed_user_option == 'single_user'){
-        var url = '/detect/single_person/?';
+    var url = '';
+    if (seed_user_option == 'single_user'){  //single_user
+        url += '/detect/single_person/?';
         var uid_uname = $('#seed_user #uid_uname').val();
         url += 'seed_uname=' + uid_uname;
         url += '&seed_uid=' + uid_uname;
@@ -258,30 +266,40 @@ function seed_user_data(){
         //structure
         url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
         $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
-            if($(this).is(':checked')){
-                url += '&' + $(this).next().attr('id') + '=1';
+            if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
+                if ($(this).is(':checked')){
+                    url += '&hop=' + $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
+                }
             }
-            /* default 0
             else{
-                url += '&' + $(this).next().attr('id') + '=0';
+                if($(this).is(':checked')){
+                    url += '&' + $(this).next().attr('id') + '=1';
+                }
+                /* default 0
+                else{
+                    url += '&' + $(this).next().attr('id') + '=0';
+                }
+                */
             }
-            */
         });
+        //events
+        url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
+        url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+        url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        //extension
+        url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
+        url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
+        url += '&influence_to=' + $('#seed_user #'+seed_user_option+' #influ_to').val();
+        url += '&importance_from=' + $('#seed_user #'+seed_user_option+' #impor_from').val();
+        url += '&importance_to=' + $('#seed_user #'+seed_user_option+' #impor_to').val();
     }
+    else{           //multi_user
+    }
+    // group_task
+    url += '&task_name=' + $('#seed_user #'+seed_user_option+' #first_name').val();
+    url += '&state=' + $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    url += '&submit_user=admin';
     console.log(url);
-    /*
-    console.log($('#seed_user #'+seed_user_option+' #num-range').val());
-    console.log($('#seed_user #'+seed_user_option+' #influ_from').val());
-    console.log($('#seed_user #'+seed_user_option+' #influ_to').val());
-    console.log($('#seed_user #'+seed_user_option+' #impor_from').val());
-    console.log($('#seed_user #'+seed_user_option+' #impor_to').val());
-    console.log($('#seed_user #'+seed_user_option+' #events_keywords').val());
-    seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-    seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
-    if ($('#seed_user #'+seed_user_option+' #hop_checkbox').is(':checked')){
-        console.log($('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val());
-    }
-    */
     return url;
 }
 function seed_user_timepicker(str){
