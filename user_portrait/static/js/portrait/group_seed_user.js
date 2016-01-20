@@ -126,7 +126,7 @@ function seed_user_init(){
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
         console.log(seed_user_option);
-        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,minDate:min_date,maxDate:max_date,step:10});
         $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
         if (seed_user_option == 'multi_user'){
             $('#seed_user #multi_user #attribute').css('display','none');
@@ -145,9 +145,10 @@ var min_date = '-1970/01/30';
 var current_date = new Date();
 var last_date = new Date();
 current_date.setHours(0,0,0);
+var current_ts = current_date.getTime();
+last_date.setTime(current_ts - 24*60*60*1000);
 current_date = current_date.format('yyyy/MM/dd hh:mm');
-console.log(current_date);
-console.log(min_date);
+last_date = last_date.format('yyyy/MM/dd hh:mm');
 
 var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
 var seed_user_flag = false;
@@ -210,6 +211,10 @@ function seed_user_check(){             // check validation
         var events_to = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
         if (events_from > events_to){
             alert('时间输入不合法！');
+            return false;
+        }
+        if ((events_from > current_ts) || (events_to > current_ts)){
+            alert('选择时间不能超过今日零时！');
             return false;
         }
         if ($('#seed_user #'+seed_user_option+' #num-range').val() == 0){
