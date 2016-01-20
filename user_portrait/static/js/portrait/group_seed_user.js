@@ -103,7 +103,7 @@ function bind_button_click(){
         });
         $('#seed_user #multi_user_ext [name="ext_choose"]').change(function(){
             var ext_flag = $('#seed_user #multi_user_ext [name="ext_choose"]:checked').val();
-            if (ext_flag == 1){
+            if (ext_flag == 0){
                 $('#seed_user #multi_user #attribute').css('display','none');
                 $('#seed_user #multi_user #structure').css('display','none');
                 $('#seed_user #multi_user #events').css('display','none');
@@ -304,51 +304,59 @@ function seed_single_user_data(){
 function seed_multi_user_data(){
     var url = '/detect/multi_person/';
     var upload_job = new Array();
-    handleFileSelect(upload_job);
-    /*
-    //attribute
-    url += '&attribute_weight=' + $('#seed_user #'+seed_user_option+' #attr_weight').val();
-    $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
-        if($(this).is(':checked')){
-            url += '&' + $(this).next().attr('id') + '=1';
-        }
-        else{
-            url += '&' + $(this).next().attr('id') + '=0';
-        }
-    });
-    //structure
-    url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
-    $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
-        if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
-            if ($(this).is(':checked')){
-                url += '&hop=' + $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
-            }
-        }
-        else{
+    // group_task
+    upload_job['task_name'] = $('#seed_user #'+seed_user_option+' #first_name').val();
+    upload_job['state']  = $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    upload_job['submit_user'] = 'admin';
+    if ($('#seed_user #multi_user_ext [name="ext_choose"]:checked').val() == 0){
+        upload_job['extend'] = 0;
+    }
+    else{
+        upload_job['extend'] = 1;
+        //attribute
+        upload_job['attribute_weight'] = $('#seed_user #'+seed_user_option+' #attr_weight').val();
+        $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
+            var attr_id = $(this).next().attr('id');
             if($(this).is(':checked')){
-                url += '&' + $(this).next().attr('id') + '=1';
+                upload_job[attr_id] = '1';
             }
             else{
-                url += '&' + $(this).next().attr('id') + '=0';
+                upload_job[attr_id] = '0';
             }
-        }
-    });
-    //events
-    url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
-    url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-    url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
-    //extension
-    url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
-    url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
-    url += '&influence_to=' + $('#seed_user #'+seed_user_option+' #influ_to').val();
-    url += '&importance_from=' + $('#seed_user #'+seed_user_option+' #impor_from').val();
-    url += '&importance_to=' + $('#seed_user #'+seed_user_option+' #impor_to').val();
-    // group_task
-    url += '&task_name=' + $('#seed_user #'+seed_user_option+' #first_name').val();
-    url += '&state=' + $('#seed_user #'+seed_user_option+' #first_remarks').val();
-    url += '&submit_user=admin';
-    console.log(url);
-    */
+        });
+        //structure
+        upload_job['structure_weight'] = $('#seed_user #'+seed_user_option+' #stru_weight').val();
+        $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
+            if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
+                if ($(this).is(':checked')){
+                    upload_job['hop'] = $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
+                }
+                else{
+                    upload_job['hop'] = 1;
+                }
+            }
+            else{
+                var attr_id = $(this).next().attr('id');
+                if($(this).is(':checked')){
+                    upload_job[attr_id] = '1';
+                }
+                else{
+                    upload_job[attr_id] = '0';
+                }
+            }
+        });
+        //events
+        upload_job['text'] = $('#seed_user #'+seed_user_option+' #events_keywords').val();
+        upload_job['timestamp_from'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+        upload_job['timestamp_to'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        //extension
+        upload_job['count'] = $('#seed_user #'+seed_user_option+' #num-range').val();
+        upload_job['influence_from'] = $('#seed_user #'+seed_user_option+' #influ_from').val();
+        upload_job['influence_to'] =  $('#seed_user #'+seed_user_option+' #influ_to').val();
+        upload_job['importance_from'] = $('#seed_user #'+seed_user_option+' #impor_from').val();
+        upload_job['importance_to'] = $('#seed_user #'+seed_user_option+' #impor_to').val();
+    }
+    handleFileSelect(upload_job);
 }
 function seed_user_timepicker(str){
     var date_time = str.split(' ');
