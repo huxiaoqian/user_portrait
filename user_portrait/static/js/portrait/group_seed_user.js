@@ -244,29 +244,32 @@ function seed_user_data(){
         url += 'seed_uname=' + uid_uname;
         url += '&seed_uid=' + uid_uname;
         //attribute
+        url += '&attribute_weight=' + $('#seed_user #'+seed_user_option+' #attr_weight').val();
         $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
             if($(this).is(':checked')){
                 url += '&' + $(this).next().attr('id') + '=1';
             }
+            /* default 0
             else{
                 url += '&' + $(this).next().attr('id') + '=0';
             }
+            */
+        });
+        //structure
+        url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
+        $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
+            if($(this).is(':checked')){
+                url += '&' + $(this).next().attr('id') + '=1';
+            }
+            /* default 0
+            else{
+                url += '&' + $(this).next().attr('id') + '=0';
+            }
+            */
         });
     }
     console.log(url);
     /*
-    var keywords = new Array();
-    var structure = new Array();
-    var weight = new Array();
-    url += keywords.join(',') + '&structure=';
-    $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
-        if($(this).is(':checked')){
-            structure.push($(this).next().attr('id'));
-        }
-    });
-    url += structure.join(',');
-    console.log($('#seed_user #'+seed_user_option+' #attr_weight').val());
-    console.log($('#seed_user #'+seed_user_option+' #stru_weight').val());
     console.log($('#seed_user #'+seed_user_option+' #num-range').val());
     console.log($('#seed_user #'+seed_user_option+' #influ_from').val());
     console.log($('#seed_user #'+seed_user_option+' #influ_to').val());
