@@ -14,7 +14,7 @@ sys.path.append('../../')
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1 
 from global_utils import  R_CLUSTER_FLOW1
 from global_utils import uname2uid_redis as r_name
-
+from time_utils import ts2date
 
 def get_queue_index(timestamp):
     time_struc = time.gmtime(float(timestamp))
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     poller.register(controller, zmq.POLLIN)
     controller.setsockopt(zmq.SUBSCRIBE, "")
     cluster_redis = R_CLUSTER_FLOW1
-    f = open("cluster_error.txt", "wb")
+    f = open("cluster_error.txt", "a")
 
     count = 0
     tb = time.time()
@@ -122,11 +122,9 @@ if __name__ == "__main__":
         if int(item['sp_type']) == 1:
             try:
                 cal_propage_work(item)
-            except ClusterDownException:
-                cal_propage_work(item)
-                f.write("unable rebuild cluster error"+'\n')
             except Exception, r:
-                f.write(Exception + "  " + r)
+                now_ts = str(ts2date(time.time()))
+                f.write(now_ts + ": " + str(Exception) + "  " + r)
 
 
             count += 1
@@ -135,18 +133,6 @@ if __name__ == "__main__":
                 print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000)
                 ts = te
 
-                event = poller.poll(0)
-                if event:
-                    socks = dict(poller.poll(0))
-                else:
-                    socks = None
-                if socks and socks.get(controller) == zmq.POLLIN:
-                    item = controller.recv()
-                    if str(item) == "KILL":
-                        print item
-                        exit(0)
-                else:
-                    pass
 
                 if count % 100000 == 0:
                     print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 

@@ -51,7 +51,7 @@ if __name__=="__main__":
         if socks and socks.get(controller) == zmq.POLLIN: 
             # receive control message from zmq pollor
             item = controller.recv()
-            if item == "PAUSE": # pause the vent work
+            if str(item) == "PAUSE": # pause the vent work
                 message = "PAUSE"
                 print "receive message from zmq", message
                 time.sleep(1)
@@ -70,6 +70,8 @@ if __name__=="__main__":
                 print "nothing receive from zmq, ", message
                 continue
             else:
+                print "waiting"
+                time.sleep(1)
                 total_count, total_cost = send_weibo(sender, poller, controller, total_count, total_cost)
 
 
