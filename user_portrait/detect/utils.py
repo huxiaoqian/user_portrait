@@ -361,7 +361,7 @@ def show_detect_result(task_name):
     if task_exist_result == {}:
         return 'task name is not exist'
     #step2:get uid list
-    uid_list = task_exist_result['uid_list']
+    uid_list = json.loads(task_exist_result['uid_list'])
     #step3:get user evaluation information---uid/uname/activeness/importance/influence
     iter_count = 0
     uid_count = len(uid_list)
@@ -386,8 +386,9 @@ def show_detect_result(task_name):
                 importance = u'未知'
                 influence = u'未知'
             user_result.append([uid, uname, activeness, importance, influence])
+        iter_count += DETECT_ITER_COUNT
     sort_user_result = sorted(user_result, key=lambda x:x[4], reverse=True)
-
+  
     return sort_user_result
 
 
@@ -416,7 +417,9 @@ def detect2analysis(input_data):
     task_information_dict = {'task_name':task_name, 'uid_list':uid_list, 'status':0, 'count':len(uid_list),\
             'task_type':'analysis', 'submit_user':task_exist_result['submit_user'], 'submit_date':task_exist_result['submit_date'], \
             'detect_type':task_exist_result['detect_type'], 'detect_process':task_exist_result['detect_process']}
+    
     add_es_dict = {'task_information':task_information_dict, 'query_condition':task_exist_result['query_condition']}
+    print 'add_es_dict:', add_es_dict
     es_status = save_compute2es(add_es_dict)
     #step4: add task to analysis queue
     redis_status = save_compute2redis(task_exist_result)
