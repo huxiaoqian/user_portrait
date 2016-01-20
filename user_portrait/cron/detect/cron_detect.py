@@ -114,23 +114,18 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
             if retweet_mark == 1:
                 retweet_index_name = retweet_index_name_pre + str(db_number)
                 be_retweet_index_name = be_retweet_index_name_pre + str(db_number)
-                print 'test retweet_index_name:', retweet_index_name
-                print 'test be_retweet_index_name:', be_retweet_index_name
-                print 'test iter_search_user_list:', iter_search_user_list
                 #mget retwet
                 try:
                     retweet_result = es_retweet.mget(index=retweet_index_name, doc_type=retweet_index_type, \
                                                      body={'ids':iter_search_user_list}, _source=True)['docs']
                 except:
                     retweet_result = []
-                print 'retweet_result:', retweet_result
                 #mget be_retweet
                 try:
                     be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_type, \
                                                         body={'ids':iter_search_user_list} ,_source=True)['docs']
                 except:
                     be_retweet_result = []
-                print 'be_retweet_result:', be_retweet_result
             #step2: mget comment and be_comment
             if comment_mark == '1':
                 comment_index_name = comment_index_name_pre + str(db_number)
@@ -141,23 +136,20 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
                                                      body={'ids':iter_search_user_list}, _source=True)['docs']
                 except:
                     comment_result = []
-                print 'comment_result:', comment_result
                 #mget be_comment
                 try:
                     be_comment_result = es_comment.mget(index=be_comment_index_name, doc_type=be_comment_index_type, \
                                                     body={'ids':iter_search_user_list}, _source=True)['docs']
                 except:
                     be_comment_result = []
-                print 'be_comment_result:', be_comment_result
             #step3: union retweet/be_retweet/comment/be_comment result
             union_count = 0
             
             for iter_search_uid in iter_search_user_list:
-                #try:
-                uid_retweet_dict = json.loads(retweet_result[union_count]['_source']['uid_retweet'])
-                #except:
-                #    uid_retweet_dict = {}
-                print 'uid_retweet_dict:', uid_retweet_dict
+                try:
+                    uid_retweet_dict = json.loads(retweet_result[union_count]['_source']['uid_retweet'])
+                except:
+                    uid_retweet_dict = {}
                 try:
                     uid_be_retweet_dict = json.loads(be_retweet_result[union_count]['_source']['uid_be_retweet'])
                 except:
@@ -187,7 +179,6 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
         #get all union result
         all_union_result = union_dict(all_union_result, hop_union_result)
     
-    print 'test all_union_result:', all_union_result
     #step5: identify the who is in user_portrait
     sort_all_union_result = sorted(all_union_result.items(), key=lambda x:x[1], reverse=True)
     iter_count = 0
@@ -197,7 +188,6 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
     filter_importance_to = filter_dict['importance']['to']
     filter_influence_from = filter_dict['influence']['from']
     filter_influence_to = filter_dict['influence']['to']
-    #print 'test sort_all_union_result:', sort_all_union_result
     while iter_count < all_count:
         iter_user_list = [item[0] for item in sort_all_union_result[iter_count:iter_count + DETECT_ITER_COUNT]]
         try:
@@ -205,19 +195,16 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
                     body={'ids':iter_user_list}, _source=True)['docs']
         except:
             portrait_result = []
-        #print 'portrait_result:', portrait_result
         for portrait_item in portrait_result:
             if portrait_item['found'] == True:
                 if portrait_item['_source']['importance'] >= filter_importance_from and portrait_item['_source']['importance'] <= filter_importance_to:
                     if portrait_item['_source']['influence'] >= filter_influence_from and portrait_item['_source']['influence'] <= filter_influence_to:
                         uid = portrait_item['_id']
-                        #print 'yes:', uid
                         in_portrait_result.append(uid)
         if len(in_portrait_result) > (filter_dict['count'] * DETECT_COUNT_EXPAND):
             break
         iter_count += DETECT_ITER_COUNT
 
-    print 'in_portrait_result:', in_portrait_result
     return in_portrait_result
 
 
@@ -241,12 +228,16 @@ def union_attribute_structure(attribute_user_result, structure_result, attribute
     union_user_list = list(union_user_set)
     #step2:use attribute weight and structure weight to score for user
     attribute_rank = 0
-    attribute_normal_index = float(1) / len(attribute_user_result)
-    structure_normal_index = float(1) / len(structure_user_result)
+    try:
+        attribute_normal_index = float(1) / len(attribute_user_result)
+    except:
+        attribute_normal_index = 0
+    try:
+        structure_normal_index = float(1) / len(structure_user_result)
+    except:
+        structure_normal_index = 0
     attribute_count = len(attribute_user_result)
     structure_count = len(structure_user_result)
-    print 'structrue_count, attribute_count:', structure_count, attribute_count
-    print 'union user set:', len(union_user_set)
     for user_item in union_user_list:
         try:
             attribute_rank = attribute_user_dict[user_item]
@@ -263,7 +254,6 @@ def union_attribute_structure(attribute_user_result, structure_result, attribute
         union_result[user_item] = new_score
     #step3:sort user by new score
     sort_union_result = sorted(union_result.items(), key=lambda x:x[1], reverse=True)
-    #print 'test sort_union_result:', sort_union_result
     return sort_union_result
 
 #use to filter event for single or multi detect task
@@ -272,7 +262,6 @@ def union_attribute_structure(attribute_user_result, structure_result, attribute
 def filter_event(all_union_user, event_condition_list):
     user_result = []
     new_range_dict_list = []
-    print 'filter event len(all_union_user):', len(all_union_user)
     #step1: adjust the date condition for date
     new_event_condition_list = []
     for event_condition_item in event_condition_list:
@@ -297,7 +286,6 @@ def filter_event(all_union_user, event_condition_list):
                 new_range_dict_list = [{'range':{'timestamp':{'from':from_ts, 'to':to_ts}}}]
         else:
             new_event_condition_list.append(event_condition_item)
-    print'test filter event:', len(new_range_dict_list), len(new_event_condition_list)
     #step2: iter to search user who publish weibo use keywords_string
     #step2.1: split user to bulk action
     #step2.2: iter to search user meet condition weibo for different day
@@ -339,6 +327,33 @@ def filter_event(all_union_user, event_condition_list):
             rank_hit_user.append(uid)
 
     return rank_hit_user
+
+
+#use to make normal index range to abnormal index
+#input: input_filter_from, input_filter_to
+#output: abnormal_filter_from, abnormal_filter_to
+def modify_evaluate_index(filter_from, filter_to, evaluate_index):
+    abnormal_filter_from = 0
+    abnormal_filter_to = 0
+    #step1: get evaluate_index max value
+    query_body = {
+        'query':{
+            'match_all':{},
+            },
+        'size': 1,
+        'sort': [{evaluate_index: {'order': 'desc'}}]
+        }
+    try:
+        evaluate_index_max = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type ,\
+                body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    max_value = evaluate_index_max[0]['_source'][evaluate_index]
+    #step2: get abnormal index
+    abnormal_filter_from = (10 ** (float(filter_from) / 100) - 1) / 9 * max_value
+    abnormal_filter_to = (10 ** (float(filter_to) / 100) - 1)  / 9 * max_value
+
+    return abnormal_filter_from, abnormal_filter_to
 
 
 #use to detect group by single-person
@@ -387,7 +402,9 @@ def single_detect(input_dict):
                 else:
                     attribute_query_list.append({'wildcard': {query_item: '*'+user_attribute_value+'*'}})
     
-    #step2.2: add filter query condition
+
+    #step2.2:add filter by evaluate index---filter dict
+    
     count = MAX_DETECT_COUNT
     for filter_item in filter_dict:
         if filter_item == 'count':
@@ -395,10 +412,12 @@ def single_detect(input_dict):
         else:
             filter_value_from = filter_dict[filter_item]['from']
             filter_value_to = filter_dict[filter_item]['to']
-            attribute_query_list.append({'range':{filter_item: {'from': filter_value_from, 'to':filter_value_to}}})
-    
+            #get new filter
+            #new_filter_value_from, new_filter_value_to = modify_evaluate_index(filter_value_from, filter_value_to, filter_item)
+            attribute_query_list.append({'range':{filter_item: {'from':filter_value_from, 'to':filter_value_to}}})
+
     attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
-            body={'query':{'bool':{'should':attribute_query_list}}, 'size': count})['hits']['hits']
+            body={'query':{'bool':{'should': attribute_query_list}}, 'size':count})['hits']['hits']
     
     #step2.3: change process proportion
     process_mark = change_process_proportion(task_name, 25)
@@ -545,7 +564,7 @@ def multi_detect(input_dict):
         return 'task is not exist'
     query_condition_dict = input_dict['query_condition']
     filter_dict = query_condition_dict['filter']
-    structure_dict = input_dict['structure_dict']
+    structure_dict = query_condition_dict['structure']
     #step1.1: get seed users attribute
     attribute_list = query_condition_dict['attribute']
     seed_user_list = task_information_dict['uid_list']
@@ -984,6 +1003,19 @@ def compute_group_detect():
             start_ts = time.time()
             task_information_dict = detect_task_information['task_information']
             task_name = task_information_dict['task_name']
+            #step1: modify filter dict evalute index to abnormal
+            filter_dict = detect_task_information['query_condition']['filter']
+            importance_from = filter_dict['importance']['from']
+            importance_to = filter_dict['importance']['to']
+            new_importance_from ,new_importance_to = modify_evaluate_index(importance_from, importance_to, 'importance')
+            influence_from = filter_dict['influence']['from']
+            influence_to = filter_dict['influence']['to']
+            new_influence_from, new_influence_to = modify_evaluate_index(influence_from, influence_to, 'influence')
+            filter_dict['importance']['from'] = new_importance_from
+            filter_dict['importance']['to'] = new_importance_to
+            filter_dict['influence']['from'] = new_influence_from
+            filter_dict['influence']['to'] = new_influence_to
+            detect_task_information['query_condition']['filter'] = filter_dict
             #step2:according task type to do group detect
             detect_task_type = task_information_dict['detect_type']
             if detect_task_type == 'single':
@@ -1008,9 +1040,20 @@ def compute_group_detect():
 if __name__=='__main__':
     #compute_group_detect()
     #test
+    importance_from = 20
+    importance_to = 100
+    new_importance_from, new_importance_to = modify_evaluate_index(importance_from, importance_to, 'importance')
+    influence_from = 50
+    influence_to = 100
+    new_influence_from, new_influence_to = modify_evaluate_index(influence_from, influence_to, 'influence')
     single_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'0', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5, \
-            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':0, 'to':1000}, 'influence':{'from':0, 'to':1000}}}}
-    results = single_detect(single_input_dict)
+            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':new_importance_from, 'to':new_importance_to}, 'influence':{'from':new_influence_from, 'to':new_influence_to}}}}
+    #results = single_detect(single_input_dict)
+    multi_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single', \
+            'uid_list':['2172653252','2698626560','1981307823','1268043470']},\
+            'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'1', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5 ,\
+            'text':[], 'filter':{'count':100, 'importance':{'from':new_importance_from, 'to':new_importance_to}, 'influence':{'from':new_influence_from, 'to':new_influence_to}}}}
+    results = multi_detect(multi_input_dict)
     print 'results:', results
-    save_mark = save_detect_results(results, 'test')
+    #save_mark = save_detect_results(results, 'test')
