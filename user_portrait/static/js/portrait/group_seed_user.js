@@ -303,16 +303,16 @@ function seed_single_user_data(){
 }
 function seed_multi_user_data(){
     var url = '/detect/multi_person/';
-    var upload_job = new Array();
+    var upload_job = {};
     // group_task
     upload_job['task_name'] = $('#seed_user #'+seed_user_option+' #first_name').val();
     upload_job['state']  = $('#seed_user #'+seed_user_option+' #first_remarks').val();
     upload_job['submit_user'] = 'admin';
     if ($('#seed_user #multi_user_ext [name="ext_choose"]:checked').val() == 0){
-        upload_job['extend'] = 0;
+        upload_job['extend'] = '0';
     }
     else{
-        upload_job['extend'] = 1;
+        upload_job['extend'] = '1';
         //attribute
         upload_job['attribute_weight'] = $('#seed_user #'+seed_user_option+' #attr_weight').val();
         $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
@@ -384,17 +384,14 @@ function handleFileSelect(upload_job){
             console.log(a);
             upload_job['upload_data'] = a;
             console.log(upload_job);
-            /*
             $.ajax({   
                 type:"POST",  
-                url:"/group/upload_file/",
+                url:"/detect/multi_person/",
+                contentType:"application/json",
+                data:JSON.stringify(upload_job),
                 dataType: "json",
-                data:JSON.stringify(job),
-                success: function(){
-                            var show_url = "/group/show_task/";
-                }
+                success: seed_single_user_callback
             });
-            */
         };            
         reader.readAsText(f,'GB2312');                                                        
     }
