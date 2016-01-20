@@ -180,6 +180,12 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
     index_flow_text = pre_text_index + date
+    text_result = es.get(index=text_index, doc_type=flow_text_index_type, id=mid)["_source"]
+    temp_mid = text_result.get("root_mid", "") #判断微博是否是原创微博
+    if temp_mid:
+        mid_type = 0 # 非原创微博
+    else:
+        mid_type = 1 # 原创微博
     results = {}
     query_body = {
         "query":{
@@ -196,32 +202,100 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
         "size": 100000
     }
 
-    if int(influence_style) == 0: # origin weibo, all retweeted people
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 3}}])
-    else: # commented people
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}])
+    if mid_type == 0:
+        if int(influence_style) == 0: # origin weibo, all retweeted people
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 3}}, {"term": {"root_mid": temp_mid}}])
+        else: # commented people
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}, {"term": {"root_mid": temp_mid}}])
+    else:
+        if int(influence_style) == 0: # origin weibo, all retweeted people
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"root_uid": uid}}, {"term": {"message_type": 3}}, {"term": {"root_mid": mid}}])
+        else: # commented people
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"root_uid": uid}}, {"term": {"message_type": 2}}, {"term": {"root_mid": mid}}])
     search_results = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"], timeout=30)["hits"]["hits"]
-    if len(search_results) == 0:
-        result = [[], []]
-        return result
     results = []
-    for item in search_results:
-        results.append(item["fields"]["uid"][0])
+    if search_results:
+        for item in search_results:
+            if int(item["fields"]["uid"][0]) == int(uid):
+                pass
+            else:
+                results.append(item["fields"]["uid"][0])
+    else:
+        results = []
 
-    portrait_results = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": results}, fields=["importance","uid"])["docs"]
-    in_portrait = {}
+
+    if results:
+        portrait_results = es_user_portrait.mget(index=user_portrait, doc_type=portrait_index_type, body={"ids": results}, fields=["domain", "topic_string", "activity_geo_dict","importance", "influence"])["docs"]
+    else:
+        portrait_results = {}
+
+
+    in_portrait = []
     out_portrait = []
-    for item in portrait_results:
-        if item["found"]:
-            in_portrait[item["fields"]["uid"][0]] = item["fields"]["importance"][0]
-        else:
-            out_portrait.append(item['_id'])
-    in_portrait = sorted(in_portrait.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_info = []
+    retweeted_domain = {}
+    retweeted_topic = {}
+    retweeted_geo = {}
+    average_influence = 0
+    total_influence = 0
+    count = 0
+
+    if portrait_results:
+        for item in portrait_results:
+            if item["found"]:
+                temp = []
+                count += 1
+                temp.append(item['_id'])
+                temp.append(item["fields"]["importance"][0])
+                in_portrait_info.append(temp)
+                temp_domain = item["fields"]["domain"][0].split('&')
+                temp_topic = item["fields"]["topic_string"][0].split('&')
+                temp_geo = json.loads(item["fields"]["activity_geo_dict"][0])[-1].keys()
+                total_influence += item["fields"]["influence"][0]
+                retweeted_domain = aggregation(temp_domain, retweeted_domain)
+                retweeted_topic = aggregation(temp_topic, retweeted_topic)
+                retweeted_geo = aggregation(temp_geo, retweeted_geo)
+            else:
+                out_portrait.append(item['_id'])
+        retweeted_domain = proportion(retweeted_domain)
+        retweeted_topic = proportion(retweeted_topic)
+        retweeted_geo = proportion(retweeted_geo)
+        try:
+            average_influence = total_influence/count
+        except:
+            average_influence = 0
+    sorted_retweeted_domain = sorted(retweeted_domain.items(),key=lambda x:x[1], reverse=True)
+    sorted_retweeted_topic = sorted(retweeted_topic.items(),key=lambda x:x[1], reverse=True)
+    sorted_retweeted_geo = sorted(retweeted_geo.items(), key=lambda x:x[1], reverse=True)
+
+    retweeted_results = dict()
+    retweeted_results["domian"] = sorted_retweeted_domain[:5]
+    retweeted_results["topic"] = sorted_retweeted_topic[:5]
+    retweeted_results["geo"] = sorted_retweeted_geo[:5]
+    retweeted_results["influence"] = average_influence
+    in_portrait = sorted(in_portrait, key=lambda x:x[1], reverse=True)
+
+
     temp_list = []
     for item in in_portrait:
         temp_list.append(item[0])
-    in_portrait_url = get_user_url(temp_list)
-    out_portrait_url = get_user_url(out_portrait)
+    print temp_list[:20]
+    print out_portrait[:20]
+    retweeted_results['in_portrait_number'] = len(temp_list)
+    retweeted_results['out_portrait_number'] = len(out_portrait)
+    in_portrait_url = get_user_url(temp_list[:default_number])
+    out_portrait_url = get_user_url(out_portrait[:default_number])
+
+    return_results = dict()
+    return_results["influence_users"] = [in_portrait_url, out_portrait_url]
+    return_results["influence_distribution"] = retweeted_results
+
+
+    return return_results
+
+
+
+
 
     return ([in_portrait_url[:default_number], out_portrait_url[:default_number]])
 
@@ -340,23 +414,14 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
 
 
 # 用于调用，某条微博的影响力，人和分布
+# style: 转发或者评论的类型
 def detail_weibo_influence(uid, mid, style, date, number):
     results = dict()
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
     text_index = pre_text_index + date
-    text_result = es.get(index=text_index, doc_type=flow_text_index_type, id=mid)["_source"]
-    root_mid = text_result.get("root_mid", mid)
-    print mid
-    print root_mid
-    influence_users = influenced_people(uid, root_mid, style, date, number)
-    results["influence_users"] = influence_users
-    if int(style) == 0:
-        message_type = 3
-    else:
-        message_type = 2
-    influence_distribution = influenced_user_detail(uid, date, [root_mid], [root_mid], message_type)
-    results["influence_distribution"] = influence_distribution
+    results = influenced_people(uid, mid, style, date, number)
+
     return results
 
 

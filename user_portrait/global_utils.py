@@ -64,6 +64,9 @@ R_DICT = {'0':R_0, '1':R_1, '2':R_2, '3':R_3, '4':R_4, '5':R_5, '6':R_6, '7':R_7
 # type2 list: group_task_name index group_task_members
 R_GROUP = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
 
+# social sensing redis
+R_SOCIAL_SENSING = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
+
 # use to recomment 
 #two types hash
 #type1:{recomment_2013-09-01:{uid:status, uid:status}} status:0 not in  status:1 have in

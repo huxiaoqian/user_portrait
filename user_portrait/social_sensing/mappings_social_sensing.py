@@ -8,92 +8,117 @@ reload(sys)
 sys.path.append("./../")
 from global_utils import es_user_portrait as es
 
-current_sensing_info = {
-    "mappings":{
-        "task":{
-            "properties":{
-                "task_name":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "create_by":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "create_at":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "start_time":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "stop_time":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "remark":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "social_sensor":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "keywords":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "warming_status":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "history_warning":{
-                    "type": "string",
-                    "index": "not_analyzed"
-                },
-                "finish":{
-                    "type": "string",
-                    "index": "not_analyzed"
+def mappings_sensing_task(task_name):
+    index_info = {
+        "mappings":{
+            task_name:{
+                "properties":{
+                    "origin_weibo_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "retweeted_weibo_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "comment_weibo_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "weibo_total_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "sentiment_distribution":{
+                        "type": "string",
+                        "index": "no"
+                    },
+                    "important_users":{
+                        "type": "string",
+                        "index": "no"
+                    },
+                    "timestamp":{
+                        "type": "long",
+                    },
+                    "burst_reason":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "geo":{
+                        "type": "string",
+                        "index": "no"
+                    }
                 }
             }
         }
     }
-}
 
-social_burst_sensing = {
-    "mappings":{
-        "warning":{
-            "properties":{
-                "origin_weibo_time_series":{
-                    "type": "string",
-                    "index": "no"
-                },
-                "retweeted_weibo_time_series":{
-                    "type": "string",
-                    "index": "no"
-                },
-                "comment_weibo_time_series":{
-                    "type": "string",
-                    "index": "no"
-                },
-                "sentiment_time_series":{
-                    "type": "string",
-                    "index": "no"
-                },
-                "important_users":{
-                    "type": "string",
-                    "index": "no"
+    es.indices.create(index="social_sensing_task", body=index_info, ignore=400)
+
+    return "1"
+
+def manage_sensing_task():
+    index_info = {
+        "mappings":{
+            "sensing_task":{
+                "properties":{
+                    "task_name":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "task_type":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "create_by":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "stop_time":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "remark":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "social_sensors":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "keywords":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "history_status":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "create_at":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "warning_status":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "finish":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "burst_reason":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
                 }
             }
         }
     }
-}
 
+    es.indices.create(index="manage_sensing_task", body=index_info, ignore=400)
 
-
-es.indices.create(index="social_sensing_task", body=current_sensing_info, ignore=400)
-es.indices.create(index="social_burst_sensing", body=social_burst_sensing, ignore=400)
-
+if __name__ == "__main__":
+    manage_sensing_task()
+    es.indices.create(index="social_sensing_task", ignore=400)
 
 
