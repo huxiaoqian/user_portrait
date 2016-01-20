@@ -16,7 +16,7 @@ from user_portrait.global_config import UPLOAD_FOLDER
 from user_portrait.global_utils import R_GROUP as r
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.time_utils import ts2datetime, datetime2ts
-
+from user_portrait.parameter import MAX_VALUE
 
 index_name = 'group_result'
 index_type = 'group'
@@ -108,7 +108,6 @@ def search_task(task_name, submit_date, state, status):
     if task_name:
         task_name_list = task_name.split(' ')
         for item in task_name_list:
-            #print 'item:', item
             query.append({'wildcard':{'task_name': '*' + item + '*'}})
             condition_num += 1
     if submit_date:
@@ -123,9 +122,10 @@ def search_task(task_name, submit_date, state, status):
         query.append({'match':{'status': status}})
         condition_num += 1
     if condition_num > 0:
+        query.append({'term':{'task_type': 'analysis'}})
         try:
             source = es.search(
-                    index = 'group_result',
+                    index = 'group_manage',
                     doc_type = 'group',
                     body = {
                         'query':{
@@ -134,20 +134,23 @@ def search_task(task_name, submit_date, state, status):
                                 }
                             },
                         'sort': [{'count':{'order': 'desc'}}],
-                        'size': 10000
+                        'size': MAX_VALUE
                         }
                     )
         except Exception as e:
             raise e
     else:
+        query.append({'term':{'task_type': 'analysis'}})
         source = es.search(
-                index = 'group_result',
+                index = 'group_manage',
                 doc_type = 'group',
                 body = {
-                    'query':{'match_all':{}
+                    'query':{'bool':{
+                        'must':query
+                        }
                         },
                     'sort': [{'count': {'order': 'desc'}}],
-                    'size': 10000
+                    'size': MAX_VALUE
                     }
                 )
 
@@ -155,6 +158,7 @@ def search_task(task_name, submit_date, state, status):
         task_dict_list = source['hits']['hits']
     except:
         return None
+    print 'step yse'
     result = []
     #print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:

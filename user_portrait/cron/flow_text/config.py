@@ -9,8 +9,7 @@ import re
 sys.path.append('../../')
 from parameter import PSY_ABS_PATH as abs_path
 
-s_label = ['anger','anx','sad']#第二层分类标签
-f_label = ['negemo','posemo']#第一层分类标签
+z_label = ['anger','anx','sad','awful']#综合分类器
 
 SCWS_ENCODING = 'utf-8'
 SCWS_RULES = '/usr/local/scws/etc/rules.utf8.ini'
@@ -58,8 +57,7 @@ def load_dict(emotion_list):
 
     return emotion_set,emotion_count
 
-DF_DICT,DF_COUNT = load_dict(f_label)
-DS_DICT,DS_COUNT = load_dict(s_label)
+DZ_DICT,DZ_COUNT = load_dict(z_label)
 
 def cut_filter(text):
     pattern_list = [r'\（分享自 .*\）', r'http://\w*']

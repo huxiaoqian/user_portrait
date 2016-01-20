@@ -1,0 +1,177 @@
+<div id="seed_user">
+    <div class="box col-md-12" style="padding:0px;margin:0px;">
+        <div class="box-inner" id = 'box-height'>
+            <div class='col-md-12' style="margin-bottom:4px">
+                <div class='col-lg-6' style='margin-left:195px;font-size:32px;'>
+                    <input type='radio' name="mode_choose" value='single_user' checked='checked'>
+                    <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >单个种子用户</span>
+                    <input type='radio' name="mode_choose" value='multi_user'>
+                    <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >多个种子用户</span>
+                </div>
+            </div>
+            <hr style='width:800px;margin-bottom:0px;margin-left:10px;'>
+            <div id='single_user_ext' class="box-content" style="height:440px">
+                <input id="uid_uname" type='text' class="form-control" style='width:27%;margin:10px 15px;margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
+                <div id='single_user'></div>
+            </div>
+            <div id='multi_user_ext' class="box-content" style="display:none">
+				<form enctype="multipart/form-data" method="post" style="float:left;margin:10px 15px;height:25px;">
+                    <input type="file" id="seed_file_upload" class="fleft" style='border:1px solid #999'/>  
+                    <input type="button" value="上传" id="uploadbtn" class="fleft"/>
+                </form>
+                <div class='col-lg-5' style='margin:10px 55px;'>
+                    <span class="input-group-addon" style="width:120px;border:1px solid white;background-color:white;display:inline-block">是否进行扩展：</span>
+                    <input type='radio' name="ext_choose" value='1' checked='checked'>
+                    <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >否</span>
+                    <input type='radio' name="ext_choose" value='2'>
+                    <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >是</span>
+                </div>
+                <div class="col-lg-9" id="file_status" style="display:none;padding:0px;">
+                    <span class="input-group-addon" style="color:#2c3251;font-weight:bold;width:100px;border:1px solid white;background-color:white;display:inline-block">上传成功！</span>
+                    <span id="add_file" class="input-group-addon" style="width:250px;border:1px solid white;background-color:white;display:inline-block" ></span>
+                    <a id="delete_file" style="cursor:pointer;">删除</a>
+                </div>
+                <div id='multi_user'></div>
+            </div>
+        </div>
+    </div>
+    <div id='seed_user_ext' class="box-content" style="height:420px;display:none">
+        <hr style='width:800px;margin:0px;'>
+        <div id="attribute" class="col-md-12">
+            <label class='control-label' style='padding-top:5px;'>属性（权重从0到1）：
+                 <input id="attr_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='0.5'>
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style="margin-bottom:4px">
+                    <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="location">注册地</span>                             
+                    </div>
+                     <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="area">领域</span>
+                    </div>
+                     <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="topic">话题</span>
+                    </div>
+                    <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="activity_location">活跃地</span>
+                    </div>
+                    <div class='col-lg-2'>
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="keywords">关键词</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tendention">倾向性</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status">心理状态</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tag">自定义标签</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="structure" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>结构（权重从0到1）：
+                 <input id="stru_weight" type='text' class="form-control" style='width:15%; display:inline-block;height:25px'  value='0.5'>
+            </label>
+            <div class='controls'>
+                <div class='col-md-12'>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="repost">转发关系</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="comment">评论关系</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' id="hop_checkbox"class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="hop">跳数</span>
+                    </div>
+                    <div class='col-lg-3'>
+                        <input type='radio' name="hop_choose" value='1' checked='checked' disabled>
+                        <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >1</span>
+                        <input type='radio' name="hop_choose" value='2' disabled>
+                        <span class="input-group-addon" style="width:30px;border:1px solid white; background-color:white;display:inline-block" >2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="events" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>参与事件筛选
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;'>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">关键词</span>
+                         <input id="events_keywords" type='text' class="form-control" style='width:65%; display:inline-block;height:25px' placeholder='多个词用空格隔开'>
+                    </div>
+                    <div class='col-lg-7' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">时间</span>
+                         <input id="events_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>&nbsp;-&nbsp;
+                         <input id="events_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="extension" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>扩展规则（影响力和重要度从1到100）
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;'>
+                    <div class='col-lg-4' >
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
+                        <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
+                            0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
+                        </span>
+                    </div>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
+                         <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                         <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                    </div>
+                    <div class='col-lg-4' >
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
+                         <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                         <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                    </div>
+                </div>
+            </div>
+            <hr style='width:800px;margin-bottom:0px;margin-left:-15px;'>
+        </div>
+        <div id="information" class="col-md-12" style="padding-top:5px">
+            <label class='control-label'>群组信息
+            </label>
+            <div class='controls'>
+                <div class='col-md-12' style='padding:0px;'>
+                    <div class='col-lg-6' style='padding:0px;'>
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
+                         <input id="first_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                    </div>
+                    <div class='col-lg-6' style='padding:0px;'>
+                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                         <input id="first_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style='margin-top:11px'>
+            <div class='col-md-12' style='text-align:right; padding-right:35px'>
+                <span id="seed_user_commit" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='/static/js/portrait/group_seed_user.js'></script>

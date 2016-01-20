@@ -15,6 +15,13 @@ def loading():
 
     return render_template('portrait/overview.html')
 
+@mod.route('/social_sensing/')
+def social_sensing():
+    return render_template('portrait/social_sensing.html')
+
+@mod.route('/group/')
+def group_identify():
+    return render_template('portrait/group_identify.html')
 @mod.route('/group_analysis/')
 def group_analysis():
     name = request.args.get('name', 'test_task')

@@ -1,0 +1,198 @@
+{% extends "tbase.html" %}
+    {% block title %}群体分析{% endblock title %}
+    {% block css %}
+        {{ super() }}
+        <style>
+            .wrapper{min-height:330px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
+            #tab{width: 180px;height:400px;}
+            #tab_left,#tab_con{margin: 0px;background: #fff;} #tab,#tab_con{float: left;}
+            #tab_left{width:180px;height:380px;font-family:"Microsoft Yahei"}
+            #tab_left li{list-style-type: none;font-size: 20px;text-align: center;border-top: 1px solid #ccc;}
+            #tab_left li a{color: #000;opacity:0.7;text-decoration: none;line-height: 80px;width: 180px;height: 70px;display: block;background: #fff;text-shadow:1px 1px 2px #ccc;border-left: 1px solid #ccc;}
+            #tab_left li.current a{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
+            #tab_left li a:hover{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
+            #tab_con{width: 820px;overflow: hidden;margin-bottom:30px;}
+        </style>
+        <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
+    {% endblock css %}
+    {% block head_js %}
+        {{ super() }}
+        <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+    {% endblock head_js %}
+    {% block main %}
+    <h4 class="page-header">群体分析</h4>
+    <div class="box-content">
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a id="tab_discovery" href="#">群体发现任务</a></li>
+            <li><a id="tab_manage" href="#">群体分析任务</a></li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div id="content_discovery" class="tab-pane active" style="margin-top:10px">
+                <div class="wrapper">
+                    <div id="tab">
+                        <ul id="tab_left">
+                            <li id="tab_left_1" class="current"><a href="#tab_con">种子用户群体发现</a></li>
+                            <li id="tab_left_2"><a href="#tab_con">特定属性及模式</a></li>
+                            <li id="tab_left_3"><a href="#tab_con">特定事件及模式</a></li>
+                            <li id="tab_left_4" style="border-bottom:1px solid #ccc;"><a href="#tab_con">社会感知</a></li>
+                        </ul>
+                    </div>
+                    <div id="tab_con">
+                        <div id="tab_con_1">
+                            {% include "portrait/group/seed_user.html"%}
+
+                        </div>
+                        <div id="tab_con_2" style='display:none'>
+                            {% include "portrait/group/attribute_pattern.html"%}
+                        </div>
+                        <div id="tab_con_3" style='display:none'>
+                        </div>
+                        <div id="tab_con_4" style='display:none'>
+                        </div>
+                    </div>
+                </div>
+                <div >
+                    <div id="dis_table">
+                    </div>
+                </div>
+            </div>
+            <div id="content_manage" class="tab-pane" style="margin-top:10px">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="group_control" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">提交监控任务</h4>
+          </div>
+          <div class="modal-body">
+            <span>群体名称：</span>
+            <span style="margin-left:10px" name="group_name" style="width:270px;" /></span>
+            <span style="margin-left:10px;">备注：</span>
+            <span style="float:right" name="remark" style="width:400px" ></span>
+            <div id="group_control_confirm" style="margin-top:30px"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="group_analyze" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">提交分析任务</h4>
+          </div>
+          <div class="modal-body">
+            <span>群体名称：</span><span id="group_name0" style="margin-left:10px;margin-right:250px;"></span>
+            <span style="margin-left:10px;">备注：</span>
+            <span id="remark0" style="width:400px"></span>
+            <div id="group_analyze_confirm" style="margin-top:30px;overflow-y:auto;height:300px;"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="table_search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">搜索条件</h4>
+          </div>
+          <div class="modal-body">
+            <div style='width:300px;margin: 0px auto;'>
+                <div style="margin-top:5px;">群组名称：<input type="text"  id="groupName" class="input searchinput" name="task_name" placeholder="请输入群组名称" style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">备注：<input type="text" id="groupState" class="input searchinput" name="state" placeholder="请输入备注"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">时间：<input type="text" id="groupState" class="input searchinput" name="submit_date" placeholder="请输入时间2015-07-15"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">提交用户：<input type="text"  id="submitUser" class="input searchinput" name="submit_user" placeholder="请输入提交用户"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">发现任务类型：
+                        <select  name="detect_type" class="searchinput" style="width:174px;height:24px;float: right;">
+                        <option value="single" selected = "selected">单种子用户群体发现</option>
+                        <option value="multi">多种子用户群体发现 </option>
+                        <option value="attribute">特定属性及模式群体发现</option>
+                        <option value="event">特定事件群体发现</option>
+                        <option value="sense">社会感知自动群体发现</option>
+                        </select></div>
+            </div>  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_search_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endblock main %}
+    {% block Own_js %}
+        {{ super() }}
+        <script>
+            $(function(){
+                $("#tab_left_1").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
+                    $("#tab_con_1").fadeIn(600);
+                    $("#tab_con_2").hide();
+                    $("#tab_con_3").hide();
+                    $("#tab_con_4").hide();
+                });
+                $("#tab_left_2").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
+                    $("#tab_con_1").hide();
+                    $("#tab_con_3").hide();
+                    $("#tab_con_4").hide();
+                    $("#tab_con_2").fadeIn(600);
+                });
+                $("#tab_left_3").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
+                    $("#tab_con_2").hide();
+                    $("#tab_con_1").hide();
+                    $("#tab_con_4").hide();
+                    $("#tab_con_3").fadeIn(600);
+                });
+                $("#tab_left_4").click(function(){
+                    if ($(this).hasClass('current')) return;
+                    $(this).addClass('current');
+                    $(this).siblings().removeClass('current');
+                    $("#tab_con_1").hide();
+                    $("#tab_con_2").hide();
+                    $("#tab_con_3").hide();
+                    $("#tab_con_4").fadeIn(600);
+                });
+                $("#tab_discovery").click(function(){
+                    if ($(this).parent('li').hasClass('active')) return;
+                    $(this).parent('li').siblings().removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    $('#content_discovery').css('display','block');
+                    $('#content_manage').css('display','none');
+                });
+                $("#tab_manage").click(function(){
+                    if ($(this).parent('li').hasClass('active')) return;
+                    $(this).parent('li').siblings().removeClass('active');
+                    $(this).parent('li').addClass('active');
+                    $('#content_discovery').css('display','none');
+                    $('#content_manage').css('display','block');
+                });
+            });
+        </script>
+        <script type="text/javascript" src="/static/js/portrait/group_identify_task.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/group_pattern.js"></script>
+    {% endblock Own_js %}

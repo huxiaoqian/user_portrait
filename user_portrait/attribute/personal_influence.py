@@ -401,8 +401,8 @@ def influenced_user_detail(uid, date, origin_retweeted_mid, retweeted_retweeted_
     temp_list = []
     for item in in_portrait:
         temp_list.append(item[0])
-    print temp_list[:20]
-    print out_portrait[:20]
+    #print temp_list[:20]
+    #print out_portrait[:20]
     retweeted_results['in_portrait_number'] = len(temp_list)
     retweeted_results['out_portrait_number'] = len(out_portrait)
     in_portrait_url = get_user_url(temp_list[:default_number])
@@ -598,7 +598,7 @@ def influence_summary(uid, date):
             topic.add(item[0])
     result.append(list(domain))
     result.append(list(topic))
-    print result
+    #print result
     return result
 
 if __name__ == "__main__":

@@ -1774,12 +1774,13 @@ def search_sentiment_trend(uid, time_type, now_ts):
             source = flow_text_item['_source']
             timestamp = source['timestamp']
             time_segment = int((timestamp - now_date_ts) / HALF_HOUR) * HALF_HOUR + now_date_ts
-            print 'timestamp, time_segment:', timestamp, ts2date(timestamp), ts2date(time_segment), time_segment
+            #print 'timestamp, time_segment:', timestamp, ts2date(timestamp), ts2date(time_segment), time_segment
             sentiment = source['sentiment']
+            #print 'sentiment', sentiment, type(sentiment)
             try:
-                results[sentiment][time_segment] += 1
+                results[str(sentiment)][time_segment] += 1
             except:
-                results[sentiment][time_segment] = 1
+                results[str(sentiment)][time_segment] = 1
         time_list = [item for item in range(now_date_ts, now_date_ts+DAY, HALF_HOUR)]
         results['time_list'] = time_list
         for time_segment in time_list:
@@ -1870,7 +1871,7 @@ def search_tendency_psy(uid):
     except:
         return None
     #test
-    print 'portrait_result:', portrait_result
+    #print 'portrait_result:', portrait_result
     results['tendency'] = portrait_result['tendency']
     
     psy_dict_list = json.loads(portrait_result['psycho_status'])
@@ -2153,8 +2154,8 @@ def search_attribute_portrait(uid):
     normal_activeness = math.log(results['activeness'] / evaluate_max['activeness'] * 9 + 1, 10)
     results['activeness'] = int(normal_activeness * 100)
     normal_importance = math.log(results['importance'] / evaluate_max['importance'] * 9 + 1, 10)
-    print 'importance:', results['importance']
-    print 'normal importance:', normal_importance*100
+    #print 'importance:', results['importance']
+    #print 'normal importance:', normal_importance*100
     results['importance'] = int(normal_importance * 100)
     normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
     results['influence'] = int(normal_influence * 100)
@@ -2258,6 +2259,7 @@ def get_activeness_trend(uid):
         if len(item_list)==2 and '-' in item_list[1]:
             value = es_result[item]
             value_list.append(value)
+            '''
             query_body = {
                     'query':{
                         'range':{
@@ -2269,8 +2271,9 @@ def get_activeness_trend(uid):
                     }
                 }
             rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
+            '''
             if '-' in item_list[1]:
-                results[item_list[1]] = rank['count']
+                results[item_list[1]] = value
     #print 'results:', results
     sort_results = sorted(results.items(), key=lambda x:datetime2ts(x[0]))
     time_list = [item[0] for item in sort_results]
