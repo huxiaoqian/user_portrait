@@ -87,7 +87,7 @@ redraw();
 redraw_result();
 
 function Group_delete_task(){
-	 this.url = "/group/delete_task/?";
+	 this.url = "/detect/delete_task/?";
 }
 Group_delete_task.prototype = {   //群组搜索
 	call_sync_ajax_request:function(url, method, callback){
@@ -207,7 +207,7 @@ function delRow(obj){
 function group_analyze_confirm_button(){
   	var group_confirm_uids = [];
   	$('[name="analyze_list_option"]').each(function(){
-  	    group_confirm_uids.push($(this).text());
+  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
   	});
   	console.log(group_confirm_uids);
   	var group_ajax_url = '/detect/add_detect2analysis/';
@@ -216,14 +216,14 @@ function group_analyze_confirm_button(){
   	console.log(group_name);
   	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
   	console.log(job);
-  	// $.ajax({
-  	//     type:'POST',
-  	//     url: group_ajax_url,
-  	//     contentType:"application/json",
-  	//     data: JSON.stringify(job),
-  	//     dataType: "json",
-  	//     success: callback
-  	// });
+  	$.ajax({
+  	    type:'POST',
+  	    url: group_ajax_url,
+  	    contentType:"application/json",
+  	    data: JSON.stringify(job),
+  	    dataType: "json",
+  	    success: callback
+  	});
   	function callback(data){
   	    console.log(data);
   	    if (data == '1'){
