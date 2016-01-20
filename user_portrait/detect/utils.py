@@ -426,7 +426,7 @@ def detect2analysis(input_data):
     else:
         status = False
 
-    return results
+    return status
 
 #use to delete detect task
 #input: task_name
