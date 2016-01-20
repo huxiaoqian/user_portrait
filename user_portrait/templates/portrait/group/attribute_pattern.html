@@ -38,33 +38,45 @@
         <!-- <div class="box-content"> -->
 					<div class="cols" style="margin-top:10px;padding: 0px 0px 0px 15px;" id="basic">
 						  <b class='control-label' style='padding-top:5px;'>属性</b>
-              <div style="padding:6px 0px 0px 15px;">
-    						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">注册地</span>
-    						<input id="location" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
-    						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">活跃地</span>
-    						<input id="activity_geo" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
-    						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">关键词</span>
-    						<input id="keywords_string" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='请输入关键词'>
-    						<p style="margin-top:10px;">
-        						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">hashtag</span>
-        						<input id="hashtag" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='请输入hashtag'>
-        						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">备注</span>
-        						<input id="remark" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='备注'>
-        						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" >心理状态</span>
-        						<select id="psychology" name="psycho_status" class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:30px'>
-        							<option value="">不限</option>
-        							<option value="积极">积极</option>
-        							<option value="焦虑">焦虑</option>
-        							<option value="生气">生气</option>
-        							<option value="悲伤">悲伤</option>
-        							<option value="中性">中性</option>
-        						</select>
-                </p>
+              <div class='col-md-12' style="padding-left:0px;margin-bottom:10px;width:820px;">
+                <div class='col-md-4'>
+      						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">注册地</span>
+      						<input id="location" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
+                </div>
+                <div class='col-md-4'>
+      						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">活跃地</span>
+      						<input id="activity_geo" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
+                </div>
+                <div class='col-md-4'>
+      						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">关键词</span>
+      						<input id="keywords_string" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='多个词用空格隔开'>
+                </div>
+              </div>
+              <div class='col-md-12' style="padding-left:0px;margin-bottom:10px;width:820px;">
+                <div class='col-md-4'>
+      						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">hashtag</span>
+      						<input id="hashtag" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='多个词用空格隔开'>
+                </div>
+                <div class='col-md-4'>
+      						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">备注</span>
+      						<input id="remark" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='备注'>
+                </div>
+                <div class='col-md-4'>
+      						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" >心理状态</span>
+      						<select id="psychology" name="psycho_status" class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px;padding: 0px 10px;'>
+      							<option value="">不限</option>
+      							<option value="积极">积极</option>
+      							<option value="焦虑">焦虑</option>
+      							<option value="生气">生气</option>
+      							<option value="悲伤">悲伤</option>
+      							<option value="中性">中性</option>
+      						</select>
+                </div>
               </div>
 					</div>
 					<div class='cols' style="margin-top:-5px;">
             <div class='col-md-12'   id="domain" style="padding-left:28px;">
-              <span style="float:left;line-height: 27px;margin-right:15px">领域</span>
+              <span style="float:left;line-height: 27px;margin-right:15px;color: #555555;">领域</span>
               <div class='col-lg-2' style="margin-left:0px;">
                 <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
                 <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="">境内机构</span>                             
@@ -125,7 +137,7 @@
           </div>
 					<div class='cols' style="margin-top:-10px;padding-left:28px;" id="topic_string">
             <div class='col-md-12'>
-              <span style="float:left;line-height: 27px;margin-right:15px">话题</span>
+              <span style="float:left;line-height: 27px;margin-right:15px;color: #555555;">话题</span>
               <div class='col-lg-2'>
                 <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
                 <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="technology">科技类</span>
@@ -217,13 +229,19 @@
 		      <div id="attribute_tags" style="margin-left:52px;"></div>
           <div class="cols" id="pattern_select">
             <b class='control-label' style='padding-top:5px;'>模式</b>
-						<div class='col-md-12'   style=' margin-left: 15px;'>
-							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;padding-left:0px;" id="">所处城市</span>
-							<input id="geo" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
-							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">ip地址</span>
-							<input id="ip" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：127.0.0.1'>
-              <span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">倾向性</span>
-              <input id="tendency" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='倾向性'>
+						<div class='col-md-12'   style=' margin-left: -5px;'>
+              <div class='col-md-4'>
+  							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;padding-left:0px;" id="">所处城市</span>
+  							<input id="geo" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
+              </div>
+              <div class='col-md-4'>
+  							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">ip地址</span>
+  							<input id="ip" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：127.0.0.1'>
+              </div>
+              <div class='col-md-4'>
+                <span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">倾向性</span>
+                <input id="tendency" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='倾向性'>
+              </div>
 						</div>
 						<br>
 						<div class='col-md-12'  id="message_type" style="margin-top:10px;margin-left: 15px;">
@@ -273,9 +291,9 @@
                 <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="">消极其他</span>
               </div>
             </div>
-            <div class='col-md-12' style="margin:0px 0px 10px 0px;">
-	            <span class="input-group-addon" style="width:100px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;margin-left: 15px;">时间范围</span>
-	            <input id="weibo_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px;margin-left:10px;'>&nbsp;-&nbsp;
+            <div class='col-md-12' style="margin:0px 0px 10px 15px;">
+	            <span class="input-group-addon" style="width:50px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;">时间范围</span>
+	            <input id="weibo_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px;margin-left:20px;'>&nbsp;-&nbsp;
 	            <input id="weibo_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
 	          </div>
             <div id="extension" class="col-md-12" style="padding-top:5px;padding-left:0px;">
@@ -392,32 +410,23 @@ Date.prototype.format = function(format) {
     return format;
 }
 
-  var max_date = new Date().format('yyyyMMdd');
-  var current_date = new Date().format('yyyy/MM/dd hh:mm');
-  var from_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24;
-  var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-  var min_date_ms = new Date()
-  min_date_ms.setTime(from_date_time*1000);
-  var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
+//日期选择
+var date = new Date();
+date.setHours(0);
+date.setMinutes(0);
+date.setSeconds(0);
+date.setMilliseconds(0);
+var max_date = date.format('yyyyMMdd');
+var current_date = date.format('yyyy/MM/dd hh:mm');
+var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
+var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+var max_date_time = Math.floor(new Date().getTime()/1000) - 0;
+var min_date_ms = new Date()
+min_date_ms.setTime(from_date_time*1000);
+var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 
-	$('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10});
-	$('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10});
-  //console.log(time_from);
-	function attribute_pattern_timepicker(str){
-	    var date_time = str.split(' ');
-	    var dates = date_time[0].split('/');
-	    var yy = parseInt(dates[0]);
-	    var mm = parseInt(dates[1]) - 1;
-	    var dd = parseInt(dates[2]);
-	    var times = date_time[1].split(':');
-	    var hh = parseInt(times[0]);
-	    var minute = parseInt(times[1]);
-	    var final_date = new Date();
-	    final_date.setFullYear(yy,mm,dd);
-	    final_date.setHours(hh,minute);
-	    final_date = Math.floor(final_date.getTime()/1000);
-	    //console.log(final_date);
-	}
+$('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10});
+$('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10});
 
 function attribute_pattern_check(){             // check validation 
   //group_information check starts  
@@ -432,36 +441,40 @@ function attribute_pattern_check(){             // check validation
   var impor_from_num = parseFloat($('#attribute_pattern #impor_from').val());
   var impor_to_num = parseFloat($('#attribute_pattern #impor_to').val());
   if (influ_from_num > influ_to_num){
-    alert('影响力左侧输入值应小于右侧')
+    alert('影响力左侧输入值应小于右侧，请重新输入！')
     return false;
   }
   if (impor_from_num > impor_to_num){
-    alert('重要度输入栏左侧输入值应小于右侧')
+    alert('重要度输入栏左侧输入值应小于右侧，请重新输入！')
     return false;
   }
   if(influ_from_num > 100 || influ_to_num > 100){
-    alert('影响力输入值应在0到100之间');
+    alert('影响力输入值应在0到100之间，请重新输入！');
     return false;
   }
   if(impor_from_num>100 || impor_to_num>100){
-    alert('重要度输入值应在0到100之间');
+    alert('重要度输入值应在0到100之间，请重新输入！');
     return false;
   }
   if(num_range_count ==0 ){
-    alert('扩展规则中人数不能为0！');
+    alert('扩展规则中人数不能为0，请重新输入！');
     return false;
   }
   if(time_from > time_to){
     alert('选择发布微博的起止时间错误，请重新选择！');
     return false;
   }
-  if(min_date_time > time_from){
+  if(min_date_time > time_from || min_date_time >time_to){
     alert('请选择近一个月内的时间！');
     return false;
   }
-  //console.log(group_name, remark);
+  if(max_date_time < time_from || max_date_time < time_to){
+    alert('选择的时间超出当前日期，请重新选择！');
+    return false;
+  }
+
   if (group_name.length == 0){
-      alert('群体名称不能为空');
+      alert('群体名称不能为空，请重新输入！');
       return false;
   }
 
@@ -495,7 +508,6 @@ function attribute_pattern_check(){             // check validation
         if(content != ''){
           basic_url = id +'='+ content;
           url_all.push(basic_url);
-          //console.log(basic);
         }
       });
       
@@ -549,6 +561,14 @@ function attribute_pattern_check(){             // check validation
         url_all.push(ip_url);
       }
 
+      var tendency_url = ''
+      var tendency_id = $('#attribute_pattern #tendency').attr("id");
+      var tendency_content = $('#attribute_pattern #tendency').val();
+      if(tendency_content != ''){
+        tendency_url = tendency_id +'='+ tendency_content;
+        url_all.push(tendency_url);
+      }
+
       var message_url = '';
       var message_string = new Array();
       $('#attribute_pattern #message_type .inline-checkbox').each(function(){
@@ -600,7 +620,6 @@ function attribute_pattern_check(){             // check validation
 
       var num_range_url = '';
       var num_range_count = $('#attribute_pattern #num-range').val();
-      //console.log(num_range_count);
       num_range_url = 'count=' + num_range_count;
       url_all.push(num_range_url);
 
@@ -639,8 +658,8 @@ function attribute_pattern_check(){             // check validation
     }	
 	}
   function callback(data){
-        console.log(data);
         if (data == 'true'){
+          alert('提交成功！');
           window.location.href=window.location.href;
             // window.location.href = group_url;
         } 
