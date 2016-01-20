@@ -163,7 +163,6 @@ function draw_keys(data){
 }
 
 	$('a[id^="so_keys"]').click(function(e){
-		console.log('aaa');
 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		url = "/detect/show_detect_result/?task_name=" + temp;
 		//that.call_sync_ajax_request(url,that.ajax_method,draw_sensor);
@@ -173,3 +172,29 @@ function draw_keys(data){
 		$('span[id^="so_remark0"]').html(remark0);
 		$('#so_keys_block').modal();
 	});
+	
+	$('a[id^="so_history"]').click(function(e){
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+		url = "/detect/show_detect_result/?task_name=" + temp;
+		//that.call_sync_ajax_request(url,that.ajax_method,draw_sensor);
+		//draw_table('1',"#group_analyze_confirm");
+		remark0 = $(this).parent().prev().prev().prev().html();
+		$('span[id^="so_group_name0"]').html(temp);
+		$('span[id^="so_remark0"]').html(remark0);
+		draw_history('1');
+		$('#so_his_block').modal();
+	});
+
+function draw_history(data){
+	console.log('asdf');
+	$('#so_his_content').empty();
+	var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
+    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="analyze_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
+    //for (var i=0;i<data.length;i++) {
+      //  html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+    //	i = i + 1;
+ 	//}
+    html += '</table>'; 
+	$('#so_his_content').append(html);	
+}
