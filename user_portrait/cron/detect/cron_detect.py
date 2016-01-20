@@ -2,6 +2,7 @@
 import os
 import sys
 import time
+import json
 
 reload(sys)
 sys.path.append('../../')
@@ -152,20 +153,21 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
             union_count = 0
             
             for iter_search_uid in iter_search_user_list:
+                #try:
+                uid_retweet_dict = json.loads(retweet_result[union_count]['_source']['uid_retweet'])
+                #except:
+                #    uid_retweet_dict = {}
+                print 'uid_retweet_dict:', uid_retweet_dict
                 try:
-                    uid_retweet_dict = json.loads(retweet_result[union_count]['uid_retweet'])
-                except:
-                    uid_retweet_dict = {}
-                try:
-                    uid_be_retweet_dict = json.loads(be_retweet_result[union_count]['uid_be_retweet'])
+                    uid_be_retweet_dict = json.loads(be_retweet_result[union_count]['_source']['uid_be_retweet'])
                 except:
                     uid_be_retweet_dict = {}
                 try:
-                    uid_comment_dict = json.loads(comment_result[union_count]['uid_comment'])
+                    uid_comment_dict = json.loads(comment_result[union_count]['_source']['uid_comment'])
                 except:
                     uid_comment_dict = {}
                 try:
-                    uid_be_comment_dict = json.loads(be_comment_result[union_count]['uid_be_comment'])
+                    uid_be_comment_dict = json.loads(be_comment_result[union_count]['_source']['uid_be_comment'])
                 except:
                     uid_be_comment_dict = {}
                 #union four type user set
@@ -185,6 +187,7 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
         #get all union result
         all_union_result = union_dict(all_union_result, hop_union_result)
     
+    print 'test all_union_result:', all_union_result
     #step5: identify the who is in user_portrait
     sort_all_union_result = sorted(all_union_result.items(), key=lambda x:x[1], reverse=True)
     iter_count = 0
@@ -194,22 +197,28 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
     filter_importance_to = filter_dict['importance']['to']
     filter_influence_from = filter_dict['influence']['from']
     filter_influence_to = filter_dict['influence']['to']
+    print 'test sort_all_union_result:', sort_all_union_result
     while iter_count < all_count:
         iter_user_list = [item[0] for item in sort_all_union_result[iter_count:iter_count + DETECT_ITER_COUNT]]
-        try:
-            portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+        #try:
+        portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
                     body={'ids':iter_user_list}, _source=True)['docs']
-        except:
-            portrait_result = []
+        #except:
+        #    portrait_result = []
+        print 'portrait_result:', portrait_result
         for portrait_item in portrait_result:
             if portrait_item['found'] == True:
-                if portrait_item['importance'] >= filter_importance_from and portrait_item['importance'] <= filter_importance_to:
-                    if portrait_item['influence'] <= filter_influence_from and portrait_item['influence'] >= filter_influence_to:
+                print 'portrait_item:', portrait_item
+                if portrait_item['_source']['importance'] >= filter_importance_from and portrait_item['_source']['importance'] <= filter_importance_to:
+                    if portrait_item['_source']['influence'] >= filter_influence_from and portrait_item['_source']['influence'] <= filter_influence_to:
                         uid = portrait_item['_id']
+                        print 'yes:', uid
                         in_portrait_result.append(uid)
         if len(in_portrait_result) > (filter_dict['count'] * DETECT_COUNT_EXPAND):
             break
+        iter_count += DETECT_ITER_COUNT
 
+    print 'in_portrait_result:', in_portrait_result
     return in_portrait_result
 
 
@@ -228,12 +237,15 @@ def union_attribute_structure(attribute_user_result, structure_result, attribute
     attribute_normal_index = float(1) / len(attribute_user_result)
     structure_normal_index = float(1) / len(structure_user_result)
     attribute_count = len(attribute_user_result)
-    structure_count = len(structure_count)
+    structure_count = len(structure_user_result)
+    print 'structure_user_result:', structure_user_result
     for attribute_item in attribute_user_result:
         uid = attribute_item['_id']
+        
         structure_rank = structure_user_result[uid]
         new_score = attribute_weight*((attribute_count - attribute_rank)*attribute_normal_index) + \
                     structure_weight*((structure_count - structure_rank)*structure_normal_index)
+        
         union_result[uid] = new_score
     #step3:sort user by new score
     sort_union_result = sorted(union_result.items(), key=lambda x:x[1], reverse=True)
@@ -980,6 +992,6 @@ if __name__=='__main__':
     #test
     single_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'0', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5, \
-            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':50, 'to':100}, 'influence':{'from':50, 'to':100}}}}
+            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':0, 'to':1000}, 'influence':{'from':0, 'to':1000}}}}
     results = single_detect(single_input_dict)
     print 'results:', results

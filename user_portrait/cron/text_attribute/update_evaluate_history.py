@@ -5,6 +5,7 @@ use to scan the activeness, influence, pagerank to copy
 import sys
 import json
 import time
+import math
 from elasticsearch.helpers import scan
 reload(sys)
 sys.path.append('../../')
@@ -12,6 +13,11 @@ from global_utils import es_user_portrait, portrait_index_name, portrait_index_t
 from global_utils import copy_portrait_index_name, copy_portrait_index_type
 from time_utils import ts2datetime, datetime2ts
 from parameter import DAY, LOW_INFLUENCE_THRESHOULD
+
+#test
+portrait_index_name = 'user_portrait_1222'
+portrait_index_type = 'user'
+
 
 # yuankun-20151229
 def average_value(source):
@@ -37,6 +43,32 @@ def average_value(source):
 
 
 
+
+#use to get max_value
+#write in version: 15-12-08
+def get_max_index(term):
+    query_body = {
+        'query':{
+            'match_all':{}
+            },
+        'size':1,
+        'sort':[{term: {'order': 'desc'}}]
+        }
+    try:
+        iter_max_value = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
+                body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    iter_max = iter_max_value[0]['_source'][term]
+    return iter_max
+
+
+#use to normal influence and activeness
+#write in verson: 15-12-08
+def normal_index(index, max_index):
+    normal_value = math.log((index / max_index) * 9 + 1, 10) * 100
+    return normal_value
+
 #use to scan portrait to get activeness and influence to es:copy_user_portrait
 #write in version: 15-12-08
 def scan_index_history():
@@ -56,6 +88,9 @@ def scan_index_history():
     del_date_string = del_date
     del_activeness_key = 'activeness_'+del_date_string
     del_influence_key = del_date_string
+    #get max value for importance and activeness
+    max_activeness = get_max_index('activeness')
+    max_influence = get_max_index('influence')
     while True:
         try:
             scan_re = s_re.next()['_source']
@@ -64,8 +99,13 @@ def scan_index_history():
 
             activeness_key = 'activeness_'+now_date_string
             influence_key = now_date_string
+            #save to normal activeness and normal influence
+            activeness_value = scan_re['activeness']
+            influence_value = scan_re['influence']
+            normal_activeness = normal_index(activeness_value, max_activeness)
+            normal_influence = normal_index(influence_value, max_influence)
 
-            add_info[uid] = {activeness_key:scan_re['activeness'], influence_key:scan_re['influence']}
+            add_info[uid] = {activeness_key:normal_activeness, influence_key:normal_influence}
             if count % 1000==0:
                 uid_list = add_info.keys()
                 evaluate_history_results = es_user_portrait.mget(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body={'ids':uid_list})['docs']
