@@ -417,7 +417,9 @@ def detect2analysis(input_data):
     task_information_dict = {'task_name':task_name, 'uid_list':uid_list, 'status':0, 'count':len(uid_list),\
             'task_type':'analysis', 'submit_user':task_exist_result['submit_user'], 'submit_date':task_exist_result['submit_date'], \
             'detect_type':task_exist_result['detect_type'], 'detect_process':task_exist_result['detect_process']}
+    
     add_es_dict = {'task_information':task_information_dict, 'query_condition':task_exist_result['query_condition']}
+    print 'add_es_dict:', add_es_dict
     es_status = save_compute2es(add_es_dict)
     #step4: add task to analysis queue
     redis_status = save_compute2redis(task_exist_result)

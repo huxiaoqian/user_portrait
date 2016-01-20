@@ -941,7 +941,7 @@ def change_process_proportion(task_name, proportion):
         print 'task is not exist'
         return 'task is not exist'
     if task_exist_result != {}:
-        task_exist_result['process'] = proportion
+        task_exist_result['detect_process'] = proportion
         es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=task_exist_result)
         mark = True
 
