@@ -4,13 +4,14 @@ import sys
 import json
 from elasticsearch import Elasticsearch
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import portrait_index_name, portrait_index_type
 from user_portrait.filter_uid import all_delete_uid
 """
 reload(sys)
 sys.path.append('./../')
 from global_utils import es_user_portrait as es
 """
-def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
+def imagine(uid, query_fields_dict,index_name=portrait_index_name, doctype=portrait_index_type):
 
     """
     uid: search users relate to uid
@@ -19,7 +20,7 @@ def imagine(uid, query_fields_dict,index_name="user_portrait", doctype='user'):
     for example: "domain": 2
     domain, psycho_feature
     """
-    personal_info = es.get(index="user_portrait", doc_type="user", id=uid, _source=True)['_source']
+    personal_info = es.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid, _source=True)['_source']
 
     keys_list = query_fields_dict.keys()
     keys_list.remove('field')

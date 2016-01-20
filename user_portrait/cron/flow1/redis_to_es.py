@@ -20,7 +20,7 @@ from parameter import pre_influence_index, influence_doctype
 es = ES_CLUSTER_FLOW1
 cluster_redis = R_CLUSTER_FLOW1
 
-def compute(user_set):
+def compute(user_set, bulk_action):
     count_c = 0
 
     weibo_redis = R_CLUSTER_FLOW1
@@ -91,7 +91,6 @@ def compute(user_set):
         retweeted_weibo_comment_brust= activity_weibo(retweeted_weibo_comment_timestamp, user_info, "retweeted_weibo_comment_timestamp")
 
 
-
         influence_origin_weibo_retweeted = influence_weibo_cal(origin_weibo_retweeted_total_number, origin_weibo_retweeted_average_number, origin_weibo_retweeted_top[0][1],origin_weibo_retweeted_brust)
 
         influence_origin_weibo_comment = influence_weibo_cal(origin_weibo_comment_total_number, origin_weibo_comment_average_number, origin_weibo_comment_top[0][1], origin_weibo_comment_brust)
@@ -160,7 +159,7 @@ def compute(user_set):
 if __name__ == "__main__":
 
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130907"
+    es_index = "20130905"
     es_index = pre_influence_index + es_index
     bool = es.indices.exists(index=es_index)
     print bool
@@ -169,6 +168,7 @@ if __name__ == "__main__":
 
     count = 0
     bulk_action = []
+    time.sleep(20)
     tb = time.time()
 
 

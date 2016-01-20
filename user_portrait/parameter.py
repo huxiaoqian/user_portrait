@@ -175,6 +175,27 @@ INFLUENCE_BRUST_THRESHOULD = [100, 100,100, 100]
 INFLUENCE_BRUST_LIST = ['origin_weibo_retweeted_brust_average','origin_weibo_comment_brust_average','retweeted_weibo_retweeted_brust_average','retweeted_weibo_comment_brust_average']
 INFLUENCE_BRUST_CONCLUSION = ['传播速度快', '评论速度快', '传播速度快', '评论速度快']
 
+
+# social sensoring time interval
+SOCIAL_SENSOR_TIME_INTERVAL = 1800
+SOCIAL_SENSOR_FORWARD_RANGE = 21600
+INDEX_MANAGE_SOCIAL_SENSING = "manage_sensing_task"
+DOC_TYPE_MANAGE_SOCIAL_SENSING = "task"
+DETAIL_SOCIAL_SENSING = "social_sensing_task"
+FORWARD_N = 12
+INITIAL_EXIST_COUNT = 6 #从任务开始到经历多少个时间片段开始计数
+IMPORTANT_USER_NUMBER = 100 # 每个时间间隔内es查询时设置重要的人的个数
+IMPORTANT_USER_THRESHOULD = 50 # 重要的人其重要度的阈值，不低于
+signal_nothing = "0" # 无事件
+signal_brust = "1" # 事件爆发
+signal_track = "2" # 事件跟踪
+signal_count_varition = "1"
+signal_sentiment_varition = "2"
+signal_nothing_variation = ""
+finish_signal = "1"
+unfinish_signal = "0"
+
+
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
                           'activity_geo', 'tendency', 'tag', 'remark']

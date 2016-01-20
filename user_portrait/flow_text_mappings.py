@@ -42,7 +42,7 @@ def get_mappings(index_name):
                             'index': 'not_analyzed'
                             },
                         'timestamp':{
-                            'type': 'long',
+                            'type': 'long'
                             },
                         'sentiment': {
                             'type': 'string',
@@ -61,12 +61,32 @@ def get_mappings(index_name):
                             'analyzer': 'my_analyzer'
                             },
                         'message_type':{
-                            'type': 'string',
-                            'index': 'not_analyzed'
+                            'type': 'long'
                             },
                         'uid':{
                             'type': 'string',
                             'index': 'not_analyzed'
+                            },
+                        'root_uid':{
+                            'type': 'string',
+                            'index': 'not_analyzed'
+                            },
+                        'root_mid':{
+                            'type': 'string',
+                            'index': 'not_analyzed'
+                            },
+                         # uncut weibo text
+                        'origin_text':{
+                            'type': 'string',
+                            'index': 'not_analyzed'
+                            },
+                        'origin_keywords_dict':{
+                            'type': 'string',
+                            'index': 'not_analyzed'
+                            },
+                        'origin_keywords_string':{
+                            'type': 'string',
+                            'analyzer': 'my_analyzer'
                             }
                         }
                     }
@@ -76,5 +96,5 @@ def get_mappings(index_name):
     #es.index(index=index_name, doc_type='text', id='test', body={'uid':'test'})
 
 if __name__=='__main__':
-    index_name = 'flow_text_2013-09-06'
+    index_name = 'flow_text_2013-09-07'
     get_mappings(index_name)
