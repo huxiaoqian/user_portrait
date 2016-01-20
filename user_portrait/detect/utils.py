@@ -260,7 +260,12 @@ def save_compute2es(input_dict):
     status = True
     add_dict = dict(add_dict, **input_dict['task_information'])
     task_name = input_dict['task_information']['task_name']
-    add_dict['query_condition'] = json.dumps(input_dict['query_condition'])
+    count = len(input_dict['uid_list'])
+    add_dict['count'] = count
+    if isinstance(input_dict['query_condition'], str):
+        add_dict['query_condition'] = input_dict['query_condition']
+    else:
+        add_dict['query_condition'] = json.dumps(input_dict['query_condition'])
     try:
         es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=add_dict)
         print 'success add compute task es'
