@@ -30,7 +30,13 @@ function bind_button_click(){
     $('#seed_user #'+seed_user_option+' #seed_user_commit').click(function(){
         var valid = seed_user_check();
         if (valid){
-            seed_user_data();
+            var seed_user_url = seed_user_data();
+            $.ajax({
+                type:'GET',
+                url:seed_user_url,
+                dataType:'json',
+                success:seed_user_callback
+            });
         }
     });
     $('#seed_user #'+seed_user_option+' #attr_weight').change(function(){
@@ -109,7 +115,9 @@ function bind_button_click(){
         });
     }
 }
-
+function seed_user_callback(data){
+    console.log(data);
+}
 function seed_user_init(){
     if (!seed_user_flag){
         var html = $('#seed_user #seed_user_ext').html();
@@ -174,8 +182,25 @@ function seed_user_check(){             // check validation
     }
     //other form check starts
     if ((seed_user_option == 'multi_user') && ($('#seed_user #multi_user_ext [name="ext_choose"]:checked').val() == 1)){
+        if (seed_user_files == undefined){
+            alert("请选择文件上传！");
+            return false;
+        }
     }
     else{              //single_user or multi_user with extension
+        if (seed_user_option == 'single_user'){
+            console.log($('#seed_user #uid_uname').val());
+            if (!($('#seed_user #uid_uname').val())){
+                alert('请输入用户ID或昵称！');
+                return false;
+            }
+        }
+        else{
+            if (seed_user_files == undefined){
+                alert("请选择文件上传！");
+                return false;
+            }
+        }
         var attr_weight = parseFloat($('#seed_user #'+seed_user_option+' #attr_weight').val());
         var stru_weight = parseFloat($('#seed_user #'+seed_user_option+' #stru_weight').val());
         if ((attr_weight + stru_weight) != 1){
@@ -214,17 +239,25 @@ function seed_user_check(){             // check validation
 //获取选择的条件，把参数传出获取返回值
 function seed_user_data(){
     if (seed_user_option == 'single_user'){
-        console.log($('#seed_user #uid_uname').val());
+        var url = '/detect/single_person/?';
+        var uid_uname = $('#seed_user #uid_uname').val();
+        url += 'seed_uname=' + uid_uname;
+        url += '&seed_uid=' + uid_uname;
+        //attribute
+        $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
+            if($(this).is(':checked')){
+                url += '&' + $(this).next().attr('id') + '=1';
+            }
+            else{
+                url += '&' + $(this).next().attr('id') + '=0';
+            }
+        });
     }
-    var url = '/manage/imagine/?keywords=';
+    console.log(url);
+    /*
     var keywords = new Array();
     var structure = new Array();
     var weight = new Array();
-    $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
-        if($(this).is(':checked')){
-            keywords.push($(this).next().attr('id'));
-        }
-    });
     url += keywords.join(',') + '&structure=';
     $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
         if($(this).is(':checked')){
@@ -245,7 +278,7 @@ function seed_user_data(){
     if ($('#seed_user #'+seed_user_option+' #hop_checkbox').is(':checked')){
         console.log($('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val());
     }
-    console.log(url);
+    */
     return url;
 }
 function seed_user_timepicker(str){
