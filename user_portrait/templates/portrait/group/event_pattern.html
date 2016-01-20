@@ -1,9 +1,9 @@
 <style type="text/css">
-	#attribute_pattern #domain .input-group-addon{
+	#event_pattern #domain .input-group-addon{
 	    font-size: 13px;
 	    margin-top: -3px;
 	}
-	#attribute_pattern #topic_string .input-group-addon{
+	#event_pattern #topic_string .input-group-addon{
 	    font-size: 13px;
 	}
 </style>
@@ -42,7 +42,7 @@
                 <input type='checkbox' class='inline-checkbox' value='option1'>
                 <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="health">民生类_健康</span>
               </div>
-              <div id="topic_show" onclick='show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="topic_show" onclick='event_show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
               <div id="more_topic" class="hidden">
                 <div class='col-lg-2'  style="margin-left:43px;">
                   <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -100,7 +100,7 @@
                   <input type='checkbox' class='inline-checkbox' value='option1'>
                   <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="others">其他类</span>
                 </div>
-                 <div onclick="fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+                 <div onclick="event_fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
               </div>
           	</div>
 
@@ -126,7 +126,7 @@
                 <input type='checkbox' class='inline-checkbox' value='option1'>
                 <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="">境外媒体</span>
               </div>
-              <div id="domain_show" onclick='show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="domain_show" onclick='event_show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
               <div id="more_domain" class="hidden">
                 <div class='col-lg-2' style="">
                     <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -160,7 +160,7 @@
                   <input type='checkbox' class='inline-checkbox' value='option1'>
                   <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">其他</span>
                 </div>
-                <div onclick="fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+                <div onclick="event_fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
               </div>
             </div>
 
@@ -214,19 +214,19 @@
 </div>
 
 <script type="text/javascript">
-  function show_more(){
+  function event_show_more(){
       $("#event_pattern #more_domain").removeClass("hidden");
       $("#event_pattern #domain_show").addClass("hidden");
   }
-  function fold_domain(){
+  function event_fold_domain(){
       $("#event_pattern #more_domain").addClass("hidden");
       $("#event_pattern #domain_show").removeClass("hidden");
   }
-  function show_more_topic(){
+  function event_show_more_topic(){
       $("#event_pattern #more_topic").removeClass("hidden");
       $("#event_pattern #topic_show").addClass("hidden");
   }
-  function fold_topic(){
+  function event_fold_topic(){
       $("#event_pattern #more_topic").addClass("hidden");
       $("#event_pattern #topic_show").removeClass("hidden");
   }
