@@ -16,7 +16,7 @@ def deliver_weibo_brust(time_list, division=900, percent=0.5):
 
     time_list = [int(value) for value in time_list]
     max_value = max(time_list)
-    if max_value <= 10:
+    if max_value <= 5:
         return 0, 0
     else:
         list_brust = [value for value in time_list if value >= percent*max_value]
@@ -50,8 +50,9 @@ def statistic_weibo(origin_weibo_retweeted_count, origin_weibo_set, user_info,we
             origin_weibo_retweeted_detail[origin_weibo_id] = int(user_info[origin_weibo_id+weibo_type])
             total_number += int(origin_weibo_retweeted_detail[origin_weibo_id])
         average_number = total_number * 1.0/ len(origin_weibo_set)
-        order = sorted(origin_weibo_retweeted_detail.iteritems(), key=lambda x:x[1], reverse=True)
-        top_retweeted = order[0:3] # list of top 3 weibo
+        if origin_weibo_retweeted_detail:
+            order = sorted(origin_weibo_retweeted_detail.iteritems(), key=lambda x:x[1], reverse=True)
+            top_retweeted = order[0:3] # list of top 3 weibo
 
     return origin_weibo_retweeted_detail, total_number, top_retweeted, average_number
 

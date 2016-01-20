@@ -66,6 +66,9 @@ R_GROUP = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
 group_detect_queue_name = 'group_detect_task'
 group_analysis_queue_name = 'group_analysis_task'
 
+# social sensing redis
+R_SOCIAL_SENSING = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=14)
+
 # use to recomment 
 #two types hash
 #type1:{recomment_2013-09-01:{uid:status, uid:status}} status:0 not in  status:1 have in
