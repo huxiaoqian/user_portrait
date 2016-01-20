@@ -254,6 +254,31 @@ function seed_single_user_callback(data){
     if (data == 'task name invalid') alert('请输入合法的任务名称！');
     if (data == 'no query condition') alert('请选择搜索条件！');
 }
+function seed_multi_user_callback(data){
+    var status_string = data[0];
+    var out_list = data[1];
+    console.log(data);
+    if (status_string == true){
+        console.log(data);
+        $('#group_out_list').empty();
+        var html = '';
+        html += '<table class="table table-bordered table-striped table-condensed datatable"><thead>';
+        html += '<tr style="text-align:center;"><th>用户ID</th><th>操作</th></tr></thead>';
+        html += '<tbody>';
+        for (i=0;i<out_list.length;i++){
+            html += '<tr><td>'+out_list[i][0]+'</td><td><a name="group_recommend_in">入库</a></td></tr>';
+        }
+        html += '</tbody>';
+        html += '</table>';
+        $('#group_out_list').append(html);
+        $('#out_list_modal').modal();
+    }
+    else{
+        if (status_string == 'no seed user') alert('用户列表为空！');
+        if (status_string == 'task name invalid') alert('请输入合法的任务名称！');
+        if (status_string == 'no query condition') alert('请选择搜索条件！');
+    }
+}
 //获取选择的条件，把参数传出获取返回值
 function seed_single_user_data(){
     var url = '';
@@ -398,7 +423,7 @@ function handleFileSelect(upload_job){
                 contentType:"application/json",
                 data:JSON.stringify(upload_job),
                 dataType: "json",
-                success: seed_single_user_callback
+                success: seed_multi_user_callback
             });
         };            
         reader.readAsText(f,'GB2312');                                                        
