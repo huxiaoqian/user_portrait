@@ -50,7 +50,7 @@ Draw_dis_Table:function(data){
 	var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
-	j = 40;
+	//j = 40;
 	var dis_type='';
 	for (i=0;i<data.length;i++){
 		if(data[i][3]=='single'){
@@ -64,8 +64,8 @@ Draw_dis_Table:function(data){
 		}else{
 			dis_type='社会感知自动群体发现';
 		}
-		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][1]+'</td><td><progress value="'+j+'" max="100"></progress>&nbsp;&nbsp;'+j+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
-		j += 10;
+		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][1]+'</td><td><progress value="'+data[i][1]+'" max="100"></progress>&nbsp;&nbsp;'+data[i][1]+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+		//j += 10;
 	}
 	html += '</tbody>';
 	html += '</table>';
