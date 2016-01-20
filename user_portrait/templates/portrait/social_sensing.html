@@ -1,1 +1,44 @@
 {% extends "tbase.html" %}
+	{% block title %}社会感知{% endblock title %}
+	{% block css %}
+        {{ super() }}
+    {% endblock css %}
+    {% block main %}
+    <h4 class="page-header">社会感知</h4>
+    <div>新建任务</div>
+    <div>传感器</div>
+    <div>
+		<input type='radio' name="so_mode_choose" value='so_all_users' checked='checked'>
+        <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >全库用户</span>
+        <input type='radio' name="so_mode_choose" value='so_have_users'>
+        <span class="input-group-addon" style="width:140px;border:1px solid white;font-weight:bold; background-color:white;display:inline-block" >选择已有群体</span>
+    </div>
+
+    <div id='so_group_task'>
+    </div>
+
+    <div>关键词</div>
+    <input id="so_keywords" type='text' class="form-control" style='width:65%; display:inline-block;height:25px' placeholder='多个词用空格隔开'>
+    <div id='so_have_keys'></div>
+    <div>
+        <div class='col-md-12' style='padding:0px;'>
+            <div class='col-lg-6' style='padding:0px;'>
+                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
+                 <input id="so_task_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+            </div>
+            <div class='col-lg-6' style='padding:0px;'>
+                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                 <input id="so_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+            </div>
+        </div>
+    	<div>                         
+    		<span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">终止时间</span>
+            <input id="so_end_time" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
+        </div>
+    </div>
+
+    {% endblock main %}
+    {% block Own_js %}
+        {{ super() }}
+		<script type='text/javascript' src='/static/js/portrait/social_sensing.js'></script>
+    {% endblock Own_js %}
