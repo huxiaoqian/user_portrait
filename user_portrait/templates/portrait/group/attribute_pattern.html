@@ -427,6 +427,26 @@ function attribute_pattern_check(){             // check validation
   var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
   var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
   var num_range_count = $('#attribute_pattern #num-range').val();
+  var influ_from_num = parseFloat($('#attribute_pattern #influ_from').val());
+  var influ_to_num =parseFloat($('#attribute_pattern #influ_to').val());
+  var impor_from_num = parseFloat($('#attribute_pattern #impor_from').val());
+  var impor_to_num = parseFloat($('#attribute_pattern #impor_to').val());
+  if (influ_from_num > influ_to_num){
+    alert('影响力左侧输入值应小于右侧')
+    return false;
+  }
+  if (impor_from_num > impor_to_num){
+    alert('重要度输入栏左侧输入值应小于右侧')
+    return false;
+  }
+  if(influ_from_num > 100 || influ_to_num > 100){
+    alert('影响力输入值应在0到100之间');
+    return false;
+  }
+  if(impor_from_num>100 || impor_to_num>100){
+    alert('重要度输入值应在0到100之间');
+    return false;
+  }
   if(num_range_count ==0 ){
     alert('扩展规则中人数不能为0！');
     return false;
