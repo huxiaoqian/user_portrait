@@ -113,7 +113,7 @@ def identify_user_out(input_uid_list):
             out_user_result.sppend([uid, uname, fansnum, statusnum, friendsnum])
     sort_out_user_result = sorted(out_user_result, key=lambda x:x[2], reverse=True)
 
-    return in_user_list, sort_out_user_list
+    return in_user_list, sort_out_user_result
 
 
 #use to save detect multi task
