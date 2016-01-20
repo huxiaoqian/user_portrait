@@ -207,7 +207,7 @@ function delRow(obj){
 function group_analyze_confirm_button(){
   	var group_confirm_uids = [];
   	$('[name="analyze_list_option"]').each(function(){
-  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
+  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().text());
   	});
   	console.log(group_confirm_uids);
   	var group_ajax_url = '/detect/add_detect2analysis/';

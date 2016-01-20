@@ -2,7 +2,12 @@
 	{% block title %}社会感知{% endblock title %}
 	{% block css %}
         {{ super() }}
+        <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
     {% endblock css %}
+    {% block head_js %}
+        {{ super() }}
+        <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+    {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">社会感知</h4>
     <div>新建任务</div>
@@ -40,5 +45,6 @@
     {% endblock main %}
     {% block Own_js %}
         {{ super() }}
+
 		<script type='text/javascript' src='/static/js/portrait/social_sensing.js'></script>
     {% endblock Own_js %}
