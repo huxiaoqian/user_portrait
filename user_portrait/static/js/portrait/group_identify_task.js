@@ -78,7 +78,7 @@ function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 }
-//window.setInterval(redraw,3000);
+window.setInterval(redraw,3000);
 function redraw(){
 	deurl= '/detect/show_detect_task/';
 	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
@@ -207,7 +207,7 @@ function delRow(obj){
 function group_analyze_confirm_button(){
   	var group_confirm_uids = [];
   	$('[name="analyze_list_option"]').each(function(){
-  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
+  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().text());
   	});
   	console.log(group_confirm_uids);
   	var group_ajax_url = '/detect/add_detect2analysis/';
