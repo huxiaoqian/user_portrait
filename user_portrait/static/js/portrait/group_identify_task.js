@@ -66,7 +66,7 @@ function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 }
-window.setInterval(redraw,3000);
+//window.setInterval(redraw,3000);
 function redraw(){
 	deurl= '/detect/show_detect_task/';
 	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
@@ -127,8 +127,8 @@ $('a[id^="commit_control"]').click(function(){
 function submit_analyze(that){
 	$('a[id^="group_commit_analyze"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-		var percent = $(this).parent().prev().val();
-		if(percent < 1){
+		var percent = $(this).parent().prev().text();
+		if(percent.replace(/[^0-9]/ig,"") != 100){
 			alert('进度没有达到100%，无法提交分析任务！');
 		}
 		else{
@@ -136,8 +136,6 @@ function submit_analyze(that){
 			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
 			draw_table('1',"#group_analyze_confirm");
 			remark0 = $(this).parent().prev().prev().html();
-			//document.getElementById('group_name0').innerHTML=temp;
-			//document.getElementById('remark0').innerHTML=remark0;
 			$('span[id^="group_name0"]').html(temp);
 			$('span[id^="remark0"]').html(remark0);
 			$('#group_analyze').modal();
@@ -150,7 +148,7 @@ function submit_control(that){
 		console.log('aaaa');
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		var percent = $(this).parent().prev().val();
-		if(percent < 1){
+		if(percent != '100%'){
 			alert('进度没有达到100%，无法提交监控任务！');
 		}
 		else{
@@ -202,18 +200,18 @@ function group_analyze_confirm_button(){
   	console.log(group_name);
   	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
   	console.log(job);
-  	// $.ajax({
-  	//     type:'POST',
-  	//     url: group_ajax_url,
-  	//     contentType:"application/json",
-  	//     data: JSON.stringify(job),
-  	//     dataType: "json",
-  	//     success: callback
-  	// });
+  	$.ajax({
+  	    type:'POST',
+  	    url: group_ajax_url,
+  	    contentType:"application/json",
+  	    data: JSON.stringify(job),
+  	    dataType: "json",
+  	    success: callback
+  	});
   	function callback(data){
   	    console.log(data);
   	    if (data == '1'){
-  	        window.location.href = group_url;
+  	        alert('提交成功！');
   	    }
   	    else{
   	        alert('已存在相同名称的群体分析任务,请重试一次!');
