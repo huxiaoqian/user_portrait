@@ -136,6 +136,7 @@ def ajax_multi_person():
     results = {}
     query_dict = {} # query_dict = {'attribute':[], 'attribute_weight':0.5, 'structure':[], 'structure_weight':0.5, 'text':{} ,'filter':{}}
     task_information_dict = {} # task_information_dict = {'uid_list':[], 'task_name':xx, 'state':xx, 'submit_user':xx}
+    input_data = request.get_json()
     #upload user list
     upload_data = request.form['upload_data']
     line_list = upload_data.split('\n')
