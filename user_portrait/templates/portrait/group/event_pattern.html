@@ -264,46 +264,28 @@ Date.prototype.format = function(format) {
     return format;
 }
 
-  var date = new Date();
-  date.setHours(0);
-  date.setMinutes(0);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
-  alert(date);
-  var max_date = date.format('yyyyMMdd');
-  console.log('max_date', max_date);
-  var current_date = date.format('yyyy/MM/dd hh:mm');
-  console.log('current_date', current_date);
-  var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
-  var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-  var max_date_time = Math.floor(new Date().getTime()/1000) - 0;
-  var min_date_ms = new Date()
-  min_date_ms.setTime(from_date_time*1000);
-  var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
+//日期选择
+var date = new Date();
+date.setHours(0);
+date.setMinutes(0);
+date.setSeconds(0);
+date.setMilliseconds(0);
+var max_date = date.format('yyyyMMdd');
+var current_date = date.format('yyyy/MM/dd hh:mm');
+var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
+var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+var max_date_time = Math.floor(new Date().getTime()/1000) - 0;
+var min_date_ms = new Date()
+min_date_ms.setTime(from_date_time*1000);
+var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 
-  $('#event_pattern #time_start').datetimepicker({value:from_date,step:10});
-  $('#event_pattern #time_end').datetimepicker({value:current_date,step:10});
-  //console.log(time_from);
-	// function event_pattern_timepicker(str){
-	//     var date_time = str.split(' ');
-	//     var dates = date_time[0].split('/');
-	//     var yy = parseInt(dates[0]);
-	//     var mm = parseInt(dates[1]) - 1;
-	//     var dd = parseInt(dates[2]);
-	//     var times = date_time[1].split(':');
-	//     var hh = parseInt(times[0]);
-	//     var minute = parseInt(times[1]);
-	//     var final_date = new Date();
-	//     final_date.setFullYear(yy,mm,dd);
-	//     final_date.setHours(hh,minute);
-	//     final_date = Math.floor(final_date.getTime()/1000);
-	//     //console.log(final_date);
-	// }
+$('#event_pattern #time_start').datetimepicker({value:from_date,step:10});
+$('#event_pattern #time_end').datetimepicker({value:current_date,step:10});
+
 
 function event_pattern_check(){             // check validation 
   //group_information check starts  
   var group_name = $('#event_pattern #first_name').val();
-  console.log(group_name);
   var remark = $('#event_pattern #first_remarks').val();
   var location = $('#event_pattern #location').val();
   var time_from = Date.parse($('#event_pattern #time_start').val())/1000;
@@ -345,7 +327,6 @@ function event_pattern_check(){             // check validation
   	alert('选择的时间超出当前日期，请重新选择！');
   	return false;
   }
-  //console.log(group_name, remark);
   if (group_name.length == 0){
       alert('群体名称不能为空，请重新输入！');
       return false;
@@ -467,8 +448,8 @@ function submit_event(){
     }	
 	}
   function event_callback(data){
-        console.log(data);
         if (data == 'true'){
+          alert('提交成功！');
           window.location.href=window.location.href;
             // window.location.href = group_url;
         } 
