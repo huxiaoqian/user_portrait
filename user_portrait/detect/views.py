@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
-
-import os
+ os
 import time
 import json
 from flask import Blueprint, url_for, render_template, request,\
