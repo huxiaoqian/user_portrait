@@ -1,6 +1,6 @@
 <style type="text/css">
 #attribute_pattern{
-  color:#555;
+  color:#333;
 }
 #attribute_pattern .col-lg-2{
 	padding: 0 15px;
@@ -33,10 +33,10 @@
 
 </style>
 <div id="attribute_pattern" style="height:auto;">
-	<div class="box col-md-12" style="padding:0px;margin-top:0;">
-    <div class="box-inner" id = 'box-height' style="height:auto;">
-        <div class="box-content">
-					<div class="cols" style="margin-top:5px;padding: 0px 0px 0px 15px;" id="basic">
+	<div class="box col-md-12" style="padding-left:10px;margin-top:0;border: 1px solid #DEDEDE;">
+    <!-- <div class="box-inner" id = 'box-height' style="height:auto;"> -->
+        <!-- <div class="box-content"> -->
+					<div class="cols" style="margin-top:10px;padding: 0px 0px 0px 15px;" id="basic">
 						  <b class='control-label' style='padding-top:5px;'>属性</b>
               <div style="padding:6px 0px 0px 15px;">
     						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">注册地</span>
@@ -274,34 +274,33 @@
               </div>
             </div>
             <div class='col-md-12' style="margin:0px 0px 10px 0px;">
-	            <span class="input-group-addon" style="width:100px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;margin-left: 15px;">微博发布时间</span>
+	            <span class="input-group-addon" style="width:100px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;margin-left: 15px;">时间范围</span>
 	            <input id="weibo_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px;margin-left:10px;'>&nbsp;-&nbsp;
 	            <input id="weibo_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
 	          </div>
             <div id="extension" class="col-md-12" style="padding-top:5px;padding-left:0px;">
-            <label class='control-label'>扩展规则
-            </label>
-            <div class='controls'>
+              <label class='control-label'>扩展规则</label>
+              <div class='controls'>
                 <div class='col-md-12' style='padding:0px;margin-left: -5px;'>
-                    <div class='col-lg-4' >
-                        <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
-                        <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
-                            0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
-                        </span>
-                    </div>
-                    <div class='col-lg-4' >
-                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
-                         <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
-                         <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
-                    </div>
-                    <div class='col-lg-4' >
-                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
-                         <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
-                         <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
-                    </div>
+                  <div class='col-lg-4' >
+                      <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
+                      <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
+                          0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
+                      </span>
+                  </div>
+                  <div class='col-lg-4' >
+                    <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
+                    <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                    <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                  </div>
+                  <div class='col-lg-4' >
+                    <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
+                    <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+                    <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
             <hr style='width:800px;margin-bottom:0px;'>
             <div id="information" class="col-md-12" style="padding-top:5px;padding-left:0px;">
               <label class='control-label'>群组信息</label>
@@ -324,29 +323,29 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        <!-- </div> -->
+      <!-- </div> -->
   </div>
 </div>
 
 
 <script type="text/javascript">
-    function show_more(){
-        $("#attribute_pattern #more_domain").removeClass("hidden");
-        $("#attribute_pattern #domain_show").addClass("hidden");
-    }
-    function fold_domain(){
-        $("#attribute_pattern #more_domain").addClass("hidden");
-        $("#attribute_pattern #domain_show").removeClass("hidden");
-    }
-    function show_more_topic(){
-        $("#attribute_pattern #more_topic").removeClass("hidden");
-        $("#attribute_pattern #topic_show").addClass("hidden");
-    }
-    function fold_topic(){
-        $("#attribute_pattern #more_topic").addClass("hidden");
-        $("#attribute_pattern #topic_show").removeClass("hidden");
-    }
+  function show_more(){
+      $("#attribute_pattern #more_domain").removeClass("hidden");
+      $("#attribute_pattern #domain_show").addClass("hidden");
+  }
+  function fold_domain(){
+      $("#attribute_pattern #more_domain").addClass("hidden");
+      $("#attribute_pattern #domain_show").removeClass("hidden");
+  }
+  function show_more_topic(){
+      $("#attribute_pattern #more_topic").removeClass("hidden");
+      $("#attribute_pattern #topic_show").addClass("hidden");
+  }
+  function fold_topic(){
+      $("#attribute_pattern #more_topic").addClass("hidden");
+      $("#attribute_pattern #topic_show").removeClass("hidden");
+  }
     attribute_chosen_tag = new Array();
 	function attribute_add_tag() {  
         // $('#attribute_pattern #box-height').css("height", "520px"); 
