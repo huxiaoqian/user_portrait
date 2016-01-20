@@ -197,22 +197,21 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
     filter_importance_to = filter_dict['importance']['to']
     filter_influence_from = filter_dict['influence']['from']
     filter_influence_to = filter_dict['influence']['to']
-    print 'test sort_all_union_result:', sort_all_union_result
+    #print 'test sort_all_union_result:', sort_all_union_result
     while iter_count < all_count:
         iter_user_list = [item[0] for item in sort_all_union_result[iter_count:iter_count + DETECT_ITER_COUNT]]
-        #try:
-        portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+        try:
+            portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
                     body={'ids':iter_user_list}, _source=True)['docs']
-        #except:
-        #    portrait_result = []
-        print 'portrait_result:', portrait_result
+        except:
+            portrait_result = []
+        #print 'portrait_result:', portrait_result
         for portrait_item in portrait_result:
             if portrait_item['found'] == True:
-                print 'portrait_item:', portrait_item
                 if portrait_item['_source']['importance'] >= filter_importance_from and portrait_item['_source']['importance'] <= filter_importance_to:
                     if portrait_item['_source']['influence'] >= filter_influence_from and portrait_item['_source']['influence'] <= filter_influence_to:
                         uid = portrait_item['_id']
-                        print 'yes:', uid
+                        #print 'yes:', uid
                         in_portrait_result.append(uid)
         if len(in_portrait_result) > (filter_dict['count'] * DETECT_COUNT_EXPAND):
             break
@@ -232,24 +231,39 @@ def union_attribute_structure(attribute_user_result, structure_result, attribute
     for item_rank in range(0, len(structure_result)):
         uid = structure_result[item_rank]
         structure_user_result[uid] = item_rank
+    #step2:trans attribute result list to dict{uid1:rank1, uid2:rank2, ...}
+    attribute_user_dict = dict()
+    for attribute_rank in range(0, len(attribute_user_result)):
+        uid = attribute_user_result[attribute_rank]['_id']
+        attribute_user_dict[uid] = attribute_rank
+    #step3: get union user list
+    union_user_set = set(structure_user_result.keys()) | set(attribute_user_dict.keys())
+    union_user_list = list(union_user_set)
     #step2:use attribute weight and structure weight to score for user
     attribute_rank = 0
     attribute_normal_index = float(1) / len(attribute_user_result)
     structure_normal_index = float(1) / len(structure_user_result)
     attribute_count = len(attribute_user_result)
     structure_count = len(structure_user_result)
-    print 'structure_user_result:', structure_user_result
-    for attribute_item in attribute_user_result:
-        uid = attribute_item['_id']
-        
-        structure_rank = structure_user_result[uid]
+    print 'structrue_count, attribute_count:', structure_count, attribute_count
+    print 'union user set:', len(union_user_set)
+    for user_item in union_user_list:
+        try:
+            attribute_rank = attribute_user_dict[user_item]
+        except KeyError:
+            attribtue_rank = attribute_count
+        try:
+            structure_rank = structure_user_result[user_item]
+        except KeyError:
+            structure_rank = structure_count
+
         new_score = attribute_weight*((attribute_count - attribute_rank)*attribute_normal_index) + \
                     structure_weight*((structure_count - structure_rank)*structure_normal_index)
         
-        union_result[uid] = new_score
+        union_result[user_item] = new_score
     #step3:sort user by new score
     sort_union_result = sorted(union_result.items(), key=lambda x:x[1], reverse=True)
-
+    #print 'test sort_union_result:', sort_union_result
     return sort_union_result
 
 #use to filter event for single or multi detect task
@@ -257,7 +271,8 @@ def union_attribute_structure(attribute_user_result, structure_result, attribute
 #output: user_list (who meet the filter condition)
 def filter_event(all_union_user, event_condition_list):
     user_result = []
-    new_event_condition_list = []
+    new_range_dict_list = []
+    print 'filter event len(all_union_user):', len(all_union_user)
     #step1: adjust the date condition for date
     new_event_condition_list = []
     for event_condition_item in event_condition_list:
@@ -282,7 +297,7 @@ def filter_event(all_union_user, event_condition_list):
                 new_range_dict_list = [{'range':{'timestamp':{'from':from_ts, 'to':to_ts}}}]
         else:
             new_event_condition_list.append(event_condition_item)
-
+    print'test filter event:', len(new_range_dict_list), len(new_event_condition_list)
     #step2: iter to search user who publish weibo use keywords_string
     #step2.1: split user to bulk action
     #step2.2: iter to search user meet condition weibo for different day
@@ -384,8 +399,7 @@ def single_detect(input_dict):
     
     attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
             body={'query':{'bool':{'should':attribute_query_list}}, 'size': count})['hits']['hits']
-    #print 'test attribute_query_list:', attribute_query_list
-    #print 'test attribute_user_result:', attribute_user_result
+    
     #step2.3: change process proportion
     process_mark = change_process_proportion(task_name, 25)
     if process_mark == 'task is not exist':
@@ -410,9 +424,12 @@ def single_detect(input_dict):
     structure_weight = query_condition_dict['structure_weight']
     all_union_user = union_attribute_structure(attribute_user_result, structure_user_result, attribute_weight, structure_weight)
     #step5: filter user by event
-    event_condition_list = query_condition['text']
+    event_condition_list = query_condition_dict['text']
     #step5.1: filter user list
-    filter_user_list = filter_event(all_union_user, event_condition_list)
+    if len(event_condition_list) != 0:
+        filter_user_list = filter_event(all_union_user, event_condition_list)
+    else:
+        filter_user_list = [item[0] for item in all_union_user]
     #step5.2: change process proportion
     process_mark = change_process_proportion(task_name, 75)
     if process_mark == 'task is not exist':
@@ -424,7 +441,8 @@ def single_detect(input_dict):
     #step6: filter by count
     count = filter_dict['count']
     result = filter_user_list[:count]
-    results = [seed_uid].extend(result)
+    results = [seed_uid]
+    results.extend(result)
     return results
 
 
@@ -897,7 +915,7 @@ def event_detect(input_dict):
 #use to save detect results to es
 #input: uid list (detect results)
 #output: status (True/False)
-def save_detect_results(detect_results):
+def save_detect_results(detect_results, task_name):
     mark = False
     try:
         task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
@@ -977,7 +995,7 @@ def compute_group_detect():
             elif detect_task_type == 'event':
                 detect_results = event_detect(detect_task_information)
             #step3:save detect results to es (status=1 and process=100 and add uid_list)
-            mark = save_detect_results(detect_results)
+            mark = save_detect_results(detect_results, task_name)
             #step4:add task_information_dict to redis queue when detect process fail
             if mark == False:
                 status = add_task2queue(detect_task_information)
@@ -995,3 +1013,4 @@ if __name__=='__main__':
             'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':0, 'to':1000}, 'influence':{'from':0, 'to':1000}}}}
     results = single_detect(single_input_dict)
     print 'results:', results
+    save_mark = save_detect_results(results, 'test')

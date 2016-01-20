@@ -465,7 +465,7 @@ def ajax_search_detect_task():
 def ajax_show_detect_result():
     results = {}
     task_name = request.args.get('task_name', '')
-    results = show_detect_result()
+    results = show_detect_result(task_name)
     return json.dumps(results)
 
 

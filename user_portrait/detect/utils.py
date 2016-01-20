@@ -361,7 +361,7 @@ def show_detect_result(task_name):
     if task_exist_result == {}:
         return 'task name is not exist'
     #step2:get uid list
-    uid_list = task_exist_result['uid_list']
+    uid_list = json.loads(task_exist_result['uid_list'])
     #step3:get user evaluation information---uid/uname/activeness/importance/influence
     iter_count = 0
     uid_count = len(uid_list)
@@ -386,8 +386,9 @@ def show_detect_result(task_name):
                 importance = u'未知'
                 influence = u'未知'
             user_result.append([uid, uname, activeness, importance, influence])
+        iter_count += DETECT_ITER_COUNT
     sort_user_result = sorted(user_result, key=lambda x:x[4], reverse=True)
-
+  
     return sort_user_result
 
 
