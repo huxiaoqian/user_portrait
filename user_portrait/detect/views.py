@@ -67,7 +67,7 @@ def ajax_single_person():
             structure_condition_num += 1
     struture_condition_num = len(structure_list)
     structure_weight = request.args.get('structure_weight', DETECT_DEFAULT_WEIGHT) #default weight 0.5
-    structure_weight = float(atructure_weight)
+    structure_weight = float(structure_weight)
     if struture_condition_num==0:
         attribute_weight = 0
     query_dict['structure'] = structure_list

@@ -1,0 +1,321 @@
+<style type="text/css">
+	#event_pattern #domain .input-group-addon{
+	    font-size: 13px;
+	    margin-top: -3px;
+	}
+	#event_pattern #topic_string .input-group-addon{
+	    font-size: 13px;
+	}
+</style>
+
+<div id="event_pattern">
+  <div class="box col-md-12" style="padding-left:10px;margin-top:0;border: 1px solid #DEDEDE;">
+  	<div style="padding-top:10px;padding-left:15px;">
+  		<div id="basic">
+  			<b class='control-label' style='padding-top:5px;'>事件属性</b>
+  			<div style="padding:6px 0px 0px 15px;">
+			  <span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">关键词</span>
+			  <input id="keywords_string" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='请输入关键词'>
+			  <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="">时间范围</span>
+	          <input id="time_start" type='text' class="form-control" style='width:145px; margin-left:15px;display:inline-block;height:25px'>&nbsp;-&nbsp;
+	          <input id="time_end" type='text' class="form-control" style='width:145px; margin-left:15px;display:inline-block;height:25px'>
+			</div>
+			<div class='cols-md-12' style="padding-left:28px;" id="topic_string">
+              <span style="float:left;line-height: 27px;margin-right:15px">话题</span>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
+                <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="technology">科技类</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="economics">经济类</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="education">教育类</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="military">军事类</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="health">民生类_健康</span>
+              </div>
+              <div id="topic_show" onclick='event_show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="more_topic" class="hidden">
+                <div class='col-lg-2'  style="margin-left:43px;">
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="environment">民生类_环保</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="employment">民生类_就业</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="house">民生类_住房</span>
+                </div>
+                <div class='col-lg-2'>
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="social_security">民生类_社会保障</span>
+                </div>
+                <div class='col-lg-2'>
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="trafic">民生类_交通</span>
+                </div>
+                <div class='col-lg-2' style="margin-left:43px;" >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="law">民生类_法律</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="diplomacy">政治类_外交</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="terrorist">政治类_暴恐</span>
+                </div>
+                <div class='col-lg-2'>
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="peace">政治类_地区和平</span>
+                </div>
+                <div class='col-lg-2'>
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="anti_corruption">政治类_反腐</span>
+                </div>
+                <div class='col-lg-2' style="margin-left:43px;">
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="religion">政治类_宗教</span>
+                </div>
+                <div class='col-lg-2' style="margin-left:0px;">
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="entertainment">文体类_娱乐</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="sports">文体类_体育</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="others">其他类</span>
+                </div>
+                 <div onclick="event_fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+              </div>
+          	</div>
+
+			<div class='col-md-12'   id="domain" style="padding-left:28px;">
+              <span style="float:left;line-height: 27px;margin-right:15px">领域</span>
+              <div class='col-lg-2' style="margin-left:0px;">
+                <input type='checkbox' class='inline-checkbox' value='option1' checked='checked'>
+                <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="">境内机构</span>                             
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="">境外机构</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white;background-color:white; display:inline-block" id="">民间组织</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">媒体</span>
+              </div>
+              <div class='col-lg-2'>
+                <input type='checkbox' class='inline-checkbox' value='option1'>
+                <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="">境外媒体</span>
+              </div>
+              <div id="domain_show" onclick='event_show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="more_domain" class="hidden">
+                <div class='col-lg-2' style="">
+                    <input type='checkbox' class='inline-checkbox' value='option1'>
+                    <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="">活跃人士</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">商业人士</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">媒体人士</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">法律机构及人士</span>
+                </div>
+                <div class='col-lg-2' >
+                    <input type='checkbox' class='inline-checkbox' value='option1'>
+                    <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">政府机构及人士</span>
+                </div>
+                <div class='col-lg-2'  style="margin-left:43px;">
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">草根</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">高校</span>
+                </div>
+                <div class='col-lg-2' >
+                  <input type='checkbox' class='inline-checkbox' value='option1'>
+                  <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">其他</span>
+                </div>
+                <div onclick="event_fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+              </div>
+            </div>
+
+  		</div>
+  		<div id="extension">
+	      <label class='control-label'>扩展规则</label>
+	      <div class='controls'>
+	        <div class='col-md-12' style='padding:0px;margin-left: -5px;'>
+	          <div class='col-lg-4' >
+		          <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
+		          <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
+		              0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
+		          </span>
+	          </div>
+	          <div class='col-lg-4' >
+	            <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
+	            <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+	            <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+	          </div>
+	          <div class='col-lg-4' >
+	            <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
+	            <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
+	            <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+        <hr style='width:750px;margin-bottom:0px;'>
+        <div id="information" class="col-md-12" style="padding-top:5px;padding-left:0px;">
+          <label class='control-label'>群组信息</label>
+          <div class='controls'>
+            <div class='col-md-12' style='padding:0px;margin-left: 5px;'>
+              <div class='col-lg-6' style='padding:0px;width:48%;'>
+                <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block;margin-left: 5px;">名称</span>
+                <input id="first_name" type='text' class="form-control" style='width:78%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+              </div>
+              <div class='col-lg-6' style='padding:0px;'>
+                <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                <input id="first_remarks" type='text' class="form-control" style='width:76%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cols" style='margin:11px 0px;'>
+          <div class='col-md-12' style='text-align:right; padding-right:120px'>
+            <span id="event_pattern_commit" onclick="submit_results2();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
+          </div>
+        </div>
+	</div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function event_show_more(){
+      $("#event_pattern #more_domain").removeClass("hidden");
+      $("#event_pattern #domain_show").addClass("hidden");
+  }
+  function event_fold_domain(){
+      $("#event_pattern #more_domain").addClass("hidden");
+      $("#event_pattern #domain_show").removeClass("hidden");
+  }
+  function event_show_more_topic(){
+      $("#event_pattern #more_topic").removeClass("hidden");
+      $("#event_pattern #topic_show").addClass("hidden");
+  }
+  function event_fold_topic(){
+      $("#event_pattern #more_topic").addClass("hidden");
+      $("#event_pattern #topic_show").removeClass("hidden");
+  }
+
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
+
+  var max_date = new Date().format('yyyyMMdd');
+  var current_date = new Date().format('yyyy/MM/dd hh:mm');
+  var from_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24;
+  var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+  var min_date_ms = new Date()
+  min_date_ms.setTime(from_date_time*1000);
+  var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
+
+	$('#event_pattern #time_start').datetimepicker({value:from_date,step:10});
+	$('#event_pattern #time_end').datetimepicker({value:current_date,step:10});
+  //console.log(time_from);
+	function event_pattern_timepicker(str){
+	    var date_time = str.split(' ');
+	    var dates = date_time[0].split('/');
+	    var yy = parseInt(dates[0]);
+	    var mm = parseInt(dates[1]) - 1;
+	    var dd = parseInt(dates[2]);
+	    var times = date_time[1].split(':');
+	    var hh = parseInt(times[0]);
+	    var minute = parseInt(times[1]);
+	    var final_date = new Date();
+	    final_date.setFullYear(yy,mm,dd);
+	    final_date.setHours(hh,minute);
+	    final_date = Math.floor(final_date.getTime()/1000);
+	    //console.log(final_date);
+	}
+
+function event_pattern_check(){             // check validation 
+  //group_information check starts  
+  var group_name = $('#event_pattern #first_name').val();
+  var remark = $('#event_pattern #first_remarks').val();
+  var location = $('#event_pattern #location').val();
+  var time_from = Date.parse($('#event_pattern #time_start').val())/1000;
+  var time_to = Date.parse($('#event_pattern #time_end').val())/1000;
+  var num_range_count = $('#event_pattern #num-range').val();
+  if(num_range_count ==0 ){
+    alert('扩展规则中人数不能为0！');
+    return false;
+  }
+  if(time_from > time_to){
+    alert('选择发布微博的起止时间错误，请重新选择！');
+    return false;
+  }
+  if(min_date_time > time_from){
+    alert('请选择近一个月内的时间！');
+    return false;
+  }
+  //console.log(group_name, remark);
+  if (group_name.length == 0){
+      alert('群体名称不能为空');
+      return false;
+  }
+
+  var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+  if (!group_name.match(reg)){
+    alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+    return false;
+  }
+  if ((remark.length > 0) && (!remark.match(reg))){
+    alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+    return false;
+  }
+  //other form check starts multi/single
+  return true;
+
+}
+</script>
