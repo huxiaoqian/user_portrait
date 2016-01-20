@@ -142,7 +142,10 @@ function seed_user_init(){
 var seed_user_files = undefined;
 var max_date = '+1970/01/01';
 var min_date = '-1970/01/30';
-var current_date = new Date().format('yyyy/MM/dd hh:mm');
+var current_date = new Date();
+var last_date = new Date();
+current_date.setHours(0,0,0);
+current_date = current_date.format('yyyy/MM/dd hh:mm');
 console.log(current_date);
 console.log(min_date);
 
