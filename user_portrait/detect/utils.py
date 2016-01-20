@@ -113,7 +113,7 @@ def identify_user_out(input_uid_list):
             out_user_result.sppend([uid, uname, fansnum, statusnum, friendsnum])
     sort_out_user_result = sorted(out_user_result, key=lambda x:x[2], reverse=True)
 
-    return in_user_list, sort_out_user_list
+    return in_user_list, sort_out_user_result
 
 
 #use to save detect multi task
@@ -136,14 +136,18 @@ def save_detect_multi_task(input_dict, extend_mark):
     try:
         task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
     except:
-        task_exsit_result = {}
+        task_exist_result = {}
     if task_exist_result != {}:
         return 'task name invalid'
     #step3: identify whether or not to extend----extend mark
     if extend_mark=='1':
         es_status = save_detect2es(input_dict)
         redis_status = save_detect2redis(input_dict) # detect redis queue
-    elif extend=='0':
+    elif extend_mark=='0':
+        uid_list = input_dict['task_information']['uid_list']
+        input_dict['task_information']['uid_list'] = json.dumps(uid_list)
+        input_dict['task_information']['status'] = 0
+        input_dict['task_information']['count'] = len(uid_list)
         es_status = save_compute2es(input_dict)
         redis_status = save_compute2redis(input_dict) # compute redis queue
     #identify the operation status
@@ -260,8 +264,10 @@ def save_compute2es(input_dict):
     status = True
     add_dict = dict(add_dict, **input_dict['task_information'])
     task_name = input_dict['task_information']['task_name']
-    count = len(input_dict['uid_list'])
+    count = len(input_dict['task_information']['uid_list'])
     add_dict['count'] = count
+    if 'query_condition' not in input_dict:
+        input_dict['query_condition'] = {}
     if isinstance(input_dict['query_condition'], str):
         add_dict['query_condition'] = input_dict['query_condition']
     else:
@@ -424,7 +430,6 @@ def detect2analysis(input_data):
             'detect_type':task_exist_result['detect_type'], 'detect_process':task_exist_result['detect_process']}
     
     add_es_dict = {'task_information':task_information_dict, 'query_condition':task_exist_result['query_condition']}
-    print 'add_es_dict:', add_es_dict
     es_status = save_compute2es(add_es_dict)
     #step4: add task to analysis queue
     redis_status = save_compute2redis(task_exist_result)
