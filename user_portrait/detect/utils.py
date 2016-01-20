@@ -412,7 +412,12 @@ def detect2analysis(input_data):
     task_exist_result['status'] = 0 # mark the compute status
     task_exist_result['count'] = len(uid_list)
     task_exist_result['task_type'] = 'analysis'
-    es_status = save_compute2es(task_exist_result)
+    #get task information dict
+    task_information_dict = {'task_name':task_name, 'uid_list':uid_list, 'status':0, 'count':len(uid_list),\
+            'task_type':'analysis', 'submit_user':task_exist_result['submit_user'], 'submit_date':task_exist_result['submit_date'], \
+            'detect_type':task_exist_result['detect_type'], 'detect_process':task_exist_result['detect_process']}
+    add_es_dict = {'task_information':task_information_dict, 'query_condition':task_exist_result['query_condition']}
+    es_status = save_compute2es(add_es_dict)
     #step4: add task to analysis queue
     redis_status = save_compute2redis(task_exist_result)
     #identify the operation status
@@ -421,7 +426,7 @@ def detect2analysis(input_data):
     else:
         status = False
 
-    return results
+    return status
 
 #use to delete detect task
 #input: task_name

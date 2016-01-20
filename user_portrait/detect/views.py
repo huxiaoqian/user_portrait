@@ -1,5 +1,4 @@
 #-*- coding:utf-8 -*-
-
 import os
 import time
 import json
@@ -475,7 +474,7 @@ def ajax_show_detect_result():
 #output: results
 @mod.route('/add_detect2analysis/',methods=['GET', 'POST'])
 def ajax_add_detect2analysis():
-    input_data = request.args.get_json() #input_data = {'uid_list':[], 'task_name':xx}
+    input_data = request.get_json() #input_data = {'uid_list':[], 'task_name':xx}
     results = detect2analysis(input_data)
 
     return json.dumps(results)
