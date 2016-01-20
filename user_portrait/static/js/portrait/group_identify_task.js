@@ -64,7 +64,7 @@ Draw_dis_Table:function(data){
 		}else{
 			dis_type='社会感知自动群体发现';
 		}
-		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][4]+'</td><td><progress value="'+data[i][5]+'" max="100"></progress>&nbsp;&nbsp;'+data[i][5]+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][4]+'</td><td><progress value="'+data[i][5]+'" max="100"></progress>&nbsp;&nbsp;'+data[i][5]+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a>&nbsp;&nbsp;<a href="javascript:void(0)" id="task_del">删除</a></td></tr>';
 		//j += 10;
 	}
 	html += '</tbody>';
@@ -87,7 +87,7 @@ redraw();
 redraw_result();
 
 function Group_delete_task(){
-	 this.url = "/group/delete_group_task/?";
+	 this.url = "/group/delete_task/?";
 }
 Group_delete_task.prototype = {   //群组搜索
 	call_sync_ajax_request:function(url, method, callback){
@@ -111,8 +111,9 @@ function deleteGroup(that){
 			var url = that.url;
 			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
+			console.log(url);
 			//window.location.href = url;
-			//that.call_sync_ajax_request(url,that.ajax_method,that.del);
+			that.call_sync_ajax_request(url,that.ajax_method,that.del);
 		}
 	});	
 }
@@ -145,8 +146,8 @@ function submit_analyze(that){
 		}
 		else{
 			url = "/detect/show_detect_result/?task_name=" + temp;
-			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
-			draw_table('1',"#group_analyze_confirm");
+			that.call_sync_ajax_request(url,that.ajax_method,function(data){draw_table(data,"#group_analyze_confirm")});
+			//draw_table('1',"#group_analyze_confirm");
 			remark0 = $(this).parent().prev().prev().html();
 			$('span[id^="group_name0"]').html(temp);
 			$('span[id^="remark0"]').html(remark0);
@@ -173,17 +174,20 @@ function submit_control(that){
 }
 
 
+
+
 function draw_table(data,div){
+	console.log(data);
+	console.log(div);
 	$(div).empty();
 	//var datas = data['topic'];
     html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
     html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="analyze_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
-    var i = 1;
-    //for (var key in datas) {
-        html += '<tr><th style="text-align:center">' + 'id' + '</th><th style="text-align:center">' + '昵称' + '</th><th style="text-align:center">' + '10' + '</th><th style="text-align:center">' + '20' + '</th><th style="text-align:center">' + '30' + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
-    //	i = i + 1;
- 	//}
+    for (var i=0;i<data.length;i++) {
+        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+    	i = i + 1;
+ 	}
     html += '</table>'; 
     $(div).append(html);    
 }
@@ -212,14 +216,14 @@ function group_analyze_confirm_button(){
   	console.log(group_name);
   	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
   	console.log(job);
-  	$.ajax({
-  	    type:'POST',
-  	    url: group_ajax_url,
-  	    contentType:"application/json",
-  	    data: JSON.stringify(job),
-  	    dataType: "json",
-  	    success: callback
-  	});
+  	// $.ajax({
+  	//     type:'POST',
+  	//     url: group_ajax_url,
+  	//     contentType:"application/json",
+  	//     data: JSON.stringify(job),
+  	//     dataType: "json",
+  	//     success: callback
+  	// });
   	function callback(data){
   	    console.log(data);
   	    if (data == '1'){
