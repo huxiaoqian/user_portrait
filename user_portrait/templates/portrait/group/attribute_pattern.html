@@ -429,7 +429,8 @@ function attribute_pattern_check(){             // check validation
   var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
   var num_range_count = $('#attribute_pattern #num-range').val();
   if(num_range_count ==0 ){
-    alert('扩展规则中人数不能为0！')
+    alert('扩展规则中人数不能为0！');
+    return false;
   }
   if(time_from > time_to){
     alert('选择发布微博的起止时间错误，请重新选择！');
