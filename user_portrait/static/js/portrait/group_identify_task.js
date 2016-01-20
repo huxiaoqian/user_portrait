@@ -59,12 +59,12 @@ Draw_dis_Table:function(data){
 			dis_type='多种子用户群体发现';
 		}else if(data[i][3]=='attribute'){
 			dis_type='特定属性及模式群体发现';
-		}else if(data[i][4]=='event'){
+		}else if(data[i][3]=='event'){
 			dis_type='特定事件群体发现';
 		}else{
 			dis_type='社会感知自动群体发现';
 		}
-		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][1]+'</td><td><progress value="'+data[i][1]+'" max="100"></progress>&nbsp;&nbsp;'+data[i][1]+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][4]+'</td><td><progress value="'+data[i][5]+'" max="100"></progress>&nbsp;&nbsp;'+data[i][5]+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
 		//j += 10;
 	}
 	html += '</tbody>';
