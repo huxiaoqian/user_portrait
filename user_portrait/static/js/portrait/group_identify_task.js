@@ -51,8 +51,20 @@ Draw_dis_Table:function(data){
 	html += '<table class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	j = 40;
+	var dis_type='';
 	for (i=0;i<data.length;i++){
-		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+data[i][3]+'</td><td>'+data[i][1]+'</td><td><progress value="'+j+'" max="100"></progress>&nbsp;&nbsp;'+j+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
+		if(data[i][3]=='single'){
+			dis_type='单种子用户群体发现';
+		}else if(data[i][3]=='multi'){
+			dis_type='多种子用户群体发现';
+		}else if(data[i][3]=='attribute'){
+			dis_type='特定属性及模式群体发现';
+		}else if(data[i][4]=='event'){
+			dis_type='特定事件群体发现';
+		}else{
+			dis_type='社会感知自动群体发现';
+		}
+		html += '<tr><td>'+data[i][0]+'</td><td>'+data[i][1]+'</td><td>'+data[i][2]+'</td><td>'+dis_type+'</td><td>'+data[i][1]+'</td><td><progress value="'+j+'" max="100"></progress>&nbsp;&nbsp;'+j+'%</td><td><a href="javascript:void(0)" id="group_commit_analyze">提交分析</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="group_commit_control" >提交监控</a></td></tr>';
 		j += 10;
 	}
 	html += '</tbody>';
