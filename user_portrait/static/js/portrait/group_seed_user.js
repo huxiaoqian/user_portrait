@@ -115,7 +115,7 @@ function bind_button_click(){
                 $('#seed_user #multi_user #structure').css('display','block');
                 $('#seed_user #multi_user #events').css('display','block');
                 $('#seed_user #multi_user #extension').css('display','block');
-                $('#seed_user #multi_user').css('height','440px');
+                $('#seed_user #multi_user').css('height','450px');
             }
         });
     }
