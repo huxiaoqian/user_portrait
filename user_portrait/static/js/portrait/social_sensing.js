@@ -65,19 +65,38 @@ Social_sense.prototype = {   //获取数据，重新画表
   	$('#so_task_table').empty();
   	var item = data;
   	var html = '';
+  	var warn = '';
+  	var flag = '';
+  	var so_flag = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th>创建人</th><th>创建时间</th><th>终止时间</th><th>备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
+	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
+	  	var end_d = new Date(item[i]['stop_time']*1000).format('yyyy/MM/dd hh:mm'); 
+		if(item[i]['warning_status']==0){
+			warn = '无事件';
+		}else if (item[i]['warning_status']==1){
+			warn = '事件爆发';
+		}else {
+			warn = '事件跟踪';
+		}
+		if(item[i]['finish'] = 0){
+			flag = '终止任务';
+			so_flag = 'so_stop_task';
+		}else{
+			flag = '重启任务';
+			so_flag = 'so_revise_task';
+		}
 		html += '<tr>';
 		html += '<td name="task_name">'+item[i]['task_name']+'</td>';
 		html += '<td>'+item[i]['create_by']+'</td>';
-		html += '<td>'+item[i]['create_at']+'</td>';
-		html += '<td>'+item[i]['stop_time']+'</td>';
+		html += '<td>'+create_d+'</td>';
+		html += '<td>'+end_d+'</td>';
 		html += '<td>'+item[i]['remark']+'</td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">查看传感器</a></td>';
-		html += '<td>'+item[i]['task_taype']+'</td>';
-		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td><a href="javascript:void(0)" id="task_del">change_type</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
+		html += '<td>'+warn+'</td>';
+		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td><a href="javascript:void(0)" id="'+so_flag+'">'+flag+'</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
 		html += '</tr>';		
 	}
 	html += '</tbody>';
@@ -100,7 +119,7 @@ $('input[name="so_mode_choose"]').change(function(){
 var current_date = new Date().format('yyyy/MM/dd hh:mm');
 var max_date = '+1970/01/01';
 var min_date = '-1970/01/30';
-$('#so_end_time').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
 
 function prepare(that){
 	console.log(that);
@@ -155,7 +174,7 @@ function draw_keys(data){
 
     $('#so_keys_content').append(html);    
 }
-
+function so_ready(){
 	$('a[id^="so_keys"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		url = "/detect/show_detect_result/?task_name=" + temp;
@@ -169,7 +188,7 @@ function draw_keys(data){
 	
 	$('a[id^="so_history"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
-		url = "/detect/show_detect_result/?task_name=" + temp;
+		url = "/detect/group/show_task/?task_name=" + temp;
 		//that.call_sync_ajax_request(url,that.ajax_method,draw_sensor);
 		//draw_table('1',"#group_analyze_confirm");
 		remark0 = $(this).parent().prev().prev().prev().html();
@@ -178,6 +197,36 @@ function draw_keys(data){
 		draw_history('1');
 		$('#so_his_block').modal();
 	});
+
+	$('a[id^="so_stop_task"]').click(function(e){
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+		var a = confirm('确定要终止任务吗？');
+		if (a== true){
+			url = "/social_sensing/stop_task/?task_name=" + temp;
+			Social_sense.call_sync_ajax_request(url, Social_sense.ajax_method, callback);
+		}
+	});	
+
+	$('a[id^="so_revise_task"]').click(function(e){
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+		var remark0 = $(this).parent().prev().prev().prev().prev().html();
+		//url = "/social_sensing/revise_task/?task_name=" + temp;
+		//Social_sense.call_sync_ajax_request(url, Social_sense.ajax_method, callback);
+		$('span[id^="so_group_name0"]').html(temp);
+		$('span[id^="so_remark0"]').html(remark0);
+		$('#so_revise').modal();
+	});	
+}
+so_ready();
+function callback(data){
+	if(data.length != 0){
+		alert('操作成功！');
+	}
+}
+
+
+
+
 
 $('a[id^="so_task_del"]').click(function(e){
 	var a = confirm('确定要删除吗？');
@@ -206,7 +255,7 @@ function draw_history(data){
 }
 
 $('#so_user_commit').click(function(){
-
+	so_group_data();
 });
 
 var so_user_option = $('input[name="so_mode_choose"]:checked').val();
@@ -220,7 +269,6 @@ function so_user_check(){             // check validation
         alert('群体名称不能为空');
         return false;
     }
-
     var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
     if (!group_name.match(reg)){
         alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
@@ -237,6 +285,10 @@ function so_user_check(){             // check validation
 function so_group_data(){
 	var flag = so_user_check();
 	var url_all = new Array();
+    var group_name = $('#so_name').val();
+    var remark = $('#so_remarks').val();
+	var so_time = Date.parse($('input[name="so_end_time"]').val())/1000;
+	console.log(so_time);
 	if(flag = true){
 	    var key_words = $('#so_keywords').val();
 	    if (so_user_option == 'so_all_users'){
@@ -259,6 +311,7 @@ function so_group_data(){
 	    });
 	}
 }
+
 function so_callback(data){
     if (data == 'true'){
       alert('提交成功！');

@@ -19,7 +19,7 @@ Draw_resultTable: function(data){
 	var html = '';
 	html += '<a id="turnback"  href="javascript:void()" onclick="redraw_result()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>发现方式</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		html += '<tr>';
@@ -35,7 +35,6 @@ Draw_resultTable: function(data){
 		}else{
 			html += '<td>正在计算</td>';
 		}
-		html +='<td>发现方式</td>';
 		html +='<td><a href="javascript:void(0)" id="task_del">删除</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="commit_control">提交监控</a></td>';
 		html += '</tr>';
 	}
@@ -48,7 +47,7 @@ Draw_resultTable: function(data){
 Draw_dis_Table:function(data){
 	$('#dis_table').empty();
 	var html = '';
-	html += '<table id="dis_table_body" class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
+	html += '<table class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	//j = 40;
 	var dis_type='';
@@ -70,13 +69,6 @@ Draw_dis_Table:function(data){
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
-    $('#dis_table_body').dataTable({
-        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-        "sPaginationType": "bootstrap",
-        "oLanguage": {
-            "sLengthMenu": "_MENU_ 每页"
-        }
-    });
 	}
 
 }
@@ -85,7 +77,7 @@ function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 }
-//window.setInterval(redraw,3000);
+window.setInterval(redraw,30000);
 function redraw(){
 	deurl= '/detect/show_detect_task/';
 	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
@@ -116,7 +108,7 @@ function deleteGroup(that){
 		var a = confirm('确定要删除吗？');
     	if (a == true){
 			var url = that.url;
-			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
 			console.log(url);
 			//window.location.href = url;
