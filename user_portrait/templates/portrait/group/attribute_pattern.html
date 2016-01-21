@@ -416,9 +416,9 @@ date.setHours(0,0,0,0);
 var max_date = date.format('yyyyMMdd');
 var current_date = date.format('yyyy/MM/dd hh:mm');
 var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
-var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-var max_date_time = Math.floor(date.getTime()/1000) - 0;
-console.log('max_max_date', max_date_time)
+//var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+//var max_date_time = Math.floor(date.getTime()/1000) - 0;
+//console.log('max_max_date', max_date_time)
 var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
@@ -428,17 +428,17 @@ $('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10,min
 
 function attribute_pattern_check(){             // check validation 
   //group_information check starts  
-  var max_date_limit = new Date();
-  max_date_limit.setHours(0,0,0,0);
-  console.log('max_date_limit',max_date_limit);
-  var max_date_limit_stamp = Date.parse(max_date_limit.getTime()/1000);
+  var dt = new Date();
+  dt.setHours(0,0,0,0);
+  //console.log('max_date_limit',max_date_limit);
+  var max_date_limit_stamp = Date.parse(dt)/1000;
   console.log('max_date', max_date_limit_stamp);
   var group_name = $('#attribute_pattern #first_name').val();
   var remark = $('#attribute_pattern #first_remarks').val();
   var location = $('#attribute_pattern #location').val();
   var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
   var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
-  console.log('time_from', time_from);
+  console.log('time_to', time_to);
   var num_range_count = $('#attribute_pattern #num-range').val();
   var influ_from_num = parseFloat($('#attribute_pattern #influ_from').val());
   var influ_to_num =parseFloat($('#attribute_pattern #influ_to').val());
@@ -465,15 +465,11 @@ function attribute_pattern_check(){             // check validation
     return false;
   }
   if(time_from > time_to){
-    alert('选择时间的起止时间错误，请重新选择！');
+    alert('起止时间错误，请重新选择！');
     return false;
   }
-  // if(min_date_time > time_from || min_date_time >time_to){
-  //   alert('请选择近一个月内的时间！');
-  //   return false;
-  // }
-  if(parseFloat(max_date_limit_stamp) < parseFloat(time_from)){
-    alert('起始时间最晚不超过今日零点，请重新选择！');
+  if(max_date_limit_stamp < time_to ){
+    alert('终止时间最晚不超过今日零点，请重新选择！');
     return false;
   }
 
@@ -651,13 +647,13 @@ function attribute_pattern_check(){             // check validation
       url_attribute += url_all.join('&') + '&submit_user=admin';
       console.log(url_attribute);
 
-      // $.ajax({
-      //   type:'GET',
-      //   url: url_attribute,
-      //   contentType:"application/json",
-      //   dataType: "json",
-      //   success: callback
-      // });
+      $.ajax({
+        type:'GET',
+        url: url_attribute,
+        contentType:"application/json",
+        dataType: "json",
+        success: callback
+      });
       
     }	
 	}

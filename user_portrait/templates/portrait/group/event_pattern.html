@@ -266,25 +266,25 @@ Date.prototype.format = function(format) {
 
 //日期选择
 var date = new Date();
-date.setHours(0);
-date.setMinutes(0);
-date.setSeconds(0);
-date.setMilliseconds(0);
+date.setHours(0,0,0,0);
 var max_date = date.format('yyyyMMdd');
 var current_date = date.format('yyyy/MM/dd hh:mm');
 var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
-var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-var max_date_time = Math.floor(new Date().getTime()/1000) - 0;
+//var max_date_time = Math.floor(date.getTime()/1000) - 0;
 var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 
-$('#event_pattern #time_start').datetimepicker({value:from_date,step:10});
-$('#event_pattern #time_end').datetimepicker({value:current_date,step:10});
+$('#event_pattern #time_start').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+$('#event_pattern #time_end').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 
 
 function event_pattern_check(){             // check validation 
   //group_information check starts  
+  var dt = new Date();
+  dt.setHours(0,0,0,0);
+  //console.log('max_date_limit',max_date_limit);
+  var max_date_limit_stamp = Date.parse(dt)/1000;
   var group_name = $('#event_pattern #first_name').val();
   var remark = $('#event_pattern #first_remarks').val();
   var location = $('#event_pattern #location').val();
@@ -316,16 +316,12 @@ function event_pattern_check(){             // check validation
     return false;
   }
   if(time_from > time_to){
-    alert('选择发布微博的起止时间错误，请重新选择！');
+    alert('起止时间错误，请重新选择！');
     return false;
   }
-  if(min_date_time > time_from || min_date_time >time_to){
-    alert('请选择近一个月内的时间！');
+  if(max_date_limit_stamp < time_to ){
+    alert('终止时间最晚不超过今日零点，请重新选择！');
     return false;
-  }
-  if(max_date_time < time_from || max_date_time < time_to){
-  	alert('选择的时间超出当前日期，请重新选择！');
-  	return false;
   }
   if (group_name.length == 0){
       alert('群体名称不能为空，请重新输入！');
