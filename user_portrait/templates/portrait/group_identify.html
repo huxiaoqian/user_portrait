@@ -3,6 +3,8 @@
     {% block css %}
         {{ super() }}
         <style>
+            .dataTables_filter{text-align:right;margin-bottom:5px;}
+            .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
             .wrapper{min-height:330px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
             #tab{width: 180px;height:400px;}
             #tab_left,#tab_con{margin: 0px;background: #fff;} #tab,#tab_con{float: left;}
@@ -18,6 +20,7 @@
     {% block head_js %}
         {{ super() }}
         <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/identify_table.js"></script>
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
@@ -46,6 +49,7 @@
                             {% include "portrait/group/attribute_pattern.html"%}
                         </div>
                         <div id="tab_con_3" style='display:none'>
+                            {% include "portrait/group/event_pattern.html"%}
                         </div>
                         <div id="tab_con_4" style='display:none'>
                         </div>

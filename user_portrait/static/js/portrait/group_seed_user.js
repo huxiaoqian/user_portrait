@@ -30,7 +30,18 @@ function bind_button_click(){
     $('#seed_user #'+seed_user_option+' #seed_user_commit').click(function(){
         var valid = seed_user_check();
         if (valid){
-            seed_user_data();
+            if (seed_user_option == 'single_user'){
+                var seed_user_url = seed_single_user_data();
+                $.ajax({
+                    type:'GET',
+                    url:seed_user_url,
+                    dataType:'json',
+                    success:seed_single_user_callback
+                });
+            }
+            else{
+                seed_multi_user_data();
+            }
         }
     });
     $('#seed_user #'+seed_user_option+' #attr_weight').change(function(){
@@ -92,7 +103,7 @@ function bind_button_click(){
         });
         $('#seed_user #multi_user_ext [name="ext_choose"]').change(function(){
             var ext_flag = $('#seed_user #multi_user_ext [name="ext_choose"]:checked').val();
-            if (ext_flag == 1){
+            if (ext_flag == 0){
                 $('#seed_user #multi_user #attribute').css('display','none');
                 $('#seed_user #multi_user #structure').css('display','none');
                 $('#seed_user #multi_user #events').css('display','none');
@@ -109,14 +120,13 @@ function bind_button_click(){
         });
     }
 }
-
 function seed_user_init(){
     if (!seed_user_flag){
         var html = $('#seed_user #seed_user_ext').html();
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
         console.log(seed_user_option);
-        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,minDate:min_date,maxDate:max_date,step:10});
         $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
         if (seed_user_option == 'multi_user'){
             $('#seed_user #multi_user #attribute').css('display','none');
@@ -132,9 +142,13 @@ function seed_user_init(){
 var seed_user_files = undefined;
 var max_date = '+1970/01/01';
 var min_date = '-1970/01/30';
-var current_date = new Date().format('yyyy/MM/dd hh:mm');
-console.log(current_date);
-console.log(min_date);
+var current_date = new Date();
+var last_date = new Date();
+current_date.setHours(0,0,0);
+var current_ts = current_date.getTime();
+last_date.setTime(current_ts - 24*60*60*1000);
+current_date = current_date.format('yyyy/MM/dd hh:mm');
+last_date = last_date.format('yyyy/MM/dd hh:mm');
 
 var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
 var seed_user_flag = false;
@@ -154,28 +168,27 @@ $('#seed_user [name="mode_choose"]').change(function(){
 });
 
 function seed_user_check(){             // check validation 
-    //group_information check starts  
-    var group_name = $('#seed_user #'+seed_user_option+' #first_name').val();
-    var remark = $('#seed_user #'+seed_user_option+' #first_remarks').val();
-    console.log(group_name, remark);
-    if (group_name.length == 0){
-        alert('群体名称不能为空');
-        return false;
-    }
-
-    var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
-    if (!group_name.match(reg)){
-        alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
-        return false;
-    }
-    if ((remark.length > 0) && (!remark.match(reg))){
-        alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
-        return false;
-    }
     //other form check starts
     if ((seed_user_option == 'multi_user') && ($('#seed_user #multi_user_ext [name="ext_choose"]:checked').val() == 1)){
+        if (seed_user_files == undefined){
+            alert("请选择文件上传！");
+            return false;
+        }
     }
     else{              //single_user or multi_user with extension
+        if (seed_user_option == 'single_user'){
+            console.log($('#seed_user #uid_uname').val());
+            if (!($('#seed_user #uid_uname').val())){
+                alert('请输入用户ID或昵称！');
+                return false;
+            }
+        }
+        else{
+            if (seed_user_files == undefined){
+                alert("请选择文件上传！");
+                return false;
+            }
+        }
         var attr_weight = parseFloat($('#seed_user #'+seed_user_option+' #attr_weight').val());
         var stru_weight = parseFloat($('#seed_user #'+seed_user_option+' #stru_weight').val());
         if ((attr_weight + stru_weight) != 1){
@@ -200,6 +213,14 @@ function seed_user_check(){             // check validation
             alert('时间输入不合法！');
             return false;
         }
+        if ((events_from > current_ts) || (events_to > current_ts)){
+            alert('选择时间不能超过今日零时！');
+            return false;
+        }
+        if ($('#seed_user #'+seed_user_option+' #num-range').val() == 0){
+            alert('人数不能为0！');
+            return false;
+        }
         if ($('#seed_user #'+seed_user_option+' #hop_checkbox').is(':checked')){
             if ($('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val() == undefined){
                 alert('请选择跳数！');
@@ -207,46 +228,168 @@ function seed_user_check(){             // check validation
             }
         }
     }
+    //group_information check starts  
+    var group_name = $('#seed_user #'+seed_user_option+' #first_name').val();
+    var remark = $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    console.log(group_name, remark);
+    if (group_name.length == 0){
+        alert('群体名称不能为空');
+        return false;
+    }
 
+    var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+    if (!group_name.match(reg)){
+        alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
+    if ((remark.length > 0) && (!remark.match(reg))){
+        alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
   return true;
-
+}
+function seed_single_user_callback(data){
+    console.log(data);
+    if (data == 'seed user invalid') alert('人物库中不存在该用户！');
+    if (data == 'task name invalid') alert('请输入合法的任务名称！');
+    if (data == 'no query condition') alert('请选择搜索条件！');
+}
+function seed_multi_user_callback(data){
+    var status_string = data[0];
+    var out_list = data[1];
+    console.log(data);
+    if (status_string == true){
+        console.log(data);
+        $('#group_out_list').empty();
+        var html = '';
+        html += '<table class="table table-bordered table-striped table-condensed datatable"><thead>';
+        html += '<tr style="text-align:center;"><th>用户ID</th><th>操作</th></tr></thead>';
+        html += '<tbody>';
+        for (i=0;i<out_list.length;i++){
+            html += '<tr><td>'+out_list[i][0]+'</td><td><a name="group_recommend_in">入库</a></td></tr>';
+        }
+        html += '</tbody>';
+        html += '</table>';
+        $('#group_out_list').append(html);
+        $('#out_list_modal').modal();
+    }
+    else{
+        if (status_string == 'no seed user') alert('用户列表为空！');
+        if (status_string == 'task name invalid') alert('请输入合法的任务名称！');
+        if (status_string == 'no query condition') alert('请选择搜索条件！');
+    }
 }
 //获取选择的条件，把参数传出获取返回值
-function seed_user_data(){
-    if (seed_user_option == 'single_user'){
-        console.log($('#seed_user #uid_uname').val());
-    }
-    var url = '/manage/imagine/?keywords=';
-    var keywords = new Array();
-    var structure = new Array();
-    var weight = new Array();
+function seed_single_user_data(){
+    var url = '';
+    url += '/detect/single_person/?';
+    var uid_uname = $('#seed_user #uid_uname').val();
+    url += 'seed_uname=' + uid_uname;
+    url += '&seed_uid=' + uid_uname;
+    //attribute
+    url += '&attribute_weight=' + $('#seed_user #'+seed_user_option+' #attr_weight').val();
     $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
         if($(this).is(':checked')){
-            keywords.push($(this).next().attr('id'));
+            url += '&' + $(this).next().attr('id') + '=1';
         }
+        /* default 0
+        else{
+            url += '&' + $(this).next().attr('id') + '=0';
+        }
+        */
     });
-    url += keywords.join(',') + '&structure=';
+    //structure
+    url += '&structure_weight=' + $('#seed_user #'+seed_user_option+' #stru_weight').val();
     $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
-        if($(this).is(':checked')){
-            structure.push($(this).next().attr('id'));
+        if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
+            if ($(this).is(':checked')){
+                url += '&hop=' + $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
+            }
+        }
+        else{
+            if($(this).is(':checked')){
+                url += '&' + $(this).next().attr('id') + '=1';
+            }
+            /* default 0
+            else{
+                url += '&' + $(this).next().attr('id') + '=0';
+            }
+            */
         }
     });
-    url += structure.join(',');
-    console.log($('#seed_user #'+seed_user_option+' #attr_weight').val());
-    console.log($('#seed_user #'+seed_user_option+' #stru_weight').val());
-    console.log($('#seed_user #'+seed_user_option+' #num-range').val());
-    console.log($('#seed_user #'+seed_user_option+' #influ_from').val());
-    console.log($('#seed_user #'+seed_user_option+' #influ_to').val());
-    console.log($('#seed_user #'+seed_user_option+' #impor_from').val());
-    console.log($('#seed_user #'+seed_user_option+' #impor_to').val());
-    console.log($('#seed_user #'+seed_user_option+' #events_keywords').val());
-    seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-    seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
-    if ($('#seed_user #'+seed_user_option+' #hop_checkbox').is(':checked')){
-        console.log($('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val());
-    }
+    //events
+    url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
+    url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+    url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    //extension
+    url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
+    url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
+    url += '&influence_to=' + $('#seed_user #'+seed_user_option+' #influ_to').val();
+    url += '&importance_from=' + $('#seed_user #'+seed_user_option+' #impor_from').val();
+    url += '&importance_to=' + $('#seed_user #'+seed_user_option+' #impor_to').val();
+    // group_task
+    url += '&task_name=' + $('#seed_user #'+seed_user_option+' #first_name').val();
+    url += '&state=' + $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    url += '&submit_user=admin';
     console.log(url);
     return url;
+}
+function seed_multi_user_data(){
+    var url = '/detect/multi_person/';
+    var upload_job = {};
+    // group_task
+    upload_job['task_name'] = $('#seed_user #'+seed_user_option+' #first_name').val();
+    upload_job['state']  = $('#seed_user #'+seed_user_option+' #first_remarks').val();
+    upload_job['submit_user'] = 'admin';
+    if ($('#seed_user #multi_user_ext [name="ext_choose"]:checked').val() == 0){
+        upload_job['extend'] = '0';
+    }
+    else{
+        upload_job['extend'] = '1';
+        //attribute
+        upload_job['attribute_weight'] = $('#seed_user #'+seed_user_option+' #attr_weight').val();
+        $('#seed_user #'+seed_user_option+' #attribute .inline-checkbox').each(function(){
+            var attr_id = $(this).next().attr('id');
+            if($(this).is(':checked')){
+                upload_job[attr_id] = '1';
+            }
+            else{
+                upload_job[attr_id] = '0';
+            }
+        });
+        //structure
+        upload_job['structure_weight'] = $('#seed_user #'+seed_user_option+' #stru_weight').val();
+        $('#seed_user #'+seed_user_option+' #structure .inline-checkbox').each(function(){
+            if ($(this).attr('id') == 'hop_checkbox'){        //just for hop
+                if ($(this).is(':checked')){
+                    upload_job['hop'] = $('#seed_user #'+seed_user_option+' [name="hop_choose"]:checked').val();
+                }
+                else{
+                    upload_job['hop'] = 1;
+                }
+            }
+            else{
+                var attr_id = $(this).next().attr('id');
+                if($(this).is(':checked')){
+                    upload_job[attr_id] = '1';
+                }
+                else{
+                    upload_job[attr_id] = '0';
+                }
+            }
+        });
+        //events
+        upload_job['text'] = $('#seed_user #'+seed_user_option+' #events_keywords').val();
+        upload_job['timestamp_from'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+        upload_job['timestamp_to'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        //extension
+        upload_job['count'] = $('#seed_user #'+seed_user_option+' #num-range').val();
+        upload_job['influence_from'] = $('#seed_user #'+seed_user_option+' #influ_from').val();
+        upload_job['influence_to'] =  $('#seed_user #'+seed_user_option+' #influ_to').val();
+        upload_job['importance_from'] = $('#seed_user #'+seed_user_option+' #impor_from').val();
+        upload_job['importance_to'] = $('#seed_user #'+seed_user_option+' #impor_to').val();
+    }
+    handleFileSelect(upload_job);
 }
 function seed_user_timepicker(str){
     var date_time = str.split(' ');
@@ -265,31 +408,25 @@ function seed_user_timepicker(str){
     return final_date;
 }
 
-function handleFileSelect(evt){
-    var files = evt;
-    /*
-    var task_name = $('#file_task_name').val();
-    var state = $('#file_state').val();
+function handleFileSelect(upload_job){
+    var files = seed_user_files;
     for(var i=0,f;f=files[i];i++){
         var reader = new FileReader();
         reader.onload = function (oFREvent) {
-            var a = oFREvent.target.result;	
+            var a = oFREvent.target.result;
             console.log(a);
+            upload_job['upload_data'] = a;
+            console.log(upload_job);
             $.ajax({   
                 type:"POST",  
-                url:"/group/upload_file/",
+                url:"/detect/multi_person/",
+                contentType:"application/json",
+                data:JSON.stringify(upload_job),
                 dataType: "json",
-                async:false,
-                data:{upload_data:a,task_name:task_name,state:state},
-                success: function(){
-                            var show_url = "/group/show_task/";
-                            //Group_result.call_sync_ajax_request(show_url,Group_result.ajax_method,Group_result.Draw_resultTable);
-                }
+                success: seed_multi_user_callback
             });
-            location.reload();
         };            
         reader.readAsText(f,'GB2312');                                                        
     }
-    */
 }
 
