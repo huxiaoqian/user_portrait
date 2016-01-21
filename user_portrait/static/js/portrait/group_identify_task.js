@@ -85,7 +85,7 @@ function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 }
-//window.setInterval(redraw,3000);
+window.setInterval(redraw,3000);
 function redraw(){
 	deurl= '/detect/show_detect_task/';
 	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);

@@ -73,6 +73,7 @@ def identify_user_out(input_uid_list):
     in_user_list = []
     input_len = len(input_uid_list)
     iter_count = 0
+    print 'identify user out'
     #get user list who is out user_portrait
     while iter_count < input_len:
         iter_user_list = input_uid_list[iter_count: iter_count+DETECT_ITER_COUNT]
@@ -87,6 +88,7 @@ def identify_user_out(input_uid_list):
             else:
                 in_user_list.append(uid)
         iter_count += DETECT_ITER_COUNT
+    print 'get out user portrait information'
     #get user profile information for out user_portrait
     iter_count = 0
     out_user_count = len(out_user_list)
@@ -111,6 +113,7 @@ def identify_user_out(input_uid_list):
                 statusnum =  u'未知'
                 friendsnum =  u'未知'
             out_user_result.append([uid, uname, fansnum, statusnum, friendsnum])
+        iter_count += DETECT_ITER_COUNT 
     sort_out_user_result = sorted(out_user_result, key=lambda x:x[2], reverse=True)
 
     return in_user_list, sort_out_user_result
@@ -131,6 +134,7 @@ def save_detect_multi_task(input_dict, extend_mark):
     #step1: identify user is in user_portrait and not in user_portrait
     in_user_list, out_user_list = identify_user_out(input_uid_list)
     input_dict['task_information']['uid_list'] = in_user_list
+    print 'step1'
     #step2: identify task name is valid
     task_name = input_dict['task_information']['task_name']
     try:
@@ -139,8 +143,10 @@ def save_detect_multi_task(input_dict, extend_mark):
         task_exist_result = {}
     if task_exist_result != {}:
         return 'task name invalid'
+    print 'step2'
     #step3: identify whether or not to extend----extend mark
     if extend_mark=='1':
+        print 'step3 save'
         es_status = save_detect2es(input_dict)
         redis_status = save_detect2redis(input_dict) # detect redis queue
     elif extend_mark=='0':
@@ -148,6 +154,7 @@ def save_detect_multi_task(input_dict, extend_mark):
         input_dict['task_information']['uid_list'] = json.dumps(uid_list)
         input_dict['task_information']['status'] = 0
         input_dict['task_information']['count'] = len(uid_list)
+        print 'step3 save'
         es_status = save_compute2es(input_dict)
         redis_status = save_compute2redis(input_dict) # compute redis queue
     #identify the operation status
@@ -223,6 +230,7 @@ def save_detect2redis(input_dict):
     status = True
     try:
         r_group.lpush(group_detect_queue_name, json.dumps(input_dict))
+        print 'success to save redis'
     except:
         status = False
     return status
