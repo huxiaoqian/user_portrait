@@ -658,11 +658,11 @@ function attribute_pattern_check(){             // check validation
     }	
 	}
   function callback(data){
-    console.log(data);
-    if (data == 'true'){
-        alert('提交成功！');
-        window.location.href=window.location.href;
-        // window.location.href = group_url;
+    //console.log(data);
+    if (data == true){
+      //redraw_result();
+      alert('提交成功！');
+      window.location.reload(); 
     } 
     if(data =='task name invalid'){
         alert('已存在相同名称的群体分析任务,请重试!');
