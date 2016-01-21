@@ -82,7 +82,6 @@ function bind_button_click(){
         $('#seed_user #multi_user_ext #uploadbtn').click(function(){
             var fileInput = document.getElementById('seed_file_upload');
             // 检查文件是否选择:
-            console.log(fileInput.value);
             if (!fileInput.value) {
                 alert('没有选择文件');
                 return;
@@ -91,7 +90,6 @@ function bind_button_click(){
             var file = fileInput.value;
             //alert(file);
             if ((file.endsWith('.csv')) || (file.endsWith('.txt'))) {
-                console.log('success');
                 seed_user_files = fileInput.files;
                 $('#seed_user #multi_user_ext #add_file').html(file);
                 $('#seed_user #multi_user_ext #file_status').css('display', 'block');
@@ -125,7 +123,6 @@ function seed_user_init(){
         var html = $('#seed_user #seed_user_ext').html();
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
-        console.log(seed_user_option);
         $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,minDate:min_date,maxDate:max_date,step:10});
         $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
         if (seed_user_option == 'multi_user'){
@@ -177,7 +174,6 @@ function seed_user_check(){             // check validation
     }
     else{              //single_user or multi_user with extension
         if (seed_user_option == 'single_user'){
-            console.log($('#seed_user #uid_uname').val());
             if (!($('#seed_user #uid_uname').val())){
                 alert('请输入用户ID或昵称！');
                 return false;
@@ -231,7 +227,6 @@ function seed_user_check(){             // check validation
     //group_information check starts  
     var group_name = $('#seed_user #'+seed_user_option+' #first_name').val();
     var remark = $('#seed_user #'+seed_user_option+' #first_remarks').val();
-    console.log(group_name, remark);
     if (group_name.length == 0){
         alert('群体名称不能为空');
         return false;
@@ -257,20 +252,27 @@ function seed_single_user_callback(data){
 function seed_multi_user_callback(data){
     var status_string = data[0];
     var out_list = data[1];
-    console.log(data);
     if (status_string == true){
-        console.log(data);
         $('#group_out_list').empty();
         var html = '';
         html += '<table class="table table-bordered table-striped table-condensed datatable"><thead>';
-        html += '<tr style="text-align:center;"><th>用户ID</th><th>操作</th></tr></thead>';
+        html += '<tr style="text-align:center;"><th>用户ID</th><th>昵称</th><th>粉丝数</th>';
+        html += '<th>好友数</th><th>微博数</th><th>';
+        html += '<input id="out_modal_all" type="checkbox" onclick="out_modal_all();"/></th></tr></thead>';
         html += '<tbody>';
         for (i=0;i<out_list.length;i++){
-            html += '<tr><td>'+out_list[i][0]+'</td><td><a name="group_recommend_in">入库</a></td></tr>';
+            html += '<tr><td class="center"><a target="_blank" href="http://weibo/com/u/' + out_list[i][0] + '">'+out_list[i][0]+'</a></td>';
+            html += '<td class="center">'+out_list[i][1]+'</td>';
+            html += '<td class="center">'+out_list[i][2]+'</td>';
+            html += '<td class="center">'+out_list[i][4]+'</td>';
+            html += '<td class="center">'+out_list[i][3]+'</td>';
+            html += '<td><input name="group_recommend_in" type="checkbox" value="' + out_list[i][0] + '" /></td>';
+            html += '</tr>';
         }
         html += '</tbody>';
         html += '</table>';
         $('#group_out_list').append(html);
+        group_bind_recommend();
         $('#out_list_modal').modal();
     }
     else{
@@ -278,6 +280,53 @@ function seed_multi_user_callback(data){
         if (status_string == 'task name invalid') alert('请输入合法的任务名称！');
         if (status_string == 'no query condition') alert('请选择搜索条件！');
     }
+}
+function out_modal_all(){
+  $('#seed_user input[name="group_recommend_in"]:not(:disabled)').prop('checked', $("#seed_user #out_modal_all").prop('checked'));
+}
+function group_bind_recommend(){
+  $('#seed_user #group_recommend_confirm').click(function(){
+      var cur_uids = [];
+      $('#seed_user input[name="group_recommend_in"]:checked').each(function(){
+        cur_uids.push($(this).attr('value'));
+      })
+      var recommend_date = new Date().format('yyyy-MM-dd');
+      if(cur_uids.length == 0)
+        alert("请选择至少一个用户！");
+      else{
+        var compute_time;
+        if($('#seed_user input[name="instant"]:checked').val()==1){
+          compute_time = '1';
+          var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
+          if(sure==true){
+              var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids.join(',') + '&status=' + compute_time;
+              //console.log(recommend_confirm_url);
+              $.ajax({
+                    type:'GET',
+                    url:recommend_confirm_url,
+                    dataType:'json',
+                    success:function(){
+                        $('#out_list_modal').modal('hide');
+                    }
+              });
+          }
+        }
+        else{
+            compute_time = '2';
+            alert('您选择了预约计算，系统将在今日24:00自动启动计算！');
+            var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids.join(',') + '&status=' + compute_time;
+            //console.log(recommend_confirm_url);
+            $.ajax({
+                    type:'GET',
+                    url:recommend_confirm_url,
+                    dataType:'json',
+                    success:function(){
+                        $('#out_list_modal').modal('hide');
+                    }
+            });
+        }
+      }
+  });
 }
 //获取选择的条件，把参数传出获取返回值
 function seed_single_user_data(){
@@ -331,7 +380,6 @@ function seed_single_user_data(){
     url += '&task_name=' + $('#seed_user #'+seed_user_option+' #first_name').val();
     url += '&state=' + $('#seed_user #'+seed_user_option+' #first_remarks').val();
     url += '&submit_user=admin';
-    console.log(url);
     return url;
 }
 function seed_multi_user_data(){
@@ -389,6 +437,7 @@ function seed_multi_user_data(){
         upload_job['importance_from'] = $('#seed_user #'+seed_user_option+' #impor_from').val();
         upload_job['importance_to'] = $('#seed_user #'+seed_user_option+' #impor_to').val();
     }
+    // var test_data = [true, [['00000', '未知','未知','未知','未知']]];
     handleFileSelect(upload_job);
 }
 function seed_user_timepicker(str){
@@ -404,7 +453,6 @@ function seed_user_timepicker(str){
     final_date.setFullYear(yy,mm,dd);
     final_date.setHours(hh,minute);
     final_date = Math.floor(final_date.getTime()/1000);
-    console.log(final_date);
     return final_date;
 }
 
@@ -414,7 +462,6 @@ function handleFileSelect(upload_job){
         var reader = new FileReader();
         reader.onload = function (oFREvent) {
             var a = oFREvent.target.result;
-            console.log(a);
             upload_job['upload_data'] = a;
             console.log(upload_job);
             $.ajax({   
