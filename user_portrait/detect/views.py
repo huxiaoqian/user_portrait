@@ -182,7 +182,7 @@ def ajax_multi_person():
         structure_list = {}
         for structure_item in DETECT_QUERY_STRUCTURE:
             structure_mark = input_data[attribute_item]
-            strucutre_list[structure_item] = structure_mark
+            structure_list[structure_item] = structure_mark
             if structure_mark != '0':
                 structure_condition_num += 1
         
@@ -207,7 +207,7 @@ def ajax_multi_person():
             item_value_from = input_data[text_item+'_from']
             item_value_to = input_data[text_item+'_to']
             if item_value_from != '' and item_value_to != '':
-                if int(item_value_from) > int(ite_value_to):
+                if int(item_value_from) > int(item_value_to):
                     return 'invalid input for range'
                 else:
                     text_query_list.append({'range':{text_item:{'from':int(item_value_from), 'to':int(item_value_to)}}})

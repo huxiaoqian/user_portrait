@@ -3,21 +3,24 @@
     {% block css %}
         {{ super() }}
         <style>
+            .dataTables_filter{text-align:right;margin-bottom:5px;}
+            .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
             .wrapper{min-height:330px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
-            #tab{width: 180px;height:400px;}
+            #tab{width: 180px;height:284px;}
             #tab_left,#tab_con{margin: 0px;background: #fff;} #tab,#tab_con{float: left;}
             #tab_left{width:180px;height:380px;font-family:"Microsoft Yahei"}
             #tab_left li{list-style-type: none;font-size: 20px;text-align: center;border-top: 1px solid #ccc;}
             #tab_left li a{color: #000;opacity:0.7;text-decoration: none;line-height: 80px;width: 180px;height: 70px;display: block;background: #fff;text-shadow:1px 1px 2px #ccc;border-left: 1px solid #ccc;}
             #tab_left li.current a{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
             #tab_left li a:hover{background: #dde4f2;text-decoration: none;border-left: 1px solid #f00;text-shadow:1px 1px 2px #ccc;}
-            #tab_con{width: 820px;overflow: hidden;margin-bottom:30px;}
+            #tab_con{width: 820px;overflow: hidden;margin-bottom:65px;}
         </style>
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
     {% endblock css %}
     {% block head_js %}
         {{ super() }}
         <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/identify_table.js"></script>
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>

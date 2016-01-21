@@ -106,11 +106,11 @@ def identify_user_out(input_uid_list):
                 statusnum = source['statusnum']
                 friendsnum = source['friendsnum']
             else:
-                uanme =  u'未知'
+                uname =  u'未知'
                 fansnum =  u'未知'
                 statusnum =  u'未知'
                 friendsnum =  u'未知'
-            out_user_result.sppend([uid, uname, fansnum, statusnum, friendsnum])
+            out_user_result.append([uid, uname, fansnum, statusnum, friendsnum])
     sort_out_user_result = sorted(out_user_result, key=lambda x:x[2], reverse=True)
 
     return in_user_list, sort_out_user_result

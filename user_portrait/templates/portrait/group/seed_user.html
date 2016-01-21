@@ -35,6 +35,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="out_list_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">未入库用户</h4>
+          </div>
+          <div class="modal-body">
+            <span>以下用户并未入库，可在此选择用户入库。</span>
+            <div id="group_out_list" style="margin-top:30px"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id='seed_user_ext' class="box-content" style="height:420px;display:none">
         <hr style='width:800px;margin:0px;'>
         <div id="attribute" class="col-md-12">

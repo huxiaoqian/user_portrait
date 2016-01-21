@@ -121,7 +121,7 @@
 			}
 		},
 		value:'',
-		lang:'en',
+		lang:'ch',
 		format:'Y/m/d H:i',
 		formatTime:'H:i',
 		formatDate:'Y/m/d',
