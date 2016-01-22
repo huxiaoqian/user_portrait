@@ -123,6 +123,8 @@ Draw_pie_all0:function(data){
     var data_set = [];
     data_set.push(data.in_portrait);
     data_set.push(data.out_portrait);
+    data_set.push(data.in_portrait_number);
+    data_set.push(data.out_portrait_number);
     Influence_motal(data_set, 're_user_in_all', 're_user_out_all', 're_three_pie_all', 're_user_content_all')
 
     
@@ -140,6 +142,8 @@ Draw_pie_all0:function(data){
     var data_set = [];
     data_set.push(data.in_portrait);
     data_set.push(data.out_portrait);
+    data_set.push(data.in_portrait_number);
+    data_set.push(data.out_portrait_number);
     Influence_motal(data_set, 'cmt_user_in_all', 'cmt_user_out_all', 'cmt_three_pie_all', 'cmt_user_content_all')
   },
 
@@ -212,7 +216,13 @@ Draw_pie_all0:function(data){
   },
 
   Single_users_influence_re:function(data){
-    Influence_motal(data.influence_users, 're_user_in', 're_user_out', 're_three_pie', 're_user_content');
+    var data_user_detail = [];
+    data_user_detail.push(data.influence_users[0]);
+    data_user_detail.push(data.influence_users[1]);
+    data_user_detail.push(data.influence_distribution.in_portrait_number);
+    data_user_detail.push(data.influence_distribution.out_portrait_number);
+
+    Influence_motal(data_user_detail, 're_user_in', 're_user_out', 're_three_pie', 're_user_content');
     $('#re_conclusion').empty();
     var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
     $('#re_conclusion').append(html);
@@ -257,7 +267,12 @@ Draw_pie_all0:function(data){
   },
 
   Single_users_influence_cmt:function(data){
-    Influence_motal(data.influence_users, 'cmt_user_in','cmt_user_out', 'cmt_three_pie', 'cmt_user_content');
+    var data_user_detail = [];
+    data_user_detail.push(data.influence_users[0]);
+    data_user_detail.push(data.influence_users[1]);
+    data_user_detail.push(data.influence_distribution.in_portrait_number);
+    data_user_detail.push(data.influence_distribution.out_portrait_number);
+    Influence_motal(data_user_detail, 'cmt_user_in','cmt_user_out', 'cmt_three_pie', 'cmt_user_content');
     $('#cmt_conclusion').empty();
     var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
     $('#cmt_conclusion').append(html);
@@ -271,9 +286,10 @@ Draw_pie_all0:function(data){
     $('#'+div_name_in).empty();
 
     var html = '';
+    console.log(data[2]);
     //html += '<hr style="margin-top:-10px;">';
-    html += '<h4>已入库用户('+data[0].length+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
-    if (data[0].length == 0){
+    html += '<h4>已入库用户('+data[2]+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
+    if (data[2] == 0){
       //$('#'+del_div).append('<h4>test</h4>');
       $('#'+del_div).remove();
       $('#'+del_div_attr).css("height", "auto");
@@ -304,8 +320,8 @@ Draw_pie_all0:function(data){
 
     $('#'+div_name_out).empty();
     var html2 = '';
-    html2 += '<hr><h4>未入库用户('+data[1].length+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
-    if (data[1].length == 0){
+    html2 += '<hr><h4>未入库用户('+data[3]+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
+    if (data[3] == 0){
     }else{
       for (i=0;i<data[1].length;i++){
         var img_src = ''
@@ -349,13 +365,13 @@ Draw_pie_all0:function(data){
       var option = {
         tooltip : {
           trigger: 'item',
-          formatter: "{a} <br/>{b} : {c} ({d}%)"
+          formatter: "{b} <br/> 占比 {d}%"
         },
 
         calculable : true,
         series : [
         {
-          name:'访问来源',
+          name:'',
           type:'pie',
           radius : '35%',
           center: ['50%', '45%'],
@@ -372,7 +388,7 @@ Draw_pie_all0:function(data){
             emphasis : {
               label : {
                 show : false,
-                position : 'left',
+                position : 'bottom',
                 textStyle : {
                   fontSize : '14',
                   fontWeight : 'bold'

@@ -31,25 +31,25 @@
         <div class='col-md-12' style='padding:0px;'>
             <div class='col-lg-4' style='padding:0px;'>
                  <span class="input-group-addon" style="width:50px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
-                 <input id="first_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                 <input id="so_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
             </div>
             <div class='col-lg-4' style='padding:0px;'>
                  <span class="input-group-addon" style="width:50px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
-                 <input id="first_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+                 <input id="so_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
             </div>
             <div class='col-lg-4' style='padding:0px;'>
                  <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">终止时间</span>
-                 <input id="so_end_time" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
+                 <input name="so_end_time" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
             </div>
         </div>
     </div>
-    <div class="col-md-12" style='margin-top:11px'>
+    <div class="col-md-12" style='margin-top:10px;margin-bottom:10px;'>
         <div class='col-md-12' style='text-align:right; padding-right:35px'>
             <span id="so_user_commit" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
         </div>
     </div>
 
-    <div id='so_task_table' class="col-md-12" ></div>
+    <div id='so_task_table' ></div>
 
     <div class="modal fade" id="so_keys_block" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document" style="width:850px;">
@@ -87,6 +87,29 @@
             <span style="margin-left:10px;">备注：</span>
             <span id="so_remark0" style="width:400px"></span>
             <div id="so_his_content" style="margin-top:30px;overflow-y:auto;height:300px;"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="so_revise" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">重启任务</h4>
+          </div>
+          <div class="modal-body">
+            <span>群体名称：</span>
+            <span id="so_group_name0" style="margin-left:10px;margin-right:20px;"></span>
+            <span style="margin-left:10px;">备注：</span>
+            <span id="so_remark0" style="width:400px;margin-right:20px;"></span>
+            <span style="margin-left:10px;">终止时间：</span>
+            <input name="so_end_time" type='text' style='width:145px; display:inline-block;height:25px'>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

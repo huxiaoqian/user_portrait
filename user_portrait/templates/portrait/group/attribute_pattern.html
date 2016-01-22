@@ -377,10 +377,10 @@
 
             var html = '';
             html += '<span class="mouse" style="margin-right:40px;"><span class="tag_str">'+ check_str;
-            html += '</span>&nbsp;<a class="cross" href="#">X</a></span>';
+            html += '</span>&nbsp;<span class="cross" cursor: pointer;>X</span></span>';
             $('#attribute_tags').append(html);
             attribute_chosen_tag[check_str] = 1;
-            $('#attribute_pattern .mouse>a').click(function(){
+            $('#attribute_pattern .mouse .cross').click(function(){
                 var text = $(this).prev().html();
                 text = text.split('&')[0];
                 attribute_chosen_tag[text] = undefined;
@@ -412,29 +412,33 @@ Date.prototype.format = function(format) {
 
 //日期选择
 var date = new Date();
-date.setHours(0);
-date.setMinutes(0);
-date.setSeconds(0);
-date.setMilliseconds(0);
+date.setHours(0,0,0,0);
 var max_date = date.format('yyyyMMdd');
 var current_date = date.format('yyyy/MM/dd hh:mm');
 var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
-var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-var max_date_time = Math.floor(new Date().getTime()/1000) - 0;
+//var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
+//var max_date_time = Math.floor(date.getTime()/1000) - 0;
+//console.log('max_max_date', max_date_time)
 var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 
-$('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10});
-$('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10});
+$('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+$('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 
 function attribute_pattern_check(){             // check validation 
   //group_information check starts  
+  var dt = new Date();
+  dt.setHours(0,0,0,0);
+  //console.log('max_date_limit',max_date_limit);
+  var max_date_limit_stamp = Date.parse(dt)/1000;
+  console.log('max_date', max_date_limit_stamp);
   var group_name = $('#attribute_pattern #first_name').val();
   var remark = $('#attribute_pattern #first_remarks').val();
   var location = $('#attribute_pattern #location').val();
   var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
   var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
+  console.log('time_to', time_to);
   var num_range_count = $('#attribute_pattern #num-range').val();
   var influ_from_num = parseFloat($('#attribute_pattern #influ_from').val());
   var influ_to_num =parseFloat($('#attribute_pattern #influ_to').val());
@@ -461,15 +465,11 @@ function attribute_pattern_check(){             // check validation
     return false;
   }
   if(time_from > time_to){
-    alert('选择发布微博的起止时间错误，请重新选择！');
+    alert('起止时间错误，请重新选择！');
     return false;
   }
-  if(min_date_time > time_from || min_date_time >time_to){
-    alert('请选择近一个月内的时间！');
-    return false;
-  }
-  if(max_date_time < time_from || max_date_time < time_to){
-    alert('选择的时间超出当前日期，请重新选择！');
+  if(max_date_limit_stamp < time_to ){
+    alert('终止时间最晚不超过今日零点，请重新选择！');
     return false;
   }
 
@@ -658,22 +658,23 @@ function attribute_pattern_check(){             // check validation
     }	
 	}
   function callback(data){
-        if (data == 'true'){
-          alert('提交成功！');
-          window.location.href=window.location.href;
-            // window.location.href = group_url;
-        } 
-        if(data =='task name invalid'){
-            alert('已存在相同名称的群体分析任务,请重试!');
-        }
-        if(data =='invalid input for condition'){
-          alert('请至少选择一个分析条件！');
-        }
-        if(data == 'invalid input for filter'){
-          alert('请输入合理的影响力或重要度范围！');
-        }
-        if(data == 'invalid input for count'){
-          alert('请选择合理的人数！')
-        }
-      }
+    //console.log(data);
+    if (data == true){
+      //redraw_result();
+      alert('提交成功！');
+      window.location.reload(); 
+    } 
+    if(data =='task name invalid'){
+        alert('已存在相同名称的群体分析任务,请重试!');
+    }
+    if(data =='invalid input for condition'){
+      alert('请至少选择一个分析条件！');
+    }
+    if(data == 'invalid input for filter'){
+      alert('请输入合理的影响力或重要度范围！');
+    }
+    if(data == 'invalid input for count'){
+      alert('请选择合理的人数！')
+    }
+  }
 </script>
