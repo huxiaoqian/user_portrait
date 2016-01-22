@@ -219,6 +219,7 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
                 pass
             else:
                 results.append(item["fields"]["uid"][0])
+        results = list(set(results))
     else:
         results = []
 
