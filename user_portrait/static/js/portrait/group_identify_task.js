@@ -146,8 +146,13 @@ var Group_delete_task = new Group_delete_task();
 
 $('a[id^="commit_control"]').click(function(){
 	var a = confirm('确定要提交监控吗？');
- 	   if (a == true){
-		
+ 	    if (a == true){
+			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+			url = "/detect/show_detect_result/?task_name=" + temp;
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
+			$('span[id^="group_name0"]').html(temp);
+			$('span[id^="remark0"]').html(remark0);
+			$('#group_control').modal();
 		}
 	}
 );
