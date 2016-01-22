@@ -57,7 +57,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html +='<td><input name="so_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td>';
 		html += '</tr>';
 	}
-	html += '</tbody>';
+	html += '</tbody>';-
     html += '</table>';
 	$('#so_group_task').append(html);
   },
@@ -69,7 +69,7 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var flag = '';
   	var so_flag = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th>创建人</th><th>创建时间</th><th>终止时间</th><th>备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th style="width: 180px;">备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
@@ -117,9 +117,9 @@ $('input[name="so_mode_choose"]').change(function(){
     //if (!seed_user_flag) seed_user_flag = true; // no more html init
 });
 var current_date = new Date().format('yyyy/MM/dd hh:mm');
-var max_date = '+1970/01/01';
+var max_date = '+1970/01/30';
 var min_date = '-1970/01/30';
-$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
 function prepare(that){
 	console.log(that);
