@@ -89,7 +89,7 @@ def ajax_single_person():
             if int(item_value_from) > int(item_value_to):
                 return 'invalid input for range'
             else:
-                text_query_list.append({'range':{text_item:{'from':int(item_value_from), 'to':int(item_value_to)}}})
+                text_query_list.append({'range':{text_item:{'gte':int(item_value_from), 'lt':int(item_value_to)}}})
 
     query_dict['text'] = text_query_list
     #identify the query condition num at least one
@@ -139,7 +139,6 @@ def ajax_multi_person():
     input_dict = {}
     input_data = request.get_json()
     #upload user list
-    print 'multi get_json'
     upload_data = input_data['upload_data']
     line_list = upload_data.split('\n')
     uid_list = []
@@ -212,7 +211,7 @@ def ajax_multi_person():
                 if int(item_value_from) > int(item_value_to):
                     return 'invalid input for range'
                 else:
-                    text_query_list.append({'range':{text_item:{'from':int(item_value_from), 'to':int(item_value_to)}}})
+                    text_query_list.append({'range':{text_item:{'gte':int(item_value_from), 'lt':int(item_value_to)}}})
         query_dict['text'] = text_query_list
         #identify the comdition num at least 1
         if attribute_condition_num + structure_condition_num == 0:
@@ -320,7 +319,7 @@ def ajax_attribute_pattern():
             if int(item_value_from) > int(item_value_to):
                 return 'invalid input for condition'
             else:
-                pattern_query_list.append({'range':{item:{'from': int(item_value_from), 'to':int(item_value_to)}}})
+                pattern_query_list.append({'range':{item:{'gte': int(item_value_from), 'lt':int(item_value_to)}}})
         
     #identify attribute and pattern condition num >= 1
     if attribute_condition_num + pattern_condition_num < 1:
@@ -492,3 +491,11 @@ def ajax_delete_task():
     task_name = request.args.get('task_name', '')
     status = delete_task(task_name)
     return json.dumps(status)
+
+#use to get social sensing group detect results
+#input:
+#output:
+@mod.route('/sensing_detect/')
+def ajax_socail_sensing():
+    results = {}
+    return json.dumps(results)

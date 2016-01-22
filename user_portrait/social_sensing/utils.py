@@ -33,7 +33,7 @@ def get_warning_detail(task_name, keywords, ts, task_type="2"):
     return results
 
 # 获得一段时间内的文本，按序排列
-def get_text_detail(task_name, keywords, ts):
+def get_text_detail(task_name, keywords, ts, size=100):
     results = dict()
 
     return results

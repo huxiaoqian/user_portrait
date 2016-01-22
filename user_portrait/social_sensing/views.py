@@ -81,6 +81,7 @@ def ajax_delete_task():
         return json.dumps([])
 
 
+
 # 终止任务，即在到达终止时间前就终止任务
 @mod.route('/stop_task/')
 def ajax_stop_task():
@@ -95,10 +96,12 @@ def ajax_stop_task():
 
 
 # 修改任务终止时间
+# 修改finish=0代表重启任务
+# 修改终止时间，当任务停止后即使延迟终止时间，仍需要设置finish=0代表重新启动
 @mod.route('/revise_task/')
 def ajax_revise_task():
     task_name = request.args.get('task_name','') # must
-    finish = request.args.get("finish", "")
+    finish = request.args.get("finish", "10")
     stop_time = request.args.get('stop_time', '') # timestamp
 
     now_ts = time.time()
@@ -121,6 +124,8 @@ def ajax_revise_task():
 @mod.route('/show_task/')
 def ajax_show_task():
     # show all working task
+    # "0": unfinish working task
+    # "1": finish working task
     status = request.args.get("finish", "01")
     length = len(status)
     query_body = {
@@ -144,10 +149,40 @@ def ajax_show_task():
     search_results = es.search(index=index_manage_sensing_task, doc_type=task_doc_type, body=query_body)['hits']['hits']
 
     results = []
-    for item in search_results:
-        results.append(item['_source'])
+    if search_results:
+        for item in search_results:
+            item = item['_source']
+            history_status = json.loads(item['history_status'])
+            temp_list = []
+            temp_list.append(history_status[-1])
+            for iter_item in history_status[:-1]:
+                if int(iter_item[-1]) != 0:
+                    temp_list.append(iter_item)
+                    sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+            item['history_status'] = sorted_list
+            results.append(item)
 
     return json.dumps(results)
+
+
+@mod.route('/get_task_detail_info/')
+def ajax_get_task_detail_info():
+    task_name = request.args.get('task_name','') # task_name
+    task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)['_source']
+    task_detail["social_sensors"] = json.loads(task_detail["social_sensors"])
+    task_detail['keywords'] = json.loads(task_detail['keywords'])
+    history_status = json.loads(task_detail['history_status'])
+    temp_list = []
+    temp_list.append(history_status[-1])
+    for item in history_status[:-1]:
+        if int(item[-1]) != 0:
+            temp_list.append(item)
+    sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+    task_detail['history_status'] = sorted_list
+    print task_detail
+    return json.dumps(task_detail)
+
+
 
 # unfinished
 @mod.route('/get_group_list/')

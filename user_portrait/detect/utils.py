@@ -114,6 +114,7 @@ def identify_user_out(input_uid_list):
                 friendsnum =  u'未知'
             out_user_result.append([uid, uname, fansnum, statusnum, friendsnum])
         iter_count += DETECT_ITER_COUNT 
+    
     sort_out_user_result = sorted(out_user_result, key=lambda x:x[2], reverse=True)
 
     return in_user_list, sort_out_user_result
