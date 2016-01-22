@@ -661,7 +661,6 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
     new_range_dict_list = []
     for pattern_item in pattern_list:
         if 'range' in pattern_item:
-            print 'test pattern pattern_item:', pattern_item
             range_dict = pattern_item['range']['timestamp']
             from_ts = range_dict['gte']
             to_ts = range_dict['lt']
@@ -699,6 +698,8 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
             range_from_ts = range_item['range']['timestamp']['gte']
             range_from_date = ts2datetime(range_from_ts)
             flow_index_name = flow_text_index_name_pre + range_from_date
+            print 'flow_index_name:', flow_index_name
+            print 'iter_date_pattern_condition_list:', iter_date_pattern_condition_list
             try:
                 flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
                         body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
@@ -912,6 +913,7 @@ def event_detect(input_dict):
                     body={'query':{'bool': {'should':attribute_list}}, 'sort':[{'influence': {'order': 'desc'}}],'size':count})['hits']['hits']
         except:
             user_portrait_result = []
+        print 'event user_portrait_result:', len(user_portrait_result)
         #change process proportion
         process_mark = change_process_proportion(task_name, 30)
         if process_mark == 'task is not exist':
@@ -923,6 +925,7 @@ def event_detect(input_dict):
         if len(event_list) != 0:
             #type1: have attribute condition and filter by flow_text
             #step2.1: filter by event--text
+            print 'before filter event'
             filter_user_list = attribute_filter_pattern(user_portrait_result, event_list)
         else:
             #step2.2: get uid list from user_portrait_result
