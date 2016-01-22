@@ -143,33 +143,31 @@ def temporal_keywords(ts1, ts2):
 
 
 # 事件检测中用于查询给定关键词，在某段时间内的原创微博列表
-
+# 基于全文索引的方式查询text字段
 def query_mid_list(ts, keywords_list, time_segment):
     # 第一步，聚合前六个小时相关微博mid, 首先获得原创微博
     #ts = time.time()
     #ts = 1377964800+3600
     query_body = {
         "query": {
-            "filtered": {
-                "filter": {
-                    "bool": {
-                        "must": [
-                            {"range": {
-                                "timestamp": {
-                                    "gte": ts - time_segment,
-                                    "lt": ts
-                                }
-                            }},
-                            {"terms": {"keywords_string": keywords_list}},
-                            #{"term": {"message_type": 1}} # origin weibo
-                        ]
-                    }
-                }
+            "bool": {
+                "must": [
+                    {"range": {
+                        "timestamp": {
+                            "gte": ts - time_segment,
+                            "lt": ts
+                        }
+                     }}
+                ]
             }
         },
         "sort": {"sentiment": {"order": "desc"}},
         "size": 10000
     }
+    if keywords_list:
+        query_body['query']['bool']['should'] = []
+        for word in keywords_list:
+            query_body['query']['bool']['should'].append({'wildcard':{"text": "*"+word+"*"}})
 
     datetime = ts2datetime(ts)
     # test
@@ -209,24 +207,17 @@ def query_mid_list(ts, keywords_list, time_segment):
 def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregation_field="root_mid", size=100):
     query_all_body = {
         "query": {
-            "filtered": {
-                "filter": {
-                    "bool": {
-                        "must": [
-                            {"range": {
-                                "timestamp":{
-                                    "gte": ts - time_segment,
-                                    "lt": ts
-                                }
-                            }}],
-                        "should": [
-                            {"terms":{
-                                "keywords_string": keywords_list
-                                }
-                            }
-                        ]
-                    }
-                }
+            "bool": {
+                "must": [
+                    {"range": {
+                        "timestamp":{
+                            "gte": ts - time_segment,
+                            "lt": ts
+                        }
+                    }}
+                ],
+                "should": [
+                ]
             }
         },
         "aggs":{
@@ -236,6 +227,10 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
         }
     }
 
+    if keywords_list:
+        for word in keywords_list:
+            query_body['query']['bool']['should'].append({'wildcard':{"text": "*"+word+"*"}})
+
     datetime = ts2datetime(ts)
     # test
     #datetime = "2013-09-07"
@@ -243,8 +238,8 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
     index_name = flow_text_index_name_pre + datetime
     exist_es = es_text.indices.exists(index_name)
     if origin_mid_list and exist_es:
-        query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
-        query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
+        query_all_body["query"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
+        query_all_body["query"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
         results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_count']['buckets']
         if results:
             for item in results:

@@ -44,7 +44,7 @@ def get_task_detail_2(task_name, keywords, ts):
 
     # get detail task information from es
     if time_series:
-        print time_series
+        #print time_series
         flow_detail = es.mget(index=index_sensing_task, doc_type=index_name, body={"ids": time_series})['docs']
     else:
         flow_detail = {}
@@ -79,7 +79,7 @@ def get_task_detail_2(task_name, keywords, ts):
                 temp.append(item['fields']['uid'][0])
                 temp.append(item['fields']['uname'][0])
                 temp.append(item['fields']['domain'][0])
-                temp.append(item['fields']['topic_string'][0])
+                temp.append(item['fields']['topic_string'][0].split('&'))
                 temp.append(item['fields']['fansnum'][0])
                 temp.append(item['fields']['importance'][0])
                 temp.append(item['fields']['influence'][0])
@@ -102,7 +102,7 @@ def get_task_detail_2(task_name, keywords, ts):
 
 
 
-def get_detail_text(ts):
+#def get_detail_text(ts):
 
 
 if __name__ == "__main__":
