@@ -149,8 +149,18 @@ def ajax_show_task():
     search_results = es.search(index=index_manage_sensing_task, doc_type=task_doc_type, body=query_body)['hits']['hits']
 
     results = []
-    for item in search_results:
-        results.append(item['_source'])
+    if search_results:
+        for item in search_results:
+            item = item['_source']
+            history_status = json.loads(item['history_status'])
+            temp_list = []
+            temp_list.append(history_status[-1])
+            for iter_item in history_status[:-1]:
+                if int(iter_item[-1]) != 0:
+                    temp_list.append(iter_item)
+                    sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+            item['history_status'] = sorted_list
+            results.append(item)
 
     return json.dumps(results)
 
@@ -164,11 +174,11 @@ def ajax_get_task_detail_info():
     history_status = json.loads(task_detail['history_status'])
     temp_list = []
     temp_list.append(history_status[-1])
-    for item in history_status[-1]:
+    for item in history_status[:-1]:
         if int(item[-1]) != 0:
             temp_list.append(item)
     sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
-    task_detail['history_detail'] = sorted_list
+    task_detail['history_status'] = sorted_list
     print task_detail
     return json.dumps(task_detail)
 
