@@ -15,38 +15,31 @@
 </div>
 
 <script type="text/javascript">
-	var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
+	var table_content = [{'uid':12322222444222456,'uname':123},{'uid':123234522222456,'uname':123},{'uid':12322222282222456,'uname':123},{'uid':123222256432456,'uname':123},{'uid':123222222289456,'uname':123},{'uid':12324522222222456,'uname':123},{'uid':12326322222222456,'uname':123}]
 	function draw_social_sensing_table (data) {
 		$('#social_sensing_table').empty();
 		var html = '';
 		html += '<table id="social_table" class="table table-bordered table-striped table-condensed datatable">';
 		html += '<thead><tr>';
-		html += '<th>uid</th>';
-		html += '<th>昵称</th>';
-		html += '<th>领域</th>';
-		html += '<th>话题</th>';
-		//html += '<th>参与事件</th>';
-		html += '<th>热度</th>';
-		html += '<th>重要度</th>';
-		//html += '<th>活跃度</th>';
-		//html += '<th>影响力</th>';
-		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_selecet_all()" /></th>';
-
+		html += '<th style="text-align:center">uid</th>';
+		html += '<th style="text-align:center">昵称</th>';
+		html += '<th style="text-align:center">领域</th>';
+		html += '<th style="text-align:center">话题</th>';
+		html += '<th style="text-align:center">热度</th>';
+		html += '<th style="text-align:center">重要度</th>';
+		html += '<th style="text-align:center"> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_selecet_all()" /></th>';
 		html += '</tr></thead>';
 		html += '<tbody>';
 
 		for(var i=0; i<data.length; i++){
 			html += '<tr>';
-			html += '<td>' + data[i].uid + '</td>';
-			// html += '<td>' + data[i].uid + '</td>';
-			// html += '<td>' + data[i].uid + '</td>';
-			// html += '<td>' + data[i].uid + '</td>';
-			html += '<td>' + data[i].uid + '</td>';
-			html += '<td>' + data[i].uid + '</td>';
-			html += '<td>' + data[i].uid + '</td>';
-			html += '<td>' + data[i].uid + '</td>';
-			html += '<td>' + 1 + '</td>';
-			html += '<td>' + '<input name="social_select" type="checkbox" id="social_select" value ="'+data[i].uid+'">' + '</td>';
+			html += '<td style="text-align:center">' + data[i].uid + '</td>';
+			html += '<td style="text-align:center">' + data[i].uname + '</td>';
+			html += '<td style="text-align:center">' + data[i].uname + '</td>';
+			html += '<td style="text-align:center">' + data[i].uname + '</td>';
+			html += '<td style="text-align:center">' + data[i].uid + '</td>';
+			html += '<td style="text-align:center">' + 1 + '</td>';
+			html += '<td style="text-align:center">' + '<input name="social_select" type="checkbox" id="social_select" value ="'+data[i].uid+'">' + '</td>';
 			html += '</tr>';
 		}
 		html += '</tbody></table>'		
@@ -55,8 +48,8 @@
         	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
 
         	"sPaginationType": "bootstrap",
-        	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
-        	"bAutoWidth": true,
+        	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}, {"bAutoWidth": true, "aTargets":["_all"]}],
+        	// "bAutoWidth": true,
         	"oLanguage": {
 
             	"sLengthMenu": "_MENU_ 每页"
