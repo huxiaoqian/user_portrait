@@ -21,9 +21,9 @@
                 </form>
                 <div class='col-lg-5' style='margin:10px 55px;'>
                     <span class="input-group-addon" style="width:120px;border:1px solid white;background-color:white;display:inline-block">是否进行扩展：</span>
-                    <input type='radio' name="ext_choose" value='1' checked='checked'>
+                    <input type='radio' name="ext_choose" value='0' checked='checked'>
                     <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >否</span>
-                    <input type='radio' name="ext_choose" value='2'>
+                    <input type='radio' name="ext_choose" value='1'>
                     <span class="input-group-addon" style="width:40px;border:1px solid white;background-color:white;display:inline-block" >是</span>
                 </div>
                 <div class="col-lg-9" id="file_status" style="display:none;padding:0px;">
@@ -34,6 +34,25 @@
                 <div id='multi_user'></div>
             </div>
         </div>
+    </div>
+    <div class="modal fade" id="out_list_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">未入库用户</h4>
+          </div>
+          <div class="modal-body">
+            <span>以下用户并未入库，可在此选择用户入库。</span>
+            <div id="group_out_list" style="margin-top:30px"></div>
+          </div>
+          <div class="modal-footer">
+            <input type="radio" name="instant" checked value="0" /> 预约计算
+            <input type="radio" name="instant" value="1" style="margin-left:5px" /> 立即计算
+            <button id="group_recommend_confirm" type="button" class="btn btn-primary">确认</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div id='seed_user_ext' class="box-content" style="height:420px;display:none">
         <hr style='width:800px;margin:0px;'>
@@ -49,15 +68,15 @@
                     </div>
                      <div class='col-lg-2'>
                         <input type='checkbox' class='inline-checkbox' value='option1'>
-                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="area">领域</span>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="domain">领域</span>
                     </div>
                      <div class='col-lg-2'>
                         <input type='checkbox' class='inline-checkbox' value='option1'>
-                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="topic">话题</span>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block" id="topic_string">话题</span>
                     </div>
                     <div class='col-lg-2'>
                         <input type='checkbox' class='inline-checkbox' value='option1'>
-                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="activity_location">活跃地</span>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="activity_geo">活跃地</span>
                     </div>
                     <div class='col-lg-2'>
                         <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -65,11 +84,11 @@
                     </div>
                     <div class='col-lg-2' >
                         <input type='checkbox' class='inline-checkbox' value='option1'>
-                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="keywords">关键词</span>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="keywords_string">关键词</span>
                     </div>
                     <div class='col-lg-2' >
                         <input type='checkbox' class='inline-checkbox' value='option1'>
-                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tendention">倾向性</span>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tendency">倾向性</span>
                     </div>
                     <div class='col-lg-2' >
                         <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -78,6 +97,10 @@
                     <div class='col-lg-2' >
                         <input type='checkbox' class='inline-checkbox' value='option1'>
                         <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="tag">自定义标签</span>
+                    </div>
+                    <div class='col-lg-2' >
+                        <input type='checkbox' class='inline-checkbox' value='option1'>
+                        <span class="input-group-addon" style="width:75px;border:1px solid white; background-color:white;display:inline-block" id="remark">备注</span>
                     </div>
                 </div>
             </div>
