@@ -1,1 +1,84 @@
 {% extends "tbase.html" %}
+	{% block title %}社会感知{% endblock title %}
+	{% block css %}
+        {{ super() }}
+        <style type="text/css">
+        	.dataTables_length{display:none;}
+        	.dataTables_filter{display:none;text-align:right;margin-bottom:5px;}
+            .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+        </style>
+
+    {% endblock css %}
+    {% block head_js %}
+        {{ super() }}
+        <script type="text/javascript" src="/static/js/portrait/sensing_analysis_table.js"></script>
+    {% endblock head_js %}
+    {% block main %}
+    	<div id="sensing_analysis">
+    		<h4 class="page-header">社会感知</h4>
+    		<div id="task_detail"><b>
+    			<span>任务名称: <span id="sensing_task_name">任务名称</span>
+    				  关键词：<span id="sensing_keywords">关键词1,关键词2,关键词3,关键词4,关键词5 </span>
+    				  <span id="sensing_analysing_sonsor" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#sensor_modal">
+    				  	<u>传感器</u>
+    				  </span>
+    			</span></b>
+    		</div>
+    		<div id="sensing_conslusion">jielun</div>
+    		<div id="sensing_graph">
+    			<div id="sensing_participate" style="width:610px;"></div>
+    			<span style='font-size:16px;color:#777'><b>参与人</b></span>
+    			<hr>
+    			<!-- <span id="sensing_analysing_sonsor" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#participate_more">
+    				<u>查看更多</u>
+    			</span> -->
+    			<div id="sensing_participate_table" style="width:650px;background-color:#55555;">
+    			</div>
+    		</div>
+    	</div>
+
+
+
+
+<!-- modal -->
+<div class="modal fade" id="sensor_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 800px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      		<span aria-hidden="true">&times;</span>
+      	</button>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感器</h4>
+      </div>
+      <div id="modal_sensor_table" class="modal-body" style="max-height:520px; margin:5px 0;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="participate_more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 800px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感器</h4>
+      </div>
+      <div id="modal_participate_table" class="modal-body" style="max-height:520px; margin:5px 0;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+    {% endblock main %}
+    {% block Own_js %}
+        {{ super() }}
+
+		<script type='text/javascript' src='/static/js/portrait/sensing_analysis.js'></script>
+    {% endblock Own_js %}
