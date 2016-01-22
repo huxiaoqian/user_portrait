@@ -491,3 +491,11 @@ def ajax_delete_task():
     task_name = request.args.get('task_name', '')
     status = delete_task(task_name)
     return json.dumps(status)
+
+#use to get social sensing group detect results
+#input:
+#output:
+@mod.route('/sensing_detect/')
+def ajax_socail_sensing():
+    results = {}
+    return json.dumps(results)
