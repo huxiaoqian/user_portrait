@@ -2,11 +2,16 @@
 	{% block title %}社会感知{% endblock title %}
 	{% block css %}
         {{ super() }}
+        <style type="text/css">
+            .dataTables_filter{text-align:right;margin-bottom:5px;}
+            .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+        </style>
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
     {% endblock css %}
     {% block head_js %}
         {{ super() }}
         <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/identify_table.js"></script>
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">社会感知</h4>

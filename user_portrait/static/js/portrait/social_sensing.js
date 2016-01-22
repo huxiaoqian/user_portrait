@@ -35,7 +35,7 @@ Social_sense.prototype = {   //获取数据，重新画表
  	$('#so_group_task').empty();
     var item = data;
 	var html = '';
-	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
+	html += '<table style="so_group_task_body" class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>操作</th><th><input name="so_choose_all" id="so_choose_all" type="checkbox" value="" onclick="so_choose_all()" /></th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
@@ -56,6 +56,13 @@ Social_sense.prototype = {   //获取数据，重新画表
 	html += '</tbody>';
     html += '</table>';
 	$('#so_group_task').append(html);
+	$('#so_group_task_body').dataTable({
+       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+       "sPaginationType": "bootstrap",
+       "oLanguage": {
+           "sLengthMenu": "_MENU_ 每页"
+       }
+    });
   },
   Draw_task_table: function(data){
   	$('#so_task_table').empty();
@@ -64,12 +71,15 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var warn = '';
   	var flag = '';
   	var so_flag = '';
+  	var time_pro = '';
+  	var time_now =  Date.parse(new Date())/1000;
 	html += '<table id="so_task_table_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th style="width: 180px;">备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;width:115px;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th  style="width: 140px;">进度</th><th style="width:110px;">传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	var end_d = new Date(item[i]['stop_time']*1000).format('yyyy/MM/dd hh:mm'); 
+	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(2);
 		if(item[i]['warning_status']==0){
 			warn = '无事件';
 		}else if (item[i]['warning_status']==1){
@@ -89,7 +99,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td>'+item[i]['create_by']+'</td>';
 		html += '<td>'+create_d+'</td>';
 		html += '<td>'+end_d+'</td>';
-		html += '<td>'+item[i]['remark']+'</td>';
+		html += '<td "><progress style="width:60%" value="'+data[i][5]+'" max="100"></progress>'+time_pro+'%</td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">查看传感器</a></td>';
 		html += '<td>'+warn+'</td>';
 		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td><a href="javascript:void(0)" id="'+so_flag+'">'+flag+'</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
@@ -162,9 +172,9 @@ function draw_sensor(data){
 	$('#so_sensor_content').empty();
 	var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
-    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="analyze_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
+    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
     for (var i=0;i<data.length;i++) {
-        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th></tr>';
     	i = i + 1;
  	}
     html += '</table>'; 

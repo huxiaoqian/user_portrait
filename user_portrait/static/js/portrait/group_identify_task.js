@@ -70,6 +70,9 @@ Draw_dis_Table:function(data){
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
+    deleteGroup(Group_delete_task);
+	submit_analyze(Group_delete_task);
+	submit_control(Group_delete_task);
     $('#dis_table_body').dataTable({
        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
        "sPaginationType": "bootstrap",
@@ -77,9 +80,6 @@ Draw_dis_Table:function(data){
            "sLengthMenu": "_MENU_ 每页"
        }
     });
-    deleteGroup(Group_delete_task);
-	submit_analyze(Group_delete_task);
-	submit_control(Group_delete_task);
 	}
 
 }
