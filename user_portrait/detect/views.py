@@ -403,7 +403,7 @@ def ajax_event_detect():
                 return 'invalid input for range'
             else:
                 query_condition_num += 1
-                event_query_list.append({'range':{item: {'from': int(item_value_from), 'to':int(item_value_to)}}})
+                event_query_list.append({'range':{item: {'gte': int(item_value_from), 'lt':int(item_value_to)}}})
         else:
             return 'invalid input for range'
     query_dict['event'] =  event_query_list
