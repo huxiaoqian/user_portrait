@@ -57,7 +57,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html +='<td><input name="so_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td>';
 		html += '</tr>';
 	}
-	html += '</tbody>';-
+	html += '</tbody>';
     html += '</table>';
 	$('#so_group_task').append(html);
   },
@@ -81,7 +81,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		}else {
 			warn = '事件跟踪';
 		}
-		if(item[i]['finish'] = 0){
+		if(item[i]['finish'] == 0){
 			flag = '终止任务';
 			so_flag = 'so_stop_task';
 		}else{
@@ -121,25 +121,25 @@ var max_date = '+1970/01/30';
 var min_date = '-1970/01/30';
 $('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
-function prepare(that){
-	console.log(that);
-	$("#so_keys").click(function(e){
-		console.log('aaa');
-		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
-		url = "/detect/show_detect_result/?task_name=" + temp;
-		that.call_sync_ajax_request(url,that.ajax_method,draw_sensor);
-		//draw_table('1',"#group_analyze_confirm");
-		remark0 = $(this).parent().prev().html();
-		$('span[id^="so_group_name0"]').html(temp);
-		$('span[id^="so_remark0"]').html(remark0);
-		$('#so_keys_block').modal();
-	});
-	$('a[id^=so_history]').click(function(){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
-	});
-}
+// function prepare(that){
+// 	console.log(that);
+// 	$("#so_keys").click(function(e){
+// 		console.log('aaa');
+// 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+// 		url = "/detect/show_detect_result/?task_name=" + temp;
+// 		that.call_sync_ajax_request(url,that.ajax_method,draw_sensor);
+// 		//draw_table('1',"#group_analyze_confirm");
+// 		remark0 = $(this).parent().prev().html();
+// 		$('span[id^="so_group_name0"]').html(temp);
+// 		$('span[id^="so_remark0"]').html(remark0);
+// 		$('#so_keys_block').modal();
+// 	});
+// 	$('a[id^=so_history]').click(function(){
+// 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+// 	});
+// }
 var Social_sense= new Social_sense();
-prepare(Social_sense);
+//prepare(Social_sense);
 
 function draw_result(){
 	url = '/group/show_task/'; 
