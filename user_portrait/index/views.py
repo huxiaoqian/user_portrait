@@ -19,6 +19,10 @@ def loading():
 def social_sensing():
     return render_template('portrait/social_sensing.html')
 
+@mod.route('/sensing_analysis/')
+def sensing_analysis():
+    return render_template('portrait/sensing_analysis.html')
+
 @mod.route('/group/')
 def group_identify():
     return render_template('portrait/group_identify.html')
