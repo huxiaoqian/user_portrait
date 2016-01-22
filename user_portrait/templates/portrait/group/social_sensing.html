@@ -3,12 +3,18 @@
   		<div style="padding-top:10px;padding-left:15px;">
   			<div id="social_sensing_table" style="">
   			</div>
+  			<div class="cols" style='margin-top:11px'>
+              <div class='col-md-12' style='text-align:right; padding-right:120px'>
+                <span id="attribute_pattern_commit" onclick="submit_social_sensing();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
+              </div>
+            </div>
   		</div>
+
   	</div>
 </div>
 
 <script type="text/javascript">
-	var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':123456},{'uid':123456},{'uid':1234556},{'uid':11232456},{'uid':123456},{'uid':123456},{'uid':123456},{'uid':123956},{'uid':123456},{'uid':123456},{'uid':123456},{'uid':123456},{'uid':133456},{'uid':123456},{'uid':123456},{'uid':1273456},{'uid':123456},{'uid':123456},{'uid':1231456},{'uid':12384056},{'uid':1234576},{'uid':1234056},{'uid':1023456}]
+	var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
 	function draw_social_sensing_table (data) {
 		$('#social_sensing_table').empty();
 		var html = '';
@@ -25,6 +31,8 @@
 		html += '<th>重要度</th>';
 		html += '<th>活跃度</th>';
 		html += '<th>影响力</th>';
+		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_selecet_all()" /></th>';
+
 		html += '</tr></thead>';
 		html += '<tbody>';
 
@@ -42,6 +50,7 @@
 			html += '<td>' + data[i].uid + '</td>';
 			html += '<td>' + data[i].uid + '</td>';
 			html += '<td>' + data[i].uid + '</td>';
+			html += '<td>' + '<input name="social_select" type="checkbox" id="social_select" value ="'+data[i].uid+'">' + '</td>';
 			html += '</tr>';
 		}
 		html += '</tbody></table>'		
@@ -50,6 +59,7 @@
         	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
 
         	"sPaginationType": "bootstrap",
+        	"aoColumnDefs":[ {"bSortable": false, "aTargets":[10]}],
 
         	"oLanguage": {
 
@@ -59,5 +69,20 @@
 
     });
 	}
+
+function social_sensing_selecet_all(){
+  $('input[name="social_select"]:not(:disabled)').prop('checked', $("#social_select_all").prop('checked'));
+ }
+
+function submit_social_sensing(){
+	var cur_uids = [];
+	$('input[name="social_select"]:checked').each(function(){
+		cur_uids.push($(this).attr('value'));
+	})
+	console.log(cur_uids);
+
+
+}
+
 draw_social_sensing_table(table_content);
 </script>
