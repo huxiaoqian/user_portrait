@@ -444,26 +444,27 @@ function submit_event(){
     }	
 	}
   function event_callback(data){
-        if (data == 'true'){
-          alert('提交成功！');
-          window.location.href=window.location.href;
-            // window.location.href = group_url;
-        } 
-        if(data == 'invalid input for query'){
-          alert('请至少选择一个筛选条件！')
-        }
-        if(data =='task name invalid'){
-            alert('已存在相同名称的群体分析任务,请重试!');
-        }
-        if(data =='invalid input for range'){
-          alert('请选择合理的时间范围！');
-        }
-        if(data == 'invalid input for filter'){
-          alert('请输入合理的影响力或重要度范围！');
-        }
-        if(data == 'invalid input for count'){
-          alert('请选择合理的人数！')
-        }
+    console.log(data);
+    if (data == true){
+      //redraw_result();
+      alert('提交成功！');
+      window.location.reload(); 
+    } 
+    if(data == 'invalid input for query'){
+      alert('请至少选择一个筛选条件！')
+    }
+    if(data =='task name invalid'){
+        alert('已存在相同名称的群体分析任务,请重试!');
+    }
+    if(data =='invalid input for range'){
+      alert('请选择合理的时间范围！');
+    }
+    if(data == 'invalid input for filter'){
+      alert('请输入合理的影响力或重要度范围！');
+    }
+    if(data == 'invalid input for count'){
+      alert('请选择合理的人数！')
+    }
 
       }
 </script>
