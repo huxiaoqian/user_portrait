@@ -34,28 +34,24 @@ Social_sense.prototype = {   //获取数据，重新画表
   Draw_group_table: function(data){
  	$('#so_group_task').empty();
     var item = data;
-    console.log('11');
 	var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>发现方式</th><th>操作</th><th><input name="so_choose_all" id="so_choose_all" type="checkbox" value="" onclick="so_choose_all()" /></th></tr></thead>';
+	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>操作</th><th><input name="so_choose_all" id="so_choose_all" type="checkbox" value="" onclick="so_choose_all()" /></th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
-		html += '<tr>';
-		for(j=0;j<item[i].length-1;j++){
-			if (j==0){
-				html += '<td name="task_name">'+item[i][j]+'</td>';
-			}else{
-				html += '<td>'+item[i][j]+'</td>';
+		if (item[i][4]==1){
+			html += '<tr>';
+			for(j=0;j<item[i].length-1;j++){
+				if (j==0){
+					html += '<td name="task_name">'+item[i][j]+'</td>';
+				}else{
+					html += '<td>'+item[i][j]+'</td>';
+				}
 			}
+			html +='<td>发现方式</td>';
+			html +='<td><input name="so_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td>';
+			html += '</tr>';
 		}
-		if(item[i][4]==1){
-			html += '<td><a style="cursor:hand;" href="/index/group_analysis/?name=' + item[i][0]+ '">已完成</a></td>';
-		}else{
-			html += '<td>正在计算</td>';
-		}
-		html +='<td>发现方式</td>';
-		html +='<td><input name="so_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td>';
-		html += '</tr>';
 	}
 	html += '</tbody>';
     html += '</table>';
@@ -68,7 +64,7 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var warn = '';
   	var flag = '';
   	var so_flag = '';
-	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
+	html += '<table id="so_task_table_body" class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th style="width: 180px;">备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
@@ -102,6 +98,13 @@ Social_sense.prototype = {   //获取数据，重新画表
 	html += '</tbody>';
     html += '</table>';
 	$('#so_task_table').append(html);
+	$('#so_task_table_body').dataTable({
+       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+       "sPaginationType": "bootstrap",
+       "oLanguage": {
+           "sLengthMenu": "_MENU_ 每页"
+       }
+    });
   }
 }
 
