@@ -15,7 +15,10 @@
 </div>
 
 <script type="text/javascript">
-	var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
+    var global_pre_page = 1;
+    var global_choose_uids = new Array();
+
+    var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
 	function draw_social_sensing_table (data) {
 		$('#social_sensing_table').empty();
 		var html = '';
@@ -30,7 +33,7 @@
 		html += '<th>重要度</th>';
 		//html += '<th>活跃度</th>';
 		//html += '<th>影响力</th>';
-		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_selecet_all()" /></th>';
+		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_select_all()" /></th>';
 
 		html += '</tr></thead>';
 		html += '<tbody>';
@@ -54,7 +57,7 @@
 		$('#social_table').dataTable({
         	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
 
-        	"sPaginationType": "bootstrap",
+        	"sPaginationType": "custom_bootstrap",
         	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         	"bAutoWidth": true,
         	"oLanguage": {
@@ -66,7 +69,7 @@
     });
 	}
 
-function social_sensing_selecet_all(){
+function social_sensing_select_all(){
   $('input[name="social_select"]:not(:disabled)').prop('checked', $("#social_select_all").prop('checked'));
  }
 
@@ -75,9 +78,15 @@ function submit_social_sensing(){
 	$('input[name="social_select"]:checked').each(function(){
 		cur_uids.push($(this).attr('value'));
 	})
-	console.log(cur_uids);
-
-
+    global_choose_uids[global_pre_page] = cur_uids;
+    var select_uids = [];
+    for (var key in global_choose_uids){
+        var temp_list = global_choose_uids[key];
+        for (var i = 0; i < temp_list.length; i++){
+            select_uids.push(temp_list[i]);
+        }
+    }
+	console.log(select_uids);
 }
 
 draw_social_sensing_table(table_content);
