@@ -320,8 +320,12 @@ function draw_daily_ip_table(ip_data){
     //console.log(ip_data);
     var this_desc = '';
     this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1] + "</span>"; //description
-    this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3] + "</span>"; //description
-    this_desc += "<span>" + ip_data.description[4] + "</span><span style='color:red;'>" + ip_data.description[5] + "</span>"; //description
+    if (ip_data.description[3]){
+        this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3] + "</span>"; //description
+    }
+    if (ip_data.description[5]){
+        this_desc += "<span>" + ip_data.description[4] + "</span><span style='color:red;'>" + ip_data.description[5] + "</span>"; //description
+    }
     $('#ip_desc').html(this_desc);
     var location_geo;
     // ip table
@@ -332,7 +336,7 @@ function draw_daily_ip_table(ip_data){
     for (var i = 0; i < 5; i++){
         var s = i.toString();
         var m = i + 1;
-        html += '<th style="text-align:center">' + m + '</th>';
+        html += '<th style="width:170px;text-align:center">' + m + '</th>';
     }
     html += '<th style="text-align:center"></th>';
     html += '</tr>';

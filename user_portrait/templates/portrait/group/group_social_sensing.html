@@ -1,0 +1,93 @@
+<div id="social_sensing">
+	<div class="box col-md-12" style="padding-left:10px;margin-top:0;border: 1px solid #DEDEDE;">
+  		<div style="padding-top:10px;padding-left:15px;">
+  			<h4><b>相关事件：<span style="color:red;">***事件</b></span></h4>
+  			<div id="social_sensing_table" style="">
+  			</div>
+  			<div class="cols" style='margin-top:11px;margin-bottom:15px;'>
+              <div class='col-md-12' style='text-align:right; padding-right:120px'>
+                <span id="attribute_pattern_commit" onclick="submit_social_sensing();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
+              </div>
+            </div>
+  		</div>
+
+  	</div>
+</div>
+
+<script type="text/javascript">
+    var global_pre_page = 1;
+    var global_choose_uids = new Array();
+
+    var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
+	function draw_social_sensing_table (data) {
+		$('#social_sensing_table').empty();
+		var html = '';
+		html += '<table id="social_table" class="table table-bordered table-striped table-condensed datatable">';
+		html += '<thead><tr>';
+		html += '<th>uid</th>';
+		html += '<th>昵称</th>';
+		html += '<th>领域</th>';
+		html += '<th>话题</th>';
+		//html += '<th>参与事件</th>';
+		html += '<th>热度</th>';
+		html += '<th>重要度</th>';
+		//html += '<th>活跃度</th>';
+		//html += '<th>影响力</th>';
+		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_select_all()" /></th>';
+
+		html += '</tr></thead>';
+		html += '<tbody>';
+
+		for(var i=0; i<data.length; i++){
+			html += '<tr>';
+			html += '<td>' + data[i].uid + '</td>';
+			// html += '<td>' + data[i].uid + '</td>';
+			// html += '<td>' + data[i].uid + '</td>';
+			// html += '<td>' + data[i].uid + '</td>';
+			html += '<td>' + data[i].uid + '</td>';
+			html += '<td>' + data[i].uid + '</td>';
+			html += '<td>' + data[i].uid + '</td>';
+			html += '<td>' + data[i].uid + '</td>';
+			html += '<td>' + 1 + '</td>';
+			html += '<td>' + '<input name="social_select" type="checkbox" id="social_select" value ="'+data[i].uid+'">' + '</td>';
+			html += '</tr>';
+		}
+		html += '</tbody></table>'		
+		$('#social_sensing_table').append(html);
+		$('#social_table').dataTable({
+        	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+
+        	"sPaginationType": "custom_bootstrap",
+        	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
+        	"bAutoWidth": true,
+        	"oLanguage": {
+
+            	"sLengthMenu": "_MENU_ 每页"
+
+        }
+
+    });
+	}
+
+function social_sensing_select_all(){
+  $('input[name="social_select"]:not(:disabled)').prop('checked', $("#social_select_all").prop('checked'));
+ }
+
+function submit_social_sensing(){
+	var cur_uids = [];
+	$('input[name="social_select"]:checked').each(function(){
+		cur_uids.push($(this).attr('value'));
+	})
+    global_choose_uids[global_pre_page] = cur_uids;
+    var select_uids = [];
+    for (var key in global_choose_uids){
+        var temp_list = global_choose_uids[key];
+        for (var i = 0; i < temp_list.length; i++){
+            select_uids.push(temp_list[i]);
+        }
+    }
+	console.log(select_uids);
+}
+
+draw_social_sensing_table(table_content);
+</script>

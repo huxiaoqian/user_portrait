@@ -3,7 +3,7 @@
     {% block css %}
         {{ super() }}
         <style>
-            .dataTables_filter{text-align:right;margin-bottom:5px;}
+            .dataTables_filter{display:none;text-align:right;margin-bottom:5px;}
             .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
             .wrapper{min-height:330px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
             #tab{width: 180px;height:284px;}
@@ -20,7 +20,7 @@
     {% block head_js %}
         {{ super() }}
         <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
-        <script type="text/javascript" src="/static/js/portrait/identify_table.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/identify_custom_table.js"></script>
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
@@ -52,7 +52,7 @@
                             {% include "portrait/group/event_pattern.html"%}
                         </div>
                         <div id="tab_con_4" style='display:none'>
-                            {% include "portrait/group/social_sensing.html"%}
+                            {% include "portrait/group/group_social_sensing.html"%}
                         </div>
                     </div>
                 </div>
@@ -141,6 +141,33 @@
       </div>
     </div>
 
+    <div class="modal fade" id="task_search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">搜索条件</h4>
+          </div>
+          <div class="modal-body">
+            <div style='width:300px;margin: 0px auto;'>
+                <div style="margin-top:5px;">群组名称：<input type="text"  id="groupName0" class="input searchinput" name="task_name0" placeholder="请输入群组名称" style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">备注：<input type="text" id="groupState0" class="input searchinput" name="state0" placeholder="请输入备注"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">时间：<input type="text" id="groupState" class="input searchinput" name="submit_date0" placeholder="请输入时间2015-07-15"  style="float: right;width: 175px;"/></div>
+                <div style="margin-top:10px;">计算状态：
+                    <select  name="task_type" class="searchinput" style="width:174px;height:24px;float: right;">
+                        <option value="1" >已完成</option>
+                        <option value="0" selected = "selected">正在计算</option>
+                        </select>
+                </div>
+            </div>  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="task_search_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
     {% endblock main %}
     {% block Own_js %}
         {{ super() }}

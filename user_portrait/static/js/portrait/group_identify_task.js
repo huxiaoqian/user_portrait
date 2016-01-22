@@ -17,7 +17,7 @@ Draw_resultTable: function(data){
     $('#content_manage').empty();
     var item = data;
 	var html = '';
-	html += '<a id="turnback"  href="javascript:void()" onclick="redraw_result()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
+	html += '<a id="turnback"  href="javascript:void()" onclick="redraw_result()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#task_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
@@ -35,7 +35,7 @@ Draw_resultTable: function(data){
 		}else{
 			html += '<td>正在计算</td>';
 		}
-		html +='<td><a href="javascript:void(0)" id="task_del">删除</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="commit_control">提交监控</a></td>';
+		html +='<td><a href="javascript:void(0)" id="analyze_del">删除</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="commit_control">提交监控</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
@@ -47,7 +47,8 @@ Draw_resultTable: function(data){
 Draw_dis_Table:function(data){
 	$('#dis_table').empty();
 	var html = '';
-	html += '<table class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
+	html += '<a id="turnback"  href="javascript:void()" onclick="redraw()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
+	html += '<table id="dis_table_body" class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	//j = 40;
 	var dis_type='';
@@ -69,6 +70,16 @@ Draw_dis_Table:function(data){
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
+    $('#dis_table_body').dataTable({
+       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+       "sPaginationType": "bootstrap",
+       "oLanguage": {
+           "sLengthMenu": "_MENU_ 每页"
+       }
+    });
+    deleteGroup(Group_delete_task);
+	submit_analyze(Group_delete_task);
+	submit_control(Group_delete_task);
 	}
 
 }
@@ -108,6 +119,17 @@ function deleteGroup(that){
 		var a = confirm('确定要删除吗？');
     	if (a == true){
 			var url = that.url;
+			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			url = url + 'task_name=' + temp;
+			console.log(url);
+			//window.location.href = url;
+			that.call_sync_ajax_request(url,that.ajax_method,that.del);
+		}
+	});	
+	$('a[id^="analyze_del"]').click(function(e){
+		var a = confirm('确定要删除吗？');
+    	if (a == true){
+			var url = that.url;
 			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
 			console.log(url);
@@ -118,9 +140,9 @@ function deleteGroup(that){
 }
 
 var Group_delete_task = new Group_delete_task();
-deleteGroup(Group_delete_task);
-submit_analyze(Group_delete_task);
-submit_control(Group_delete_task);
+// deleteGroup(Group_delete_task);
+// submit_analyze(Group_delete_task);
+// submit_control(Group_delete_task);
 
 $('a[id^="commit_control"]').click(function(){
 	var a = confirm('确定要提交监控吗？');
@@ -235,10 +257,61 @@ function group_analyze_confirm_button(){
 }
 
 function group_search_button(){ //表单搜索
-	var task_name = $('input[name="task_name"]').val();
-	var submit_date = $('input[name="submit_date"]').val();
-	var state = $('input[name="state"]').val();
-	var detect_type = $('select[name="detect_type"] option:selected').val();
-	var submit_user = $('input[name="submit_user"]').val();
-	console.log(task_name,submit_date,state,detect_type,submit_user);
+	var a = new Array();
+	var url0 = [];
+	var url1 = '';
+	a['task_name'] = $('input[name="task_name"]').val();
+	a['submit_date'] = $('input[name="submit_date"]').val();
+	a['state'] = $('input[name="state"]').val();
+	a['detect_type'] = $('select[name="detect_type"] option:selected').val();
+	a['submit_user'] = $('input[name="submit_user"]').val();
+	for(var k in a){
+		if(a[k]){
+			url0.push(k +'='+a[k]);
+		}
+	}
+	if(url0.length > 1){
+		url1 = url0.join('&');
+	}else{
+		url1 = url0;
+	}
+	var search_url = '/detect/search_detect_task/?'+url1;
+	console.log(search_url);
+	$.ajax({
+  	    type:'GET',
+  	    url: search_url,
+  	    contentType:"application/json",
+  	    dataType: "json",
+  	    success: Group_identify_task.Draw_dis_Table
+  	});
+}
+
+function task_search_button(){ //表单搜索
+	var a = new Array();
+	var url0 = [];
+	var url1 = '';
+	a['task_name'] = $('input[name="task_name0"]').val();
+	a['submit_date'] = $('input[name="submit_date0"]').val();
+	a['state'] = $('input[name="state0"]').val();
+	var status =  $('input[name="status0"]').val();
+	a['status'] = $('select[name="task_type"] option:selected').val();
+	for(var k in a){
+		if(a[k]){
+			url0.push(k +'='+a[k]);
+		}
+	}
+	if(url0.length > 1){
+		url1 = url0.join('&');
+	}else{
+		url1 = url0;
+	}
+	var search_url = '/group/show_task/?'+url1;
+	console.log(search_url);
+	$.ajax({
+  	    type:'GET',
+  	    url: search_url,
+  	    contentType:"application/json",
+  	    dataType: "json",
+  	    success: Group_identify_task.Draw_resultTable
+  	});
 }

@@ -10,10 +10,11 @@
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">社会感知</h4>
-    <div>新建任务</div>
+    <div style="font-size:16px;">新建任务</div>
     <div class='col-md-12' style='padding:0px;'>
-		<span class="input-group-addon" style="width:75px;border:1px solid white;font-weight:bold;float:left;background-color:white;display:inline-block;color:#333;">传感器</span>
-    	<input type='radio' name="so_mode_choose" value='so_all_users' checked='checked'>
+		<!-- <span class="input-group-addon" style="width:75px;border:1px solid white;font-weight:bold;float:left;background-color:white;display:inline-block;color:#333;">传感器</span> -->
+    	<label class='control-label' style='padding-top:5px;'>传感器：</lable>
+    	<input type='radio' style="margin-left:40px;" name="so_mode_choose" value='so_all_users' checked='checked'>
         <span class="input-group-addon" style="width:140px;border:1px solid white; background-color:white;display:inline-block" >全库用户</span>
         <input type='radio' name="so_mode_choose" value='so_have_users'>
         <span class="input-group-addon" style="width:140px;border:1px solid white; background-color:white;display:inline-block" >选择已有群体</span>
@@ -23,23 +24,26 @@
     	</div>	
     </div>
 
-    <label class='control-label' style='padding-top:5px;'>关键词：
-        <input id="so_keywords" type='text' class="form-control" style='width:65%; display:inline-block;height:25px' placeholder='多个词用空格隔开'>
-    </label>
+    <label class='control-label' style='padding-top:5px;'>关键词：</label>
+        <input id="so_keywords" type='text' class="form-control" style='width:30%; display:inline-block;height:25px' placeholder='多个词用空格隔开'>
+
     <div id='so_have_keys' class='controls'></div>
     <div class='controls'>
-        <div class='col-md-12' style='padding:0px;'>
+        <div class='col-md-12' style='padding:0px;margin-top:5px;'>
             <div class='col-lg-4' style='padding:0px;'>
-                 <span class="input-group-addon" style="width:50px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
-                 <input id="so_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
+                 <span style="margin-top:5px;width:50px;font-weight:bold;float:left;display:inline-block">名称：</span>
+    			 <!-- <label class='control-label' style='padding-top:5px;'>名称：</lable> -->
+                 <input id="so_name" type='text' class="form-control" style='width:84%; font-size:8px;margin-top:5px;display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
             </div>
             <div class='col-lg-4' style='padding:0px;'>
-                 <span class="input-group-addon" style="width:50px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
-                 <input id="so_remarks" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
+                 <span style="margin-top:5px;width:50px;font-weight:bold;float:left;display:inline-block">备注：</span>
+                 <!-- <label class='control-label' style='padding-top:5px;'>备注：</lable> -->
+                 <input id="so_remarks" type='text' class="form-control" style='width:84%;font-size:8px; margin-top:5px;display:inline-block;height:25px' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
             </div>
             <div class='col-lg-4' style='padding:0px;'>
-                 <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">终止时间</span>
-                 <input name="so_end_time" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
+                 <span style="margin-top:5px;font-weight:bold;float:left;display:inline-block">终止时间：</span>
+                 <!-- <label class='control-label' style='padding-top:5px;'>终止时间：</lable> -->
+                 <input name="so_end_time" type='text' class="form-control" style='width:145px;margin-top:5px; display:inline-block;height:25px'>
             </div>
         </div>
     </div>
