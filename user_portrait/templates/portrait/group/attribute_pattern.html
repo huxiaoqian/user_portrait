@@ -97,7 +97,7 @@
                 <input type='checkbox' class='inline-checkbox' value='option1'>
                 <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="">境外媒体</span>
               </div>
-              <div id="domain_show" onclick='show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="domain_show" onclick='show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多</b></u></div>
               <div id="more_domain" class="hidden">
                 <div class='col-lg-2' style="">
                     <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -131,7 +131,7 @@
                   <input type='checkbox' class='inline-checkbox' value='option1'>
                   <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">其他</span>
                 </div>
-                <div onclick="fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+                <div onclick="fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起</b></u></div>
               </div>
             </div>
           </div>
@@ -158,7 +158,7 @@
                 <input type='checkbox' class='inline-checkbox' value='option1'>
                 <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="health">民生类_健康</span>
               </div>
-              <div id="topic_show" onclick='show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="topic_show" onclick='show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多</b></u></div>
               <div id="more_topic" class="hidden">
                 <div class='col-lg-2'  style="margin-left:43px;">
                   <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -216,7 +216,7 @@
                   <input type='checkbox' class='inline-checkbox' value='option1'>
                   <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="others">其他类</span>
                 </div>
-                 <div onclick="fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+                 <div onclick="fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起</b></u></div>
               </div>
             </div>
           </div>
@@ -224,9 +224,9 @@
 						<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="location">标签</span>
 		        <select name="tag_type" class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px;padding:1px 12px;'></select>
 		        <select name="tag_name" class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px;padding:1px 12px;'></select>
-		        <span style="margin-top:10px;"><a id="group_tag_add" style="cursor:pointer;text-decoration:underline;" onclick="attribute_add_tag();">添加</a></span>
+		        <span style="margin-top:10px;"><a id="group_tag_add" style="color:#037eaa;font-weight:bold;cursor:pointer;text-decoration:underline;" onclick="attribute_add_tag();">添加</a></span>
 					</div>
-		      <div id="attribute_tags" style="margin-left:52px;"></div>
+		      <div id="attribute_tags" style="margin-left:98px;"></div>
           <div class="cols" id="pattern_select">
             <b class='control-label' style='padding-top:5px;'>模式</b>
 						<div class='col-md-12'   style=' margin-left: -5px;'>
@@ -235,7 +235,7 @@
   							<input id="geo" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：北京'>
               </div>
               <div class='col-md-4'>
-  							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">ip地址</span>
+  							<span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block;" id="">IP地址</span>
   							<input id="ip" type='text' class="form-control" style='width:63%; margin-left:15px;display:inline-block;height:25px'  placeholder='如：127.0.0.1'>
               </div>
               <div class='col-md-4'>
@@ -325,7 +325,8 @@
               <div class='controls'>
                 <div class='col-md-12' style='padding:0px;margin-left: 5px;'>
                   <div class='col-lg-6' style='padding:0px;width:48%;'>
-                    <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block;margin-left: 5px;">名称</span>
+                     <span style='float:left;color:#c00;font-size:15px;margin-top:5px;'>*</span>
+                     <span class="input-group-addon" style="width:70px;padding-right:0px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
                     <input id="first_name" type='text' class="form-control" style='width:78%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
                   </div>
                   <div class='col-lg-6' style='padding:0px;'>
@@ -336,7 +337,7 @@
               </div>
             </div>
             <div class="cols" style='margin-top:11px'>
-              <div class='col-md-12' style='text-align:right; padding-right:120px'>
+              <div class='col-md-12' style='text-align:right;padding-right:60px;'>
                 <span id="attribute_pattern_commit" onclick="submit_results2();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
               </div>
             </div>
@@ -370,14 +371,14 @@
         // $('#attribute_pattern ').css("height", "540px"); 	
         var type = $('#attribute_pattern [name=tag_type]').val();
         var name = $('#attribute_pattern [name=tag_name]').val();
-        var check_str = type + ':' + name;
+        var check_str = type + '：' + name;
         if (attribute_chosen_tag[check_str] != undefined){
         }
         else{
 
             var html = '';
-            html += '<span class="mouse" style="margin-right:40px;"><span class="tag_str">'+ check_str;
-            html += '</span>&nbsp;<span class="cross" cursor: pointer;>X</span></span>';
+            html += '<span class="mouse" style="margin-right:40px;background:#e7ecf6"><span class="tag_str">'+ check_str;
+            html += '</span>&nbsp;<span class="cross" style="cursor:pointer;">X</span></span>';
             $('#attribute_tags').append(html);
             attribute_chosen_tag[check_str] = 1;
             $('#attribute_pattern .mouse .cross').click(function(){
