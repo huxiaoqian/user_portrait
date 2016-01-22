@@ -57,7 +57,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html +='<td><input name="so_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td>';
 		html += '</tr>';
 	}
-	html += '</tbody>';
+	html += '</tbody>';-
     html += '</table>';
 	$('#so_group_task').append(html);
   },
@@ -117,9 +117,9 @@ $('input[name="so_mode_choose"]').change(function(){
     //if (!seed_user_flag) seed_user_flag = true; // no more html init
 });
 var current_date = new Date().format('yyyy/MM/dd hh:mm');
-var max_date = '+1970/01/01';
+var max_date = '+1970/01/30';
 var min_date = '-1970/01/30';
-$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
 function prepare(that){
 	console.log(that);
