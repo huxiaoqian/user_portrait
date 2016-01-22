@@ -69,7 +69,7 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var flag = '';
   	var so_flag = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th>创建人</th><th>创建时间</th><th>终止时间</th><th>备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th style="width: 180px;">备注</th><th>传感器与关键词</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
