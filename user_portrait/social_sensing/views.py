@@ -7,16 +7,18 @@ from flask import Blueprint, url_for, render_template, request, abort, flash, se
 from user_portrait.time_utils import datetime2ts, ts2datetime
 from user_portrait.global_utils import R_SOCIAL_SENSING as r
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import portrait_index_name, portrait_index_type
 from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_sensing_task
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
-from user_portrait.parameter import finish_signal, unfinish_signal
+from user_portrait.parameter import finish_signal, unfinish_signal, SOCIAL_SENSOR_INFO
 from utils import get_warning_detail, get_text_detail
 
 mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 
 index_group_manage = "group_manage"
 doc_type_group = "group"
+portrait_index_name = "user_portrait_1222"
 
 # 前台设置好的参数传入次函数，创建感知任务,放入es, 从es中读取所有任务信息放入redis:sensing_task 任务队列中
 # parameters: task_name, create_by, stop_time, remark, social_sensors, keywords
@@ -179,6 +181,22 @@ def ajax_get_task_detail_info():
             temp_list.append(item)
     sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
     task_detail['history_status'] = sorted_list
+    task_detail['social_sensors_portrait'] = []
+
+    if task_detail["social_sensors"]:
+        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids": task_detail["social_sensors"]})['docs']
+        portrait_detail = []
+        if search_results:
+            for item in search_results:
+                temp = []
+                if item['found']:
+                    for iter_item in SOCIAL_SENSOR_INFO:
+                        if iter_item == "topic_string":
+                            temp.append(item["_source"][iter_item].split('&'))
+                        else:
+                            temp.append(item["_source"][iter_item])
+                portrait_detail.append(temp)
+    task_detail['social_sensors_portrait'] = portrait_detail
     print task_detail
     return json.dumps(task_detail)
 
