@@ -70,6 +70,9 @@ Draw_dis_Table:function(data){
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
+    deleteGroup(Group_delete_task);
+	submit_analyze();
+	submit_control();
     $('#dis_table_body').dataTable({
        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
        "sPaginationType": "bootstrap",
@@ -77,9 +80,6 @@ Draw_dis_Table:function(data){
            "sLengthMenu": "_MENU_ 每页"
        }
     });
-    deleteGroup(Group_delete_task);
-	submit_analyze(Group_delete_task);
-	submit_control(Group_delete_task);
 	}
 
 }
@@ -146,17 +146,20 @@ var Group_delete_task = new Group_delete_task();
 
 $('a[id^="commit_control"]').click(function(){
 	var a = confirm('确定要提交监控吗？');
- 	   if (a == true){
-		
+ 	    if (a == true){
+			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+			url = "/detect/show_detect_result/?task_name=" + temp;
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
+			$('span[id^="group_name0"]').html(temp);
+			$('span[id^="remark0"]').html(remark0);
+			$('#group_control').modal();
 		}
 	}
 );
-// $('#turnback').click(function(){
-// 	console.log('sdf');
-// 	url = '/group/show_task/'; 
-// 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
-// });
-
+var current_date = new Date().format('yyyy/MM/dd hh:mm');
+var max_date = '+1970/01/30';
+var min_date = '-1970/01/30';
+$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
 function submit_analyze(that){
 	$('a[id^="group_commit_analyze"]').click(function(e){
@@ -167,7 +170,7 @@ function submit_analyze(that){
 		}
 		else{
 			url = "/detect/show_detect_result/?task_name=" + temp;
-			that.call_sync_ajax_request(url,that.ajax_method,function(data){draw_table(data,"#group_analyze_confirm")});
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,function(data){draw_table(data,"#group_analyze_confirm")});
 			//draw_table('1',"#group_analyze_confirm");
 			remark0 = $(this).parent().prev().prev().html();
 			$('span[id^="group_name0"]').html(temp);
@@ -179,21 +182,33 @@ function submit_analyze(that){
 
 function submit_control(that){
 	$('a[id^="group_commit_control"]').click(function(e){
-		console.log('aaaa');
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-		var percent = $(this).parent().prev().val();
-		if(percent != '100%'){
-			alert('进度没有达到100%，无法提交监控任务！');
-		}
-		else{
-			url = url + 'task_name=' + temp;
+		var percent = $(this).parent().prev().text();
+		// if(percent.replace(/[^0-9]/ig,"") != 100){
+		// 	alert('进度没有达到100%，无法提交分析任务！');
+		// }
+		// else{
+			url = "/detect/show_detect_result/?task_name=" + temp;
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
 			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
-			draw_table('1',"#group_control_confirm");
+			$('span[id^="group_name0"]').html(temp);
+			$('span[id^="remark0"]').html(remark0);
 			$('#group_control').modal();
-		}
+		//}
 	});	
 }
 
+function draw_control_table(data){
+	$('#group_control_confirm').empty();
+	var html='';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
+    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="control_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
+    for (var i=0;i<data.length;i++) {
+        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+ 	}
+    html += '</table>'; 
+	$('#group_control_confirm').append(html);
+}
 
 
 
@@ -207,7 +222,7 @@ function draw_table(data,div){
     html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="analyze_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
     for (var i=0;i<data.length;i++) {
         html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
-    	i = i + 1;
+    	//i = i + 1;
  	}
     html += '</table>'; 
     $(div).append(html);    
