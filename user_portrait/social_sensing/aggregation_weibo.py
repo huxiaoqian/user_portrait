@@ -645,7 +645,7 @@ if __name__ == "__main__":
             print search_results
         ts += time_interval
     """
-    #now_ts = time.time()
-    #print get_forward_numerical_info("test", now_ts)
-    query_hot_weibo(ts, origin_mid_list, 1800, ['政府'], size=100)
+    ts1 = datetime2ts("2013-09-01")
+    print es_text.search(index="flow_text_2013-09-01", doc_type="text", body=aggregation_sentiment(ts1, ts1+24*3600, ['维权','律师','强拆'], 'keywords_string', 20))['aggregations']['all_sentiment']['buckets']
+
 

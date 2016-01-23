@@ -22,6 +22,7 @@ from user_portrait.parameter import DETECT_ATTRIBUTE_FUZZ_ITEM, DETECT_ATTRIBUTE
                                     DETECT_EVENT_TEXT_FUZZ_ITEM, DETECT_EVENT_TEXT_RANGE_ITEM
 from user_portrait.parameter import DAY
 from user_portrait.time_utils import ts2datetime, datetime2ts
+from social_sensing_utils import show_social_sensing_task, show_important_users
 
 mod = Blueprint('detect', __name__, url_prefix='/detect')
 
@@ -495,7 +496,15 @@ def ajax_delete_task():
 #use to get social sensing group detect results
 #input:
 #output:
-@mod.route('/sensing_detect/')
+@mod.route('/show_sensing_task/') #获得所有的已经完成的社会感知任务列表
 def ajax_socail_sensing():
-    results = {}
+    results = []
+    results = show_social_sensing_task()
+    return json.dumps(results)
+
+@mod.route('/show_user_in_sensing_task/')
+def ajax_show_user_in_sensing_task():
+    task_name = request.args.get('task_name', '') # 获取某个任务名，返回相应重要的人
+    results = show_important_users(task_name)
+
     return json.dumps(results)
