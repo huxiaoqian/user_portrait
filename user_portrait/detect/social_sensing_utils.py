@@ -17,6 +17,7 @@ from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import IMPORTANT_USER_THRESHOULD
 from user_portrait.social_sensing.full_text_serach import count_hot_uid
+portrait_index_name = "user_portrait_1222"
 
 # 展示所有已经完成的任务，返回任务名
 def show_social_sensing_task():
@@ -49,7 +50,8 @@ def show_important_users(task_name):
     start_time = int(task_detail['create_at'])
     stop_time = int(task_detail['stop_time'])
     time_series = []
-    keywords_list = json.dumps(task_detail['keywords'])
+    keywords_list = json.loads(task_detail['keywords'])
+    print keywords_list
     for item in history_status:
         time_series.append(item[0])
 
