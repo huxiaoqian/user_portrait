@@ -185,7 +185,7 @@ DETAIL_SOCIAL_SENSING = "social_sensing_task"
 FORWARD_N = 12
 INITIAL_EXIST_COUNT = 6 #从任务开始到经历多少个时间片段开始计数
 IMPORTANT_USER_NUMBER = 100 # 每个时间间隔内es查询时设置重要的人的个数
-IMPORTANT_USER_THRESHOULD = 50 # 重要的人其重要度的阈值，不低于
+IMPORTANT_USER_THRESHOULD = 70 # 重要的人其重要度的阈值，不低于
 signal_nothing = "0" # 无事件
 signal_brust = "1" # 事件爆发
 signal_track = "2" # 事件跟踪
@@ -194,7 +194,7 @@ signal_sentiment_varition = "2"
 signal_nothing_variation = ""
 finish_signal = "1"
 unfinish_signal = "0"
-
+SOCIAL_SENSOR_INFO = ['uid', 'uname', "photo_url", "domain", "topic_string", "importance"]
 
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \

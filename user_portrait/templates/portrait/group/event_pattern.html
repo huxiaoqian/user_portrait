@@ -28,7 +28,7 @@
   			<div style="padding:6px 0px 0px 21px;">
 			  <span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="">关键词</span>
 			  <input id="text" type='text' class="form-control" style='width:20%; margin-left:15px;display:inline-block;height:25px'  placeholder='多个词用空格隔开'>
-			  <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block;margin-left:15px;" id="">时间范围</span>
+			  <span class="input-group-addon" style="width:75px;border:1px solid white;background-color:white; display:inline-block;margin-left:109px;margin-right:15px;" id="">时间范围</span>
 	          <input id="time_start" type='text' class="form-control" style='width:145px;display:inline-block;height:25px'>&nbsp;-&nbsp;
 	          <input id="time_end" type='text' class="form-control" style='width:145px;display:inline-block;height:25px'>
 			</div>
@@ -54,7 +54,7 @@
                 <input type='checkbox' class='inline-checkbox' value='option1'>
                 <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="health">民生类_健康</span>
               </div>
-              <div id="topic_show" onclick='event_show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="topic_show" onclick='event_show_more_topic();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多</b></u></div>
               <div id="more_topic" class="hidden">
                 <div class='col-lg-2' style="margin-left: 43px;">
                   <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -112,7 +112,7 @@
                   <input type='checkbox' class='inline-checkbox' value='option1'>
                   <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="others">其他类</span>
                 </div>
-                 <div onclick="event_fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+                 <div onclick="event_fold_topic();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起</b></u></div>
               </div>
           	</div>
 
@@ -138,7 +138,7 @@
                 <input type='checkbox' class='inline-checkbox' value='option1'>
                 <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block;" id="">境外媒体</span>
               </div>
-              <div id="domain_show" onclick='event_show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多↓</b></u></div>
+              <div id="domain_show" onclick='event_show_more();' style="font-size:14px;color:#037EAA;cursor: pointer;line-height: 30px;"><u><b>显示更多</b></u></div>
               <div id="more_domain" class="hidden">
                 <div class='col-lg-2' style="margin-left: 43px;">
                     <input type='checkbox' class='inline-checkbox' value='option1'>
@@ -172,7 +172,7 @@
                   <input type='checkbox' class='inline-checkbox' value='option1'>
                   <span class="input-group-addon" style="border:1px solid white; background-color:white;display:inline-block" id="">其他</span>
                 </div>
-                <div onclick="event_fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起↑</b></u></div>
+                <div onclick="event_fold_domain();" style="float: left;line-height: 27px;font-size:14px;color:#037EAA;cursor: pointer;"><u><b>收起</b></u></div>
               </div>
             </div>
 
@@ -192,7 +192,7 @@
 	            <input id="influ_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
 	            <input id="influ_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
 	          </div>
-	          <div class='col-lg-4' >
+	          <div class='col-lg-4' style='margin-left:15px;width:244px;padding-right:0px;'>
 	            <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">重要度</span>
 	            <input id="impor_from" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='50'>&nbsp;-&nbsp;
 	            <input id="impor_to" type='text' class="form-control" style='width:25%; display:inline-block;height:25px'  value='100'>
@@ -206,18 +206,19 @@
           <div class='controls'>
             <div class='col-md-12' style='padding:0px;margin-left: 5px;'>
               <div class='col-lg-6' style='padding:0px;width:48%;'>
-                <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block;margin-left: 5px;">名称</span>
+                 <span style='float:left;color:#c00;font-size:15px;margin-top:5px;'>*</span>
+                 <span class="input-group-addon" style="width:70px;padding-right:0px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
                 <input id="first_name" type='text' class="form-control" style='width:78%; display:inline-block;height:25px;padding-left: 5px;' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
               </div>
               <div class='col-lg-6' style='padding:0px;'>
-                <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
+                <span class="input-group-addon" style="margin-left:15px;width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">备注</span>
                 <input id="first_remarks" type='text' class="form-control" style='width:76%; display:inline-block;height:25px;padding-left: 5px;' placeholder='（选填）仅包含汉字、英文、数字和下划线'>
               </div>
             </div>
           </div>
         </div>
         <div class="cols" style='margin:11px 0px;'>
-          <div class='col-md-12' style='text-align:right; padding-right:120px'>
+          <div class='col-md-12' style='text-align:right; padding-right:98px'>
             <span id="event_pattern_commit" onclick="submit_event();" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
           </div>
         </div>
