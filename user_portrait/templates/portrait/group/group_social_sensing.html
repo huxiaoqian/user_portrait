@@ -130,11 +130,19 @@ function submit_social_sensing(){
         }
         else{
             var social_sensing_url = '';
-            social_sensing_url += 'task_name=' + $('#social_sensing #first_name').val();
-            social_sensing_url += '&state=' + $('#social_sensing #first_remarks').val();
-            social_sensing_url += '&submit_user=' + 'admin';
-            social_sensing_url += '&submit_user=' + select_uids.join(',');
-            social_sensing_ajax(social_sensing_url, social_sensing_callback);
+            var sensing_job = {};
+            sensing_job['task_name'] = $('#social_sensing #first_name').val();
+            sensing_job['state'] = $('#social_sensing #first_remarks').val();
+            sensing_job['submit_user'] = 'admin';
+            sensing_job['uid_list'] = select_uids;
+            $.ajax({   
+                type:"POST",  
+                url:"/detect/multi_person/",
+                contentType:"application/json",
+                data:JSON.stringify(sensing_job),
+                dataType: "json",
+                success: social_sensing_callback
+            });
         }
     }
 }
