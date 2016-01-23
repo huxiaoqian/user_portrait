@@ -21,7 +21,7 @@ def social_sensing_task():
             break  # finish all task in task_list
         task_detail = json.loads(temp)
         print "task_detail: ", task_detail
-        print specific_keywords_burst_dection(task_detail)
+   #     print specific_keywords_burst_dection(task_detail)
 
 
 if __name__ == "__main__":

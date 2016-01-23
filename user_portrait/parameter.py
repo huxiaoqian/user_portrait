@@ -196,6 +196,15 @@ finish_signal = "1"
 unfinish_signal = "0"
 SOCIAL_SENSOR_INFO = ['uid', 'uname', "photo_url", "domain", "topic_string", "importance"]
 
+# 预警提示句
+CURRENT_WARNING_DICT = {
+    "0": "目前没有感知到事件爆发",
+    "1": "预警：与事件相关的微博的数量发生异常，可能发生相关事件，请及时查看",
+    "2": "预警：与事件相关的微博的负面情绪发生异常，可能发生相关事件，请及时查看",
+    "3": "预警：与事件相关的微博的数量和负面情绪均发生异常，可能发生相关事件，请及时查看"
+    }
+
+
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
                           'activity_geo', 'tendency', 'tag', 'remark']
