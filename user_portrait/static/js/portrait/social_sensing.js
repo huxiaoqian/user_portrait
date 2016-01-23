@@ -37,12 +37,13 @@ Social_sense.prototype = {   //获取数据，重新画表
 	var html = '';
 	var item_time = '';
 	html += '<table style="so_group_task_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>群组用户</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>查看详情</th><th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		item_time = new Date(item[i][1]*1000).format('yyyy/MM/dd hh:mm')
 		html += '<tr><td >'+item[i][0]+'</td><td>'+item_time+'</td><td>'+item[i][2]+'</td><td>'+item[i][3]+'</td>';
-		html +='<td><a href=javascript:void(0)  id="so_users">群组用户<a/></td>';
+		html += '<td><a href=javascript:void(0)  id="so_users">查看详情<a/></td>';
+		html += '<td><input name="so_user_list_option" class="search_result_option" type="checkbox"  /></td>'
 		html += '</tr>';	
 	}
 	html += '</tbody>';
@@ -72,10 +73,15 @@ Social_sense.prototype = {   //获取数据，重新画表
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	var end_d = new Date(item[i]['stop_time']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(2);
+	  	if(time_pro>=100.00){
+	  		time_pro=100
+	  	}
 		if(item[i]['warning_status']==0){
 			warn = '无事件';
+			//$('#pro').replaceWith('<progress id="pro" progress ::webkit-progress-value{ background: #0064B4; }');
 		}else if (item[i]['warning_status']==1){
 			warn = '事件爆发';
+			$('progress').removeClass('webkit-progress-value').addClass('webkit-progress-value{ background: #333; }');
 		}else {
 			warn = '事件跟踪';
 		}
@@ -91,7 +97,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td style="width: 60px;">'+item[i]['create_by']+'</td>';
 		html += '<td>'+create_d+'</td>';
 		html += '<td>'+end_d+'</td>';
-		html += '<td "><progress style="width:60%" value="'+data[i][5]+'" max="100"></progress>'+time_pro+'%</td>';
+		html += '<td "><progress id="pro" style="width:60%"   progress::-webkit-progress-value  { background: #333; } value="'+time_pro+'" max="100"></progress>'+time_pro+'%</td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">查看更多</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_warn">'+warn+'</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td><a href="javascript:void(0)" id="'+so_flag+'">'+flag+'</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
@@ -349,7 +355,7 @@ function so_group_data(){
 	    }
 	    else{              //single_user or multi_user with extension
 	    	var group_names = [];
-		  	$('[name="so_list_option"]').each(function(){
+		  	$('[name="so_user_list_option"]').each(function(){
 		  	    group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
 		  	});
 		}
