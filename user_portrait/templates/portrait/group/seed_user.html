@@ -10,11 +10,15 @@
                 </div>
             </div>
             <hr style='width:800px;margin-bottom:0px;margin-left:10px;'>
-            <div id='single_user_ext' class="box-content" style="height:440px">
-                <input id="uid_uname" type='text' class="form-control" style='width:27%;margin:10px 15px;margin-left:15px;display:inline-block;height:25px'  placeholder='请输入相关用户的ID或昵称'>
+            <div id='single_user_ext' class="box-content" style="height:440px;padding-top:0px;">
+                <div class='col-lg-8' style='padding:0px;'>
+                    <span style='float:left;color:#c00;font-size:15px;margin-left:15px;margin-top:15px;'>*</span>
+                     <span class="input-group-addon" style="margin-top:10px;width:110px;border:1px solid white;float:left;background-color:white;display:inline-block">用户ID或昵称</span>
+                    <input id="uid_uname" type='text' class="form-control" style='width:255px;margin:10px 15px;margin-left:15px;display:inline-block;height:25px'  placeholder='（必填）请输入相关用户的ID或昵称'>
+                </div>
                 <div id='single_user'></div>
             </div>
-            <div id='multi_user_ext' class="box-content" style="display:none">
+            <div id='multi_user_ext' class="box-content" style="display:none;padding-top:0px;">
 				<form enctype="multipart/form-data" method="post" style="float:left;margin:10px 15px;height:25px;">
                     <input type="file" id="seed_file_upload" class="fleft" style='border:1px solid #999'/>  
                     <input type="button" value="上传" id="uploadbtn" class="fleft"/>
@@ -180,7 +184,8 @@
             <div class='controls'>
                 <div class='col-md-12' style='padding:0px;'>
                     <div class='col-lg-6' style='padding:0px;'>
-                         <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
+                         <span style='float:left;color:#c00;font-size:15px;margin-top:5px;'>*</span>
+                         <span class="input-group-addon" style="width:70px;padding-right:0px;border:1px solid white;float:left;background-color:white;display:inline-block">名称</span>
                          <input id="first_name" type='text' class="form-control" style='width:80%; display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线'>
                     </div>
                     <div class='col-lg-6' style='padding:0px;'>
@@ -191,7 +196,7 @@
             </div>
         </div>
         <div class="col-md-12" style='margin-top:11px'>
-            <div class='col-md-12' style='text-align:right; padding-right:35px'>
+            <div class='col-md-12' style='text-align:right;padding-right:0px;'>
                 <span id="seed_user_commit" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89)'>提交</span>
             </div>
         </div>

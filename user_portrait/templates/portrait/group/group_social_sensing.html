@@ -1,8 +1,14 @@
 <div id="social_sensing">
 	<div class="box col-md-12" style="padding-left:10px;margin-top:0;border: 1px solid #DEDEDE;">
   		<div style="padding-top:10px;padding-left:15px;">
-  			<h4><b>相关事件：<span style="color:red;">***事件</b></span></h4>
-  			<div id="social_sensing_table" style="">
+  			<div class="cols" style='margin-top:11px;margin-bottom:15px;'>
+                <span class="input-group-addon" style="width:60px;font-weight:bold;border:1px solid white;background-color:white; display:inline-block" >事件</span>
+                <select id="sensing_event" class="form-control" style='width:175px; margin-left:15px;display:inline-block;height:25px;padding: 0px 10px;'>
+                    <option value="">不限</option>
+                </select>
+                <span id="sensing_event_commit" onclick="submit_sensing_event();" class="label label-success" style='padding:5px;margin-left:35px;cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>查看相关用户</span>
+            </div>    
+            <div id="social_sensing_table" style="">
   			</div>
   			<div class="cols" style='margin-top:11px;margin-bottom:15px;'>
               <div class='col-md-12' style='text-align:right; padding-right:120px'>
@@ -19,7 +25,16 @@
     var global_choose_uids = new Array();
 
     var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
-	function draw_social_sensing_table (data) {
+    function social_sensing_ajax(url, callback){
+        $.ajax({
+            url:url,
+            type:'get',
+            dataType:'json',
+            async:true,
+            success:callback
+        });
+    }
+    function draw_social_sensing_table (data) {
 		$('#social_sensing_table').empty();
 		var html = '';
 		html += '<table id="social_table" class="table table-bordered table-striped table-condensed datatable">';
@@ -72,7 +87,11 @@
 function social_sensing_select_all(){
   $('input[name="social_select"]:not(:disabled)').prop('checked', $("#social_select_all").prop('checked'));
  }
-
+function submit_sensing_event(){
+    var current_event = $('#sensing_event').val();
+    var event_user_url = '';
+    social_sensing_ajax(event_user_url, draw_social_sensing_table);
+}
 function submit_social_sensing(){
 	var cur_uids = [];
 	$('input[name="social_select"]:checked').each(function(){
@@ -88,6 +107,19 @@ function submit_social_sensing(){
     }
 	console.log(select_uids);
 }
-
+function draw_sensing_event_option(){
+    var url = '';
+    social_sensing_ajax(url, sensing_callback);
+    function sensing_callback(data){
+        $('#sensing_event').empty();
+        var html = '';
+        for (var i = 0;i < data.length; i++){
+            html += '<option value="' + data[i] + '">' + data[i] + '</option>';
+        }
+        $('#sensing_event').html(html);
+        submit_sensing_event();
+    }
+}
+//draw_sensing_event_option();
 draw_social_sensing_table(table_content);
 </script>
