@@ -164,6 +164,9 @@ function so_user_choose_all(){
   $('input[name="so_user_list_option"]').prop('checked', $("#so_user_choose_all").prop('checked'));
 }
 
+function keys_choose_all(){
+  $('input[name="keys_list_option"]').prop('checked', $("#keys_choose_all").prop('checked'));
+}
 
 function draw_sensor(data){
 	$('#so_sensor_content').empty();
@@ -178,7 +181,7 @@ function draw_sensor(data){
     	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
     }
     html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
+    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
     for (var i=0;i<item.length;i++) {
     	if(item[i][1]=='unknown'){
     		item_name = '未知';
@@ -195,7 +198,7 @@ function draw_sensor(data){
     	}else{
     		item_num = item[i][5].toFixed(2);
     	}
-        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5" src="' + item_img + '" ></td><td style="text-align:center">' + item[i][0] + '</td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
+        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
  	}
     html += '</table>'; 
     $('#so_sensor_content').append(html); 
@@ -271,10 +274,6 @@ function callback(data){
 	}
 }
 
-
-
-
-
 $('a[id^="so_task_del"]').click(function(e){
 	var a = confirm('确定要删除吗？');
     	if (a == true){
@@ -348,18 +347,26 @@ function so_group_data(){
     var group_name = $('#so_name').val();
     var remark = $('#so_remarks').val();
 	var so_time = Date.parse($('input[name="so_end_time"]').val())/1000;
+	var key_words0 = '';
+	var key_words1 = [];
 	console.log(so_time);
 	if(flag = true){
-	    var key_words = $('#so_keywords').val();
+	    key_words0 = $('#so_keywords').val();
+	 	key_words0 = key_words0.split(/\s+/g);
+	    $('[name="keys_list_option"]:checked').each(function(){
+		  	    key_words0.push($(this).val());
+		  	});
 	    if (so_user_option == 'so_all_users'){
 	    }
 	    else{              //single_user or multi_user with extension
 	    	var group_names = [];
-		  	$('[name="so_user_list_option"]').each(function(){
+		  	$('[name="so_user_list_option"]:checked').each(function(){
 		  	    group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
 		  	});
 		}
-	    key_words = key_words.split(' ');	
+	    //key_words0 = key_words0.split(/\s+/g);
+	    //key_words0.push(key_words1)
+	    console.log(key_words0);
 	    var remark = $('#so_remarks').val();
 
 	    $.ajax({
@@ -390,4 +397,15 @@ function so_callback(data){
     if(data == 'invalid input for count'){
       alert('请选择合理的人数！')
     }
+}
+
+have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
+
+function have_keys(data){
+	$('#show_keys').empty();
+	html = '';
+	for(var i=0;i<data.length;i++){
+		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-right:40px;">'+data[i]+'</span> ';
+	}
+	$('#show_keys').append(html);
 }

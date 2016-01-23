@@ -1,4 +1,30 @@
- function Group_identify_task(){
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
+
+var current_date = new Date().format('yyyy/MM/dd hh:mm');
+var max_date = '+1970/01/30';
+var min_date = '-1970/01/30';
+$('input[name="con_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
+
+function Group_identify_task(){
   this.ajax_method = 'GET';
 }
 Group_identify_task.prototype = {   //获取数据，重新画表
@@ -23,13 +49,11 @@ Draw_resultTable: function(data){
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		html += '<tr>';
-		for(j=0;j<item[i].length-1;j++){
-			if (j==0){
-				html += '<td name="task_name">'+item[i][j]+'</td>';
-			}else{
-				html += '<td>'+item[i][j]+'</td>';
-			}
-		}
+		var time0 = new Date(item[i][1]*1000).format('yyyy/MM/dd hh:mm')
+		html += '<td name="task_name">'+item[i][0]+'</td>';
+		html += '<td>'+time0+'</td>';
+		html += '<td>'+item[i][2]+'</td>';
+		html += '<td>'+item[i][3]+'</td>';
 		if(item[i][4]==1){
 			html += '<td><a style="cursor:hand;" href="/index/group_analysis/?name=' + item[i][0]+ '">已完成</a></td>';
 		}else{
@@ -47,7 +71,7 @@ Draw_resultTable: function(data){
 Draw_dis_Table:function(data){
 	$('#dis_table').empty();
 	var html = '';
-	html += '<a id="turnback"  href="javascript:void()" onclick="redraw()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
+	html += '<a id="turnback"  href="javascript:void(0)" onclick="redraw()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
 	html += '<table id="dis_table_body" class="table table-bordered table-striped table-condensed datatable"><thead><tr style="text-align:center;"><th>群组名称</th><th>提交人</th><th>时间</th><th>发现方式</th><th>备注</th><th>进度</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	//j = 40;
@@ -87,6 +111,8 @@ var Group_identify_task = new Group_identify_task();
 function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
+	deleteGroup(Group_delete_task);
+	control_click();
 }
 window.setInterval(redraw,30000);
 function redraw(){
@@ -144,18 +170,17 @@ var Group_delete_task = new Group_delete_task();
 // submit_analyze(Group_delete_task);
 // submit_control(Group_delete_task);
 
-$('a[id^="commit_control"]').click(function(){
-	var a = confirm('确定要提交监控吗？');
- 	    if (a == true){
-			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
-			url = "/detect/show_detect_result/?task_name=" + temp;
-			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
-			$('span[id^="group_name0"]').html(temp);
-			$('span[id^="remark0"]').html(remark0);
-			$('#group_control').modal();
-		}
-	}
-);
+function control_click(){
+	$('a[id^="commit_control"]').click(function(){
+		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+		var remark0 =  $(this).parent().prev().prev().html();
+		url = "/detect/show_detect_result/?task_name=" + temp;
+		Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
+		$('input[name="con_group_name"]').val(temp);
+		$('input[name="con_remark"]').val(remark0);
+		$('#group_control').modal();
+	});
+}
 var current_date = new Date().format('yyyy/MM/dd hh:mm');
 var max_date = '+1970/01/30';
 var min_date = '-1970/01/30';
@@ -165,10 +190,10 @@ function submit_analyze(that){
 	$('a[id^="group_commit_analyze"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		var percent = $(this).parent().prev().text();
-		if(percent.replace(/[^0-9]/ig,"") != 100){
-			alert('进度没有达到100%，无法提交分析任务！');
-		}
-		else{
+		// if(percent.replace(/[^0-9]/ig,"") != 100){
+		// 	alert('进度没有达到100%，无法提交分析任务！');
+		// }
+		// else{
 			url = "/detect/show_detect_result/?task_name=" + temp;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,function(data){draw_table(data,"#group_analyze_confirm")});
 			//draw_table('1',"#group_analyze_confirm");
@@ -176,7 +201,7 @@ function submit_analyze(that){
 			$('span[id^="group_name0"]').html(temp);
 			$('span[id^="remark0"]').html(remark0);
 			$('#group_analyze').modal();
-		}
+		//}
 	});	
 }
 
@@ -184,6 +209,7 @@ function submit_control(that){
 	$('a[id^="group_commit_control"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		var percent = $(this).parent().prev().text();
+		var remark0 = $(this).parent().prev().prev().html();
 		// if(percent.replace(/[^0-9]/ig,"") != 100){
 		// 	alert('进度没有达到100%，无法提交分析任务！');
 		// }
@@ -191,20 +217,31 @@ function submit_control(that){
 			url = "/detect/show_detect_result/?task_name=" + temp;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
 			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
-			$('span[id^="group_name0"]').html(temp);
-			$('span[id^="remark0"]').html(remark0);
+			$('input[name="con_group_name"]').val(temp);
+			$('input[name="con_remark"]').val(remark0);
 			$('#group_control').modal();
-		//}
+		// }
 	});	
+}
+
+have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
+
+function have_keys(data){
+	$('#show_keys').empty();
+	html = '';
+	for(var i=0;i<data.length;i++){
+		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-right:40px;">'+data[i]+'</span> ';
+	}
+	$('#show_keys').append(html);
 }
 
 function draw_control_table(data){
 	$('#group_control_confirm').empty();
 	var html='';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
-    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="control_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
+    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';
     for (var i=0;i<data.length;i++) {
-        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+        html += '<tr><td style="text-align:center">' + data[i][0] + '</td><td style="text-align:center">' + data[i][1] + '</td><td style="text-align:center">' + data[i][2].toFixed(2) + '</td><td style="text-align:center">' + data[i][3].toFixed(2) + '</td><td style="text-align:center">' + data[i][4].toFixed(2) + '</td><td><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td></tr>';
  	}
     html += '</table>'; 
 	$('#group_control_confirm').append(html);
@@ -229,7 +266,15 @@ function draw_table(data,div){
 }
 
 function analyze_choose_all(){
-  $('input[name="analyze_list_option"]').prop('checked', $("#analyze_choose_all").prop('checked'));
+	$('input[name="analyze_list_option"]').prop('checked', $("#analyze_choose_all").prop('checked'));
+}
+
+function control_choose_all(){
+	$('input[name="control_list_option"]').prop('checked', $("#control_choose_all").prop('checked'));
+}
+
+function keys_choose_all(){
+	$('input[name="keys_list_option"]').prop('checked', $("#keys_choose_all").prop('checked'));	
 }
 
 function delRow(obj){
@@ -242,7 +287,7 @@ function delRow(obj){
 
 function group_analyze_confirm_button(){
   	var group_confirm_uids = [];
-  	$('[name="analyze_list_option"]').each(function(){
+  	$('[name="analyze_list_option"]:checked').each(function(){
   	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().text());
   	});
   	console.log(group_confirm_uids);
@@ -252,14 +297,14 @@ function group_analyze_confirm_button(){
   	console.log(group_name);
   	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
   	console.log(job);
-  	$.ajax({
-  	    type:'POST',
-  	    url: group_ajax_url,
-  	    contentType:"application/json",
-  	    data: JSON.stringify(job),
-  	    dataType: "json",
-  	    success: callback
-  	});
+  	// $.ajax({
+  	//     type:'POST',
+  	//     url: group_ajax_url,
+  	//     contentType:"application/json",
+  	//     data: JSON.stringify(job),
+  	//     dataType: "json",
+  	//     success: callback
+  	// });
   	function callback(data){
   	    console.log(data);
   	    if (data == '1'){
@@ -270,6 +315,87 @@ function group_analyze_confirm_button(){
   	    }
   	}
 }
+
+$('#group_control_confirm_button').click(function(){
+	group_control_data();
+});
+
+function group_control_check(){             // check validation 
+    //group_information check starts  
+    var group_name = $('input[name="con_group_name"]').val();
+    var remark = $('input[name="con_remark"]').val();
+    var sensors = '';
+    console.log(group_name, remark); 
+    if (group_name.length == 0){
+        alert('群体名称不能为空');
+        return false;
+    }
+    var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
+    if (!group_name.match(reg)){
+        alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
+    if ((remark.length > 0) && (!remark.match(reg))){
+        alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
+    //other form check starts
+  return true;
+
+}
+function group_control_data(){
+	var flag = group_control_check();
+	var a = new Array();
+    a['task_name'] = $('input[name="con_group_name"]').val();
+    a['remark'] = $('input[name="con_remark"]').val();
+	a['stop_time'] = Date.parse($('input[name="con_end_time"]').val())/1000;
+	a['keywords'] = '';
+	a['create_at'] =  Date.parse(new Date())/1000;
+	a['social_sensors'] =[];
+	var url0 = [];
+	var url1 = '';
+	var url_create = '/social_sensing/create_task/?';
+	if(flag = true){
+	   a['keywords'] = $('input[name="con_keywords"]').val();
+	    if(a['keywords'].length){
+		 	a['keywords'] = a['keywords'].split(/\s+/g);
+	    }else{
+	    	a['keywords'] = [];
+	    }
+	    $('[name="keys_list_option"]:checked').each(function(){
+		  	    a['keywords'].push($(this).val());
+		  	});
+	    $('[name="control_list_option"]:checked').each(function(){
+		  	    a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().text());
+		  	});
+		for(var k in a){
+			if(a[k]){
+				url0.push(k +'='+a[k]);
+			}
+		}
+		if(url0.length > 1){
+			url1 = url0.join('&');
+		}else{
+			url1 = url0;
+		}
+		url_create += url1;
+		console.log(url_create);
+	    // $.ajax({
+	    //     type:'GET',
+	    //     url: url_create,
+	    //     contentType:"application/json",
+	    //     dataType: "json",
+	    //     success: con_callback
+	    // });
+	}
+}
+
+function con_callback(data){
+	if(data.length != 0){
+		alert('操作成功！');
+	}
+}
+
 
 function group_search_button(){ //表单搜索
 	var a = new Array();
