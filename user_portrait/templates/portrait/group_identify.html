@@ -3,6 +3,7 @@
     {% block css %}
         {{ super() }}
         <style>
+            .dataTables_length{display:none;}
             .dataTables_filter{display:none;text-align:right;margin-bottom:5px;}
             .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
             .wrapper{min-height:330px;margin-top:50px;margin-left:-20px;background: #fff;position: relative;}
@@ -77,9 +78,11 @@
           </div>
           <div class="modal-body">
             <span>群体名称：</span>
-            <span style="margin-left:10px" name="group_name" style="width:270px;" /></span>
+            <input type='text' style='width:35%;margin-left:10px;display:inline-block;height:25px' placeholder='（必填）仅包含汉字、英文、数字和下划线' name="group_name" /></span>
             <span style="margin-left:10px;">备注：</span>
-            <span style="float:right" name="remark" style="width:400px" ></span>
+            <input type='text' style='width:35%;margin-left:10px;display:inline-block;height:25px; margin-right:40px;' placeholder='（必填）仅包含汉字、英文、数字和下划线' name="group_name" ></span>
+            <span style="margin-top:5px;display:inline-block">终止时间：</span>
+            <input name="so_end_time" type='text' style='margin-left:10px;width:145px;margin-top:5px;display:inline-block;height:25px'>
             <div id="group_control_confirm" style="margin-top:30px"></div>
           </div>
           <div class="modal-footer">
