@@ -39,8 +39,6 @@
 <script type="text/javascript">
     var global_pre_page = 1;
     var global_choose_uids = new Array();
-
-    var table_content = [{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456},{'uid':1223456},{'uid':1234456},{'uid':123456},{'uid':123456}]
     function social_sensing_ajax(url, callback){
         $.ajax({
             url:url,
@@ -60,11 +58,8 @@
 		html += '<th style="width:120px;">昵称</th>';
 		html += '<th>领域</th>';
 		html += '<th>话题</th>';
-		//html += '<th>参与事件</th>';
 		html += '<th>热度</th>';
 		html += '<th>重要度</th>';
-		//html += '<th>活跃度</th>';
-		//html += '<th>影响力</th>';
 		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_select_all()" /></th>';
 
 		html += '</tr></thead>';
@@ -86,7 +81,6 @@
 		$('#social_sensing_table').append(html);
 		$('#social_table').dataTable({
         	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-
         	"sPaginationType": "custom_bootstrap",
         	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         	"bAutoWidth": true,
@@ -191,5 +185,4 @@ function draw_sensing_event_option(){
     }
 }
 draw_sensing_event_option();
-draw_social_sensing_table(table_content);
 </script>
