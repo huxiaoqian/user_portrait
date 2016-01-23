@@ -49,6 +49,7 @@ def ajax_create_task():
         task_detail["finish"] = "0" # not end the task
         task_detail["history_status"] = json.dumps([]) # ts, keywords, warning_status
         task_detail['burst_reason'] = ''
+        task_detail['processing_status'] = "1" #任务正在进行
         if keywords:
             if social_sensors:
                 task_detail["task_type"] = "3"
@@ -91,6 +92,7 @@ def ajax_stop_task():
     if task_name:
         task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)['_source']
         task_detail["finish"] = finish_signal
+        task_detail['processing_status'] = '0'
         es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
         return json.dumps(['1'])
     else:
@@ -106,7 +108,8 @@ def ajax_revise_task():
     finish = request.args.get("finish", "10")
     stop_time = request.args.get('stop_time', '') # timestamp
 
-    now_ts = time.time()
+    now_ts = datetime2ts("2013-09-06")
+    #now_ts = time.time()
     if stop_time and stop_time < now_ts:
         return json.dumps([])
 
@@ -116,6 +119,7 @@ def ajax_revise_task():
             task_detail['stop_time'] = stop_time
         if int(finish) == 0:
             task_detail['finish'] = finish
+            task_detail['processing_status'] = "1" # 重启时将处理状态改为
         if stop_time or int(finish) == 0:
             es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
             return json.dumps(['1'])
@@ -197,6 +201,7 @@ def ajax_get_task_detail_info():
                             temp.append(item["_source"][iter_item])
                 portrait_detail.append(temp)
     task_detail['social_sensors_portrait'] = portrait_detail
+
     print task_detail
     return json.dumps(task_detail)
 
@@ -230,10 +235,11 @@ def ajax_get_group_list():
 @mod.route('/get_warning_detail/')
 def ajax_get_warning_detail():
     task_name = request.args.get('task_name','') # task_name
-    keywords = request.args.get('keywords', '') # warning keywords
+    keywords = request.args.get('keywords', '') # warning keywords, seperate with ","
+    keywords_list = keywords.split(',')
     ts = request.args.get('ts', '') # timestamp: 123456789
 
-    results = get_warning_detail(task_name, keywords, ts)
+    results = get_warning_detail(task_name, keywords_list, ts)
 
     return json.dumps(results)
 
