@@ -245,6 +245,11 @@ function seed_user_check(){             // check validation
 }
 function seed_single_user_callback(data){
     console.log(data);
+    if (data == true){
+      //redraw_result();
+      alert('提交成功！');
+      //window.location.reload(); 
+    } 
     if (data == 'seed user invalid') alert('人物库中不存在该用户！');
     if (data == 'task name invalid') alert('请输入合法的任务名称！');
     if (data == 'no query condition') alert('请选择搜索条件！');
