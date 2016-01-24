@@ -41,7 +41,7 @@ def get_task_detail_2(task_name, keywords, ts):
                         temp.append(item["fields"][iter_item][0].split('&'))
                     else:
                         temp.append(item["fields"][iter_item][0])
-            portrait_detail.append(temp)
+                portrait_detail.append(temp)
 
     time_series = [] # 时间
     positive_sentiment_list = [] # 情绪列表
