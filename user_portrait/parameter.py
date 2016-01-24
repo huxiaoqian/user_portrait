@@ -194,7 +194,7 @@ signal_sentiment_varition = "2"
 signal_nothing_variation = ""
 finish_signal = "1"
 unfinish_signal = "0"
-SOCIAL_SENSOR_INFO = ['uid', 'uname', "photo_url", "domain", "topic_string", "importance"]
+SOCIAL_SENSOR_INFO = ['uid', 'uname', "photo_url", "domain", "topic_string", "importance", "influence", "activeness"]
 
 # 预警提示句
 CURRENT_WARNING_DICT = {
