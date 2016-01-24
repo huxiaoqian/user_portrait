@@ -37,12 +37,13 @@ Social_sense.prototype = {   //获取数据，重新画表
 	var html = '';
 	var item_time = '';
 	html += '<table style="so_group_task_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>群组用户</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>查看详情</th><th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		item_time = new Date(item[i][1]*1000).format('yyyy/MM/dd hh:mm')
 		html += '<tr><td >'+item[i][0]+'</td><td>'+item_time+'</td><td>'+item[i][2]+'</td><td>'+item[i][3]+'</td>';
-		html +='<td><a href=javascript:void(0)  id="so_users">群组用户<a/></td>';
+		html += '<td><a href=javascript:void(0)  id="so_users">查看详情<a/></td>';
+		html += '<td><input name="so_user_list_option" class="search_result_option" type="checkbox"  /></td>'
 		html += '</tr>';	
 	}
 	html += '</tbody>';
@@ -72,10 +73,15 @@ Social_sense.prototype = {   //获取数据，重新画表
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	var end_d = new Date(item[i]['stop_time']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(2);
+	  	if(time_pro>=100.00){
+	  		time_pro=100
+	  	}
 		if(item[i]['warning_status']==0){
 			warn = '无事件';
+			//$('#pro').replaceWith('<progress id="pro" progress ::webkit-progress-value{ background: #0064B4; }');
 		}else if (item[i]['warning_status']==1){
 			warn = '事件爆发';
+			$('progress').removeClass('webkit-progress-value').addClass('webkit-progress-value{ background: #333; }');
 		}else {
 			warn = '事件跟踪';
 		}
@@ -91,7 +97,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td style="width: 60px;">'+item[i]['create_by']+'</td>';
 		html += '<td>'+create_d+'</td>';
 		html += '<td>'+end_d+'</td>';
-		html += '<td "><progress style="width:60%" value="'+data[i][5]+'" max="100"></progress>'+time_pro+'%</td>';
+		html += '<td "><progress id="pro" style="width:60%"   progress::-webkit-progress-value  { background: #333; } value="'+time_pro+'" max="100"></progress>'+time_pro+'%</td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">查看更多</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_warn">'+warn+'</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td><a href="javascript:void(0)" id="'+so_flag+'">'+flag+'</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
@@ -158,6 +164,9 @@ function so_user_choose_all(){
   $('input[name="so_user_list_option"]').prop('checked', $("#so_user_choose_all").prop('checked'));
 }
 
+function keys_choose_all(){
+  $('input[name="keys_list_option"]').prop('checked', $("#keys_choose_all").prop('checked'));
+}
 
 function draw_sensor(data){
 	$('#so_sensor_content').empty();
@@ -172,7 +181,7 @@ function draw_sensor(data){
     	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
     }
     html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
+    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
     for (var i=0;i<item.length;i++) {
     	if(item[i][1]=='unknown'){
     		item_name = '未知';
@@ -189,7 +198,7 @@ function draw_sensor(data){
     	}else{
     		item_num = item[i][5].toFixed(2);
     	}
-        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5" src="' + item_img + '" ></td><td style="text-align:center">' + item[i][0] + '</td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
+        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
  	}
     html += '</table>'; 
     $('#so_sensor_content').append(html); 
@@ -265,10 +274,6 @@ function callback(data){
 	}
 }
 
-
-
-
-
 $('a[id^="so_task_del"]').click(function(e){
 	var a = confirm('确定要删除吗？');
     	if (a == true){
@@ -342,18 +347,26 @@ function so_group_data(){
     var group_name = $('#so_name').val();
     var remark = $('#so_remarks').val();
 	var so_time = Date.parse($('input[name="so_end_time"]').val())/1000;
+	var key_words0 = '';
+	var key_words1 = [];
 	console.log(so_time);
 	if(flag = true){
-	    var key_words = $('#so_keywords').val();
+	    key_words0 = $('#so_keywords').val();
+	 	key_words0 = key_words0.split(/\s+/g);
+	    $('[name="keys_list_option"]:checked').each(function(){
+		  	    key_words0.push($(this).val());
+		  	});
 	    if (so_user_option == 'so_all_users'){
 	    }
 	    else{              //single_user or multi_user with extension
 	    	var group_names = [];
-		  	$('[name="so_list_option"]').each(function(){
+		  	$('[name="so_user_list_option"]:checked').each(function(){
 		  	    group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
 		  	});
 		}
-	    key_words = key_words.split(' ');	
+	    //key_words0 = key_words0.split(/\s+/g);
+	    //key_words0.push(key_words1)
+	    console.log(key_words0);
 	    var remark = $('#so_remarks').val();
 
 	    $.ajax({
@@ -384,4 +397,15 @@ function so_callback(data){
     if(data == 'invalid input for count'){
       alert('请选择合理的人数！')
     }
+}
+
+have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
+
+function have_keys(data){
+	$('#show_keys').empty();
+	html = '';
+	for(var i=0;i<data.length;i++){
+		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-right:40px;">'+data[i]+'</span> ';
+	}
+	$('#show_keys').append(html);
 }
