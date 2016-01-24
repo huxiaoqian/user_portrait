@@ -239,8 +239,8 @@ function week_chart(trend_data){
         },
         legend: {
             layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
+            align: 'center',
+            verticalAlign: 'top',
             borderWidth: 0
         },
         series: [{
@@ -377,9 +377,13 @@ function draw_daily_ip_table(ip_data){
     $('#span_ip').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th style="text-align:center">时段</th><th style="text-align:center">00:00-04:00</th><th style="text-align:center">04:00-08:00</th>';
-    html += '<th style="text-align:center">08:00-12:00</th><th style="text-align:center">12:00-16:00</th><th style="text-align:center">16:00-20:00</th>';
-    html += '<th style="text-align:center">20:00-24:00</th><th style="text-align:center"></th></tr>';
+    html += '<tr><th style="text-align:center">时段</th><th style="text-align:center;">00:00-04:00</th>';
+    html += '<th style="text-align:center">04:00-08:00</th>';
+    html += '<th style="text-align:center">08:00-12:00</th>';
+    html += '<th style="text-align:center">12:00-16:00</th>';
+    html += '<th style="text-align:center">16:00-20:00</th>';
+    html += '<th style="text-align:center">20:00-24:00</th>';
+    html += '<th style="text-align:center"></th></tr>';
 
     location_geo = ip_data.day_ip;
     html += '<tr>';
@@ -392,7 +396,7 @@ function draw_daily_ip_table(ip_data){
            span_daily_map_data.push(['时段'+(i+1),location_geo[i][0][2]]);
            for (var j = 0;j < top_two.length;j++){
                var ip_city = top_two[j][2].split('\t').pop();
-               html += top_two[j][0] + '(' + ip_city + ',' + top_two[j][1] + ')';
+               html += top_two[j][0] + '<br>(' + ip_city + ',' + top_two[j][1] + ')';
            }
        }
        else{
@@ -413,7 +417,7 @@ function draw_daily_ip_table(ip_data){
            span_weekly_map_data.push(['时段'+(i+1),location_geo[i][0][2]]);
            for (var j = 0;j < top_two.length;j++){
                var ip_city = top_two[j][2].split('\t').pop();
-               html += top_two[j][0] + '(' + ip_city + ',' + top_two[j][1] + ')';
+               html += top_two[j][0] + '<br>(' + ip_city + ',' + top_two[j][1] + ')';
            }
        }
        else{
@@ -453,7 +457,6 @@ activity_call_ajax_request(url,draw_online_pattern);
 
 function draw_activeness_chart(data){
     $('#activeness_desc').html("<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>");
-    //console.log(data);
     global_tag_vector.push(['活跃类型', data.tag_vector]);
     var data_time = [];
     var data_count = [];
@@ -463,7 +466,7 @@ function draw_activeness_chart(data){
         data_time.push(timeline[i]);
     }
     for (var i = 0;i < activeness.length;i++){
-        data_count.push(activeness[i]);
+        data_count.push(parseFloat(activeness[i].toFixed(2)));
     }
     $('#activeness').highcharts({
         chart: {
@@ -512,8 +515,8 @@ function draw_activeness_chart(data){
         },
         legend: {
             layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
+            align: 'center',
+            verticalAlign: 'top',
             borderWidth: 0
         },
         series: [{

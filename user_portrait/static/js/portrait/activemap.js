@@ -287,5 +287,5 @@ function location_all(){
     }
 
 }
-location_all();
+//location_all();
 
