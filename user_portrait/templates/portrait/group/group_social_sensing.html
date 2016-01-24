@@ -91,8 +91,8 @@ function draw_social_sensing_table (data) {
 		html += '<th>重要度</th>';
 		html += '</tr></thead>';
 		html += '<tbody>';
-        for(var i=0; i<group_list.length; i++){
-            var user_data = group_list[i];
+        for(var i=0; i<sensors.length; i++){
+            var user_data = sensors[i];
 			html += '<tr>';
 			html += '<td>' + user_data[0] + '</td>';
 			html += '<td>' + user_data[1] + '</td>';
