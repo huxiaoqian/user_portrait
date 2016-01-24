@@ -241,3 +241,4 @@ IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influ
 
 #cron_group
 ACTIVITY_GEO_TOP = 3
+HIS_BINS_COUNT = 5
