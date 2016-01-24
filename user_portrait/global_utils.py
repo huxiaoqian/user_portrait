@@ -95,6 +95,7 @@ es_flow_text = Elasticsearch(FLOW_TEXT_ES_HOST, timeout=600)
 es_group_result = Elasticsearch(USER_PORTRAIT_ES_HOST, time_out=600)
 es_retweet = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 es_comment = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+es_copy_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 
 # elasticsearch index_name and index_type
 profile_index_name = 'weibo_user'  # user profile es
