@@ -1,4 +1,4 @@
-var data=[['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称1','法律机构及人士','民生类_社会保障','234',23,56],
+var data=[['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称1','法律机构及人士','民生类_社会保障,民生类_社会保障,民生类_社会保障','234',23,56],
 			['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称2','话题2','领域domain','24',23,56],
 			['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称3','话题2','领域domain','24',23,56],
 			['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称4','','领域domain','24',23,56],
@@ -15,9 +15,10 @@ var keywords=[['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2
 				['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23],
 				['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23]]
 var sensor_head=['序号','头像','昵称','领域','话题','影响力','重要度','活跃度']
-var sensor2_head=['头像','昵称','领域','话题','热度','影响力','重要度','活跃度']
+var sensor2_head=['序号','头像','昵称','领域','话题','热度','影响力','重要度','活跃度']
 var keywords_head=['序号','关键词','频数']
-
+var global_pre_page = 1;
+var global_choose_uids = new Array();
 
 function sensing_sensors_table (head, data, div_name) {
     $('#'+div_name).empty();
@@ -69,7 +70,7 @@ function sensing_participate_table (head, data, div_name) {
 	for(var i=0; i<data.length; i++){
 		var s= i+1;
 		html += '<tr>';
-		// html += '<td style="text-align:center;vertical-align:middle;">' + s + '234567890</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + s + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][2] + '</td>';
@@ -84,16 +85,15 @@ function sensing_participate_table (head, data, div_name) {
 	html += '</tbody></table>';
 	$('#'+div_name).append(html);
 	$('#participate_table').dataTable({
-        	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+    	//"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
 
-        	"sPaginationType": "custom_bootstrap",
-        	"aoColumnDefs":[ {"bSortable": false, "aTargets":[8]}, {"bAutoWidth": true, "aTargets":["_all"]}],
-        	// "bAutoWidth": true,
-        	"oLanguage": {
+    	//"sPaginationType": "bootstrap",
+    	"aoColumnDefs":[ {"bSortable": false, "aTargets":[8]},{ "sWidth": "130px", "aTargets": [4] }],
+    	"oLanguage": {
 
-            	"sLengthMenu": "_MENU_ 每页"
+        	"sLengthMenu": "_MENU_ 每页"
 
-        }
+    	}
 
     });
 }
@@ -122,22 +122,9 @@ function sensing_keywords_table (head, data, div_name) {
 	}
 	html += '</tbody></table>';
 	$('#'+div_name).append(html);
-	// $('#keywords_table').dataTable({
- //        	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-
- //        	"sPaginationType": "bootstrap",
- //        	"aoColumnDefs":[ {"bSortable": false, "aTargets":[8]}, {"bAutoWidth": true, "aTargets":["_all"]}],
- //        	// "bAutoWidth": true,
- //        	"oLanguage": {
-
- //            	"sLengthMenu": "_MENU_ 每页"
-
- //        }
-
- //    });
 }
 
-function draw_line_charts(div_name){
+function draw_line_charts(div_name, legend_data){
 	var myChart = echarts.init(document.getElementById(div_name)); 
 	option = {  
 	    tooltip : {
@@ -168,7 +155,7 @@ function draw_line_charts(div_name){
 	        start : 90
 	    },
 	    legend : {
-	        data : ['series1', 'series2', 'series3', 'series4'],
+	        data : legend_data,
 	        x:'right'
 	    },
 	    grid: {
@@ -187,7 +174,7 @@ function draw_line_charts(div_name){
 	    ],
 	    series : [
 	        {
-	            name: 'series1',
+	            name: legend_data[0],
 	            type: 'line',
 	            showAllSymbol: true,
 	            symbolSize: function (value){
@@ -211,7 +198,7 @@ function draw_line_charts(div_name){
 	            })()
 	        },
 	        {
-	            name: 'series2',
+	            name: legend_data[1],
 	            type: 'line',
 	            showAllSymbol: false,
 	            
@@ -232,7 +219,7 @@ function draw_line_charts(div_name){
 	            })()
 	        },
 	        {
-	            name: 'series3',
+	            name: legend_data[2],
 	            type: 'line',
 	            showAllSymbol: false,
 	            
@@ -253,7 +240,7 @@ function draw_line_charts(div_name){
 	            })()
 	        },
 	        {
-	            name: 'series4',
+	            name: legend_data[3],
 	            type: 'line',
 	            showAllSymbol: false,
 	            
@@ -288,7 +275,7 @@ function draw_line_charts(div_name){
 			    //     mes += '  dataIndex : ' + param.dataIndex;
 			    // }
 			    var click_time = param.value[0].format('yyyy-MM-dd hh:mm');
-			    var data=[['0',1,2,'3neirong',4,click_time,6,7,8,9,0],['0',1,2,'3neirong',4,click_time,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
+			    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,click_time,6,7,8,9,0],['0',1,2,'3neirong',4,click_time,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 			    Draw_get_weibo(data, 'related_weibo_text');
 			    //testit();
 			    // if (param.type == 'hover') {
@@ -339,18 +326,19 @@ function Draw_get_weibo(data,div_name){
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail" style="width:1000px">';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;';
+        html += '情绪：'+'积极'+'&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
         html += '<div class="weibo_info"style="width:100%">';
-        html += '<div class="weibo_pz">';
-        html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
-        html += '<a class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
-        html += '<a class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</a></div>';
         html += '<div class="m">';
         html += '<u>' + date + '</u>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;-&nbsp;';
-        html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
-        html += '</div>';
+        // html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>&nbsp;-&nbsp;';
+        // html += '</div>';
+        // html += '<div class="weibo_pz">';
+        html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
+        html += '<span class="retweet_count" href="">转发数(' + reposts_count + ')</span>&nbsp;-&nbsp;';
+        html += '<span class="comment_count" href="">评论数(' + comments_count + ')</span></div>';
         html += '</div>';
         html += '</div>';
         html += '</li>';
@@ -395,10 +383,16 @@ sensing_sensors_table(sensor_head,data,"modal_sensor_table");
 sensing_participate_table(sensor2_head,data,"sensing_participate_table");
 sensing_keywords_table(keywords_head, keywords.slice(0, 10),"sensing_keywords_table");
 sensing_keywords_table(keywords_head,keywords,"modal_keywords_table");
-draw_line_charts('num_line_charts');
-draw_line_charts('mood_line_charts');
+var num_legend = ['总数','原创', '转发', '评论' ];
+var mood_legend = ['消极','积极', '愤怒', '悲伤' ];
+
+draw_line_charts('num_line_charts',num_legend);
+draw_line_charts('mood_line_charts', mood_legend);
 
 
 function participate_select_all(){
 	  $('input[name="participate_select"]:not(:disabled)').prop('checked', $("#participate_select_all").prop('checked'));
+}
+function submit_participate(){
+	alert('hi');
 }
