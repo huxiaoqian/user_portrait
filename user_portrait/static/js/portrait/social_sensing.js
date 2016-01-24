@@ -18,6 +18,7 @@ Date.prototype.format = function(format) {
     }
     return format;
 }
+
 function Social_sense(){
   this.ajax_method = 'GET';
 }
@@ -65,6 +66,7 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var flag = '';
   	var so_flag = '';
   	var time_pro = '';
+  	var operate = '';
   	var time_now =  Date.parse(new Date())/1000;
 	html += '<table id="so_task_table_body" class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;width:115px;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th  style="width: 140px;">进度</th><th style="width:110px;">更多信息</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
@@ -86,11 +88,9 @@ Social_sense.prototype = {   //获取数据，重新画表
 			warn = '事件跟踪';
 		}
 		if(item[i]['finish'] == 0){
-			flag = '终止任务';
-			so_flag = 'so_stop_task';
+			operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>&nbsp;&nbsp;<a href="javascript:void(0)" id="so_stop_task">终止</a>';
 		}else{
-			flag = '重启任务';
-			so_flag = 'so_revise_task';
+			operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>';
 		}
 		html += '<tr>';
 		html += '<td name="task_name">'+item[i]['task_name']+'</td>';
@@ -100,7 +100,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td "><progress id="pro" style="width:60%"   progress::-webkit-progress-value  { background: #333; } value="'+time_pro+'" max="100"></progress>'+time_pro+'%</td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">查看更多</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_warn">'+warn+'</a></td>';
-		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td><a href="javascript:void(0)" id="'+so_flag+'">'+flag+'</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
+		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
 		html += '</tr>';		
 	}
 	html += '</tbody>';
@@ -138,7 +138,7 @@ function draw_control_table(data){
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
     html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th></tr>';
     for (var i=0;i<data.length;i++) {
-        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="so_user_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+        html += '<tr><td style="text-align:center">' + data[i][0] + '</td><td style="text-align:center">' + data[i][1] + '</td><td style="text-align:center">' + data[i][2].toFixed(2) + '</td><td style="text-align:center">' + data[i][3].toFixed(2) + '</td><td style="text-align:center">' + data[i][4].toFixed(2) + '</td><td><input name="so_user_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td></tr>';
  	}
     html += '</table>'; 
 	$('#so_control_confirm').append(html);
@@ -261,8 +261,8 @@ function so_ready(){
 		var remark = $(this).parent().prev().html();
 		url = "/detect/show_detect_result/?task_name=" + temp;
 		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_control_table);
-		$('span[id^="so_group_name0"]').html(temp);
-		$('span[id^="so_remark0"]').html(remark);
+		$('span[id^="have_sensor_name"]').html(temp);
+		$('span[id^="have_sensor_remark"]').html(remark);
 		$('#so_control').modal();
 		});
 	
@@ -306,7 +306,7 @@ function draw_history(data){
 		}else {
 			warn = '事件跟踪';
 		}
-		item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm')
+		item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm');
        html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a href="javascript:void(0)" id="show_detail">查看详情</a></td></tr>';
  	}
     html += '</table>'; 
@@ -343,18 +343,21 @@ function so_user_check(){             // check validation
 }
 function so_group_data(){
 	var flag = so_user_check();
-	var url_all = new Array();
-    var group_name = $('#so_name').val();
-    var remark = $('#so_remarks').val();
-	var so_time = Date.parse($('input[name="so_end_time"]').val())/1000;
-	var key_words0 = '';
-	var key_words1 = [];
-	console.log(so_time);
+	var a = new Array();
+    a['task_name'] = $('#so_name').val();
+    a['remark'] = $('#so_remarks').val();
+	a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
+	a['keywords'] = '';
+	a['create_at'] =  Date.parse(new Date())/1000;
+	a['social_sensors'] ='';
+	var url0 = '';
+	var url1 = '';
+	var url_create = '/social_sensing/create_task/?';
 	if(flag = true){
-	    key_words0 = $('#so_keywords').val();
-	 	key_words0 = key_words0.split(/\s+/g);
+	    key_words = $('#so_keywords').val();
+	 	key_words = key_words.split(/\s+/g);
 	    $('[name="keys_list_option"]:checked').each(function(){
-		  	    key_words0.push($(this).val());
+		  	    key_words.push($(this).val());
 		  	});
 	    if (so_user_option == 'so_all_users'){
 	    }
@@ -364,11 +367,17 @@ function so_group_data(){
 		  	    group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
 		  	});
 		}
-	    //key_words0 = key_words0.split(/\s+/g);
-	    //key_words0.push(key_words1)
-	    console.log(key_words0);
-	    var remark = $('#so_remarks').val();
-
+		for(var k in a){
+			if(a[k]){
+				url0.push(k +'='+a[k]);
+			}
+		}
+		if(url0.length > 1){
+			url1 = url0.join('&');
+		}else{
+			url1 = url0;
+		}
+		url_create += url1;
 	    $.ajax({
 	        type:'GET',
 	        url: url_create,
