@@ -21,7 +21,10 @@ def social_sensing():
 
 @mod.route('/sensing_analysis/')
 def sensing_analysis():
-    return render_template('portrait/sensing_analysis.html')
+    task_name = request.args.get('task_name','监督维权律师' );
+    keywords = request.args.get('keywords','律师,维权' );
+    ts = request.args.get('ts','1378567800' );
+    return render_template('portrait/sensing_analysis.html', task_name=task_name, keywords=keywords, ts=ts);
 
 @mod.route('/group/')
 def group_identify():

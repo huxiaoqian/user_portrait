@@ -1,4 +1,16 @@
-var data=[['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称1','法律机构及人士','民生类_社会保障,民生类_社会保障,民生类_社会保障','234',23,56],
+$(document).ready(function() {
+	alert('aaabbb');
+} );
+function call_sync_ajax_request(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+}
+var data=[['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','我是昵称呢呢呢','法律机构及人士','民生类_社会保障,民生类_社会保障,民生类_社会保障','234',23,56],
 			['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称2','话题2','领域domain','24',23,56],
 			['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称3','话题2','领域domain','24',23,56],
 			['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称4','','领域domain','24',23,56],
@@ -14,8 +26,8 @@ var data=[['http://tp2.sinaimg.cn/2127129797/50/40016674706/0','昵称1','法律
 var keywords=[['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23],
 				['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23],
 				['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23]]
-var sensor_head=['序号','头像','昵称','领域','话题','影响力','重要度','活跃度']
-var sensor2_head=['序号','头像','昵称','领域','话题','热度','影响力','重要度','活跃度']
+var sensor_head=['uid','昵称','领域','话题','重要度','影响力','活跃度']
+var sensor2_head=['uid','昵称','领域','话题','热度','重要度','影响力','活跃度']
 var keywords_head=['序号','关键词','频数']
 var global_pre_page = 1;
 var global_choose_uids = new Array();
@@ -26,23 +38,21 @@ function sensing_sensors_table (head, data, div_name) {
 		$('#'+div_name).css("overflow-y", "auto");
 	}
 	var html = '';
-	html += '<table id="" class="table table-bordered table-striped table-condensed datatable">';
+	html += '<table id="sensor_table" class="table table-bordered table-striped table-condensed datatable">';
 	html += '<thead><tr>';
 	for(var i=0; i<head.length; i++){
 	html += '<th style="text-align:center">'+head[i]+'</th>';
-
 	}
 	html += '</tr></thead>';
 	html += '<tbody>';
 
 	for(var i=0; i<data.length; i++){
-		var s= i+1;
 		html += '<tr>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + s + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + 1234567890 + '</td>';
+		//html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][2] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
+		html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][4] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + 10 + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + 16 + '</td>';
@@ -50,6 +60,7 @@ function sensing_sensors_table (head, data, div_name) {
 	}
 	html += '</tbody></table>';
 	$('#'+div_name).append(html);
+
 }
 
 function sensing_participate_table (head, data, div_name) {
@@ -68,13 +79,13 @@ function sensing_participate_table (head, data, div_name) {
 	html += '<tbody>';
 
 	for(var i=0; i<data.length; i++){
-		var s= i+1;
+		//var s= i+1;
 		html += '<tr>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + s + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + 1234567890 + '</td>';
+		//html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][2] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
+		html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][4] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][5] + '</td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + 10 + '</td>';
@@ -84,18 +95,11 @@ function sensing_participate_table (head, data, div_name) {
 	}
 	html += '</tbody></table>';
 	$('#'+div_name).append(html);
-	$('#participate_table').dataTable({
-    	//"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-
-    	//"sPaginationType": "bootstrap",
-    	"aoColumnDefs":[ {"bSortable": false, "aTargets":[8]},{ "sWidth": "130px", "aTargets": [4] }],
-    	"oLanguage": {
-
-        	"sLengthMenu": "_MENU_ 每页"
-
-    	}
-
-    });
+	$('#participate_table').DataTable( {
+        "scrollY":        "300px",
+        "scrollCollapse": true,
+        "paging":         false
+    } );
 }
 
 function sensing_keywords_table (head, data, div_name) {
@@ -268,12 +272,14 @@ function draw_line_charts(div_name, legend_data){
         function(ec){
 			var ecConfig = require('echarts/config');
 			function eConsole(param) {
-				alert('aaa');
+				//alert('aaa');
 			    var mes = '【' + param.type + '】';
-			    // if (typeof param.seriesIndex != 'undefined') {
-			    //     mes += '  seriesIndex : ' + param.seriesIndex;
-			    //     mes += '  dataIndex : ' + param.dataIndex;
-			    // }
+			    if (typeof param.seriesIndex != 'undefined') {
+			        mes += '  seriesIndex : ' + param.seriesIndex;
+			        mes += '  dataIndex : ' + param.dataIndex;
+			        mes += '  dataValue : ' + param.value;
+			        mes += '  dataname : ' + param.name;
+			    }
 			    var click_time = param.value[0].format('yyyy-MM-dd hh:mm');
 			    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,click_time,6,7,8,9,0],['0',1,2,'3neirong',4,click_time,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 			    Draw_get_weibo(data, 'related_weibo_text');
@@ -299,7 +305,7 @@ function Draw_get_weibo(data,div_name){
   var html = '';
   $('#'+div_name).empty();
     if(data[0][3]==''){
-        html += "<div style='width:100%;height:100px;'>用户在昨天未发布任何微博</div>";
+        html += "<div style='width:100%;height:100px;'>用户在未发布任何微博</div>";
     }else{
       html += '<div id="weibo_list" class="weibo_list weibo_list_height scrolls tang-scrollpanel" style="margin:0;">';
       html += '<div id="content_control_height" class="tang-scrollpanel-wrapper" style="margin:0;">';
@@ -326,19 +332,18 @@ function Draw_get_weibo(data,div_name){
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail" style="width:1000px">';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;';
-        html += '情绪：'+'积极'+'&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
         html += '<div class="weibo_info"style="width:100%">';
+        html += '<div class="weibo_pz">';
+        html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
+        html += '<a class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
+        html += '<a class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</a></div>';
         html += '<div class="m">';
         html += '<u>' + date + '</u>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;-&nbsp;';
-        // html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>&nbsp;-&nbsp;';
-        // html += '</div>';
-        // html += '<div class="weibo_pz">';
-        html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
-        html += '<span class="retweet_count" href="">转发数(' + reposts_count + ')</span>&nbsp;-&nbsp;';
-        html += '<span class="comment_count" href="">评论数(' + comments_count + ')</span></div>';
+        html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
+        html += '</div>';
         html += '</div>';
         html += '</div>';
         html += '</li>';
@@ -396,3 +401,10 @@ function participate_select_all(){
 function submit_participate(){
 	alert('hi');
 }
+
+function social_sen
+
+var sensing_url = '';
+sensing_url += '/social_sensing/get_warning_detail/?task_name=监督维权律师&keywords=律师&ts=1378567800';
+call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
+
