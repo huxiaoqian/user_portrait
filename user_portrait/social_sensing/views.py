@@ -8,6 +8,8 @@ from user_portrait.time_utils import datetime2ts, ts2datetime
 from user_portrait.global_utils import R_SOCIAL_SENSING as r
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import portrait_index_name, portrait_index_type
+from user_portrait.global_utils import group_index_name as index_group_manage
+from user_portrait.global_utils import group_index_type as doc_type_group
 from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_sensing_task
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
@@ -16,8 +18,6 @@ from utils import get_warning_detail, get_text_detail
 
 mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 
-index_group_manage = "group_manage"
-doc_type_group = "group"
 portrait_index_name = "user_portrait_1222"
 
 # 前台设置好的参数传入次函数，创建感知任务,放入es, 从es中读取所有任务信息放入redis:sensing_task 任务队列中
@@ -76,7 +76,6 @@ def ajax_delete_task():
     # delete task based on task_name
     task_name = request.args.get('task_name','') # must
     if task_name:
-        #r.pop("task_name", task_name)
         es.delete(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)
         #es.delete(index_sensing_task, task_name)
         return json.dumps(['1'])
@@ -159,6 +158,8 @@ def ajax_show_task():
         for item in search_results:
             item = item['_source']
             history_status = json.loads(item['history_status'])
+            keywords = json.loads(item['keywords'])
+            item['keywords'] = keywords
             temp_list = []
             temp_list.append(history_status[-1])
             for iter_item in history_status[:-1]:
@@ -214,7 +215,16 @@ def ajax_get_group_list():
     results = [] # 
     query_body = {
         "query":{
-            "match_all": {}
+            "filtered":{
+                "filter":{
+                    "bool":{
+                        "must":[
+                            {"term": {"task_type": "analysis"}},
+                            {"term": {"status": 0}} # attention-------------------------
+                        ]
+                    }
+                }
+            }
         },
         "sort": {"submit_date": {"order": "desc"}},
         "size": 10000

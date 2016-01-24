@@ -25,7 +25,7 @@ from global_utils import R_DICT as r_dict
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from global_config import R_BEGIN_TIME
-from parameter import ACTIVITY_GEO_TOP, MAX_VALUE
+from parameter import ACTIVITY_GEO_TOP, MAX_VALUE, DAY, HIS_BINS_COUNT
 from time_utils import ts2datetime, datetime2ts
 
 list_name = 'group_task'
@@ -46,6 +46,8 @@ def union_dict_list(objs):
     return _total
 
 # compute index rank like importance/activeness/influence rank
+# input: index_value and index_type
+# output: index_rank
 def get_index_rank(index_value, index_name):
     result = 0
     query_body = {
@@ -81,7 +83,15 @@ def get_attr_portrait(uid_list):
     topic_ratio = dict()
     keyword_ratio = dict()
     hashtag_ratio = dict()
-    activity_geo_ratio = dict()
+    activity_geo_distribution_date = dict() # {'date1':{geo1:person_count, geo2:person_count}, 'date2':{geo1:person_count,..}, ..} # one month
+    activity_geo_vary = dict() # {'geo2geo': count, ...}  geo2geo='activity_geo1&activity_geo2'
+    importance_list = []
+    influence_list = []
+    activeness_list = []
+    sentiment_dict_list = []
+    #get now date to iter activity geo
+    now_ts = int(time.time())
+    now_date_ts = datetime2ts(ts2datetime(now_ts))
     #split uid_list to bulk action
     iter_count = 0
     all_user_count = len(uid_list)
@@ -145,28 +155,87 @@ def get_attr_portrait(uid_list):
                     hashtag_ratio[hashtag] += 1
                 except:
                     hashtag_ratio[hashtag] = 1
-            #attr8: activity_geo_dict
+            #attr8: activity_geo_dict---distribution by date
             user_activity_geo = {}
             activity_geo_dict_list = json.loads(source['activity_geo_dict'])
-            user_activity_geo = union_dict_list(activity_geo_dict_list)
-            sort_user_activity_geo = sorted(user_activity_geo.items(), key=lambda x:x[1], reverse=True)
-            top_user_activity_geo = sort_user_activity_geo[:ACTIVITY_GEO_TOP]
-            for city in top_user_activity_geo:
-                try:
-                    activity_geo_ratio[city] += 1
-                except:
-                    activity_geo_ratio[city] = 1
-            #attr9: influence list
-            influence = source['influence']
+            activity_geo_date_count = len(activity_geo_dict_list)
+            iter_ts = now_date_ts - activity_geo_date_count * DAY
+            user_date_main_list = []
+            for i in range(0, activity_geo_date_count):
+                if iter_date in activity_geo_distribution_date:
+                    activity_geo_distribution_date[iter_ts] = union_dict([activity_geo_distribution_date[iter_ts], date_item])
+                else:
+                    activity_geo_distribution_date[iter_ts] = date_item
+                #use to get activity_geo vary
+                sort_date_item = sorted(date_item.items(), key=lambda x:x[1], reverse=True)
+                if date_item != {}:
+                    main_date_city = sort_date_item[0][0]
+                    try:
+                        last_user_date_main_item = user_date_main_list[-1]
+                    except:
+                        lasr_user_date_main_item = ''
+                    if main_date_city != main_date_city:
+                        user_date_main_list.append(main_date_city)
+
+                iter_ts += DAY
+            #attr8: activity_geo_dict---location vary
+            if len(user_date_main_list) > 1:
+                for i in range(1, len(user_date_main_list)):
+                    vary_item = '&'.join(user_date_main_list[i-1:i])
+                    try:
+                        activity_geo_vary[vary_item] += 1
+                    except:
+                        activity_geo_vary[vary_item] = 1
             
-            #attr10: importance list
-
-
-
-
-
+            #attr9: influence distribution
+            influence = source['influence']
+            influence_rank = get_index_rank(influence, 'influence')
+            influence_list.append(influence_rank) 
+            #attr10: importance distribution
+            importance = source['importance']
+            importance_rank = get_index_rank(importance, 'importance')
+            importance_list.append(importance_rank)
+            #attr11: activeness distribution
+            activeness = source['activeness']
+            activeness_rank = get_index_rank(activeness, 'activeness')
+            activeness_list.append(activeness_rank)
+            #attr12: tag
+            for user_attribute_item in source:
+                if user_attribute_item not in IDENTIFY_ATTRIBUTE_LIST:
+                    tag_name = user_attribute_item
+                    tag_value = source[user_attribute_item]
+                    tag_key = tag_name + ':' + tag_value
+                    try:
+                        tag_dict[tag_key] += 1
+                    except:
+                        tag_dict[tag_key] = 1
+            #attr13: psycho status
+            #test
+            user_sentiment = source['psycho_status']['first_dict']
+            #user_sentiment = source['psycho_status']
+            sentiment_dict_list.append(user_sentiment)
 
         iter_count += DETECT_ITER_COUNT
+    #get all sentiment dict
+    sentiment_dict = union_dict_list(sentiment_dict_list)
+    # importance ditribution
+    p, t = np.histogram(importance_list, bins=HIS_BINS_COUNT, normed=False)
+    results['importance_his'] = [p.tolist(), t.tolist()]
+    p, t = np.histogram(influence_list, bins=HIS_BINS_COUNT, normed=False)
+    results['influence_his'] = [p.tolist(), t.tolist()]
+    p, t = np.histogram(activeness_list, bins=HIS_BINS_COUNT ,normed=False)
+    results['activeness_his'] = [p.tolist(), t.tolist()]
+    # get result dict
+    result['gender'] = json.dumps(gender_ratio)
+    result['verified'] = json.dumps(verified_ratio)
+    result['online_pattern'] = json.dumps(onlinr_pattern)
+    result['domain'] = json.dumps(domain_ratio)
+    result['topic'] = json.dumps(topic_rati)
+    result['activity_geo_distribution'] = json.dumps(activity_geo_distribution_date)
+    result['activity_geo_vary'] = json.dumps(activity_geo_vary)
+    result['hashtag'] = json.dumps(hashtag_dict)
+    return result
+
 
 
 #abandon in version: 160122

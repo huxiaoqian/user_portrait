@@ -154,6 +154,7 @@ def get_task_detail_2(task_name, keywords, ts):
     keywords_dict = aggregation_hot_keywords(start_time, stop_time, keywords_list)
     sorted_keywords_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:100]
 
+    results['keywords'] = keywords_list
     results['keywords_list'] = sorted_keywords_list
     results['important_user_detail'] = user_detail_info
     results['burst_time'] = burst_time_list # 爆发时间点，以及爆发原因
