@@ -26,8 +26,11 @@ def create_task_list(ts):
         "query":{
             "filtered":{
                 "filter":{
-                    "term":{
-                        "finish": "0"
+                    "bool":{
+                        "must":[
+                            {"term":{"finish": "0"}},
+                            {"term":{"processing_status": "1"}}
+                        ]
                     }
                 }
             }

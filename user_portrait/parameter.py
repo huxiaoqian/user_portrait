@@ -195,6 +195,8 @@ signal_nothing_variation = ""
 finish_signal = "1"
 unfinish_signal = "0"
 SOCIAL_SENSOR_INFO = ['uid', 'uname', "photo_url", "domain", "topic_string", "importance", "influence", "activeness"]
+AGGRAGATION_KEYWORDS_NUMBER = 20
+PRE_AGGREGATION_NUMBER = 50
 
 # 预警提示句
 CURRENT_WARNING_DICT = {
@@ -242,3 +244,9 @@ IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influ
 #cron_group
 ACTIVITY_GEO_TOP = 3
 HIS_BINS_COUNT = 5
+GROUP_ACTIVITY_TIME_THRESHOLD = [0.3, 0.5]
+GROUP_ACTIVITY_TIME_DECRIPTION_DICT = {
+        '0': u'群体用户活跃时间较分散',
+        '1': u'群体用户活跃时间较集中',
+        '2': u'群体用户活跃时间非常集中'
+        }
