@@ -7,6 +7,12 @@
                 </select>
                 <span id="sensing_event_commit" onclick="submit_sensing_event();" class="label label-success" style='padding:5px;margin-left:35px;cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>查看相关用户</span>
             </div>    
+            <div class='col-md-12' style="padding-left:0px;margin-bottom:10px;width:820px;">
+                 <div class='col-md-4'>
+                     <span class="input-group-addon" style="padding:0px;margin-left:-10px;font-weight:bold;width:50px;border:1px solid white;background-color:white; display:inline-block" id="">关键词</span>
+                     <span class="input-group-addon" style="width:50px;border:1px solid white;background-color:white; display:inline-block" id="sensing_keywords"></span>
+                 </div>
+            </div>
             <div id="social_sensing_table" style="">
   			</div>
             <hr style='width:750px;margin-bottom:0px;'>
@@ -48,7 +54,8 @@
             success:callback
         });
     }
-    function draw_social_sensing_table (data) {
+function draw_social_sensing_table (data) {
+        console.log(data);
         $('#social_sensing #social_sensing_table').empty();
 		var html = '';
 		html += '<table id="social_table" class="table table-bordered table-striped table-condensed datatable">';
