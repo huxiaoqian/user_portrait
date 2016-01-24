@@ -15,6 +15,7 @@ from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_t
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.parameter import finish_signal, unfinish_signal, SOCIAL_SENSOR_INFO
 from utils import get_warning_detail, get_text_detail
+from full_text_serach import aggregation_hot_keywords
 
 mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 
@@ -90,7 +91,7 @@ def ajax_stop_task():
     task_name = request.args.get('task_name','') # must
     if task_name:
         task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)['_source']
-        task_detail["finish"] = finish_signal
+        #task_detail["finish"] = finish_signal
         task_detail['processing_status'] = '0'
         es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
         return json.dumps(['1'])
@@ -101,6 +102,13 @@ def ajax_stop_task():
 # 修改任务终止时间
 # 修改finish=0代表重启任务
 # 修改终止时间，当任务停止后即使延迟终止时间，仍需要设置finish=0代表重新启动
+# if finish == 1:
+#    finish
+# else:
+#    if processing_status == 0:
+#        print "stop"
+#    else:
+#        print "working"
 @mod.route('/revise_task/')
 def ajax_revise_task():
     task_name = request.args.get('task_name','') # must
@@ -231,14 +239,22 @@ def ajax_get_group_list():
     }
 
     search_results = es.search(index=index_group_manage, doc_type=doc_type_group, body=query_body, timeout=600)['hits']['hits']
-    for item in search_results:
-        temp = []
-        temp.append(item['task_name'])
-        temp.append(json.loads(item['uid_list']))
-        results.append(temp)
+    if search_results:
+        for item in search_results:
+            temp = []
+            temp.append(item['task_name'])
+            temp.append(item['submit_user'])
+            temp.append(item['submit_date'])
+            temp.append(item['count'])
+            temp.append(item['state'])
+            temp.append(json.loads(item['uid_list']))
+            results.append(temp)
 
     return json.dumps(results)
-
+@mod.route('get_group_detail')
+def ajax_get_group_detail():
+    task_name = request.args.get('task_name','') # task_name
+    uid_list = json.loads(es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name)['_source']['uid_list'])
 
 
 # 返回某个预警事件的详细信息，包括微博量、情感和参与的人
@@ -253,7 +269,18 @@ def ajax_get_warning_detail():
 
     return json.dumps(results)
 
+# 聚合关键词
+@mod.route('/get_keywords_list/')
+def ajax_get_keywords_list():
+    task_name = request.args.get('task_name','') # task_name
+    keywords = request.args.get('keywords', '') # warning keywords, seperate with ","
+    keywords_list = keywords.split(',')
+    ts = request.args.get('ts', '') # timestamp: 123456789
+    start_time = request.args.get('start_time', '') # task_name 创建时间
 
+    results = aggregation_hot_keywords(start_time, ts, keywords_list)
+
+    return json.dumps(results)
 # 返回某个时间段特定的文本，按照热度排序
 @mod.route('/get_text_detail/')
 def ajax_get_text_detail():

@@ -74,6 +74,10 @@ def manage_sensing_task():
                         "type": "string",
                         "index": "not_analyzed"
                     },
+                    "processing_status":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
                     "stop_time":{
                         "type": "string",
                         "index": "not_analyzed"
