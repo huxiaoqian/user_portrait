@@ -7,7 +7,7 @@ from flask import Blueprint, url_for, render_template, request,\
 from utils import save_detect_single_task, save_detect_multi_task ,\
                   save_detect_attribute_task, save_detect_event_task, \
                   show_detect_task, detect2analysis, delete_task, \
-                  show_detect_result, search_detect_task
+                  show_detect_result, search_detect_task, submit_sensing
 
 from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.parameter import DETECT_QUERY_ATTRIBUTE, DETECT_QUERY_STRUCTURE,\
@@ -499,3 +499,12 @@ def ajax_delete_task():
 def ajax_socail_sensing():
     results = {}
     return json.dumps(results)
+
+#use to submit social sensing group to analysis
+#input: get_json
+#output:
+@mod.route('/submit_sensing/')
+def ajax_submit_sensing():
+    status = False
+    input_dict = request.get_json() # input_dict ={'task_information': {'task_name':xx, 'uid_list':[], 'state':[], submit_user:admin'}}
+    return json.dumps(status)
