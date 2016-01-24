@@ -16,6 +16,8 @@ from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.parameter import SOCIAL_SENSOR_INFO, signal_count_varition, signal_sentiment_varition, CURRENT_WARNING_DICT, IMPORTANT_USER_THRESHOULD
+from user_portrait.time_utils import ts2date_min
+
 portrait_index_name = "user_portrait_1222"
 
 # 特别适用于doc_type=2的事件
@@ -30,6 +32,7 @@ def get_task_detail_2(task_name, keywords, ts):
     start_time = task_detail['create_at']
     stop_time = task_detail['stop_time']
     portrait_detail = []
+    count = 0 # 计数
 
     if social_sensors:
         search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":social_sensors}, fields=SOCIAL_SENSOR_INFO)['docs']
@@ -59,7 +62,7 @@ def get_task_detail_2(task_name, keywords, ts):
     for item in history_status:
         if int(item[0]) <= ts:
             time_series.append(item[0]) # 到目前为止的所有的时间戳
-
+    print time_series
     # get detail task information from es
     if time_series:
         #print time_series
@@ -84,7 +87,12 @@ def get_task_detail_2(task_name, keywords, ts):
 
             burst_reason = item.get("burst_reason", "")
             if burst_reason:
-                burst_time_list.append([timestamp, burst_reason])
+                burst_time_list.append([timestamp, count])
+            count += 1
+    negetive_sentiment_list = []
+    for i in range(len(time_series)):
+        negetive_sentiment_list.append(sad_sentiment_list[i]+anger_sentiment_list[i])
+
 
     # 统计爆发原因，下相应的结论
     weibo_variation_count = 0
@@ -97,15 +105,15 @@ def get_task_detail_2(task_name, keywords, ts):
         for item in burst_time_list:
             if int(item[1]) == int(signal_count_varition):
                 weibo_variation_count += 1
-                weibo_variation_time.append(ts2date(item[0]))
+                weibo_variation_time.append([ts2date(item[0]), total_number_list[item[1]]])
             elif int(item[1]) == int(signal_sentiment_varition):
                 sentiment_variation_count += 1
-                sentiment_variation_time.append(ts2date(item[0]))
+                sentiment_variation_time.append([ts2date(item[0]), negetive_sentiment_list[item[1]]])
             else:
                 weibo_variation_count += 1
-                weibo_variation_time.append(ts2date(item[0]))
+                weibo_variation_time.append([ts2date(item[0]), total_number_list[item[1]]])
                 sentiment_variation_count += 1
-                sentiment_variation_time.append(ts2date(item[0]))
+                sentiment_variation_time.append([ts2date(item[0]), negetive_sentiment_list[item[1]]])
                 common_variation_count += 1
                 common_variation_time.append(ts2date(item[0]))
 
@@ -149,20 +157,18 @@ def get_task_detail_2(task_name, keywords, ts):
                 temp.append(item['fields']['influence'][0])
                 temp.append(item['fields']['activeness'][0])
                 user_detail_info.append(temp)
-                print temp
+                #print temp
 
-    keywords_dict = aggregation_hot_keywords(start_time, stop_time, keywords_list)
-    sorted_keywords_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:100]
+    revise_time_series = []
+    for item in time_series:
+        revise_time_series.append(ts2date_min(item))
 
     results['keywords'] = keywords_list
-    results['keywords_list'] = sorted_keywords_list
+    #results['keywords_list'] = sorted_keywords_list
     results['important_user_detail'] = user_detail_info
     results['burst_time'] = burst_time_list # 爆发时间点，以及爆发原因
-    results['time_series'] = time_series
+    results['time_series'] = revise_time_series
     results['positive_sentiment_list'] = positive_sentiment_list
-    negetive_sentiment_list = []
-    for i in range(len(time_series)):
-        negetive_sentiment_list.append(sad_sentiment_list[i]+anger_sentiment_list[i])
     results['negetive_sentiment_list'] = negetive_sentiment_list
     results['neutral_sentiment_list'] = neutral_sentiment_list
     results['origin_weibo_list'] = origin_weibo_list
