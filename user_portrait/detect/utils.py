@@ -462,3 +462,28 @@ def delete_task(task_name):
     
     return status
 
+#use to submit sensing result to analysis
+def submit_sensing(input_dict):
+    status = True
+    #step1: identify the task name is valid
+    task_name = input_dict['task_name']
+    try:
+        task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)
+    except:
+        task_exist_result = {}
+    if task_exist_result != {}:
+        return 'task name invalid'
+
+    #step2: save to compute es
+    submit_date = int(time.time())
+    input_dict['task_information']['submit_date'] = submit_date
+    input_dict['task_informaiton']['count'] = len(input_dict['task_information']['uid_list'])
+    es_status = save_compute2es(input_dict)
+    #step3: save to compute redis
+    redis_status = save_compute2redis(input_dict)
+    #identify the operation status
+    if es_status == True and redis_status ==True:
+        status = True
+    else:
+        status = False
+    return status

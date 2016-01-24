@@ -687,7 +687,7 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
     iter_count = 0
     hit_user_set = set()
     while iter_count < user_count:
-        iter_user_list = [portrait_item['_id'] for portrait_item in user_portrait_result[iter_count: iter_count+DETECT_ITER_COUNT / 10]]
+        iter_user_list = [portrait_item['_id'] for portrait_item in user_portrait_result[iter_count: iter_count+DETECT_ITER_COUNT]]
         #get uid nest_body_list
         iter_user_pattern_condition_list = [{'terms': {'uid': iter_user_list}}]
         iter_user_pattern_condition_list.append(new_pattern_list)
@@ -705,20 +705,22 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
                         body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
             except:
                 flow_text_exist = []
+            print 'folw_text_exist:', len(flow_text_exist)
             #get hit user set
             for flow_text_item in flow_text_exist:
                 uid = flow_text_item['fields']['uid'][0]
                 hit_user_set.add(uid)
 
-        iter_count += DETECT_ITER_COUNT / 10
+        iter_count += DETECT_ITER_COUNT
     #identify the hit user list ranked by score
     rank_hit_user = []
+    print 'end hit_user_set:', len(hit_user_set)
     for user_item in user_portrait_result:
         uid = user_item['_id']
         uid_set = set(uid)
-        if len(uid_set & hit_user_set) != 0:
+        if uid in hit_user_set:
             rank_hit_user.append(uid)
-        
+    print 'rank_hit_user:', len(rank_hit_user)
     return rank_hit_user
 
 
@@ -733,14 +735,14 @@ def pattern_filter_attribute(pattern_list, filter_dict):
     for pattern_item in pattern_list:
         if 'range' in pattern_item:
             range_dict = pattern_item['range']
-            from_ts = range_dict['gte']
-            to_ts = range_dict['lt']
+            from_ts = range_dict['timestamp']['gte']
+            to_ts = range_dict['timestamp']['lt']
             from_date_ts = datetime2ts(ts2datetime(from_ts))
             to_date_ts = datetime2ts(ts2datetime(to_ts))
             if from_date_ts != to_date_ts:
                 iter_date_ts = from_date_ts
                 while iter_date_ts <= to_date_ts:
-                    iter_next_date_ts = iter_date_ts + DAY
+                    iter_next_date_ts = iter_date_ts + DAY / 48
                     new_range_dict_list.append({'range':{'timestamp':{'gte':iter_date_ts, 'lt':iter_next_date_ts}}})
                     iter_date_ts = iter_next_date_ts
                 if new_range_dict_list[0]['range']['timestamp']['gte'] < from_ts:
@@ -750,32 +752,36 @@ def pattern_filter_attribute(pattern_list, filter_dict):
             else:
                 new_range_dict_list = [{'range': {'timestamp':{'gte': from_ts, 'lt': to_ts}}}]
         else:
-            new_pattern_list.append(patter_item)
+            new_pattern_list.append(pattern_item)
     #step2.1: iter to search user who meet pattern condition
     #step2.2: filter who is in user_portrait and meet filter_dict
     all_hit_user = {}
     for range_item in new_range_dict_list:
-        iter_date_pattern_condition_list = new_pattern_list
+        iter_date_pattern_condition_list = [item for item in new_pattern_list]
         iter_date_pattern_condition_list.append(range_item)
         range_from_ts = range_item['range']['timestamp']['gte']
         range_from_date = ts2datetime(range_from_ts)
         
         flow_index_name = flow_text_index_name_pre + range_from_date
-        try:
-            flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type,\
+        print 'flow index name:', flow_index_name
+        print 'iter_date_pattern_condition_list:', iter_date_pattern_condition_list
+        #try:
+        flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type,\
                     body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size': MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
-        except:
-            flow_text_exist = []
+        #except:
+        #    flow_text_exist = []
+        print 'flow text exist:', len(flow_text_exist)
         #pattern user set
         pattern_user_set = set([flow_text_item['fields']['uid'][0] for flow_text_item in flow_text_exist])
         pattern_user_list = list(pattern_user_set)
         #filter by user_portrait filter dict by bulk action
-        patter_user_count = len(pattern_user_list)
+        pattern_user_count = len(pattern_user_list)
         iter_count = 0
         #add filter dict
         inter_portrait_condition_list = []
         inter_portrait_condition_list.append({'range':{'importance':{'gte': filter_dict['importance']['gte'], 'lt': filter_dict['importance']['lt']}}})
-        inter_portrait_condition_list.append({'range':{'importance':{'gte': filter_dict['influence']['gte'], 'lt':filter_dict['influence']['lt']}}})
+        inter_portrait_condition_list.append({'range':{'influence':{'gte': filter_dict['influence']['gte'], 'lt':filter_dict['influence']['lt']}}})
+        
         while iter_count < pattern_user_count:
             iter_user_list = pattern_user_list[iter_count: iter_count + DETECT_ITER_COUNT]
             #get uid nest_body_list
@@ -950,8 +956,8 @@ def event_detect(input_dict):
 
     #step3: filter user list by filter count
     count = filter_dict['count']
-    results = fitler_user_list[:count]
-
+    results = filter_user_list[:count]
+    print 'result:', results
     return results
 
 #use to save detect results to es
@@ -1089,6 +1095,11 @@ if __name__=='__main__':
     event_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type': 'event'},\
             'query_condition':{'attribute':[{'wildcard':{'domain':'*'+'媒体'+'*'}}, {'wildcard':{'topic': '*'+'民生类_社会保障'+'*'}}],\
             'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
+            'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
+            'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
+
+    event_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'event'},\
+            'query_condition':{'attribute':[], 'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
     results = event_detect(event_dict)

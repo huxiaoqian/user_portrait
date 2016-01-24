@@ -238,3 +238,6 @@ IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influ
         'online_pattern', 'keywords_string', 'topic', 'activity_geo', 'uname', 'hashtag', 'keywords', 'fansnum', \
         'psycho_status', 'tendency', 'photo_url', 'verified', 'statusnum', 'gender', 'topic_string',\
         'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark']
+
+#cron_group
+ACTIVITY_GEO_TOP = 3

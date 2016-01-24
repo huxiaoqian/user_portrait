@@ -12,12 +12,38 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
 from global_utils import R_GROUP as r
+from global_utils import group_analysis_queue_name
+from global_utils import es_user_portrait, portrait_index_name, portrait_index_type ,\
+                         es_group_result, group_index_name, group_index_type ,\
+                         es_retweet, retweet_index_name_pre, retweet_index_type ,\
+                         be_retweet_index_name, be_retweet_index_type ,\
+                         es_comment, comment_index_name_pre, comment_index_type ,\
+                         be_comment_index_name, be_comment_index_type ,\
+                         es_flow_text, flow_text_index_name_pre, flow_text_index_type
+
 from global_utils import R_DICT as r_dict
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import ES_CLUSTER_FLOW1 as es_cluster
+from global_config import R_BEGIN_TIME
+from parameter import ACTIVITY_GEO_TOP, MAX_VALUE
 from time_utils import ts2datetime, datetime2ts
 
 list_name = 'group_task'
+
+
+r_begin_ts = datetime2ts(R_BEGIN_TIME)
+
+
+#use to merge dict list
+#input: dict_list
+#ouput: merge_dict
+def union_dict_list(objs):
+    _keys = set(sum([obj.keys() for obj in objs], []))
+    _total = {}
+    for _key in _keys:
+        _total[_key] = sum([int(obj.get(_key, 0)) for obj in objs])
+
+    return _total
 
 # compute index rank like importance/activeness/influence rank
 def get_index_rank(index_value, index_name):
@@ -27,12 +53,12 @@ def get_index_rank(index_value, index_name):
                 'range':{
                     index_name:{
                         'from':index_value,
-                        'to': 100000
+                        'to': MAX_VALUE
                         }
                     }
                 }
             }
-    index_rank = es.count(index='user_portrait', doc_type='user', body=query_body)
+    index_rank = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)
     if index_rank['_shards']['successful'] != 0:
        result = index_rank['count']
     else:
@@ -41,15 +67,116 @@ def get_index_rank(index_value, index_name):
     return result
 
 
+#compute attr from es_user_portrait
+#version: 16-01-22
+#input: uid_list
+#output: 
+def get_attr_portrait(uid_list):
+    result = {}
+    #init some dict
+    gender_ratio = dict()
+    verified_ratio = dict()
+    online_pattern_ratio = dict()
+    domain_ratio = dict()
+    topic_ratio = dict()
+    keyword_ratio = dict()
+    hashtag_ratio = dict()
+    activity_geo_ratio = dict()
+    #split uid_list to bulk action
+    iter_count = 0
+    all_user_count = len(uid_list)
+    while iter_count < all_user_count:
+        iter_uid_list = uid_list[iter_count: iter_count + DETECT_ITER_COUNT]
+        try:
+            iter_user_dict_list = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                body={'ids':iter_uid_list})['docs']
+        except:
+            iter_user_dict_list = []
+
+        for user_dict in iter_user_dict_list:
+            source = user_dict['_source']
+            #attr1: gender ratio:
+            gender = source['gender']
+            try:
+                gender_ratio[gender] += 1
+            except:
+                gender_ratio[gender] = 1
+            #attr2: verified ratio
+            verified = source['verified']
+            try:
+                verified_ratio[verified] += 1
+            except:
+                verified_ratio[verified] = 1
+            #attr3: online pattern
+            online_pattern = source['online_pattern']
+            online_pattern = json.loads(online_pattern)
+            for pattern in online_pattern:
+                try:
+                    online_pattern_ratio[pattern] += 1
+                except:
+                    online_pattern_ratio[pattern] = 1
+            #attr4: domain
+            domain = source['domain']
+            try:
+                domain_ratio[domain] += 1
+            except:
+                domain_ratio[domain] = 1
+            #attr5: topic
+            topic_string = source['topic_string']
+            topic_list = topic_string.split('&')
+            for topic in topic_list:
+                try:
+                    topic_ratio[topic] += 1
+                except:
+                    topic_ratio[topic] = 1
+            #attr6: keywords_string
+            keywords_string = source['keywords_string']
+            keywords_list = keywords_string.split('&')
+            for keyword in keywords_list:
+                try:
+                    keyword_ratio[keyword] += 1
+                except:
+                    keyword_ratio[keyword] = 1
+            #attr7: hashtag
+            hashtag_string = source['hashtag']
+            hashtag_list = hashtag_string.split('&')
+            for hashtag in hashtag_list:
+                try:
+                    hashtag_ratio[hashtag] += 1
+                except:
+                    hashtag_ratio[hashtag] = 1
+            #attr8: activity_geo_dict
+            user_activity_geo = {}
+            activity_geo_dict_list = json.loads(source['activity_geo_dict'])
+            user_activity_geo = union_dict_list(activity_geo_dict_list)
+            sort_user_activity_geo = sorted(user_activity_geo.items(), key=lambda x:x[1], reverse=True)
+            top_user_activity_geo = sort_user_activity_geo[:ACTIVITY_GEO_TOP]
+            for city in top_user_activity_geo:
+                try:
+                    activity_geo_ratio[city] += 1
+                except:
+                    activity_geo_ratio[city] = 1
+            #attr9: influence list
+            influence = source['influence']
+            
+            #attr10: importance list
 
 
+
+
+
+
+        iter_count += DETECT_ITER_COUNT
+
+
+#abandon in version: 160122
+'''
 # compute attr from es_user_portrait
 def get_attr_portrait(uid_list):
     result = {}
     index_name = 'user_portrait'
     index_type = 'user'
-    user_dict_list = es.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
-    #print 'user_dict:', user_dict_list
+    user_dict_list = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
     gender_ratio = dict()
     verified_ratio = dict()
     online_pattern_ratio = dict()
@@ -198,14 +325,49 @@ def get_attr_portrait(uid_list):
     result['activeness_his'] = json.dumps(activeness_his)
     result['influence_his'] = json.dumps(influence_his)
     return result
+'''
 
 
+#use to get db number for retweet/be_retweet/comment/be_comment
+#input: timestamp
+#output: db_number
+def get_db_num(timestamp):
+    date = ts2datetime(timestamp)
+    date_ts = datetime2ts(date)
+    db_number = (((date_ts - r_begin_ts) / DAY) / 7) % 2 + 1
+    
+    return db_number
+
+
+
+#use to get group social attribute
+#write in version: 16-01-23
+#input: uid_list
+#output: group social attribute
 def get_attr_social(uid_list):
-    #test
-    '''
-    uid_list = ['1514608170', '2729648295', '3288875501', '1660612723', '1785934112',\
-                '2397686502', '1748065927', '2699434042', '1886419032', '1830325932']
-    '''
+    result = {}
+    #step1: get db number
+    timestamp = int(time.time())
+    db_num = get_db_num(timestamp)
+    #step2: split uid list to iter mget
+    iter_count = 0
+    all_user_count = len(uid_list)
+    while iter_count < all_user_count:
+        iter_uid_list = uid_list[iter_count:iter_count+DETECT_ITER_COUNT]
+
+    #step2: mget retweet
+    #step3: mget be_retweet
+    #step4: mget comment
+    #step5: mget be_comment
+    #step6: union four type social user list
+    #step7: filter to identify who is in user_portrait or not
+    #step8: compute in-portrait index, out_portrait index
+    return result
+
+
+#abandon in version:16-01-23
+'''
+def get_attr_social(uid_list):
     result = {}
     union_dict = {}
     union_edge_count = 0
@@ -292,6 +454,7 @@ def get_attr_social(uid_list):
     #print 'result:', result
     #print 'out_beretweet_relation:', sort_out_beretweet_relation
     return result
+'''
 
 def get_attr_trend(uid_list):
     result = {}
@@ -742,11 +905,10 @@ def ip2geo(ip_dict):
 def compute_group_task():
     results = dict()
     while True:
-        task = r.rpop(list_name)
+        task = r.rpop(group_analysis_queue_name)
         if not task:
             break
         else:
-            #print 'task:', task
             task = json.loads(task)
             #uid_list should be keep list type to save in es
             uid_list = task['uid_list']
@@ -786,12 +948,12 @@ def compute_group_task():
     task = json.loads(TASK)
     task_name = task['task_name']
     uid_list = task['uid_list']
-    submit_date = task['submit_date']
+    submit_date = task['submit_date']  #submit_date = timestamp
     # attr1 group member count
     results['count'] = len(uid_list)
     # get attr from es_user_portrait
     attr_in_portrait = get_attr_portrait(uid_list)
-    #print 'activity_geo:', attr_in_portrait['activity_geo']
+
     results['task_name'] = task_name
     results['uid_list'] = uid_list
     results['submit_date'] = submit_date
