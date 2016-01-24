@@ -100,7 +100,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                     console.log(global_choose_uids);
                     console.log(global_pre_page);
                     console.log(test_uids);
-                    var prePage = $('li.groupcustom').children('a').html();
+                    var prePage = $('li.participatecustom').children('a').html();
                     global_pre_page = prePage; // redefine global_pre_page
                 }
             };
@@ -143,7 +143,7 @@ $.extend($.fn.dataTableExt.oPagination, {
 
                 // add the new list items and their event handlers
                 for (j = iStart; j <= iEnd; j++) {
-                    sClass = (j == oPaging.iPage + 1) ? 'class="active groupcustom"' : '';
+                    sClass = (j == oPaging.iPage + 1) ? 'class="active participatecustom"' : '';
                     $('<li ' + sClass + '><a href="#">' + j + '</a></li>')
                         .insertBefore($('li:last', an[i])[0])
                         .bind('click', function (e) {
