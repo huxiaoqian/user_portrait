@@ -15,7 +15,7 @@ from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_social_task
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
-from user_portrait.parameter import IMPORTANT_USER_THRESHOULD
+from user_portrait.parameter import IMPORTANT_USER_THRESHOULD, SOCIAL_SENSOR_INFO
 from user_portrait.social_sensing.full_text_serach import count_hot_uid
 portrait_index_name = "user_portrait_1222"
 
@@ -43,6 +43,7 @@ def show_social_sensing_task():
 
 
 def show_important_users(task_name):
+    return_results = dict() # 返回字典
     task_detail = es.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)["_source"]
     portrait_detail = []
     important_user_set = set() # 重要人物列表
@@ -51,9 +52,26 @@ def show_important_users(task_name):
     stop_time = int(task_detail['stop_time'])
     time_series = []
     keywords_list = json.loads(task_detail['keywords'])
+    return_results['keywords'] = keywords_list
+    return_results['remark'] = task_detail['remark']
+    social_sensors = json.loads(task_detail['social_sensors'])
     print keywords_list
     for item in history_status:
         time_series.append(item[0])
+
+    # return social sensors details
+    if social_sensors:
+        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":social_sensors},fields=['uid', 'uname', 'domain', 'topic_string', "photo_url", 'importance', 'influence', 'activeness'])["docs"]
+        for item in search_results:
+            temp = []
+            if item['found']:
+                for iter_item in SOCIAL_SENSOR_INFO:
+                    if iter_item == "topic_string":
+                        temp.append(item["fields"][iter_item][0].split('&'))
+                    else:
+                        temp.append(item["fields"][iter_item][0])
+                portrait_detail.append(temp)
+    return_results['social_sensors_detail'] = portrait_detail
 
     if time_series:
         flow_detail = es.mget(index=index_sensing_task, doc_type=task_name, body={"ids": time_series})['docs']
@@ -88,6 +106,7 @@ def show_important_users(task_name):
                 print temp
 
 
-    return user_detail_info
+    return_results['group_list'] = user_detail_info
 
+    return return_results
 
