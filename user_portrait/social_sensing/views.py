@@ -30,13 +30,17 @@ portrait_index_name = "user_portrait_1222"
 def ajax_create_task():
     # task_name forbid illegal enter
     task_name = request.args.get('task_name','') # must
-    create_by = request.args.get('create_by', '') # must
+    create_by = request.args.get('create_by', 'admin') #
     stop_time = request.args.get('stop_time', "default") #timestamp, 1234567890
     social_sensors = request.args.get("social_sensors", "") #uid_list, split with ","
     keywords = request.args.get("keywords", "") # keywords_string, split with ","
     remark = request.args.get("remark", "")
 
-    if task_name and create_by:
+    exist_es = es.indices.exists(index=task_name)
+    if exist_es:
+        return json.dumps(["0"]) # 任务名不能重合
+
+    if task_name:
         task_detail = dict()
         task_detail["task_name"] = task_name
         task_detail["create_by"] = create_by
@@ -61,8 +65,6 @@ def ajax_create_task():
                 task_detail["task_type"] = "1"
             else:
                 task_detail["task_type"] = "0"
-    else:
-        return json.dumps([])
 
 
     # store task detail into es
@@ -241,6 +243,7 @@ def ajax_get_group_list():
     search_results = es.search(index=index_group_manage, doc_type=doc_type_group, body=query_body, timeout=600)['hits']['hits']
     if search_results:
         for item in search_results:
+            item = item['_source']
             temp = []
             temp.append(item['task_name'])
             temp.append(item['submit_user'])
@@ -251,11 +254,27 @@ def ajax_get_group_list():
             results.append(temp)
 
     return json.dumps(results)
-@mod.route('get_group_detail')
+
+@mod.route('/get_group_detail/')
 def ajax_get_group_detail():
     task_name = request.args.get('task_name','') # task_name
-    uid_list = json.loads(es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name)['_source']['uid_list'])
+    portrait_detail = []
+    search_result = es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name).get('_source', {})
+    if search_result:
+        uid_list = json.loads(search_result['uid_list'])
+        print uid_list
+        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":uid_list}, fields=SOCIAL_SENSOR_INFO)['docs']
+        for item in search_results:
+            temp = []
+            if item['found']:
+                for iter_item in SOCIAL_SENSOR_INFO:
+                    if iter_item == "topic_string":
+                        temp.append(item["fields"][iter_item][0].split('&'))
+                    else:
+                        temp.append(item["fields"][iter_item][0])
+                portrait_detail.append(temp)
 
+    return json.dumps(portrait_detail)
 
 # 返回某个预警事件的详细信息，包括微博量、情感和参与的人
 @mod.route('/get_warning_detail/')
