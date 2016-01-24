@@ -21,7 +21,7 @@ from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_t
 from user_portrait.parameter import FORWARD_N as forward_n
 from user_portrait.parameter import INITIAL_EXIST_COUNT as initial_count
 from user_portrait.parameter import IMPORTANT_USER_NUMBER, IMPORTANT_USER_THRESHOULD, signal_brust, signal_track, signal_count_varition, signal_sentiment_varition,signal_nothing, signal_nothing_variation, \
-                      unfinish_signal, finish_signal
+                      unfinish_signal, finish_signal, AGGRAGATION_KEYWORDS_NUMBER, PRE_AGGREGATION_NUMBER
 
 day_time = 24*3600
 """
@@ -170,7 +170,7 @@ def aggregation_hot_keywords(start_time, stop_time, keywords_list):
         },
         "aggs":{
             "all_keywords":{
-                "terms": {"field": "keywords_string", "size": 50}
+                "terms": {"field": "keywords_string", "size": PRE_AGGREGATION_NUMBER}
             }
         }
     }
@@ -211,4 +211,5 @@ def aggregation_hot_keywords(start_time, stop_time, keywords_list):
             if datetime_1 == datetime:
                 break
     print keywords_dict
-    return keywords_dict
+    return_dict = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:AGGRAGATION_KEYWORDS_NUMBER]
+    return return_dict
