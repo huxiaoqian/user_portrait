@@ -95,10 +95,13 @@ Social_sense.prototype = {   //获取数据，重新画表
 			warn = '事件跟踪';
 		}
 		if(item[i]['finish'] == 0){
-			operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>&nbsp;&nbsp;<a href="javascript:void(0)" id="so_stop_task">终止</a>';
 			if(item[i]['processing_status']==0){
 				f_color = 'style="color:red"';
-			}else{f_color = '';}
+				operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>';
+			}else{
+				f_color = '';
+				operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>&nbsp;&nbsp;<a href="javascript:void(0)" id="so_stop_task">终止</a>';
+			}
 		}else{
 			operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>';
 			f_color = '';
@@ -375,22 +378,23 @@ function so_user_check(){             // check validation
 function so_group_data(){
 	var flag = so_user_check();
 	var a = new Array();
-    a['task_name'] = $('#so_name').val();
-    a['remark'] = $('#so_remarks').val();
-	a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
-	a['keywords'] = '';
-	a['create_at'] =  Date.parse(new Date())/1000;
-	a['social_sensors'] ='';
-	var url0 = '';
-	var url1 = '';
-	var url_create = '/social_sensing/create_task/?';
 	if(flag = true){
+	    a['task_name'] = $('#so_name').val();
+	    a['remark'] = $('#so_remarks').val();
+		a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
+		a['keywords'] = '';
+		a['create_at'] =  Date.parse(new Date())/1000;
+		a['social_sensors'] ='';
+		var url0 = [];
+		var url1 = '';
+		var url_create = '/social_sensing/create_task/?';
 	    key_words = $('#so_keywords').val();
 	 	key_words = key_words.split(/\s+/g);
 	    $('[name="keys_list_option"]:checked').each(function(){
 		  	    key_words.push($(this).val());
 		  	});
 	    if (so_user_option == 'so_all_users'){
+	    	a['social_sensors'] = '';
 	    }
 	    else{              //single_user or multi_user with extension
 	    	var group_names = [];
@@ -406,9 +410,10 @@ function so_group_data(){
 		if(url0.length > 1){
 			url1 = url0.join('&');
 		}else{
-			url1 = url0;
+			url1 = url0.toString();
 		}
 		url_create += url1;
+		console.log(url_create);
 	    $.ajax({
 	        type:'GET',
 	        url: url_create,
