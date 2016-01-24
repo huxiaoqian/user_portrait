@@ -32,7 +32,7 @@ def get_task_detail_2(task_name, keywords, ts):
     portrait_detail = []
 
     if social_sensors:
-        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":social_sensors}, fields=['uid', 'uname', 'domain', 'topic_string', "photo_url", 'importance', 'influence', 'activeness'])['docs']
+        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":social_sensors}, fields=SOCIAL_SENSOR_INFO)['docs']
         for item in search_results:
             temp = []
             if item['found']:
