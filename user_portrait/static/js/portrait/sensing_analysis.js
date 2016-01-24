@@ -417,8 +417,7 @@ Date.prototype.format = function(format) {
 
 //sensing_sensors_table(sensor_head,data,"modal_sensor_table");
 //sensing_participate_table(sensor2_head,data,"sensing_participate_table");
-sensing_keywords_table(keywords_head, keywords.slice(0, 10),"sensing_keywords_table");
-sensing_keywords_table(keywords_head,keywords,"modal_keywords_table");
+
 
 
 
@@ -442,10 +441,11 @@ function participate_select_all(){
 // }
 
 function show_warning_time(div_name, data){
+
 	$('#' + div_name).empty();	
 	var html = '';
 	for(var i=0;i<data.length;i++){
-		html += '<span style="width:150px;margin:10px;font-size:14px;">' + data[i] + '</span>';
+		html += '<span style="width:150px;margin:10px;font-size:14px;">' + data[i][0] + '</span>';
 		if(i%3 == 2){
 			html += '<br>';
 		}
@@ -471,12 +471,6 @@ function social_sensing_all(data){
 	show_warning_time('modal_warning_mood_content', data.variation_distribution[1]);
 	show_warning_time('modal_warning_total_content', data.variation_distribution[2]);
 
-
-
-
-
-
-
 	//微博数量走势图
 	var num_line_data = new Array();
 	num_line_data[0]= data.time_series;
@@ -484,6 +478,7 @@ function social_sensing_all(data){
 	num_line_data[2] = data.origin_weibo_list;
 	num_line_data[3] = data.retweeted_weibo_list;
 	num_line_data[4] = data.comment_weibo_list;
+	num_line_data[5] = data.variation_distribution[0];
 	draw_num_line_charts(num_line_data, 'num_line_charts',num_legend);
 
 	//情绪走势图
@@ -492,6 +487,7 @@ function social_sensing_all(data){
 	mood_line_data[1] = data.negetive_sentiment_list;
 	mood_line_data[2] = data.neutral_sentiment_list;
 	mood_line_data[3] = data.positive_sentiment_list;
+	mood_line_data[4] = data.variation_distribution[1];
 	draw_mood_line_charts(mood_line_data, 'mood_line_charts', mood_legend);
 	
 	//参与人表格
@@ -520,13 +516,20 @@ function social_sensing_all(data){
 	$('#sensing_keywords').empty();
 	$('#sensing_keywords').append(keywords_list);
 
+}
 
-
-
-
+function sensing_keywords_table_all(data){
+	sensing_keywords_table(keywords_head, data.slice(0, 10),"sensing_keywords_table");
+	sensing_keywords_table(keywords_head,data,"modal_keywords_table");
 }
 
 var sensing_url = '';
 sensing_url += '/social_sensing/get_warning_detail/?task_name=监督维权律师&keywords=律师&ts=1378567800';
 call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
+
+var keywords_url = '/social_sensing/get_keywords_list/?task_name=监督维权律师&keywords=律师&ts=1378567800&start_time=1377964800';
+call_sync_ajax_request(keywords_url, ajax_method, sensing_keywords_table_all);
+
+
+
 
