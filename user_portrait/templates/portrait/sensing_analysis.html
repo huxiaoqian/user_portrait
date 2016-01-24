@@ -1,0 +1,113 @@
+{% extends "tbase.html" %}
+	{% block title %}社会感知{% endblock title %}
+	{% block css %}
+        {{ super() }}
+        <style type="text/css">
+        	.dataTables_length{display:none;}
+        	.dataTables_filter{display:none;text-align:right;margin-bottom:5px;}
+          .dataTables_paginate{margin-top:-10px;margin-bottom:-20px;}
+          #sensing_graph hr{margin-top: 2px;}
+        </style>
+
+    {% endblock css %}
+    {% block head_js %}
+        {{ super() }}
+        <script type="text/javascript" src="/static/js/portrait/sensing_analysis_table.js"></script>
+    {% endblock head_js %}
+    {% block main %}
+    	<div id="sensing_analysis">
+    		<h4 class="page-header">社会感知</h4>
+    		<div id="task_detail" style="font-size:16px;line-height: 30px;">
+          
+      		<span>
+              <b>任务名称: <span id="sensing_task_name">任务名称</span></b>
+          <span id="sensing_analysing_sonsor" style="margin-left:30px;cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#sensor_modal">
+            <u>传感器</u>
+          </span><br>
+          <b>
+      		  关键词：<span id="sensing_keywords">关键词1,关键词2,关键词3,关键词4,关键词5 </span>
+      		</b>
+      		</span>
+
+    		</div>
+    		<div id="sensing_conslusion"><img src="/static/img/conclusion.png" style="width:40px";>这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论</div>
+    		<div id="sensing_graph" style="margin-top:20px;">
+          <div style="width:100%;height:330px;">
+            <div style="width:49%;float: left;" >
+              <span style='font-size:16px;'><b>微博发布情况</b></span>
+              <hr style="width:100%;margin-bottom: -20px;">             
+              <div id="num_line_charts" style="width:650px;float: left;width:550px;height:300px;margin-left:-50px;margin-top-30px;"></div>
+            </div>
+            <div style="width:49%;float: left;margin-left: 20px;">
+              <span style='font-size:16px;margin-bottom: -20px;'><b>情绪走势</b></span>
+              <hr style="width:100%;margin-bottom: -20px;">             
+              <div id="mood_line_charts" style="width:650px;float: left;width:550px;height:300px;margin-left:-50px;"></div>
+            </div>
+          </div>
+          <div id="related_weibo_text" style="background-color:whitesmoke;width:100%;margin-bottom:20px;">
+
+          </div>
+
+          <div style="width:100%">
+      			<div id="sensing_participate" style="width:100%;float: left;margin-right:20px;">
+        			<span style='font-size:16px;'><b>参与人</b></span>
+        			<hr style="width:640px;">        			
+        			<div id="sensing_participate_table" style="width:100%;float: left;"></div>
+            </div>
+            <!-- <div id="sensing_keywords" style="width:320px;float: left;">
+              <span style='font-size:16px;'><b>关键词</b></span>
+              <span id="sensing_analysing_sonsor" style="font-size:16px;cursor:pointer;color: #337ab7;float: right;" type="button" data-toggle="modal" data-target="#keywords_more">
+                <u>查看更多</u>
+              </span>
+              <hr style="width:320px;">
+              <div id="sensing_keywords_table" style="width:100%;"></div>
+            </div> -->
+          </div>
+    		</div>
+    	</div>
+
+
+
+
+<!-- modal -->
+<div class="modal fade" id="sensor_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 800px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      		<span aria-hidden="true">&times;</span>
+      	</button>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感器</h4>
+      </div>
+      <div id="modal_sensor_table" class="modal-body" style="max-height:520px; margin:5px 0;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="keywords_more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 500px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感器</h4>
+      </div>
+      <div id="modal_keywords_table" class="modal-body" style="max-height:520px; margin:5px 0;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+    {% endblock main %}
+    {% block Own_js %}
+        {{ super() }}
+    <script type='text/javascript' src='/static/js/portrait/sensing_custom_table.js'></script>
+		<script type='text/javascript' src='/static/js/portrait/sensing_analysis.js'></script>
+    {% endblock Own_js %}

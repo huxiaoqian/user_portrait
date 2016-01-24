@@ -180,20 +180,19 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
     date1 = str(date).replace('-', '')
     index_name = pre_index + date1
     index_flow_text = pre_text_index + date
-    text_result = es.get(index=text_index, doc_type=flow_text_index_type, id=mid)["_source"]
-    temp_mid = text_result.get("root_mid", "") #判断微博是否是原创微博
+    text_result = es.get(index=index_flow_text, doc_type=flow_text_index_type, id=mid)["_source"]
+    temp_mid = text_result.get("root_mid",'') #判断微博是否是原创微博
+    print temp_mid
     if temp_mid:
-        mid_type = 0 # 非原创微博
+        mid_type = 1 # 非原创微博
     else:
-        mid_type = 1 # 原创微博
-    results = {}
+        mid_type = 0 # 原创微博
     query_body = {
         "query":{
             "filtered":{
                 "filter":{
                     "bool":{
                         "must":[
-                            {"term": {"root_mid": mid}}
                         ]
                     }
                 }
@@ -204,14 +203,14 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
 
     if mid_type == 0:
         if int(influence_style) == 0: # origin weibo, all retweeted people
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"root_uid": uid}}, {"term": {"message_type": 3}}, {"term": {"root_mid": mid}}])
+        else: # commented people
+            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}, {"term": {"root_mid": mid}}])
+    else:
+        if int(influence_style) == 0: # origin weibo, all retweeted people
             query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 3}}, {"term": {"root_mid": temp_mid}}])
         else: # commented people
             query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"directed_uid": uid}}, {"term": {"message_type": 2}}, {"term": {"root_mid": temp_mid}}])
-    else:
-        if int(influence_style) == 0: # origin weibo, all retweeted people
-            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"root_uid": uid}}, {"term": {"message_type": 3}}, {"term": {"root_mid": mid}}])
-        else: # commented people
-            query_body["query"]["filtered"]["filter"]["bool"]["must"].extend([{"term": {"root_uid": uid}}, {"term": {"message_type": 2}}, {"term": {"root_mid": mid}}])
     search_results = es.search(index=index_flow_text, doc_type=flow_text_index_type, body=query_body, fields=["uid"], timeout=30)["hits"]["hits"]
     results = []
     if search_results:
@@ -220,6 +219,7 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
                 pass
             else:
                 results.append(item["fields"]["uid"][0])
+        results = list(set(results))
     else:
         results = []
 
@@ -247,7 +247,7 @@ def influenced_people(uid, mid, influence_style, date, default_number=20):
                 count += 1
                 temp.append(item['_id'])
                 temp.append(item["fields"]["importance"][0])
-                in_portrait_info.append(temp)
+                in_portrait.append(temp)
                 temp_domain = item["fields"]["domain"][0].split('&')
                 temp_topic = item["fields"]["topic_string"][0].split('&')
                 temp_geo = json.loads(item["fields"]["activity_geo_dict"][0])[-1].keys()
