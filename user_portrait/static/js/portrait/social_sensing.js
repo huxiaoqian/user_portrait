@@ -70,7 +70,7 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var f_color = '';
   	var time_now =  Date.parse(new Date())/1000;
 	html += '<table id="so_task_table_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;width:115px;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th  style="width: 140px;">进度</th><th style="width:110px;">更多信息</th><th>预警状态</th><th>历史状态</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;width:115px;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th  style="width: 140px;">进度</th><th>预警状态</th><th>更多</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
@@ -90,7 +90,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 			//$('#pro').replaceWith('<progress id="pro" progress ::webkit-progress-value{ background: #0064B4; }');
 		}else if (item[i]['warning_status']==1){
 			warn = '事件爆发';
-			$('progress').removeClass('webkit-progress-value').addClass('webkit-progress-value{ background: #333; }');
+			//$('progress').removeClass('webkit-progress-value').addClass('webkit-progress-value{ background: #333; }');
 		}else {
 			warn = '事件跟踪';
 		}
@@ -106,11 +106,10 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td style="width: 60px;">'+item[i]['create_by']+'</td>';
 		html += '<td>'+create_d+'</td>';
 		html += '<td>'+end_d+'</td>';
-		html += '<td "><progress id="pro" style="width:60%"   progress::-webkit-progress-value  { background: #333; } value="'+time_pro+'" max="100"></progress><span '+f_color+'>'+time_pro+'%</span></td>';
-		html += '<td><a href="javascript:void(0)" id="so_keys">查看更多</a></td>';
-
+		html += '<td "><progress id="pro" style="width:60%"   value="'+time_pro+'" max="100"></progress><span '+f_color+'>'+time_pro+'%</span></td>';
 		html += '<td><a href="/index/sensing_analysis/?task_name='+item[i]['task_name']+'&keywords='+keys+'&ts='+item[i]['history_status'][0][1]+' id="so_warn">'+warn+'</a></td>';
-		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
+		html += '<td><a href="javascript:void(0)" id="so_keys">更多信息&nbsp;&nbsp;</a>';
+		html += '<a href="javascript:void(0)" id="so_history">历史状态</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
 		html += '</tr>';		
 	}
 	html += '</tbody>';
@@ -222,7 +221,7 @@ function draw_keys(data){
 }
 function so_ready(){
 	$('a[id^="so_keys"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		url = "/social_sensing/get_task_detail_info/?task_name=" + temp;
 		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_sensor);
 		//draw_table('1',"#group_analyze_confirm");
@@ -232,7 +231,7 @@ function so_ready(){
 	});
 	
 	$('a[id^="so_history"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		url = "/social_sensing/get_task_detail_info/?task_name=" + temp;
 		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_history);
 		//draw_table('1',"#group_analyze_confirm");
@@ -328,6 +327,19 @@ $('#so_user_commit').click(function(){
 	so_group_data();
 });
 
+function revise_confirm_button(){
+	var task_name=$('#so_re_group_name').val();
+	var re_time=$('#so_re_end_time').val();
+	url = '/social_sensing/revise_task/?task_name='+task_name+'&stop_time='+re_time+'&finish=0';
+	$.ajax({
+	        type:'GET',
+	        url: url,
+	        contentType:"application/json",
+	        dataType: "json",
+	        success: callback
+    });
+}
+
 var so_user_option = $('input[name="so_mode_choose"]:checked').val();
 function so_user_check(){             // check validation 
     //group_information check starts  
@@ -394,7 +406,7 @@ function so_group_data(){
 	        url: url_create,
 	        contentType:"application/json",
 	        dataType: "json",
-	        success: so_callback
+	        success: callback
 	    });
 	}
 }
