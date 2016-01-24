@@ -173,6 +173,14 @@ function draw_result(){
 draw_result();
 show_url='/social_sensing/show_task/';
 Social_sense.call_sync_ajax_request(show_url, Social_sense.ajax_method, Social_sense.Draw_task_table);
+
+//window.setInterval(so_redraw,30000);
+function so_redraw(){
+	show_url='/social_sensing/show_task/';
+	Social_sense.call_sync_ajax_request(show_url, Social_sense.ajax_method, Social_sense.Draw_task_table);
+	so_ready();
+}
+
 //Social_sense.Draw_task_table();
 function so_choose_all(){
   $('input[name="so_list_option"]').prop('checked', $("#so_choose_all").prop('checked'));
@@ -287,11 +295,11 @@ function so_ready(){
 }
 so_ready();
 function callback(data){
-	console.log(data);
-	if(data.length != 0){
+	console.log(callback);
+	if(data.length>1){
 		alert('操作成功！');
-		window.location.href=window.location.href;
 	}
+		//window.location.href=window.location.href;
 }
 
 $('a[id^="so_task_del"]').click(function(e){
@@ -419,29 +427,20 @@ function so_group_data(){
 	        url: url_create,
 	        contentType:"application/json",
 	        dataType: "json",
-	        success: callback
+	        success: so_callback
 	    });
 	}
 }
 
 function so_callback(data){
-    if (data == 'true'){
-      alert('提交成功！');
-      window.location.href=window.location.href;
-        // window.location.href = group_url;
-    } 
-    if(data =='task name invalid'){
-        alert('已存在相同名称的群体分析任务,请重试!');
-    }
-    if(data =='invalid input for condition'){
-      alert('请至少选择一个分析条件！');
-    }
-    if(data == 'invalid input for filter'){
-      alert('请输入合理的影响力或重要度范围！');
-    }
-    if(data == 'invalid input for count'){
-      alert('请选择合理的人数！')
-    }
+	if(data==1){
+		alert('操作成功！');
+		window.location.href=window.location.href;
+	}else if(data==0){
+		alert('已存在相同名称的监控任务，请重试！');
+	}else if(data ==-1){
+		alert('请将信息补充完整！');
+	}
 }
 
 have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
