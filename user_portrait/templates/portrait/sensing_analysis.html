@@ -16,8 +16,9 @@
           .weibo_info {color: #666;margin:0;}
           .weibo_info .weibo_pz {float:right;margin-left:10px;color: #858585;height: 18px;line-height: 18px;}
           .weibo_info .m a {color: #666;}
-          .sensing_topic{width:130px;}
-          #sensing_conslusion{line-height: 30px;};
+          .sensing_uid{width:97px;}
+          .sensing_topic{width:200px;}
+          #sensing_conslusion{line-height: 30px;}
         </style>
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css"/>
 
@@ -33,32 +34,42 @@
     		<h4 class="page-header">社会感知</h4>
     		<div id="task_detail" style="font-size:14px;line-height: 30px;">         
       		<span>
-              <b>任务名称: <span id="sensing_task_name">任务名称</span></b>&nbsp;(
+              <b>任务名称：<span id="sensing_task_name">任务名称</span></b>&nbsp;(
           <span id="sensing_analysing_sonsor" style="font-size:13px;cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#sensor_modal">
             <u>查看传感器</u>
           </span>)<br>
-          <b>关键词：</b><span id="sensing_keywords">关键词1&nbsp;&nbsp;关键词2&nbsp;&nbsp;关键词3&nbsp;&nbsp;关键词4&nbsp;&nbsp;关键词5 </span>      		
+          <b>关键词：</b><span id="sensing_keywords"></span>      		
       		</span>
     		</div>
-    		<div id="sensing_conslusion"><b><span>异常点发现：</span></b>这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论</div>
+    		<div><b><span id="sensing_conslusion_title"></span>：</b><span id="sensing_conslusion"></span>
+          <div id="warning_num">
+            <b>异常点：</b>
+            微博发布数量共有
+            <span id="weibo_warning_num" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#modal_warning_weibo"></span>
+            个异常点，情绪共有
+            <span id="mood_abnormal_num" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#modal_warning_mood"></span>
+            个异常点,重合异常点有
+            <span id="total_abnormal_num" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#modal_warning_total"></span>个
+          </div>
+        </div>
     		<div id="sensing_graph" style="margin-top:20px;">
           <div style="width:100%;height:330px;">
             <div style="width:49%;float: left;" >
               <span style='font-size:14px;'><b>微博发布情况</b></span>
               <hr style="width:100%;margin-bottom: -20px;">             
-              <div id="num_line_charts" style="width:650px;float: left;width:550px;height:300px;margin-left:-50px;margin-top-30px;"></div>
+              <div id="num_line_charts" style="width:650px;float: left;width:500px;height:300px;margin-left:-25px;margin-top-30px;"></div>
             </div>
             <div style="width:49%;float: left;margin-left: 20px;">
               <span style='font-size:14px;margin-bottom: -20px;'><b>情绪走势</b></span>
               <hr style="width:100%;margin-bottom: -20px;">             
-              <div id="mood_line_charts" style="width:650px;float: left;width:550px;height:300px;margin-left:-50px;"></div>
+              <div id="mood_line_charts" style="width:650px;float: left;width:500px;height:300px;margin-left:-25px;"></div>
             </div>
           </div>
           <div id="related_weibo_text" style="background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
 
           <div style="width:100%;margin-bottom:20px;height:500px;">
       			<div id="sensing_participate" style="width:690px;float: left;margin-right:15px;">
-        			<span style='font-size:14px;'><b>参与人（10）</b></span>
+        			<span style='font-size:14px;'><b>参与人（<span id='participate_num'></span>）</b></span>
         			<hr style="width:690px;">        			
         			<div id="sensing_participate_table" style="width:690px;height:400px;float: left;0verflow-y: scroll;overflow-x: hidden;"></div>
               <div class='col-md-12' style='margin-top: 10px;text-align:right;padding-right:60px;'>
@@ -87,7 +98,7 @@
       	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
       		<span aria-hidden="true">&times;</span>
       	</button>
-        <h4 class="modal-title" id="myModalLabel">社会感知传感器（100）</h4>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感器（<span id="sensor_num"></span>）</h4>
       </div>
       <div id="modal_sensor_table" class="modal-body" style="max-height:520px; margin:5px 0;">
       </div>
@@ -110,6 +121,46 @@
       </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal_warning_weibo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 550px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
+      </div>
+      <div id="modal_warning_weibo_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_warning_mood" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 550px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
+      </div>
+      <div id="modal_warning_mood_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_warning_total" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-content" style="width: 550px;margin: 0 auto;margin-top: 2%;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
+      </div>
+      <div id="modal_warning_total_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+</div>
+
 
 
 
