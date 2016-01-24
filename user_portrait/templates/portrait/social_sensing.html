@@ -135,10 +135,6 @@
             <span id="have_sensor_remark" style="width:400px"></span>
             <div id="so_control_confirm" style="margin-top:30px;overflow-y:auto;height:300px;"></div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" >确认</button>
-          </div>
         </div>
       </div>
     </div>
@@ -152,15 +148,15 @@
           </div>
           <div class="modal-body">
             <span>群体名称：</span>
-            <span id="so_group_name0" style="margin-left:10px;margin-right:20px;"></span>
-            <span style="margin-left:10px;">备注：</span>
-            <span id="so_remark0" style="width:400px;margin-right:20px;"></span>
+            <span id="so_re_group_name" style="margin-left:10px;margin-right:20px;"></span>
+<!--             <span style="margin-left:10px;">备注：</span>
+            <span id="so_re_remark" style="width:400px;margin-right:20px;"></span> -->
             <span style="margin-left:10px;">终止时间：</span>
-            <input name="so_end_time" type='text' style='width:145px; display:inline-block;height:25px'>
+            <input id="so_re_end_time" type='text' style='width:145px; display:inline-block;height:25px'>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="revise_confirm_button()">确认</button>
           </div>
         </div>
       </div>

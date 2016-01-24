@@ -77,10 +77,10 @@ Social_sense.prototype = {   //获取数据，重新画表
 	  	var end_d = new Date(item[i]['stop_time']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	var keys = [];
 	  	for(var j=0;j<item[i]['keywords'].length;j++){
-	  		console.log(item[i]['keywords'][j]);
+	  		keys.push(item[i]['keywords'][j]);
 	  	}
-	  	//keys.join(',');
-	  	//console.log(keys);
+	  	keys.join(',');
+	  	console.log(keys);
 	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(2);
 	  	if(time_pro>=100.00){
 	  		time_pro=100
@@ -96,10 +96,15 @@ Social_sense.prototype = {   //获取数据，重新画表
 		}
 		if(item[i]['finish'] == 0){
 			operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>&nbsp;&nbsp;<a href="javascript:void(0)" id="so_stop_task">终止</a>';
-			f_color = 'style="color:red"';
+			if(item[i]['processing_status']==0){
+				f_color = 'style="color:red"';
+			}else{f_color = '';}
 		}else{
 			operate = '<a href="javascript:void(0)" id="so_revise_task">修改</a>';
 			f_color = '';
+		}
+		if(item[i]['processing_status']==0){
+
 		}
 		html += '<tr>';
 		html += '<td name="task_name">'+item[i]['task_name']+'</td>';
@@ -107,7 +112,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td>'+create_d+'</td>';
 		html += '<td>'+end_d+'</td>';
 		html += '<td "><progress id="pro" style="width:60%"   value="'+time_pro+'" max="100"></progress><span '+f_color+'>'+time_pro+'%</span></td>';
-		html += '<td><a href="/index/sensing_analysis/?task_name='+item[i]['task_name']+'&keywords='+keys+'&ts='+item[i]['history_status'][0][1]+' id="so_warn">'+warn+'</a></td>';
+		html += '<td><a href="/index/sensing_analysis/?task_name='+item[i]['task_name']+'&keywords='+keys+'&ts='+item[i]['history_status'][0][0]+'" id="so_warn">'+warn+'</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">更多信息&nbsp;&nbsp;</a>';
 		html += '<a href="javascript:void(0)" id="so_history">历史状态</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
 		html += '</tr>';		
@@ -140,6 +145,7 @@ var current_date = new Date().format('yyyy/MM/dd hh:mm');
 var max_date = '+1970/01/30';
 var min_date = '-1970/01/30';
 $('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
+$('input[id="so_re_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
 function draw_control_table(data){
 	$('#so_control_confirm').empty();
@@ -249,7 +255,7 @@ function so_ready(){
 
 	// });
 	$('a[id^="so_stop_task"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
 		var a = confirm('确定要终止任务吗？');
 		if (a== true){
 			url = "/social_sensing/stop_task/?task_name=" + temp;
@@ -258,11 +264,10 @@ function so_ready(){
 	});	
 
 	$('a[id^="so_revise_task"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
-		var remark0 = $(this).parent().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
 		//url = "/social_sensing/revise_task/?task_name=" + temp;
 		//Social_sense.call_sync_ajax_request(url, Social_sense.ajax_method, callback);
-		$('span[id^="so_group_name0"]').html(temp);
+		$('span[id^="so_re_group_name"]').html(temp);
 		$('#so_revise').modal();
 	});
 
@@ -279,8 +284,10 @@ function so_ready(){
 }
 so_ready();
 function callback(data){
+	console.log(data);
 	if(data.length != 0){
 		alert('操作成功！');
+		window.location.href=window.location.href;
 	}
 }
 
@@ -288,7 +295,7 @@ $('a[id^="so_task_del"]').click(function(e){
 	var a = confirm('确定要删除吗？');
     	if (a == true){
 			var url = '/social_sensing/delete_task/';
-			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().prev().html();
+			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
 			console.log(url);
 			//window.location.href = url;
@@ -328,9 +335,10 @@ $('#so_user_commit').click(function(){
 });
 
 function revise_confirm_button(){
-	var task_name=$('#so_re_group_name').val();
-	var re_time=$('#so_re_end_time').val();
+	var task_name=$('#so_re_group_name').html();
+	var re_time=Date.parse($('#so_re_end_time').val())/1000;
 	url = '/social_sensing/revise_task/?task_name='+task_name+'&stop_time='+re_time+'&finish=0';
+	console.log(url);
 	$.ajax({
 	        type:'GET',
 	        url: url,
