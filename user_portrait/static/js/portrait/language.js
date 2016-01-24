@@ -60,7 +60,7 @@ function Draw_keyword(data, div_name, more_div, more){
 	$('#'+ more_div).empty();
   if(data.length == 0){
      //console.log(div_name);
-      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      html = '<h4 style="text-align:center;margin-top:50%;">暂无数据</h4>';
       //$('#'+ more_div).append(html);
       $('#'+ div_name).append(html);
       $('#'+ more).empty();
@@ -213,9 +213,9 @@ function show_domain(data){
 
   // var html = '';
   //html += '<h3>用户领域分析</h3>';
-  data1 = '根据用户个人信息分类：'+data[0][0];
-  data2 = '根据用户粉丝结构分类：'+data[0][1];
-  data3 = '根据用户文本分类：'+data[0][2];
+  data1 = '根据注册信息分类：'+data[0][0];
+  data2 = '根据转发结构分类：'+data[0][1];
+  data3 = '根据发帖内容分类：'+data[0][2];
   data4 = data[1];
 var myChart1 = echarts.init(document.getElementById('preference_domain')); 
 var option = {
