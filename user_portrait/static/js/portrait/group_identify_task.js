@@ -190,10 +190,10 @@ function submit_analyze(that){
 	$('a[id^="group_commit_analyze"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		var percent = $(this).parent().prev().text();
-		// if(percent.replace(/[^0-9]/ig,"") != 100){
-		// 	alert('进度没有达到100%，无法提交分析任务！');
-		// }
-		// else{
+		if(percent.replace(/[^0-9]/ig,"") != 100){
+			alert('进度没有达到100%，无法提交分析任务！');
+		}
+		else{
 			url = "/detect/show_detect_result/?task_name=" + temp;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,function(data){draw_table(data,"#group_analyze_confirm")});
 			//draw_table('1',"#group_analyze_confirm");
@@ -201,7 +201,7 @@ function submit_analyze(that){
 			$('span[id^="group_name0"]').html(temp);
 			$('span[id^="remark0"]').html(remark0);
 			$('#group_analyze').modal();
-		//}
+		}
 	});	
 }
 
@@ -220,7 +220,7 @@ function submit_control(that){
 			$('input[name="con_group_name"]').val(temp);
 			$('input[name="con_remark"]').val(remark0);
 			$('#group_control').modal();
-		// }
+		 //}
 	});	
 }
 

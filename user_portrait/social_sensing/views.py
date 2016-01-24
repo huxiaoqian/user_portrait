@@ -8,16 +8,17 @@ from user_portrait.time_utils import datetime2ts, ts2datetime
 from user_portrait.global_utils import R_SOCIAL_SENSING as r
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import portrait_index_name, portrait_index_type
+from user_portrait.global_utils import group_index_name as index_group_manage
+from user_portrait.global_utils import group_index_type as doc_type_group
 from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_sensing_task
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.parameter import finish_signal, unfinish_signal, SOCIAL_SENSOR_INFO
 from utils import get_warning_detail, get_text_detail
+from full_text_serach import aggregation_hot_keywords
 
 mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 
-index_group_manage = "group_manage"
-doc_type_group = "group"
 portrait_index_name = "user_portrait_1222"
 
 # 前台设置好的参数传入次函数，创建感知任务,放入es, 从es中读取所有任务信息放入redis:sensing_task 任务队列中
@@ -29,13 +30,17 @@ portrait_index_name = "user_portrait_1222"
 def ajax_create_task():
     # task_name forbid illegal enter
     task_name = request.args.get('task_name','') # must
-    create_by = request.args.get('create_by', '') # must
+    create_by = request.args.get('create_by', 'admin') #
     stop_time = request.args.get('stop_time', "default") #timestamp, 1234567890
     social_sensors = request.args.get("social_sensors", "") #uid_list, split with ","
     keywords = request.args.get("keywords", "") # keywords_string, split with ","
     remark = request.args.get("remark", "")
 
-    if task_name and create_by:
+    exist_es = es.indices.exists(index=task_name)
+    if exist_es:
+        return json.dumps(["0"]) # 任务名不能重合
+
+    if task_name:
         task_detail = dict()
         task_detail["task_name"] = task_name
         task_detail["create_by"] = create_by
@@ -60,8 +65,6 @@ def ajax_create_task():
                 task_detail["task_type"] = "1"
             else:
                 task_detail["task_type"] = "0"
-    else:
-        return json.dumps([])
 
 
     # store task detail into es
@@ -76,7 +79,6 @@ def ajax_delete_task():
     # delete task based on task_name
     task_name = request.args.get('task_name','') # must
     if task_name:
-        #r.pop("task_name", task_name)
         es.delete(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)
         #es.delete(index_sensing_task, task_name)
         return json.dumps(['1'])
@@ -91,7 +93,7 @@ def ajax_stop_task():
     task_name = request.args.get('task_name','') # must
     if task_name:
         task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)['_source']
-        task_detail["finish"] = finish_signal
+        #task_detail["finish"] = finish_signal
         task_detail['processing_status'] = '0'
         es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
         return json.dumps(['1'])
@@ -102,6 +104,13 @@ def ajax_stop_task():
 # 修改任务终止时间
 # 修改finish=0代表重启任务
 # 修改终止时间，当任务停止后即使延迟终止时间，仍需要设置finish=0代表重新启动
+# if finish == 1:
+#    finish
+# else:
+#    if processing_status == 0:
+#        print "stop"
+#    else:
+#        print "working"
 @mod.route('/revise_task/')
 def ajax_revise_task():
     task_name = request.args.get('task_name','') # must
@@ -159,6 +168,8 @@ def ajax_show_task():
         for item in search_results:
             item = item['_source']
             history_status = json.loads(item['history_status'])
+            keywords = json.loads(item['keywords'])
+            item['keywords'] = keywords
             temp_list = []
             temp_list.append(history_status[-1])
             for iter_item in history_status[:-1]:
@@ -214,22 +225,56 @@ def ajax_get_group_list():
     results = [] # 
     query_body = {
         "query":{
-            "match_all": {}
+            "filtered":{
+                "filter":{
+                    "bool":{
+                        "must":[
+                            {"term": {"task_type": "analysis"}},
+                            {"term": {"status": 0}} # attention-------------------------
+                        ]
+                    }
+                }
+            }
         },
         "sort": {"submit_date": {"order": "desc"}},
         "size": 10000
     }
 
     search_results = es.search(index=index_group_manage, doc_type=doc_type_group, body=query_body, timeout=600)['hits']['hits']
-    for item in search_results:
-        temp = []
-        temp.append(item['task_name'])
-        temp.append(json.loads(item['uid_list']))
-        results.append(temp)
+    if search_results:
+        for item in search_results:
+            item = item['_source']
+            temp = []
+            temp.append(item['task_name'])
+            temp.append(item['submit_user'])
+            temp.append(item['submit_date'])
+            temp.append(item['count'])
+            temp.append(item['state'])
+            temp.append(json.loads(item['uid_list']))
+            results.append(temp)
 
     return json.dumps(results)
 
+@mod.route('/get_group_detail/')
+def ajax_get_group_detail():
+    task_name = request.args.get('task_name','') # task_name
+    portrait_detail = []
+    search_result = es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name).get('_source', {})
+    if search_result:
+        uid_list = json.loads(search_result['uid_list'])
+        print uid_list
+        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":uid_list}, fields=SOCIAL_SENSOR_INFO)['docs']
+        for item in search_results:
+            temp = []
+            if item['found']:
+                for iter_item in SOCIAL_SENSOR_INFO:
+                    if iter_item == "topic_string":
+                        temp.append(item["fields"][iter_item][0].split('&'))
+                    else:
+                        temp.append(item["fields"][iter_item][0])
+                portrait_detail.append(temp)
 
+    return json.dumps(portrait_detail)
 
 # 返回某个预警事件的详细信息，包括微博量、情感和参与的人
 @mod.route('/get_warning_detail/')
@@ -243,7 +288,18 @@ def ajax_get_warning_detail():
 
     return json.dumps(results)
 
+# 聚合关键词
+@mod.route('/get_keywords_list/')
+def ajax_get_keywords_list():
+    task_name = request.args.get('task_name','') # task_name
+    keywords = request.args.get('keywords', '') # warning keywords, seperate with ","
+    keywords_list = keywords.split(',')
+    ts = request.args.get('ts', '') # timestamp: 123456789
+    start_time = request.args.get('start_time', '') # task_name 创建时间
 
+    results = aggregation_hot_keywords(start_time, ts, keywords_list)
+
+    return json.dumps(results)
 # 返回某个时间段特定的文本，按照热度排序
 @mod.route('/get_text_detail/')
 def ajax_get_text_detail():

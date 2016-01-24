@@ -1141,7 +1141,17 @@ def search_ip(now_ts, uid):
     description, home_ip, job_ip = get_ip_description(week_time_ip_dict, all_week_result, all_day_result)
     results['description'] = description
     #tag vector
-    results['tag_vector'] = [[u'家庭IP', home_ip[0]], [u'工作IP', job_ip[0]]]
+    if len(home_ip) != 0:
+        home_ip_city = ip2city(home_ip[0])
+    else:
+        home_ip = ['']
+        home_ip_city = ''
+    if len(job_ip) != 0:
+        job_ip_city = ip2city(job_ip[0])
+    else:
+        job_ip = ['']
+        job_ip_city = ''
+    results['tag_vector'] = [[u'家庭IP', home_ip[0], home_ip_city], [u'工作IP', job_ip[0], job_ip_city]]
     return results
 
 #get ip information conclusion
