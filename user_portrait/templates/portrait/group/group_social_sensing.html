@@ -71,7 +71,7 @@
 			html += '<td>' + user_data[4] + '</td>';
 			html += '<td>' + user_data[5] + '</td>';
 			html += '<td>' + user_data[6] + '</td>';
-			html += '<td>' + '<input name="social_select" type="checkbox" id="social_select" value ="'+data[i].uid+'">' + '</td>';
+			html += '<td>' + '<input name="social_select" type="checkbox" id="social_select" value ="' + user_data[0] +'">' + '</td>';
 			html += '</tr>';
 		}
 		html += '</tbody></table>';	
@@ -115,7 +115,7 @@ function submit_social_sensing(){
             return;
         }
         else{
-            var social_sensing_url = '';
+            var social_sensing_url = '/detect/submit_sensing/';
             var sensing_job = {};
             sensing_job['task_name'] = $('#social_sensing #first_name').val();
             sensing_job['state'] = $('#social_sensing #first_remarks').val();
@@ -123,9 +123,9 @@ function submit_social_sensing(){
             sensing_job['uid_list'] = select_uids;
             $.ajax({   
                 type:"POST",  
-                url:"/detect/multi_person/",
+                url:social_sensing_url,
                 contentType:"application/json",
-                data:JSON.stringify(sensing_job),
+                data:JSON.stringify({'task_information':sensing_job}),
                 dataType: "json",
                 success: social_sensing_callback
             });
