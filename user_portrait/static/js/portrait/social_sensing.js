@@ -37,7 +37,7 @@ Social_sense.prototype = {   //获取数据，重新画表
     var item = data;
 	var html = '';
 	var item_time = '';
-	html += '<table style="so_group_task_body" class="table table-bordered table-striped table-condensed datatable" >';
+	html += '<table id="so_group_task_body" class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>查看详情</th><th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
@@ -50,13 +50,13 @@ Social_sense.prototype = {   //获取数据，重新画表
 	html += '</tbody>';
     html += '</table>';
 	$('#so_group_task').append(html);
-	$('#so_group_task_body').dataTable({
-       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-       "sPaginationType": "bootstrap",
-       "oLanguage": {
-           "sLengthMenu": "_MENU_ 每页"
-       }
-    });
+	// $('#so_group_task_body').dataTable({
+ //       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+ //       "sPaginationType": "bootstrap",
+ //       "oLanguage": {
+ //           "sLengthMenu": "_MENU_ 每页"
+ //       }
+ //    });
   },
   Draw_task_table: function(data){
   	$('#so_task_table').empty();
@@ -75,6 +75,12 @@ Social_sense.prototype = {   //获取数据，重新画表
 	for (i=0;i<item.length;i++){
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
 	  	var end_d = new Date(item[i]['stop_time']*1000).format('yyyy/MM/dd hh:mm'); 
+	  	var keys = [];
+	  	for(var j=0;j<item[i]['keywords'].length;j++){
+	  		console.log(item[i]['keywords'][j]);
+	  	}
+	  	//keys.join(',');
+	  	//console.log(keys);
 	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(2);
 	  	if(time_pro>=100.00){
 	  		time_pro=100
@@ -102,7 +108,8 @@ Social_sense.prototype = {   //获取数据，重新画表
 		html += '<td>'+end_d+'</td>';
 		html += '<td "><progress id="pro" style="width:60%"   progress::-webkit-progress-value  { background: #333; } value="'+time_pro+'" max="100"></progress><span '+f_color+'>'+time_pro+'%</span></td>';
 		html += '<td><a href="javascript:void(0)" id="so_keys">查看更多</a></td>';
-		html += '<td><a href="/index/sensing_analysis/" id="so_warn">'+warn+'</a></td>';
+
+		html += '<td><a href="/index/sensing_analysis/?task_name='+item[i]['task_name']+'&keywords='+keys+'&ts='+item[i]['history_status'][0][1]+' id="so_warn">'+warn+'</a></td>';
 		html += '<td><a href="javascript:void(0)" id="so_history">查看详情</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
 		html += '</tr>';		
 	}
@@ -179,7 +186,7 @@ function draw_sensor(data){
 	var item_name = '';
 	var item_img = '';
 	var item_keys = data['keywords'];
-    html += '<span  style="margin-right:20px;">关键词：</span>';
+    html += '<span  style="margin-right:25px;">关键词：</span>';
     for (var j =0;j<item_keys.length;j++){
     	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
     }
@@ -311,7 +318,7 @@ function draw_history(data){
 			warn = '事件跟踪';
 		}
 		item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm');
-       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a href="/index/sensing_analysis/" id="show_detail">查看详情</a></td></tr>';
+       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
  	}
     html += '</table>'; 
 	$('#so_his_content').append(html);	
@@ -418,7 +425,7 @@ function have_keys(data){
 	$('#show_keys').empty();
 	html = '';
 	for(var i=0;i<data.length;i++){
-		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-right:40px;">'+data[i]+'</span> ';
+		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[i]+'</span> ';
 	}
 	$('#show_keys').append(html);
 }

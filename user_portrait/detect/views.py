@@ -512,8 +512,9 @@ def ajax_show_user_in_sensing_task():
 #use to submit social sensing group to analysis
 #input: get_json
 #output:
-@mod.route('/submit_sensing/')
+@mod.route('/submit_sensing/', methods=['GET', 'POST'])
 def ajax_submit_sensing():
     status = False
     input_dict = request.get_json() # input_dict ={'task_information': {'task_name':xx, 'uid_list':[], 'state':[], submit_user:admin'}}
+    status = submit_sensing(input_dict)
     return json.dumps(status)
