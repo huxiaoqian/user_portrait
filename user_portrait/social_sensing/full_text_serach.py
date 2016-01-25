@@ -184,7 +184,7 @@ def aggregation_hot_keywords(start_time, stop_time, keywords_list):
         search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body)["aggregations"]['all_keywords']['buckets']
         if search_results:
             for item in search_results:
-                keywords_list[item['key']] = item['doc_count']
+                keywords_dict[item['key']] = item['doc_count']
 
     datetime_1 = ts2datetime(float(start_time))
     if datetime_1 == datetime:
