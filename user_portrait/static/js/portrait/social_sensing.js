@@ -42,7 +42,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		item_time = new Date(item[i][2]*1000).format('yyyy/MM/dd hh:mm')
-		html += '<tr><td >'+item[i][0]+'</td><td>'+item[i][1]+'</td><td>'+item_time+'</td><td>'+item[i][3]+'</td><td>'+item[i][4]+'</td>';
+		html += '<tr><td name="'+item[i][5]+'">'+item[i][0]+'</td><td>'+item[i][1]+'</td><td>'+item_time+'</td><td>'+item[i][3]+'</td><td>'+item[i][4]+'</td>';
 		html += '<td><a href=javascript:void(0)  id="so_users">查看详情<a/></td>';
 		html += '<td><input name="so_user_list_option" class="search_result_option" type="checkbox"  /></td>'
 		html += '</tr>';	
@@ -125,6 +125,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 	html += '</tbody>';
     html += '</table>';
 	$('#so_task_table').append(html);
+	so_ready();
 	$('#so_task_table_body').dataTable({
        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
        "sPaginationType": "bootstrap",
@@ -154,6 +155,8 @@ $('input[id="so_re_end_time"]').datetimepicker({value:current_date,minDate:curre
 
 function draw_control_table(data){
 	$('#so_control_confirm').empty();
+	var item =data;
+	var item_name = '';
 	var html='';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
     html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">活跃度</th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
@@ -195,7 +198,6 @@ Social_sense.call_sync_ajax_request(show_url, Social_sense.ajax_method, Social_s
 function so_redraw(){
 	show_url='/social_sensing/show_task/';
 	Social_sense.call_sync_ajax_request(show_url, Social_sense.ajax_method, Social_sense.Draw_task_table);
-	so_ready();
 }
 
 //Social_sense.Draw_task_table();
@@ -299,9 +301,9 @@ function so_ready(){
 	});
 
 	$('a[id^="so_users"]').click(function(){
-		var temp = $(this).parent().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		var remark = $(this).parent().prev().html();
-		url = "/detect/get_group_detail/?task_name=" + temp;
+		url = "/social_sensing/get_group_detail/?task_name=" + temp;
 		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_control_table);
 		$('span[id^="have_sensor_name"]').html(temp);
 		$('span[id^="have_sensor_remark"]').html(remark);
@@ -309,7 +311,7 @@ function so_ready(){
 		});
 	
 }
-so_ready();
+
 function callback(data){
 	console.log(data);
 	if(data.length>0){
@@ -410,24 +412,25 @@ function so_group_data(){
 		a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
 		a['keywords'] = '';
 		a['create_at'] =  Date.parse(new Date())/1000;
-		a['social_sensors'] ='';
+		var so_user_option = $('input[name="so_mode_choose"]:checked').val();
 		var url0 = [];
 		var url1 = '';
 		var url_create = '/social_sensing/create_task/?';
-	    key_words = $('#so_keywords').val();
-	 	key_words = key_words.split(/\s+/g);
+	    a['keywords'] = $('#so_keywords').val();
+	 	a['keywords'] = a['keywords'].split(/\s+/g);
 	    $('[name="keys_list_option"]:checked').each(function(){
-		  	    key_words.push($(this).val());
+		  	    a['keywords'].push($(this).val());
 		  	});
 	    if (so_user_option == 'so_all_users'){
 	    	a['social_sensors'] = '';
-	    }
-	    else{              //single_user or multi_user with extension
-	    	var group_names = [];
+	    }else{              //single_user or multi_user with extension
+	    	a['social_sensors'] = [];
 		  	$('[name="so_user_list_option"]:checked').each(function(){
-		  	    group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
+		  	    //group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
+		  	     a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().prev().attr('name'));
 		  	});
 		}
+		console.log(a['social_sensors']);
 		for(var k in a){
 			if(a[k]){
 				url0.push(k +'='+a[k]);

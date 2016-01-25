@@ -210,17 +210,17 @@ function submit_control(that){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 		var percent = $(this).parent().prev().text();
 		var remark0 = $(this).parent().prev().prev().html();
-		// if(percent.replace(/[^0-9]/ig,"") != 100){
-		// 	alert('进度没有达到100%，无法提交分析任务！');
-		// }
-		// else{
+		if(percent.replace(/[^0-9]/ig,"") != 100){
+			alert('进度没有达到100%，无法提交监控任务！');
+		}
+		else{
 			url = "/detect/show_detect_result/?task_name=" + temp;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
 			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
 			$('input[name="con_group_name"]').val(temp);
 			$('input[name="con_remark"]').val(remark0);
 			$('#group_control').modal();
-		 //}
+		 }
 	});	
 }
 
@@ -393,7 +393,7 @@ function group_control_data(){
 function con_callback(data){
 	if(data==1){
 		alert('操作成功！');
-		window.location.href='/index/group';
+		window.location.href='/index/group/#';
 	}else if(data==0){
 		alert('已存在相同名称的监控任务，请重试！');
 	}else if(data ==-1){
