@@ -192,13 +192,16 @@ def ajax_get_task_detail_info():
     task_detail["social_sensors"] = json.loads(task_detail["social_sensors"])
     task_detail['keywords'] = json.loads(task_detail['keywords'])
     history_status = json.loads(task_detail['history_status'])
-    temp_list = []
-    temp_list.append(history_status[-1])
-    for item in history_status[:-1]:
-        if int(item[-1]) != 0:
-            temp_list.append(item)
-    sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
-    task_detail['history_status'] = sorted_list
+    if history_status:
+        temp_list = []
+        temp_list.append(history_status[-1])
+        for item in history_status[:-1]:
+            if int(item[-1]) != 0:
+                temp_list.append(item)
+        sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+        task_detail['history_status'] = sorted_list
+    else:
+        task_detail['history_status'] = history_status
     task_detail['social_sensors_portrait'] = []
 
     if task_detail["social_sensors"]:
