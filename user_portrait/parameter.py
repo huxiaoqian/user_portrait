@@ -250,3 +250,9 @@ GROUP_ACTIVITY_TIME_DECRIPTION_DICT = {
         '1': u'群体用户活跃时间较集中',
         '2': u'群体用户活跃时间非常集中'
         }
+GROUP_ITER_COUNT = 100
+GROUP_INFLUENCE_FILTER_LOW_THRESHOLD = 500
+GROUP_INFLUENCE_FILTER_RANK_RATIO = 0.05
+GROUP_SOCIAL_OUT_COUNT = 100
+GROUP_SENTIMENT_LIST = ['0', '1', '2', '3'] # need to modify
+GROUP_NEGATIVE_SENTIMENT = ['2', '3'] # need to modify
