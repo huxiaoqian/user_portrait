@@ -245,7 +245,7 @@ IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influ
 ACTIVITY_GEO_TOP = 3
 HIS_BINS_COUNT = 5
 GROUP_ACTIVITY_TIME_THRESHOLD = [0.3, 0.5]
-GROUP_ACTIVITY_TIME_DECRIPTION_DICT = {
+GROUP_ACTIVITY_TIME_DESCRIPTION_DICT = {
         '0': u'群体用户活跃时间较分散',
         '1': u'群体用户活跃时间较集中',
         '2': u'群体用户活跃时间非常集中'
@@ -256,3 +256,27 @@ GROUP_INFLUENCE_FILTER_RANK_RATIO = 0.05
 GROUP_SOCIAL_OUT_COUNT = 100
 GROUP_SENTIMENT_LIST = ['0', '1', '2', '3'] # need to modify
 GROUP_NEGATIVE_SENTIMENT = ['2', '3'] # need to modify
+GROUP_AVE_ACTIVENESS_RANK_THRESHOLD = [0.3, 0.7]
+GROUP_AVE_INFLUENCE_RANK_THRESHOLD = [0.3, 0.7]
+GROUP_AVE_IMPORTANCE_RANK_THRESHOLD = [0.3, 0.7]
+GROUP_AVE_ACTIVENESS_RANK_DESCRIPTION = {
+        '0': u'群体用户整体活跃度较高',
+        '1': u'群体用户整体活跃度一般',
+        '2': u'群体用户整体活跃度较低'
+        }
+GROUP_AVE_INFLUENCE_RANK_DESCRIPTION = {
+        '0': u'群体用户整体影响力较高',
+        '1': u'群体用户整体影响力一般',
+        '2': u'群体用户整体活跃度较低'
+        }
+GROUP_AVE_IMPORTANCE_RANK_DESCRIPTION = {
+        '0': u'群体用户整体重要度较高',
+        '1': u'群体用户整体重要度一般',
+        '2': u'群体用户整体重要度较低'
+        }
+GROUP_DENSITY_THRESHOLD = [0.1, 0.3]
+GROUP_DENSITY_DESCRIPTION = {
+        '0': u'群体内交互紧密读较低',
+        '1': u'群体内交互进密度一般',
+        '2': u'群体内交互进密度较高'
+        }

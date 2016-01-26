@@ -6,8 +6,10 @@ import time
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
-from global_utils import R_DICT
+from global_utils import R_DICT, es_retweet, retweet_index_name_pre, retweet_index_type
 from time_utils import datetime2ts, ts2datetime
+from parameter import DAY
+from cron.detect.cron_detect import get_db_num
 
 activity_threshold = 50
 ip_threshold = 7
@@ -24,14 +26,14 @@ def filter_activity(user_set):
     now_date = ts2datetime(time.time())
     # test
     now_date = '2013-09-08'
-    ts = datetime2ts(now_date) - 24*3600
+    ts = datetime2ts(now_date) - DAY
     date = ts2datetime(ts)
     #print 'date:', date
     timestamp = datetime2ts(date)
     for user in user_set:
         over_count = 0
         for i in range(0,7):
-            ts = timestamp - 3600*24*i
+            ts = timestamp - DAY*i
             result = r_cluster.hget('activity_'+str(ts), str(user))
             if result:
                 items_dict = json.loads(result)
@@ -52,11 +54,11 @@ def filter_ip(user_set):
     now_date = ts2datetime(time.time())
     # test
     now_date = '2013-09-08'
-    ts = datetime2ts(now_date) - 24*3600
+    ts = datetime2ts(now_date) - DAY
     for user in user_set:
         ip_set = set()
         for i in range(0,7):
-            timestamp = ts - 3600*24*i
+            timestamp = ts - DAY*i
             ip_result = r_cluster.hget('ip_'+str(ts), str(user))
             if ip_result:
                 result_dict = json.loads(ip_result)
@@ -72,22 +74,39 @@ def filter_ip(user_set):
     return results
 
 def filter_retweet_count(user_set):
+    FILTER_ITER_COUNT = 100;
     results = []
-    now_date = ts2datetime(time.time())
+    now_ts = time.time()
+    db_number = get_db_num(now_ts)
+    retweet_index_name = retweet_index_name_pre + str(db_number)
     # test
-    for user in user_set:
-        retweet_set = set()
-        for db_number in R_DICT:
-            r = R_DICT[db_number]
-            retweet_result = r.hgetall('retweet_'+str(user))
-            #if retweet_result:
-            #    print 'retweet_result:', retweet_result
-            for retweet_user in retweet_result:
-                retweet_set.add(retweet_user)
-        if len(retweet_set) < retweet_threshold:
-            results.append(user)
-        else:
-            writer.writerow([user, 'retweet'])
+    search_user_count = len(user_set);
+    iter_search_count = 0
+    while iter_search_count < search_user_count:
+        iter_search_user_list = user_set[iter_search_count:iter_search_count + FILTER_ITER_COUNT]
+        try:
+            retweet_result = es_retweet.mget(index = retweet_index_name, doc_type = retweet_index_type,\
+                    body = {'ids':iter_search_user_list}, _source=True)['docs']
+        except:
+            retweet_result = []
+        # if retweet_result:
+        #     print 'retweet_result:', retweet_result
+        for retweet_item in retweet_result:
+            if retweet_item['found']:
+                retweet_set = set()
+                user = retweet_item['_id']
+                per_retweet_result = json.loads(retweet_item['_source']['uid_retweet'])
+                for retweet_user in per_retweet_result:
+                    retweet_set.add(retweet_user)
+                if len(retweet_set) < retweet_threshold:
+                    results.append(user)
+                else:
+                    writer.writerow([user, 'retweet'])
+            else:
+                user = retweet_item['_id']
+                results.append(user)
+
+        iter_search_count += FILTER_ITER_COUNT
     print 'after filter retweet:', len(results)
     return results
 
@@ -96,12 +115,12 @@ def filter_mention(user_set):
     now_date = ts2datetime(time.time())
     # test
     now_date = '2013-09-08'
-    timestamp = datetime2ts(now_date) - 24*3600
+    timestamp = datetime2ts(now_date) - DAY
     date = ts2datetime(timestamp)
     for user in user_set:
         mention_set = set()
         for i in range(0,7):
-            ts = timestamp - 3600*24*i
+            ts = timestamp - DAY*i
             result = r_cluster.hget('at_'+str(ts), str(user))
             if result:
                 item_dict = json.loads(result)
