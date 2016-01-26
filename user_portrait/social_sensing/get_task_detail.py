@@ -183,8 +183,10 @@ def get_task_detail_2(task_name, keywords, ts):
 
 # 获得某个时间段的文本内容，返回ts-time_interval~ts之间的
 def get_detail_text(task_name, keywords_list, ts, text_type):
+    print "-----------------"
     task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)["_source"]
     keywords_list = json.loads(task_detail['keywords'])
+    print keywords_list
     results = query_hot_mid(ts, keywords_list, text_type="1")
 
     return results
