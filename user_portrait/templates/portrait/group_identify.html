@@ -21,7 +21,7 @@
     {% block head_js %}
         {{ super() }}
         <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
-        <script type="text/javascript" src="/static/js/portrait/identify_custom_table.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/identify_table.js"></script>
     {% endblock head_js %}
     {% block main %}
     <h4 class="page-header">群体分析</h4>
@@ -93,7 +93,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary"  id="group_control_confirm_button">提交</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="group_control_confirm_button">提交</button>
           </div>
         </div>
       </div>

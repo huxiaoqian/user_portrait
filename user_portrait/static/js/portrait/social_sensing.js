@@ -324,12 +324,12 @@ function callback(data){
 $('a[id^="so_task_del"]').click(function(e){
 	var a = confirm('确定要删除吗？');
     	if (a == true){
-			var url = '/social_sensing/delete_task/';
+			var url = '/social_sensing/delete_task/?';
 			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
 			console.log(url);
 			//window.location.href = url;
-			//Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,callback);
+			Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,callback);
 	}
 });
 

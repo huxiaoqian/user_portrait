@@ -94,7 +94,7 @@ Draw_dis_Table:function(data){
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
-    deleteGroup(Group_delete_task);
+    deleteGroup();
 	submit_analyze();
 	submit_control();
     $('#dis_table_body').dataTable({
@@ -111,7 +111,7 @@ var Group_identify_task = new Group_identify_task();
 function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
-	deleteGroup(Group_delete_task);
+	deleteGroup();
 	control_click();
 }
 window.setInterval(redraw,30000);
@@ -125,7 +125,7 @@ redraw_result();
 function Group_delete_task(){
 	 this.url = "/detect/delete_task/?";
 }
-Group_delete_task.prototype = {   //群组搜索
+Group_delete_task.prototype = {   //群组删除
 	call_sync_ajax_request:function(url, method, callback){
 	    $.ajax({
 	      url: url,
@@ -135,21 +135,26 @@ Group_delete_task.prototype = {   //群组搜索
 	      success:callback
     	});
 	},
-	del:function(data){
-		location.reload();
-	}
 }
 
-function deleteGroup(that){
+function del(data){
+		console.log(data);
+		if(data.length>0){
+			alert('操作成功！');
+			window.location.href=window.location.href;
+		}
+}
+
+function deleteGroup(){
 	$('a[id^="task_del"]').click(function(e){
 		var a = confirm('确定要删除吗？');
     	if (a == true){
-			var url = that.url;
+			var url = '/detect/delete_task/?';
 			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
 			console.log(url);
 			//window.location.href = url;
-			that.call_sync_ajax_request(url,that.ajax_method,that.del);
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
 		}
 	});	
 	$('a[id^="analyze_del"]').click(function(e){
@@ -160,7 +165,7 @@ function deleteGroup(that){
 			url = url + 'task_name=' + temp;
 			console.log(url);
 			//window.location.href = url;
-			that.call_sync_ajax_request(url,that.ajax_method,that.del);
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
 		}
 	});	
 }
@@ -305,7 +310,9 @@ function group_analyze_confirm_button(){
   	//     dataType: "json",
   	//     success: callback
   	// });
-  	function callback(data){
+}
+
+function callback(data){
   	    console.log(data);
   	    if (data == '1'){
   	        alert('提交成功！');
@@ -314,8 +321,6 @@ function group_analyze_confirm_button(){
   	        alert('已存在相同名称的群体分析任务,请重试一次!');
   	    }
   	}
-}
-
 $('#group_control_confirm_button').click(function(){
 	group_control_data();
 });
