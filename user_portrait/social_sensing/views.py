@@ -46,7 +46,7 @@ def ajax_create_task():
         task_detail["create_by"] = create_by
         task_detail["stop_time"] = stop_time
         task_detail["remark"] = remark
-        task_detail["social_sensors"] = json.dumps(social_sensors.split(','))
+        task_detail["social_sensors"] = json.dumps(list(set(social_sensors.split(','))))
         task_detail["keywords"] = json.dumps(keywords.split(","))
         now_ts = int(time.time())
         task_detail["create_at"] = now_ts
@@ -65,7 +65,7 @@ def ajax_create_task():
                 task_detail["task_type"] = "1"
             else:
                 task_detail["task_type"] = "0"
-        print task_detail
+    print task_detail
 
     # store task detail into es
     es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
@@ -276,11 +276,13 @@ def ajax_get_group_detail():
                 for iter_item in SOCIAL_SENSOR_INFO:
                     if iter_item == "topic_string":
                         temp.append(item["fields"][iter_item][0].split('&'))
+                        temp.append(item["fields"][iter_item][0].split('&'))
                     else:
                         temp.append(item["fields"][iter_item][0])
                 portrait_detail.append(temp)
 
     return json.dumps(portrait_detail)
+
 
 # 返回某个预警事件的详细信息，包括微博量、情感和参与的人
 @mod.route('/get_warning_detail/')
@@ -301,19 +303,24 @@ def ajax_get_keywords_list():
     keywords = request.args.get('keywords', '') # warning keywords, seperate with ","
     keywords_list = keywords.split(',')
     ts = request.args.get('ts', '') # timestamp: 123456789
-    start_time = request.args.get('start_time', '') # task_name 创建时间
+
+    task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)['_source']
+    start_time = task_detail['create_at']
 
     results = aggregation_hot_keywords(start_time, ts, keywords_list)
 
     return json.dumps(results)
+
+
 # 返回某个时间段特定的文本，按照热度排序
 @mod.route('/get_text_detail/')
 def ajax_get_text_detail():
     task_name = request.args.get('task_name','') # task_name
     keywords = request.args.get('keywords', '') # warning keywords
     ts = request.args.get('ts', '') # timestamp: 123456789
+    text_type = request.args.get('text_type', '') # which line
 
-    results = get_text_detail(task_name, keywords, ts)
+    results = get_text_detail(task_name, keywords, ts, text_type)
 
     return json.dumps(results)
 

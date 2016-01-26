@@ -4,17 +4,13 @@ import time
 import json
 import math
 from mid2weibolink import weiboinfo2url
-#test
-'''
-reload(sys)
-sys.path.append('../')
-from global_utils import R_GROUP as r
-from global_utils import es_user_portrait as es
-from time_utils import ts2datetime, datetime2ts
-'''
 from user_portrait.global_config import UPLOAD_FOLDER
 from user_portrait.global_utils import R_GROUP as r
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type,\
+                        es_flow_text, flow_text_index_name_pre, flow_text_index_type,\
+                        es_user_profile, profile_index_name, profile_index_type,\
+                        es_group_result
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.parameter import MAX_VALUE
 
@@ -399,6 +395,175 @@ def delete_group_results(task_name):
         return False
     '''
     return True
+
+#show group members weibo for influence content
+#input: uid, timestamp_from, timestamp_to
+#output: weibo_list
+def get_influence_content(uid, timestamp_from, timestamp_to):
+    weibo_list = []
+    #split timestamp range to new_range_dict_list
+    from_date_ts = datetime2ts(ts2datetime(timestamp_from))
+    to_date_ts = datetime2ts(ts2datetime(timestamp_to))
+    new_range_dict_list = []
+    if from_date_ts != to_date_ts:
+        iter_date_ts = from_date_ts
+        while iter_date_ts < to_date_ts:
+            iter_next_date_ts = iter_date_ts + DAY
+            new_range_dict_list.append({'range':{'timestamp':{'gte':iter_date_ts, 'lt':iter_next_date_ts}}})
+            iter_date_ts = iter_next_date_ts
+        if new_range_dict_list[0]['range']['timestamp']['gte'] < timestamp_from:
+            new_range_dict_list[0]['range']['timestamp']['gte'] = timestamp_from
+        if new_range_dict_list[-1]['range']['timestamp']['lt'] > timestamp_to:
+            new_range_dict_list[-1]['range']['timestamp']['lt'] = timestamp_to
+    else:
+        new_range_dict_list = [{'range':{'timestamp':{'gte':timestamp_from, 'lt':timestamp_to}}}]
+    #iter date to search flow_text
+    iter_result = []
+    for range_item in new_range_dict_list:
+        range_from_ts = range_item['range']['timestamp']['gte']
+        range_from_date = ts2datetime(range_from_ts)
+        flow_text_index_name = flow_text_index_name_pre + range_from_date
+        query_body={
+            'query':{
+                'filtered':{
+                    'filter':{
+                        'bool':{
+                            'must':{[
+                                {'term':{'uid': uid}},
+                                range_item
+                                ]
+                                }
+                            }
+                        }
+                    }
+                },
+            'sort':[{'timestamp':{'order': 'asc'}}]
+            }
+        try:
+            flow_text_exist = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
+                                        body=query_body)['hits']['hits']
+        except:
+            flow_text_exist = []
+        iter_result.extend(flow_text_exist)
+    # get weibo list
+    for item in flow_text_exist:
+        source = item['_source']
+        weibo = {}
+        weibo['timestamp'] = ts2date(source['timestamp'])
+        weibo['ip'] = source['ip']
+        weibo['text'] = source['text']
+        weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        weibo_list.append(weibo)
+        
+    return weibo_list
+
+#show group members interaction weibo content
+#input: uid1, uid2
+#ouput: weibo_list
+def get_social_inter_content(uid1, uid2):
+    weibo_list = []
+    #get two type relation about uid1 and uid2
+    #search weibo list
+    now_ts = int(time.time())
+    now_date_ts = datetime2ts(ts2datetime(now_ts))
+    #uid2uname
+    uid2unam = {}
+    try:
+        portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
+                                body={'ids': [uid1, uid2]}, _source=False, fileds=['uid', 'uname'])['docs']
+    except:
+        portrait_result = []
+    for item in portrait_result:
+        uid = item['_id']
+        if item['found'] == True:
+            uname = item['uname']
+            uid2uname[uid] = uname
+    #iter date to search weibo list
+    for i in range(7, 0, -1):
+        iter_date_ts = now_date_ts - i*DAY
+        iter_date = ts2datetime(iter_date_ts)
+        flow_text_index_name = flow_text_index_name_pre + str(iter_date)
+        query = [{'bool':{'should':[{'bool':{'must':[{'term': {'uid': uid1}}, {'term':{'directed_uid':uid2}}]}}, \
+                                                {'bool':{'must':[{'term': {'uid': uid2}}, {'term':{'directed_uid':uid1}}]}}]}}]
+        try:
+            flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
+                                    body={'query': query, 'sort':[{'timestamp':{'order': 'asc'}}]})['hits']['hits']
+        except:
+            flow_text_result = []
+        for flow_text in flow_text_result:
+            source = flow_text['_source']
+            weibo = {}
+            weibo['timestamp'] = flow_text['timestamp']
+            weibo['ip'] = flow_text['ip']
+            weibo['geo'] = flow_text['geo']
+            weibo['text'] = '\t'.join(flow_text['text'].split('&'))
+            weibo['uid'] =  flow_text['uid']
+            weibo['uname'] = uid2uname[weibo['uid']]
+            weibo['directed_uid'] = flow_text['directed_uid']
+            weibo['directed_uname'] = uid2uname[flow_text['directed_uid']]
+            weibo_list.append(weibo)
+
+    return weibo_list
+
+#show group members sentiment weibo
+#input: task_name, start_ts ,sentiment_type
+#output: weibo_list
+def search_group_sentiment_weibo(task_name, start_ts, sentiment):
+    weibo_list = []
+    #step1:get task_name uid
+    try:
+        group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
+                        id=task_name, _source=False, fields=['uid_list'])['hits']['hits']
+    except:
+        group_result = {}
+    if group_result == {}:
+        return 'task name invalid'
+    try:
+        uid_list = json.loads(group_result['fields']['uid_list'][0])
+    except:
+        uid_list = []
+    if uid_list == []:
+        return 'task uid list null'
+    #step3: get ui2uname
+    uid2uname = {}
+    try:
+        user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type,\
+                        body={'ids':uid_list}, _source=False, fields=['uname'])['hits']['hits']
+    except:
+        user_portrait_result = []
+    for item in user_portrait_result:
+        uid = item['_id']
+        if item['found']==True:
+            uname = item['fields']['uname'][0]
+            uid2uname[uid] = uname
+    
+    #step4:iter date to search weibo
+    now_ts = int(time.time())
+    now_date_ts = datetime2ts(ts2datetime(now_ts))
+    weibo_list = []
+    for i in range(7, 0, -1):
+        iter_date_ts = now_date_ts - i*DAY
+        iter_date = ts2datetime(iter_date_ts)
+        flow_text_index_name = flow_text_index_name_pre + str(iter_date)
+        #step4: get query_body
+        query_body = [{'terms': {'uid': uid_list}}, {'term':{'sentiment': sentiment}}]
+        try:
+            flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
+                            body={'query':{'bool':{'must': query_body}}, 'sort': [{'timestamp':{'order':'asc'}}]})['hits']['hits']
+        except:
+            flow_text_result = []
+        for flow_text_item in flow_text_result:
+            source = flow_text_item['_source']
+            weibo = {}
+            weibo['uid'] = source['uid']
+            weibo['uname'] = uid2uname[weibo['uid']]
+            weibo['ip'] = source['ip']
+            weibo['geo'] = '\t'.join(source['geo'].split('&'))
+            weibo['text'] = source['text']
+            weibo['timestamp'] = source['timestamp']
+            weibo_list.append(weibo)
+
+    return weibo_list
 
 
 if __name__=='__main__':
