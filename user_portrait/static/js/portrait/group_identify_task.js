@@ -147,20 +147,6 @@ function redraw(){
 redraw();
 redraw_result();
 
-// function Group_delete_task(){
-// 	 this.url = "/detect/delete_task/?";
-// }
-// Group_delete_task.prototype = {   //群组删除
-// 	call_sync_ajax_request:function(url, method, callback){
-// 	    $.ajax({
-// 	      url: url,
-// 	      type: 'GET',
-// 	      dataType: 'json',
-// 	      async: true,
-// 	      success:callback
-//     	});
-// 	},
-// }
 
 function del(data){
 		console.log(data);
@@ -170,40 +156,6 @@ function del(data){
 			//window.location.href=window.location.href;
 		}
 }
-
-//function deleteGroup(){
-//	console.log('666');
-	// $('a[id="task_del"]').click(function(e){
-	// 	console.log('333');
-	// 	var a = confirm('确定要删除吗？');
- //    	if (a == true){
-	// 		var url = '/detect/delete_task/?';
-	// 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-	// 		url = url + 'task_name=' + temp;
-	// 		//window.location.href = url;
-	// 		Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
-	// 		console.log('111');
-	// 	}
-	// });	
-	// $('a[id="analyze_del"]').click(function(e){
-	// 	console.log('444');
-	// 	var a = confirm('确定要删除吗？');
- //    	if (a == true){
- //    		var url = '/detect/delete_task/?';
-	// 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
-	// 		url = url + 'task_name=' + temp;
-	// 		console.log(url);
-	// 		//window.location.href = url;
-	// 		Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
-	// 		console.log('222');
-	// 	}
-	// });	
-//}
-//
-//var Group_delete_task = new Group_delete_task();
-// deleteGroup(Group_delete_task);
-// submit_analyze(Group_delete_task);
-// submit_control(Group_delete_task);
 
 function control_click(){
 	$('a[id^="commit_control"]').click(function(){
@@ -279,7 +231,7 @@ function draw_control_table(data){
 	var item_name = '';
 	var html='';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
-    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">活跃度</th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
+    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">活跃度</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
     for (var i=0;i<data.length;i++) {
     	if(item[i][1]=='unknown'){
     		item_name = '未知';
@@ -291,12 +243,12 @@ function draw_control_table(data){
     	}else{
     		item_img = item[i][2];
     	}
-    	if(item[i][5]==undefined){
-    		item_num = '无';
-    	}else{
-    		item_num = item[i][5].toFixed(2);
-    	}
-        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][5] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td></tr>';
+    	// if(item[i][5]==undefined){
+    	// 	item_num = '无';
+    	// }else{
+    	// 	item_num = item[i][5].toFixed(2);
+    	// }
+        html += '<tr><td name="'+item[i][0]+'" style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td><td style="text-align:center">' + item[i][8] + '</td><td><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td></tr>';
   	}
     html += '</table>'; 
   //   html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
@@ -337,6 +289,9 @@ function control_choose_all(){
 function keys_choose_all(){
 	$('input[name="keys_list_option"]').prop('checked', $("#keys_choose_all").prop('checked'));	
 }
+// function user_choose_all(){
+// 	$('input[name="keys_list_option"]').prop('checked', $("#keys_choose_all").prop('checked'));	
+// }
 
 function delRow(obj){
   var Row = obj.parentNode;
@@ -427,7 +382,7 @@ function group_control_data(){
 		  	    a['keywords'].push($(this).val());
 		  	});
 	    $('[name="control_list_option"]:checked').each(function(){
-		  	    a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().text());
+		  	    a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().prev().prev().attr('name'));
 		  	});
 		for(var k in a){
 			if(a[k]){
