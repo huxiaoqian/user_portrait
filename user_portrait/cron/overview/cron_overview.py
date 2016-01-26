@@ -6,11 +6,12 @@ from elasticsearch.helpers import scan
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_RECOMMENTATION as r
-from global_utils import es_user_portrait as es
+from global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from global_utils import ES_DAILY_RANK as es_cluster
 from global_utils import es_user_profile
 from global_utils import R_RECOMMENTATION as r_recomment
 from time_utils import ts2datetime, datetime2ts
+from parameter import DAY
 
 basic_field = ['user_count', 'gender_ratio', 'location_top', 'verified_ratio']
 behavior_field = ['total_status', 'keywords_top', 'activity_geo', 'hashtag_top',\
@@ -18,16 +19,16 @@ behavior_field = ['total_status', 'keywords_top', 'activity_geo', 'hashtag_top',
 user_field = ['domain_top', 'domain_top_user']
 compute_field = ['recomment_in_count', 'recomment_out', 'compute_count']
 
-index_name = 'user_portrait'
-index_type = 'user'
+# index_name = 'user_portrait'
+# index_type = 'user'
+portrait_index_name = 'user_portrait_1222'
 
 #there have to add domain user top rank
 def get_domain_top_user(domain_top):
     result = {}
     domain_user = {}
-    index_name = 'weibo_user'
-    index_type = 'user'
     #test user list
+    """
     test_user_list = [['2803301701', '1639498782', '2656274875', '1402977920', '3114175427'], \
                       ['3575186384', '1316683401', '1894603174', '1641542052', '1068248497'], \
                       ['1729736051', '1396715380', '2377610962', '1828183230', '2718018210'], \
@@ -40,18 +41,30 @@ def get_domain_top_user(domain_top):
                       ['1664065962', '3299094722', '1942531237', '2799434700', '1784404677'],\
                       ['1218353337', '1761179351', '3482911112', '1220291284', '2504433601'],\
                       ['3682473195', '1627673351', '1779065471', '3316144700', '1896701827']]
+    """
     count = 0
+    k = 5
     for item in domain_top:
         domain = item[0]
         #test
-        user_list = test_user_list[count]
+        #user_list = test_user_list[count]
         result[domain] = []
-        profile_result = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':user_list})['docs']
+        query_body = {
+            'query':{
+                'filtered':{
+                    'filter':{'term':{'domain':domain}}    
+                }
+            },
+            'size':k,
+            'sort':[{'influence':{'order':'desc'}}]
+        }
+        profile_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
+                body=query_body, _source=False, fields=['uid', 'uname', 'photo_url'])['hits']['hits']
         for profile in profile_result:
             uid = profile['_id']
             try:
-                uname = profile['_source']['nick_name']
-                photo_url = profile['_source']['photo_url']
+                uname = profile['fields']['uname'][0]
+                photo_url = profile['fields']['photo_url'][0]
             except:
                 uname = 'unknown'
                 photo_url = 'unknown'
@@ -63,9 +76,8 @@ def get_domain_top_user(domain_top):
 def get_topic_top_user(topic_top):
     result = {}
     topic_user = {}
-    index_name = 'weibo_user'
-    index_type = 'user'
     #test user list
+    """
     test_user_list = [['1499104401', '1265965213', '3270699555', '2073915493', '1686474312'],\
                       ['2803301701', '2105426467', '1665372775', '3716504593', '2892376557'],\
                       ['1457530250', '1698513182', '2793591492', '2218894100', '1737961042'],\
@@ -78,18 +90,28 @@ def get_topic_top_user(topic_top):
                       ['1993292930', '1645823930', '1890926610', '1641561810', '2023833990'],\
                       ['2005471590', '1233628160', '2074684140', '1396715380', '1236762250'],\
                       ['1423592890', '2612799560', '1926127090', '2684951180', '1760607220']]
+    """
     count = 0
+    k = 5
     for item in topic_top:
         topic = item[0]
         #test
-        user_list = test_user_list[count]
+        #user_list = test_user_list[count]
         result[topic] = []
-        profile_result = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':user_list})['docs']
+        query_body = {
+            'query':{
+                'wildcard':{'topic_string':'*'+topic+'*'}
+            },
+            'size':k,
+            'sort':[{'influence':{'order':'desc'}}]
+        }
+        profile_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
+                body=query_body, _source=False, fields=['uid', 'uname', 'photo_url'])['hits']['hits']
         for profile in profile_result:
             uid = profile['_id']
             try:
-                uname = profile['_source']['nick_name']
-                photo_url = profile['_source']['photo_url']
+                uname = profile['fields']['uname'][0]
+                photo_url = profile['fields']['photo_url'][0]
             except:
                 uname = 'unknown'
                 photo_url = 'unknown'
@@ -105,7 +127,7 @@ def get_user_count():
                 'match_all':{}
                 }
             }
-    count = es.count(index=index_name, doc_type=index_type, body=query_body)['count']
+    count = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['count']
     #print 'all user count:', count
     return count
 
@@ -136,7 +158,7 @@ def get_scan_results():
     no_topic_count = 0
     no_online_pattern_count = 0
     no_domain_count = 0
-    s_re = scan(es, query={'query':{'match_all':{}}, 'size':100}, index=index_name, doc_type=index_type)
+    s_re = scan(es_user_portrait, query={'query':{'match_all':{}}, 'size':100}, index=portrait_index_name, doc_type=portrait_index_type)
     print 's_re:', s_re
     activity_count = 0
     while True:
@@ -170,8 +192,8 @@ def get_scan_results():
                 # activity geo
                 try:
                     activity_geo = scan_re['activity_geo_dict']
-                    if scan_re:
-                        activity_geo_dict = json.loads(activity_geo)
+                    if activity_geo:
+                        activity_geo_dict = json.loads(activity_geo)[-1]
                         for geo in activity_geo_dict:
                             geo_list = geo.split('\t')
                             if geo_list[0]==u'中国' and len(geo_list)>=2:
@@ -206,9 +228,10 @@ def get_scan_results():
                     no_hashtag_count += 1
                 # topic top
                 try:
-                    topic = json.loads(scan_re['topic'])
+                    topic = scan_re['topic_string']
                     if topic:
-                        for item in topic:
+                        topic_list = topic.split('&')
+                        for item in topic_list:
                             try:
                                 topic_result[item] += 1
                             except:
@@ -230,22 +253,24 @@ def get_scan_results():
                 try:
                     domain = scan_re['domain']
                     if domain:
-                        domain_list = domain.split('_')
-                        for item in domain_list:
-                            try:
-                                domain_result[item] += 1
-                            except:
-                                domain_result[item] = 1
+                        try:
+                            domain_result[domain] += 1
+                        except:
+                            domain_result[domain] = 1
                 except:
-                    no_domain_count += 1
-                 
+                        no_domain_count += 1
             except StopIteration:
                 print 'all done'
+                now_ts = time.time()
+                now_date = ts2datetime(now_ts - DAY)
+                index_time = ''.join(now_date.split('-'))
+                #test
+                index_time = '20130907'
                 # gender ratio count
                 count = sum(gender_result.values())
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
                 #print 'gender ratio:', gender_ratio
-                activity_result = es.mget(index='20130907', doc_type='bci', body={'ids':portrait_uid_list})['docs']
+                activity_result = es_user_portrait.mget(index='bci_'+index_time, doc_type='bci', body={'ids':portrait_uid_list})['docs']
                 for activity_item in activity_result:
                     if activity_item['found']:
                         activity_count += 1
@@ -313,18 +338,18 @@ def get_scan_results():
                     sort_domain = sorted(domain_result.items(), key=lambda x:x[1], reverse=True)
                     domain_top = sort_domain[:20]
                     #test:
-                    domain_top = [('education',50), ('art', 40), ('lawyer', 30), ('student', 20), ('media', 10), ('oversea',1)]
+                    #domain_top = [('education',50), ('art', 40), ('lawyer', 30), ('student', 20), ('media', 10), ('oversea',1)]
                 else:
                     domain_top = {}
                 #print 'domain top:', domain_top
                 result_dict['domain_top'] = json.dumps(domain_top)
                 #test need to add domain top user
-                domain_top = [[u'媒体',1],[u'法律人士',1], [u'政府机构人士',1], [u'活跃人士',1], [u'媒体人士',1], [u'商业人士',1],\
-                              [u'高校微博', 1], [u'境内机构', 1], [u'境外机构', 1], [u'民间组织',1], [u'草根',1], [u'其他', 1]]
+                #domain_top = [[u'媒体',1],[u'法律人士',1], [u'政府机构人士',1], [u'活跃人士',1], [u'媒体人士',1], [u'商业人士',1],\
+                #              [u'高校微博', 1], [u'境内机构', 1], [u'境外机构', 1], [u'民间组织',1], [u'草根',1], [u'其他', 1]]
                 result_dict['domain_top_user'] = json.dumps(get_domain_top_user(domain_top))
                 #test need to add topic user
-                topic_top = [[u'军事', 1], [u'政治',1], [u'体育',1], [u'计算机',1], [u'民生',1], [u'生活',1],\
-                              [u'娱乐',1], [u'健康',1], [u'交通',1], [u'经济',1], [u'教育',1], [u'自然',1]]
+                #topic_top = [[u'军事', 1], [u'政治',1], [u'体育',1], [u'计算机',1], [u'民生',1], [u'生活',1],\
+                #              [u'娱乐',1], [u'健康',1], [u'交通',1], [u'经济',1], [u'教育',1], [u'自然',1]]
                 result_dict['topic_top_user'] = json.dumps(get_topic_top_user(topic_top))
                 return result_dict 
             except Exception, r:
@@ -343,7 +368,7 @@ def get_retweeted_top():
     k = 100000
     count = 0
     now_ts = time.time()
-    date = ts2datetime(now_ts-3600*24)
+    date = ts2datetime(now_ts-DAY)
     index_time = ''.join(date.split('-'))
     # test
     index_time = '20130907'
@@ -356,7 +381,7 @@ def get_retweeted_top():
         'sort':[{'origin_weibo_retweeted_top_number':{'order':'desc'}}]
         }
     try:
-        result = es_cluster.search(index=index_time, doc_type=index_type, body=query_body)['hits']['hits']
+        result = es_cluster.search(index='bci_'+index_time, doc_type=index_type, body=query_body)['hits']['hits']
     except:
         return None
     #print 'result:', len(result)
@@ -365,7 +390,7 @@ def get_retweeted_top():
             break
         uid = item['_id']
         try:
-            exist_result = es.get(index='user_portrait', doc_type='user', id=uid)
+            exist_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)
             #print 'exist_result:', exist_result
             try:
                 source = exist_result['_source']
@@ -388,7 +413,7 @@ def get_comment_top():
     k = 100000
     count = 0
     now_ts = time.time()
-    date = ts2datetime(now_ts - 3600*24)
+    date = ts2datetime(now_ts - DAY)
     index_time = ''.join(date.split('-'))
     #test
     index_time = '20130907'
@@ -401,7 +426,7 @@ def get_comment_top():
             'sort':[{'origin_weibo_comment_top_number':{'order':'desc'}}]
             }
     try:
-        result = es_cluster.search(index=index_time, doc_type=index_type, body=query_body)['hits']['hits']
+        result = es_cluster.search(index='bci_'+index_time, doc_type=index_type, body=query_body)['hits']['hits']
         #print 'result:', result
     except:
         return None
@@ -410,7 +435,7 @@ def get_comment_top():
             break
         uid = item['_id']
         try:
-            exist_result = es.get(index='user_portrait', doc_type='user', id=uid)
+            exist_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)
             try:
                 source = exist_result['_source']
                 count += 1
@@ -428,11 +453,9 @@ def get_comment_top():
 # get activeness top 100
 def get_activeness_top():
     result = []
-    index_name = 'user_portrait'
-    index_type = 'user'
     query_body = {'query':{'match_all':{}}, 'sort':[{'activeness':{'order': 'desc'}}], 'size':100}
     try:
-        es_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        es_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
     except Exception, e:
         raise e
     if es_result:
@@ -450,11 +473,9 @@ def get_activeness_top():
 # get importance top 100
 def get_importance_top():
     result = []
-    index_name = 'user_portrait'
-    index_type = 'user'
     query_body = {'query':{'match_all':{}}, 'sort':[{'importance':{'order':'desc'}}], 'size':100}
     try:
-        es_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        es_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
     except Exception, e:
         raise e
     if es_result:
@@ -472,11 +493,9 @@ def get_importance_top():
 # get influence top 100
 def get_influence_top():
     result = []
-    index_name = 'user_portrait'
-    index_type = 'user'
     query_body = {'query':{'match_all':{}}, 'sort':[{'influence':{'order':'desc'}}], 'size':100}
     try:
-        es_result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        es_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
     except Exception, e:
         raise e
     if es_result:
@@ -502,12 +521,12 @@ def get_influence_vary_top():
         'sort':[{'vary':{'order': 'desc'}}]
         }
     try:
-        es_result =  es.search(index='vary', doc_type='bci', body=query_body)['hits']['hits']
+        es_result =  es_user_portrait.search(index='vary', doc_type='bci', body=query_body)['hits']['hits']
     except Exception, e:
         raise e
     uid_list = [user_dict['_id'] for user_dict in es_result]
     #print 'uid_list:', uid_list
-    portrait_result = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
+    portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list}, _source=True)['docs']
     #print 'portrait_result:', portrait_result
     count = 0
     for i in range(len(portrait_result)):
@@ -544,7 +563,7 @@ def get_influence_top_count(top_threshold, user_count):
                     }
                 }
             }
-    result = es.count(index='user_portrait', doc_type='user', body=query_body)['count']
+    result = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['count']
     #print 'result:', result
     return {'top_influence_ratio':float(result)/user_count}
 
@@ -554,7 +573,7 @@ def get_influence_top_count(top_threshold, user_count):
 def get_operate_information():
     result = dict()
     now_ts = time.time()
-    date = ts2datetime(now_ts - 24*3600)
+    date = ts2datetime(now_ts - DAY)
     #test
     date = '2013-09-07'
     delete_date = ''.join(date.split('-'))
@@ -606,7 +625,7 @@ def compute_overview():
     results = dict(results, **top_influence_ratio)
     operate_result = get_operate_information()
     results = dict(results, **operate_result)
-    #print 'results:', results
+    # print 'results:', results
     save_result(results)
     return results
 
