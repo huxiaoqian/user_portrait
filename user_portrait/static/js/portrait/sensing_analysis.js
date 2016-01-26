@@ -1,21 +1,33 @@
-$(document).ready(function() {
-	//alert('aaabbb');
-} );
 ajax_method = 'GET';
 function call_sync_ajax_request(url, method, callback){
     $.ajax({
       url: url,
       type: method,
       dataType: 'json',
-      async: false,
+      async: true,
       success:callback
     });
 }
-var sensor_head=['uid','昵称','领域','话题','重要度','影响力','活跃度']
-var participate_head=['uid','昵称','领域','话题','热度','重要度','影响力','活跃度']
-var keywords_head=['序号','关键词','频数']
-// var global_pre_page = 1;
-// var global_choose_uids = new Array();
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
 
 function sensing_sensors_table (head, data, div_name) {
 	$('#sensor_num').append(data.length);
@@ -85,11 +97,6 @@ function sensing_participate_table (head, data, div_name) {
 	}
 	html += '</tbody></table>';
 	$('#'+div_name).append(html);
-	// $('#participate_table').DataTable( {
- //        "scrollY":        "300px",
- //        "scrollCollapse": true,
- //        "paging":         false
- //    } );
 }
 
 function sensing_keywords_table (head, data, div_name) {
@@ -165,30 +172,30 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	        {
 	            name: legend_data[0],
 	            type: 'line',
-	            symbol: 'none',
+	            showAllSymbol : true,
 	            markPoint : {
                 	data :markpoint,
                 	clickable: true,
                 	symbolSize:5,
+                	// symbol: 'droplet',
                 	tooltip:{
                 		show : false
-                		// formatter: {b}{c}
                 	}
                 
             	},
-	            clickable: false,	          
+	            clickable: true,	          
 	            data: line1
 	        },
 	        {
 	            name: legend_data[1],
 	            type: 'line',
-	            symbol: 'none',
+	            showAllSymbol : true,
 	            data: line2
 	        },
 	        {
 	            name: legend_data[2],
 	            type: 'line',
-   	            symbol: 'none',
+	            showAllSymbol : true,
 	            data: line3
 	        }
 	    ]
@@ -199,26 +206,15 @@ function draw_mood_line_charts(data, div_name, legend_data){
         function(ec){
 			var ecConfig = require('echarts/config');
 			function eConsole(param) {
-				alert('param', param);
-			    var mes = '【' + param.type + '】';
-			    if (typeof param.seriesIndex != 'undefined') {
-			        mes += '  seriesIndex : ' + param.seriesIndex;
-			        mes += '  dataIndex : ' + param.dataIndex;
-			        mes += '  dataValue : ' + param.value;
-			        mes += '  dataname : ' + param.name;
-			    }
-			    //var click_time = param.value[0].format('yyyy-MM-dd hh:mm');
-			    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,2,6,7,8,9,0],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
-			    Draw_get_weibo(data, 'related_weibo_text');
-			    //testit();
-			    // if (param.type == 'hover') {
-			    //     document.getElementById('hover-console').innerHTML = 'Event Console : ' + mes;
-			    // }
-			    // else {
-			    //     document.getElementById('console').innerHTML = mes;
-			    // }
-			    console.log('mes', mes)
-			    console.log(0);
+			    if (typeof param.seriesIndex != 'undefined') {			    
+				    var timestamp2 = Date.parse(new Date(param.name));
+					timestamp2 = timestamp2 / 1000;
+				    var click_time = timestamp2;
+				    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0]]
+				    var num_line_url = '传递的'+(param.seriesIndex+4) +',时间是'+click_time;
+	   			    Draw_get_weibo(data, 'related_weibo_text');
+				    console.log(num_line_url);
+				}
 			}
 		
 		myChart.on(ecConfig.EVENT.CLICK, eConsole);
@@ -276,35 +272,37 @@ function draw_num_line_charts(data, div_name, legend_data){
 	    series : [
 	        {
 	            name: legend_data[0],
-	            type: 'line',
-	            symbol: 'none',
+	            type: 'line',	            
+	            showAllSymbol : true,
 	           	markPoint : {
                 	data :markpoint,
                 	clickable: true,
-                	symbolSize:5
+                	symbolSize:5,
+                	// symbol: 'droplet',
+                	tooltip:{
+                		show : false
+                		// formatter: {b}{c}
+                	}
             	},
-	            // symbolSize: function (value){
-	            //     return Math.round(value[0]/10) + 2;
-	            // },
-	            clickable: false,	          
+	            clickable: true,	          
 	            data: line1
 	        },
 	        {
 	            name: legend_data[1],
 	            type: 'line',
-	            symbol: 'none',
+	            showAllSymbol : true,
 	            data: line2
 	        },
 	        {
 	            name: legend_data[2],
 	            type: 'line',
-   	            symbol: 'none',
+	            showAllSymbol : true,
 	            data: line3
 	        },
 	        {
 	            name: legend_data[3],
 	            type: 'line',
-   	            symbol: 'none',
+	            showAllSymbol : true,
 	            data: line4
 	        }
 	    ]
@@ -315,7 +313,7 @@ function draw_num_line_charts(data, div_name, legend_data){
         function(ec){
 			var ecConfig = require('echarts/config');
 			function eConsole(param) {
-				alert('param', param);
+				//alert('param', param);
 			    var mes = '【' + param.type + '】';
 			    if (typeof param.seriesIndex != 'undefined') {
 			        mes += '  seriesIndex : ' + param.seriesIndex;
@@ -323,18 +321,14 @@ function draw_num_line_charts(data, div_name, legend_data){
 			        mes += '  dataValue : ' + param.value;
 			        mes += '  dataname : ' + param.name;
 			    }
-			    //var click_time = param.value[0].format('yyyy-MM-dd hh:mm');
-			    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,2,6,7,8,9,0],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
-			    Draw_get_weibo(data, 'related_weibo_text');
-			    //testit();
-			    // if (param.type == 'hover') {
-			    //     document.getElementById('hover-console').innerHTML = 'Event Console : ' + mes;
-			    // }
-			    // else {
-			    //     document.getElementById('console').innerHTML = mes;
-			    // }
+			    var timestamp2 = Date.parse(new Date(param.name));
+				timestamp2 = timestamp2 / 1000;
+			    var click_time = timestamp2;
+			    var data=[['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
+			    var num_line_url = '传递的'+param.seriesIndex +',时间是'+click_time;
+   			    Draw_get_weibo(data, 'related_weibo_text');
 			    console.log('mes', mes)
-			    console.log(0);
+			    console.log(num_line_url);
 			}
 		
 		myChart.on(ecConfig.EVENT.CLICK, eConsole);
@@ -345,6 +339,9 @@ function draw_num_line_charts(data, div_name, legend_data){
 }
 
 function Draw_get_weibo(data,div_name){
+	if(data.length>4){
+		$('#weibo_list').css("overflow-y","scroll");
+	}
   var html = '';
   $('#'+div_name).empty();
     if(data[0][3]==''){
@@ -374,18 +371,18 @@ function Draw_get_weibo(data,div_name){
         }
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
-        html += '<div class="weibo_detail" style="width:1000px">';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
+        html += '<div class="weibo_detail" >';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: 积极'+ '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容:&nbsp;&nbsp;' + text + '</p>';
         html += '<div class="weibo_info"style="width:100%">';
         html += '<div class="weibo_pz">';
         html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
-        html += '<a class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</a>&nbsp;&nbsp;|&nbsp;&nbsp;';
-        html += '<a class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</a></div>';
+        html += '<span class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</span>&nbsp;&nbsp;|&nbsp;&nbsp;';
+        html += '<span class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</span></div>';
         html += '<div class="m">';
         html += '<u>' + date + '</u>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
-        html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;-&nbsp;';
-        html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
+        html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;&nbsp;';
+        // html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
         html += '</div>';
         html += '</div>';
         html += '</div>';
@@ -406,39 +403,10 @@ function Draw_get_weibo(data,div_name){
       $('#'+div_name).append(html);
 }
 
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
-
-//sensing_sensors_table(sensor_head,data,"modal_sensor_table");
-//sensing_participate_table(sensor2_head,data,"sensing_participate_table");
-
-
-
-
-
-function participate_select_all(){
-	  $('input[name="participate_select"]:not(:disabled)').prop('checked', $("#participate_select_all").prop('checked'));
-}
-
 //暂时不用
+// function participate_select_all(){
+// 	  $('input[name="participate_select"]:not(:disabled)').prop('checked', $("#participate_select_all").prop('checked'));
+// }
 // function submit_participate(){
 // 	var user_choose = [];
 // 	var user_url = '';
@@ -482,6 +450,7 @@ function deal_point(data){
 var num_legend = ['总数','原创', '转发', '评论'];
 var mood_legend = ['消极','积极', '中性'];
 function social_sensing_all(data){
+
 	//异常点信息
 	var weibo_warning_num = data.variation_distribution[0].length;
 	var mood_abnormal_num = data.variation_distribution[1].length;
@@ -504,9 +473,6 @@ function social_sensing_all(data){
 	num_line_data[3] = data.retweeted_weibo_list;
 	num_line_data[4] = data.comment_weibo_list;
 	num_line_data[5] = deal_point(data.variation_distribution[0]);
-	//console.log(num_line_data[5])
-	//deal_point(data.variation_distribution[0];)
-
 	draw_num_line_charts(num_line_data, 'num_line_charts', num_legend);
 
 	//情绪走势图
@@ -516,7 +482,6 @@ function social_sensing_all(data){
 	mood_line_data[2] = data.neutral_sentiment_list;
 	mood_line_data[3] = data.positive_sentiment_list;
 	mood_line_data[4] = deal_point(data.variation_distribution[1]);
-	//console.log(mood_line_data[4]);
 	draw_mood_line_charts(mood_line_data, 'mood_line_charts', mood_legend);
 	
 	//参与人表格
@@ -548,17 +513,31 @@ function social_sensing_all(data){
 }
 
 function sensing_keywords_table_all(data){
+	var keywords_head=['序号','关键词','频数'];
 	sensing_keywords_table(keywords_head, data.slice(0, 10),"sensing_keywords_table");
 	sensing_keywords_table(keywords_head,data,"modal_keywords_table");
 }
 
-var sensing_url = '';
-sensing_url += '/social_sensing/get_warning_detail/?task_name=监督维权律师&keywords=律师&ts=1378567800';
-call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
-
-var keywords_url = '/social_sensing/get_keywords_list/?task_name=监督维权律师&keywords=律师&ts=1378567800&start_time=1377964800';
-call_sync_ajax_request(keywords_url, ajax_method, sensing_keywords_table_all);
 
 
+	console.log(task_name);
+	console.log(keywords);
+	console.log(ts);
+	var sensing_url = '';
+	sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
+	call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
+
+	$('#sensing_task_name').append(task_name);
+    // $('#participate_table').DataTable( {
+    //     "scrollY":        "200px",
+    //     "scrollCollapse": true,
+    //     "paging":         false
+    // } );
+// } );
+window.onload = function(){
+	var keywords_url = '/social_sensing/get_keywords_list/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts+'&start_time=1377964800';
+	call_sync_ajax_request(keywords_url, ajax_method, sensing_keywords_table_all);
+
+}
 
 
