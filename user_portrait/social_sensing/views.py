@@ -65,7 +65,7 @@ def ajax_create_task():
                 task_detail["task_type"] = "1"
             else:
                 task_detail["task_type"] = "0"
-        print task_detail
+    print task_detail
 
     # store task detail into es
     es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
@@ -276,11 +276,13 @@ def ajax_get_group_detail():
                 for iter_item in SOCIAL_SENSOR_INFO:
                     if iter_item == "topic_string":
                         temp.append(item["fields"][iter_item][0].split('&'))
+                        temp.append(item["fields"][iter_item][0].split('&'))
                     else:
                         temp.append(item["fields"][iter_item][0])
                 portrait_detail.append(temp)
 
     return json.dumps(portrait_detail)
+
 
 # 返回某个预警事件的详细信息，包括微博量、情感和参与的人
 @mod.route('/get_warning_detail/')
