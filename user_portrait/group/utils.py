@@ -286,39 +286,7 @@ def get_group_results(task_name, module):
                     weibolink = None
                 result_item.append((number, mid, weibolink))
             user_influence_result.append(result_item)
-        '''
-        origin_max_retweeted_number =es_result['origin_max_retweeted_number']
-        origin_max_retweeted_id = es_result['origin_max_retweeted_id']
-        origin_max_retweeted_user = es_result['origin_max_retweeted_user']
-        if origin_max_retweeted_id != 0 and origin_max_retweeted_user != 0:
-            origin_max_retweeted_weibolink = weiboinfo2url(origin_max_retweeted_user, origin_max_retweeted_id)
-        else:
-            origin_max_retweeted_weibolink = None
-
-        origin_max_comment_number = es_result['origin_max_comment_number']
-        origin_max_comment_id = es_result['origin_max_comment_id']
-        origin_max_comment_user = es_result['origin_max_comment_user']
-        if origin_max_comment_id !=0 and origin_max_comment_user != 0:
-            origin_max_comment_weibolink = weiboinfo2url(origin_max_comment_user, origin_max_comment_id)
-        else:
-            origin_max_comment_weibolink = None
         
-        retweet_max_retweeted_number = es_result['retweet_max_retweeted_number']
-        retweet_max_retweeted_id = es_result['retweet_max_retweeted_id']
-        retweet_max_retweeted_user = es_result['retweet_max_retweeted_user']
-        if retweet_max_retweeted_id != 0 and retweet_max_retweeted_user != 0:
-            retweet_max_retweeted_weibolink = weiboinfo2url(retweet_max_retweeted_user, retweet_max_retweeted_id)
-        else:
-            retweet_max_retweeted_weibolink = None
-
-        retweet_max_comment_number = es_result['retweet_max_comment_number']
-        retweet_max_comment_id = es_result['retweet_max_comment_id']
-        retweet_max_comment_user = es_result['retweet_max_comment_user']
-        if retweet_max_comment_id != 0 and retweet_max_comment_user != 0:
-            retweet_max_comment_weibolink = weiboinfo2url(retweet_max_comment_user, retweet_max_comment_id)
-        else:
-            retweet_max_comment_weibolink = None
-        '''
         result = [importance_dis, activeness_his, influence_his, user_influence_result]
     #print result
     return result
@@ -395,6 +363,16 @@ def delete_group_results(task_name):
         return False
     '''
     return True
+
+
+#show group user geo track
+#input: uid
+#output: results [geo1,geo2,..]
+def get_group_user_track(uid):
+    results = []
+    return results
+
+
 
 #show group members weibo for influence content
 #input: uid, timestamp_from, timestamp_to
