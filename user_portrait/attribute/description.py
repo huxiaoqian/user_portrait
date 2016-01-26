@@ -63,7 +63,7 @@ def active_time_description(result):
     active_time = {0:'0:00-4:00', 14400:'4:00-8:00',28800:'8:00-12:00',43200:'12:00-16:00',57600:'16:00-20:00',72000:'20:00-24:00'}
     timestamp = active_time_order[0][0]
     segment = str(int(timestamp)/4/3600)
-    definition = active_time[int(segment)]
+    definition = active_time[int(timestamp)]
     pd = {'0':'夜猫子','1':'早起刷微博','2':'工作时间刷微博','3':'午休时间刷微博','4':'上班时间刷微博','5':'下班途中刷微博','6':'晚间休息刷微博'}
  
     #description = '用户属于%s类型，活跃时间主要集中在%s' % (pd[segment], definition)

@@ -5,18 +5,22 @@ import json
 import time
 from elasticsearch import Elasticsearch
 from filter_rules import filter_activity, filter_ip, filter_retweet_count, filter_mention
+from parameter import DAY
 
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2,  R_DICT, ES_DAILY_RANK, es_user_portrait
-from global_utils import R_RECOMMENTATION as r
+from global_utils import R_RECOMMENTATION as r, portrait_index_name, portrait_index_type
 from global_config import RECOMMENTATION_TOPK as k
 from time_utils import datetime2ts, ts2datetime
+
+#test
+portrait_index_name = 'user_portrait_1222'
 
 def search_from_es(date):
     # test
     k = 10000
-    index_time = ''.join(date.split('-'))
+    index_time = 'bci_' + ''.join(date.split('-'))
     print 'index_time:', index_time
     index_type = 'bci'
     query_body = {
@@ -39,7 +43,7 @@ def search_from_es(date):
 def filter_in(top_user_set):
     results = []
     try:
-        in_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':list(top_user_set)})
+        in_results = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':list(top_user_set)})
     except Exception as e:
         raise e
     filter_list = [item['_id'] for item in in_results['docs'] if item['found'] is True]
@@ -90,12 +94,14 @@ def read_black_user():
 
 # get sensitive user and filt in
 def get_sensitive_user(date):
+    SENSITIVE_TOP = 10000
     results = set()
     r_cluster = R_CLUSTER_FLOW2
     ts = datetime2ts(date)
     results = r_cluster.hgetall('sensitive_'+str(ts))
     if results:
-        user_list = results.keys()
+        results = sorted(results.iteritems(), key=lambda t:t[1], reverse=True)
+        user_list = [result[0] for result in results[0:SENSITIVE_TOP]]
     else:
         user_list = []
     results = filter_in(user_list)
@@ -105,7 +111,7 @@ def main():
     now_ts = time.time()
     #test
     now_ts = datetime2ts('2013-09-07')
-    date = ts2datetime(now_ts - 3600*24)
+    date = ts2datetime(now_ts - DAY)
     #step1: read from top es_daily_rank
     top_user_set, user_dict = search_from_es(date)
     #step2: filter black_uid
@@ -130,13 +136,11 @@ def main():
     results = set(results)
     print 'end:', len(results)
     #step6: write to recommentation csv/redis
-    '''
     status = save_recommentation2redis(date, results)
     status = True
-    write_recommentation(date, results, user_dict)
+    # write_recommentation(date, results, user_dict)
     if status==True:
         print 'date:%s recommentation done' % date
-    '''
 
 
 def write_sensitive_user(results):
@@ -147,7 +151,7 @@ def write_sensitive_user(results):
     return True
 
 if __name__=='__main__':
-    #main()
-    results = get_sensitive_user('2013-09-07')
-    print 'sensitive_user:', len(results)
-    write_sensitive_user(results)
+    main()
+    #results = get_sensitive_user('2013-09-07')
+    #print 'sensitive_user:', len(results)
+    #write_sensitive_user(results)

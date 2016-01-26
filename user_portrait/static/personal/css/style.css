@@ -33,7 +33,7 @@ a#basic_info:hover{cursor:hand;}
 .tagbg{min-width:50px;}
 #delIcon{background-image:url(/static/img/Delete16.png);width:16px;height:16px;cursor:pointer;display:inline-block;}
 .tagClo:hover{border:#eee solid 1px;cursor:default; }
-.tagClo{margin-left:30px;margin-bottom:10px;padding-top:8px;height:40px;}
+.tagClo{margin-left:20px;margin-bottom:10px;padding-top:8px;height:40px;}
 #detail h3{font-size:20px;font-weight:bold;}
 
 
