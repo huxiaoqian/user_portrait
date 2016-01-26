@@ -99,6 +99,122 @@ function sensing_participate_table (head, data, div_name) {
 	$('#'+div_name).append(html);
 }
 
+function Draw_group_weibo(data){
+    page_num = 10;
+    if (data.length < page_num) {
+          page_num = data.length
+          page_group_weibo( 0, page_num, data);
+      }
+      else {
+          page_group_weibo( 0, page_num, data);
+          var total_pages = 0;
+          if (data.length % page_num == 0) {
+              total_pages = data.length / page_num;
+          }
+          else {
+              total_pages = Math.round(data.length / page_num) + 1;
+          }
+        }
+    var pageCount = total_pages;
+
+    if(pageCount>5){
+        page_icon(1,5,0);
+    }else{
+        page_icon(1,pageCount,0);
+    }
+    
+    $("#pageGro li").live("click",function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($(this).html());
+            pageGroup(pageNum,pageCount);
+        }else{
+            $(this).addClass("on");
+            $(this).siblings("li").removeClass("on");
+        }
+      page = parseInt($("#pageGro li.on").html())  
+      console.log(page);         
+      start_row = (page - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+        page_group_weibo(start_row,end_row,data);
+    });
+
+    $("#pageGro .pageUp").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#pageGro li.on").html());
+            pageUp(pageNum,pageCount);
+        }else{
+            var index = $("#pageGro ul li.on").index();
+            if(index > 0){
+                $("#pageGro li").removeClass("on");
+                $("#pageGro ul li").eq(index-1).addClass("on");
+            }
+        }
+      page = parseInt($("#pageGro li.on").html())  
+      console.log(page);
+      start_row = (page-1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length){
+          end_row = data.length;
+      }
+        page_group_weibo(start_row,end_row,data);
+    });
+    
+
+    $("#pageGro .pageDown").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#pageGro li.on").html());
+
+            pageDown(pageNum,pageCount);
+        }else{
+            var index = $("#pageGro ul li.on").index();
+            if(index+1 < pageCount){
+                $("#pageGro li").removeClass("on");
+                $("#pageGro ul li").eq(index+1).addClass("on");
+            }
+        }
+      page = parseInt($("#pageGro li.on").html()) 
+      console.log(page);
+      start_row = (page-1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length){
+          end_row = data.length;
+      }
+        page_group_weibo(start_row,end_row,data);
+    });
+}
+
+function page_group_weibo(start_row,end_row,data){
+    weibo_num = end_row - start_row;
+    $('#group_weibo').empty();
+    var html = "";
+    html += '<div class="group_weibo_font">';
+    for (var i = start_row; i < end_row; i += 1){
+        s=i.toString();
+        uid = data[s]['uid'];
+        text = data[s]['text'];
+        uname = data[s]['uname'];
+        timestamp = data[s]['timestamp'];
+        date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
+        if (i%2 ==0){
+            html += '<div style="background:whitesmoke;font-size:14px">';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>'
+    }
+        else{
+            html += '<div>';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>';
+        }
+    }
+    html += '</div>'; 
+    $('#group_weibo').append(html);
+}
+
+
 function sensing_keywords_table (head, data, div_name) {
     $('#'+div_name).empty();
 	if(data.length>10){
@@ -125,6 +241,106 @@ function sensing_keywords_table (head, data, div_name) {
 	$('#'+div_name).append(html);
 }
 
+function draw_sensi_line_charts(data, div_name, legend_data){
+	console.log(data);
+	var line1 = data[1];
+	var line2 = data[2];
+	var line3 = data[3];
+	var markpoint = data[4];
+	var myChart = echarts.init(document.getElementById(div_name)); 
+	option = {  
+	    tooltip : {
+	        trigger: 'axis',
+	        show : true,
+	    },
+	    toolbox: {
+	        show : true,
+	        feature : {
+	            mark : {show: true},
+	            dataView : {show: true, readOnly: false},
+	            restore : {show: true},
+	            saveAsImage : {show: true}
+	        }
+	    },
+	    dataZoom: {
+	        show: true,
+	        start : 80
+	    },
+	    legend : {
+	        data : legend_data,
+	        x:'center'
+	    },
+	    grid: {
+	        y2: 70
+	    },
+	    xAxis : [
+	        {
+	            data :data[0],
+	            type : 'category',
+	            splitNumber:10
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value'
+	        }
+	    ],
+	    series : [
+	        {
+	            name: legend_data[0],
+	            type: 'line',
+	            showAllSymbol : true,
+	            markPoint : {
+                	data :markpoint,
+                	clickable: true,
+                	symbolSize:5,
+                	// symbol: 'droplet',
+                	tooltip:{
+                		show : false
+                	}
+                
+            	},
+	            clickable: true,	          
+	            data: line1
+	        },
+	        {
+	            name: legend_data[1],
+	            type: 'line',
+	            showAllSymbol : true,
+	            data: line2
+	        },
+	        {
+	            name: legend_data[2],
+	            type: 'line',
+	            showAllSymbol : true,
+	            data: line3
+	        }
+	    ]
+	};
+	 require([
+            'echarts'
+        ],
+        function(ec){
+			var ecConfig = require('echarts/config');
+			function eConsole(param) {
+			    if (typeof param.seriesIndex != 'undefined') {			    
+				    var timestamp2 = Date.parse(new Date(param.name));
+					timestamp2 = timestamp2 / 1000;
+				    var click_time = timestamp2;
+				    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0]]
+				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+click_time;
+					Draw_group_weibo.(data, 'sensi_related_weibo');
+				    console.log(num_line_url);
+				}
+			}
+		
+		myChart.on(ecConfig.EVENT.CLICK, eConsole);
+	});
+
+	// 为echarts对象加载数据 
+    myChart.setOption(option);                  
+}
+
 function draw_mood_line_charts(data, div_name, legend_data){
 	var line1 = data[1];
 	var line2 = data[2];
@@ -137,7 +353,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	        show : true,
 	    },
 	    toolbox: {
-	        show : false,
+	        show : true,
 	        feature : {
 	            mark : {show: true},
 	            dataView : {show: true, readOnly: false},
@@ -151,7 +367,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	    },
 	    legend : {
 	        data : legend_data,
-	        x:'right'
+	        x:'center'
 	    },
 	    grid: {
 	        y2: 70
@@ -212,7 +428,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 				    var click_time = timestamp2;
 				    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0]]
 				    var num_line_url = '传递的'+(param.seriesIndex+4) +',时间是'+click_time;
-	   			    Draw_get_weibo(data, 'related_weibo_text');
+	   			    Draw_get_weibo(data, 'mood_related_weibo');
 				    console.log(num_line_url);
 				}
 			}
@@ -238,7 +454,7 @@ function draw_num_line_charts(data, div_name, legend_data){
 	        show : true,
 	    },
 	    toolbox: {
-	        show : false,
+	        show : true,
 	        feature : {
 	            mark : {show: true},
 	            dataView : {show: true, readOnly: false},
@@ -252,7 +468,7 @@ function draw_num_line_charts(data, div_name, legend_data){
 	    },
 	    legend : {
 	        data : legend_data,
-	        x:'right'
+	        x:'center'
 	    },
 	    grid: {
 	        y2: 70
@@ -314,20 +530,20 @@ function draw_num_line_charts(data, div_name, legend_data){
 			var ecConfig = require('echarts/config');
 			function eConsole(param) {
 				//alert('param', param);
-			    var mes = '【' + param.type + '】';
-			    if (typeof param.seriesIndex != 'undefined') {
-			        mes += '  seriesIndex : ' + param.seriesIndex;
-			        mes += '  dataIndex : ' + param.dataIndex;
-			        mes += '  dataValue : ' + param.value;
-			        mes += '  dataname : ' + param.name;
-			    }
+			    // var mes = '【' + param.type + '】';
+			    // if (typeof param.seriesIndex != 'undefined') {
+			    //     mes += '  seriesIndex : ' + param.seriesIndex;
+			    //     mes += '  dataIndex : ' + param.dataIndex;
+			    //     mes += '  dataValue : ' + param.value;
+			    //     mes += '  dataname : ' + param.name;
+			    // }
 			    var timestamp2 = Date.parse(new Date(param.name));
 				timestamp2 = timestamp2 / 1000;
 			    var click_time = timestamp2;
 			    var data=[['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 			    var num_line_url = '传递的'+param.seriesIndex +',时间是'+click_time;
-   			    Draw_get_weibo(data, 'related_weibo_text');
-			    console.log('mes', mes)
+   			    Draw_get_weibo(data, 'num_related_weibo');
+			    //console.log('mes', mes)
 			    console.log(num_line_url);
 			}
 		
@@ -495,6 +711,15 @@ function social_sensing_all(data){
 	mood_line_data[3] = data.positive_sentiment_list;
 	mood_line_data[4] = deal_point(data.variation_distribution[1]);
 	draw_mood_line_charts(mood_line_data, 'mood_line_charts', mood_legend);
+
+	//敏感微博走势图
+	// var mood_line_data = new Array();
+	// mood_line_data[0] = data.time_series;
+	// mood_line_data[1] = data.negetive_sentiment_list;
+	// mood_line_data[2] = data.neutral_sentiment_list;
+	// mood_line_data[3] = data.positive_sentiment_list;
+	// mood_line_data[4] = deal_point(data.variation_distribution[1]);
+	draw_sensi_line_charts(mood_line_data, 'sensi_line_charts', mood_legend);
 	
 	//参与人表格
 	var participate_head=['uid','昵称','领域','话题','热度','重要度','影响力','活跃度']
@@ -508,13 +733,11 @@ function social_sensing_all(data){
 	sensor_data = data.social_sensors_detail;
 	sensing_sensors_table(sensor_head,sensor_data,"modal_sensor_table");
 
-	//预警信息
-	var warning_conclusion = [];
-	warning_conclusion = data.warning_conclusion.split('：');
-	$('#sensing_conslusion_title').empty();
-	$('#sensing_conslusion_title').append(warning_conclusion[0]);
-	$('#sensing_conslusion').empty();
-	$('#sensing_conslusion').append(warning_conclusion[1]);
+	//备注信息---数据错误
+	var remark_info = data.warning_conclusion;
+	//warning_conclusion = data.warning_conclusion.split('：');
+	$('#remark_info').empty();
+	$('#remark_info').append(remark_info);
 
 	//事件关键词
 	var keywords_list = ''
@@ -532,24 +755,20 @@ function sensing_keywords_table_all(data){
 
 
 
-	console.log(task_name);
-	console.log(keywords);
-	console.log(ts);
-	var sensing_url = '';
-	sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
-	call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
+$('#sensing_task_name').append(task_name);
+var sensing_url = '';
+sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
+call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
 
-	$('#sensing_task_name').append(task_name);
-    // $('#participate_table').DataTable( {
-    //     "scrollY":        "200px",
-    //     "scrollCollapse": true,
-    //     "paging":         false
-    // } );
-// } );
 window.onload = function(){
 	var keywords_url = '/social_sensing/get_keywords_list/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts+'&start_time=1377964800';
 	call_sync_ajax_request(keywords_url, ajax_method, sensing_keywords_table_all);
 
 }
 
-
+    // $('#participate_table').DataTable( {
+    //     "scrollY":        "200px",
+    //     "scrollCollapse": true,
+    //     "paging":         false
+    // } );
+// } );
