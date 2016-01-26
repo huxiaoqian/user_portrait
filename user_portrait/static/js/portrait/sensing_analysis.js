@@ -446,6 +446,18 @@ function deal_point(data){
 
 }
 
+function show_warning_time_all(div_name, data){
+
+	$('#' + div_name).empty();	
+	var html = '';
+	for(var i=0;i<data.length;i++){
+		html += '<span style="width:150px;margin:10px;font-size:14px;">' + data[i] + '</span>';
+		if(i%3 == 2){
+			html += '<br>';
+		}
+	}
+		$('#' + div_name).append(html);	
+}
 
 var num_legend = ['总数','原创', '转发', '评论'];
 var mood_legend = ['消极','积极', '中性'];
@@ -463,7 +475,7 @@ function social_sensing_all(data){
 	$('#total_abnormal_num').append(total_abnormal_num);
 	show_warning_time('modal_warning_weibo_content', data.variation_distribution[0]);
 	show_warning_time('modal_warning_mood_content', data.variation_distribution[1]);
-	show_warning_time('modal_warning_total_content', data.variation_distribution[2]);
+	show_warning_time_all('modal_warning_total_content', data.variation_distribution[2]);
 
 	//微博数量走势图
 	var num_line_data = new Array();
