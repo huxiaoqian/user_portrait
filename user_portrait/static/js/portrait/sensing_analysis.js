@@ -11,14 +11,11 @@ function call_sync_ajax_request(url, method, callback){
       success:callback
     });
 }
-var keywords=[['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23],
-				['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23],
-				['关键词1', 7],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词2', 6],['关键词', 8],['关键词', 34],['关键词', 76],['关键词', 32],['关键词', 23]]
 var sensor_head=['uid','昵称','领域','话题','重要度','影响力','活跃度']
 var participate_head=['uid','昵称','领域','话题','热度','重要度','影响力','活跃度']
 var keywords_head=['序号','关键词','频数']
-var global_pre_page = 1;
-var global_choose_uids = new Array();
+// var global_pre_page = 1;
+// var global_choose_uids = new Array();
 
 function sensing_sensors_table (head, data, div_name) {
 	$('#sensor_num').append(data.length);
@@ -125,6 +122,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	var line1 = data[1];
 	var line2 = data[2];
 	var line3 = data[3];
+	var markpoint = data[4];
 	var myChart = echarts.init(document.getElementById(div_name)); 
 	option = {  
 	    tooltip : {
@@ -168,10 +166,17 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	            name: legend_data[0],
 	            type: 'line',
 	            symbol: 'none',
-	            // symbolSize: function (value){
-	            //     return Math.round(value[0]/10) + 2;
-	            // },
-	            clickable: true,	          
+	            markPoint : {
+                	data :markpoint,
+                	clickable: true,
+                	symbolSize:5,
+                	tooltip:{
+                		show : false
+                		// formatter: {b}{c}
+                	}
+                
+            	},
+	            clickable: false,	          
 	            data: line1
 	        },
 	        {
@@ -228,6 +233,8 @@ function draw_num_line_charts(data, div_name, legend_data){
 	var line2 = data[2];
 	var line3 = data[3];
 	var line4 = data[4];
+	var markpoint  = data[5];
+	console.log(markpoint[1])
 	var myChart = echarts.init(document.getElementById(div_name)); 
 	option = {  
 	    tooltip : {
@@ -271,10 +278,15 @@ function draw_num_line_charts(data, div_name, legend_data){
 	            name: legend_data[0],
 	            type: 'line',
 	            symbol: 'none',
+	           	markPoint : {
+                	data :markpoint,
+                	clickable: true,
+                	symbolSize:5
+            	},
 	            // symbolSize: function (value){
 	            //     return Math.round(value[0]/10) + 2;
 	            // },
-	            clickable: true,	          
+	            clickable: false,	          
 	            data: line1
 	        },
 	        {
@@ -453,6 +465,19 @@ function show_warning_time(div_name, data){
 		$('#' + div_name).append(html);	
 }
 
+function deal_point(data){
+	var data_list = new Array();
+	for(var i=0;i<data.length; i++){
+		var data_dict = {};
+		data_dict.name = data[i][0];
+		data_dict.xAxis=data[i][0];
+		data_dict.yAxis= data[i][1];
+		data_list.push(data_dict);
+	}
+	return data_list;
+
+}
+
 
 var num_legend = ['总数','原创', '转发', '评论'];
 var mood_legend = ['消极','积极', '中性'];
@@ -478,8 +503,11 @@ function social_sensing_all(data){
 	num_line_data[2] = data.origin_weibo_list;
 	num_line_data[3] = data.retweeted_weibo_list;
 	num_line_data[4] = data.comment_weibo_list;
-	num_line_data[5] = data.variation_distribution[0];
-	draw_num_line_charts(num_line_data, 'num_line_charts',num_legend);
+	num_line_data[5] = deal_point(data.variation_distribution[0]);
+	//console.log(num_line_data[5])
+	//deal_point(data.variation_distribution[0];)
+
+	draw_num_line_charts(num_line_data, 'num_line_charts', num_legend);
 
 	//情绪走势图
 	var mood_line_data = new Array();
@@ -487,7 +515,8 @@ function social_sensing_all(data){
 	mood_line_data[1] = data.negetive_sentiment_list;
 	mood_line_data[2] = data.neutral_sentiment_list;
 	mood_line_data[3] = data.positive_sentiment_list;
-	mood_line_data[4] = data.variation_distribution[1];
+	mood_line_data[4] = deal_point(data.variation_distribution[1]);
+	//console.log(mood_line_data[4]);
 	draw_mood_line_charts(mood_line_data, 'mood_line_charts', mood_legend);
 	
 	//参与人表格
