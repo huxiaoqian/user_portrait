@@ -5,18 +5,22 @@ import json
 import time
 from elasticsearch import Elasticsearch
 from filter_rules import filter_activity, filter_ip, filter_retweet_count, filter_mention
+from parameter import DAY
 
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2,  R_DICT, ES_DAILY_RANK, es_user_portrait
-from global_utils import R_RECOMMENTATION as r
+from global_utils import R_RECOMMENTATION as r, portrait_index_name, portrait_index_type
 from global_config import RECOMMENTATION_TOPK as k
 from time_utils import datetime2ts, ts2datetime
+
+#test
+portrait_index_name = 'user_portrait_1222'
 
 def search_from_es(date):
     # test
     k = 10000
-    index_time = ''.join(date.split('-'))
+    index_time = 'bci_' + ''.join(date.split('-'))
     print 'index_time:', index_time
     index_type = 'bci'
     query_body = {
@@ -39,7 +43,7 @@ def search_from_es(date):
 def filter_in(top_user_set):
     results = []
     try:
-        in_results = es_user_portrait.mget(index='user_portrait', doc_type='user', body={'ids':list(top_user_set)})
+        in_results = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':list(top_user_set)})
     except Exception as e:
         raise e
     filter_list = [item['_id'] for item in in_results['docs'] if item['found'] is True]
@@ -52,12 +56,16 @@ def filter_in(top_user_set):
 def filter_rules(candidate_results):
     results = []
     #rule1: activity count
+    print 'rule1'
     filter_result1 = filter_activity(candidate_results)
     #rule2: ip count
+    print 'rule2'
     filter_result2 = filter_ip(filter_result1)
     #rule3: retweet count & beretweeted count
+    print 'rule3'
     filter_result3 = filter_retweet_count(filter_result2)
     #rule4: mention count
+    print 'rule4'
     results = filter_mention(filter_result3)
     return results
 
@@ -105,10 +113,12 @@ def main():
     now_ts = time.time()
     #test
     now_ts = datetime2ts('2013-09-07')
-    date = ts2datetime(now_ts - 3600*24)
+    date = ts2datetime(now_ts - DAY)
     #step1: read from top es_daily_rank
+    print 'step 1 starts'
     top_user_set, user_dict = search_from_es(date)
     #step2: filter black_uid
+    print 'step 2 starts'
     black_user_set = read_black_user()
     print 'black_user_set:', len(black_user_set)
     intersection = top_user_set & black_user_set
@@ -116,11 +126,14 @@ def main():
     subtract_user_set = top_user_set - black_user_set
     print 'after filter blacklist:', len(subtract_user_set)
     #step3: filter users have been in
+    print 'step 3 starts'
     candidate_results = filter_in(subtract_user_set)
     #step4: filter rules about ip count& reposts/bereposts count&activity count
+    print 'step 4 starts'
     results = filter_rules(candidate_results)
     print 'after filter:', len(results)
     #step5: get sensitive user
+    """
     sensitive_user = list(get_sensitive_user(date))
     print 'sensitive_user:', len(sensitive_user)
     print 'sensitive_user_2:', sensitive_user[2]
@@ -129,6 +142,7 @@ def main():
     print 'after list extend:', len(results), type(results)
     results = set(results)
     print 'end:', len(results)
+    """
     #step6: write to recommentation csv/redis
     '''
     status = save_recommentation2redis(date, results)
@@ -147,7 +161,7 @@ def write_sensitive_user(results):
     return True
 
 if __name__=='__main__':
-    #main()
-    results = get_sensitive_user('2013-09-07')
+    main()
+    #results = get_sensitive_user('2013-09-07')
     print 'sensitive_user:', len(results)
-    write_sensitive_user(results)
+    #write_sensitive_user(results)
