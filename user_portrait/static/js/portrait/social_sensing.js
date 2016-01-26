@@ -153,7 +153,7 @@ var min_date = '-1970/01/30';
 $('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 $('input[id="so_re_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
-function draw_control_table(data){
+function so_draw_control_table(data){
 	$('#so_control_confirm').empty();
 	var item =data;
 	var item_name = '';
@@ -215,37 +215,51 @@ function keys_choose_all(){
 
 function draw_sensor(data){
 	$('#so_sensor_content').empty();
-	$('span[id^="so_remark0"]').html(data['remark']);
+	if(data['remark']){
+		$('span[id^="so_remark0"]').html(data['remark']);
+	}else{
+		$('span[id^="so_remark0"]').html('无');
+	}
 	var item = data['social_sensors_portrait'];
 	var html = '';
 	var item_name = '';
 	var item_img = '';
 	var item_keys = data['keywords'];
+	var item_sensor = data['social_sensors'];
     html += '<span  style="margin-right:25px;">关键词：</span>';
-    for (var j =0;j<item_keys.length;j++){
-    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
+    if(item_keys[0] != ''){
+    	console.log(item_keys);
+	    for (var j =0;j<item_keys.length;j++){
+	    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
+	    }
+    }else{html += '<span style="margin-right:20px;">无</span>'}
+    if (item_sensor[0] == ''){
+    	html += '<div style="margin-top:10px;">传感器：<span style="margin-left:25px;">全库用户</span></div>'
+    }else{
+    	html += '<div style="margin-top:10px;overflow-y:auto;height:300px;">';
+	    html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
+	    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
+	    for (var i=0;i<item.length;i++) {
+	    	if(item[i][1]=='unknown'){
+	    		item_name = '未知';
+	    	}else{
+	    		item_name = item[i][1];
+	    	}
+	    	if(item[i][2]=='unknown'){
+	    		item_img = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+	    	}else{
+	    		item_img = item[i][2];
+	    	}
+	    	if(item[i][5]==undefined){
+	    		item_num = '无';
+	    	}else{
+	    		item_num = item[i][5].toFixed(2);
+	    	}
+	        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
+	 	}
+	 	html += '</div>';
+	    html += '</table>'; 
     }
-    html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
-    for (var i=0;i<item.length;i++) {
-    	if(item[i][1]=='unknown'){
-    		item_name = '未知';
-    	}else{
-    		item_name = item[i][1];
-    	}
-    	if(item[i][2]=='unknown'){
-    		item_img = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
-    	}else{
-    		item_img = item[i][2];
-    	}
-    	if(item[i][5]==undefined){
-    		item_num = '无';
-    	}else{
-    		item_num = item[i][5].toFixed(2);
-    	}
-        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
- 	}
-    html += '</table>'; 
     $('#so_sensor_content').append(html); 
 }
 
@@ -304,7 +318,7 @@ function so_ready(){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		var remark = $(this).parent().prev().html();
 		url = "/social_sensing/get_group_detail/?task_name=" + temp;
-		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_control_table);
+		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,so_draw_control_table);
 		$('span[id^="have_sensor_name"]').html(temp);
 		$('span[id^="have_sensor_remark"]').html(remark);
 		$('#so_control').modal();

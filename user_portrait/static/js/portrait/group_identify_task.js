@@ -59,16 +59,29 @@ Draw_resultTable: function(data){
 		}else{
 			html += '<td>正在计算</td>';
 		}
-		html +='<td><a href="javascript:void(0)" id="analyze_del">删除</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="commit_control">提交监控</a></td>';
+		html +='<td><a href="javascript:void(0)" id="commit_control">提交监控</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="analyze_del">删除</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
     html += '</table>';
 	$('#content_manage').append(html);
-    
+    $('a[id="analyze_del"]').click(function(e){
+		console.log('444');
+		var a = confirm('确定要删除吗？');
+    	if (a == true){
+    		var url = '/detect/delete_task/?';
+			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+			url = url + 'task_name=' + temp;
+			console.log(url);
+			//window.location.href = url;
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
+			console.log('222');
+		}
+	});	
 	},
 
 Draw_dis_Table:function(data){
+	console.log('555');
 	$('#dis_table').empty();
 	var html = '';
 	html += '<a id="turnback"  href="javascript:void(0)" onclick="redraw()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
@@ -94,7 +107,19 @@ Draw_dis_Table:function(data){
 	html += '</tbody>';
 	html += '</table>';
 	$('#dis_table').append(html);
-    deleteGroup();
+    //deleteGroup();
+    $('a[id="task_del"]').click(function(e){
+		console.log('333');
+		var a = confirm('确定要删除吗？');
+    	if (a == true){
+			var url = '/detect/delete_task/?';
+			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+			url = url + 'task_name=' + temp;
+			//window.location.href = url;
+			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
+			console.log('111');
+		}
+	});	
 	submit_analyze();
 	submit_control();
     $('#dis_table_body').dataTable({
@@ -111,7 +136,7 @@ var Group_identify_task = new Group_identify_task();
 function redraw_result(){
 	url = '/group/show_task/'; 
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
-	deleteGroup();
+	//deleteGroup();
 	control_click();
 }
 window.setInterval(redraw,30000);
@@ -122,55 +147,60 @@ function redraw(){
 redraw();
 redraw_result();
 
-function Group_delete_task(){
-	 this.url = "/detect/delete_task/?";
-}
-Group_delete_task.prototype = {   //群组删除
-	call_sync_ajax_request:function(url, method, callback){
-	    $.ajax({
-	      url: url,
-	      type: 'GET',
-	      dataType: 'json',
-	      async: true,
-	      success:callback
-    	});
-	},
-}
+// function Group_delete_task(){
+// 	 this.url = "/detect/delete_task/?";
+// }
+// Group_delete_task.prototype = {   //群组删除
+// 	call_sync_ajax_request:function(url, method, callback){
+// 	    $.ajax({
+// 	      url: url,
+// 	      type: 'GET',
+// 	      dataType: 'json',
+// 	      async: true,
+// 	      success:callback
+//     	});
+// 	},
+// }
 
 function del(data){
 		console.log(data);
-		if(data.length>0){
+		if(data==true){
 			alert('操作成功！');
-			window.location.href=window.location.href;
+			location.reload();
+			//window.location.href=window.location.href;
 		}
 }
 
-function deleteGroup(){
-	$('a[id^="task_del"]').click(function(e){
-		var a = confirm('确定要删除吗？');
-    	if (a == true){
-			var url = '/detect/delete_task/?';
-			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-			url = url + 'task_name=' + temp;
-			console.log(url);
-			//window.location.href = url;
-			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
-		}
-	});	
-	$('a[id^="analyze_del"]').click(function(e){
-		var a = confirm('确定要删除吗？');
-    	if (a == true){
-			var url = that.url;
-			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
-			url = url + 'task_name=' + temp;
-			console.log(url);
-			//window.location.href = url;
-			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
-		}
-	});	
-}
-
-var Group_delete_task = new Group_delete_task();
+//function deleteGroup(){
+//	console.log('666');
+	// $('a[id="task_del"]').click(function(e){
+	// 	console.log('333');
+	// 	var a = confirm('确定要删除吗？');
+ //    	if (a == true){
+	// 		var url = '/detect/delete_task/?';
+	// 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+	// 		url = url + 'task_name=' + temp;
+	// 		//window.location.href = url;
+	// 		Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
+	// 		console.log('111');
+	// 	}
+	// });	
+	// $('a[id="analyze_del"]').click(function(e){
+	// 	console.log('444');
+	// 	var a = confirm('确定要删除吗？');
+ //    	if (a == true){
+ //    		var url = '/detect/delete_task/?';
+	// 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
+	// 		url = url + 'task_name=' + temp;
+	// 		console.log(url);
+	// 		//window.location.href = url;
+	// 		Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
+	// 		console.log('222');
+	// 	}
+	// });	
+//}
+//
+//var Group_delete_task = new Group_delete_task();
 // deleteGroup(Group_delete_task);
 // submit_analyze(Group_delete_task);
 // submit_control(Group_delete_task);
@@ -179,7 +209,8 @@ function control_click(){
 	$('a[id^="commit_control"]').click(function(){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		var remark0 =  $(this).parent().prev().prev().html();
-		url = "/detect/show_detect_result/?task_name=" + temp;
+		//url = "/detect/show_detect_result/?task_name=" + temp;
+		url = '/social_sensing/get_group_detail/?task_name='+temp;
 		Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
 		$('input[name="con_group_name"]').val(temp);
 		$('input[name="con_remark"]').val(remark0);
@@ -219,7 +250,8 @@ function submit_control(that){
 			alert('进度没有达到100%，无法提交监控任务！');
 		}
 		else{
-			url = "/detect/show_detect_result/?task_name=" + temp;
+			//url = "/detect/show_detect_result/?task_name=" + temp;
+			url = '/social_sensing/get_group_detail/?task_name='+temp;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,draw_control_table);
 			//that.call_sync_ajax_request(url,that.ajax_method,draw_table);
 			$('input[name="con_group_name"]').val(temp);
@@ -243,12 +275,36 @@ function have_keys(data){
 function draw_control_table(data){
 	$('#group_control_confirm').empty();
 	var html='';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';
+	var item =data;
+	var item_name = '';
+	var html='';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
+    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">活跃度</th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
     for (var i=0;i<data.length;i++) {
-        html += '<tr><td style="text-align:center">' + data[i][0] + '</td><td style="text-align:center">' + data[i][1] + '</td><td style="text-align:center">' + data[i][2].toFixed(2) + '</td><td style="text-align:center">' + data[i][3].toFixed(2) + '</td><td style="text-align:center">' + data[i][4].toFixed(2) + '</td><td><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td></tr>';
- 	}
+    	if(item[i][1]=='unknown'){
+    		item_name = '未知';
+    	}else{
+    		item_name = item[i][1];
+    	}
+    	if(item[i][2]=='unknown'){
+    		item_img = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+    	}else{
+    		item_img = item[i][2];
+    	}
+    	if(item[i][5]==undefined){
+    		item_num = '无';
+    	}else{
+    		item_num = item[i][5].toFixed(2);
+    	}
+        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][5] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td></tr>';
+  	}
     html += '</table>'; 
+  //   html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
+  //   html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';
+  //   for (var i=0;i<data.length;i++) {
+  //       html += '<tr><td style="text-align:center">' + data[i][0] + '</td><td style="text-align:center">' + data[i][1] + '</td><td style="text-align:center">' + data[i][2].toFixed(2) + '</td><td style="text-align:center">' + data[i][3].toFixed(2) + '</td><td style="text-align:center">' + data[i][4].toFixed(2) + '</td><td><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td></tr>';
+ 	// }
+  //   html += '</table>'; 
 	$('#group_control_confirm').append(html);
 }
 
