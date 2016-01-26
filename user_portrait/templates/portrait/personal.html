@@ -144,12 +144,12 @@ $(function(){
 			<ul>
 				<li>
                     <h3 style="padding:5px;">业务备注信息</h3>
-                    <ul style="height:435px;padding:0px;">
+                    <ul style="padding:0px;">
                         <div id="ptag" class="fleft" style="font-size:14px;width:240px;margin-top:20px;">
                             <div class="tagClo fleft" ><span style="color:red;">test1</span>:<span class="tagbg"><span>tag1<span><a id="delIcon"></a></span></div>
                             <div class="tagClo fleft" ><span style="color:red;">test1</span>:<span class="tagbg"><span>tag1<span><a id="delIcon"></a></span></div>
                         </div>
-                        <div id="addM" style="font-size:14px;border-top:solid 1px lightgrey;width:240px;padding-top:20px;padding-right:25px;" class="fleft">
+                        <div id="addM" style="font-size:14px;border-bottom:solid 1px lightgrey;border-top:solid 1px lightgrey;width:240px;padding-top:20px;padding-right:25px;" class="fleft">
                             <div >
                                 <span style="margin-left:30px;">选择类别：</span>
                                 <span id="attribute_name_zh" style="margin-left:10px">
@@ -347,13 +347,13 @@ Personal.call_sync_ajax_request(url, Personal.ajax_method, currentData);
 
 function currentData(data){
     //console.log(data);
-    global_tag_vector.push(['昨日影响力评价',data[0]]);
+    //global_tag_vector.push(['昨日影响力评价',data[0]]);
 }
 function bind_remark_edit(Personal){
     $('#extraDetail').click(function(){
         var td = $(this);
         var txt = td.html();
-        var input = "<input id='editremark' style='width:200px;' type='text' value='" + txt + "'/>";
+        var input = "<input id='editremark' style='width:150px;' type='text' value='" + txt + "'/>";
         td.html(input);
         $('#editremark').click(function(){
             return false;

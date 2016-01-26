@@ -115,10 +115,8 @@ def main():
     now_ts = datetime2ts('2013-09-07')
     date = ts2datetime(now_ts - DAY)
     #step1: read from top es_daily_rank
-    print 'step 1 starts'
     top_user_set, user_dict = search_from_es(date)
     #step2: filter black_uid
-    print 'step 2 starts'
     black_user_set = read_black_user()
     print 'black_user_set:', len(black_user_set)
     intersection = top_user_set & black_user_set
@@ -126,10 +124,8 @@ def main():
     subtract_user_set = top_user_set - black_user_set
     print 'after filter blacklist:', len(subtract_user_set)
     #step3: filter users have been in
-    print 'step 3 starts'
     candidate_results = filter_in(subtract_user_set)
     #step4: filter rules about ip count& reposts/bereposts count&activity count
-    print 'step 4 starts'
     results = filter_rules(candidate_results)
     print 'after filter:', len(results)
     #step5: get sensitive user
