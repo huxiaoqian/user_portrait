@@ -380,19 +380,24 @@ function group_control_data(){
 		}
 		url_create += url1;
 		console.log(url_create);
-	    // $.ajax({
-	    //     type:'GET',
-	    //     url: url_create,
-	    //     contentType:"application/json",
-	    //     dataType: "json",
-	    //     success: con_callback
-	    // });
+	    $.ajax({
+	        type:'GET',
+	        url: url_create,
+	        contentType:"application/json",
+	        dataType: "json",
+	        success: con_callback
+	    });
 	}
 }
 
 function con_callback(data){
-	if(data.length != 0){
+	if(data==1){
 		alert('操作成功！');
+		window.location.href='/index/group';
+	}else if(data==0){
+		alert('已存在相同名称的监控任务，请重试！');
+	}else if(data ==-1){
+		alert('请将信息补充完整！');
 	}
 }
 

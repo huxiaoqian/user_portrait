@@ -36,7 +36,7 @@ def ajax_create_task():
     keywords = request.args.get("keywords", "") # keywords_string, split with ","
     remark = request.args.get("remark", "")
 
-    exist_es = es.indices.exists(index=task_name)
+    exist_es = es.exists(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)
     if exist_es:
         return json.dumps(["0"]) # 任务名不能重合
 
@@ -65,7 +65,7 @@ def ajax_create_task():
                 task_detail["task_type"] = "1"
             else:
                 task_detail["task_type"] = "0"
-
+        print task_detail
 
     # store task detail into es
     es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
@@ -170,13 +170,16 @@ def ajax_show_task():
             history_status = json.loads(item['history_status'])
             keywords = json.loads(item['keywords'])
             item['keywords'] = keywords
-            temp_list = []
-            temp_list.append(history_status[-1])
-            for iter_item in history_status[:-1]:
-                if int(iter_item[-1]) != 0:
-                    temp_list.append(iter_item)
-                    sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
-            item['history_status'] = sorted_list
+            if history_status:
+                temp_list = []
+                temp_list.append(history_status[-1])
+                for iter_item in history_status[:-1]:
+                    if int(iter_item[-1]) != 0:
+                        temp_list.append(iter_item)
+                        sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+                item['history_status'] = sorted_list
+            else:
+                item['history_status'] = history_status
             results.append(item)
 
     return json.dumps(results)
@@ -189,13 +192,16 @@ def ajax_get_task_detail_info():
     task_detail["social_sensors"] = json.loads(task_detail["social_sensors"])
     task_detail['keywords'] = json.loads(task_detail['keywords'])
     history_status = json.loads(task_detail['history_status'])
-    temp_list = []
-    temp_list.append(history_status[-1])
-    for item in history_status[:-1]:
-        if int(item[-1]) != 0:
-            temp_list.append(item)
-    sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
-    task_detail['history_status'] = sorted_list
+    if history_status:
+        temp_list = []
+        temp_list.append(history_status[-1])
+        for item in history_status[:-1]:
+            if int(item[-1]) != 0:
+                temp_list.append(item)
+        sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+        task_detail['history_status'] = sorted_list
+    else:
+        task_detail['history_status'] = history_status
     task_detail['social_sensors_portrait'] = []
 
     if task_detail["social_sensors"]:

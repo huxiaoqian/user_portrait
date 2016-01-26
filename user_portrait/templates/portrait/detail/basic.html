@@ -143,55 +143,55 @@ margin-top:0px;
 </style>
 
 <div id="Pdetail">
-  <div id="influence_conclusion" style="margin-bottom:-10px;width:100%;">
-      <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-      <h4 id="influence_conclusion_all" style="line-height:40px;"></h4>
-  </div>
-  <div id="yesterday_influence" style="width:1000px;float:left;">
-    <h3>昨日影响力 (No.<span id="influence_index" style="color:red"></span>)</h3>
-    <hr>
-    <div id = "influence_table" style="width:100%;margin-bottom:-15px;"></div>
-    <div style = 'font-size:16px' id = "all_influenced_users_style0"></div>
-    <div style = 'font-size:16px'id = "all_influenced_users_style1"></div>
-    <div class="box-content" style="padding:0;margin:0;">
-      <ul class="nav nav-tabs" id="myTab" style="margin:10px 0;">
-        <li class="active" title="领域"><a href="#rewteet_origin" style="font-size:15px">被转发的原创微博</a></li>
-        <li title="话题"><a href="#comment_origin" style="font-size:15px">被评论的原创微博</a></li>
-        <li title="领域"><a href="#retweet_retweet" style="font-size:15px">被转发的转发微博</a></li>
-        <li title="话题"><a href="#comment_retweet" style="font-size:15px">被评论的转发微博</a></li>
-      </ul>
-      <div id="myTabContent" class="tab-content" style="margin:0;width:1000px;background-color:whitesmoke;">
-        <div class="tab-pane active" id="rewteet_origin" style="margin-top:10px;margin-bottom:0;">
-          <div class="row category margin-bottom-20" id='influence_weibo1' style="margin:0;"></div>
+    <div id="yesterday_influence" style="width:1000px;float:left;">
+        <h3>昨日影响力 (No.<span id="influence_index" style="color:red"></span>)</h3>
+        <hr>
+        <div id = "influence_table" style="width:100%;margin-bottom:-15px;"></div>
+        <div style = 'font-size:16px' id = "all_influenced_users_style0"></div>
+        <div style = 'font-size:16px'id = "all_influenced_users_style1"></div>
+        <div class="box-content" style="padding:0;margin:0;">
+            <ul class="nav nav-tabs" id="myTab" style="margin:10px 0;">
+                <li class="active" title="领域"><a href="#rewteet_origin" style="font-size:15px">被转发的原创微博</a></li>
+                <li title="话题"><a href="#comment_origin" style="font-size:15px">被评论的原创微博</a></li>
+                <li title="领域"><a href="#retweet_retweet" style="font-size:15px">被转发的转发微博</a></li>
+                <li title="话题"><a href="#comment_retweet" style="font-size:15px">被评论的转发微博</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content" style="margin:0;width:1000px;background-color:whitesmoke;">
+                <div class="tab-pane active" id="rewteet_origin" style="margin-top:10px;margin-bottom:0;">
+                  <div class="row category margin-bottom-20" id='influence_weibo1' style="margin:0;"></div>
+                </div>
+                <div class="tab-pane" id="comment_origin" style="margin-top:10px;margin-bottom:0;">
+                  <div class="row category margin-bottom-20" id='influence_weibo2' style="margin:0;"></div>
+                </div>
+                <div class="tab-pane" id="retweet_retweet" style="margin-top:10px;margin-bottom:0;">
+               <div class="row category margin-bottom-20" id='influence_weibo3' style="margin:0;"></div>
+            </div>
+            <div class="tab-pane" id="comment_retweet" style="margin-top:10px;margin-bottom:0;">
+              <div class="row category margin-bottom-20" id='influence_weibo4' style="margin:0;"></div>
+            </div>
         </div>
-        <div class="tab-pane" id="comment_origin" style="margin-top:10px;margin-bottom:0;">
-          <div class="row category margin-bottom-20" id='influence_weibo2' style="margin:0;"></div>
-        </div>
-        <div class="tab-pane" id="retweet_retweet" style="margin-top:10px;margin-bottom:0;">
-           <div class="row category margin-bottom-20" id='influence_weibo3' style="margin:0;"></div>
-        </div>
-        <div class="tab-pane" id="comment_retweet" style="margin-top:10px;margin-bottom:0;">
-          <div class="row category margin-bottom-20" id='influence_weibo4' style="margin:0;"></div>
-        </div>
-      </div>
     </div>
     <div id="influence_conclusion" style="margin:0px;width:100%;">
       <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
       <h4 id="influence_conclusion_c" style="line-height:40px;"></h4>
     </div>
-  </div>   
 
-  <div style="font-size:16px;z-index:100;float:left;background-color:white;">
-    <h3 style="margin-right:50px;">影响力走势图</h3>
-    <hr style="width:1000px;">
-	  <input name="choose_module" type="radio" checked value=1>每周影响力
-    <input style="margin-left:20px;" name="choose_module" type="radio" value=2>每日影响力
-  </div>
-	<div id="influence_chart" style="float:left;height:300px;width:1000px;margin-top:10px;"></div>
-	<div id=""  style="float:left;width:1000px;line-height:48px;font-size:18px;font-family:"Microsoft YaHei UI";">
-		<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-		<span id="saysth"style="line-height:32px;"></span><span class="red" id="sayimportant"style="line-height:32px;">
-	</div>
+    <div style="font-size:16px;z-index:100;float:left;background-color:white;">
+        <h3 style="margin-right:50px;">影响力走势图</h3>
+        <hr style="width:1000px;">
+        <input style="margin-left:80px;"name="choose_module" type="radio" checked value=1>近7天
+        <input style="margin-left:20px;" name="choose_module" type="radio" value=2>近30天
+    </div>
+    <div id="influence_chart" style="float:left;height:300px;width:1000px;margin-top:10px;"></div>
+    <div id=""  style="float:left;width:1000px;line-height:48px;font-size:18px;font-family:"Microsoft YaHei UI";">
+        <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+        <span id="saysth"style="line-height:32px;"></span><span class="red" id="sayimportant"style="line-height:32px;">
+    </div>
+    <div id="influence_conclusion" style="margin-bottom:-10px;width:100%;">
+        <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
+        <h4 id="influence_conclusion_all" style="line-height:40px;"></h4>
+    </div>
+</div>
 </div>
 
 <div id="float-wrap" class="hidden"></div>
