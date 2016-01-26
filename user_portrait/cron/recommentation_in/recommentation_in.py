@@ -56,16 +56,12 @@ def filter_in(top_user_set):
 def filter_rules(candidate_results):
     results = []
     #rule1: activity count
-    print 'rule1'
     filter_result1 = filter_activity(candidate_results)
     #rule2: ip count
-    print 'rule2'
     filter_result2 = filter_ip(filter_result1)
     #rule3: retweet count & beretweeted count
-    print 'rule3'
     filter_result3 = filter_retweet_count(filter_result2)
     #rule4: mention count
-    print 'rule4'
     results = filter_mention(filter_result3)
     return results
 
@@ -98,12 +94,14 @@ def read_black_user():
 
 # get sensitive user and filt in
 def get_sensitive_user(date):
+    SENSITIVE_TOP = 10000
     results = set()
     r_cluster = R_CLUSTER_FLOW2
     ts = datetime2ts(date)
     results = r_cluster.hgetall('sensitive_'+str(ts))
     if results:
-        user_list = results.keys()
+        results = sorted(results.iteritems(), key=lambda t:t[1], reverse=True)
+        user_list = [result[0] for result in results[0:SENSITIVE_TOP]]
     else:
         user_list = []
     results = filter_in(user_list)
@@ -129,7 +127,6 @@ def main():
     results = filter_rules(candidate_results)
     print 'after filter:', len(results)
     #step5: get sensitive user
-    """
     sensitive_user = list(get_sensitive_user(date))
     print 'sensitive_user:', len(sensitive_user)
     print 'sensitive_user_2:', sensitive_user[2]
@@ -138,15 +135,12 @@ def main():
     print 'after list extend:', len(results), type(results)
     results = set(results)
     print 'end:', len(results)
-    """
     #step6: write to recommentation csv/redis
-    '''
     status = save_recommentation2redis(date, results)
     status = True
-    write_recommentation(date, results, user_dict)
+    # write_recommentation(date, results, user_dict)
     if status==True:
         print 'date:%s recommentation done' % date
-    '''
 
 
 def write_sensitive_user(results):
@@ -159,5 +153,5 @@ def write_sensitive_user(results):
 if __name__=='__main__':
     main()
     #results = get_sensitive_user('2013-09-07')
-    print 'sensitive_user:', len(results)
+    #print 'sensitive_user:', len(results)
     #write_sensitive_user(results)

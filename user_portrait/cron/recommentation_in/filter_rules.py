@@ -89,18 +89,23 @@ def filter_retweet_count(user_set):
                     body = {'ids':iter_search_user_list}, _source=True)['docs']
         except:
             retweet_result = []
-        if retweet_result:
-            print 'retweet_result:', retweet_result
+        # if retweet_result:
+        #     print 'retweet_result:', retweet_result
         for retweet_item in retweet_result:
-            retweet_set = set()
-            user = retweet_item['_id']
-            per_retweet_result = json.loads(retweet_item['_source']['uid_retweet'])
-            for retweet_user in per_retweet_result:
-                retweet_set.add(retweet_user)
-            if len(retweet_set) < retweet_threshold:
-                results.append(user)
+            if retweet_item['found']:
+                retweet_set = set()
+                user = retweet_item['_id']
+                per_retweet_result = json.loads(retweet_item['_source']['uid_retweet'])
+                for retweet_user in per_retweet_result:
+                    retweet_set.add(retweet_user)
+                if len(retweet_set) < retweet_threshold:
+                    results.append(user)
+                else:
+                    writer.writerow([user, 'retweet'])
             else:
-                writer.writerow([user, 'retweet'])
+                user = retweet_item['_id']
+                results.append(user)
+
         iter_search_count += FILTER_ITER_COUNT
     print 'after filter retweet:', len(results)
     return results
