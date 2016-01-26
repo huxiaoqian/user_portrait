@@ -89,10 +89,7 @@
 			    </div>
 			    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 			      <div class="panel-body">
-			        <div id='sex' style='float:left;width:300px;height:200px'></div>        
-			        <div id='verify' style='float:right;width:300px;height:200px'></div>
-				    <div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:80px' id='totalnumber'>
-				    </div>
+			         {% include "portrait/group_analysis/group_basic.html"%}
 			      </div>
 			    </div>
 			  </div>
@@ -108,12 +105,7 @@
 			    </div>
 			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 			      <div class="panel-body">
-					<div id="line" style="height:400px;width:950px;float:left"></div>
-			         <div id='top_platform' style='overflow-x:hidden;width:450px;float:left;margin-top:20px'>
-			        </div>
-				     <div id='top_location' style='overflow-x:hidden;width:450px;float:right;margin-top:20px'>
-					 </div>
-					 <div id="top_active_geo" style="height:250px;width:1000px;float:left"></div>
+			         {% include "portrait/group_analysis/group_activity.html"%}
 			      </div>
 			    </div>
 			  </div>
@@ -124,39 +116,13 @@
 			    <div class="panel-heading" role="tab" id="headingThree">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-			          语言属性
+			          偏好特征
 			        </a>
 			      </h4>
 			    </div>
 			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 			      <div class="panel-body">
-					<div id='hashtag' style='overflow-x:hidden;width:300px;height:300;float:left'>
-		        	</div>
-		     		<div id='emotion' style='overflow-x:hidden;width:200px;height:300;float:right'>		     	
-			        </div>
-					<div style="width:450px;height:250px;float:left">
-						<div><span style="font-size:17px;margin-left:50px;">关键词云</span><span type="button"data-toggle="modal" data-target="#modal_keyword" style="font-size:17px;margin-left:200px;cursor:pointer;"><u>查看更多</u></span></div>
-						<div id="keywordcloud" style="width:450px;height:240px"></div>
-					</div>
-					<div style="font-size:18px;margin-bottom:10px;margin-top:270px">群组成员微博</div>
-					<div>
-						<span>选择日期：</span><span id='group_weibo_date' style="margin-left:10px"></span>
-						<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择" onclick="add_group_tag()">确定</button></span>
-			        </div>
-					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
-					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
-						<div class="pageUp">上一页</div>
-					    <div class="pageList">
-					        <ul>
-					            <li>1</li>
-					            <li>2</li>
-					            <li>3</li>
-					            <li>4</li>
-					            <li>5</li>
-					        </ul>
-					    </div>
-					    <div class="pageDown">下一页</div>
-					</div>
+			         {% include "portrait/group_analysis/group_preference.html"%}
 			      </div>
 			    </div>
 			  </div>
@@ -483,7 +449,10 @@ function pageDown(pageNum,pageCount){
 }
 
     </script>
-	<script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
+    <script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_activity.js"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_basic.js"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_preference.js"></script>
     {% endblock Own_js %}
     {% block end_js %}
     {{ super() }}
