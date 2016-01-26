@@ -5,7 +5,7 @@ import sys
 import json
 import math
 import time
-from full_text_serach import count_hot_uid, aggregation_hot_keywords
+from full_text_serach import count_hot_uid, query_hot_mid
 from user_portrait.time_utils import ts2date
 from user_portrait.global_utils import es_user_profile as es_profile
 from user_portrait.global_utils import es_user_portrait as es
@@ -181,9 +181,13 @@ def get_task_detail_2(task_name, keywords, ts):
     return results
 
 
-# 获得某个时间段的文本内容，
-#def get_detail_text(ts):
+# 获得某个时间段的文本内容，返回ts-time_interval~ts之间的
+def get_detail_text(task_name, keywords_list, ts, text_type):
+    task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)["_source"]
+    keywords_list = json.loads(task_detail['keywords'])
+    results = query_hot_mid(ts, keywords_list, text_type="1")
 
+    return results
 
 
 if __name__ == "__main__":

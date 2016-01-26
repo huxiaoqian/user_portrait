@@ -24,8 +24,8 @@ from user_portrait.parameter import IMPORTANT_USER_NUMBER, IMPORTANT_USER_THRESH
                       unfinish_signal, finish_signal, AGGRAGATION_KEYWORDS_NUMBER, PRE_AGGREGATION_NUMBER
 
 day_time = 24*3600
-"""
-def query_mid_list(ts, keywords_list, time_segment):
+
+def query_hot_mid(ts, keywords_list, text_type,size=100):
     query_body = {
         "query":{
             "filtered":{
@@ -34,57 +34,48 @@ def query_mid_list(ts, keywords_list, time_segment):
                         "must":[
                             {"range":{
                                 "timestamp":{
-                                    "gte":ts - time_segment,
+                                    "gte":ts - time_interval,
                                     "lt": ts
                                 }
                             }},
-                        ],
-                    }
-                },
-                "query":{
-                    "bool":{
-                        "should":[
+                            {"terms": {"keywords_string": keywords_list}}
                         ]
                     }
                 }
             }
         },
-        "sort":{"sentiment": {"order": "desc"}},
-        "size": 10000
+        "aggs":{
+            "all_interests":{
+                "terms":{"field": "root_mid", "size": size}
+            }
+        }
     }
-    if keywords_list:
-        for word in keywords_list:
-            query_body['query']['filtered']['query']['bool']['should'].append({'wildcard':{"text": "*"+word+"*"}})
 
     datetime = ts2datetime(ts)
+    datetime_1 = ts2datetime(ts-time_interval)
     index_name = flow_text_index_name_pre + datetime
     exist_es = es_text.indices.exists(index_name)
-    if exist_es:
+    index_name_1 = flow_text_index_name_pre + datetime_1
+    exist_bool_1 = es_text.indices.exists(index_name_1)
+
+    if datetime == datetime_1 and exist_es:
         search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body, fields=["root_mid"])["hits"]["hits"]
+    elif datetime != datetime_1 and exist_bool_1:
+        search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body, fields=['root_mid'])["hits"]["hits"]
     else:
         search_results = []
-    origin_mid_list = [] # all related weibo mid list
+
+    hot_mid_list = []
     if search_results:
         for item in search_results:
-            if item.get("fields", ""):
-                origin_mid_list.append(item["fields"]["root_mid"][0])
-            else:
-                origin_mid_list.append(item["_id"])
+            temp = []
+            temp.append(item['key'])
+            temp.append(item['doc_count'])
+            hot_mid_list.append(temp)
 
-    datetime_1 = ts2datetime(ts-time_segment)
-    index_name_1 = flow_text_index_name_pre + datetime_1
-    exist_bool = es_text.indices.exists(index_name_1)
-    if datetime != datetime_1 and exist_bool:
-        search_results_1 = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body, fields=['root_mid'])["hits"]["hits"]
-        if search_results_1:
-            for item in search_results_1:
-                if item.get("fields", ""):
-                    origin_mid_list.append(item["fields"]["root_mid"][0])
-                else:
-                    origin_mid_list.append(item["_id"])
+    print hot_mid_list
 
-    return origin_mid_list
-"""
+    return hot_mid_list
 
 
 def count_hot_uid(uid, start_time, stop_time, keywords_list):
@@ -150,6 +141,8 @@ def count_hot_uid(uid, start_time, stop_time, keywords_list):
 
 
 def aggregation_hot_keywords(start_time, stop_time, keywords_list):
+    start_time = int(start_time)
+    stop_time = int(stop_time)
     query_body = {
         "query":{
             "filtered":{
