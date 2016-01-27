@@ -280,3 +280,6 @@ GROUP_DENSITY_DESCRIPTION = {
         '1': u'群体内交互进密度一般',
         '2': u'群体内交互进密度较高'
         }
+GROUP_KEYWORD_COUNT = 50
+GROUP_HASHTAG_COUNT = 50
+GROUP_SENTIMENT_WORD_COUNT = 50

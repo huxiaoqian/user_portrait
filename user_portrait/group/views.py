@@ -8,7 +8,7 @@ from flask import Blueprint, url_for, render_template, request,\
                   abort, flash, session, redirect, send_from_directory
 from utils import submit_task, search_task, get_group_results, get_group_list,\
        delete_group_results, get_social_inter_content, search_group_sentiment_weibo,\
-       get_group_user_track
+       get_group_user_track, search_group_results
 from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.time_utils import ts2datetime
@@ -75,13 +75,16 @@ def ajax_show_task():
 
 
 # show the group analysis result---different module
+# input: task_name, module
+#        module: overview/basic/activity/preference/influence/social/think
+# output: module result
 @mod.route('/show_group_result/')
 def ajax_show_group_result_basic():
     results = {}
     task_name = request.args.get('task_name', '')
     module = request.args.get('module', 'basic')
-    results = get_group_results(task_name, module)
-    #print 'result:', results
+    #results = get_group_results(task_name, module)
+    results = search_group_results(task_name, module)
     return json.dumps(results)
 
 
