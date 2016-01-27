@@ -166,7 +166,7 @@ def search_task(task_name, submit_date, state, status):
 #search group analysis result
 #input: task_name, module
 #output: module_result
-def search_group_result(task_name, module):
+def search_group_results(task_name, module):
     result = {}
     #step1:identify the task_name exist
     try:
@@ -439,6 +439,7 @@ def delete_group_results(task_name):
 #output: results [geo1,geo2,..]
 def get_group_user_track(uid):
     results = []
+    
     return results
 
 
