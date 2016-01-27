@@ -439,7 +439,27 @@ def delete_group_results(task_name):
 #output: results [geo1,geo2,..]
 def get_group_user_track(uid):
     results = []
-    
+    #step1:get user_portrait activity_geo_dict
+    try:
+        portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type,\
+                id=uid, _source=False, fields=['activity_geo_dict'])['hits']['hits']
+    except:
+        portrait_result = {}
+    if portrait_result == {}:
+        return 'uid is not in user_portrait'
+    activity_geo_dict = portrait_result['fields']['activity_geo_dict'][0]
+    now_date_ts = datetime2ts(ts2datetime(int(time.time())))
+    start_ts = now_date_ts - DAY * len(acitivity_geo_dict)
+    #step2: iter date to get month track
+    for geo_item in activity_geo_dict:
+        iter_date = ts2datetime(start_ts)
+        sort_day_dict = sorted(geo_item.items(), key=lambda x:x[1], reverse=True)
+        if sort_day_dict:
+            results.append([iter_date, sort_day_dict[0][0]])
+        else:
+            results.append([iter_date, ''])
+        start_ts = start_ts + DAY
+
     return results
 
 
