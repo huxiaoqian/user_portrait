@@ -16,15 +16,24 @@
           .sensing_uid{width:97px;}
           .sensing_topic{width:200px;}
           #sensing_conslusion{line-height: 30px;}
+          #pageGro{ width:400px; height:25px; margin:0px auto; padding-top:30px;}
+          #pageGro div,#pageGro div ul li{ font-size:12px; color:#999; line-height:23px; float:left; margin-left:5px;}
+          #pageGro div ul li{ width:22px; text-align:center; border:1px solid #999; cursor:pointer;}
+          #pageGro div ul li.on{ color:#fff; background:#3c90d9; border:1px solid #3c90d9;}          
+          #pageGro .pageUp{ border:1px solid #999; cursor:pointer;}
+          #pageGro .pageDown{ width:63px; border:1px solid #999; cursor:pointer;}
+          #pageGro .pageUp{ text-indent:23px;background:url(/static/img/pageUp.png) 5px 7px no-repeat;}
+          #pageGro .pageDown{ text-indent:5px;background:url(/static/img/pageDown.png) 46px 6px no-repeat;}
         </style>
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css"/>
+        <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
 
 
     {% endblock css %}
     {% block head_js %}
         {{ super() }}
             <script type='text/javascript' src='/static/js/jquery-1.12.0.min.js'></script>
-            <script type='text/javascript' src='/static/js/jquery_dataTables_min.js'></script>
+            <script type='text/javascript' src='/static/js/jquery.dataTables.min.js'></script>
     {% endblock head_js %}
     {% block main %}
     	<div id="sensing_analysis">
@@ -59,25 +68,73 @@
               <span style='font-size:14px;'><b>微博发布情况</b></span>
               <hr style="width:100%;margin-bottom: -25px;">             
               <div id="num_line_charts" style="width:100%;float: left;height:300px;margin-left:-25px;"></div>
-              <div id="num_related_weibo" style="float:left;background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
+              <div id="num_weibo"  style="display:none;">
+                <div id="num_related_weibo" style="float:left;background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
+                <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
+                    <div class="pageUp">上一页</div>
+                    <div class="pageList">
+                        <ul>
+                            <li>1</li>
+                            <li>2</li>
+                            <li>3</li>
+                            <li>4</li>
+                            <li>5</li>
+                        </ul>
+                    </div>
+                    <div class="pageDown">下一页</div>
+                  <div style="float:left;margin-left:50px;cursor: pointer;" onclick="fold('num_weibo');" ><u>收起</u></div>                    
+                </div>
+              </div>
             </div>
             <div style="width:100%;float: left;margin-top:20px;">
               <span style='font-size:14px;margin-bottom: -20px;'><b>情绪走势</b></span>
               <hr style="width:100%;margin-bottom: -25px;">             
               <div id="mood_line_charts" style="width:100%;float: left;height:300px;margin-left:-25px;"></div>
-              <div id="mood_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
+              <div id="mood_weibo" style="display:none;">
+                <div id="mood_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
+                <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
+                  <div class="pageUp">上一页</div>               
+                  <div class="pageList">
+                      <ul>
+                          <li>1</li>
+                          <li>2</li>
+                          <li>3</li>
+                          <li>4</li>
+                          <li>5</li>
+                      </ul>
+                  </div>
+                  <div class="pageDown">下一页</div>
+                  <div style="float:left;margin-left:50px;cursor: pointer;" onclick="fold('mood_weibo');" ><u>收起</u></div>                  
+                </div>
+              </div>
             </div>
             <div style="width:100%;float: left;margin-top:20px;">
               <span style='font-size:14px;margin-bottom: -20px;'><b>敏感微博走势</b></span>
               <hr style="width:100%;margin-bottom: -25px;">             
               <div id="sensi_line_charts" style="width:100%;float: left;height:300px;margin-left:-25px;"></div>
-              <div id="sensi_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
+              <div id="sensi_weibo" style="display:none;">
+                <div id="sensi_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;margin-bottom:20px;"></div>
+                <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
+                  <div class="pageUp">上一页</div>
+                  <div class="pageList">
+                      <ul>
+                          <li>1</li>
+                          <li>2</li>
+                          <li>3</li>
+                          <li>4</li>
+                          <li>5</li>
+                      </ul>
+                  </div>
+                  <div class="pageDown">下一页</div>
+                  <div style="float:left;margin-left:50px;cursor: pointer;" onclick="fold('sensi_weibo');" ><u>收起</u></div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div style="width:100%;margin-bottom:20px;height:500px;">
+          <div style="width:100%;margin-bottom:20px;height:500px;margin-top:20px;">
       			<div id="sensing_participate" style="width:100%;float: left;margin-right:15px;">
-        			<span style='font-size:14px;'><b>参与人（<span id='participate_num'></span>）</b></span>
+        			<span style='font-size:14px;'><b>参与人群（<span id='participate_num'></span>）</b></span>
         			<hr style="width:690px;">        			
         			<div id="sensing_participate_table" style="padding:10px;width:100%;height:435px;float: left;0verflow-y: scroll;overflow-x: hidden;"></div>
             </div>
@@ -103,7 +160,7 @@
       	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
       		<span aria-hidden="true">&times;</span>
       	</button>
-        <h4 class="modal-title" id="myModalLabel">社会感知传感器（<span id="sensor_num"></span>）</h4>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感器<span id="sensor_num"></span></h4>
       </div>
       <div id="modal_sensor_table" class="modal-body" style="max-height:520px; margin:5px 0;">
       </div>
@@ -180,6 +237,13 @@
         var task_name = "{{ task_name }}";
         var keywords = "{{keywords}}";
         var ts = "{{ts}}";
+
+        // $('.fold').click(function(){
+        //   this.parent.parent.css("display", "none");
+        // })
+        function fold (div_name) {
+          $('#' + div_name).css("display", "none");
+        }
       </script>
 		  <script type='text/javascript' src='/static/js/portrait/sensing_analysis.js'></script>
     {% endblock Own_js %}
