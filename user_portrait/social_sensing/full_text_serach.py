@@ -25,6 +25,51 @@ from user_portrait.parameter import IMPORTANT_USER_NUMBER, IMPORTANT_USER_THRESH
 
 day_time = 24*3600
 
+
+
+# 获得原创微博内容，按时间排序
+def get_origin_weibo_detail(ts, keywords_list, size=100):
+    results = dict()
+    query_body = {
+        "query":{
+            "filtered":{
+                "filter":{
+                    "bool":{
+                        "must":[
+                            {"range":{
+                                "timestamp":{
+                                    "gte": ts - time_interval,
+                                    "lt": ts
+                                }
+                            }},
+                            {"terms":{"keywords_string": keywords_list}}
+                        ]
+                    }
+                }
+            }
+        },
+        "size": size,
+        "sort": {"timestamp": {"order": "desc"}}
+    }
+
+    datetime = ts2datetime(ts)
+    datetime_1 = ts2datetime(ts-time_interval)
+    index_name = flow_text_index_name_pre + datetime
+    exist_es = es_text.indices.exists(index_name)
+    index_name_1 = flow_text_index_name_pre + datetime_1
+    exist_es_1 = es_text.indices.exists(index_name_1)
+
+    if datetime == datetime_1 and exist_es:
+        search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body)["hits"]["hits"]
+    elif datetime != datetime_1 and exist_es_1:
+        search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body)["hits"]["hits"]
+    else:
+        search_results = []
+
+    if search_results:
+        pass
+
+
 def query_hot_mid(ts, keywords_list, text_type,size=100):
     query_body = {
         "query":{
@@ -38,7 +83,8 @@ def query_hot_mid(ts, keywords_list, text_type,size=100):
                                     "lt": ts
                                 }
                             }},
-                            {"terms": {"keywords_string": keywords_list}}
+                            {"terms": {"keywords_string": keywords_list}},
+                            {"term": {"message_type": "0"}}
                         ]
                     }
                 }
@@ -57,17 +103,18 @@ def query_hot_mid(ts, keywords_list, text_type,size=100):
     exist_es = es_text.indices.exists(index_name)
     index_name_1 = flow_text_index_name_pre + datetime_1
     exist_bool_1 = es_text.indices.exists(index_name_1)
-
+    print datetime, datetime_1
     if datetime == datetime_1 and exist_es:
-        search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body, fields=["root_mid"])["hits"]["hits"]
+        search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body)["aggregations"]["all_interests"]["buckets"]
     elif datetime != datetime_1 and exist_bool_1:
-        search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body, fields=['root_mid'])["hits"]["hits"]
+        search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body)["aggregations"]["all_interests"]["buckets"]
     else:
         search_results = []
 
     hot_mid_list = []
     if search_results:
         for item in search_results:
+            print item
             temp = []
             temp.append(item['key'])
             temp.append(item['doc_count'])
@@ -206,3 +253,7 @@ def aggregation_hot_keywords(start_time, stop_time, keywords_list):
     print keywords_dict
     return_dict = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:AGGRAGATION_KEYWORDS_NUMBER]
     return return_dict
+
+
+
+

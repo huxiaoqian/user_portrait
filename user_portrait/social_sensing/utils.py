@@ -4,7 +4,7 @@ import sys
 import json
 import math
 import time
-from get_task_detail import get_task_detail_2
+from get_task_detail import get_task_detail_2, get_detail_text
 from user_portrait.global_utils import es_user_profile as es_profile
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_flow_text as es_text
@@ -25,9 +25,10 @@ def get_warning_detail(task_name, keywords, ts, task_type="2"):
     return results
 
 # 获得一段时间内的文本，按序排列
-def get_text_detail(task_name, keywords, ts, size=100):
+def get_text_detail(task_name, keywords, ts, text_type, size=100):
     results = dict()
 
+    results = get_detail_text(task_name, keywords, ts, text_type)
     return results
 
 

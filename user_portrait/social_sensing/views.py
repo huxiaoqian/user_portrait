@@ -34,6 +34,7 @@ def ajax_create_task():
     stop_time = request.args.get('stop_time', "default") #timestamp, 1234567890
     social_sensors = request.args.get("social_sensors", "") #uid_list, split with ","
     keywords = request.args.get("keywords", "") # keywords_string, split with ","
+    sensitive_words = request.args.get("sensitive_words", "") # sensitive_words, split with ","
     remark = request.args.get("remark", "")
 
     exist_es = es.exists(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)
@@ -48,6 +49,7 @@ def ajax_create_task():
         task_detail["remark"] = remark
         task_detail["social_sensors"] = json.dumps(list(set(social_sensors.split(','))))
         task_detail["keywords"] = json.dumps(keywords.split(","))
+        task_detail["sensitive_words"] = json.dumps(sensitive_words.split(","))
         now_ts = int(time.time())
         task_detail["create_at"] = now_ts
         task_detail["warning_status"] = '0'
@@ -317,10 +319,10 @@ def ajax_get_keywords_list():
 def ajax_get_text_detail():
     task_name = request.args.get('task_name','') # task_name
     keywords = request.args.get('keywords', '') # warning keywords
-    ts = request.args.get('ts', '') # timestamp: 123456789
+    ts = int(request.args.get('ts', '')) # timestamp: 123456789
     text_type = request.args.get('text_type', '') # which line
-
-    results = get_text_detail(task_name, keywords, ts, text_type)
+    keywords_list = keywords.split(',')
+    results = get_text_detail(task_name, keywords_list, ts, text_type)
 
     return json.dumps(results)
 

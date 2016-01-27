@@ -55,7 +55,6 @@ def show_important_users(task_name):
     return_results['keywords'] = keywords_list
     return_results['remark'] = task_detail['remark']
     social_sensors = json.loads(task_detail['social_sensors'])
-    print keywords_list
     for item in history_status:
         time_series.append(item[0])
 
@@ -103,7 +102,6 @@ def show_important_users(task_name):
                 temp.append(item['fields']['influence'][0])
                 temp.append(item['fields']['activeness'][0])
                 user_detail_info.append(temp)
-                print temp
 
 
     return_results['group_list'] = user_detail_info

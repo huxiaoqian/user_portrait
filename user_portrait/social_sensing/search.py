@@ -92,12 +92,14 @@ if __name__ == "__main__":
     print pynlpir.get_key_words(s)
     """
     media_list = search_specified_group("律师")
+    print media_list
     #media_list = filter_top_influence_user("user_portrait_1222", ["活跃人士","草根","媒体"], ["经济类","民生_就业类"], 100)
+    """
     query_body = aggregation_sensor_keywords(1378557829, 1378557829+100000, media_list, "keywords_string", 50)
     search_results = es_text.search(index="flow_text_2013-09-07", doc_type="text", body=query_body)['aggregations']['all_keywords']['buckets']
     print search_results
     for item in search_results:
         print item["key"].encode("utf-8", "ignore"), item["doc_count"], "\n"
-
+    """
 
 

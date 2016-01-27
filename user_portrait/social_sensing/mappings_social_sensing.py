@@ -94,6 +94,10 @@ def manage_sensing_task():
                         "type": "string",
                         "index": "not_analyzed"
                     },
+                    "sensitive_keywords":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
                     "history_status":{
                         "type": "string",
                         "index": "not_analyzed"
