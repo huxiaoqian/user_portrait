@@ -560,7 +560,6 @@ def get_attr_social(uid_list, uid2uname):
         be_retweet_dict = dict() #{uid1: {uid_be_retweet dict}, uid2:{},...}
         for item in be_retweet_result:
             uid = item['_id']
-            print 'item:', item
             if item['found'] == True:
                 be_retweet_dict[uid] = json.loads(item['_source']['uid_be_retweet'])
         #step6:mget be_comment
@@ -586,7 +585,7 @@ def get_attr_social(uid_list, uid2uname):
                 user_comment_result = {}
             filter_in_dict, filter_out_dict = filter_union_dict([user_retweet_result, user_comment_result], uid_list, 'in&out')
             #step8: record the retweet/coment relaton in group uid 
-            uid_in_record = [[iter_uid, ruid, filter_in_dict[ruid], uid2uname[iter_uid], uid2uname[filter_in_dict[ruid]]] for ruid in filter_in_dict if iter_uid != ruid]
+            uid_in_record = [[iter_uid, ruid, filter_in_dict[ruid], uid2uname[iter_uid], uid2uname[ruid]] for ruid in filter_in_dict if iter_uid != ruid]
             all_in_record.extend(uid_in_record)  # [[uid1, ruid1, count1],[uid1,ruid2,count2],[uid2,ruid2,count3],...]
             #step9: record the retweet/comment/be_retweet/be_comment relation out group uid
             try:
@@ -628,7 +627,7 @@ def get_attr_social(uid_list, uid2uname):
     for user_profile_item in user_profile_result:
         uid = user_profile_item['_id']
         if user_profile_item['found'] == True:
-            out_uid2uname[uid] = user_profile_item['nick_name'][0]
+            out_uid2uname[uid] = user_profile_item['fields']['nick_name'][0]
         else:
             out_uid2uname[uid] = 'unknown'
     sort_out_record = [[item[0], item[1], item[2], item[3], item[4], out_uid2uname[item[1]]] for item in sort_out_record]
@@ -1721,8 +1720,9 @@ def compute_group_task():
     results['state'] = task['state']
     results = dict(results, **attr_in_portrait)
     #step2: get attr from social es----es_retweet&es_comment
-    #attr_in_social = get_attr_social(uid_list, uid2uname)
-    #results = dict(results, **attr_in_social)
+    attr_in_social = get_attr_social(uid_list, uid2uname)
+    results = dict(results, **attr_in_social)
+    print 'attr_in_social:', attr_in_social
     #step3: get attr activity trend and activity_time----redis for activity time
     attr_weibo_trend = get_attr_trend(uid_list) # {'activity_trend':[], 'activity_time':{}}
     results = dict(results, **attr_weibo_trend)
@@ -1775,7 +1775,7 @@ if __name__=='__main__':
                               '1582488432', '1708942053', '1647678107']
     input_data['task_name'] = u'商业人士'
     '''
-    input_data['submit_date'] = '2013-09-08'
+    input_data['submit_date'] = datetime2ts('2013-09-08')
     input_data['state'] = u'关注的媒体'
     #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)

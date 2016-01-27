@@ -6,7 +6,7 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
 
-index_name = 'group_result'
+index_name = 'group_manage'
 index_type = 'group'
 
 
