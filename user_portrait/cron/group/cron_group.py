@@ -73,7 +73,7 @@ def filter_union_dict(objs, filter_uid_list, mark):
         return _in_total, _out_total
     elif mark == 'out':
         _out_total = {}
-        _out_keys = _keys & set(filter_uid_list)
+        _out_keys = _keys - set(filter_uid_list)
         for _key in _out_keys:
             _out_total[_key] = sum([int(obj.get(_key, 0)) for obj in objs])
         return _out_total
@@ -551,18 +551,19 @@ def get_attr_social(uid_list, uid2uname):
         #step5:mget be_retweet
         try:
             be_retweet_result = es_comment.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, \
-                                                body={'ids':iter_uid})['docs']
+                                                body={'ids':iter_uid_list})['docs']
         except:
             be_retweet_result = []
         be_retweet_dict = dict() #{uid1: {uid_be_retweet dict}, uid2:{},...}
         for item in be_retweet_result:
             uid = item['_id']
+            print 'item:', item
             if item['found'] == True:
                 be_retweet_dict[uid] = json.loads(item['_source']['uid_be_retweet'])
         #step6:mget be_comment
         try:
             be_comment_result = es_comment.mget(index=be_comment_index_name, doc_type=be_comment_index_type,\
-                                                body={'ids':iter_uid})['docs']
+                                                body={'ids':iter_uid_list})['docs']
         except:
             be_comment_result = []
         be_comment_dict = dict() #{uid1:{uid_be_comment dict}, uid2:{},...}
@@ -582,7 +583,7 @@ def get_attr_social(uid_list, uid2uname):
                 user_comment_result = {}
             filter_in_dict, filter_out_dict = filter_union_dict([user_retweet_result, user_comment_result], uid_list, 'in&out')
             #step8: record the retweet/coment relaton in group uid 
-            uid_in_record = [[iter_uid, ruid, filter_in_dict[ruid]] for ruid in filter_in_dict]
+            uid_in_record = [[iter_uid, ruid, filter_in_dict[ruid]], uid2uname[iter_uid], uid2uname[filter_in_dict[ruid]] for ruid in filter_in_dict if iter_uid != ruid]
             all_in_record.extend(uid_in_record)  # [[uid1, ruid1, count1],[uid1,ruid2,count2],[uid2,ruid2,count3],...]
             #step9: record the retweet/comment/be_retweet/be_comment relation out group uid
             try:
@@ -596,17 +597,16 @@ def get_attr_social(uid_list, uid2uname):
             filter_out_dict = filter_union_dict([filter_out_dict, user_be_retweet_result, user_be_comment_result], uid_list, 'out')
             #step10: filter out user who is in user_portrait
             try:
-                out_in_user_portrait = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type,\
+                out_in_user_portrait = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type,\
                                     body={'ids':filter_out_dict.keys()}, _source=False, fields=['influence'])['docs']
             except:
                 out_in_user_portrait = []
             uid_out_record = []
             for out_in_item in out_in_user_portrait:
                 ruid = out_in_item['_id']
-                if out_in_item['found'] == True:
+                if out_in_item['found'] == True and ruid != iter_uid:
                     influence = out_in_item['fields']['influence'][0]
-                    uid_out_record.append([iter_uid, ruid, filter_out_dict[ruid], influence])
-                    
+                    uid_out_record.append([iter_uid, ruid, filter_out_dict[ruid], influence, uid2uname[iter_uid]])
             all_out_record.extend(uid_out_record) #[[uid1, ruid1,count1],[uid1,ruid2,count2],[uid2,ruid2,count3],...]
         iter_count += GROUP_ITER_COUNT
     #step11 sort interaction in group by retweet&comment count
@@ -614,6 +614,21 @@ def get_attr_social(uid_list, uid2uname):
     result['social_in_record'] = sort_in_record   
     #step12: sort interaction out group by influence
     sort_out_record = sorted(all_out_record, key=lambda x:x[3])[:GROUP_SOCIAL_OUT_COUNT]
+    #get social out user uname
+    sort_out_record_out_user = [item[1] for item in sort_out_record]
+    try:
+        user_profile_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type,\
+                body={'ids': sort_out_record_out_user}, _source=False, fields=['nick_name'])['docs']
+    except:
+        user_profile_result = []
+    out_uid2uname = {}
+    for user_profile_item in user_profile_result:
+        uid = user_profile_item['_id']
+        if user_profile_item['found'] == True:
+            out_uid2uname[uid] = user_profile_item['nick_name'][0]
+        else:
+            out_uid2uname[uid] = 'unknown'
+    sort_out_record = [[item[0], item[1], item[2], item[3], item[4], out_uid2uname[item[1]]] for item in sort_out_record]
     result['social_out_record'] = sort_out_record
     #step13: compute interaction index---in group
     in_inter_edge_count = len(sort_in_record)
@@ -636,7 +651,7 @@ def get_attr_social(uid_list, uid2uname):
     in_out_inter_user_count = len(set([item[0] for item in all_out_record])) # who is in user_portrait
     result['out_inter_user_ratio'] = float(in_out_inter_user_count) / len(uid_list) # the ratio of uid in group who interact with out group
     out_outer_weibo_count = sum([item[2] for item in all_out_record])
-    result['out_iner_weibo_ratio'] = float(out_outer_weibo_count) / len(uid_list)
+    result['out_inter_weibo_ratio'] = float(out_outer_weibo_count) / len(uid_list)
     #step15:  @ network---result [[uid1, @uname, count], [uid2, @uname, count],...]
     now_ts = int(time.time())
     now_date_ts = datetime2ts(ts2datetime(now_ts))
@@ -1141,23 +1156,11 @@ def get_attr_sentiment_trend(uid_list):
     for i in range(7, 0, -1):
         iter_date_ts = now_date_ts - i * DAY
         iter_date = ts2datetime(iter_date_ts)
-        flow_text_index_name = flow_text_index_name_pre + iter_date
-        query_body = {
-            'query':{
-                'filtered':{
-                    'filter':{
-                        'bool':{
-                            'must':[
-                                {'terms':{'uid': uid_list}}
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
+        flow_text_index_name = flow_text_index_name_pre + str(iter_date)
+        
         try:
-            flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type ,\
-                                body=query_body, _source=False, fields=['sentiment'])['hits']['hits']
+            flow_text_result = es_flow_text.mget(index=flow_text_index_name, doc_type=flow_text_index_type ,\
+                    body={'ids':uid_list}, _source=False, fields=['sentiment'])['docs']
         except:
             flow_text_result = []
         ts_sentiment_dict[iter_date_ts] = {'0':0, '1':0, '2':0, '3':0}
