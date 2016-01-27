@@ -30,35 +30,40 @@ Date.prototype.format = function(format) {
 }
 
 function sensing_sensors_table (head, data, div_name) {
-	$('#sensor_num').append(data.length);
-    $('#'+div_name).empty();
-	if(data.length>7){
-		$('#'+div_name).css("overflow-y", "auto");
-	}
 	var html = '';
-	html += '<table id="sensor_table" class="table table-bordered table-striped table-condensed datatable">';
-	html += '<thead><tr>';
-	for(var i=0; i<head.length; i++){
-	html += '<th style="text-align:center">'+head[i]+'</th>';
-	}
-	html += '</tr></thead>';
-	html += '<tbody>';
+    $('#'+div_name).empty();
+    if (data.length==0) {
+    	html = '传感人群为全库用户';
+    }else{
+    	 $('#sensor_num').append('('+data.length+')');
+	    if(data.length>7){
+			$('#'+div_name).css("overflow-y", "auto");
+		}
+		html += '<table id="sensor_table" class="table table-bordered table-striped table-condensed datatable">';
+		html += '<thead><tr>';
+		for(var i=0; i<head.length; i++){
+		html += '<th style="text-align:center">'+head[i]+'</th>';
+		}
+		html += '</tr></thead>';
+		html += '<tbody>';
 
-	for(var i=0; i<data.length; i++){
-		html += '<tr>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
-		//html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
-		html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">';
-		//console.log(data[i][4]);
-		html += ''+ data[i][4].join(', ');
-		html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][5] + '</td>';
-		html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][6] + '</td>';
-		html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][7] + '</td>';
-		html += '</tr>';
+		for(var i=0; i<data.length; i++){
+			html += '<tr>';
+			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
+			//html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
+			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
+			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
+			html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">';
+			//console.log(data[i][4]);
+			html += ''+ data[i][4].join(', ');
+			html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][5] + '</td>';
+			html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][6] + '</td>';
+			html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][7] + '</td>';
+			html += '</tr>';
+		}
+		html += '</tbody></table>';
 	}
-	html += '</tbody></table>';
+	
 	$('#'+div_name).append(html);
 
 }
@@ -82,9 +87,9 @@ function sensing_participate_table (head, data, div_name) {
 	for(var i=0; i<data.length; i++){
 		//var s= i+1;
 		html += '<tr>';
-		html += '<td class="sensing_uid" style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
 		//html += '<td style="text-align:center;vertical-align:middle;">' + '<img src="'+data[i][0] +'" class="small-photo shadow-5" title="' + data[i][1] +'">' + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;"><a href="/index/personal/?uid='+data[i][0]+'">' + data[i][1] + '</a></td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
 		html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">';
 		html +=  data[i][4].join(',');
@@ -96,36 +101,266 @@ function sensing_participate_table (head, data, div_name) {
 		html += '</tr>';
 	}
 	html += '</tbody></table>';
+    $('#participate_table').DataTable( {
+        "scrollY":        "200px",
+        "scrollCollapse": true,
+        "paging":         false
+    } );
+
 	$('#'+div_name).append(html);
 }
 
-function sensing_keywords_table (head, data, div_name) {
-    $('#'+div_name).empty();
-	if(data.length>10){
-		$('#'+div_name).css("overflow-y", "auto");
+function page_icon(page,count,eq, div_name){
+	var ul_html = "";
+	for(var i=page; i<=count; i++){
+		ul_html += "<li>"+i+"</li>";
 	}
-	var html = '';
-	html += '<table id="keywords_table" class="table table-bordered table-striped table-condensed datatable">';
-	html += '<thead><tr>';
-	for(var i=0; i<head.length; i++){
-	html += '<th style="text-align:center">'+head[i]+'</th>';
-	}
-	//html += '<th style="text-align:center"> <input name="participate_select_all" id="participate_select_all" type="checkbox" value="" onclick="participate_select_all()" /></th>';
-	html += '</tr></thead>';
-	html += '<tbody>';
-
-	for(var i=0; i<data.length; i++){
-		var s= i+1;
-		html += '<tr>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + s + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
-	}
-	html += '</tbody></table>';
-	$('#'+div_name).append(html);
+	$("#"+div_name+" #pageGro ul").empty();
+	$("#"+div_name+" #pageGro ul").append(ul_html);
+	$("#"+div_name+" #pageGro ul li").eq(eq).addClass("on");
 }
 
-function draw_mood_line_charts(data, div_name, legend_data){
+//上一页
+function pageUp(pageNum,pageCount, div_name){
+	switch(pageNum){
+		case 1:
+		break;
+		case 2:
+			page_icon(1,5,0, div_name);
+		break;
+		case pageCount-1:
+			page_icon(pageCount-4,pageCount,2, div_name);
+		break;
+		case pageCount:
+			page_icon(pageCount-4,pageCount,3, div_name);
+		break;
+		default:
+			page_icon(pageNum-2,pageNum+2,1, div_name);
+		break;
+	}
+}
+
+//下一页
+function pageDown(pageNum,pageCount){
+	switch(pageNum){
+		case 1:
+			page_icon(1,5,1, div_name);
+		break;
+		case 2:
+			page_icon(1,5,2);
+		break;
+		case pageCount-1:
+			page_icon(pageCount-4,pageCount,4, div_name);
+		break;
+		case pageCount:
+		break;
+		default:
+			page_icon(pageNum-2,pageNum+2,3, div_name);
+		break;
+	}
+}
+
+//点击跳转页面
+function pageGroup(pageNum,pageCount){
+	switch(pageNum){
+		case 1:
+			page_icon(1,5,0, div_name);
+		break;
+		case 2:
+			page_icon(1,5,1);
+		break;
+		case pageCount-1:
+			page_icon(pageCount-4,pageCount,3, div_name);
+		break;
+		case pageCount:
+			page_icon(pageCount-4,pageCount,4, div_name);
+		break;
+		default:
+			page_icon(pageNum-2,pageNum+2,2, div_name);
+		break;
+	}
+}
+
+
+
+function Draw_group_weibo(data, div_name, sub_div_name){
+    page_num = 5;
+    if (data.length < page_num) {
+          page_num = data.length
+          page_group_weibo( 0, page_num, data, sub_div_name);
+      }
+      else {
+          page_group_weibo( 0, page_num, data, sub_div_name);
+          var total_pages = 0;
+          if (data.length % page_num == 0) {
+              total_pages = data.length / page_num;
+          }
+          else {
+              total_pages = Math.round(data.length / page_num) + 1;
+          }
+        }
+    var pageCount = total_pages;
+
+    if(pageCount>10){
+        page_icon(1,10,0, div_name);
+    }else{
+        page_icon(1,pageCount,0, div_name);
+    }
+    
+    $("#"+div_name+" #pageGro li").bind("click", function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($(this).html());
+            pageGroup(pageNum,pageCount);
+        }else{
+            $(this).addClass("on");
+            $(this).siblings("li").removeClass("on");
+        }
+      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
+      console.log(page);         
+      start_row = (page - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+      	console.log('start', start_row);
+      	console.log('end', end_row);
+      	console.log('data',data);
+        page_group_weibo(start_row,end_row,data, sub_div_name);
+    });
+
+    $("#"+div_name+" #pageGro .pageUp").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
+            pageUp(pageNum,pageCount);
+        }else{
+            var index = $("#"+div_name+" #pageGro ul li.on").index();
+            if(index > 0){
+                $("#"+div_name+" #pageGro li").removeClass("on");
+                $("#"+div_name+" #pageGro ul li").eq(index-1).addClass("on");
+            }
+        }
+      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
+      console.log(page);
+      start_row = (page-1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length){
+          end_row = data.length;
+      }
+        page_group_weibo(start_row,end_row,data,sub_div_name);
+    });
+    
+
+    $("#" + div_name + " #pageGro .pageDown").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
+
+            pageDown(pageNum,pageCount);
+        }else{
+            var index = $("#"+div_name+" #pageGro ul li.on").index();
+            if(index+1 < pageCount){
+                $("#"+div_name+" #pageGro li").removeClass("on");
+                $("#"+div_name+" #pageGro ul li").eq(index+1).addClass("on");
+            }
+        }
+      page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
+      console.log(page);
+      start_row = (page-1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length){
+          end_row = data.length;
+      }
+        page_group_weibo(start_row,end_row,data,sub_div_name);
+    });
+}
+function page_group_weibo(start_row,end_row,data, sub_div_name){
+	console.log('#'+ sub_div_name);
+    weibo_num = end_row - start_row;
+    $('#'+ sub_div_name).empty();
+    var html = "";
+	html += '<div id="weibo_list" class="weibo_list weibo_list_height scrolls tang-scrollpanel" style="margin:0;">';
+	html += '<div id="content_control_height" class="tang-scrollpanel-wrapper" style="margin:0;">';
+	html += '<div class="tang-scrollpanel-content" style="margin:0;">';
+	html += '<ul>';
+    for (var i = start_row; i < end_row; i += 1){
+        var s = (i+1).toString();
+        var weibo = data[i]
+        var mid = weibo[0];
+        var uid = weibo[9];
+        var name = weibo[10];
+        var date = weibo[5];
+        var text = weibo[3];
+        var geo = weibo[4];
+        var reposts_count = weibo[1];
+        var comments_count = weibo[2];
+        var weibo_link = weibo[7];
+        var user_link = weibo[8];
+        var profile_image_url = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+        var repost_tree_link = 'http://219.224.135.60:8080/show_graph/' + mid;
+        if (geo==''){
+           geo = '未知';
+        }
+        var user_link = 'http://weibo.com/u/' + uid;
+        html += '<li class="item">';
+        html += '<div class="weibo_detail" >';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: 积极'+ '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容:&nbsp;&nbsp;' + text + '</p>';
+        html += '<div class="weibo_info"style="width:100%">';
+        html += '<div class="weibo_pz">';
+        html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
+        html += '<span class="retweet_count" href="javascript:;" target="_blank">转发数(' + reposts_count + ')</span>&nbsp;&nbsp;|&nbsp;&nbsp;';
+        html += '<span class="comment_count" href="javascript:;" target="_blank">评论数(' + comments_count + ')</span></div>';
+        html += '<div class="m">';
+        html += '<u>' + date + '</u>&nbsp;-&nbsp;';
+        html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
+        html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;&nbsp;';
+        // html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '</li>';
+    }
+    html += '<div id="TANGRAM_54__slider" class="tang-ui tang-slider tang-slider-vtl" style="height: 100%;">';
+    html += '<div id="TANGRAM_56__view" class="tang-view" style="width: 6px;">';
+    html += '<div class="tang-content"><div id="TANGRAM_56__inner" class="tang-inner"><div id="TANGRAM_56__process" class="tang-process tang-process-undefined" style="height: 0px;"></div></div></div>';
+    html += '<a id="TANGRAM_56__knob" href="javascript:;" class="tang-knob" style="top: 0%; left: 0px;"></a></div>';
+    html += '<div class="tang-corner tang-start" id="TANGRAM_54__arrowTop"></div><div class="tang-corner tang-last" id="TANGRAM_54__arrowBottom"></div></div>';
+
+    html += '</ul>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';   
+    html += '</div>'; 
+    $('#'+sub_div_name).append(html);
+    //$('#'+div_name+ ' .related_weibo').append('html');
+
+}
+
+
+// function sensing_keywords_table (head, data, div_name) {
+//     $('#'+div_name).empty();
+// 	if(data.length>10){
+// 		$('#'+div_name).css("overflow-y", "auto");
+// 	}
+// 	var html = '';
+// 	html += '<table id="keywords_table" class="table table-bordered table-striped table-condensed datatable">';
+// 	html += '<thead><tr>';
+// 	for(var i=0; i<head.length; i++){
+// 	html += '<th style="text-align:center">'+head[i]+'</th>';
+// 	}
+// 	//html += '<th style="text-align:center"> <input name="participate_select_all" id="participate_select_all" type="checkbox" value="" onclick="participate_select_all()" /></th>';
+// 	html += '</tr></thead>';
+// 	html += '<tbody>';
+
+// 	for(var i=0; i<data.length; i++){
+// 		var s= i+1;
+// 		html += '<tr>';
+// 		html += '<td style="text-align:center;vertical-align:middle;">' + s + '</td>';
+// 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
+// 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
+// 	}
+// 	html += '</tbody></table>';
+// 	$('#'+div_name).append(html);
+// }
+
+function draw_sensi_line_charts(data, div_name, legend_data){
 	var line1 = data[1];
 	var line2 = data[2];
 	var line3 = data[3];
@@ -137,7 +372,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	        show : true,
 	    },
 	    toolbox: {
-	        show : false,
+	        show : true,
 	        feature : {
 	            mark : {show: true},
 	            dataView : {show: true, readOnly: false},
@@ -147,11 +382,11 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	    },
 	    dataZoom: {
 	        show: true,
-	        start : 90
+	        start : 80
 	    },
 	    legend : {
 	        data : legend_data,
-	        x:'right'
+	        x:'center'
 	    },
 	    grid: {
 	        y2: 70
@@ -210,10 +445,110 @@ function draw_mood_line_charts(data, div_name, legend_data){
 				    var timestamp2 = Date.parse(new Date(param.name));
 					timestamp2 = timestamp2 / 1000;
 				    var click_time = timestamp2;
-				    var data=[['0',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0],['0',1,2,'3neirong',4,param.name,6,7,8,9,0]]
+				    var data=[['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
+				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+click_time;
+				    $('#sensi_weibo').css("display", 'block');
+					Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
+				    //console.log(num_line_url);
+				}
+			}
+		
+		myChart.on(ecConfig.EVENT.CLICK, eConsole);
+	});
+
+	// 为echarts对象加载数据 
+    myChart.setOption(option);                  
+}
+
+function draw_mood_line_charts(data, div_name, legend_data){
+	var line1 = data[1];
+	var line2 = data[2];
+	var line3 = data[3];
+	var markpoint = data[4];
+	var myChart = echarts.init(document.getElementById(div_name)); 
+	option = {  
+	    tooltip : {
+	        trigger: 'axis',
+	        show : true,
+	    },
+	    toolbox: {
+	        show : true,
+	        feature : {
+	            mark : {show: true},
+	            dataView : {show: true, readOnly: false},
+	            restore : {show: true},
+	            saveAsImage : {show: true}
+	        }
+	    },
+	    dataZoom: {
+	        show: true,
+	        start : 90
+	    },
+	    legend : {
+	        data : legend_data,
+	        x:'center'
+	    },
+	    grid: {
+	        y2: 70
+	    },
+	    xAxis : [
+	        {
+	            data :data[0],
+	            type : 'category',
+	            splitNumber:10
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value'
+	        }
+	    ],
+	    series : [
+	        {
+	            name: legend_data[0],
+	            type: 'line',
+	            showAllSymbol : true,
+	            markPoint : {
+                	data :markpoint,
+                	clickable: true,
+                	symbolSize:5,
+                	// symbol: 'droplet',
+                	tooltip:{
+                		show : false
+                	}
+                
+            	},
+	            clickable: true,	          
+	            data: line1
+	        },
+	        {
+	            name: legend_data[1],
+	            type: 'line',
+	            showAllSymbol : true,
+	            data: line2
+	        },
+	        {
+	            name: legend_data[2],
+	            type: 'line',
+	            showAllSymbol : true,
+	            data: line3
+	        }
+	    ]
+	};
+	 require([
+            'echarts'
+        ],
+        function(ec){
+			var ecConfig = require('echarts/config');
+			function eConsole(param) {
+			    if (typeof param.seriesIndex != 'undefined') {			    
+				    var timestamp2 = Date.parse(new Date(param.name));
+					timestamp2 = timestamp2 / 1000;
+				    var click_time = timestamp2;
+				    var data=[['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 				    var num_line_url = '传递的'+(param.seriesIndex+4) +',时间是'+click_time;
-	   			    Draw_get_weibo(data, 'related_weibo_text');
-				    console.log(num_line_url);
+	   			    $('#mood_weibo').css("display", 'block');
+					Draw_group_weibo(data, 'mood_weibo', 'mood_related_weibo');
 				}
 			}
 		
@@ -238,7 +573,7 @@ function draw_num_line_charts(data, div_name, legend_data){
 	        show : true,
 	    },
 	    toolbox: {
-	        show : false,
+	        show : true,
 	        feature : {
 	            mark : {show: true},
 	            dataView : {show: true, readOnly: false},
@@ -252,7 +587,7 @@ function draw_num_line_charts(data, div_name, legend_data){
 	    },
 	    legend : {
 	        data : legend_data,
-	        x:'right'
+	        x:'center'
 	    },
 	    grid: {
 	        y2: 70
@@ -314,21 +649,22 @@ function draw_num_line_charts(data, div_name, legend_data){
 			var ecConfig = require('echarts/config');
 			function eConsole(param) {
 				//alert('param', param);
-			    var mes = '【' + param.type + '】';
-			    if (typeof param.seriesIndex != 'undefined') {
-			        mes += '  seriesIndex : ' + param.seriesIndex;
-			        mes += '  dataIndex : ' + param.dataIndex;
-			        mes += '  dataValue : ' + param.value;
-			        mes += '  dataname : ' + param.name;
-			    }
+			    // var mes = '【' + param.type + '】';
+			    // if (typeof param.seriesIndex != 'undefined') {
+			    //     mes += '  seriesIndex : ' + param.seriesIndex;
+			    //     mes += '  dataIndex : ' + param.dataIndex;
+			    //     mes += '  dataValue : ' + param.value;
+			    //     mes += '  dataname : ' + param.name;
+			    // }
 			    var timestamp2 = Date.parse(new Date(param.name));
 				timestamp2 = timestamp2 / 1000;
 			    var click_time = timestamp2;
 			    var data=[['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
-			    var num_line_url = '传递的'+param.seriesIndex +',时间是'+click_time;
-   			    Draw_get_weibo(data, 'related_weibo_text');
-			    console.log('mes', mes)
-			    console.log(num_line_url);
+			    var num_line_url = '传递的'+ param.seriesIndex + ',时间是'+click_time;
+			    
+   			    $('#num_weibo').css("display", 'block');
+				Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
+				console.log(num_line_url);
 			}
 		
 		myChart.on(ecConfig.EVENT.CLICK, eConsole);
@@ -387,7 +723,7 @@ function Draw_get_weibo(data,div_name){
         html += '</div>';
         html += '</div>';
         html += '</li>';
-            }
+      }
                                     
     html += '<div id="TANGRAM_54__slider" class="tang-ui tang-slider tang-slider-vtl" style="height: 100%;">';
     html += '<div id="TANGRAM_56__view" class="tang-view" style="width: 6px;">';
@@ -446,6 +782,18 @@ function deal_point(data){
 
 }
 
+function show_warning_time_all(div_name, data){
+
+	$('#' + div_name).empty();	
+	var html = '';
+	for(var i=0;i<data.length;i++){
+		html += '<span style="width:150px;margin:10px;font-size:14px;">' + data[i] + '</span>';
+		if(i%3 == 2){
+			html += '<br>';
+		}
+	}
+		$('#' + div_name).append(html);	
+}
 
 var num_legend = ['总数','原创', '转发', '评论'];
 var mood_legend = ['消极','积极', '中性'];
@@ -463,7 +811,7 @@ function social_sensing_all(data){
 	$('#total_abnormal_num').append(total_abnormal_num);
 	show_warning_time('modal_warning_weibo_content', data.variation_distribution[0]);
 	show_warning_time('modal_warning_mood_content', data.variation_distribution[1]);
-	show_warning_time('modal_warning_total_content', data.variation_distribution[2]);
+	show_warning_time_all('modal_warning_total_content', data.variation_distribution[2]);
 
 	//微博数量走势图
 	var num_line_data = new Array();
@@ -483,6 +831,15 @@ function social_sensing_all(data){
 	mood_line_data[3] = data.positive_sentiment_list;
 	mood_line_data[4] = deal_point(data.variation_distribution[1]);
 	draw_mood_line_charts(mood_line_data, 'mood_line_charts', mood_legend);
+
+	//敏感微博走势图
+	// var mood_line_data = new Array();
+	// mood_line_data[0] = data.time_series;
+	// mood_line_data[1] = data.negetive_sentiment_list;
+	// mood_line_data[2] = data.neutral_sentiment_list;
+	// mood_line_data[3] = data.positive_sentiment_list;
+	// mood_line_data[4] = deal_point(data.variation_distribution[1]);
+	draw_sensi_line_charts(mood_line_data, 'sensi_line_charts', mood_legend);
 	
 	//参与人表格
 	var participate_head=['uid','昵称','领域','话题','热度','重要度','影响力','活跃度']
@@ -496,13 +853,11 @@ function social_sensing_all(data){
 	sensor_data = data.social_sensors_detail;
 	sensing_sensors_table(sensor_head,sensor_data,"modal_sensor_table");
 
-	//预警信息
-	var warning_conclusion = [];
-	warning_conclusion = data.warning_conclusion.split('：');
-	$('#sensing_conslusion_title').empty();
-	$('#sensing_conslusion_title').append(warning_conclusion[0]);
-	$('#sensing_conslusion').empty();
-	$('#sensing_conslusion').append(warning_conclusion[1]);
+	//备注信息---数据错误
+	var remark_info = data.warning_conclusion;
+	//warning_conclusion = data.warning_conclusion.split('：');
+	$('#remark_info').empty();
+	$('#remark_info').append(remark_info);
 
 	//事件关键词
 	var keywords_list = ''
@@ -520,24 +875,15 @@ function sensing_keywords_table_all(data){
 
 
 
-	console.log(task_name);
-	console.log(keywords);
-	console.log(ts);
-	var sensing_url = '';
-	sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
-	call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
+$('#sensing_task_name').append(task_name);
+var sensing_url = '';
+sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
+call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
 
-	$('#sensing_task_name').append(task_name);
-    // $('#participate_table').DataTable( {
-    //     "scrollY":        "200px",
-    //     "scrollCollapse": true,
-    //     "paging":         false
-    // } );
-// } );
-window.onload = function(){
-	var keywords_url = '/social_sensing/get_keywords_list/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts+'&start_time=1377964800';
-	call_sync_ajax_request(keywords_url, ajax_method, sensing_keywords_table_all);
+// window.onload = function(){
+// 	var keywords_url = '/social_sensing/get_keywords_list/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts+'&start_time=1377964800';
+// 	call_sync_ajax_request(keywords_url, ajax_method, sensing_keywords_table_all);
 
-}
+// }
 
 
