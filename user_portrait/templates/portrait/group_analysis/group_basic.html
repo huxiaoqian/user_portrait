@@ -1,3 +1,110 @@
-<div id='sex' style='float:left;width:300px;height:200px'></div>        
-<div id='verify' style='float:right;width:300px;height:200px'></div>
-<div class="col-md-3 col-sm-3 col-xs-6"style='margin-left:80px' id='totalnumber'></div>
+<!-- <div id='sex' style='float:left;width:300px;height:200px'></div>         -->
+<!-- <div id='verify' style='float:right;width:300px;height:200px'></div> -->
+<div class="col-md-3 col-sm-3 col-xs-6"style=' margin-left:80px' id='totalnumber'></div>
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            男女比例
+        </div>
+        <div class="panel-body" id='sex' style='float:left;width:300px;height:200px'>
+        </div>
+        <div class="panel-footer">
+           图
+        </div>
+    </div>
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            认证比例
+        </div>
+        <div class="panel-body" id='verify' style='float:left;width:300px;height:200px'>
+        </div>
+        <div class="panel-footer">
+           图
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+function draw_sex(){
+	var mychart1 =  echarts.init(document.getElementById('sex')); 
+	var option = {
+	     title : {
+	        // text: '某站点用户访问来源',
+	        // subtext: '纯属虚构',
+	        x:'center'
+	     },
+	    tooltip : {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+	    legend: {
+	        orient: 'vertical',
+	        left: 'left',
+	      //  data: ['男','女']
+	    },
+	    series : [
+	        {
+	            name: '访问来源',
+	            type: 'pie',
+	            radius : '55%',
+	            center: ['50%', '60%'],
+	            data:[
+	                {value:335, name:'男'},
+	                {value:310, name:'女'}
+	            ],
+	            itemStyle: {
+	                emphasis: {
+	                    shadowBlur: 10,
+	                    shadowOffsetX: 0,
+	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	                }
+	            }
+	        }
+	    ]
+	};
+  mychart1.setOption(option);
+}
+function draw_verify(){
+	var mychart1 =  echarts.init(document.getElementById('verify')); 
+	var option = {
+		title : {
+	        // text: '某站点用户访问来源',
+	        // subtext: '纯属虚构',
+	        x:'center'
+	    },
+	    tooltip : {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+		legend: {
+        	orient: 'vertical',
+        	left: 'left',
+        	//data: ['认证','未认证']
+	    },
+	    series : [
+	        {
+	            name: '访问来源',
+	            type: 'pie',
+	            radius : '55%',
+	            center: ['50%', '60%'],
+	            data:[
+	                {value:335, name:'认证'},
+	                {value:310, name:'未认证'}
+	            ],
+	            itemStyle: {
+	                emphasis: {
+	                    shadowBlur: 10,
+	                    shadowOffsetX: 0,
+	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	                }
+	            }
+	        }
+	    ]
+	};
+  mychart1.setOption(option);
+}
+draw_sex();
+draw_verify();
+</script>

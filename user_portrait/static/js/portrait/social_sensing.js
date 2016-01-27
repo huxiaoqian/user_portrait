@@ -42,7 +42,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		item_time = new Date(item[i][2]*1000).format('yyyy/MM/dd hh:mm')
-		html += '<tr><td >'+item[i][0]+'</td><td>'+item[i][1]+'</td><td>'+item_time+'</td><td>'+item[i][3]+'</td><td>'+item[i][4]+'</td>';
+		html += '<tr><td name="'+item[i][5]+'">'+item[i][0]+'</td><td>'+item[i][1]+'</td><td>'+item_time+'</td><td>'+item[i][3]+'</td><td>'+item[i][4]+'</td>';
 		html += '<td><a href=javascript:void(0)  id="so_users">查看详情<a/></td>';
 		html += '<td><input name="so_user_list_option" class="search_result_option" type="checkbox"  /></td>'
 		html += '</tr>';	
@@ -70,7 +70,7 @@ Social_sense.prototype = {   //获取数据，重新画表
   	var f_color = '';
   	var time_now =  Date.parse(new Date())/1000;
 	html += '<table id="so_task_table_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;width:115px;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th  style="width: 140px;">进度</th><th>预警状态</th><th>更多</th><th>操作</th></tr></thead>';
+	html += '<thead><tr style="text-align:center;width:115px;"><th>任务名称</th><th style="width: 60px;">创建人</th><th>创建时间</th><th>终止时间</th><th  style="width: 140px;">监控进度&nbsp;&nbsp;<i style="font-size:15px;" class="glyphicon glyphicon-question-sign" data-placement="right" title="红色表示任务处于终止状态"></i></th><th>预警提示</th><th>监控浏览</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 	  	var create_d = new Date(item[i]['create_at']*1000).format('yyyy/MM/dd hh:mm'); 
@@ -80,8 +80,7 @@ Social_sense.prototype = {   //获取数据，重新画表
 	  		keys.push(item[i]['keywords'][j]);
 	  	}
 	  	keys.join(',');
-	  	console.log(keys);
-	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(2);
+	  	time_pro = (((time_now-item[i]['create_at'])/(item[i]['stop_time']-item[i]['create_at']))*100).toFixed(0);
 		if(item[i]['warning_status']==0){
 			warn = '无事件';
 			//$('#pro').replaceWith('<progress id="pro" progress ::webkit-progress-value{ background: #0064B4; }');
@@ -111,20 +110,21 @@ Social_sense.prototype = {   //获取数据，重新画表
 	  		time_pro=0;
 	  	}
 		html += '<tr>';
-		html += '<td name="task_name">'+item[i]['task_name']+'</td>';
+		html += '<td><a href="javascript:void(0)" id="so_keys">'+item[i]['task_name']+'</a></td>';
 		html += '<td style="width: 60px;">'+item[i]['create_by']+'</td>';
 		html += '<td>'+create_d+'</td>';
 		html += '<td>'+end_d+'</td>';
 		html += '<td "><progress id="pro" style="width:60%"   value="'+time_pro+'" max="100"></progress><span '+f_color+'>'+time_pro+'%</span></td>';
 		html += '<td>'+warn+'</a></td>';
 		//<a href="/index/sensing_analysis/?task_name='+item[i]['task_name']+'&keywords='+keys+'&ts='+item[i]['history_status'][0][0]+'" id="so_warn">
-		html += '<td><a href="javascript:void(0)" id="so_keys">更多信息&nbsp;&nbsp;</a>';
-		html += '<a href="javascript:void(0)" id="so_history">历史状态</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
+		//html += '<td><a href="javascript:void(0)" id="so_keys">更多信息&nbsp;&nbsp;</a>';
+		html += '<td><a href="javascript:void(0)" id="so_history">历史状态</a></td><td>'+operate+'&nbsp;&nbsp;<a href="javascript:void(0)" id="so_task_del">删除</a></td>';
 		html += '</tr>';		
 	}
 	html += '</tbody>';
     html += '</table>';
 	$('#so_task_table').append(html);
+	so_ready();
 	$('#so_task_table_body').dataTable({
        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
        "sPaginationType": "bootstrap",
@@ -137,23 +137,32 @@ Social_sense.prototype = {   //获取数据，重新画表
 
 $('input[name="so_mode_choose"]').change(function(){
     var so_user_option = $('input[name="so_mode_choose"]:checked').val();
-    if (so_user_option == 'so_all_users'){
-        $('#so_have_users_ext').css('display','none');
+    if (so_user_option == 'so_have_users'){
+        $('#so_have_users_ext').css('display','block');
     }
     else{
-        $('#so_have_users_ext').css('display','block');
+        $('#so_have_users_ext').css('display','none');
+        if(so_user_option == 'so_new_users'){
+        	window.location.href='/index/group/';
+        }
     }
     //seed_user_init();
     //if (!seed_user_flag) seed_user_flag = true; // no more html init
 });
-var current_date = new Date().format('yyyy/MM/dd hh:mm');
+//var current_date = new Date().format('yyyy/MM/dd hh:mm');
+var current_date0 = new Date();
+var current_date = current_date0.format('yyyy/MM/dd hh:mm')
+current_date0.setDate(current_date0.getDate()+7);
+var v_date = current_date0.format('yyyy/MM/dd hh:mm');
 var max_date = '+1970/01/30';
 var min_date = '-1970/01/30';
-$('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
-$('input[id="so_re_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
+$('input[name="so_end_time"]').datetimepicker({value:v_date,minDate:current_date,step:10});
+$('input[id="so_re_end_time"]').datetimepicker({value:v_date,minDate:current_date,step:10});
 
-function draw_control_table(data){
+function so_draw_control_table(data){
 	$('#so_control_confirm').empty();
+	var item =data;
+	var item_name = '';
 	var html='';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
     html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">活跃度</th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
@@ -168,12 +177,12 @@ function draw_control_table(data){
     	}else{
     		item_img = item[i][2];
     	}
-    	if(item[i][5]==undefined){
-    		item_num = '无';
-    	}else{
-    		item_num = item[i][5].toFixed(2);
-    	}
-        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][5] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td></tr>';
+    	// if(item[i][5]==undefined){
+    	// 	item_num = '无';
+    	// }else{
+    	// 	item_num = item[i][5].toFixed(2);
+    	// }
+        html += '<tr><td name="'+item[i][0]+'" style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td><td style="text-align:center">' + item[i][8] + '</td></tr>';
   	}
     html += '</table>'; 
 	$('#so_control_confirm').append(html);
@@ -195,7 +204,6 @@ Social_sense.call_sync_ajax_request(show_url, Social_sense.ajax_method, Social_s
 function so_redraw(){
 	show_url='/social_sensing/show_task/';
 	Social_sense.call_sync_ajax_request(show_url, Social_sense.ajax_method, Social_sense.Draw_task_table);
-	so_ready();
 }
 
 //Social_sense.Draw_task_table();
@@ -213,44 +221,60 @@ function keys_choose_all(){
 
 function draw_sensor(data){
 	$('#so_sensor_content').empty();
-	$('span[id^="so_remark0"]').html(data['remark']);
+	if(data['remark']){
+		$('span[id^="so_remark0"]').html(data['remark']);
+	}else{
+		$('span[id^="so_remark0"]').html('无');
+	}
 	var item = data['social_sensors_portrait'];
 	var html = '';
 	var item_name = '';
 	var item_img = '';
+	var item_num = '';
 	var item_keys = data['keywords'];
-    html += '<span  style="margin-right:25px;">关键词：</span>';
-    for (var j =0;j<item_keys.length;j++){
-    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
+	var item_sensor = data['social_sensors'];
+    html += '<span  style="margin-right:25px;">传感词：</span>';
+    if(item_keys[0] != ''){
+    	console.log(item_keys);
+	    for (var j =0;j<item_keys.length;j++){
+	    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
+	    }
+    }else{html += '<span style="margin-right:20px;">无</span>'}
+    if (item_sensor[0] == ''){
+    	html += '<div style="margin-top:10px;">传感群：<span style="margin-left:25px;">全库用户</span></div>'
+    }else{
+    	html += '<div style="margin-top:10px;overflow-y:auto;height:300px;">';
+	    html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
+	    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
+	    for (var i=0;i<item.length;i++) {
+	    	if(item[i][1]=='unknown'){
+	    		item_name = '未知';
+	    	}else{
+	    		item_name = item[i][1];
+	    	}
+	    	if(item[i][2]=='unknown'){
+	    		item_img = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+	    	}else{
+	    		item_img = item[i][2];
+	    	}
+	    	if(item[i][5]==undefined){
+	    		item_num = '无';
+	    	}else{
+	    		item_num = item[i][5].toFixed(2);
+	    	}
+	        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
+	 	}
+	 	html += '</div>';
+	    html += '</table>'; 
     }
-    html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
-    for (var i=0;i<item.length;i++) {
-    	if(item[i][1]=='unknown'){
-    		item_name = '未知';
-    	}else{
-    		item_name = item[i][1];
-    	}
-    	if(item[i][2]=='unknown'){
-    		item_img = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
-    	}else{
-    		item_img = item[i][2];
-    	}
-    	if(item[i][5]==undefined){
-    		item_num = '无';
-    	}else{
-    		item_num = item[i][5].toFixed(2);
-    	}
-        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
- 	}
-    html += '</table>'; 
     $('#so_sensor_content').append(html); 
 }
 
 
 function so_ready(){
 	$('a[id^="so_keys"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().text();
+		console.log(temp);
 		$('span[id^="so_group_name0"]').html(temp);
 		$('#so_sensor_content').empty();
 		$('span[id="so_remark0"]').html('');
@@ -262,7 +286,7 @@ function so_ready(){
 	});
 	
 	$('a[id^="so_history"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().text();
 		$('span[id^="so_group_name0"]').html(temp);
 		$('#so_his_content').empty();
 		$('span[id="so_remark0"]').html('');
@@ -282,7 +306,7 @@ function so_ready(){
 
 	// });
 	$('a[id^="so_stop_task"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().text();
 		var a = confirm('确定要终止任务吗？');
 		if (a== true){
 			url = "/social_sensing/stop_task/?task_name=" + temp;
@@ -291,7 +315,7 @@ function so_ready(){
 	});	
 
 	$('a[id^="so_revise_task"]').click(function(e){
-		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().text();
 		//url = "/social_sensing/revise_task/?task_name=" + temp;
 		//Social_sense.call_sync_ajax_request(url, Social_sense.ajax_method, callback);
 		$('span[id^="so_re_group_name"]').html(temp);
@@ -299,17 +323,28 @@ function so_ready(){
 	});
 
 	$('a[id^="so_users"]').click(function(){
-		var temp = $(this).parent().prev().prev().prev().prev().html();
+		var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 		var remark = $(this).parent().prev().html();
-		url = "/detect/get_group_detail/?task_name=" + temp;
-		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_control_table);
+		url = "/social_sensing/get_group_detail/?task_name=" + temp;
+		Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,so_draw_control_table);
 		$('span[id^="have_sensor_name"]').html(temp);
 		$('span[id^="have_sensor_remark"]').html(remark);
 		$('#so_control').modal();
 		});
-	
+	$('a[id^="so_task_del"]').click(function(e){
+	var a = confirm('确定要删除吗？');
+    	if (a == true){
+			var url = '/social_sensing/delete_task/?';
+			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().text();
+			url = url + 'task_name=' + temp;
+			console.log(url);
+			//window.location.href = url;
+			Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,callback);
+	}
+	});
+
 }
-so_ready();
+
 function callback(data){
 	console.log(data);
 	if(data.length>0){
@@ -319,43 +354,43 @@ function callback(data){
 		//window.location.href=window.location.href;
 }
 
-$('a[id^="so_task_del"]').click(function(e){
-	var a = confirm('确定要删除吗？');
-    	if (a == true){
-			var url = '/social_sensing/delete_task/';
-			var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().html();
-			url = url + 'task_name=' + temp;
-			console.log(url);
-			//window.location.href = url;
-			//Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,callback);
-	}
-});
+
 
 
 function draw_history(data){
 	$('#so_his_content').empty();
-	$('span[id="so_remark0"]').html('');
-	$('span[id="so_remark0"]').html(data['remark']);
+	if(data['remark']){
+		$('span[id^="so_remark0"]').html(data['remark']);
+	}else{
+		$('span[id^="so_remark0"]').html('无');
+	}
+	//$('span[id="so_remark0"]').html('');
+	//$('span[id="so_remark0"]').html(data['remark']);
     var item_his = data['history_status'];
 	var html = '';
 	var warn = '';
-	var item_time = ''
-	console.log(item_his);
+	var item_time = '';
 	console.log(item_his.length);
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
-    html += '<tr><th style="text-align:center">时间</th><th style="text-align:center">关键词</th><th style="text-align:center">预警状态</th><th style="text-align:center">查看详情</a></th></tr>';
-    for (var i=0;i<item_his.length ;i++) {
-    	if(item_his[i][2]==0){
-			warn = '无事件';
-		}else if (item_his[i][2]==1){
-			warn = '事件爆发';
-		}else {
-			warn = '事件跟踪';
-		}
-		item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm');
-       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
- 	}
-    html += '</table>'; 
+	if(item_his.length == 0){
+		html += '<div>暂无历史状态</div>';
+	}else{
+		html += '<div style="overflow-y:auto;height:300px;">'
+	    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
+	    html += '<tr><th style="text-align:center">时间</th><th style="text-align:center">传感词</th><th style="text-align:center">预警状态</th><th style="text-align:center">查看详情</a></th></tr>';
+	    for (var i=0;i<item_his.length ;i++) {
+	    	if(item_his[i][2]==0){
+				warn = '无事件';
+			}else if (item_his[i][2]==1){
+				warn = '事件爆发';
+			}else {
+				warn = '事件跟踪';
+			}
+			item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm');
+	       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
+	 	}
+	    html += '</table>'; 
+	    html += '</div>';
+	}
 	$('#so_his_content').append(html);	
 }
 
@@ -410,24 +445,25 @@ function so_group_data(){
 		a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
 		a['keywords'] = '';
 		a['create_at'] =  Date.parse(new Date())/1000;
-		a['social_sensors'] ='';
+		var so_user_option = $('input[name="so_mode_choose"]:checked').val();
 		var url0 = [];
 		var url1 = '';
 		var url_create = '/social_sensing/create_task/?';
-	    key_words = $('#so_keywords').val();
-	 	key_words = key_words.split(/\s+/g);
+	    a['keywords'] = $('#so_keywords').val();
+	 	a['keywords'] = a['keywords'].split(/\s+/g);
 	    $('[name="keys_list_option"]:checked').each(function(){
-		  	    key_words.push($(this).val());
+		  	    a['keywords'].push($(this).val());
 		  	});
 	    if (so_user_option == 'so_all_users'){
 	    	a['social_sensors'] = '';
-	    }
-	    else{              //single_user or multi_user with extension
-	    	var group_names = [];
+	    }else{              //single_user or multi_user with extension
+	    	a['social_sensors'] = [];
 		  	$('[name="so_user_list_option"]:checked').each(function(){
-		  	    group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
+		  	    //group_names.push($(this).parent().prev().prev().prev().prev().prev().prev().text());
+		  	     a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().prev().attr('name'));
 		  	});
 		}
+		console.log(a['social_sensors']);
 		for(var k in a){
 			if(a[k]){
 				url0.push(k +'='+a[k]);

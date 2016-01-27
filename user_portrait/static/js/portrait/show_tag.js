@@ -37,7 +37,7 @@ Draw_tag:function(data){
 	$('#ptag').empty();
 	var html = '';
 	for(i=0;i<item.length;i++){
-		html += '<div class="tagClo fleft" ><span class="ptagName" style="color:red;">'+attributeNames[i]+'</span>:<span class="tagbg"><span>'+attributeValues[i]+'<span><a id="delIcon"></a></span></div>';	
+		html += '<div class="tagClo fleft" ><span class="ptagName" style="color:red;">'+attributeNames[i]+'</span>：<span class="tagbg"><span>'+attributeValues[i]+'<span><a id="delIcon"></a></span></div>';	
 	}
 	$('#ptag').append(html);
   }

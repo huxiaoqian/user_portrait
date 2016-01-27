@@ -16,7 +16,7 @@ def save_group_results(results):
     if not flag:
         es.indices.create(index=index_name, ignore=400)
     
-    es.index(index_name, doc_type=index_type, body=results, id=results['task_name'])
+    es.index(index=index_name, doc_type=index_type, body=results, id=results['task_name'])
     return status
 
 

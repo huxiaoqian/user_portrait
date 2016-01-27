@@ -113,8 +113,7 @@ Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
 //url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
 //call_ajax_request(url_content,th_draw_content);
 url_think = '/attribute/tendency_psy/?uid='+uid;
-call_ajax_request(url_think,draw_think);
-call_ajax_request(url_think,draw_trend);
+call_ajax_request(url_think,draw_think_trend);
 //call_ajax_request(url_think,draw_more_psy);
 
 
@@ -239,7 +238,10 @@ function emotions(data){
             
     )
 }
-  
+function draw_think_trend(data){
+    draw_think(data);
+    draw_trend(data);
+}
 function draw_think(data){
     console.log(data['description']);
     // if(items==null){
