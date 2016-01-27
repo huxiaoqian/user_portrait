@@ -105,17 +105,17 @@ def get_task_detail_2(task_name, keywords, ts):
         for item in burst_time_list:
             if int(item[1]) == int(signal_count_varition):
                 weibo_variation_count += 1
-                weibo_variation_time.append([ts2date(item[0]), total_number_list[item[1]]])
+                weibo_variation_time.append([ts2date_min(item[0]), total_number_list[item[1]]])
             elif int(item[1]) == int(signal_sentiment_varition):
                 sentiment_variation_count += 1
-                sentiment_variation_time.append([ts2date(item[0]), negetive_sentiment_list[item[1]]])
+                sentiment_variation_time.append([ts2date_min(item[0]), negetive_sentiment_list[item[1]]])
             else:
                 weibo_variation_count += 1
-                weibo_variation_time.append([ts2date(item[0]), total_number_list[item[1]]])
+                weibo_variation_time.append([ts2date_min(item[0]), total_number_list[item[1]]])
                 sentiment_variation_count += 1
-                sentiment_variation_time.append([ts2date(item[0]), negetive_sentiment_list[item[1]]])
+                sentiment_variation_time.append([ts2date_min(item[0]), negetive_sentiment_list[item[1]]])
                 common_variation_count += 1
-                common_variation_time.append(ts2date(item[0]))
+                common_variation_time.append(ts2date_min(item[0]))
 
     if weibo_variation_count == 0 and sentiment_variation_count == 0:
         warning_conclusion = CURRENT_WARNING_DICT['0']

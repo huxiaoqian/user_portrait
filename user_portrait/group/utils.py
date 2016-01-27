@@ -10,7 +10,7 @@ from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type,\
                         es_flow_text, flow_text_index_name_pre, flow_text_index_type,\
                         es_user_profile, profile_index_name, profile_index_type,\
-                        es_group_result
+                        es_group_result, group_index_name, group_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.parameter import MAX_VALUE
 
@@ -120,9 +120,9 @@ def search_task(task_name, submit_date, state, status):
     if condition_num > 0:
         query.append({'term':{'task_type': 'analysis'}})
         try:
-            source = es.search(
-                    index = 'group_manage',
-                    doc_type = 'group',
+            source = es_group_result.search(
+                    index = group_index_name,
+                    doc_type = group_index_type,
                     body = {
                         'query':{
                             'bool':{
@@ -138,8 +138,8 @@ def search_task(task_name, submit_date, state, status):
     else:
         query.append({'term':{'task_type': 'analysis'}})
         source = es.search(
-                index = 'group_manage',
-                doc_type = 'group',
+                index = group_index_name,
+                doc_type = group_index_type,
                 body = {
                     'query':{'bool':{
                         'must':query
@@ -154,13 +154,82 @@ def search_task(task_name, submit_date, state, status):
         task_dict_list = source['hits']['hits']
     except:
         return None
-    print 'step yse'
+    print 'step yes'
     result = []
     #print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:
         result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], task_dict['_source']['state'], task_dict['_source']['status']])
     
     return result
+
+
+#search group analysis result
+#input: task_name, module
+#output: module_result
+def search_group_result(task_name, module):
+    result = {}
+    #step1:identify the task_name exist
+    try:
+        source = es_group_result.get(index=group_index_name, doc_type=group_index_type, \
+                id=task_name)['_source']
+    except:
+        return 'group task is not exist'
+    #step2: identify the task status=1(analysis completed)
+    status = source['status']
+    if status != 1:
+        return 'group task is not completed'
+    #step3:get module result
+    if module == 'overview':
+        result['task_name'] = source['task_name']
+        result['submit_date'] = ts2datetime(source['submit_date'])
+        result['state'] = source['state']
+        result['submit_user'] = source['submit_user']
+        result['density_star'] = soure['density_star']
+        result['activeness_star'] = source['activeness_star']
+        result['influence_star'] = source['influence_star']
+        result['importance_star'] = source['importance_star']
+        result['tag_vector'] = source['tag_vector']
+    elif module == 'basic':
+        result['gender'] = source['gender']
+        result['verified'] = source['verified']
+        result['user_tag'] = source['user_tag']
+        result['count'] = source['count']
+    elif module == 'activity':
+        result['activity_trend'] = json.loads(source['activity_trend'])
+        result['activity_time'] = json.loads(source['activity_time'])
+        result['activity_geo_disribution'] = json.loads(source['activity_geo_distribution'])
+        result['activiy_geo_vary'] = json.loads(source['activity_geo_vary'])
+        result['activeness_trend'] = json.loads(source['activeness'])
+        result['activeness_his'] = json.loas(source['activeness_his'])
+        result['activeness_description'] = source['activeness_description']
+    elif module == 'preference':
+        result['keywords'] = json.loads(source['keywords'])
+        result['hashtag'] = json.loads(source['hashtag'])
+        result['sentiment_word'] = json.loads(source['sentiment_word'])
+        result['domain'] = json.loads(source['domain'])
+        result['topic'] = json.loads(source['topic'])
+    elif module == 'influence':
+        result['influence_trend'] = json.loads(source['influence'])
+        result['influence_in_user'] = json.loads(source['influence_in_user'])
+        result['influence_out_user'] = json.loads(source['influence_out_user'])
+    elif module == 'social':
+        result['in_density'] = source['in_density']
+        result['in_inter_user_count'] = source['in_inter_user_count']
+        result['in_inter_weibo_count'] = source['in_inter_weibo_count']
+        result['social_in_record'] = json.loads(source['social_in_record'])
+        result['out_inter_user_ratio'] = source['out_inter_user_ratio']
+        result['out_inter_weibo_ratio'] = source['out_inter_weibo_ratio']
+        result['social_out_record'] = json.loads(source['social_out_record'])
+        result['density_description'] = source['density_description']
+        result['mention'] = source['mention']
+    elif module == 'think':
+        result['sentiment_trend'] = json.loads(source['sentiment_trend'])
+        result['main_negative'] = json.loads(source['main_negative'])
+        
+    return result
+
+
+
 
 #show group results
 def get_group_results(task_name, module):
@@ -286,39 +355,7 @@ def get_group_results(task_name, module):
                     weibolink = None
                 result_item.append((number, mid, weibolink))
             user_influence_result.append(result_item)
-        '''
-        origin_max_retweeted_number =es_result['origin_max_retweeted_number']
-        origin_max_retweeted_id = es_result['origin_max_retweeted_id']
-        origin_max_retweeted_user = es_result['origin_max_retweeted_user']
-        if origin_max_retweeted_id != 0 and origin_max_retweeted_user != 0:
-            origin_max_retweeted_weibolink = weiboinfo2url(origin_max_retweeted_user, origin_max_retweeted_id)
-        else:
-            origin_max_retweeted_weibolink = None
-
-        origin_max_comment_number = es_result['origin_max_comment_number']
-        origin_max_comment_id = es_result['origin_max_comment_id']
-        origin_max_comment_user = es_result['origin_max_comment_user']
-        if origin_max_comment_id !=0 and origin_max_comment_user != 0:
-            origin_max_comment_weibolink = weiboinfo2url(origin_max_comment_user, origin_max_comment_id)
-        else:
-            origin_max_comment_weibolink = None
         
-        retweet_max_retweeted_number = es_result['retweet_max_retweeted_number']
-        retweet_max_retweeted_id = es_result['retweet_max_retweeted_id']
-        retweet_max_retweeted_user = es_result['retweet_max_retweeted_user']
-        if retweet_max_retweeted_id != 0 and retweet_max_retweeted_user != 0:
-            retweet_max_retweeted_weibolink = weiboinfo2url(retweet_max_retweeted_user, retweet_max_retweeted_id)
-        else:
-            retweet_max_retweeted_weibolink = None
-
-        retweet_max_comment_number = es_result['retweet_max_comment_number']
-        retweet_max_comment_id = es_result['retweet_max_comment_id']
-        retweet_max_comment_user = es_result['retweet_max_comment_user']
-        if retweet_max_comment_id != 0 and retweet_max_comment_user != 0:
-            retweet_max_comment_weibolink = weiboinfo2url(retweet_max_comment_user, retweet_max_comment_id)
-        else:
-            retweet_max_comment_weibolink = None
-        '''
         result = [importance_dis, activeness_his, influence_his, user_influence_result]
     #print result
     return result
@@ -395,6 +432,16 @@ def delete_group_results(task_name):
         return False
     '''
     return True
+
+
+#show group user geo track
+#input: uid
+#output: results [geo1,geo2,..]
+def get_group_user_track(uid):
+    results = []
+    return results
+
+
 
 #show group members weibo for influence content
 #input: uid, timestamp_from, timestamp_to
