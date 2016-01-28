@@ -184,15 +184,15 @@ def search_group_results(task_name, module):
         result['submit_date'] = ts2datetime(source['submit_date'])
         result['state'] = source['state']
         result['submit_user'] = source['submit_user']
-        result['density_star'] = soure['density_star']
+        result['density_star'] = source['density_star']
         result['activeness_star'] = source['activeness_star']
         result['influence_star'] = source['influence_star']
         result['importance_star'] = source['importance_star']
-        result['tag_vector'] = source['tag_vector']
+        result['tag_vector'] = json.loads(source['tag_vector'])
     elif module == 'basic':
-        result['gender'] = source['gender']
-        result['verified'] = source['verified']
-        result['user_tag'] = source['user_tag']
+        result['gender'] = json.loads(source['gender'])
+        result['verified'] = json.loads(source['verified'])
+        result['user_tag'] = json.loads(source['user_tag'])
         result['count'] = source['count']
     elif module == 'activity':
         result['activity_trend'] = json.loads(source['activity_trend'])
@@ -200,7 +200,7 @@ def search_group_results(task_name, module):
         result['activity_geo_disribution'] = json.loads(source['activity_geo_distribution'])
         result['activiy_geo_vary'] = json.loads(source['activity_geo_vary'])
         result['activeness_trend'] = json.loads(source['activeness'])
-        result['activeness_his'] = json.loas(source['activeness_his'])
+        result['activeness_his'] = json.loads(source['activeness_his'])
         result['activeness_description'] = source['activeness_description']
     elif module == 'preference':
         result['keywords'] = json.loads(source['keywords'])
@@ -214,8 +214,8 @@ def search_group_results(task_name, module):
         result['influence_out_user'] = json.loads(source['influence_out_user'])
     elif module == 'social':
         result['in_density'] = source['in_density']
-        result['in_inter_user_count'] = source['in_inter_user_count']
-        result['in_inter_weibo_count'] = source['in_inter_weibo_count']
+        result['in_inter_user_ratio'] = source['in_inter_user_ratio']
+        result['in_inter_weibo_ratio'] = source['in_inter_weibo_ratio']
         result['social_in_record'] = json.loads(source['social_in_record'])
         result['out_inter_user_ratio'] = source['out_inter_user_ratio']
         result['out_inter_weibo_ratio'] = source['out_inter_weibo_ratio']
