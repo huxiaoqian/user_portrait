@@ -8,7 +8,7 @@ from flask import Blueprint, url_for, render_template, request,\
                   abort, flash, session, redirect, send_from_directory
 from utils import submit_task, search_task, get_group_results, get_group_list,\
        delete_group_results, get_social_inter_content, search_group_sentiment_weibo,\
-       get_group_user_track, search_group_results
+       get_group_user_track, search_group_results, get_influence_content
 from user_portrait.global_config import UPLOAD_FOLDER, ALLOWED_EXTENSIONS
 from user_portrait.search_user_profile import es_get_source
 from user_portrait.time_utils import ts2datetime
@@ -113,7 +113,7 @@ def ajax_get_influence_content():
     if int(timestamp_from) >= int(timestamp_to):
         return 'timestamp range invalid'
     else:
-        results = get_influence_content(uid, timestamp_from, timestamp_to)
+        results = get_influence_content(uid, int(timestamp_from), int(timestamp_to))
 
     return json.dumps(results)
 
@@ -147,7 +147,7 @@ def ajax_group_sentiment_weibo():
     task_name = request.args.get('task_name', '')
     start_ts = request.args.get('start_ts', '')
     start_ts = int(start_ts)
-    sentiment_type = request.args.get('sentiment_type', '')
+    sentiment_type = request.args.get('sentiment', '')
     results = search_group_sentiment_weibo(task_name, start_ts, sentiment_type)
     if not results:
         results = []

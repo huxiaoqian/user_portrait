@@ -11,8 +11,8 @@ from user_portrait.global_utils import es_user_portrait, portrait_index_name, po
                         es_flow_text, flow_text_index_name_pre, flow_text_index_type,\
                         es_user_profile, profile_index_name, profile_index_type,\
                         es_group_result, group_index_name, group_index_type
-from user_portrait.time_utils import ts2datetime, datetime2ts
-from user_portrait.parameter import MAX_VALUE
+from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
+from user_portrait.parameter import MAX_VALUE, DAY
 
 index_name = 'group_result'
 index_type = 'group'
@@ -488,28 +488,16 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
     #iter date to search flow_text
     iter_result = []
     for range_item in new_range_dict_list:
+        print 'range_item:', range_item
         range_from_ts = range_item['range']['timestamp']['gte']
         range_from_date = ts2datetime(range_from_ts)
         flow_text_index_name = flow_text_index_name_pre + range_from_date
-        query_body={
-            'query':{
-                'filtered':{
-                    'filter':{
-                        'bool':{
-                            'must':{[
-                                {'term':{'uid': uid}},
-                                range_item
-                                ]
-                                }
-                            }
-                        }
-                    }
-                },
-            'sort':[{'timestamp':{'order': 'asc'}}]
-            }
+        query = []
+        query.append({'term':{'uid':uid}})
+        query.append(range_item)
         try:
             flow_text_exist = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
-                                        body=query_body)['hits']['hits']
+                    body={'query':{'bool':{'must': query}}, 'sort':[{'timestamp':'asc'}]})['hits']['hits']
         except:
             flow_text_exist = []
         iter_result.extend(flow_text_exist)
@@ -534,41 +522,47 @@ def get_social_inter_content(uid1, uid2):
     #search weibo list
     now_ts = int(time.time())
     now_date_ts = datetime2ts(ts2datetime(now_ts))
+    #test
+    now_date_ts = datetime2ts('2013-09-08')
     #uid2uname
-    uid2unam = {}
-    try:
-        portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
-                                body={'ids': [uid1, uid2]}, _source=False, fileds=['uid', 'uname'])['docs']
-    except:
-        portrait_result = []
+    uid2uname = {}
+    #try:
+    portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
+                                body={'ids': [uid1, uid2]}, _source=False, fields=['uid', 'uname'])['docs']
+    #except:
+    #    portrait_result = []
+    
     for item in portrait_result:
         uid = item['_id']
         if item['found'] == True:
             uname = item['uname']
             uid2uname[uid] = uname
+        else:
+            uid2uname[uid] = 'unknown'
     #iter date to search weibo list
     for i in range(7, 0, -1):
         iter_date_ts = now_date_ts - i*DAY
         iter_date = ts2datetime(iter_date_ts)
         flow_text_index_name = flow_text_index_name_pre + str(iter_date)
-        query = [{'bool':{'should':[{'bool':{'must':[{'term': {'uid': uid1}}, {'term':{'directed_uid':uid2}}]}}, \
-                                                {'bool':{'must':[{'term': {'uid': uid2}}, {'term':{'directed_uid':uid1}}]}}]}}]
+        query = []
+        query.append({'bool':{'must':[{'term':{'uid':uid1}}, {'term':{'directed_uid': int(uid2)}}]}})
+        query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid2)}}]}})
         try:
             flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
-                                    body={'query': query, 'sort':[{'timestamp':{'order': 'asc'}}]})['hits']['hits']
+                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}]})['hits']['hits']
         except:
             flow_text_result = []
         for flow_text in flow_text_result:
             source = flow_text['_source']
             weibo = {}
-            weibo['timestamp'] = flow_text['timestamp']
-            weibo['ip'] = flow_text['ip']
-            weibo['geo'] = flow_text['geo']
-            weibo['text'] = '\t'.join(flow_text['text'].split('&'))
-            weibo['uid'] =  flow_text['uid']
+            weibo['timestamp'] = source['timestamp']
+            weibo['ip'] = source['ip']
+            weibo['geo'] = source['geo']
+            weibo['text'] = '\t'.join(source['text'].split('&'))
+            weibo['uid'] =  source['uid']
             weibo['uname'] = uid2uname[weibo['uid']]
-            weibo['directed_uid'] = flow_text['directed_uid']
-            weibo['directed_uname'] = uid2uname[flow_text['directed_uid']]
+            weibo['directed_uid'] = str(source['directed_uid'])
+            weibo['directed_uname'] = uid2uname[str(source['directed_uid'])]
             weibo_list.append(weibo)
 
     return weibo_list
@@ -581,13 +575,13 @@ def search_group_sentiment_weibo(task_name, start_ts, sentiment):
     #step1:get task_name uid
     try:
         group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
-                        id=task_name, _source=False, fields=['uid_list'])['hits']['hits']
+                        id=task_name, _source=False, fields=['uid_list'])
     except:
         group_result = {}
     if group_result == {}:
         return 'task name invalid'
     try:
-        uid_list = json.loads(group_result['fields']['uid_list'][0])
+        uid_list = group_result['fields']['uid_list']
     except:
         uid_list = []
     if uid_list == []:
@@ -596,7 +590,7 @@ def search_group_sentiment_weibo(task_name, start_ts, sentiment):
     uid2uname = {}
     try:
         user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type,\
-                        body={'ids':uid_list}, _source=False, fields=['uname'])['hits']['hits']
+                        body={'ids':uid_list}, _source=False, fields=['uname'])['docs']
     except:
         user_portrait_result = []
     for item in user_portrait_result:
@@ -604,32 +598,32 @@ def search_group_sentiment_weibo(task_name, start_ts, sentiment):
         if item['found']==True:
             uname = item['fields']['uname'][0]
             uid2uname[uid] = uname
-    
     #step4:iter date to search weibo
-    now_ts = int(time.time())
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
     weibo_list = []
-    for i in range(7, 0, -1):
-        iter_date_ts = now_date_ts - i*DAY
-        iter_date = ts2datetime(iter_date_ts)
-        flow_text_index_name = flow_text_index_name_pre + str(iter_date)
-        #step4: get query_body
-        query_body = [{'terms': {'uid': uid_list}}, {'term':{'sentiment': sentiment}}]
+    iter_date = ts2datetime(start_ts)
+    flow_text_index_name = flow_text_index_name_pre + str(iter_date)
+    #step4: get query_body
+    query_body = [{'terms': {'uid': uid_list}}, {'term':{'sentiment': sentiment}}, \
+                {'range':{'timestamp':{'gte':start_ts, 'lt': start_ts+DAY}}}]
+    try:
+        flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
+                body={'query':{'bool':{'must': query_body}}, 'sort': [{'timestamp':{'order':'asc'}}], 'size': MAX_VALUE})['hits']['hits']
+    except:
+        flow_text_result = []
+    for flow_text_item in flow_text_result:
+        source = flow_text_item['_source']
+        weibo = {}
+        weibo['uid'] = source['uid']
+        weibo['uname'] = uid2uname[weibo['uid']]
+        weibo['ip'] = source['ip']
         try:
-            flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
-                            body={'query':{'bool':{'must': query_body}}, 'sort': [{'timestamp':{'order':'asc'}}]})['hits']['hits']
-        except:
-            flow_text_result = []
-        for flow_text_item in flow_text_result:
-            source = flow_text_item['_source']
-            weibo = {}
-            weibo['uid'] = source['uid']
-            weibo['uname'] = uid2uname[weibo['uid']]
-            weibo['ip'] = source['ip']
             weibo['geo'] = '\t'.join(source['geo'].split('&'))
-            weibo['text'] = source['text']
-            weibo['timestamp'] = source['timestamp']
-            weibo_list.append(weibo)
+        except:
+            weibo['geo'] = ''
+        weibo['text'] = source['text']
+        weibo['timestamp'] = source['timestamp']
+        weibo['sentiment'] = source['sentiment']
+        weibo_list.append(weibo)
 
     return weibo_list
 
