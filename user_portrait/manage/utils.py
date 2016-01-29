@@ -2,6 +2,7 @@
 import sys
 import time
 import json
+import math
 #test
 '''
 reload(sys)
@@ -14,8 +15,9 @@ from time_utils import ts2datetime, datetime2ts,ts2date
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
-from user_portrait.global_utils import es_user_profile
+from user_portrait.global_utils import es_user_profile, profile_index_name, profile_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts
+from user_portrait.parameter import DAY
 
 #test
 portrait_index_name = 'user_portrait_1222'
@@ -49,16 +51,17 @@ def get_evaluate_max():
 #output: results
 def compare_user_portrait_new(uid_list):
     try:
-        user_result = es.mget(index=portrait_index_name, doc_type=portrait_index_type,\
+        user_portrait_result = es.mget(index=portrait_index_name, doc_type=portrait_index_type,\
                 body={'ids':uid_list})['docs']
     except:
-        user_result = []
-    if user_result == []:
+        user_portrait_result = []
+    if user_portrait_result == []:
         return 'uid_list not exist'
     #get max evaluate:
     max_result = get_evaluate_max()
+    user_result = {}
     #iter to get user attr
-    for item in user_result:
+    for item in user_portrait_result:
         if item['found'] != True:
             return 'uid_list not exist'
         uid = item['_id']
@@ -176,7 +179,7 @@ def compare_user_activity(uid_list):
     # test
     ts = datetime2ts('2013-09-08')
     for i in range(1,8):
-        ts = ts - 24*3600
+        ts = ts - DAY
         hash_name = 'activity_' + str(ts)
         r_result = r_cluster.hmget(hash_name, uid_list)
         if r_result:
@@ -229,9 +232,9 @@ def compare_user_activity(uid_list):
 # compare the user profile
 def compare_user_profile(uid_list):
     results = {}
-    index_name = 'weibo_user'
-    index_type = 'user'
-    search_results = es_user_profile.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
+
+    search_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type,\
+            body={'ids':uid_list})['docs']
     #print 'results:', search_results
     for result in search_results:
         uid = result['_id']

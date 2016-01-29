@@ -5,6 +5,7 @@ import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import compare_user_portrait, compare_user_activity, compare_user_profile
+from utils import compare_user_portrait_new
 from user_portrait.time_utils import datetime2ts
 from imagine import imagine
 
@@ -18,6 +19,7 @@ def ajax_compare_user_portrait():
     uid_list = uid_string.split(',')
     if uid_list:
         results = compare_user_portrait(uid_list)
+        #results = compare_user_portrait_new(uid_list)
     if results:
         return json.dumps(results)
     else:
