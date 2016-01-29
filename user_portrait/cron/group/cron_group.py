@@ -309,12 +309,12 @@ def get_attr_portrait(uid_list):
     #tag vector---main domain
     sort_domain_ratio = sorted(domain_ratio.items(), key=lambda x:x[1], reverse=True)
     main_domain = sort_domain_ratio[0][0]
-    tag_vector_result['domain'] = json.dumps([u'主要领域', main_domain])
+    tag_vector_result['domain'] = [u'主要领域', main_domain]
     results['domain'] = json.dumps(sort_domain_ratio)
     #tag vector---main topic
     sort_topic_ratio = sorted(topic_ratio.items(), key=lambda x:x[1], reverse=True)
     main_topic = sort_topic_ratio[0][0]
-    tag_vector_result['topic'] = json.dumps([u'主要话题', main_topic])
+    tag_vector_result['topic'] = [u'主要话题', main_topic]
     results['topic'] = json.dumps(sort_topic_ratio)
     results['activity_geo_distribution'] = json.dumps(activity_geo_distribution_date)
     results['activity_geo_vary'] = json.dumps(activity_geo_vary)
@@ -323,16 +323,16 @@ def get_attr_portrait(uid_list):
     sort_all_activity_geo = sorted(all_activity_geo.items(), key=lambda x:x[1], reverse=True)
     main_activity_geo = sort_all_activity_geo[0][0]
     #tag vector---main activity geo
-    tag_vector_result['activity_geo'] = json.dumps([u'主要分布城市', main_activity_geo])
+    tag_vector_result['activity_geo'] = [u'主要分布城市', main_activity_geo]
     sort_keyword_ratio = sorted(keyword_ratio.items(), key=lambda x:x[1], reverse=True)[:GROUP_KEYWORD_COUNT]
     results['keywords'] = json.dumps(sort_keyword_ratio)
     #tag vector---main hashtag
     sort_hashtag_dict = sorted(hashtag_ratio.items(), key=lambda x:x[1], reverse=True)[:GROUP_HASHTAG_COUNT]
     results['hashtag'] = json.dumps(sort_hashtag_dict)
     if len(sort_hashtag_dict) != 0:
-        tag_vector_result['hashtag'] = json.dumps([u'hastag', sort_hashtag_dict[0][0]])
+        tag_vector_result['hashtag'] = [u'hastag', sort_hashtag_dict[0][0]]
     else:
-        tag_vector_result['hashtag'] = json.dumps([u'hashtag', '暂无'])
+        tag_vector_result['hashtag'] = [u'hashtag', '暂无']
     return results, tag_vector_result
 
 
@@ -1199,7 +1199,7 @@ def get_attr_sentiment_trend(uid_list):
     results['main_negative'] = json.dumps(sort_main_negative_dict)
     #tag vector---main negative
     tag_vector_result = {}
-    tag_vector_result['main_negative_sentiment'] = json.dumps([u'主要消极情绪', sort_main_negative_dict[0][0]])
+    tag_vector_result['main_negative_sentiment'] = [u'主要消极情绪', sort_main_negative_dict[0][0]]
     return results, tag_vector_result
 
 
@@ -1718,11 +1718,11 @@ def compute_group_task():
     results['uid_list'] = uid_list
     results['submit_date'] = submit_date
     results['state'] = task['state']
+    results['submit_user'] = task['submit_user']
     results = dict(results, **attr_in_portrait)
     #step2: get attr from social es----es_retweet&es_comment
     attr_in_social = get_attr_social(uid_list, uid2uname)
     results = dict(results, **attr_in_social)
-    print 'attr_in_social:', attr_in_social
     #step3: get attr activity trend and activity_time----redis for activity time
     attr_weibo_trend = get_attr_trend(uid_list) # {'activity_trend':[], 'activity_time':{}}
     results = dict(results, **attr_weibo_trend)
@@ -1735,11 +1735,10 @@ def compute_group_task():
     tag_vector_result = dict(tag_vector_result, **sentiment_tag_vector)
     #step6: get influence user
     influence_user_result = get_influence_user(uid_list)
-    result = dict(results, **influence_user_result)
+    results = dict(results, **influence_user_result)
     #step7: get user sentiment words
     user_sentiment_words = get_attr_sentiment_word(uid_list)
     results = dict(results, **user_sentiment_words)
-    print 'user_sentiment_words:', user_sentiment_words
     results['tag_vector'] = json.dumps(tag_vector_result)
     '''
     #step8: get general evaluate index---activeness/influence/importance/tightness
@@ -1777,6 +1776,7 @@ if __name__=='__main__':
     '''
     input_data['submit_date'] = datetime2ts('2013-09-08')
     input_data['state'] = u'关注的媒体'
+    input_data['submit_user'] = 'admin'
     #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)
     result = compute_group_task()
