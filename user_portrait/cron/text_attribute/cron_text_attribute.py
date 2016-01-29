@@ -18,7 +18,7 @@ from user_profile import get_profile_information
 from save_utils import attr_hash, save_user_results
 from config import topic_en2ch_dict, domain_en2ch_dict
 from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
-
+from character_input import character_input # use to prepare input for attribute---character
 # compute user event
 from event.event_user import event_classfiy
 # compute user domain
