@@ -363,7 +363,7 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 	var markpoint = data[4];
 	var col_markpoint = data[5];
 	var myChart = echarts.init(document.getElementById(div_name)); 
-	option = {  
+	var option = {  
 	    tooltip : {
 	        trigger: 'axis',
 	        show : true,
@@ -457,7 +457,6 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+sensi_click_time;
 				    $('#sensi_weibo').css("display", 'block');
 					Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
-				    //console.log(num_line_url);
 				}
 			}
 
@@ -465,20 +464,22 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 	});
 
 	// myChart.addMarkPoint(
- //    	[0, {
- //    		    	data :markpoint,
- //    		    	clickable: true,
- //    		    	symbolSize:5,
- //    		    	symbol: 'arrow',
- //    		    	itemStyle:{
- //    		    		normal: {
- //    		                color: 'blue'
- //    		            }
- //    		    	},
- //    		    	tooltip:{
- //    		    		show : false
- //    		    	}
- //    		    }]);
+ //    	0, {
+	//     	data :markpoint,
+	//     	clickable: true,
+	//     	symbolSize:5,
+	//     	symbol: 'arrow',
+	//     	itemStyle:{
+	//     		normal: {
+	//                 color: 'red'
+	//             }
+	//     	},
+	//     	tooltip:{
+	//     		show : false
+	//     	}
+ //    	  }
+    	
+ //    );
 
 	// 为echarts对象加载数据 
     myChart.setOption(option);                  
@@ -600,7 +601,6 @@ function draw_num_line_charts(data, div_name, legend_data){
 	var line3 = data[3];
 	var line4 = data[4];
 	var markpoint  = data[5];
-	console.log(markpoint[1])
 	var myChart = echarts.init(document.getElementById(div_name)); 
 	option = {  
 	    tooltip : {
@@ -843,6 +843,41 @@ function show_warning_time_all(div_name, data){
 		$('#' + div_name).append(html);	
 }
 
+//高亮显示文本
+function Highlight() 
+{ 
+	this.KeyWords = null; 
+	 
+	// 格式化关键词 
+	this.formatKeyword = function(content, keyword) 
+	{ 
+	    keyword = keyword.replace(/(^\s*)|(\s*$)/g, ""); 
+	    if(keyword == '') 
+	        return content; 
+	    var reg = new RegExp('('+keyword+')', 'gi'); 
+	    return content.replace(reg, '<span style="color:red"><b>$1</b></span>'); 
+	} 
+	 
+	// 重绘内容区域 
+	this.refreshContent = function(contentID) 
+	{ 
+	    var content = document.getElementById(contentID).innerHTML; 
+	    for(var i = 0; i < keywords.length; i ++) 
+	    { 
+	        var strKey = keywords[i].toString(); 
+	        var arrKey = strKey.split(','); 
+	        for(var j = 0; j < arrKey.length; j ++) 
+	        { 
+	            var key = arrKey[j]; 
+	            content = this.formatKeyword(content, key); 
+	        } 
+	    } 
+	    document.getElementById(contentID).innerHTML = content; 
+	} 
+}
+
+
+
 var num_legend = ['总数','原创', '转发', '评论'];
 var mood_legend = ['消极','积极', '中性'];
 function social_sensing_all(data){
@@ -917,6 +952,11 @@ function social_sensing_all(data){
 
 		}
 	});	
+	//高亮文本
+    var keywords = ['这','啊','呀','喂']; 
+    var hl = new Highlight(); 
+    hl.keywords = keywords; // 这里是关键词的定义 
+    hl.refreshContent('sensi_related_weibo'); // 这里是要格式化内容的元素Id号 
 
 
 	//参与人表格
