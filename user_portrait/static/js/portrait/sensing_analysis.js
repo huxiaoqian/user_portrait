@@ -300,7 +300,7 @@ function page_group_weibo(start_row,end_row,data, sub_div_name){
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail" >';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: 积极'+ '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容:&nbsp;&nbsp;' + text + '</p>';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: 积极'+ '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容:&nbsp;&nbsp;<span class="weibo_text">' + text + '<span></p>';
         html += '<div class="weibo_info"style="width:100%">';
         html += '<div class="weibo_pz">';
         html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
@@ -325,6 +325,13 @@ function page_group_weibo(start_row,end_row,data, sub_div_name){
     html += '</div>';   
     html += '</div>'; 
     $('#'+sub_div_name).append(html);
+
+	//高亮文本
+    var keywords = ['怎么了','啊','呀','喂']; 
+    // var hl = new Highlight(); 
+    // hl.keywords = keywords; // 这里是关键词的定义 
+    refreshContent('weibo_text', keywords); // 这里是要格式化内容的元素Id号 
+
     //$('#'+div_name+ ' .related_weibo').append('html');
 
 }
@@ -457,6 +464,7 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+sensi_click_time;
 				    $('#sensi_weibo').css("display", 'block');
 					Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
+					
 				}
 			}
 
@@ -844,12 +852,11 @@ function show_warning_time_all(div_name, data){
 }
 
 //高亮显示文本
-function Highlight() 
-{ 
-	this.KeyWords = null; 
+ 
+	//this.KeyWords = null; 
 	 
 	// 格式化关键词 
-	this.formatKeyword = function(content, keyword) 
+	function formatKeyword(content, keyword) 
 	{ 
 	    keyword = keyword.replace(/(^\s*)|(\s*$)/g, ""); 
 	    if(keyword == '') 
@@ -859,26 +866,30 @@ function Highlight()
 	} 
 	 
 	// 重绘内容区域 
-	this.refreshContent = function(contentID) 
+	function refreshContent(contentID, keywords) 
 	{ 
-	    var content = document.getElementById(contentID).innerHTML; 
-	    for(var i = 0; i < keywords.length; i ++) 
-	    { 
-	        var strKey = keywords[i].toString(); 
-	        var arrKey = strKey.split(','); 
-	        for(var j = 0; j < arrKey.length; j ++) 
-	        { 
-	            var key = arrKey[j]; 
-	            content = this.formatKeyword(content, key); 
-	        } 
-	    } 
-	    document.getElementById(contentID).innerHTML = content; 
+		$('#sensi_related_weibo .' + contentID).each(function(){
+			var content = $(this).text() //document.getElementById(contentID).innerHTML; 
+		    console.log(content);
+		    for(var i = 0; i < keywords.length; i ++) 
+		    { 
+		        var strKey = keywords[i].toString(); 
+		        var arrKey = strKey.split(','); 
+		        for(var j = 0; j < arrKey.length; j ++) 
+		        { 
+		            var key = arrKey[j]; 
+		            content = formatKeyword(content, key); 
+		        } 
+		    } 
+		    console.log('after', content);
+		    $(this).append(content);
+		});
+
+	    //document.getElementById(contentID).innerHTML = content; 
 	} 
-}
-
-
 
 var num_legend = ['总数','原创', '转发', '评论'];
+var sensi_legend = ['总数','原创', '转发', '评论'];
 var mood_legend = ['消极','积极', '中性'];
 function social_sensing_all(data){
 
@@ -904,6 +915,7 @@ function social_sensing_all(data){
 	num_line_data[3] = data.retweeted_weibo_list;
 	num_line_data[4] = data.comment_weibo_list;
 	num_line_data[5] = deal_point(data.variation_distribution[0]);
+	num_line_data[6] = deal_point(data.variation_distribution[3]);
 	draw_num_line_charts(num_line_data, 'num_line_charts', num_legend);
 
 	//情绪走势图
@@ -913,17 +925,19 @@ function social_sensing_all(data){
 	mood_line_data[2] = data.neutral_sentiment_list;
 	mood_line_data[3] = data.positive_sentiment_list;
 	mood_line_data[4] = deal_point(data.variation_distribution[1]);
-	mood_line_data[5] = deal_point(data.variation_distribution[2]);
+	mood_line_data[5] = deal_point(data.variation_distribution[3]);
 	draw_mood_line_charts(mood_line_data, 'mood_line_charts', mood_legend);
 
 	//敏感微博走势图
-	// var mood_line_data = new Array();
-	// mood_line_data[0] = data.time_series;
-	// mood_line_data[1] = data.negetive_sentiment_list;
-	// mood_line_data[2] = data.neutral_sentiment_list;
-	// mood_line_data[3] = data.positive_sentiment_list;
-	// mood_line_data[4] = deal_point(data.variation_distribution[1]);
-	draw_sensi_line_charts(mood_line_data, 'sensi_line_charts', mood_legend);
+	var sensi_line_data = new Array();
+	sensi_line_data[0] = data.time_series;
+	sensi_line_data[1] = data.sensitive_total_number_list;
+	sensi_line_data[2] = data.sensitive_origin_weibo_list;
+	sensi_line_data[3] = data.sensitive_retweeted_weibo_list;
+	sensi_line_data[4] = data.sensitive_comment_weibo_list;
+	sensi_line_data[5] = deal_point(data.variation_distribution[2]);
+	sensi_line_data[6] = deal_point(data.variation_distribution[3]);
+	draw_sensi_line_charts(sensi_line_data, 'sensi_line_charts', sensi_legend);
 
     var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
     var data1=[['人民日报2222',1,2,'2222这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
@@ -952,11 +966,7 @@ function social_sensing_all(data){
 
 		}
 	});	
-	//高亮文本
-    var keywords = ['这','啊','呀','喂']; 
-    var hl = new Highlight(); 
-    hl.keywords = keywords; // 这里是关键词的定义 
-    hl.refreshContent('sensi_related_weibo'); // 这里是要格式化内容的元素Id号 
+
 
 
 	//参与人表格
