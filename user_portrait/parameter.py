@@ -191,12 +191,14 @@ signal_brust = "1" # 事件爆发
 signal_track = "2" # 事件跟踪
 signal_count_varition = "1"
 signal_sentiment_varition = "2"
+signal_sensitive_variation = '3'
 signal_nothing_variation = ""
 finish_signal = "1"
 unfinish_signal = "0"
 SOCIAL_SENSOR_INFO = ['uid', 'uname', "photo_url", "domain", "topic_string", "importance", "influence", "activeness"]
 AGGRAGATION_KEYWORDS_NUMBER = 20
 PRE_AGGREGATION_NUMBER = 50
+WARNING_SENSITIVE_COUNT = 1000
 
 # 预警提示句
 CURRENT_WARNING_DICT = {

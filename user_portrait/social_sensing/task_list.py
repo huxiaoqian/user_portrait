@@ -47,8 +47,10 @@ def create_task_list(ts):
             task.append(item['task_name']) # task_name
             task.append(json.loads(item['social_sensors'])) # social sensors
             task.append(json.loads(item['keywords'])) # filter keywords
+            task.append(json.loads(item['sensitive_words'])) #load sensitive_words
             task.append(item['stop_time']) # stop time
             task.append(item['warning_status']) # last step status
+            task.append(item['task_type']) # task type
             task.append(ts)
             r.lpush('task_name', json.dumps(task))
             count += 1

@@ -34,7 +34,9 @@ def ajax_create_task():
     stop_time = request.args.get('stop_time', "default") #timestamp, 1234567890
     social_sensors = request.args.get("social_sensors", "") #uid_list, split with ","
     keywords = request.args.get("keywords", "") # keywords_string, split with ","
+    sensitive_words = request.args.get("sensitive_words", "") # sensitive_words, split with ","
     remark = request.args.get("remark", "")
+    create_time = request.args.get('create_time', '')
 
     exist_es = es.exists(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)
     if exist_es:
@@ -48,8 +50,9 @@ def ajax_create_task():
         task_detail["remark"] = remark
         task_detail["social_sensors"] = json.dumps(list(set(social_sensors.split(','))))
         task_detail["keywords"] = json.dumps(keywords.split(","))
+        task_detail["sensitive_words"] = json.dumps(sensitive_words.split(","))
         now_ts = int(time.time())
-        task_detail["create_at"] = now_ts
+        task_detail["create_at"] = create_time
         task_detail["warning_status"] = '0'
         task_detail["finish"] = "0" # not end the task
         task_detail["history_status"] = json.dumps([]) # ts, keywords, warning_status
@@ -191,6 +194,7 @@ def ajax_get_task_detail_info():
     task_detail = es.get(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)['_source']
     task_detail["social_sensors"] = json.loads(task_detail["social_sensors"])
     task_detail['keywords'] = json.loads(task_detail['keywords'])
+    task_detail["sensitive_words"]= json.loads(task_detail["sensitive_words"])
     history_status = json.loads(task_detail['history_status'])
     if history_status:
         temp_list = []
@@ -203,10 +207,10 @@ def ajax_get_task_detail_info():
     else:
         task_detail['history_status'] = history_status
     task_detail['social_sensors_portrait'] = []
+    portrait_detail = []
 
     if task_detail["social_sensors"]:
         search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids": task_detail["social_sensors"]})['docs']
-        portrait_detail = []
         if search_results:
             for item in search_results:
                 temp = []
@@ -216,7 +220,9 @@ def ajax_get_task_detail_info():
                             temp.append(item["_source"][iter_item].split('&'))
                         else:
                             temp.append(item["_source"][iter_item])
-                portrait_detail.append(temp)
+                    portrait_detail.append(temp)
+        if portrait_detail:
+            portrait_detail = sorted(portrait_detail, key=lambda x:x[5], reverse=True)
     task_detail['social_sensors_portrait'] = portrait_detail
 
     print task_detail
@@ -316,11 +322,10 @@ def ajax_get_keywords_list():
 @mod.route('/get_text_detail/')
 def ajax_get_text_detail():
     task_name = request.args.get('task_name','') # task_name
-    keywords = request.args.get('keywords', '') # warning keywords
-    ts = request.args.get('ts', '') # timestamp: 123456789
+    ts = int(request.args.get('ts', '')) # timestamp: 123456789
     text_type = request.args.get('text_type', '') # which line
 
-    results = get_text_detail(task_name, keywords, ts, text_type)
+    results = get_text_detail(task_name, ts, text_type)
 
     return json.dumps(results)
 

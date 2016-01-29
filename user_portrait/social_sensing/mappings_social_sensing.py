@@ -29,6 +29,22 @@ def mappings_sensing_task(task_name):
                         "type": "long",
                         "index": "no"
                     },
+                    "sensitive_origin_weibo_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "sensitive_retweeted_weibo_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "sensitive_comment_weibo_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
+                    "sensitive_weibo_total_number":{
+                        "type": "long",
+                        "index": "no"
+                    },
                     "sentiment_distribution":{
                         "type": "string",
                         "index": "no"
@@ -91,6 +107,10 @@ def manage_sensing_task():
                         "index": "not_analyzed"
                     },
                     "keywords":{
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "sensitive_words":{
                         "type": "string",
                         "index": "not_analyzed"
                     },

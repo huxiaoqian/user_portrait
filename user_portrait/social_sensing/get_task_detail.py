@@ -15,7 +15,7 @@ from user_portrait.global_utils import profile_index_name, profile_index_type, p
 from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_sensing_task
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
-from user_portrait.parameter import SOCIAL_SENSOR_INFO, signal_count_varition, signal_sentiment_varition, CURRENT_WARNING_DICT, IMPORTANT_USER_THRESHOULD
+from user_portrait.parameter import SOCIAL_SENSOR_INFO, signal_count_varition, signal_sentiment_varition, CURRENT_WARNING_DICT, IMPORTANT_USER_THRESHOULD, signal_sensitive_variation
 from user_portrait.time_utils import ts2date_min
 
 portrait_index_name = "user_portrait_1222"
@@ -28,6 +28,7 @@ def get_task_detail_2(task_name, keywords, ts):
     task_name = task_detail['task_name']
     keywords_list = json.loads(task_detail['keywords'])
     social_sensors = json.loads(task_detail['social_sensors'])
+    sensitive_words = json.loads(task_detail['sensitive_words'])
     history_status = json.loads(task_detail['history_status'])
     start_time = task_detail['create_at']
     stop_time = task_detail['stop_time']
@@ -45,6 +46,7 @@ def get_task_detail_2(task_name, keywords, ts):
                     else:
                         temp.append(item["fields"][iter_item][0])
                 portrait_detail.append(temp)
+        portrait_detail = sorted(portrait_detail, key=lambda x:x[5], reverse=True)
 
     time_series = [] # 时间
     positive_sentiment_list = [] # 情绪列表
@@ -55,6 +57,10 @@ def get_task_detail_2(task_name, keywords, ts):
     retweeted_weibo_list = []
     comment_weibo_list = []
     total_number_list = []
+    sensitive_origin_weibo_list = [] # 微博列表
+    sensitive_retweeted_weibo_list = []
+    sensitive_comment_weibo_list = []
+    sensitive_total_number_list = []
     burst_time_list = [] # 爆发时间列表
     important_user_set = set() # 重要人物列表
 
@@ -62,7 +68,7 @@ def get_task_detail_2(task_name, keywords, ts):
     for item in history_status:
         if int(item[0]) <= ts:
             time_series.append(item[0]) # 到目前为止的所有的时间戳
-    print time_series
+
     # get detail task information from es
     if time_series:
         #print time_series
@@ -82,53 +88,73 @@ def get_task_detail_2(task_name, keywords, ts):
             retweeted_weibo_list.append(item['retweeted_weibo_number'])
             comment_weibo_list.append(item['comment_weibo_number'])
             total_number_list.append(item['weibo_total_number'])
+            sensitive_origin_weibo_list.append(item["sensitive_origin_weibo_number"])
+            sensitive_retweeted_weibo_list.append(item['sensitive_retweeted_weibo_number'])
+            sensitive_comment_weibo_list.append(item['sensitive_comment_weibo_number'])
+            sensitive_total_number_list.append(item['sensitive_weibo_total_number'])
             temp_user_list = json.loads(item['important_users'])
             important_user_set = important_user_set | set(temp_user_list)
 
             burst_reason = item.get("burst_reason", "")
             if burst_reason:
-                burst_time_list.append([timestamp, count])
+                burst_time_list.append([timestamp, count, burst_reason])
             count += 1
     negetive_sentiment_list = []
     for i in range(len(time_series)):
         negetive_sentiment_list.append(sad_sentiment_list[i]+anger_sentiment_list[i])
 
-
+    ####################################################################################
     # 统计爆发原因，下相应的结论
     weibo_variation_count = 0
     weibo_variation_time = []
     sentiment_variation_count = 0
     sentiment_variation_time = []
+    sensitive_variation_count = 0
+    sensitive_variation_time = []
     common_variation_count = 0
     common_variation_time = []
     if burst_time_list:
         for item in burst_time_list:
-            if int(item[1]) == int(signal_count_varition):
+            tmp_common = 0
+            if signal_count_varition in item[2]:
                 weibo_variation_count += 1
                 weibo_variation_time.append([ts2date_min(item[0]), total_number_list[item[1]]])
-            elif int(item[1]) == int(signal_sentiment_varition):
+                tmp_common += 1
+            if signal_sentiment_varition in item[2]:
+                tmp_common += 1
                 sentiment_variation_count += 1
                 sentiment_variation_time.append([ts2date_min(item[0]), negetive_sentiment_list[item[1]]])
-            else:
-                weibo_variation_count += 1
-                weibo_variation_time.append([ts2date_min(item[0]), total_number_list[item[1]]])
-                sentiment_variation_count += 1
-                sentiment_variation_time.append([ts2date_min(item[0]), negetive_sentiment_list[item[1]]])
+            if signal_sensitive_variation in item[2]:
+                tmp_count += 1
+                sensitive_variation_count += 1
+                sensitive_variation_time.append([ts2date_min(item[0]), sensitive_total_number_list[item[1]]])
+
+            if tmp_common >= 2:
                 common_variation_count += 1
                 common_variation_time.append(ts2date_min(item[0]))
 
-    if weibo_variation_count == 0 and sentiment_variation_count == 0:
-        warning_conclusion = CURRENT_WARNING_DICT['0']
-        variation_distribution = [[], [], []]
-    elif weibo_variation_count !=0 and sentiment_variation_count == 0:
-        warning_conclusion = CURRENT_WARNING_DICT['1']
-        variation_distribution = [weibo_variation_time, [], []]
-    elif weibo_variation_count ==0 and sentiment_variation_count != 0:
-        warning_conclusion = CURRENT_WARNING_DICT['2']
-        variation_distribution = [[], sentiment_variation_time, []]
+    warning_conclusion = "不需要说明了吧"
+    variation_distribution = []
+    if weibo_variation_count:
+        variation_distribution.append(weibo_variation_time)
     else:
-        warning_conclusion = CURRENT_WARNING_DICT['3']
-        variation_distribution = [weibo_variation_time, sentiment_variation_time, common_variation_time]
+        variation_distribution.append([])
+
+    if sentiment_variation_count:
+        variation_distribution.append(sentiment_variation_time)
+    else:
+        variation_distribution.append([])
+
+    if sensitive_variation_count:
+        variation_distribution.append(sensitive_variation_time)
+    else:
+        variation_distribution.append([])
+
+    if common_variation_count:
+        variation_distribution.append(common_variation_time)
+    else:
+        variation_distribution.append([])
+
 
     results['warning_conclusion'] = warning_conclusion
     results['variation_distribution'] = variation_distribution
@@ -144,8 +170,8 @@ def get_task_detail_2(task_name, keywords, ts):
         for item in user_results:
             if item['found']:
                 temp = []
-                if int(item['fields']['importance'][0]) < IMPORTANT_USER_THRESHOULD:
-                    continue
+                #if int(item['fields']['importance'][0]) < IMPORTANT_USER_THRESHOULD:
+                #    continue
                 temp.append(item['fields']['uid'][0])
                 temp.append(item['fields']['uname'][0])
                 temp.append(item['fields']['photo_url'][0])
@@ -158,6 +184,8 @@ def get_task_detail_2(task_name, keywords, ts):
                 temp.append(item['fields']['activeness'][0])
                 user_detail_info.append(temp)
                 #print temp
+    # 排序
+    user_detail_info = sorted(user_detail_info, key=lambda x:x[6], reverse=True)
 
     revise_time_series = []
     for item in time_series:
@@ -175,12 +203,16 @@ def get_task_detail_2(task_name, keywords, ts):
     results['retweeted_weibo_list'] = retweeted_weibo_list
     results['comment_weibo_list'] = comment_weibo_list
     results['total_number_list'] = total_number_list
+    results['sensitive_origin_weibo_list'] = sensitive_origin_weibo_list
+    results['sensitive_retweeted_weibo_list'] = sensitive_retweeted_weibo_list
+    results['sensitive_comment_weibo_list'] = sensitive_comment_weibo_list
+    results['sensitive_total_number_list'] = sensitive_total_number_list
     results['social_sensors_detail'] = portrait_detail
 
 
     return results
 
-
+"""
 # 获得某个时间段的文本内容，返回ts-time_interval~ts之间的
 def get_detail_text(task_name, keywords_list, ts, text_type):
     print "-----------------"
@@ -190,7 +222,7 @@ def get_detail_text(task_name, keywords_list, ts, text_type):
     results = query_hot_mid(ts, keywords_list, text_type="1")
 
     return results
-
+"""
 
 if __name__ == "__main__":
     print get_task_detail_2('监督维权律师', "keywords", "1378323000")
