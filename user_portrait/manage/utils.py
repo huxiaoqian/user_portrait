@@ -12,9 +12,98 @@ from global_utils import es_user_profile
 from time_utils import ts2datetime, datetime2ts,ts2date
 '''
 from user_portrait.global_utils import es_user_portrait as es
+from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import es_user_profile
 from user_portrait.time_utils import ts2datetime, datetime2ts
+
+#test
+portrait_index_name = 'user_portrait_1222'
+portrait_index_type = 'user'
+
+#use to get evaluate max
+def get_evaluate_max():
+    max_result = {}
+    evaluate_index = ['influence', 'activeness', 'importance']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size': 1,
+            'sort':[{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type,\
+                    body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    
+    return max_result
+
+
+#use to get user_list compare attr
+#input: uid_list
+#output: results
+def compare_user_portrait_new(uid_list):
+    try:
+        user_result = es.mget(index=portrait_index_name, doc_type=portrait_index_type,\
+                body={'ids':uid_list})['docs']
+    except:
+        user_result = []
+    if user_result == []:
+        return 'uid_list not exist'
+    #get max evaluate:
+    max_result = get_evaluate_max()
+    #iter to get user attr
+    for item in user_result:
+        if item['found'] != True:
+            return 'uid_list not exist'
+        uid = item['_id']
+        user_result[uid] = {}
+        source = item['_source']
+        #attr: uname
+        user_result[uid]['uname'] = source['uname']
+        #attr: location
+        user_result[uid]['location'] = source['location']
+        #attr: evaluate index
+        importance = source['importance']
+        normal_importance = math.log(importance/ max_result['importance'] * 9 + 1, 10)
+        user_result[uid]['importance'] = int(normal_importance * 100)
+        influence = source['influence']
+        normal_influence = math.log(influence / max_result['influence'] * 9 + 1, 10)
+        user_result[uid]['influence'] = int(normal_influence * 100)
+        activeness = source['activeness']
+        normal_activeness = math.log(activeness / max_result['activeness'] * 9 + 1, 10)
+        user_result[uid]['activeness'] = int(normal_activeness * 100)
+        #attr: domain
+        user_result[uid]['domain'] = source['domain']
+        #attr: topic
+        topic_string = source['topic_string']
+        user_result[uid]['topic'] = topic_string.split('&')
+        #attr: activity geo dict
+        activity_geo_dict_list = json.loads(source['activity_geo_dict'])
+        week_activity_geo_list = activity_geo_dict_list[-7:]
+        week_geo_result = {}
+        for day_geo_dict in week_activity_geo_list:
+            for geo_item in day_geo_dict:
+                try:
+                    week_geo_result[geo_item] += 1
+                except:
+                    week_geo_result[geo_item] = 1
+        sort_week_geo_result = sorted(week_geo_result.items(), key=lambda x:x[1], reverse=True)
+        user_result[uid]['activity_geo'] = [geo_item[0] for geo_item in sort_week_geo_result[:2]]
+        #attr: keywords
+        user_result[uid]['keywords'] = json.loads(source['keywords'])
+        #attr: hashtag
+        user_result[uid]['hashtag'] = json.loads(source['hashtag_dict'])
+        #attr: psycho status
+        user_result[uid]['psycho_status'] = json.loads(source['psycho_status'])
+    
+    return user_result
+
 
 # compare two or three user
 # need json.lodas to read the dict attribute
