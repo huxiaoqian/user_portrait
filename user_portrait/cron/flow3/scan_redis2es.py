@@ -128,6 +128,7 @@ def scan_comment():
                 save_dict['uid'] = uid
                 save_dict['uid_comment'] = json.dumps(item_result)
                 comment_bulk_action.extend([{'index':{'_id':uid}}, save_dict])
+            '''
             elif len(item_list)==3:
                 be_comment_count += 1
                 uid = item_list[2]
@@ -135,18 +136,21 @@ def scan_comment():
                 save_dict['uid'] = uid
                 save_dict['uid_be_comment'] = json.dumps(item_result)
                 be_comment_bulk_action.extend([{'index':{'_id': uid}}, save_dict])
+            '''
         try:
             es.bulk(comment_bulk_action, index='1225_comment_'+str(db_number), doc_type='user')
         except:
             index_name = '1225_comment_'+str(db_number)
             split_bulk_action(comment_bulk_action, index_name)
+        '''
         try:
             es.bulk(be_comment_bulk_action, index='1225_be_comment_'+str(db_number), doc_type='user')
         except:
             index_name = '1225_be_comment_'+str(db_number)
             split_bulk_action(be_comment_bulk_action, index_name)
+        '''
         comment_bulk_action = []
-        be_comment_bulk_action = []
+        #be_comment_bulk_action = []
         end_ts = time.time()
         print '%s sec scan %s count user' % (end_ts - start_ts, count)
         start_ts = end_ts

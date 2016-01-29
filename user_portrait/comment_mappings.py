@@ -30,8 +30,10 @@ def comment_es_mappings(db_number):
     index_name = '1225_comment_' + db_number
     exist_indice = es.indices.exists(index=index_name)
     if exist_indice:
-        es.indices.delete(index=index_name)
-    es.indices.create(index=index_name, body=index_info, ignore=400)
+        print 'index exist'
+        #es.indices.delete(index=index_name)
+    else:
+        es.indices.create(index=index_name, body=index_info, ignore=400)
 
     return True
 
@@ -60,8 +62,10 @@ def be_comment_es_mappings(db_number):
     index_name = '1225_be_comment_' + db_number
     exist_indice = es.indices.exists(index=index_name)
     if exist_indice:
-        es.indices.delete(index=index_name)
-    es.indices.create(index=index_name, body=index_info, ignore=400)
+        #es.indices.delete(index=index_name)
+        print 'index exist'
+    else:
+        es.indices.create(index=index_name, body=index_info, ignore=400)
 
     return True
 
@@ -69,5 +73,5 @@ if __name__=='__main__':
     print 'test'
     db_number = '1'
     comment_mark = comment_es_mappings(db_number)
-    be_comment_mark = be_comment_es_mappings(db_number)
-    print 'mark:', comment_mark, be_comment_mark
+    #be_comment_mark = be_comment_es_mappings(db_number)
+    print 'mark:', comment_mark
