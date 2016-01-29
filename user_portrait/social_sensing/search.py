@@ -23,7 +23,7 @@ def search_specified_group(postname="报"):
             "bool": {
                 "must": [
                     {"wildcard": {
-                        "nick_name": {
+                        "uname": {
                             "wildcard": "*" + postname
                         }
                     }},
@@ -38,10 +38,11 @@ def search_specified_group(postname="报"):
         "size": 10000
     }
 
-    search_results = es_profile.search(index="weibo_user", doc_type="user", body=query_body)["hits"]["hits"]
+    search_results = es_profile.search(index="user_portrait_1222", doc_type="user", body=query_body)["hits"]["hits"]
     uid_list = []
     for item in search_results:
         uid_list.append(item['_id'])
+        print item['_id'], item['_source']['uname'], '\n'
     print "该群体有：", len(uid_list)
     return uid_list
 
@@ -91,7 +92,7 @@ if __name__ == "__main__":
     pynlpir.segment(s, pos_tagging=False)
     print pynlpir.get_key_words(s)
     """
-    media_list = search_specified_group("律师")
+    media_list = search_specified_group()
     print media_list
     #media_list = filter_top_influence_user("user_portrait_1222", ["活跃人士","草根","媒体"], ["经济类","民生_就业类"], 100)
     """
