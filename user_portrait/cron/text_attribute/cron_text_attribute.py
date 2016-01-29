@@ -362,6 +362,10 @@ def test_cron_text_attribute(user_weibo_dict):
     print 'get psy result'
     psy_results_dict = psychology_classfiy(user_weibo_dict)
     print 'psy result len:', len(psy_results_dict)
+    #get user character attribute
+    print 'get character result'
+    #character_results_dict = character_classfiy(uid_list, start_ts, end_ts, type_mark)
+    print 'character result len:'
     #get user fansnum max
     fansnum_max = get_fansnum_max()
     #get user activeness by bulk_action
