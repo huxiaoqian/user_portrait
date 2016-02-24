@@ -219,6 +219,15 @@ function keys_choose_all(){
   $('input[name="keys_list_option"]').prop('checked', $("#keys_choose_all").prop('checked'));
 }
 
+function so_more_all_0(){
+  $('input[name="so_more_option_0"]').prop('checked', $("#so_more_all_0").prop('checked'));
+}
+
+function so_more_all_1(){
+  $('input[name="so_more_option_1"]').prop('checked', $("#so_more_all_1").prop('checked'));
+}
+
+
 function draw_sensor(data){
 	$('#so_sensor_content').empty();
 	if(data['remark']){
@@ -270,6 +279,22 @@ function draw_sensor(data){
     $('#so_sensor_content').append(html); 
 }
 
+function draw_more(data){
+	var item = data;
+	$('#so_more_content').empty();
+	html = '';
+	//html += '<table id="so_more_body" class="table table-bordered table-striped table-condensed datatable" >';
+	html += '<div>敏感词<input style="margin-left:50px;"margin-right:10px; name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>';
+	for (var i=0;i<item[0].length;i++){
+		html += '<input  name="so_more_option_1" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[i]+'</span> ';
+	}
+	html += '<div>一般关键词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>';
+	for (var j=0;j<item[1].length;j++){
+		html += '<input  name="so_more_option_0" class="search_result_option" value="'+data[j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[j]+'</span> ';
+	}
+	$('#so_more_content').append(html);
+}
+
 
 function so_ready(){
 	$('a[id^="so_keys"]').click(function(e){
@@ -297,14 +322,6 @@ function so_ready(){
 		$('#so_his_block').modal();
 	});
 
-	// $('a[id^="so_warn"]').click(function(e){
-	// 	var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-	// 	url="index/sensing_analysis/";
-	// 	//url = "/social_sensing/get_task_detail_info/?task_name=" + temp;
-	// 	Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,draw_sensor);
-	// 	//draw_table('1',"#group_analyze_confirm");
-
-	// });
 	$('a[id^="so_stop_task"]').click(function(e){
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().prev().text();
 		var a = confirm('确定要终止任务吗？');
@@ -342,7 +359,12 @@ function so_ready(){
 			Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,callback);
 	}
 	});
+	test=[['111','222','333','444'],['qqq','www','eee','rrr']];
+	draw_more(test);
 
+	$('span[id^="so_more"]').click(function(e){
+		$('#so_more_block').modal();
+	 });
 }
 
 function callback(data){
@@ -451,7 +473,10 @@ function so_group_data(){
 		var url_create = '/social_sensing/create_task/?';
 	    a['keywords'] = $('#so_keywords').val();
 	 	a['keywords'] = a['keywords'].split(/\s+/g);
-	    $('[name="keys_list_option"]:checked').each(function(){
+	    $('[name="so_more_option_0"]:checked').each(function(){
+		  	    a['keywords'].push($(this).val());
+		  	});
+	   	$('[name="so_more_option_1"]:checked').each(function(){
 		  	    a['keywords'].push($(this).val());
 		  	});
 	    if (so_user_option == 'so_all_users'){
@@ -497,13 +522,13 @@ function so_callback(data){
 	}
 }
 
-have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
+// have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
 
-function have_keys(data){
-	$('#show_keys').empty();
-	html = '';
-	for(var i=0;i<data.length;i++){
-		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[i]+'</span> ';
-	}
-	$('#show_keys').append(html);
-}
+// function have_keys(data){
+// 	$('#show_keys').empty();
+// 	html = '';
+// 	for(var i=0;i<data.length;i++){
+// 		html += '<input name="keys_list_option" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[i]+'</span> ';
+// 	}
+// 	$('#show_keys').append(html);
+// }
