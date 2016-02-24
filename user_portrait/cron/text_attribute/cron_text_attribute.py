@@ -18,7 +18,7 @@ from user_profile import get_profile_information
 from save_utils import attr_hash, save_user_results
 from config import topic_en2ch_dict, domain_en2ch_dict
 from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
-
+from character_input import character_input # use to prepare input for attribute---character
 # compute user event
 from event.event_user import event_classfiy
 # compute user domain
@@ -362,6 +362,12 @@ def test_cron_text_attribute(user_weibo_dict):
     print 'get psy result'
     psy_results_dict = psychology_classfiy(user_weibo_dict)
     print 'psy result len:', len(psy_results_dict)
+    #get user character attribute
+    print 'get character result'
+    #type_mark = 0/1 for identify the task input status---just sentiment or text
+    #character1_results_dict = character1_classfiy(uid_list, start_ts, end_ts, type_mark)
+    #character2_results_dict = character2_classfiy(uid_list, start_ts, end_ts, type_mark)
+    print 'character result len:'
     #get user fansnum max
     fansnum_max = get_fansnum_max()
     #get user activeness by bulk_action

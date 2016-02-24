@@ -6,7 +6,7 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
 
-index_name = 'group_result'
+index_name = 'group_manage'
 index_type = 'group'
 
 
@@ -16,7 +16,7 @@ def save_group_results(results):
     if not flag:
         es.indices.create(index=index_name, ignore=400)
     
-    es.index(index_name, doc_type=index_type, body=results, id=results['task_name'])
+    es.index(index=index_name, doc_type=index_type, body=results, id=results['task_name'])
     return status
 
 

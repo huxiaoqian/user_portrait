@@ -24,7 +24,7 @@ from parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from parameter import FORWARD_N as forward_n
 from parameter import INITIAL_EXIST_COUNT as initial_count
 from parameter import IMPORTANT_USER_NUMBER, IMPORTANT_USER_THRESHOULD, signal_brust, signal_track, signal_count_varition, signal_sentiment_varition, signal_nothing, signal_nothing_variation, \
-                      unfinish_signal, finish_signal
+                      unfinish_signal, finish_signal, signal_sensitive_variation, WARNING_SENSITIVE_COUNT
 
 
 # aggragate weibo keywords of timestamp ts1 and ts2
@@ -142,9 +142,10 @@ def temporal_keywords(ts1, ts2):
 
 
 
+
 # 事件检测中用于查询给定关键词，在某段时间内的原创微博列表
 
-def query_mid_list(ts, keywords_list, time_segment):
+def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors=[]):
     # 第一步，聚合前六个小时相关微博mid, 首先获得原创微博
     #ts = time.time()
     #ts = 1377964800+3600
@@ -170,6 +171,9 @@ def query_mid_list(ts, keywords_list, time_segment):
         "sort": {"sentiment": {"order": "desc"}},
         "size": 10000
     }
+
+    if int(query_type) == 1:
+        query_body['query']['filtered']['filter']['bool']['must'].append({"terms": {"uid": social_sensors}})
 
     datetime = ts2datetime(ts)
     # test
@@ -264,7 +268,7 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
     return hot_mid_dict
 
 # 给定原创微博list，搜索之前time_segment时间段内的微博总数，即转发和评论总数
-def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list):
+def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_type=0, social_sensors=[]):
     query_all_body = {
         "query": {
             "filtered": {
@@ -276,12 +280,10 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list):
                                     "gte": ts - time_segment,
                                     "lt": ts
                                 }
-                            }}],
+                            }}
+                        ],
                         "should": [
-                            {"terms":{
-                                "keywords_string": keywords_list
-                                }
-                            }
+                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -293,6 +295,9 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list):
             }
         }
     }
+
+    if int(query_type) == 1:
+        query_all_body['query']["filtered"]["filter"]["bool"]["should"].pop()
 
     datetime = ts2datetime(ts)
     # test
@@ -342,7 +347,7 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list):
 
 
 # 给定微博mid的前提下，聚合相关微博的情绪分布
-def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywords_list):
+def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_type=0):
     query_all_body = {
         "query": {
             "filtered": {
@@ -372,6 +377,9 @@ def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywo
             }
         }
     }
+
+    if int(query_type) == 1:
+        query_all_body["query"]["filtered"]["filter"]["bool"]["should"].pop()
 
     datetime = ts2datetime(ts)
     results =dict()
@@ -422,11 +430,6 @@ def get_forward_numerical_info(task_name, ts, keywords_list):
         ts_series.append(ts-i*time_interval)
 
     # check if detail es of task exists
-    # es.doctype = task_name_keywords_list
-    #keywords_list = [item.encode("utf-8", "ignore") for item in keywords_list]
-    #task_name = task_name.encode("utf-8", "ignore")
-    #print type(task_name),type( "_".join(keywords_list))
-    #doctype = task_name + "_" + "_".join(keywords_list)
     doctype = task_name
     index_exist = es_user_portrait.exists(index_sensing_task, doctype)
     if not index_exist:
@@ -445,20 +448,9 @@ def get_forward_numerical_info(task_name, ts, keywords_list):
             if item['found']:
                 temp = item['_source']
                 sentiment_dict = json.loads(temp['sentiment_distribution'])
-                #average_origin.append(int(temp['origin_weibo_number']))
-                #average_retweeted.append(int(temp['retweeted_weibo_number']))
-                #average_comment.append(int(temp['comment_weibo_number']))
                 average_total.append(int(temp['weibo_total_number']))
                 average_negetive.append(int(sentiment_dict["2"])+int(sentiment_dict['3']))
                 found_count += 1
-            """
-            else:
-                average_origin.append(0)
-                average_retweeted.append(0)
-                average_commet.append(0)
-                average_total.append(0)
-                average_negetive.append(0)
-            """
 
         if found_count > initial_count:
             number_mean = np.mean(average_total)
@@ -533,6 +525,9 @@ def specific_keywords_burst_dection(task_detail):
     current_retweeted_count = statistics_count['retweeted']
     current_comment_count = statistics_count['comment']
 
+
+    # 针对敏感微博的监测，给定传感器和敏感词的前提下，只要传感器的微博里提及到敏感词即会认为是预警
+
     # 聚合当前时间内积极、中性、悲伤、愤怒情绪分布
     # sentiment_dict = {"0": "neutral", "1":"positive", "2":"sad", "3": "anger"}
     sentiment_count = {"0": 0, "1": 0, "2": 0, "3": 0}
@@ -576,9 +571,67 @@ def specific_keywords_burst_dection(task_detail):
                         filter_important_list.append(item['_id'])
     print filter_important_list
 
+    # 6. 敏感词识别，如果传感器的微博中出现这么一个敏感词，那么就会预警------PS.敏感词是一个
+    sensitive_origin_weibo_number = 0
+    sensitive_retweeted_weibo_number = 0
+    sensitive_comment_weibo_number = 0
+    sensitive_total_weibo_number = 0
+
+    if sensitive_words:
+        query_sensitive_body = {
+            "query":{
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"range":{
+                                    "timestamp":{
+                                        "gte": ts - time_interval,
+                                        "lt": ts
+                                    }}
+                                },
+                                {"terms": {"keywords_string": sensitive_words}}
+                            ]
+                        }
+                    }
+                }
+            },
+            "aggs":{
+                "all_list":{
+                    "terms":{"field": "message_type"}
+                }
+            }
+        }
+
+        sensitive_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_sensitive_body)['aggregations']['all_list']["buckets"]
+        if sensitive_results:
+            for item in sensitive_results:
+                if int(item["key"]) == 1:
+                    sensitive_origin_weibo_number = item['doc_count']
+                elif int(item["key"]) == 2:
+                    sensitive_comment_weibo_number = item['doc_count']
+                elif int(item["key"]) == 3:
+                    sensitive_retweeted_weibo_number = item["doc_count"]
+                else:
+                    pass
+
+            sensitive_total_weibo_number = sensitive_origin_weibo_number + sensitive_comment_weibo_number + sensitive_retweeted_weibo_number
+
+
+
+
     burst_reason = signal_nothing_variation
     warning_status = signal_nothing
     finish = unfinish_signal # "0"
+
+    if sensitive_total_weibo_number > WARNING_SENSITIVE_COUNT: # 敏感微博的数量异常
+        print "======================"
+        if forward_warning_status == signal_brust: # 已有事件发生，改为事件追踪
+            warning_status = signal_track
+        else:
+            warning_status = signal_brust
+        bruse_reason = signal_sensitive_variation
+
     if forward_result[0]:
         # 根据移动平均判断是否有时间发生
         mean_count = forward_result[1]
@@ -591,7 +644,7 @@ def specific_keywords_burst_dection(task_detail):
                 warning_status = signal_track
             else:
                 warning_status = signal_brust
-            burst_reason = signal_count_varition # 数量异常
+            burst_reason += signal_count_varition # 数量异常
         if negetive_count > mean_sentiment+1.96*std_sentiment:
             warning_status = signal_brust
             burst_reason += signal_sentiment_varition # 负面情感异常, "12"表示两者均异常
@@ -630,22 +683,5 @@ def specific_keywords_burst_dection(task_detail):
 
 
 
-if __name__ == "__main__":
-
-    #temporal_keywords(1378557829, 1378557829+10000)
-    """
-    ts2 = datetime2ts("2013-09-08")
-    ts1 = datetime2ts("2013-09-01")
-    ts = ts1
-    while ts < ts2:
-        current_total_count, forward_average_count, ratio = burst_detection(["洪水", "洪灾"], ts)
-        if current_total_count > 100 and ratio > 3:
-            index_date = flow_text_index_name_pre + ts2datetime(ts)
-            search_results = es_text.search(index=index_date, doc_type=flow_text_index_type, body=aggregation_sentiment(ts-time_interval, ts, ["洪水", "洪灾"], "keywords_string", 20))['aggregations']['all_sentiment']['buckets']
-            print search_results
-        ts += time_interval
-    """
-    ts1 = datetime2ts("2013-09-01")
-    print es_text.search(index="flow_text_2013-09-01", doc_type="text", body=aggregation_sentiment(ts1, ts1+24*3600, ['维权','律师','强拆'], 'keywords_string', 20))['aggregations']['all_sentiment']['buckets']
 
 

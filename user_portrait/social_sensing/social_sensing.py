@@ -4,6 +4,7 @@ import sys
 import time
 import json
 from aggregation_weibo import specific_keywords_burst_dection
+from sensing_strategy import sensors_keywords_detection
 reload(sys)
 sys.path.append("./../")
 from global_utils import es_user_profile as es_profile
@@ -21,8 +22,12 @@ def social_sensing_task():
             break  # finish all task in task_list
         task_detail = json.loads(temp)
         print "task_detail: ", task_detail
-   #     print specific_keywords_burst_dection(task_detail)
-
+        if int(task_detail[6]) == 2:
+            print specific_keywords_burst_dection(task_detail)
+        elif int(task_detail[6]) == 3:
+            sensors_keywords_detection(task_detail)
+        else:
+            pass
 
 if __name__ == "__main__":
     social_sensing_task()
