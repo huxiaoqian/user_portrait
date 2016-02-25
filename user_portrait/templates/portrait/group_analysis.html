@@ -131,84 +131,28 @@
 			    <div class="panel-heading" role="tab" id="headingFour">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-			          传播属性
+			          传播特征
 			        </a>
 			      </h4>
 			    </div>
 			    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 			      <div class="panel-body">
-
-			      	<div id='importance'style='width:320px;height:420px;float:left'></div>
-			      	<div id='activeness'style='width:320px;height:420px;float:right'></div>
-			      	<div id='influence'style='width:320px;height:420px;float:left'></div>
-				     <div id='weibo' style='width:960px;float:left;margin-top:10px;max-height:520px;'>
-					 </div>
+			      	{% include "portrait/group_analysis/group_spread.html"%}
 			      </div>
 			    </div>
 			  </div>
-
-			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingFive">
-			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-			          标签属性
-			        </a>
-			      </h4>
-			    </div>
-			    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-			      <div class="panel-body">
-						<div style="font-size:17px;margin-bottom:20px;">标签划分</div>
-						<div id="lable" style="width:900px;"></div>
-						<div style="height:400px;width:450px;float:left">
-						<div style="font-size:17px;margin-bottom:20px;">领域划分</div>
-						<div id="radar_domain" style="height:380px;width:450px;"></div>
-						</div>
-						<div style="height:400px;width:450px;float:right">
-						<div style="font-size:17px;margin-bottom:20px;">话题划分</div>
-						<div id="radar_topic" style="height:380px;width:450px;"></div>
-						</div>
-			      </div>
-			    </div>
-			  </div>
-
-
 
 			  <div class="panel panel-default">
 			    <div class="panel-heading" role="tab" id="headingSix">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-			          社交属性
+			          社交特征
 			        </a>
 			      </h4>
 			    </div>
 			    <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
 			      <div class="panel-body">
-			      
-			      	<div id='group' style='overflow-x:hidden;'></div>
-
-
-
-			          <div class="box-content">
-			            <ul class="nav nav-tabs" id="myTab">
-			                <li class="active" title="群组内转发视图"><a href="#group_in_picture">群组内转发视图</a></li>
-			                <li title="群组内转发列表"><a href="#group_in_table">群组内转发列表</a></li>
-			            </ul>
-			            <div id="myTabContent" class="tab-content">
-			                <div class="tab-pane active" id="group_in_picture" style="margin-top:10px">
-			                    <div id='relation_picture'style='width:900px;height:350px'></div>                 
-			                </div>
-			                <div class="tab-pane" id="group_in_table" style="margin-top:10px">
-			                    <div id='relation_table' style='overflow-x:hidden;width:965px;height:350px'></div>
-			                </div>          
-			            </div>
-			           </div>
-
-					
-
-			      	
-			      	
-			      	<div style="float:left"><span style="font-size:17px">群组外对该群组转发关系</span><span type="button"data-toggle="modal" data-target="#more_group_out" style="font-size:17px;margin-left:710px;cursor: pointer"><u>查看更多</u></span></div>
-			      	<div id='relation_active_table' style='overflow-x:hidden;width:965px'></div>	 
+ 					{% include "portrait/group_analysis/group_social.html"%}
 			      </div>
 			    </div>
 			  </div>
@@ -218,7 +162,7 @@
 			    <div class="panel-heading" role="tab" id="headingSeven">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-			          思想属性
+			          思想特征
 			        </a>
 			      </h4>
 			    </div>
