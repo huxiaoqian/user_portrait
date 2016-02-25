@@ -7,16 +7,19 @@
     .border-table td {   
         border: solid #FFE4B5 1px;   
     }   
+    .group_block{
+    background-color:#FF8C00;width:50px;height: 30px;padding: 5px 8px;color: white;font-weight: bold;border-radius: 0.25em;margin: 5px;display: inline-block;text-align: center;
+    }
 </style>
-<div style="width:1000px;margin-bottom:0px;"><h3>情绪波动曲线</h3><hr style="width:1000px;"></div>
+<div style="width:1000px;margin-bottom:0px;"><h3>情绪变动曲线</h3><hr style="width:1000px;"></div>
 <div style="width:680px;height:470px;">
-    <div style="float: right;margin:0px;margin-right:40px;">
-       <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >当日
-       <input type="radio" name="time-type" value='week' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">近7天
+    <div style="float: right;">
+       <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
+       <input type="radio" name="time-type" value='week' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;">本周
     </div>
-    <div style="width:680px;height:400px;" id="emotion"></div>
+    <div style="width:680px;height:400px;margin;0px;" id="emotion"></div>
 </div>
-<div id='select_time' style="width:280px;font-weight:bold;margin:0px;margin-left:20px;font-size:12px;"></div>
+<div id='select_time' style="font-weight:bold;margin:0px;margin-left:20px;font-size:12px;"></div>
 
 <div style="width:280px;height:340px;background-color:whitesmoke;margin-left:20px;overflow-y:auto;" id="content">
     <div id="thought_weibo_text" style="padding:0px 10px;">
@@ -29,12 +32,19 @@
 <div style="width:998px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
-            <div style="width:100%;font-size:24px;margin:0px;"><h3>倾向性（每周更新）</h3><hr style="margin-top:10px;margin-right:20px;" /></div>
-		<div id="sen_trend" style="height:350px;width:450px;"></div>
-		</div>
+		<div style="width:100%;font-size:24px;margin:0px;">性格特征<hr style="margin-top:10px;margin-right:20px;" /></div>
+		<!-- <div id="sen_trend" style="height:350px;width:450px;"></div> -->
+        <div>
+            <div>根据情绪特征划分为：</div>
+            <span class="group_block">积极</span> <span style="background-color:gray;" class="group_block">中性</span> <span style="background-color:gray;" class="group_block">消极</span>
+        </div>
+        <div>
+            <div>根据语言特征划分为：</div>
+            <span  class="group_block">积极</span> <span style="background-color:gray;" class="group_block">中性</span>
+		    </div>
+        </div>
 		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
-            <div style="width:100%;font-size:24px;margin:0px;"><h3>心理特征<span type="button"data-toggle="modal" data-target="#psy_more"  style='font-weight:normal;font-size:16px;margin-left:270px;cursor: pointer'><u>查看更多</u></span>
-            </h3><hr style="margin-top:10px;margin-right:20px;" /></div>
+		<div style="width:100%;font-size:24px;margin:0px;">心理状态<span type="button"data-toggle="modal" data-target="#psy_more"  style='font-size:16px;margin-left:270px;cursor: pointer'><u>查看更多</u></span><hr style="margin-top:10px;margin-right:20px;" /></div>
 		<div id="pie_emotion" style="height:350px;width:450px;"></div>
 		</div>
 	</div>	
@@ -58,6 +68,7 @@
 
 
 
+<script src="/static/js/echarts-all.js"></script>
 <script type="text/javascript">
 function call_ajax_request(url, callback){
     $.ajax({
@@ -99,8 +110,7 @@ Thought.prototype = {   //获取数据，重新画表
             url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
             call_ajax_request(url_content,th_draw_content);
             $('#select_time').empty();  
-            html0 += "<div style='margin-bottom:0px;'>当前选择时间段：</div><div style='margin-bottom:0px;color:brown;'>"+items['time_list'][0]+"</div>";
-            html0 += "<div style='margin-top:4px;'>当前选择情绪：</div><div style='margin-top:4px;color:brown;'>中性</div>";
+            html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['time_list'][0]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
             $('#select_time').append(html0);
         }   
     }
@@ -113,7 +123,8 @@ Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
 //url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts=1378567800&time_type='+index+'&sentiment=1';
 //call_ajax_request(url_content,th_draw_content);
 url_think = '/attribute/tendency_psy/?uid='+uid;
-call_ajax_request(url_think,draw_think_trend);
+call_ajax_request(url_think,draw_think);
+//call_ajax_request(url_think,draw_trend);
 //call_ajax_request(url_think,draw_more_psy);
 
 
@@ -127,6 +138,7 @@ function choose_time(){
 function th_draw_content(data){
     var html = '';
     $('#thought_weibo_text').empty();
+    $('#select_time').empty();
     if(data==''){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
@@ -174,7 +186,7 @@ function emotions(data){
         trigger: 'axis'
     },
     legend: {
-        data:names,
+        data:names
     },
     toolbox: {
         show : false,
@@ -186,10 +198,6 @@ function emotions(data){
             saveAsImage : {show: true}
         }
     },
-    grid:{
-        x:'5%',
-        width:'90%',
-    },         
     calculable : true,
     xAxis : [
         {
@@ -229,8 +237,7 @@ function emotions(data){
                     });
                 var html0 = '';
                 $('#select_time').empty();  
-                html0 += "<div style='margin-bottom:0px;'>当前选择时间段：</div><div style='margin-bottom:0px;color:brown;'>"+time_name[param.dataIndex]+"</div>";
-                html0 += "<div style='margin-top:4px;'>当前选择情绪：</div><div style='margin-top:4px;color:brown;'>"+names[sentiment]+'</div>';
+                html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+time_name[param.dataIndex]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>"+names[sentiment]+'</div>';
                 $('#select_time').append(html0);
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
@@ -238,10 +245,7 @@ function emotions(data){
             
     )
 }
-function draw_think_trend(data){
-    draw_think(data);
-    draw_trend(data);
-}
+  
 function draw_think(data){
     console.log(data['description']);
     // if(items==null){
