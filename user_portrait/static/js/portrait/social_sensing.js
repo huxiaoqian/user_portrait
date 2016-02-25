@@ -242,14 +242,16 @@ function draw_sensor(data){
 	var item_num = '';
 	var item_keys = data['keywords'];
 	var item_sensor = data['social_sensors'];
-    html += '<span  style="margin-right:25px;">传感词：</span>';
+    html += '<div style="width:100%"><div  style="margin-right: 25px;float:left;display:inline-block">传感词：</div>';
     if(item_keys[0] != ''){
-    	console.log(item_keys);
+    	html += '<div style="margin-right: 9px;padding:0px;width: 89%;display:inline-block">';
 	    for (var j =0;j<item_keys.length;j++){
-	    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>'
+	    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>';
 	    }
+	    html += '</div>';
     }else{html += '<span style="margin-right:20px;">无</span>'}
-    if (item_sensor[0] == ''){
+    html += '</div>';
+    if (item_sensor[0] == undefined){
     	html += '<div style="margin-top:10px;">传感群：<span style="margin-left:25px;">全库用户</span></div>'
     }else{
     	html += '<div style="margin-top:10px;overflow-y:auto;height:300px;">';
@@ -286,11 +288,11 @@ function draw_more(data){
 	//html += '<table id="so_more_body" class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<div>敏感词<input style="margin-left:50px;"margin-right:10px; name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>';
 	for (var i=0;i<item[0].length;i++){
-		html += '<input  name="so_more_option_1" class="search_result_option" value="'+data[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[i]+'</span> ';
+		html += '<input  name="so_more_option_1" class="search_result_option" value="'+item[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[i]+'</span> ';
 	}
 	html += '<div>一般关键词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>';
 	for (var j=0;j<item[1].length;j++){
-		html += '<input  name="so_more_option_0" class="search_result_option" value="'+data[j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+data[j]+'</span> ';
+		html += '<input  name="so_more_option_0" class="search_result_option" value="'+item[j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[j]+'</span> ';
 	}
 	$('#so_more_content').append(html);
 }
@@ -466,6 +468,7 @@ function so_group_data(){
 	    a['remark'] = $('#so_remarks').val();
 		a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
 		a['keywords'] = '';
+		a['keywords0'] = '';
 		a['create_at'] =  Date.parse(new Date())/1000;
 		var so_user_option = $('input[name="so_mode_choose"]:checked').val();
 		var url0 = [];
@@ -473,8 +476,10 @@ function so_group_data(){
 		var url_create = '/social_sensing/create_task/?';
 	    a['keywords'] = $('#so_keywords').val();
 	 	a['keywords'] = a['keywords'].split(/\s+/g);
+	    a['keywords0'] = $('#so_keywords_nor').val();
+	 	a['keywords0'] = a['keywords_nor'].split(/\s+/g);
 	    $('[name="so_more_option_0"]:checked').each(function(){
-		  	    a['keywords'].push($(this).val());
+		  	    a['keywords0'].push($(this).val());
 		  	});
 	   	$('[name="so_more_option_1"]:checked').each(function(){
 		  	    a['keywords'].push($(this).val());
