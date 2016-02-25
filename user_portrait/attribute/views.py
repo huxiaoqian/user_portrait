@@ -10,6 +10,7 @@ from search import delete_action, search_identify_uid, get_activeness_trend
 from search import get_activity_weibo, search_comment, search_be_comment
 from search import search_bidirect_interaction, search_preference_attribute, search_sentiment_trend, search_tendency_psy
 from search import search_sentiment_weibo, get_influence_trend, search_remark, edit_remark
+from search import search_character_psy
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
@@ -362,6 +363,19 @@ def ajax_tendency_psy():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_tendency_psy(uid)
+    if not results:
+        results = {}
+    return json.dumps(results)
+
+#use to get user character and psy
+#write in version: 16-02-25
+#input: uid
+#ouput: character, psy(first level and second level)
+@mod.route('/character_psy/')
+def ajax_chracter_psy():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    results = search_character_psy(uid)
     if not results:
         results = {}
     return json.dumps(results)
