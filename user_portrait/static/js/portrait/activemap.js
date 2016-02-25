@@ -251,22 +251,27 @@ function location_all(){
         html += '<th style="text-align:center"><a id="monthly_location_map" href="#map">查看地图</a></th>';
         html += '</tr>';
         // track map
-        month_process(data.month_track, true);
+        // month_process(data.month_track, true);
         bind_map();
         function bind_map(){
             $('#month_track').click(function(){
+                $('#map').css('display', 'block');
                 month_process(data.month_track, true);
             });
             $('#total_daily_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(daily_map_data, false);
             });
             $('#total_weekly_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(weekly_map_data, false);
             });
             $('#span_daily_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(span_daily_map_data, true);
             });
             $('#span_weekly_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(span_weekly_map_data, true);
             });
         }
@@ -287,5 +292,5 @@ function location_all(){
     }
 
 }
-//location_all();
+location_all();
 

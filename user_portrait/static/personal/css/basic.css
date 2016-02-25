@@ -27,6 +27,7 @@
   overflow: hidden;
   font-weight: normal;
   text-align: right;
+  color: #808080;
 
 }
 .pt_detail {
@@ -34,5 +35,4 @@
   word-break: break-all;
   margin-left:60px;
   padding-left:90px;
-  color: #808080;
 }
