@@ -164,8 +164,8 @@ function deleteurl(that, parameter){
         if ((prefix != 'psycho') && (prefix != 'activity')){
             var pindex = pname.charAt(pname.length-1);
             pname = pname.substring(0, pname.length-2);
-            // console.log(pname);
-            // console.log(pindex);
+            console.log(pname);
+            console.log(pindex);
             for (var i = 0;i < pars.length;i++){
                 if (pname == pars[i]){
                     var term_list = values[i].split(',');
@@ -175,7 +175,23 @@ function deleteurl(that, parameter){
                 }
             }
         }
-        else{
+        else if(prefix == 'psycho' ){
+            console.log(pars)
+            console.log(pname)
+            var pindex = pname.charAt(pname.length-1);
+            pname = pname.substring(0, pname.length-2);
+            console.log(pname);
+            console.log(pindex);
+            for (var i = 0;i < pars.length;i++){
+                if (pname == pars[i]){
+                    var term_list = values[i].split(',');
+                    term_list.splice(pindex, 1);
+                    console.log(term_list);
+                    values[i] = term_list.join(',');
+                }
+            }
+        }
+        else if(prefix == 'activity'){
             for (var i = 0;i < pars.length;i++){
                 if (pname == pars[i]){
                     values[i] = '';
@@ -231,8 +247,12 @@ function process_par(name, value){
         result[1] = value;
     }
     */
-    else if(name=='psycho_status'){
-        result[0] = '心理状态';
+    else if(name=='psycho_status_by_emotion'){
+        result[0] = '性格（语言）';
+        result[1] = value;
+    }
+    else if(name=='psycho_status_by_word'){
+        result[0] = '性格（情绪）';
         result[1] = value;
     }
     else if(name=='domain'){
@@ -304,6 +324,7 @@ function draw_conditions(that){
         }
         $('#conditions').html(html);
         $('.mouse>a').click(function(){
+            console.log($(this).parent().attr("id"))
             deleteurl(that, $(this).parent().attr("id"));
         });
         return;
