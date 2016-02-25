@@ -235,7 +235,7 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
         },
         "aggs":{
             "all_count":{
-                "terms":{"fields": aggregation_field, "size": size}
+                "terms":{"field": aggregation_field, "size": size}
             }
         }
     }
@@ -503,10 +503,12 @@ def burst_detection(keywords_list, ts):
 # 特定关键词的社会事件监测，task_detail是已经json.loads的
 def specific_keywords_burst_dection(task_detail):
     task_name = task_detail[0]
+    social_sensors = task_detail[1]
     keywords_list = task_detail[2]
-    stop_time = task_detail[3]
-    forward_warning_status = task_detail[4]
-    ts = int(task_detail[5])
+    sensitive_words = task_detail[3]
+    stop_time = task_detail[4]
+    forward_warning_status = task_detail[5]
+    ts = int(task_detail[7])
     forward_result = get_forward_numerical_info(task_name, ts, keywords_list)
     # 之前时间阶段内的原创微博list
     forward_origin_weibo_list = query_mid_list(ts-time_interval, keywords_list, forward_time_range)
@@ -630,7 +632,7 @@ def specific_keywords_burst_dection(task_detail):
             warning_status = signal_track
         else:
             warning_status = signal_brust
-        bruse_reason = signal_sensitive_variation
+        brust_reason = signal_sensitive_variation
 
     if forward_result[0]:
         # 根据移动平均判断是否有时间发生
@@ -660,13 +662,17 @@ def specific_keywords_burst_dection(task_detail):
     results['retweeted_weibo_number'] = current_retweeted_count
     results['comment_weibo_number'] = current_comment_count
     results['weibo_total_number'] = current_total_count
+    results['sensitive_origin_weibo_number'] = sensitive_origin_weibo_number
+    results['sensitive_retweeted_weibo_number'] = sensitive_retweeted_weibo_number
+    results['sensitive_comment_weibo_number'] = sensitive_comment_weibo_number
+    results['sensitive_weibo_total_number'] = sensitive_total_weibo_number
     results['sentiment_distribution'] = json.dumps(sentiment_count)
     results['important_users'] = json.dumps(filter_important_list)
     results['burst_reason'] = burst_reason
     results['timestamp'] = ts
     # es存储当前时段的信息
     doctype = task_name
-    #es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
+    es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
 
     # 更新manage social sensing的es信息
     temporal_result = es_user_portrait.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)['_source']
@@ -676,7 +682,7 @@ def specific_keywords_burst_dection(task_detail):
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, '_'.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)
-    #es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
+    es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
 
     return "1"
 
