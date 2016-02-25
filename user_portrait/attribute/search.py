@@ -1152,6 +1152,7 @@ def search_ip(now_ts, uid):
         job_ip = ['']
         job_ip_city = ''
     results['tag_vector'] = [[u'家庭IP', home_ip[0], home_ip_city], [u'工作IP', job_ip[0], job_ip_city]]
+    print 'results:', results
     return results
 
 #get ip information conclusion
@@ -1170,27 +1171,50 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     sort_home_dict = sorted(home_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     
     home_ip_string = ''
+    home_ip_list = []
     for item in sort_home_dict:
+        '''
         home_ip_string += item[0]
+        home_ip_city = ip2city(item[0])
+        home_ip_string += home_ip_city
         home_ip_string += ' '
         home_ip.append(item[0])
-    conclusion.append(home_ip_string)
+        '''
+        home_ip_list.append(item[0])
+        home_ip_city = ip2city(item[0])
+        print ''
+        home_ip_list.append(home_ip_city)
+        home_ip.append(item[0])
 
+    #conclusion.append(home_ip_string)
+    conclusion.append(home_ip_list)
     conclusion.append( u',工作IP为')
+    
     job_ip_string = ''
+    job_ip_list = []
     for item in sort_job_dict:
+        '''
         job_ip_string += item[0]
-        job_ip_string += u' '
-        job_ip.append([item[0]])
+        job_ip_city = ip2city(item[0])
+        job_ip_string += job_ip_city
+        job_ip_string += ' '
+        job_ip.append(item[0])
+        '''
+        job_ip_list.append(item[0])
+        job_ip_city = ip2city(item[0])
+        job_ip_list.append(job_ip_city)
+        job_ip.append(item[0])
 
-    conclusion.append(job_ip_string)
+    #conclusion.append(job_ip_string)
+    conclusion.append(job_ip_list)
 
     #get abnormal use IP
     day_ip_set = set(all_day_top.keys())
     week_ip_set = set(all_week_top.keys())
     abnormal_set = day_ip_set - week_ip_set
     if len(abnormal_set)==0:
-        return conclusion[:-1], home_ip, job_ip
+        print 'description_conclusion:',conclusion
+        return conclusion, home_ip, job_ip
     else:
         conclusion.append(u',异常使用的IP为')
     abnormal_dict = dict()
@@ -1198,12 +1222,21 @@ def get_ip_description(week_result, all_week_top, all_day_top):
         abnormal_dict[abnormal_ip] = all_day_top[abnormal_ip]
     sort_abnormal_dict = sorted(abnormal_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     abnormal_ip_string = ''
+    abnormal_ip_list = []
     for item in sort_abnormal_dict:
+        '''
         abnormal_ip_string += item[0]
         abnormal_ip_string += ' '
+        '''
+        abnormal_ip_list.append(item[0])
+        abnormal_ip_city = ip2city(item[0])
+        abnormal_ip_list.append(abnormal_ip_city)
 
-    conclusion.append(abnormal_ip_string)
+    #conclusion.append(abnormal_ip_string)
+    conclusion.append(abnormal_ip_list)
+
     #print 'conclusion:', conclusion, home_ip, job_ip
+    print 'description_conclusion:', conclusion
     return conclusion, home_ip, job_ip
 
 #abandon in version:15-12-08
@@ -1726,8 +1759,8 @@ def search_preference_attribute(uid):
     sort_keywords = sorted(keywords_dict, key=lambda x:x[1], reverse=True)[:50]
     results['keywords'] = sort_keywords
     #hashtag
-    if portrait_result['hashtag']:
-        hashtag_dict = json.loads(portrait_result['hashtag'])
+    if portrait_result['hashtag_dict']:
+        hashtag_dict = json.loads(portrait_result['hashtag_dict'])
     else:
         hashtag_dict = {}
     sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)[:50]
