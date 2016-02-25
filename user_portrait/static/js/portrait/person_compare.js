@@ -282,7 +282,7 @@ Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Sear
 var portrait = Search_weibo.Return_data();
 Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var tag_data = Search_weibo.Return_data();
-console.log(tag_data);
+//console.log(tag_data);
 function Compare(){
     var html = '';
     var num = 0;
@@ -470,16 +470,24 @@ function Compare(){
     $('#picturebig').append(html2);
 }
 //心理状态
+var SENTIMENT_DICT_NEW = {'0':'中性', '1':'积极', '2':'生气', '3':'焦虑', '4':'悲伤', '5':'厌恶', '6':'其他', '7':'消极'};
 function Draw_think_emotion(psycho_status,div){
-    var first_data = psycho_status[0]['first'];
+    var first_data = psycho_status['first'];
     var first = new Array();
+    console.log(first_data)
     for(var key in first_data){
-        first.push({'name':key,'value':first_data[key]});
+        if(key == 7){
+            first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2),selected:true});
+        }else{
+            first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2)});
+        } 
     }
     var second = new Array();
-    var second_data = psycho_status[0]['second'];
+    var second_data = psycho_status['second'];
+    second.push({'name':SENTIMENT_DICT_NEW[0],'value':first_data[0].toFixed(2)});
+    second.push({'name':SENTIMENT_DICT_NEW[1],'value':first_data[1].toFixed(2)});
     for(var key in second_data){
-        second.push({'name':key,'value':second_data[key]});
+        second.push({'name':SENTIMENT_DICT_NEW[key],'value':second_data[key].toFixed(2)});
     }
     var myChart = echarts.init(document.getElementById(div)); 
     var option = {
@@ -784,7 +792,7 @@ for(var key in portrait){
     Draw_think_topic(div);
     */
     div = 'hashtag'+ mark;
-    console.log(portrait[key]['hashtag']);
+    //console.log(portrait[key]['hashtag']);
     if(portrait[key]['hashtag']){
         $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
     }else{
