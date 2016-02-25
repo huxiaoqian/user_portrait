@@ -77,8 +77,11 @@ Search_weibo.prototype = {
         }
         var keywords_data = data;
         var keywords = new Array();
-        for(var key in keywords_data){
-            keywords.push({'name':key, 'value':keywords_data[key]*1000, 'itemStyle':createRandomItemStyle()});
+        //console.log(keywords_data)
+        for(i in keywords_data){
+            //console.log(keywords_data[i])
+            keywords.push({'name':keywords_data[i][0], 'value':keywords_data[i][1]*1000, 'itemStyle':createRandomItemStyle()});
+            
         }
 
         option = {
@@ -352,23 +355,22 @@ function Compare(){
     html += '<tr class="list-3"><td class="cate_title" style="width:90px;text-align:right">领域</td>';
     for(var k in portrait){
         j += 1;
-        //html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
-		
+        html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
     }
-	html += '<td class="center" name="line1">作家</td>';
-	html += '<td class="center" name="line2">媒体</td>';
+	//html += '<td class="center" name="line1">作家</td>';
+	//html += '<td class="center" name="line2">媒体</td>';
     html += '</tr>';
     j = 0;
     html += '<tr class="list-3"><td class="cate_title" style="width:90px;text-align:right">话题</td>';
     for(var k in portrait){
         j += 1;
-        //html += '<td class="center" name="line'+ j +'">'+ portrait[k]['domain'] +'</td>';
+        html += '<td class="center" name="line'+ j +'">'+ portrait[k]['topic'][0]+','+ portrait[k]['topic'][1]+','+portrait[k]['topic'][2]+ '</td>';
 		
     }
-	html += '<td class="center" name="line1">生活</td>';
-	html += '<td class="center" name="line2">娱乐</td>';
+	//html += '<td class="center" name="line1">生活</td>';
+	//html += '<td class="center" name="line2">娱乐</td>';
     html += '</tr>';
-
+    /*
     j = 0;
     html += '<tr><td colspan="'+ (num+1) +'" name="list-4" class="cate_title" style="font-size:20px"><b>活跃属性</b></td></tr>';
     j = 0;
@@ -399,7 +401,7 @@ function Compare(){
         html += '</td>';
     }
     html += '</tr>';
-
+    */
     j = 0;
     html += '<tr><td colspan="'+ (num+1) +'" name="list-5" class="cate_title" style="font-size:20px"><b>语言属性</b></td></tr>';
     html += '<tr class="list-5"><td class="cate_title" style="width:90px;text-align:right">关键词</td>';
@@ -417,13 +419,14 @@ function Compare(){
     html += '</tr>';
     j = 0;
     html += '<tr><td colspan="'+ (num+1) +'" name="list-6" class="cate_title" style="font-size:20px"><b>思想属性</b></td></tr>';
+    /*
     html += '<tr class="list-6"><td class="cate_title" style="width:90px;text-align:right">倾向</td>';
     for(var k in portrait){
         j += 1;
         html += '<td class="center" name="line'+ j +'"><div id="perfer'+ j +'" style="height:300px"></div></td>';
     }
     html += '</tr>';
-
+    */
     j = 0;
     html += '<tr class="list-6"><td class="cate_title" style="width:90px;text-align:right">心理状态</td>';
     for(var k in portrait){
@@ -431,7 +434,7 @@ function Compare(){
         html += '<td class="center" name="line'+ j +'"><div id="emotion'+ j +'" style="height:300px"></div></td>';
     }
     html += '</tr>';
-
+    
     j = 0;
     html += '<tr><td colspan="'+ (num+1) +'" name="list-7" class="cate_title" style="font-size:20px"><b>自定义标签</b></td></tr>';
     html += '<tr class="list-7"><td class="cate_title" style="width:90px;text-align:right">标签</td>';
@@ -454,7 +457,7 @@ function Compare(){
         }
     }
     html += '</tr>';
-
+    
     html += '</tbody>';
     $('#table_compare').append(html);
 
@@ -466,8 +469,18 @@ function Compare(){
     }
     $('#picturebig').append(html2);
 }
-
-function Draw_think_emotion(div){
+//心理状态
+function Draw_think_emotion(psycho_status,div){
+    var first_data = psycho_status[0]['first'];
+    var first = new Array();
+    for(var key in first_data){
+        first.push({'name':key,'value':first_data[key]});
+    }
+    var second = new Array();
+    var second_data = psycho_status[0]['second'];
+    for(var key in second_data){
+        second.push({'name':key,'value':second_data[key]});
+    }
     var myChart = echarts.init(document.getElementById(div)); 
     var option = {
     tooltip : {
@@ -512,11 +525,7 @@ function Draw_think_emotion(div){
                     }
                 }
             },
-            data:[
-                {value:5, name:'积极'},
-                {value:5, name:'中性'},
-                {value:12, name:'消极', selected:true}
-            ]
+            data:first
         },
         {
             name:'',
@@ -529,20 +538,14 @@ function Draw_think_emotion(div){
             funnelAlign: 'left',
             max: 1048,
             
-            data:[
-                {value:5, name:'积极'},
-                {value:5, name:'中性'},
-                {value:3, name:'生气'},
-                {value:4, name:'悲伤'},
-                {value:5, name:'其他'}
-            ]
+            data:second
         }
     ]
 }
 myChart.setOption(option);  
                     
 }
-
+//话题
 function Draw_think_topic(div){
     // domain_value = [];
     // domain_key = [];
@@ -753,35 +756,46 @@ jQuery.fn.fancyZoom = function(options){
 }
 
 Compare();
-var i = 0;
+var mark = 1;
 var div ;
 var m = 0;
 var div2;
 for(var key in portrait){
-    i += 1;
-    div = 'line'+ i;
-    console.log(key);
+    div = 'line'+ mark;
+    
+    
     if(portrait[key]['keywords'].length == 0){
         $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
     }else{
+        //console.log(portrait[key]['keywords'])
         Search_weibo.Draw_cloud_keywords(portrait[key]['keywords'], div);
     }
-    // div = 'topic'+ i;
+
+    // div = 'topic'+ mark;
     // Draw_think_topic(div);
-    div = 'emotion'+ i;
-    Draw_think_emotion(div);
-    div = 'perfer'+ i;
+
+    div = 'emotion'+ mark;
+    var psycho_status = portrait[key]['psycho_status']
+    //console.log(psycho_status)
+
+    Draw_think_emotion(psycho_status,div);
+    /*
+    div = 'perfer'+ mark;
     Draw_think_topic(div);
-    div = 'hashtag'+ i;
-    // console.log(portrait[key]['hashtag_dict'].length);
-    if(portrait[key]['hashtag_dict']){
+    */
+    div = 'hashtag'+ mark;
+    console.log(portrait[key]['hashtag']);
+    if(portrait[key]['hashtag']){
         $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
     }else{
-        Search_weibo.Draw_cloud_keywords(portrait[key]['hashtag_dict'], div);
+        Search_weibo.Draw_cloud_keywords(portrait[key]['hashtag'], div);
     }
-
+    
+    mark = mark + 1;
 }
+/*
 var x_data = new Array();
+
 for(var j =0; j < activity[2].length; j++ ){
     x_data.push(new Date(activity[2][j] * 1000).format("yyyy/MM/dd"));
 }
@@ -800,7 +814,7 @@ for(var key in y_data){
  $('.btn-round').click(function(){
     
     var cell = $('#table_compare').find('th').prevAll().length;
-    console.log(cell);
+    //console.log(cell);
     $('#table_compare').css('table-layout', 'fixed');
     $('[name='+ $(this).attr("name") +']').remove();
     $('#table_compare').css('table-layout', 'auto');
@@ -827,19 +841,19 @@ for(var key in y_data){
         }else{
             Search_weibo.Draw_cloud_keywords(portrait[key]['keywords'], cloud_div);
         }
-        if(portrait[uid]['hashtag_dict']){
+        if(portrait[uid]['hashtag'].length == 0){
             $('#'+hashtag_div).empty();
             $('#'+hashtag_div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
         }else{
-            Search_weibo.Draw_cloud_keywords(portrait[key]['hashtag_dict'], hashtag_div);
+            Search_weibo.Draw_cloud_keywords(portrait[key]['hashtag'], hashtag_div);
         }
-        Draw_think_emotion(emotion_div);
+        Search_weibo.Draw_think_emotion(portrait[key]['psycho_status'],emotion_div);
         // Draw_think_topic(topic_div);
         Draw_think_topic(perfer_div);
     }
 
  });
-
+*/
 // $("td[name^='list-']").click(function(){
 //     var name = $(this).attr('name');
 //     if($(this).children('a').children('i').attr('class')=='glyphicon glyphicon-chevron-up'){
