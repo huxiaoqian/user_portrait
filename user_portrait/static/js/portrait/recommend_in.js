@@ -344,8 +344,9 @@ function bindOption(){
               if(i<(recommend_uids.length-1))
                 uids_trans += ',';
           }
-          if(recommend_uids.length == 0)
+          if(recommend_uids.length == 0){
             alert("请选择至少一个用户！");
+          }
           else{
             var compute_time;
             if($('input[name="instant"]:checked').val()==1){
