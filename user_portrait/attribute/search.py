@@ -1483,8 +1483,8 @@ def search_activity_flow_text(uid):
                     'term': {'uid': uid},
                     'range':{
                         'timestamp':{
-                        'from': i,
-                        'to': i + 3600*4
+                        'gte': i,
+                        'lt': i + 3600*4
                         }
                     }
                 }
@@ -1635,7 +1635,7 @@ def ip_dict2geo(ip_dict):
 # get importance max & activeness max & influence max
 def get_evaluate_max():
     max_result = {}
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     evaluate_index = ['activeness', 'importance', 'influence']
     for evaluate in evaluate_index:
@@ -1726,8 +1726,8 @@ def search_preference_attribute(uid):
     sort_keywords = sorted(keywords_dict, key=lambda x:x[1], reverse=True)[:50]
     results['keywords'] = sort_keywords
     #hashtag
-    if portrait_result['hashtag']:
-        hashtag_dict = json.loads(portrait_result['hashtag'])
+    if portrait_result['hashtag_dict']:
+        hashtag_dict = json.loads(portrait_result['hashtag_dict'])
     else:
         hashtag_dict = {}
     sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)[:50]
@@ -2098,8 +2098,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     "range":{
                         "importance":{
-                        "from": results['importance'],
-                        "to": 1000000
+                        "gte": results['importance'],
+                        "lt": 1000000
                         }
                         }
                     }
@@ -2118,8 +2118,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     "range":{
                         "activeness":{
-                            "from":results['activeness'],
-                            "to": 1000000
+                            "gte":results['activeness'],
+                            "lt": 1000000
                             }
                         }
                     }
@@ -2135,8 +2135,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     'range':{
                         'influence':{
-                            'from':results['influence'],
-                            'to': 1000000
+                            'gte':results['influence'],
+                            'lt': 1000000
                             }
                         }
                     }
@@ -2167,6 +2167,8 @@ def search_attribute_portrait(uid):
     #print 'importance:', results['importance']
     #print 'normal importance:', normal_importance*100
     results['importance'] = int(normal_importance * 100)
+    print 'influence:', results['influence']
+    print 'influence_max:', evaluate_max
     normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
     results['influence'] = int(normal_influence * 100)
     '''

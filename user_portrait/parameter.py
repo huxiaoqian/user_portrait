@@ -7,7 +7,7 @@ DAY = 24*3600
 HALF_HOUR = 1800
 FOUR_HOUR = 3600*4
 MAX_VALUE = 99999999
-
+WEEK = 7
 
 #attribute: IP
 IP_TIME_SEGMENT = 4*3600 # return every 4 hour statistic result for ip information
@@ -123,6 +123,7 @@ EVENT_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/us
 
 #cron/text_attribute/character
 CH_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/character'
+CHARACTER_TIME_GAP = WEEK
 
 # pre-influence index
 pre_influence_index = "bci_"
