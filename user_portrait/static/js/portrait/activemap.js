@@ -32,7 +32,7 @@
 
         var point = new BMap.Point(startPoint.x, startPoint.y);
         map.centerAndZoom(point, 5);
-        map.enableScrollWheelZoom(true);
+        //map.enableScrollWheelZoom(true);
         //console.log(data);
         // process
         var timelist = new Array();
@@ -72,6 +72,7 @@
                     var marker = new BMap.Marker(fixpoint);
                     addedlist[geoname] = addedlist[geoname] + ',' + timename;
                     marker.setTitle(geoname+addedlist[geoname]);
+                    marker.setOffset(new BMap.Size(2,10));
                     map.addOverlay(marker);
                     newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
                 }
@@ -236,7 +237,7 @@ function location_all(){
     activity_call_ajax_request(url, location_month);
     function location_month(data){
         //console.log(data);
-        $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>"); //description
+        $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>。"); //description
         //month
         location_geo = data.all_top;
         html += '<tr><th style="text-align:center">最近30天</th>';
