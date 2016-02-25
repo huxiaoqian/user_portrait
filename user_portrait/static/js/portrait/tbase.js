@@ -46,7 +46,27 @@ function get_base_input_data(){
         temp += input_value;;
     });
     temp = temp.substring(0, temp.length-1);
+    
+    var psycho_status_by_emotion_url = '&psycho_status_by_emotion=';
+    $("[name='psycho_status_by_emotion']:checked").each(function(){
+        if($(this).val()=='未知'){
+            $(this).val() = '其他';
+        }
+        psycho_status_by_emotion_url += $(this).val() + ',';
+    });
+    temp += psycho_status_by_emotion_url;
+    temp = temp.substring(0, temp.length-1);
 
+    var psycho_status_by_word_url = '&psycho_status_by_word=';
+    $("[name='psycho_status_by_word']:checked").each(function(){
+        if($(this).val()=='未知'){
+            $(this).val() = '其他';
+        }
+        psycho_status_by_word_url += $(this).val() + ',';
+    });
+    temp += psycho_status_by_word_url;
+    temp = temp.substring(0, temp.length-1);
+    
     var domain_url = '&domain=';
     $("[name='domain']:checked").each(function(){
         domain_url += $(this).val() + ',';
@@ -69,7 +89,7 @@ function get_base_input_data(){
     });
     temp += tag_url;
     temp = temp.substring(0, temp.length-1);
-
+    console.log(temp)
     return temp;
 }
 
