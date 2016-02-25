@@ -123,7 +123,7 @@ Search_weibo.prototype = {
     $('#overview').empty();
     html = '';
     html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px">' + data[7] +'</p><p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;<span style="cursor:pointer;"><u>群体标签</u></span>)</p>';
+    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px">' + data[7] +'</p><p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;<span style="cursor:pointer;"><u>群体标签</u></span></p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -1105,30 +1105,30 @@ $(document).ready(function(){
     Search_weibo.Draw_overview(overviewdata);
     // var weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
     // Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
-    var tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
-    Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
-    var basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
-    Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
-    var select_attribute_name = $("#select_attribute_name").val()
-    var attribute_value_url = '';
-    attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
-    Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+    // var tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
+    // Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
+    // var basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
+    // Search_weibo.call_sync_ajax_request(basic_url, Search_weibo.ajax_method, Search_weibo.Draw_basic);
+    // var select_attribute_name = $("#select_attribute_name").val()
+    // var attribute_value_url = '';
+    // attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
+    // Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
 
-    var show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?task_name=' + name;
-    Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
+    // var show_group_tag_url = 'http://' + downloadurl + '/tag/show_group_tag/?task_name=' + name;
+    // Search_weibo.call_sync_ajax_request(show_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_group_tag);
 
-    var show_group_weibo_url = 'http://' + downloadurl + '/weibo/show_group_weibo/?task_name=' + name + "&date=2013-09-02";
-    Search_weibo.call_sync_ajax_request(show_group_weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_group_weibo);
+    // var show_group_weibo_url = 'http://' + downloadurl + '/weibo/show_group_weibo/?task_name=' + name + "&date=2013-09-02";
+    // Search_weibo.call_sync_ajax_request(show_group_weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_group_weibo);
 
-    var activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
-    Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
-    var social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
-    Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
-    var think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
-    var text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
-    Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
-    var influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
-    Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
+    // var activity_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=activity";
+    // Search_weibo.call_sync_ajax_request(activity_url, Search_weibo.ajax_method, Search_weibo.Draw_activity);
+    // var social_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=social";
+    // Search_weibo.call_sync_ajax_request(social_url, Search_weibo.ajax_method, Search_weibo.Draw_social_line);
+    // var think_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=think";
+    // var text_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=text";
+    // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
+    // var influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
+    // Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
     $('#select_attribute_name').click(function(){
       var select_attribute_name = $("#select_attribute_name").val()
       var attribute_value_url = '';

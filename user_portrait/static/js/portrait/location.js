@@ -313,18 +313,22 @@ var span_weekly_map_data = new Array();
 function draw_daily_ip_table(ip_data){
     var tag_vector = ip_data.tag_vector;
     for (var n = 0; n < tag_vector.length; n++){
+        var tag_name = tag_vector[n][0];
+        var tag_value = tag_vector[n][1] + '(' + tag_vector[n][2].split('\t').pop() + ')';
         //console.log(tag_vector[n]);          //notice!!! tag_vector[n]:[name, value]
-        global_tag_vector.push(tag_vector[n]);
+        global_tag_vector.push([tag_name, tag_value]);
     }
     //var div_name = ['daily_ip','weekly_ip'];
-    //console.log(ip_data);
+    console.log(ip_data);
     var this_desc = '';
-    this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1] + "</span>"; //description
+    if (ip_data.description[1]){
+        this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description
+    }
     if (ip_data.description[3]){
-        this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3] + "</span>"; //description
+        this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3][0] + '(' + ip_data.description[3][1].split('\t').pop() + ')' + "</span>"; //description
     }
     if (ip_data.description[5]){
-        this_desc += "<span>" + ip_data.description[4] + "</span><span style='color:red;'>" + ip_data.description[5] + "</span>"; //description
+        this_desc += "<span>" + ip_data.description[4] + "</span><span style='color:red;'>" + ip_data.description[5][0] + '(' + ip_data.description[5][1].split('\t').pop() + ')' + "</span>"; //description
     }
     $('#ip_desc').html(this_desc);
     var location_geo;
@@ -435,22 +439,24 @@ var url = '/attribute/ip/?uid=' + uid;
 activity_call_ajax_request(url, draw_daily_ip_table);
 
 function draw_online_pattern(data){
-    var online_data = data.sort_result;
-    //console.log(online_data);
-    $('#online_pattern').empty();
-    var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < online_data.length; i++) {
-       var s = i.toString();
-       var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m;
-       html += '</th><th style="text-align:center">' + online_data[i][0];
-       html += '</th><th style="text-align:center">' + online_data[i][1];
-       html +='</th></tr>';
-    };
-    html += '</table>'; 
-    $('#online_pattern').append(html);                  
+    //console.log(data);
+    if ('sort_result' in data){
+        var online_data = data.sort_result;
+        $('#online_pattern').empty();
+        var html = '';
+        html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+        html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
+        for (var i = 0; i < online_data.length; i++) {
+           var s = i.toString();
+           var m = i + 1;
+           html += '<tr><th style="text-align:center">' + m;
+           html += '</th><th style="text-align:center">' + online_data[i][0];
+           html += '</th><th style="text-align:center">' + online_data[i][1];
+           html +='</th></tr>';
+        };
+        html += '</table>'; 
+        $('#online_pattern').append(html);                  
+    }
 }
 var url = '/attribute/online_pattern/?uid='+uid;
 activity_call_ajax_request(url,draw_online_pattern);
