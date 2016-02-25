@@ -169,7 +169,7 @@ def sensors_keywords_detection(task_detail):
             warning_status = signal_track
         else:
             warning_status = signal_brust
-        bruse_reason = signal_sensitive_variation
+        burst_reason = signal_sensitive_variation
 
     if forward_result[0]:
         # 根据移动平均判断是否有时间发生

@@ -24,12 +24,13 @@ function Draw_activity(){
             }},
         title: {
             text: '微博时间走势图',
-            x: -20 //center
+            x: -20, //-20：center
+            style: {
+                color: '#555555',
+                fontSize: '14px'
+            }
         },
-        subtitle: {
-            text: '',
-            x: -20
-        },
+        
     lang: {
             printChart: "打印",
             downloadJPEG: "下载JPEG 图片",
@@ -119,7 +120,258 @@ function show_online_time(data){
 
 }
 
+function Draw_top_location2(){
+    var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
+    var option = {
+        timeline:{
+            data:[
+                '2002-01-01','2003-01-01','2004-01-01','2005-01-01','2006-01-01',
+                '2007-01-01','2008-01-01','2009-01-01'
+            ],
+            label : {
+                formatter : function(s) {
+                    return s.slice(0, 4);
+                }
+            },
+            autoPlay : true,
+            playInterval : 1000
+        },
+        options:[
+            {
+                title : {
+                    'text':'整体用户地理位置分布'
+                },
+                tooltip : {'trigger':'axis'},
+                legend : {
+                    x:'right',
+                    'data':['GDP','金融','房地产'],
+                    'selected':{
+                        'GDP':true,
+                        '金融':false,
+                        '房地产':true
+                        
+                    }
+                },
+                toolbox : {
+                    'show':false, 
+                    orient : 'vertical',
+                    x: 'right', 
+                    y: 'center',
+                    'feature':{
+                        'mark':{'show':true},
+                        'dataView':{'show':true,'readOnly':false},
+                        'magicType':{'show':true,'type':['line','bar','stack','tiled']},
+                        'restore':{'show':true},
+                        'saveAsImage':{'show':true}
+                    }
+                },
+                calculable : true,
+                grid : {'y':80,'y2':100},
+                xAxis : [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':[
+                        '北京','\n天津','河北','\n山西','内蒙古','\n辽宁','吉林','\n黑龙江',
+                        '上海','\n江苏','浙江','\n安徽','福建','\n江西','山东','\n河南',
+                        '湖北','\n湖南','广东','\n广西','海南','\n重庆','四川','\n贵州',
+                        '云南','\n西藏','陕西','\n甘肃','青海','\n宁夏','新疆'
+                    ]
+                }],
+                yAxis : [
+                    {
+                        'type':'value',
+                        'name':'GDP（亿元）',
+                        'max':53500
+                    },
+                    {
+                        'type':'value',
+                        'name':'其他（亿元）'
+                    }
+                ],
+                series : [
+                    {
+                        'name':'GDP',
+                        'type':'bar',
+                        'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]
+                    },
+                    {
+                        'name':'金融','yAxisIndex':1,'type':'bar',
+                        'data':  [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]
+                    },
+                    {
+                        'name':'房地产','yAxisIndex':1,'type':'bar',
+                        'data':  [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]
+                    }
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                 series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                 series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                 series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                 series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            },
+            {
+                title : {'text':'整体用户地理位置分布'},
+                series : [
+                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
+                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
+                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
+                    // {'data': dataMap.dataPI['2003']},
+                    // {'data': dataMap.dataSI['2003']},
+                    // {'data': dataMap.dataTI['2003']}
+                ]
+            }
+        ]
+    };
+    myChart.setOption(option);
+                    
+}
+function moving_geo(){
+    var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
+    $('#move_location').empty();
+    var html = '';
+    html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
+    html += '<tr><th style="text-align:center">起始地</th>';
+    html += '<th style="text-align:right"></th>';
+    html += '<th style="text-align:left">目的地</th>';
+    html += '<th style="text-align:center">人数</th>';
+    html += '</tr>';
+    for (var i = 0; i < data.length; i++) {
+        html += '<tr>';
+        html += '<td style="text-align:center">' + data[i][0] + '</td>';
+        html += '<td style="text-align:center"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
+        html += '<td style="text-align:left">' + data[i][1] + '</td>';
+        html += '<td style="text-align:center">' + data[i][2] + '</td>';
+    html += '</tr>'; 
+    };
+    html += '</table>'; 
+    $('#move_location').append(html);
+}
+
+function Draw_more_moving_geo(){
+    var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
+    $('#move_location_more_detail').empty();
+    var html = '';
+    html += '<table class="table table-striped " font-size:14px">';
+    html += '<tr><th style="text-align:center">起始地</th>';
+    html += '<th style="text-align:right"></th>';
+    html += '<th style="text-align:left">目的地</th>';
+    html += '<th style="text-align:center">人数</th>';
+    html += '</tr>';
+    for (var i = 0; i < data.length; i++) {
+        html += '<tr>';
+        html += '<td style="text-align:center">' + data[i][0] + '</td>';
+        html += '<td style="text-align:left"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
+        html += '<td style="text-align:left">' + data[i][1] + '</td>';
+        html += '<td style="text-align:center">' + data[i][2] + '</td>';
+    html += '</tr>'; 
+    };
+    html += '</table>'; 
+    $('#move_location_more_detail').append(html);
+}
+
+function Draw_top_platform(){
+    $('#top_platform').empty();
+    var html = '';
+    html += '<table class="table table-striped" style="width:260px;font-size:14px;margin-bottom:0px;">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < 1; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+    };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
+    html += '</table>'; 
+    $('#top_platform').append(html);
+}
+
+function Draw_more_top_platform(){
+    $('#top_more_platform').empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" font-size:14px">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < 1; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+    };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
+    html += '</table>'; 
+    $('#top_more_platform').append(html);
+}
+
 // var activity_data = []
 var time_data = [23,3,4,55,22,6]
 Draw_activity();
 show_online_time(time_data);
+Draw_top_location2();
+moving_geo();
+Draw_more_moving_geo();
+Draw_top_platform();
+Draw_more_top_platform();
