@@ -18,8 +18,8 @@ def ajax_compare_user_portrait():
     uid_string = request.args.get('uid_list', '') # uid_list = [uid1, uid2, uid3]
     uid_list = uid_string.split(',')
     if uid_list:
-        results = compare_user_portrait(uid_list)
-        #results = compare_user_portrait_new(uid_list)
+        #results = compare_user_portrait(uid_list)
+        results = compare_user_portrait_new(uid_list)
     if results:
         return json.dumps(results)
     else:
