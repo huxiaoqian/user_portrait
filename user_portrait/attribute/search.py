@@ -1516,8 +1516,8 @@ def search_activity_flow_text(uid):
                     'term': {'uid': uid},
                     'range':{
                         'timestamp':{
-                        'from': i,
-                        'to': i + 3600*4
+                        'gte': i,
+                        'lt': i + 3600*4
                         }
                     }
                 }
@@ -1668,7 +1668,7 @@ def ip_dict2geo(ip_dict):
 # get importance max & activeness max & influence max
 def get_evaluate_max():
     max_result = {}
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     evaluate_index = ['activeness', 'importance', 'influence']
     for evaluate in evaluate_index:
@@ -1898,6 +1898,18 @@ def get_all_ave_psy():
     results = json.loads(overview_result['ave_psy'])
 
     return results
+
+
+
+#use to get character and psycho_status
+#write in version: 16-02-25
+#input: uid
+#output: character and psycho_status
+def search_character_psy(uid):
+    results = {}
+    return results
+
+
 
 
 #use to get tendency and psy
@@ -2131,8 +2143,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     "range":{
                         "importance":{
-                        "from": results['importance'],
-                        "to": 1000000
+                        "gte": results['importance'],
+                        "lt": 1000000
                         }
                         }
                     }
@@ -2151,8 +2163,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     "range":{
                         "activeness":{
-                            "from":results['activeness'],
-                            "to": 1000000
+                            "gte":results['activeness'],
+                            "lt": 1000000
                             }
                         }
                     }
@@ -2168,8 +2180,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     'range':{
                         'influence':{
-                            'from':results['influence'],
-                            'to': 1000000
+                            'gte':results['influence'],
+                            'lt': 1000000
                             }
                         }
                     }
@@ -2200,6 +2212,8 @@ def search_attribute_portrait(uid):
     #print 'importance:', results['importance']
     #print 'normal importance:', normal_importance*100
     results['importance'] = int(normal_importance * 100)
+    print 'influence:', results['influence']
+    print 'influence_max:', evaluate_max
     normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
     results['influence'] = int(normal_influence * 100)
     '''
@@ -2358,9 +2372,9 @@ def get_activeness_trend(uid):
 
 #use to get influence_trend
 #write in version: 15-12-08
-#input: uid
+#input: uid, day_count(7/30)
 #output: {'time_line':[], 'influence':[]}
-def get_influence_trend(uid):
+def get_influence_trend(uid, day_count):
     print 'uid:', uid
     results = {}
     try:
@@ -2405,7 +2419,7 @@ def get_influence_trend(uid):
                 normal_value = math.log((value / iter_max) * 9 + 1 , 10) * 100
                 results[item_list[0]] = normal_value
     #print 'results:', results
-    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))
+    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))[0-day_count:]
     time_list = [ts2datetime(datetimestr2ts(item[0])) for item in sort_results]
     influence_list = [item[1] for item in sort_results]
     

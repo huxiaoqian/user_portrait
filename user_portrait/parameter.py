@@ -7,7 +7,7 @@ DAY = 24*3600
 HALF_HOUR = 1800
 FOUR_HOUR = 3600*4
 MAX_VALUE = 99999999
-
+WEEK = 7
 
 #attribute: IP
 IP_TIME_SEGMENT = 4*3600 # return every 4 hour statistic result for ip information
@@ -19,6 +19,10 @@ GEO_COUNT_THRESHOLD = 5
 
 #attribute: sentiment
 SENTIMENT_DICT = {'1':u'积极', '2':u'悲伤', '3':u'愤怒', '0': u'中性'}
+SENTIMENT_DICT_NEW = {'0':u'中性', '1':u'积极', '2':u'生气', '3':'焦虑', \
+        '4':u'悲伤', '5':u'厌恶', '6':u'消极其他', '7':u'消极'}
+SENTIMENT_FIRST = ['0', '1', '7']
+SENTIMENT_SECOND = ['2', '3', '4', '5', '6']
 
 #attribute: online_pattern
 PATTERN_THRESHOLD = 3
@@ -123,6 +127,7 @@ EVENT_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/us
 
 #cron/text_attribute/character
 CH_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/character'
+CHARACTER_TIME_GAP = WEEK
 
 # pre-influence index
 pre_influence_index = "bci_"

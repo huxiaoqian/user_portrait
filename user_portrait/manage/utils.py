@@ -16,8 +16,9 @@ from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import es_user_profile, profile_index_name, profile_index_type
+from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts
-from user_portrait.parameter import DAY
+from user_portrait.parameter import DAY, WEEK, MAX_VALUE, SENTIMENT_FIRST, SENTIMENT_SECOND
 
 #test
 portrait_index_name = 'user_portrait_1222'
@@ -45,6 +46,64 @@ def get_evaluate_max():
     
     return max_result
 
+#use to get user psycho_status attribute
+#input: uid_list
+#output: {'uid1':{'first':{}, 'second':{}}, 'uid2':{},...}
+def get_psycho_status(uid_list):
+    results = {}
+    uid_sentiment_dict = {}
+    #time for es_flow_text
+    now_ts = time.time()
+    now_date_ts = datetime2ts(ts2datetime(now_ts))
+    #test
+    now_date_ts = datetime2ts('2013-09-08')
+    start_date_ts = now_date_ts - DAY * WEEK
+    for i in range(0, WEEK):
+        iter_date_ts = start_date_ts + DAY * i
+        flow_text_index_date = ts2datetime(iter_date_ts)
+        flow_text_index_name = flow_text_index_name_pre + flow_text_index_date
+        try:
+            flow_text_exist = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
+                    body={'query':{'filtered':{'filter':{'terms':{'uid': uid_list}}}}, 'size': MAX_VALUE}, _source=False,  fields=['uid', 'sentiment'])['hits']['hits']
+        except:
+            flow_text_exist = []
+        for flow_text_item in flow_text_exist:
+            uid = flow_text_item['fields']['uid'][0]
+            sentiment = flow_text_item['fields']['sentiment'][0]
+            if uid in uid_sentiment_dict:
+                try:
+                    uid_sentiment_dict[uid][str(sentiment)] += 1
+                except:
+                    uid_sentiment_dict[uid][str(sentiment)] = 1
+            else:
+                uid_sentiment_dict[uid] = {str(sentiment): 1}
+    #compute first and second psycho_status
+    for uid in uid_list:
+        results[uid] = {'first':{}, 'second':{}}
+        try:
+            user_sentiment_result = uid_sentiment_dict[uid]
+        except:
+            user_sentiment_result = {}
+        all_count = sum(user_sentiment_result.values())
+        #compute second level sentiment---negative type sentiment
+        second_sentiment_count_list = [user_sentiment_result[item] for item in user_sentiment_result if item in SENTIMENT_SECOND]
+        second_sentiment_all_count = sum(second_sentiment_count_list)
+        for sentiment_item in SENTIMENT_SECOND:
+            try:
+                results[uid]['second'][sentiment_item] = float(user_sentiment_result[sentiment_item]) / all_count
+            except:
+                results[uid]['second'][sentiment_item] = 0
+        #compute first level sentiment---middle, postive, negative
+        user_sentiment_result['7'] = second_sentiment_all_count
+        for sentiment_item in SENTIMENT_FIRST:
+            try:
+                sentiment_ratio = float(user_sentiment_result[sentiment_item]) / all_count
+            except:
+                sentiment_ratio = 0
+            results[uid]['first'][sentiment_item] = sentiment_ratio
+
+    return results
+
 
 #use to get user_list compare attr
 #input: uid_list
@@ -60,6 +119,8 @@ def compare_user_portrait_new(uid_list):
     #get max evaluate:
     max_result = get_evaluate_max()
     user_result = {}
+    #get user psycho status from flow_text
+    user_psycho_status_result = get_psycho_status(uid_list)
     #iter to get user attr
     for item in user_portrait_result:
         if item['found'] != True:
@@ -103,7 +164,7 @@ def compare_user_portrait_new(uid_list):
         #attr: hashtag
         user_result[uid]['hashtag'] = json.loads(source['hashtag_dict'])
         #attr: psycho status
-        user_result[uid]['psycho_status'] = json.loads(source['psycho_status'])
+        user_result[uid]['psycho_status'] = user_psycho_status_result[uid]
     
     return user_result
 
