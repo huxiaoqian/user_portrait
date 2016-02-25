@@ -87,9 +87,10 @@ function get_base_input_data(){
         text = text.split('&')[0];
         tag_url += text +',';
     });
+    console.log(tag_url)
     temp += tag_url;
     temp = temp.substring(0, temp.length-1);
-    console.log(temp)
+    //console.log(temp)
     return temp;
 }
 
