@@ -39,8 +39,9 @@
     <label class='control-label' style='padding-top:5px;font-weight:lighter;margin-right:14px;'>传感词 </label>
     <input id="so_keywords" type='text' class="form-control" style='padding:0px;width: 280px;margin-top:10px;margin-right: 18px;  display:inline-block;height:25px' placeholder='（选填，敏感词）多个词用空格隔开'>
     <input id="so_keywords_nor" type='text' class="form-control" style='padding:0px;width: 280px;margin-top:10px;margin-right: 18px;  display:inline-block;height:25px' placeholder='（选填，普通关键词）多个词用空格隔开'>
-    <input name="keys_choose_all" id="keys_choose_all" type="checkbox" value="" onclick="keys_choose_all()" />
-    <span>全选</span>
+    <!-- <input name="keys_choose_all" id="keys_choose_all" type="checkbox" value="" onclick="keys_choose_all()" />
+    <span>全选</span> -->
+    <span id="so_more" class="btn btn-default" style="height: 25px;font-size: 14px;padding-top: 0px;">更多已有传感词</span>
     <div id="show_keys" style="margin:5px;margin-left:63px;"></div>
 
     <div id='so_have_keys' class='controls'></div>
@@ -101,29 +102,6 @@
       </div>
     </div>
 
-<!--     <div class="modal fade" id="so_control" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document" style="width:850px;">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">群组用户</h4>
-          </div>
-          <div class="modal-body">
-            <span>群体名称：</span><input id="so_new_name"  type='text' style="margin-left:10px;display:inline-block;margin-right:250px;" placeholder='（必填）仅包含汉字、英文、数字和下划线'>
-            <span style="margin-left:10px;">备注：</span>
-            <input id="so_new_remark" type='text' style="width:400px;display:inline-block;" placeholder='（选填）仅包含汉字、英文、数字和下划线'>
-            <span style="margin-top:5px;font-weight:bold;float:left;display:inline-block">终止时间：</span>
-            <input name="so_new_time" type='text' class="form-control" style='width:145px;margin-top:5px; display:inline-block;height:25px'>
-            <div id="so_control_confirm" style="margin-top:30px;overflow-y:auto;height:300px;"></div>
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="group_analyze_confirm_button()">确认</button>
-          </div>
-        </div>
-      </div>
-    </div> -->
 
     <div class="modal fade" id="so_control" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document" style="width:850px;">
@@ -160,6 +138,20 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
             <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="revise_confirm_button()">确认</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="so_more_block" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width:850px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">已有传感词</h4>
+          </div>
+          <div class="modal-body">
+            <div id="so_more_content" style="margin-top:10px;"></div>
           </div>
         </div>
       </div>
