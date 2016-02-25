@@ -19,6 +19,10 @@ GEO_COUNT_THRESHOLD = 5
 
 #attribute: sentiment
 SENTIMENT_DICT = {'1':u'积极', '2':u'悲伤', '3':u'愤怒', '0': u'中性'}
+SENTIMENT_DICT_NEW = {'0':u'中性', '1':u'积极', '2':u'生气', '3':'焦虑', \
+        '4':u'悲伤', '5':u'厌恶', '6':u'消极其他', '7':u'消极'}
+SENTIMENT_FIRST = ['0', '1', '7']
+SENTIMENT_SECOND = ['2', '3', '4', '5', '6']
 
 #attribute: online_pattern
 PATTERN_THRESHOLD = 3
