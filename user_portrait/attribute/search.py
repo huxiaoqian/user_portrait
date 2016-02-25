@@ -1900,6 +1900,18 @@ def get_all_ave_psy():
     return results
 
 
+
+#use to get character and psycho_status
+#write in version: 16-02-25
+#input: uid
+#output: character and psycho_status
+def search_character_psy(uid):
+    results = {}
+    return results
+
+
+
+
 #use to get tendency and psy
 #write in version: 15-12-08
 #input: uid
@@ -2360,9 +2372,9 @@ def get_activeness_trend(uid):
 
 #use to get influence_trend
 #write in version: 15-12-08
-#input: uid
+#input: uid, day_count(7/30)
 #output: {'time_line':[], 'influence':[]}
-def get_influence_trend(uid):
+def get_influence_trend(uid, day_count):
     print 'uid:', uid
     results = {}
     try:
@@ -2407,7 +2419,7 @@ def get_influence_trend(uid):
                 normal_value = math.log((value / iter_max) * 9 + 1 , 10) * 100
                 results[item_list[0]] = normal_value
     #print 'results:', results
-    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))
+    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))[0-day_count:]
     time_list = [ts2datetime(datetimestr2ts(item[0])) for item in sort_results]
     influence_list = [item[1] for item in sort_results]
     
