@@ -76,7 +76,7 @@ var group_influ_url = '/group/show_group_result/?task_name=媒体&module=influen
 Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
 function show_influ_users(div_name,data){
     $('#' + div_name).empty();
-    console.log(data);
+    
     var html = '';
     html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">频数</th></tr>';
@@ -115,9 +115,18 @@ function show_more_influ_active_users(div_name){
 
 function group_influ(data){
    var mychart = echarts.init(document.getElementById('group_influ'));
+   var mind = []
+   var maxd = []
    ave_data = data['ave_list'];
+   
    max_data = data['max_list'];
    min_data = data['min_list'];
+   for(var i=0;i<min_data.length;i++){
+      mind.push(min_data[i][1]);
+   }
+   for(var i=0;i<max_data.length;i++){
+      maxd.push(max_data[i][1]);
+   }
    time_data = data['time_list'];
    var option = {
     tooltip : {
@@ -154,7 +163,7 @@ function group_influ(data){
             name:'最高',
             type:'line',
             stack: '总量',
-            data:max_data
+            data:mind
         },
         {
             name:'平均',
@@ -166,7 +175,7 @@ function group_influ(data){
             name:'最小',
             type:'line',
             stack: '总量',
-            data:min_data
+            data:maxd
         }
         
     ]
@@ -366,66 +375,6 @@ function get_radar_data (data) {
   topic_result.push(topic_value);
   return topic_result;
 }
-
-function Draw_topic(data, radar_div){
-  var topic = [];
-  var html = '';
-  if(data.length == 0){
-      var html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
-      //$('#'+ more_div).append(html);
-      $('#'+ radar_div).append(html);
-      //$('#'+ show_more).empty();
-  }else{
-    };
-  var topic_result = [];
-  topic_result = get_radar_data(data);
-  var topic_name = topic_result[0];
-  var topic_value = topic_result[1];
-  var myChart2 = echarts.init(document.getElementById(radar_div));
-  var option = {
-    // title : {
-    //   text: '用户话题分布',
-    //   subtext: ''
-    // },
-      tooltip : {
-        trigger: 'axis'
-      },
-      toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-      },
-      calculable : true,
-      polar : [
-       {
-        indicator :topic_name,
-        radius : 90
-       }
-      ],
-      series : [
-       {
-        name: '话题分布情况',
-        type: 'radar',
-        itemStyle: {
-         normal: {
-          areaStyle: {
-            type: 'default'
-          }
-         }
-        },
-       data : [
-        {
-         value : topic_value,
-         name : '用户话题分布'}
-       ]
-      }]
-  };
-  myChart2.setOption(option);
-}
 // function Draw_topic(data, radar_div, motal_div, show_more){
 //   var topic = [];
 //   var html = '';
@@ -531,8 +480,8 @@ console.log(url_all);
 Draw_group_influ_weibo(data0,'group_influ_weibo', 'group_influ_weibo_result');
 
 var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
-Draw_topic(topic,'influence_topic');
-Draw_topic(topic,'influence_domain');
+Draw_topic(topic,'influence_topic', 'topic_WordList','showmore_topic_influ');
+Draw_topic(topic,'influence_domain', 'domain_WordList','showmore_domain_influ');
 
 //波及用户
 $(' input[name="user_select"]').click(function(){
