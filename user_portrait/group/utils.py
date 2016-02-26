@@ -209,6 +209,7 @@ def search_group_results(task_name, module):
         result['domain'] = json.loads(source['domain'])
         result['topic'] = json.loads(source['topic'])
     elif module == 'influence':
+        result['influence_his'] = json.loads(source['influence_his'])
         result['influence_trend'] = json.loads(source['influence'])
         result['influence_in_user'] = json.loads(source['influence_in_user'])
         result['influence_out_user'] = json.loads(source['influence_out_user'])

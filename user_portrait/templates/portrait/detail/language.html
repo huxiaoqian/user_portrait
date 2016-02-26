@@ -69,7 +69,28 @@ overflow-y:scroll;
 </style>
 <div style="width:1000px;">
   
-
+    <div class="modal fade" id="language_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="position: absolute;margin-top: 100px;margin-left: 500px;float :none;width: 670px;">
+          <div class="modal-header" style="float:inherit;margin:initial;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">计算说明</h4>
+          </div>
+          <div class="modal-body" style="float:none;">
+            <table style="font-size:16px">
+              <tr><td>本页面中信息更新频率说明如下：</td></tr>
+              <tr><td>1）关键词：周更新。</td></tr>
+              <tr><td>2）事件标签：日更新。</td></tr>
+              <tr><td>3）用户领域分析：月更新。</tr>
+              <tr><td>4）用户话题分布：周更新。</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin:0px;height:10px;width:1000px;">
+        <div style="float:right;cursor: pointer" type="button" data-toggle="modal" data-target="#language_info"><u>计算说明</u></div>
+    </div>  
   <div style="margin-left:20px;width:450px;">
     <div class="showmore" id="key_more" style="float:right;margin-top:30px;font-size:16px;"><a style="cursor:pointer; color:#555555;"  id="showmore_keyWords"><u>查看更多</u></a></div>
     <!-- <div style="margin-right:-50px;font-size:16px;"> -->
@@ -79,11 +100,11 @@ overflow-y:scroll;
     <div id="Language" style="width:300px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;"></div>
     
   </div>
-  <div style="margin-left:40px;width:450px;">
+  <div style="margin-left:80px;width:450px;">
     <div class="showmore" id="hash_more" style="float:right;margin-top:30px;font-size:16px;"><a style="cursor:pointer;color:#555555; "  id="showmore_hashtagWords"><u>查看更多</u></a></div>
     <h3>事件标签</h3>
     <hr>
-    <div id="hashtag_words" style="width:300px;height:280px;margin-top:10px;float:left;margin-left:-50px;margin:-30px 50px 0px 20px;"></div>
+    <div id="hashtag_words" style="width:300px;height:280px;margin-top:10px;float:left;margin-left:-50px;margin:-30px 50px 0px 75px;"></div>
   </div>
   <div id="float-wrap" class="hidden"></div>
   <div id="more_keyWords" class="hidden">
@@ -100,7 +121,7 @@ overflow-y:scroll;
       <hr>
       <div id="preference_domain" style="width:450px;height:300px;"></div>
   	</div>
-    <div style="margin-left:40px;width:450px;">
+    <div style="margin-left:80px;width:450px;">
       <div class="showmore" id="topic_more" style="float:right;margin-top:30px;font-size:16px;"><a style="cursor:pointer;color:#555555; "  id="showmore_topic"><u>查看更多</u></a></div>
       <div id="more_topic" class="hidden">
         <h3 class="title">用户话题<a href="javascript:void(0)" class="closeList" id="close"></a></h3>
