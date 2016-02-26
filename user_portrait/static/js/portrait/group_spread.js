@@ -1,5 +1,7 @@
-function draw_influ_distribution(){
+function draw_influ_distribution(data){
     var mychart1 = echarts.init(document.getElementById('influ_distribution'));
+    var y_axi = data[0];
+    var x_axi = data[1];
     var option = {
     tooltip : {
         trigger: 'axis'
@@ -25,34 +27,71 @@ function draw_influ_distribution(){
         {
             type : 'category',
             name : '人数',
-            data : ['巴西','印尼','美国','印度','中国','100-200']
+            data : y_axi
         }
     ],
     series : [
         {
             name:'2011年',
             type:'bar',
-            data:[18203, 23489, 29034, 104970, 131744, 230230]
+            data:x_axi
         }
     ]
 };
   mychart1.setOption(option);
 }
 
-function show_influ_users(div_name){
+function Show_influ(url,div){
+    that = this;
+    this.ajax_method = 'GET';
+    this.div = div;
+}
+
+Show_influ.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+  Draw_table:function(data){
+    influ_his = data['influence_his'];
+    influ_in_user = data['influence_in_user'];
+    influ_out_user = data['influence_out_user'];
+    influ_trend = data['influence_trend'];
+    draw_influ_distribution(influ_his);
+    show_influ_users('influ_active_users',influ_trend['main_max']);
+    show_influ_users('influ_unactive_users',influ_trend['main_min']);
+    //console.log(influ_trend['main_max']);
+    //console.log(influ_out_user);
+    group_influ(influ_trend);
+  }
+}
+
+var Show_influ = new Show_influ();
+var group_influ_url = '/group/show_group_result/?task_name=媒体&module=influence';
+Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
+function show_influ_users(div_name,data){
     $('#' + div_name).empty();
+    console.log(data);
     var html = '';
     html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < data.length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+       var uname = data[i][0].split('&')[1]
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + uname + '</th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
+    /*
     html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
     html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
     html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
     html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
+    */
     html += '</table>'; 
     $('#'+div_name).append(html);
 }
@@ -74,14 +113,18 @@ function show_more_influ_active_users(div_name){
     $('#'+div_name).append(html);
 }
 
-function group_influ(){
+function group_influ(data){
    var mychart = echarts.init(document.getElementById('group_influ'));
+   ave_data = data['ave_list'];
+   max_data = data['max_list'];
+   min_data = data['min_list'];
+   time_data = data['time_list'];
    var option = {
     tooltip : {
         trigger: 'axis'
     },
     legend: {
-        data:['邮件营销','联盟广告','视频广告']
+        data:['最高','平均','最小']
     },
     toolbox: {
         show : true,
@@ -98,7 +141,7 @@ function group_influ(){
         {
             type : 'category',
             boundaryGap : false,
-            data : ['周一','周二','周三','周四','周五','周六','周日']
+            data : time_data
         }
     ],
     yAxis : [
@@ -108,22 +151,22 @@ function group_influ(){
     ],
     series : [
         {
-            name:'邮件营销',
+            name:'最高',
             type:'line',
             stack: '总量',
-            data:[120, 132, 101, 134, 90, 230, 210]
+            data:max_data
         },
         {
-            name:'联盟广告',
+            name:'平均',
             type:'line',
             stack: '总量',
-            data:[220, 182, 191, 234, 290, 330, 310]
+            data:ave_data
         },
         {
-            name:'视频广告',
+            name:'最小',
             type:'line',
             stack: '总量',
-            data:[150, 232, 201, 154, 190, 330, 410]
+            data:min_data
         }
         
     ]
@@ -399,10 +442,10 @@ function get_radar_data (data) {
 var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
 
 //影响力走势
-draw_influ_distribution();
-group_influ();
-show_influ_users('influ_active_users');
-show_influ_users('influ_unactive_users');
+//draw_influ_distribution();
+//group_influ();
+//show_influ_users('influ_active_users');
+//show_influ_users('influ_unactive_users');
 show_more_influ_active_users('show_rank_influ_users');
 show_more_influ_active_users('show_rank_uninflu_users');
 $('#group_influence_conclusion').append('结论结论结论结论');
