@@ -142,7 +142,7 @@ def classify_sentiment(uid_list,start_date,end_date,flag):
         for ts in range(start_ts,end_ts,dis):
             date_str = time.strftime('%Y-%m-%d',time.localtime(float(ts)))
             uid_weibo = search_text_sentiment(uid_list,date_str,uid_weibo)
-        print uid_weibo
+        #print uid_weibo
         com_result = classify_with_sentiment(uid_weibo,uid_list,start_date,end_date)
         
     return com_result    
