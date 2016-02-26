@@ -3,47 +3,160 @@ table tr th{
 	text-align:center;width:300px
 }
 </style>
-<div id='group' style='overflow-x:hidden;'></div>
+<div class="col-lg-12">
+	<div class="panel panel-default" >
+        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
+            群体内部互动情况
+        </div>
+        <div class="panel-body">
+        	<div id='group' style='overflow-x:hidden;'></div>
+		   	<div class="box-content">
+		     <ul class="nav nav-tabs" id="myTab">
+		         <li class="active" title="群组内转发视图"><a href="#group_in_picture">群组内转发视图</a></li>
+		         <li title="群组内转发列表"><a href="#group_in_table">群组内转发列表</a></li>
+		     </ul>
+		     <div id="myTabContent" class="tab-content">
+		         <div class="tab-pane active" id="group_in_picture" style="margin-top:10px">
+		             <div id='relation_net' style='width:900px;height:350px'>test111111111111</div>                 
+		         </div>
+		         <div class="tab-pane" id="group_in_table" style="margin-top:10px">
+		             <div id='relation_table' style='overflow-x:hidden;width:965px;height:350px'>test22222222222222</div>
+		         </div>          
+		     </div>
+		    </div>
 
-   <div class="box-content">
-     <ul class="nav nav-tabs" id="myTab">
-         <li class="active" title="群组内转发视图"><a href="#group_in_picture">群组内转发视图</a></li>
-         <li title="群组内转发列表"><a href="#group_in_table">群组内转发列表</a></li>
-     </ul>
-     <div id="myTabContent" class="tab-content">
-         <div class="tab-pane active" id="group_in_picture" style="margin-top:10px">
-             <div id='relation_net' style='width:900px;height:350px'>test111111111111</div>                 
-         </div>
-         <div class="tab-pane" id="group_in_table" style="margin-top:10px">
-             <div id='relation_table' style='overflow-x:hidden;width:965px;height:350px'>test22222222222222</div>
-         </div>          
-     </div>
-    </div>
-
-	<div style="font-size:18px;margin-bottom:10px;margin-top:270px">群组成员微博</div>
-	<div>
-		<span>选择日期：</span><span id='group_weibo_date' style="margin-left:10px"></span>
-		<span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="" title="确定选择" onclick="add_group_tag()">确定</button></span>
-    </div>
-	<div id="group_weibo" style="width:960px;margin-top:20px"></div>
-	<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
-		<div class="pageUp">上一页</div>
-	    <div class="pageList">
-	        <ul>
-	            <li>1</li>
-	            <li>2</li>
-	            <li>3</li>
-	            <li>4</li>
-	            <li>5</li>
-	        </ul>
-	    </div>
-	    <div class="pageDown">下一页</div>
+		   <div class="box-content">
+		     <ul class="nav nav-tabs" id="weiboTab">
+		         <li class="active" title="转发微博"><a href="#group_repost_weibo" data-toggle="tab">转发微博</a></li>
+		         <li title="评论微博"><a  href="#group_comment_weibo" data-toggle="tab">评论微博</a></li>
+		     </ul>
+		     <div id="weiboTabContent" class="tab-content">
+		         <div class="tab-pane active" id="group_repost_weibo" style="margin-top:10px">
+					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
+					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
+						<div class="pageUp">上一页</div>
+					    <div class="pageList">
+					        <ul>
+					            <li>1</li>
+					            <li>2</li>
+					            <li>3</li>
+					            <li>4</li>
+					            <li>5</li>
+					        </ul>
+					    </div>
+					    <div class="pageDown">下一页</div>
+					</div>               
+		         </div>     
+		         <div class="tab-pane" id="group_comment_weibo" style="margin-top:10px">
+					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
+					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
+						<div class="pageUp">上一页</div>
+					    <div class="pageList">
+					        <ul>
+					            <li>1</li>
+					            <li>2</li>
+					            <li>3</li>
+					            <li>4</li>
+					            <li>5</li>
+					        </ul>
+					    </div>
+					    <div class="pageDown">下一页</div>
+					</div>               
+		         </div>      
+		     </div>
+		    </div>
+    	</div>
 	</div>
+</div>
+
+<div class="col-lg-12" style="margin-top:15px;">
+	<div class="panel panel-default" >
+        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
+            群体外部互动情况
+        </div>
+        <div class="panel-body">
+        	<div id='out_group' style='overflow-x:hidden;'></div>
+		   	<div class="box-content">
+		     <ul class="nav nav-tabs" id="outTab">
+		         <li class="active" title="群组与外部交互视图"><a href="#group_out_picture" data-toggle="tab">群组与外部交互视图</a></li>
+		         <li title="群组与外交互列表"><a href="#group_out_table" data-toggle="tab">群组与外交互列表</a></li>
+		     </ul>
+		     <div id="outTabContent" class="tab-content">
+		         <div class="tab-pane active" id="group_out_picture" style="margin-top:10px">
+		             <div id='relation_net' style='width:900px;height:350px'>test111111111111</div>                 
+		         </div>
+		         <div class="tab-pane" id="group_out_table" style="margin-top:10px">
+		             <div id='relation_table' style='overflow-x:hidden;width:965px;height:350px'>test22222222222222</div>
+		         </div>          
+		     </div>
+		    </div>
+
+		   <div class="box-content">
+		     <ul class="nav nav-tabs" id="outWeiboTab">
+		         <li class="active" title="转发微博"><a href="#group_out_repost_weibo" data-toggle="tab">转发微博</a></li>
+		         <li title="评论微博"><a  href="#group_out_comment_weibo" data-toggle="tab">评论微博</a></li>
+		     </ul>
+		     <div id="outWeiboTabContent" class="tab-content">
+		         <div class="tab-pane active" id="group_out_repost_weibo" style="margin-top:10px">
+					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
+					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
+						<div class="pageUp">上一页</div>
+					    <div class="pageList">
+					        <ul>
+					            <li>1</li>
+					            <li>2</li>
+					            <li>3</li>
+					            <li>4</li>
+					            <li>5</li>
+					        </ul>
+					    </div>
+					    <div class="pageDown">下一页</div>
+					</div>               
+		         </div>     
+		         <div class="tab-pane" id="group_out_comment_weibo" style="margin-top:10px">
+					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
+					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
+						<div class="pageUp">上一页</div>
+					    <div class="pageList">
+					        <ul>
+					            <li>1</li>
+					            <li>2</li>
+					            <li>3</li>
+					            <li>4</li>
+					            <li>5</li>
+					        </ul>
+					    </div>
+					    <div class="pageDown">下一页</div>
+					</div>               
+		         </div>      
+		     </div>
+		    </div>
+    	</div>
+	</div>
+</div>
+
+<div id="social_conclusion" style="width:100%;"></div>
+
+
 <div style="float:left"><span style="font-size:17px">群组外对该群组转发关系</span><span type="button"data-toggle="modal" data-target="#more_group_out" style="font-size:17px;margin-left:710px;cursor: pointer"><u>查看更多</u></span></div>
 <div id='relation_active_table' style='overflow-x:hidden;width:965px'></div>	
 
 
 <script type="text/javascript">
+function g_social(){
+  this.ajax_method = 'GET';
+}
+g_social.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  }
+}
 //点击跳转页面
 function pageGroup(pageNum,pageCount){
 	switch(pageNum){
@@ -66,13 +179,13 @@ function pageGroup(pageNum,pageCount){
 }
 
 //根据当前选中页生成页面点击按钮
-function page_icon(page,count,eq){
+function page_icon(page,count,eq,div_name){
 	var ul_html = "";
 	for(var i=page; i<=count; i++){
 		ul_html += "<li>"+i+"</li>";
 	}
-	$("#pageGro ul").html(ul_html);
-	$("#pageGro ul li").eq(eq).addClass("on");
+	$("#"+div_name+"pageGro ul").html(ul_html);
+	$("#"+div_name+"pageGro ul li").eq(eq).addClass("on");
 }
 
 //上一页
@@ -115,6 +228,10 @@ function pageDown(pageNum,pageCount){
 	}
 }
 
+$('#weiboTab li a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
 
 function Draw_group(data){
     $('#group').empty();
@@ -126,6 +243,15 @@ function Draw_group(data){
     html += '<th ">参与评论比例<i id="join_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有参与评论群体微博的人数占群体人数的比例"></i>&nbsp;&nbsp;'+ (Math.round(data['5'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
     html += '</table>'; 
     $('#group').append(html);
+}
+function Draw_out_group(data){
+    $('#out_group').empty();
+    html = '';
+    html += '<table><tr><th ">外部用户交互数<i id="closeness_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内节点与外部节点交互的数量"></i>&nbsp;&nbsp;'+ data['1'].toFixed(2) +'(低于平均)</th>';
+    html += '<th ">入库用户占比<i id="weibo_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内单个节点转发群体微博的平均次数"></i>&nbsp;&nbsp;'+ data['2'].toFixed(2) +'(高于平均)</th>';
+    html += '<th ">未入库用户占比<i id="join_tooltip" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="群体内所有参与转发群体微博的人数占群体人数的比例"></i>&nbsp;&nbsp;'+ (Math.round(data['3'] * 10000)/100).toFixed(0) + '%' +'(低于平均)</th></tr>';
+    html += '</table>'; 
+    $('#out_group').append(html);
 }
 
 function draw_relation_net(){
@@ -293,6 +419,141 @@ function draw_more_relation_table(data){
     html += '</table>';
     $('#more_group_in').append(html);
 }
+function draw_group_weibo(data,div_name){
+	console.log(data);
+    page_num = 10;
+    if (data.length < page_num) {
+          page_num = data.length
+          page_group_weibo( 0, page_num, data,div_name);
+      }
+      else {
+          page_group_weibo( 0, page_num, data,div_name);
+          var total_pages = 0;
+          if (data.length % page_num == 0) {
+              total_pages = data.length / page_num;
+          }
+          else {
+              total_pages = Math.round(data.length / page_num) + 1;
+          }
+        }
+    var pageCount = total_pages;
+
+    if(pageCount>5){
+        page_icon(1,5,0);
+    }else{
+        page_icon(1,pageCount,0);
+    }
+    
+    $("#"+div_name+" #pageGro ").on("click",'li',function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($(this).html());
+            pageGroup(pageNum,pageCount);
+        }else{
+            $(this).addClass("on");
+            $(this).siblings("li").removeClass("on");
+        }
+      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
+      console.log(page);         
+      start_row = (page - 1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length)
+          end_row = data.length;
+        page_group_weibo(start_row,end_row,data,div_name);
+    });
+
+    $("#"+div_name+" #pageGro .pageUp").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
+            pageUp(pageNum,pageCount);
+        }else{
+            var index = $("#"+div_name+" #pageGro ul li.on").index();
+            if(index > 0){
+                $("#"+div_name+" #pageGro li").removeClass("on");
+                $("#"+div_name+" #pageGro ul li").eq(index-1).addClass("on");
+            }
+        }
+      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
+      console.log(page);
+      start_row = (page-1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length){
+          end_row = data.length;
+      }
+        page_group_weibo(start_row,end_row,data,div_name);
+    });
+    
+
+    $("#"+div_name+" #pageGro .pageDown").click(function(){
+        if(pageCount > 5){
+            var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
+
+            pageDown(pageNum,pageCount);
+        }else{
+            var index = $("#"+div_name+" #pageGro ul li.on").index();
+            if(index+1 < pageCount){
+                $("#"+div_name+" #pageGro li").removeClass("on");
+                $("#"+div_name+" #pageGro ul li").eq(index+1).addClass("on");
+            }
+        }
+      page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
+      console.log(page);
+      start_row = (page-1)* page_num;
+      end_row = start_row + page_num;
+      if (end_row > data.length){
+          end_row = data.length;
+      }
+        page_group_weibo(start_row,end_row,data,div_name);
+    });
+}
+function page_group_weibo(start_row,end_row,data,div_name){
+    weibo_num = end_row - start_row;
+    $("#"+div_name+" #group_weibo").empty();
+	var html = "";
+    html += '<div class="group_weibo_font">';
+    for (var i = start_row; i < end_row; i += 1){
+        s=i.toString();
+        uid = data[s]['uid'];
+        text = data[s]['text'];
+        uname = data[s]['uname'];
+        timestamp = data[s]['timestamp'];
+        //date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
+        date = '2016';
+        if (i%2 ==0){
+            html += '<div style="background:whitesmoke;font-size:14px">';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>'
+    }
+        else{
+            html += '<div>';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>';
+        }
+    }
+    html += '</div>'; 
+    $("#"+div_name+" #group_weibo").append(html);
+}
+function draw_group_weibo1(data){
+	var div_name = 'group_repost_weibo';
+	draw_group_weibo(data,div_name);
+}
+
+function show_conclusion(data){
+  var html = '';
+  html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;"></span>';
+  //html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>，'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
+  html += data;
+  $("#social_conclusion").append(html);
+}
+
+
 
 Draw_group({'1':0.04,'2':0.08,'3':0.023,'4':0.06,'5':0.012});
+Draw_out_group({'1':0.04,'2':0.08,'3':0.023});
+
+var url = '/attribute/get_top_weibo/?uid=2803301701&date=2013-09-07&style=1';
+var g_social = new g_social();
+show_conclusion('conclusionffff');
+g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo1);
 </script>

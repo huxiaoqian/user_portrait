@@ -35,7 +35,7 @@ from user_portrait.global_utils import be_comment_index_name_pre, be_comment_ind
 from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type
 from user_portrait.global_utils import R_RECOMMENTATION as r_recomment
 from user_portrait.global_config import R_BEGIN_TIME
-from user_portrait.parameter import DAY, WEEK, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
+from user_portrait.parameter import DAY, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
 from user_portrait.parameter import PSY_DESCRIPTION_FIELD, psy_en2ch_dict, psy_description_dict
 from user_portrait.search_user_profile import search_uid2uname
 from user_portrait.filter_uid import all_delete_uid
@@ -1928,14 +1928,6 @@ def search_character_psy(uid):
         
     return uid_sentiment_dict
 
-#use to get psycho_status change status
-#version: write in 2016-02-25
-#input: uid
-#output: change status
-def get_psycho_change(uid):
-    results = {}
-    return results
-
 
 #get psy all ave dict from overview es
 #write in version: 15-12-08
@@ -1947,6 +1939,19 @@ def get_all_ave_psy():
     results = json.loads(overview_result['ave_psy'])
 
     return results
+
+
+
+#use to get character and psycho_status
+#write in version: 16-02-25
+#input: uid
+#output: character and psycho_status
+def search_character_psy(uid):
+    results = {}
+    return results
+
+
+
 
 #use to get tendency and psy
 #write in version: 15-12-08
@@ -2295,7 +2300,7 @@ def get_link_conclusion(link_ratio):
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):
     user_result = []
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     if condition_num > 0:
         try:
@@ -2312,6 +2317,8 @@ def search_portrait(condition_num, query, sort, size):
         except Exception, e:
             raise e
     if result:
+        search_result_max = get_evaluate_max()
+        
         #print 'result:', result
         filter_set = all_delete_uid() # filter_uids_set
         for item in result:
@@ -2319,6 +2326,12 @@ def search_portrait(condition_num, query, sort, size):
             score = item['_score']
 
             if not user_dict['uid'] in filter_set:
+                result_normal_activeness = math.log(user_dict['activeness'] / search_result_max['activeness'] * 9 + 1, 10)
+                result_normal_importance = math.log(user_dict['importance'] / search_result_max['importance'] * 9 + 1, 10)
+                result_normal_influence = math.log(user_dict['influence'] / search_result_max['influence'] * 9 + 1, 10)
+                user_dict['activeness'] = result_normal_activeness*100
+                user_dict['importance'] = result_normal_importance*100
+                user_dict['influence'] = result_normal_influence*100
                 user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 
     return user_result
