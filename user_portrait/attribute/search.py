@@ -1904,8 +1904,8 @@ def search_character_psy(uid):
     except:
         return None
     #get character_sentiment
-    #results['character_sentiment'] = portrait_result['character_sentiment']
-    #results['character_text'] = portrait_result['character_text']
+    results['character_sentiment'] = portrait_result['character_sentiment']
+    results['character_text'] = portrait_result['character_text']
     
     #get psycho_status
     uid_sentiment_dict = {}
@@ -1925,15 +1925,7 @@ def search_character_psy(uid):
                 uid_sentiment_dict[sentiment] += item['doc_count']
             except:
                 uid_sentiment_dict[sentiment] = item['doc_count']
-        
-    return uid_sentiment_dict
-
-#use to get psycho_status change status
-#version: write in 2016-02-25
-#input: uid
-#output: change status
-def get_psycho_change(uid):
-    results = {}
+    results['sentiment_pie'] = uid_sentiment_dict
     return results
 
 
@@ -1947,6 +1939,8 @@ def get_all_ave_psy():
     results = json.loads(overview_result['ave_psy'])
 
     return results
+
+
 
 #use to get tendency and psy
 #write in version: 15-12-08
@@ -2322,10 +2316,10 @@ def search_portrait(condition_num, query, sort, size):
 
             if not user_dict['uid'] in filter_set:
                 result_normal_activeness = math.log(user_dict['activeness'] / search_result_max['activeness'] * 9 + 1, 10)
-                #result_ normal_importance = math.log(user_dict['importance'] / search_result_max['importance'] * 9 + 1, 10)
+                result_normal_importance = math.log(user_dict['importance'] / search_result_max['importance'] * 9 + 1, 10)
                 result_normal_influence = math.log(user_dict['influence'] / search_result_max['influence'] * 9 + 1, 10)
                 user_dict['activeness'] = result_normal_activeness*100
-                #user_dict['importance'] = normal_importance*100
+                user_dict['importance'] = result_normal_importance*100
                 user_dict['influence'] = result_normal_influence*100
                 user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 

@@ -176,10 +176,15 @@ function deleteurl(that, parameter){
             }
         }
         else if(prefix == 'psycho' ){
-            console.log(pars)
-            console.log(pname)
-            var pindex = pname.charAt(pname.length-1);
-            pname = pname.substring(0, pname.length-2);
+            //console.log(pars)
+            //console.log(pname)
+            var pindex = pname.charAt(pname.length-1);//返回最后一个字符
+            if (!isNaN(pindex)){
+                pname = pname.substring(0, pname.length-2);
+            }else{
+                pname = pname.substring(0, pname.length);//提取字符串中介于两个指定下标之间的字符
+            }
+            
             console.log(pname);
             console.log(pindex);
             for (var i = 0;i < pars.length;i++){
