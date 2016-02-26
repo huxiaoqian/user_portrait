@@ -2312,6 +2312,8 @@ def search_portrait(condition_num, query, sort, size):
         except Exception, e:
             raise e
     if result:
+        search_result_max = get_evaluate_max()
+        
         #print 'result:', result
         filter_set = all_delete_uid() # filter_uids_set
         for item in result:
@@ -2319,6 +2321,12 @@ def search_portrait(condition_num, query, sort, size):
             score = item['_score']
 
             if not user_dict['uid'] in filter_set:
+                result_normal_activeness = math.log(user_dict['activeness'] / search_result_max['activeness'] * 9 + 1, 10)
+                #result_ normal_importance = math.log(user_dict['importance'] / search_result_max['importance'] * 9 + 1, 10)
+                result_normal_influence = math.log(user_dict['influence'] / search_result_max['influence'] * 9 + 1, 10)
+                user_dict['activeness'] = result_normal_activeness*100
+                #user_dict['importance'] = normal_importance*100
+                user_dict['influence'] = result_normal_influence*100
                 user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 
     return user_result
