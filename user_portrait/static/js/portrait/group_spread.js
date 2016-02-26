@@ -79,7 +79,7 @@ function show_influ_users(div_name,data){
     console.log(data);
     var html = '';
     html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">频数</th></tr>';
     for (var i = 0; i < data.length; i++) {
        var s = i.toString();
        var m = i + 1;
@@ -366,6 +366,66 @@ function get_radar_data (data) {
   topic_result.push(topic_value);
   return topic_result;
 }
+
+function Draw_topic(data, radar_div){
+  var topic = [];
+  var html = '';
+  if(data.length == 0){
+      var html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      //$('#'+ more_div).append(html);
+      $('#'+ radar_div).append(html);
+      //$('#'+ show_more).empty();
+  }else{
+    };
+  var topic_result = [];
+  topic_result = get_radar_data(data);
+  var topic_name = topic_result[0];
+  var topic_value = topic_result[1];
+  var myChart2 = echarts.init(document.getElementById(radar_div));
+  var option = {
+    // title : {
+    //   text: '用户话题分布',
+    //   subtext: ''
+    // },
+      tooltip : {
+        trigger: 'axis'
+      },
+      toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+      },
+      calculable : true,
+      polar : [
+       {
+        indicator :topic_name,
+        radius : 90
+       }
+      ],
+      series : [
+       {
+        name: '话题分布情况',
+        type: 'radar',
+        itemStyle: {
+         normal: {
+          areaStyle: {
+            type: 'default'
+          }
+         }
+        },
+       data : [
+        {
+         value : topic_value,
+         name : '用户话题分布'}
+       ]
+      }]
+  };
+  myChart2.setOption(option);
+}
 // function Draw_topic(data, radar_div, motal_div, show_more){
 //   var topic = [];
 //   var html = '';
@@ -471,8 +531,8 @@ console.log(url_all);
 Draw_group_influ_weibo(data0,'group_influ_weibo', 'group_influ_weibo_result');
 
 var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
-Draw_topic(topic,'influence_topic', 'topic_WordList','showmore_topic_influ');
-Draw_topic(topic,'influence_domain', 'domain_WordList','showmore_domain_influ');
+Draw_topic(topic,'influence_topic');
+Draw_topic(topic,'influence_domain');
 
 //波及用户
 $(' input[name="user_select"]').click(function(){
