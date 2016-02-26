@@ -85,14 +85,15 @@ def search_result():
         activity_geo = request.args.get('activity_geo', '')
         adkeyword = request.args.get('adkeyword', '')
         hashtag = request.args.get('hashtag', '')
-        psycho_status = request.args.get('psycho_status', '')
+        psycho_status_by_emotion = request.args.get('psycho_status_by_emotion', '')
+        psycho_status_by_word = request.args.get('psycho_status_by_word','')
         psycho_feature = request.args.get('psycho_feature', '')
         domain = request.args.get('domain', '')
         topic = request.args.get('topic', '')
         tag = request.args.get('tag', '')
 
         return render_template('portrait/search_result.html', stype=stype, uid=uid, uname=uname,\
-                location=location, activity_geo=activity_geo, adkeyword=adkeyword, hashtag=hashtag, psycho_status=psycho_status,\
+                location=location, activity_geo=activity_geo, adkeyword=adkeyword, hashtag=hashtag, psycho_status_by_emotion=psycho_status_by_emotion,psycho_status_by_word=psycho_status_by_word,\
                 psycho_feature=psycho_feature, domain=domain, topic=topic, tag=tag)
 
 

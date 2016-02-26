@@ -2295,7 +2295,7 @@ def get_link_conclusion(link_ratio):
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):
     user_result = []
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     if condition_num > 0:
         try:
