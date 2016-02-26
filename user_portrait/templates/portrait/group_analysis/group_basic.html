@@ -37,7 +37,28 @@
 </div>
 
 <script type="text/javascript">
-function draw_sex(){
+function g_basic(){
+  this.ajax_method = 'GET';
+}
+g_basic.prototype = {   //获取数据，重新画表
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  }
+}
+function draw_basic(data){
+	draw_sex(data);
+	draw_verify(data);
+	Draw_totalnumber(data);
+	draw_tag();
+}
+g_basic = new g_basic();
+function draw_sex(data){
 	var mychart1 =  echarts.init(document.getElementById('group_sex')); 
 	var option = {
 	    tooltip : {
@@ -97,8 +118,8 @@ function draw_sex(){
 	                }
 	            },
 	            data:[
-	                {value:335, name:'男'},
-	                {value:310, name:'女'}
+	                {value:data['gender']['1'], name:'男'},
+	                {value:data['gender']['2'], name:'女'}
 	            ]
 	        }
 	    ]
@@ -106,7 +127,17 @@ function draw_sex(){
 	                  
   mychart1.setOption(option);
 }
-function draw_verify(){
+function draw_verify(data){
+	var veri = data['verified'];
+	var yes = 0;
+	var no = 0;
+	for (var k in veri){
+		if (k == ''){
+			no = veri[k];
+		}else{
+			yes = veri[k];
+		}
+	}
 	var mychart1 =  echarts.init(document.getElementById('group_verify')); 
 	var option = {
 	    tooltip : {
@@ -166,21 +197,21 @@ function draw_verify(){
 	                }
 	            },
 	            data:[
-	                {value:335, name:'已认证'},
-	                {value:310, name:'未认证'}
+	                {value:yes, name:'已认证'},
+	                {value:no, name:'未认证'}
 	            ]
 	        }
 	    ]
 	};
   mychart1.setOption(option);
 }
-function Draw_totalnumber(){
+function Draw_totalnumber(data){
     $('#totalnumber').empty();
     html = '';
     html += '<a class="well top-block" style="height: 200px;width: 200px;border-radius: 450px;margin-top: 40px;margin-left: 50px;">';
     html += '<div><img src="/static/img/user_group.png" style="height:40px;margin-top:40px"></div>';
     html += '<div>群组总人数</div>'
-    html += '<div>' + 20 + '</div></a>';
+    html += '<div>' + data['count'] + '</div></a>';
     $('#totalnumber').append(html);
 }
 function draw_tag(){
@@ -223,8 +254,6 @@ function draw_tag(){
   mychart1.setOption(option);
 }
 
-draw_sex();
-draw_verify();
-Draw_totalnumber();
-draw_tag();
+var basic_url='http://219.224.134.213:9042/group/show_group_result/?task_name=%E5%AA%92%E4%BD%93'
+g_basic.call_sync_ajax_request(basic_url,g_basic.ajax_method,draw_basic);
 </script>

@@ -249,7 +249,7 @@ DETECT_EVENT_TEXT_RANGE_ITEM = ['timestamp']
 IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influence', 'domain_v3', \
         'online_pattern', 'keywords_string', 'topic', 'activity_geo', 'uname', 'hashtag', 'keywords', 'fansnum', \
         'psycho_status', 'tendency', 'photo_url', 'verified', 'statusnum', 'gender', 'topic_string',\
-        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark']
+        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark', 'character_text','character_sentiment']
 
 #cron_group
 ACTIVITY_GEO_TOP = 3
@@ -264,8 +264,8 @@ GROUP_ITER_COUNT = 100
 GROUP_INFLUENCE_FILTER_LOW_THRESHOLD = 500
 GROUP_INFLUENCE_FILTER_RANK_RATIO = 0.05
 GROUP_SOCIAL_OUT_COUNT = 100
-GROUP_SENTIMENT_LIST = ['0', '1', '2', '3'] # need to modify
-GROUP_NEGATIVE_SENTIMENT = ['2', '3'] # need to modify
+GROUP_SENTIMENT_LIST = ['0', '1', '2'] # need to modify
+GROUP_NEGATIVE_SENTIMENT = ['2','3','4','5','6'] # need to modify
 GROUP_AVE_ACTIVENESS_RANK_THRESHOLD = [0.3, 0.7]
 GROUP_AVE_INFLUENCE_RANK_THRESHOLD = [0.3, 0.7]
 GROUP_AVE_IMPORTANCE_RANK_THRESHOLD = [0.3, 0.7]
