@@ -11,7 +11,29 @@
     background-color:#FF8C00;width:50px;height: 30px;padding: 5px 8px;color: white;font-weight: bold;border-radius: 0.25em;margin: 5px;display: inline-block;text-align: center;
     }
 </style>
-<div style="width:1000px;margin-bottom:0px;"><h3>情绪变动曲线</h3><hr style="width:1000px;"></div>
+<div class="modal fade" id="thought_info" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="position: absolute;margin-top: 100px;margin-left: 500px;float :none;width: 670px;">
+      <div class="modal-header" style="float:inherit;margin:initial;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">计算说明</h4>
+      </div>
+      <div class="modal-body" style="float:none;">
+        <table style="font-size:16px">
+          <tr><td>本页面中信息更新频率说明如下：</td></tr>
+          <tr><td>1）情绪变动曲线：当日为实时更新，近7天为日更新。</td></tr>
+          <tr><td>2）性格特征：月更新。</td></tr>
+          <tr><td>3）心理状态：日更新。</tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="width:1000px;margin-bottom:0px;">
+    <div style="float:right;cursor: pointer" type="button" data-toggle="modal" data-target="#thought_info"><u>计算说明</u></div>
+    <h3>情绪变动曲线</h3>
+    <hr style="width:1000px;">
+</div>
 <div style="width:680px;height:470px;">
     <div style="float: right;">
        <input type="radio" name="time-type" value='day' onclick="choose_time()" style="width:15px;height:15px;margin-left:8px;" checked >本日
@@ -32,7 +54,7 @@
 <div style="width:998px;margin-top:20px;">
 	<div>
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
-            <div style="width:100%;font-size:24px;margin:0px;">性格特征<hr style="margin-top:10px;margin-right:20px;" /></div>
+            <div style="width:100%;font-size:24px;margin:0px;"><h3>性格特征</h3><hr style="margin-top:10px;margin-right:20px;" /></div>
             <!-- <div id="sen_trend" style="height:350px;width:450px;"></div> -->
             <div id="character_sent" style='font-size:15px;margin-top:95px;'>
                 <div>根据情绪特征划分为：</div>
@@ -44,7 +66,7 @@
             </div>
         </div>
 		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
-            <div style="width:100%;font-size:24px;margin:0px;">心理状态
+            <div style="width:100%;font-size:24px;margin:0px;"><h3>心理状态</h3>
                 <hr style="margin-top:10px;margin-right:20px;" />
             </div>
 		    <div id="pie_emotion" style="height:300px;width:400px;margin-top:25px;"></div>
