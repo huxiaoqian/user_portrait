@@ -125,7 +125,7 @@ def ajax_get_social_inter_content():
     results = {}
     uid1 = request.args.get('uid1', '')
     uid2 = request.args.get('uid2', '')
-    results = get_social_inter_content(uid1, uid2)
+    results = get_social_inter_content(uid1, uid2, 'in')
     return json.dumps(results)
 
 #show group members out-interaction weibo content
@@ -136,7 +136,7 @@ def ajax_get_social_out_content():
     results = {}
     uid1 = request.args.get('uid1', '')
     uid2 = request.args.get('uid2', '')
-    results = get_social_inter_content(uid1, uid2)
+    results = get_social_inter_content(uid1, uid2, 'out')
     return json.dumps(results)
 
 #show group members sentiment weibo content

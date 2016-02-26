@@ -517,7 +517,7 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
 #show group members interaction weibo content
 #input: uid1, uid2
 #ouput: weibo_list
-def get_social_inter_content(uid1, uid2):
+def get_social_inter_content(uid1, uid2, type_mark):
     weibo_list = []
     #get two type relation about uid1 and uid2
     #search weibo list
@@ -547,10 +547,11 @@ def get_social_inter_content(uid1, uid2):
         flow_text_index_name = flow_text_index_name_pre + str(iter_date)
         query = []
         query.append({'bool':{'must':[{'term':{'uid':uid1}}, {'term':{'directed_uid': int(uid2)}}]}})
-        query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid2)}}]}})
+        if type_mark=='out':
+            query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid1)}}]}})
         try:
             flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
-                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}]})['hits']['hits']
+                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}], 'size':MAX_VALUE})['hits']['hits']
         except:
             flow_text_result = []
         for flow_text in flow_text_result:
