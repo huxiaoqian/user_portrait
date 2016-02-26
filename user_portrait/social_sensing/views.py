@@ -20,7 +20,7 @@ from delete_es import delete_es
 
 mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 
-portrait_index_name = "user_portrait_1222"
+#portrait_index_name = "user_portrait_1222"
 
 # 前台设置好的参数传入次函数，创建感知任务,放入es, 从es中读取所有任务信息放入redis:sensing_task 任务队列中
 # parameters: task_name, create_by, stop_time, remark, social_sensors, keywords
@@ -339,5 +339,21 @@ def ajax_get_text_detail():
     results = get_text_detail(task_name, ts, text_type)
 
     return json.dumps(results)
+
+# 返回某个预警点的微博主题, 没有则为空
+@mod.route('/get_clustering_topic/')
+def ajax_get_clustering_topic():
+    task_name = request.args.get('task_name','') # task_name
+    ts = int(request.args.get('ts', '')) # timestamp: 123456789
+
+    task_detail = es.get(index=index_sensing_task, doc_type=task_name, id=ts)['_source']
+    burst_reason = task_detail['burst_reason']
+    if burst_reason:
+        topic_list = task_detail.get("clustering_topic", [])
+        if topic_list:
+            topic_list = json.loads(topic_list)
+    print topic_list
+
+    return json.dumps(topic_list)
 
 
