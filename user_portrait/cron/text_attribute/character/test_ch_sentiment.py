@@ -51,7 +51,7 @@ def classify_without_sentiment(uid_weibo,uid_list,start_date,end_date):
     uid_sentiment = dict()
     min_ts = int(time.mktime(time.strptime(start_date,'%Y-%m-%d')))
     max_ts = int(time.mktime(time.strptime(end_date,'%Y-%m-%d')))
-    for uid,text,s,ts in uid_weibo:
+    for uid,text,ts in uid_weibo:
         sentiment = triple_classifier({'text':text})
         date_str = time.strftime('%Y-%m-%d',time.localtime(float(ts)))
         if uid_sentiment.has_key(uid):

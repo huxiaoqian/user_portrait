@@ -27,11 +27,14 @@ from domain.test_domain_v2 import domain_classfiy
 from topic.test_topic import topic_classfiy
 # compute user psy
 from psy.new_psy import psychology_classfiy
-
+# compute user character
+from character.test_ch_sentiment import classify_sentiment
+from character.test_ch_topic import classify_topic
 
 sys.path.append('../../')
 from global_utils import es_user_profile, profile_index_name, profile_index_type
-
+from parameter import CHARACTER_TIME_GAP, DAY
+from time_utils import ts2datetime, datetime2ts
 
 #abandon in version: 15-12-08
 '''
@@ -332,8 +335,7 @@ def test_cron_text_attribute(user_weibo_dict):
     #user_weibo_dict = read_user_weibo()
     uid_list = user_weibo_dict.keys()
     print 'user count:', len(uid_list)
-    
-    start_ts = time.time()
+    '''
     #get user flow information: hashtag, activity_geo, keywords
     print 'get flow result'
     flow_result = get_flow_information(uid_list)
@@ -362,12 +364,23 @@ def test_cron_text_attribute(user_weibo_dict):
     print 'get psy result'
     psy_results_dict = psychology_classfiy(user_weibo_dict)
     print 'psy result len:', len(psy_results_dict)
+    '''
     #get user character attribute
     print 'get character result'
     #type_mark = 0/1 for identify the task input status---just sentiment or text
-    #character1_results_dict = character1_classfiy(uid_list, start_ts, end_ts, type_mark)
-    #character2_results_dict = character2_classfiy(uid_list, start_ts, end_ts, type_mark)
-    print 'character result len:'
+    now_ts = time.time()
+    #test
+    now_ts = datetime2ts('2013-09-08')
+    character_end_time = ts2datetime(now_ts - DAY)
+    character_start_time = ts2datetime(now_ts - DAY * CHARACTER_TIME_GAP)
+    character_type_mark = 1
+    character_sentiment_result_dict = classify_sentiment(uid_list, character_start_time, character_end_time, character_type_mark)
+    character_type_mark = 1
+    character_text_result_dict = classify_topic(uid_list, character_start_time, character_end_time, character_type_mark)
+    print 'character result len:', len(character_sentiment_result_dict), len(character_text_result_dict)
+    print 'character_sentiment_result:', character_sentiment_result_dict
+    print 'character_text_result:', character_text_result_dict
+    '''
     #get user fansnum max
     fansnum_max = get_fansnum_max()
     #get user activeness by bulk_action
@@ -378,12 +391,15 @@ def test_cron_text_attribute(user_weibo_dict):
     print 'get influence'
     influence_results = get_influence(uid_list)
     print 'influence results len:', len(influence_results)
+    '''
     # compute text attribute
     user_set = set()
     bulk_action = []
     count = 0
     for user in user_weibo_dict:
         count += 1
+        results = {}
+        '''
         user_set.add(user)
         weibo_list = user_weibo_dict[user]
         uname = weibo_list[0]['uname']
@@ -407,6 +423,14 @@ def test_cron_text_attribute(user_weibo_dict):
         user_label_dict = domain_results_label[user]
         results['domain_v3'] = json.dumps(user_domain_dict) # [label1_en, label2_en, label3_en]
         results['domain'] = domain_en2ch(user_label_dict)      # label_ch
+        '''
+        #add user character_sentiment attribute
+        character_sentiment = character_sentiment_result_dict[user]
+        results['character_sentiment'] = character_sentiment
+        #add user character_text attribtue
+        character_text = character_text_result_dict[user]
+        results['character_text'] = character_text
+        '''
         #add user psy attribute
         user_psy_dict = [psy_results_dict[user]]
         results['psycho_status'] = json.dumps(user_psy_dict)
@@ -422,11 +446,15 @@ def test_cron_text_attribute(user_weibo_dict):
         results['activeness'] = get_activeness(user_activeness_geo, user_activeness_time)
         #add user_evaluate attribute---influence
         results['influence'] = influence_results[user]
+        '''
         #bulk_action
-        action = {'index':{'_id': str(user)}}
-        bulk_action.extend([action, results])
+        #action = {'index':{'_id': str(user)}}
+        action = {'update':{'_id': str(user)}}
+        bulk_action.extend([action, {'doc':results}])
+        #bulk_action.extend([action, results])
         if count >= 20:
             mark = save_user_results(bulk_action)
+            print 'bulk_action:', bulk_action
             bulk_action = []
             count = 0
     
@@ -435,6 +463,8 @@ def test_cron_text_attribute(user_weibo_dict):
     print 'user_set len:', len(user_set)
     print 'count:', count
     print 'bulk_action count:', len(bulk_action)
+    
+    print 'bulk_action:', bulk_action
     
     if bulk_action:
         status = save_user_results(bulk_action)
@@ -475,5 +505,5 @@ def add_domain():
 if __name__=='__main__':
     print 'test'
     bulk_action = test_cron_text_attribute()
-    print 'bulk_action:', bulk_action
+    #print 'bulk_action:', bulk_action
     #add_domain()
