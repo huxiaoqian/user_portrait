@@ -63,6 +63,10 @@ def mappings_sensing_task(task_name):
                     "geo":{
                         "type": "string",
                         "index": "no"
+                    },
+                    "clustering_topic":{
+                        "type": "string",
+                        "index": "no"
                     }
                 }
             }
