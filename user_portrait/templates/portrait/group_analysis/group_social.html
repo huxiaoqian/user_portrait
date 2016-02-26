@@ -706,10 +706,9 @@ function draw_group_weibo1(data){
 
 function show_conclusion(data){
   var html = '';
-  html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;">';
+  html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;"></span>';
   //html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>，'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
   html += data['density_description'];
-  html += '</span>';
   $("#social_conclusion").append(html);
 }
 
