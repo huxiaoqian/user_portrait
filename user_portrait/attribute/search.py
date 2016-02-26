@@ -1904,8 +1904,8 @@ def search_character_psy(uid):
     except:
         return None
     #get character_sentiment
-    #results['character_sentiment'] = portrait_result['character_sentiment']
-    #results['character_text'] = portrait_result['character_text']
+    results['character_sentiment'] = portrait_result['character_sentiment']
+    results['character_text'] = portrait_result['character_text']
     
     #get psycho_status
     uid_sentiment_dict = {}
