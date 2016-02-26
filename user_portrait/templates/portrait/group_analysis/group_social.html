@@ -2,6 +2,7 @@
 table tr th{
 	text-align:center;width:300px
 }
+
 </style>
 <div class="col-lg-12">
 	<div class="panel panel-default" >
@@ -58,14 +59,15 @@ table tr th{
 		   	<div class="box-content">
 		     <ul class="nav nav-tabs" id="outTab">
 		         <li class="active" title="群组与外部交互视图"><a href="#group_out_picture" data-toggle="tab">群组与外部交互视图</a></li>
-		         <li title="群组与外交互列表"><a href="#group_out_table" data-toggle="tab">群组与外交互列表</a></li>
+		         <li title="群组与外交互列表"><a href="#group_out_tables" data-toggle="tab">群组与外交互列表</a></li>
 		     </ul>
 		     <div id="outTabContent" class="tab-content">
 		         <div class="tab-pane active" id="group_out_picture" style="margin-top:10px">
-		             <div id='relation_net' style='width:900px;height:350px'>test111111111111</div>                 
+		             <div id='relation_out_net' style='width:900px;height:350px'></div>                 
 		         </div>
-		         <div class="tab-pane" id="group_out_table" style="margin-top:10px">
-		             <div id='group_in_table' style='overflow-x:hidden;height:350px'>test22222222222222</div>
+		         <div class="tab-pane" id="group_out_tables" style="margin-top:10px">
+		         	<div type="button" data-toggle="modal" data-target="#modal_group_out_table" style="font-size:16px;cursor:pointer;margin-left: 820px;margin-bottom: 5px;"><u>查看更多</u></div>
+		            <div id='group_out_table' style='overflow-x:hidden;height:350px'></div>
 		         </div>          
 		     </div>
 		    </div>
@@ -128,9 +130,19 @@ table tr th{
     </div>
   </div>
 </div>
-
-<div style="float:left"><span style="font-size:17px">群组外对该群组转发关系</span><span type="button"data-toggle="modal" data-target="#more_group_out" style="font-size:17px;margin-left:710px;cursor: pointer"><u>查看更多</u></span></div>
-<div id='relation_active_table' style='overflow-x:hidden;width:965px'></div>	
+<div class="modal fade" id="modal_group_out_table" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width:950px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组外转发列表</h4>
+      </div>
+      <div class="modal-body" id='group_out_more_table'>
+      </div>
+    </div>
+  </div>
+</div>
+	
 
 
 <script type="text/javascript">
@@ -243,36 +255,36 @@ function Draw_out_group(data){
     $('#out_group').append(html);
 }
 
-function draw_relation_net(data){
+function draw_relation_net(data,name){
     var total_content = [];
     var source_content = []
     console.log('1');
-    for (var i=0;i<data['social_in_record'].length;i++){
+    for (var i=0;i<data[name].length;i++){
         var s=i.toString();
         var content = {};
         content['category'] = 1;
-        content['name'] = data['social_in_record'][s]['3'];
-        content['id'] = data['social_in_record'][s]['0'];
+        content['name'] = data[name][s]['3'];
+        content['id'] = data[name][s]['0'];
         content['value'] = 7;
         content['draggable'] = true;
         content['symbolSize'] = [60, 30];
         total_content.push(content);
         content = {};
         content['category'] = 1;
-        content['name'] = data['social_in_record'][s]['4'];
-        content['id'] = data['social_in_record'][s]['1'];
+        content['name'] = data[name][s]['4'];
+        content['id'] = data[name][s]['1'];
         content['value'] = 7;
         content['draggable'] = true;
         content['symbolSize'] = [60, 30];
         total_content.push(content);
 
         var relation = {};
-        relation['source'] = data['social_in_record'][s]['4'];
-        relation['target'] = data['social_in_record'][s]['3'];
-        relation['weight'] = data['social_in_record'][s]['2'];
-        //relation['name'] = data['social_in_record'][s]['4'];
+        relation['source'] = data[name][s]['4'];
+        relation['target'] = data[name][s]['3'];
+        relation['weight'] = data[name][s]['2'];
+        //relation['name'] = data[name][s]['4'];
 
-        var width = data['social_in_record'][s]['2'];
+        var width = data[name][s]['2'];
         var normal = {'width':width};
         var itemStyle= {'normal':normal};
         relation['itemStyle'] = itemStyle;
@@ -337,7 +349,7 @@ function draw_relation_net(data){
             gravity: 1.1,
             scaling: 1.2,
             draggable: false,
-            linkSymbol: 'arrow',
+            linkSymbol: 'none',
             steps: 10,
             coolDown: 0.9,
             //preventOverlap: true,
@@ -376,32 +388,202 @@ function draw_relation_net(data){
             }
     )
 }
+function draw_relation_out_net(data,name){
+    var total_content = [];
+    var source_content = []
+    for (var i=0;i<data[name].length;i++){
+        var s=i.toString();
+        var content = {};
+        content['category'] = 1;
+        content['name'] = data[name][s]['4'];
+        content['id'] = data[name][s]['0'];
+        content['value'] = data[name][s]['3'];
+        content['draggable'] = true;
+        //content['symbolSize'] = [60, 30];
+        total_content.push(content);
+        content = {};
+        content['category'] = 1;
+        content['name'] = data[name][s]['5'];
+        content['id'] = data[name][s]['1'];
+        content['value'] = data[name][s]['3'];
+        content['draggable'] = true;
+        //content['symbolSize'] = [60, 30];
+        total_content.push(content);
 
+        var relation = {};
+        relation['source'] = data[name][s]['4'];
+        relation['target'] = data[name][s]['5'];
+        relation['weight'] = data[name][s]['2'];
+        //relation['name'] = data[name][s]['4'];
+
+        var width = data[name][s]['2'];
+        var normal = {'width':width};
+        var itemStyle= {'normal':normal};
+        relation['itemStyle'] = itemStyle;
+
+        source_content.push(relation);
+    }
+
+    var option = {
+    tooltip : {
+        trigger: 'item',
+        formatter: '{a} : {b}'
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            restore : {show: true},
+            magicType: {show: true, type: ['force', 'chord']},
+            saveAsImage : {show: true}
+        }
+    },
+    legend: {
+        x: 'left',
+        data:['']
+    },
+    series : [
+        {
+            type:'force',
+            name : "",
+            ribbonType: false,
+            categories : [
+                {
+                    name:'微博用户'
+                }
+            ],
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        textStyle: {
+                            color: '#333'
+                        }
+                    },
+                    nodeStyle : {
+                        brushType : 'both',
+                        borderColor : 'rgba(255,215,0,0.4)',
+                        borderWidth : 1
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: false
+                        // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                    },
+                    nodeStyle : {
+                        //r: 30
+                    },
+                    linkStyle : {}
+                }
+            },
+            minRadius : 15,
+            maxRadius : 25,
+            gravity: 1.1,
+            scaling: 1.2,
+            draggable: false,
+            linkSymbol: 'none',
+            steps: 10,
+            coolDown: 0.9,
+            //preventOverlap: true,
+            nodes:total_content,
+            links : source_content
+        }
+    ]
+	};
+    var myChart = echarts.init(document.getElementById('relation_out_net'));
+    myChart.setOption(option);
+    require([
+            'echarts'
+        ],
+        function(ec){
+            var ecConfig = require('echarts/config');
+            function focus(param) {
+                var data = param.data;
+                var links = option.series[0].links;
+                var nodes = option.series[0].nodes;
+                if (
+                    data.source != null
+                    && data.target != null
+                ) { //点击的是边
+                    var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+                    var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+                    // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+                } else{
+                        window.open("/index/personal/?uid=" + data.id);                 
+                }
+            }
+                myChart.on(ecConfig.EVENT.CLICK, focus)
+
+                myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+                    //console.log(myChart.chart.force.getPosition());
+                });
+            }
+    )
+}
 function draw_in_table(data){
     $('#group_in_table').empty();
     var s = '';
     var html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><td style="text-align:center">原始微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">转发微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img  src= "/static/img/arrow_geo.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
     $('#group_in_table').append(html);
+}
+function draw_out_table(data){
+    $('#group_out_table').empty();
+    var s = '';
+    var html = '';
+    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center">转发量</td></tr>';
+    for (var i=0;i<5;i++){
+        s =i.toString();
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['5'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['2'] +'</td></tr>';
+    };
+    html += '</table>';
+    $('#group_out_table').append(html);
 }
 
 function draw_more_in_table(data){
     $('#group_in_more_table').empty();
     var html = '';
-    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><td style="text-align:center">原始微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">转发微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html = '<table id="group_more_in" class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="height: 300px;    overflow-y: scroll;">';
+    html += '<tr><td style="text-align:center">原始微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_in_record'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img  src= "/static/img/arrow_geo.png" style="height:20px"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
     $('#group_in_more_table').append(html);
+    // $('#group_more_in').dataTable({
+    //    "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+    //    "sPaginationType": "bootstrap",
+    //    "oLanguage": {
+    //        "sLengthMenu": "_MENU_ 每页"
+    //    }
+    // });
+}
+function draw_more_out_table(data){
+    $('#group_out_more_table').empty();
+    var html = '';
+    html = '<table  class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="height: 300px;    overflow-y: scroll;">';
+  	html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center">转发量</td></tr>';
+    for (var i=0;i<data['social_out_record'].length;i++){
+        s =i.toString();
+        html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['5'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['2'] +'</td></tr>';
+    };
+    html += '</table>';
+    $('#group_out_more_table').append(html);
+    // $('#group_more_out').dataTable({
+    //    "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+    //    "sPaginationType": "bootstrap",
+    //    "oLanguage": {
+    //        "sLengthMenu": "_MENU_ 每页"
+    //    }
+    // });
 }
 function draw_group_weibo(data,div_name){
     page_num = 10;
@@ -524,9 +706,10 @@ function draw_group_weibo1(data){
 
 function show_conclusion(data){
   var html = '';
-  html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;"></span>';
+  html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;">';
   //html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>，'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
-  html += data;
+  html += data['density_description'];
+  html += '</span>';
   $("#social_conclusion").append(html);
 }
 
@@ -535,12 +718,15 @@ function draw_social(data){
 	Draw_out_group(data);
 	draw_in_table(data);
 	draw_more_in_table(data);
-	draw_relation_net(data);
+	draw_more_out_table(data);
+	draw_relation_net(data,'social_in_record');
+	draw_relation_out_net(data,'social_out_record');
+	draw_out_table(data);
+	show_conclusion(data);
 }
 
 
 var social_url = '/group/show_group_result/?task_name=%E5%AA%92%E4%BD%93&module=social';
 var g_social = new g_social();
-show_conclusion('conclusionffff');
 g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
 </script>
