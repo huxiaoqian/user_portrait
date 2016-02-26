@@ -34,45 +34,23 @@
 		<div style="height:380px;width:450px;float:left;margin-top:-20px">
             <div style="width:100%;font-size:24px;margin:0px;">性格特征<hr style="margin-top:10px;margin-right:20px;" /></div>
             <!-- <div id="sen_trend" style="height:350px;width:450px;"></div> -->
-            <div style='font-size:15px;margin-top:95px;'>
+            <div id="character_sent" style='font-size:15px;margin-top:95px;'>
                 <div>根据情绪特征划分为：</div>
                 <span class="group_block">积极</span> <span style="background-color:gray;" class="group_block">中性</span> <span style="background-color:gray;" class="group_block">消极</span>
             </div>
-            <div style='font-size:15px;'>
+            <div id="character_text" style='font-size:15px;'>
                 <div>根据语言特征划分为：</div>
                 <span  class="group_block">积极</span> <span style="background-color:gray;" class="group_block">中性</span>
             </div>
         </div>
 		<div style="height:380px;width:450px;float:right;margin-top:-20px;margin-left:98px;">
             <div style="width:100%;font-size:24px;margin:0px;">心理状态
-                <!--
-                <span type="button"data-toggle="modal" data-target="#psy_more"  style='font-size:16px;margin-left:270px;cursor: pointer'><u>查看更多</u></span>
-                -->
                 <hr style="margin-top:10px;margin-right:20px;" />
             </div>
 		    <div id="pie_emotion" style="height:300px;width:400px;margin-top:25px;"></div>
 		</div>
 	</div>	
 </div>
-<!--
-<div class="modal fade" id="psy_more" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="position: absolute;margin-top: 100px;margin-left: 500px;float :none;width: 400px;">
-      <div class="modal-header" style="float:inherit;margin:initial;">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">心理状态</h4>
-      </div>
-      <div class="modal-body" style="float:none;" id="psy0">
-      </div>
-      <div class="modal-footer" style="width: 380px;">
-        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-      </div>
-    </div>
-  </div>
-</div>
--->
-
-
 
 <script src="/static/js/echarts-all.js"></script>
 <script type="text/javascript">
@@ -252,21 +230,52 @@ function emotions(data){
 function draw_character(data){
     console.log('111');
     console.log(data);
+    var sentiment_dict = ['冲动', '抑郁', '未知'];
+    var text_dict = ['批判', '未知'];
+    var character_sent = data['character_sentiment'];
+    var character_text = data['character_text'];
+    var html = '';
+    html += '<div>根据情绪特征划分为：</div>';
+    for (var i = 0; i < sentiment_dict.length; i++){
+        var key = sentiment_dict[i]
+        if (key == character_sent){
+            html += '<span class="group_block">' + key + '</span>';
+        }
+        else{
+            html += '<span style="background-color:gray;" class="group_block">' + key + '</span>';
+        }
+    }
+    $('#character_sent').html(html);
+    var html = '';
+    html += '<div>根据语言特征划分为：</div>';
+    for (var i = 0; i < text_dict.length; i++){
+        var key = text_dict[i];
+        if (key == character_text){
+            html += '<span class="group_block">' + key + '</span>';
+        }
+        else{
+            html += '<span style="background-color:gray;" class="group_block">' + key + '</span>';
+        }
+    }
+    $('#character_text').html(html);
+
+
+    var pie_data = data['sentiment_pie'];
     var character_dict = {0:'中性', 1:'积极', 2:'生气', 3:'焦虑', 4:'悲伤', 5:'厌恶', 6:'消极其他'};
     var neg = 0;
     var first_content = [];
     var second_content = [];
     for (var i = 0;i < 7; i++){
-        if (data[i]){
+        if (pie_data[i]){
             var nod = {};
             nod['name'] = character_dict[i];
-            nod['value'] = data[i];
+            nod['value'] = pie_data[i];
             second_content.push(nod);
             if ((i == 0) || (i == 1)){
                 first_content.push(nod);
             }
             else{
-                neg += data[i];
+                neg += pie_data[i];
             }
         }
     }
