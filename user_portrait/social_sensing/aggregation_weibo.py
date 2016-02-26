@@ -432,7 +432,7 @@ def get_forward_numerical_info(task_name, ts, keywords_list):
 
     # check if detail es of task exists
     doctype = task_name
-    index_exist = es_user_portrait.exists(index_sensing_task, doctype)
+    index_exist = es_user_portrait.indices.exists_type(index_sensing_task, doctype)
     if not index_exist:
         print "new create task detail index"
         mappings_sensing_task(task_name)
@@ -662,22 +662,8 @@ def specific_keywords_burst_dection(task_detail):
         text_list = []
         if all_mid_list:
             origin_sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": all_mid_list}, fields=["mid", "text"])["docs"]
-            sensing_query_body = {
-                "query":{
-                    "filtered":{
-                        "filter":{
-                            "terms":{
-                                "root_mid": all_mid_list
-                            }
-                        }
-                    }
-                },
-                "size": 50000
-            }
-            search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=sensing_query_body)["hits"]["hits"]
             if origin_sensing_text:
                 for item in origin_sensing_text:
-                    origin_text_dict = dict() # 原创微博文本, mid:text
                     if item["found"]:
                         iter_mid = item["fields"]["mid"][0]
                         iter_text = item["fields"]["text"][0]
@@ -685,15 +671,6 @@ def specific_keywords_burst_dection(task_detail):
                         temp_dict["mid"] = iter_mid
                         temp_dict["text"] = iter_text
                         text_list.append(temp_dict) # 整理后的文本，mid，text
-                        origin_text_dict[iter_mid] = iter_text
-                if search_results:
-                    for item in search_results:
-                        iter_text = item['_source']["text"] + origin_text_dict.get(item['_source']['root_mid'], '') #将原创微博的text加入
-                        iter_mid = item['_source']['mid']
-                        temp_dict = dict()
-                        temp_dict["mid"] = iter_mid
-                        temp_dict["text"] = iter_text
-                        text_list.append(temp_dict)
 
 
         feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
@@ -707,8 +684,8 @@ def specific_keywords_burst_dection(task_detail):
         if sorted_dict:
             for item in sorted_dict:
                 topic_list.append(word_label[item[0]])
-        print topic_list
-        sys.exit(1)
+        #print topic_list
+        #sys.exit(1)
 
     results = dict()
     results['origin_weibo_number'] = current_origin_count
@@ -723,6 +700,8 @@ def specific_keywords_burst_dection(task_detail):
     results['important_users'] = json.dumps(filter_important_list)
     results['burst_reason'] = burst_reason
     results['timestamp'] = ts
+    if burst_reason:
+        results['clustering_topic'] = json.dumps(topic_list)
     # es存储当前时段的信息
     doctype = task_name
     es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
