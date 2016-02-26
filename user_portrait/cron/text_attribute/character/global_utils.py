@@ -29,12 +29,12 @@ def load_words():
 
     return word_dict
 
-WORD_DICT = load_words()
+WORD_DICT = set(load_words())
 
-TOPIC_LIST = ['politics','anti-corruption','fear-of-violence','peace','religion']
+TOPIC_LIST = set(['politics','anti-corruption','fear-of-violence','peace','religion'])
 EVENT_STA = 500#以一周为单位计算结果
 ZERO_STA = 0.04
-RATE_STA = 0.3
+TOTAL_STA = 0.2324412
 COUNT_STA = 2#以一周为单位计算结果
 MAX_SIZE = 9999999
 
