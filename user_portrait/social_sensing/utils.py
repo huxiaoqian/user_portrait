@@ -33,17 +33,17 @@ def get_text_detail(task_name, ts, text_type, size=100):
     sensitive_words_list = json.loads(task_detail['sensitive_words'])
     social_sensors = json.loads(task_detail["social_sensors"])
 
-    print social_sensors
+    #print social_sensors
     if int(text_type) == 0: # 原创微博
         results = get_origin_weibo_detail(ts, social_sensors, keywords_list,  size)
 
     elif int(text_type) == 1: # 转发微博
-        #results = get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, 3)
-        results = get_origin_weibo_detail(ts, social_sensors, keywords_list, size, 3)
+        results = get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, 3)
+        #results = get_origin_weibo_detail(ts, social_sensors, keywords_list, size, 3)
 
     elif int(text_type) == 2: # 评论微博
-        #results = get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, 2)
-        results = get_origin_weibo_detail(ts, social_sensors, keywords_list, size, 2)
+        results = get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, 2)
+        #results = get_origin_weibo_detail(ts, social_sensors, keywords_list, size, 2)
 
     elif int(text_type) == 3: # 积极微博
         results = get_positive_weibo_detail(ts, social_sensors, keywords_list, size, "1")

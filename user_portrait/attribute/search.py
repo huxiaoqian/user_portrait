@@ -35,7 +35,7 @@ from user_portrait.global_utils import be_comment_index_name_pre, be_comment_ind
 from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type
 from user_portrait.global_utils import R_RECOMMENTATION as r_recomment
 from user_portrait.global_config import R_BEGIN_TIME
-from user_portrait.parameter import DAY, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
+from user_portrait.parameter import DAY, WEEK, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
 from user_portrait.parameter import PSY_DESCRIPTION_FIELD, psy_en2ch_dict, psy_description_dict
 from user_portrait.search_user_profile import search_uid2uname
 from user_portrait.filter_uid import all_delete_uid
@@ -45,6 +45,7 @@ from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TR
 from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
                                     ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
 from user_portrait.parameter import SENTIMENT_DICT,  ACTIVENESS_TREND_TAG_VECTOR
+from user_portrait.parameter import SENTIMENT_SECOND
 
 r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -1421,7 +1422,10 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
     flow_text_index_name = flow_text_index_name_pre + time_date
     query = []
     query.append({'term': {'uid': uid}})
-    query.append({'term': {'sentiment': sentiment}})
+    if sentiment != '2':
+        query.append({'term': {'sentiment': sentiment}})
+    else:
+        query.append({'terms':{'sentiment': SENTIMENT_SECOND}})
     query.append({'range':{'timestamp':{'from':start_ts, 'to':end_ts}}})
     try:
         flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort':'timestamp', 'size':1000000})['hits']['hits']
@@ -1801,9 +1805,9 @@ def search_preference_attribute(uid):
 #input: uid, time_type
 #output: sentiment_trend
 def search_sentiment_trend(uid, time_type, now_ts):
-    results = {'1':{}, '2':{}, '3':{}, '0':{}, 'time_list':[]}
-    trend_results = {'1':[], '2':[], '3':[], '0':[]}
-    sentiment_list = ['1', '2', '3', '0']
+    results = {'1':{}, '2':{}, '0':{}, 'time_list':[]}
+    trend_results = {'1':[], '2':[], '0':[]}
+    sentiment_list = ['1', '2', '0']
     
     now_date = ts2datetime(now_ts)
     now_date_ts = datetime2ts(now_date)
@@ -1818,8 +1822,9 @@ def search_sentiment_trend(uid, time_type, now_ts):
             timestamp = source['timestamp']
             time_segment = int((timestamp - now_date_ts) / HALF_HOUR) * HALF_HOUR + now_date_ts
             #print 'timestamp, time_segment:', timestamp, ts2date(timestamp), ts2date(time_segment), time_segment
-            sentiment = source['sentiment']
-            #print 'sentiment', sentiment, type(sentiment)
+            sentiment = str(source['sentiment'])
+            if sentiment != '0' and sentiment != '1':
+                sentiment = '2'
             try:
                 results[str(sentiment)][time_segment] += 1
             except:
@@ -1860,7 +1865,9 @@ def search_sentiment_trend(uid, time_type, now_ts):
                 #timestamp = source['timestamp']
                 #time_segment = int((timestamp - iter_date_ts) / HALF_HOUR) * HALF_HOUR + iter_date_ts
                 time_segment = iter_date_ts
-                sentiment = source['sentiment']
+                sentiment = str(source['sentiment'])
+                if sentiment != '0' and sentiment != '1':
+                    sentiment = '2'
                 try:
                     results[sentiment][time_segment] += 1
                 except:
@@ -1888,6 +1895,47 @@ def search_sentiment_trend(uid, time_type, now_ts):
         return {'trend_result':trend_results, 'time_list':time_list, 'description':description}
 
 
+
+#use to get character and psycho_status
+#input: uid
+#output: character, psycho_status
+def search_character_psy(uid):
+    results = {}
+    #test
+    portrait_index_name = 'user_portrait_1222'
+    portrait_index_type = 'user'
+    #get user_portrait_result
+    try:
+        portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, \
+                id=uid)['_source']
+    except:
+        return None
+    #get character_sentiment
+    results['character_sentiment'] = portrait_result['character_sentiment']
+    results['character_text'] = portrait_result['character_text']
+    
+    #get psycho_status
+    uid_sentiment_dict = {}
+    now_ts = time.time()
+    now_ts = datetime2ts('2013-09-08')
+    now_date_ts = datetime2ts(ts2datetime(now_ts))
+    start_date_ts = now_date_ts - DAY * WEEK
+    for i in range(0, WEEK):
+        iter_date_ts = start_date_ts + DAY * i
+        flow_text_index_date = ts2datetime(iter_date_ts)
+        flow_text_index_name = flow_text_index_name_pre + flow_text_index_date
+        flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, \
+                body={'query':{'filtered':{'filter':{'bool':{'must':[{'term':{'uid': uid}}, {'terms':{'sentiment':['0','1','2','3','4','5','6']}}]}}}}, 'aggs':{'all_sentiment':{'terms':{'field': 'sentiment'}}}}, _source=False, fields=['uid', 'sentiment'])['aggregations']['all_sentiment']['buckets']
+        for item in flow_text_result:
+            sentiment = item['key']
+            try:
+                uid_sentiment_dict[sentiment] += item['doc_count']
+            except:
+                uid_sentiment_dict[sentiment] = item['doc_count']
+    results['sentiment_pie'] = uid_sentiment_dict
+    return results
+
+
 #get psy all ave dict from overview es
 #write in version: 15-12-08
 #remark!! there should be adjust
@@ -1898,17 +1946,6 @@ def get_all_ave_psy():
     results = json.loads(overview_result['ave_psy'])
 
     return results
-
-
-
-#use to get character and psycho_status
-#write in version: 16-02-25
-#input: uid
-#output: character and psycho_status
-def search_character_psy(uid):
-    results = {}
-    return results
-
 
 
 
