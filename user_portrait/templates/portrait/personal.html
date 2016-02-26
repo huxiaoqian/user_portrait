@@ -342,7 +342,7 @@ Personal.prototype = {   //群组搜索
         }
     },
     historyData:function(data){
-        console.log(data);
+        //console.log(data);
         histData = data;
     },
 }
@@ -367,7 +367,7 @@ function currentData(data){
 }
 function bind_status_option(){
     $('#status_option').change(function(){
-        console.log($(this).val());
+        //console.log($(this).val());
         if ($(this).val() == 'latest'){
             var APsum = document.getElementById('APsum');
             APsum.innerHTML = personalData.all_count;
@@ -414,11 +414,11 @@ function bind_status_option(){
         }
         else{
             var hist_sum;
-            if (histData[4] > 10000){
-                hist_sum = Math.floor(histData[4]/10000) + '万';
+            if (histData[6] > 10000){
+                hist_sum = Math.floor(histData[6]/10000) + '万';
             }
             else{
-                hist_sum = histData[4];
+                hist_sum = histData[6];
             }
             $('#APnum').html(histData[0].toFixed(2));
             $('#APrank').html(histData[1]);
@@ -426,6 +426,9 @@ function bind_status_option(){
             $('#FPnum').html(histData[2].toFixed(2));
             $('#FPrank').html(histData[3]);
             $('#FPsum').html(hist_sum);
+            $('#IPnum').html(histData[4].toFixed(2));
+            $('#IPrank').html(histData[5]);
+            $('#IPsum').html(hist_sum);
         }
     });
 }

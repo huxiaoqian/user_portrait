@@ -167,15 +167,14 @@ function emotions(data){
     }
     time_name = data['time_list'];
     //console.log(times);
-    var names = ['中性','积极','悲伤','愤怒']; 
+    var names = ['中性','积极','消极']; 
     var data0 = data['trend_result']['0'];
     var data1 = data['trend_result']['1'];
     var data2 = data['trend_result']['2'];
-    var data3 = data['trend_result']['3'];
-    var datas = [data0,data1,data2,data3];
+    var datas = [data0,data1,data2];
     var nods = {};
     var nodcontent = [];
-    for(i=0;i<4;i++){
+    for(i=0;i<3;i++){
         nods = {};
         nods['name'] = names[i];
         nods['type'] = 'line';
@@ -250,8 +249,7 @@ function emotions(data){
     )
 }
 function draw_character(data){
-    console.log('111');
-    console.log(data);
+    //console.log(data);
     var sentiment_dict = ['冲动', '抑郁', '未知'];
     var text_dict = ['批判', '未知'];
     var character_sent = data['character_sentiment'];
