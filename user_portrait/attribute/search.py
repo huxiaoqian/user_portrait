@@ -45,6 +45,7 @@ from user_portrait.parameter import INFLUENCE_TREND_SPAN_THRESHOLD, INFLUENCE_TR
 from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_TREND_AVE_MIN_THRESHOLD ,\
                                     ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
 from user_portrait.parameter import SENTIMENT_DICT,  ACTIVENESS_TREND_TAG_VECTOR
+from user_portrait.parameter import SENTIMENT_SECOND
 
 r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -1421,7 +1422,10 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
     flow_text_index_name = flow_text_index_name_pre + time_date
     query = []
     query.append({'term': {'uid': uid}})
-    query.append({'term': {'sentiment': sentiment}})
+    if sentiment != '2':
+        query.append({'term': {'sentiment': sentiment}})
+    else:
+        query.append({'terms':{'sentiment': SENTIMENT_SECOND}})
     query.append({'range':{'timestamp':{'from':start_ts, 'to':end_ts}}})
     try:
         flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort':'timestamp', 'size':1000000})['hits']['hits']
@@ -1801,9 +1805,9 @@ def search_preference_attribute(uid):
 #input: uid, time_type
 #output: sentiment_trend
 def search_sentiment_trend(uid, time_type, now_ts):
-    results = {'1':{}, '2':{}, '3':{}, '0':{}, 'time_list':[]}
-    trend_results = {'1':[], '2':[], '3':[], '0':[]}
-    sentiment_list = ['1', '2', '3', '0']
+    results = {'1':{}, '2':{}, '0':{}, 'time_list':[]}
+    trend_results = {'1':[], '2':[], '0':[]}
+    sentiment_list = ['1', '2', '0']
     
     now_date = ts2datetime(now_ts)
     now_date_ts = datetime2ts(now_date)
@@ -1818,8 +1822,9 @@ def search_sentiment_trend(uid, time_type, now_ts):
             timestamp = source['timestamp']
             time_segment = int((timestamp - now_date_ts) / HALF_HOUR) * HALF_HOUR + now_date_ts
             #print 'timestamp, time_segment:', timestamp, ts2date(timestamp), ts2date(time_segment), time_segment
-            sentiment = source['sentiment']
-            #print 'sentiment', sentiment, type(sentiment)
+            sentiment = str(source['sentiment'])
+            if sentiment != '0' and sentiment != '1':
+                sentiment = '2'
             try:
                 results[str(sentiment)][time_segment] += 1
             except:
@@ -1860,7 +1865,9 @@ def search_sentiment_trend(uid, time_type, now_ts):
                 #timestamp = source['timestamp']
                 #time_segment = int((timestamp - iter_date_ts) / HALF_HOUR) * HALF_HOUR + iter_date_ts
                 time_segment = iter_date_ts
-                sentiment = source['sentiment']
+                sentiment = str(source['sentiment'])
+                if sentiment != '0' and sentiment != '1':
+                    sentiment = '2'
                 try:
                     results[sentiment][time_segment] += 1
                 except:

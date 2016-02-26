@@ -117,6 +117,7 @@ def get_attr_portrait(uid_list):
     topic_ratio = dict()
     keyword_ratio = dict()
     hashtag_ratio = dict()
+    character_dict = {'character_sentiment':{}, 'character_text':{}}
     activity_geo_distribution_date = dict() # {'date1':{geo1:person_count, geo2:person_count}, 'date2':{geo1:person_count,..}, ..} # one month
     activity_geo_vary = dict() # {'geo2geo': count, ...}  geo2geo='activity_geo1&activity_geo2'
     importance_list = []
@@ -246,15 +247,19 @@ def get_attr_portrait(uid_list):
                         tag_dict[tag_key] += 1
                     except:
                         tag_dict[tag_key] = 1
-            #attr13: psycho status
-            #test
-            user_sentiment = json.loads(source['psycho_status'])[0]['first']
-            #user_sentiment = source['psycho_status']
-            sentiment_dict_list.append(user_sentiment)
+            #attr13: character
+            character_sentiment = source['character_sentiment']
+            character_text = source['character_text']
+            try:
+                character_dict['character_sentiment'][character_sentiment] += 1
+            except:
+                character_dict['character_sentiment'][character_sentiment] = 1
+            try:
+                character_dict['character_text'][character_text] += 1
+            except:
+                character_dict['character_text'][character_text] = 1
 
         iter_count += GROUP_ITER_COUNT
-    #get all sentiment dict
-    sentiment_dict = union_dict_list(sentiment_dict_list)
     # importance ditribution
     p, t = np.histogram(importance_list, bins=HIS_BINS_COUNT, normed=False)
     results['importance_his'] = json.dumps([p.tolist(), [int(item) for item in t.tolist()]])
@@ -306,6 +311,7 @@ def get_attr_portrait(uid_list):
     results['verified'] = json.dumps(verified_ratio)
     results['user_tag'] = json.dumps(tag_dict)
     results['online_pattern'] = json.dumps(online_pattern)
+    results['character'] = json.dumps(character_dict)
     #tag vector---main domain
     sort_domain_ratio = sorted(domain_ratio.items(), key=lambda x:x[1], reverse=True)
     main_domain = sort_domain_ratio[0][0]
@@ -1149,7 +1155,9 @@ def get_attr_evaluate_trend(uid_list):
 #output: sentiment trend and main sentiment ratio
 def get_attr_sentiment_trend(uid_list):
     results = {}
-    ts_sentiment_dict = {}
+    ts_sentiment_dict = {} #for 0, 1, 2 senitment
+    ts_all_sentiment_dict = {} # for 0,1,2,3,4,5,6 sentiment
+    ts_all_sentiment_dict = {'0':0, '1':0, '2':0, '3':0, '4':0, '5':0, '6':0}
     week_sentiment_trend = {}
     #step1:get now date ts
     now_ts = int(time.time())
@@ -1170,11 +1178,16 @@ def get_attr_sentiment_trend(uid_list):
         ts_sentiment_dict[iter_date_ts] = {'0':0, '1':0, '2':0, '3':0}
         for flow_text_item in flow_text_result:
             sentiment = str(flow_text_item['fields']['sentiment'][0])
+            #count for all sentiment
+            ts_all_sentiment_dict[sentiment] += 1
+            #count for three sentiment 0,1,2
+            if sentiment != '0' and sentiment != '1':
+                sentiment = '2'
             ts_sentiment_dict[iter_date_ts][sentiment] += 1
     #step3: sort by ts and make trend list
     sort_ts_sentiment_dict = sorted(ts_sentiment_dict.items(), key=lambda x:x[0])
     time_list = [ts2datetime(item[0]) for item in sort_ts_sentiment_dict]
-    sentiment_trend_dict = {} # {'1':[count1, count2,...], '2':[], '3':[]}  count ranked by time_list
+    sentiment_trend_dict = {} # {'1':[count1, count2,...], '2':[], '0':[]}  count ranked by time_list
     for sentiment in GROUP_SENTIMENT_LIST:
         date_sentiment_trend = [item[1][sentiment] for item in sort_ts_sentiment_dict]
         try:
@@ -1189,14 +1202,13 @@ def get_attr_sentiment_trend(uid_list):
     #step3:main negative sentiment
     main_negative_dict = {}
     for sentiment in GROUP_NEGATIVE_SENTIMENT:
-        sentiment_trend = week_sentiment_trend[sentiment]
-        sentiment_count = sum(sentiment_trend)
+        sentiment_count = ts_all_sentiment_dict[sentiment]
         main_negative_dict[sentiment] = sentiment_count
     sort_main_negative_dict = sorted(main_negative_dict.items(), key=lambda x:x[1], reverse=True)
     
     #step4: results
     results['sentiment_trend'] = json.dumps(week_sentiment_trend)
-    results['main_negative'] = json.dumps(sort_main_negative_dict)
+    results['sentiment_pie'] = json.dumps(ts_all_sentiment_dict)
     #tag vector---main negative
     tag_vector_result = {}
     tag_vector_result['main_negative_sentiment'] = [u'主要消极情绪', sort_main_negative_dict[0][0]]
@@ -1780,8 +1792,10 @@ if __name__=='__main__':
     #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)
     result = compute_group_task()
+    #result = get_attr_sentiment_trend(input_data['uid_list'])
     #print 'result:', result
-    #get_attr_portrait(input_data['uid_list'])
+    #result = get_attr_portrait(input_data['uid_list'])
+    #print 'character result:', result
     #get_attr_trend(input_data['uid_list'])
     #get_attr_bci(input_data['uid_list'])
     #test retweet and beretweeted
