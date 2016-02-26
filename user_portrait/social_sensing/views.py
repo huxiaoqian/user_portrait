@@ -16,6 +16,7 @@ from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.parameter import finish_signal, unfinish_signal, SOCIAL_SENSOR_INFO
 from utils import get_warning_detail, get_text_detail
 from full_text_serach import aggregation_hot_keywords
+from delete_es import delete_es
 
 mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 
@@ -48,11 +49,20 @@ def ajax_create_task():
         task_detail["create_by"] = create_by
         task_detail["stop_time"] = stop_time
         task_detail["remark"] = remark
-        task_detail["social_sensors"] = json.dumps(list(set(social_sensors.split(','))))
-        task_detail["keywords"] = json.dumps(keywords.split(","))
-        task_detail["sensitive_words"] = json.dumps(sensitive_words.split(","))
+        if social_sensors:
+            task_detail["social_sensors"] = json.dumps(list(set(social_sensors.split(','))))
+        else:
+            task_detail["social_sensors"] = json.dumps([])
+        if keywords:
+            task_detail["keywords"] = json.dumps(keywords.split(","))
+        else:
+            task_detail["keywords"] = json.dumps([])
+        if sensitive_words:
+            task_detail["sensitive_words"] = json.dumps(sensitive_words.split(","))
+        else:
+            task_detail["sensitive_words"] = json.dumps([])
         now_ts = int(time.time())
-        task_detail["create_at"] = create_time
+        task_detail["create_at"] = create_time # now_ts
         task_detail["warning_status"] = '0'
         task_detail["finish"] = "0" # not end the task
         task_detail["history_status"] = json.dumps([]) # ts, keywords, warning_status
@@ -68,7 +78,6 @@ def ajax_create_task():
                 task_detail["task_type"] = "1"
             else:
                 task_detail["task_type"] = "0"
-    print task_detail
 
     # store task detail into es
     es.index(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name, body=task_detail)
@@ -83,7 +92,10 @@ def ajax_delete_task():
     task_name = request.args.get('task_name','') # must
     if task_name:
         es.delete(index=index_manage_sensing_task, doc_type=task_doc_type, id=task_name)
-        #es.delete(index_sensing_task, task_name)
+        try:
+            delete_es(task_name)
+        except Exception, r:
+            print Exception, r
         return json.dumps(['1'])
     else:
         return json.dumps([])
@@ -225,7 +237,6 @@ def ajax_get_task_detail_info():
             portrait_detail = sorted(portrait_detail, key=lambda x:x[5], reverse=True)
     task_detail['social_sensors_portrait'] = portrait_detail
 
-    print task_detail
     return json.dumps(task_detail)
 
 

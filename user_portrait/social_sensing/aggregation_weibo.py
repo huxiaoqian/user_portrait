@@ -7,6 +7,7 @@ import json
 import numpy as np
 from elasticsearch import Elasticsearch
 from  mappings_social_sensing import mappings_sensing_task
+from clustering import tfidf, kmeans, text_classify, cluster_evaluation
 reload(sys)
 sys.path.append("./../")
 from global_utils import es_flow_text as es_text
@@ -235,7 +236,7 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
         },
         "aggs":{
             "all_count":{
-                "terms":{"fields": aggregation_field, "size": size}
+                "terms":{"field": aggregation_field, "size": size}
             }
         }
     }
@@ -503,10 +504,12 @@ def burst_detection(keywords_list, ts):
 # 特定关键词的社会事件监测，task_detail是已经json.loads的
 def specific_keywords_burst_dection(task_detail):
     task_name = task_detail[0]
+    social_sensors = task_detail[1]
     keywords_list = task_detail[2]
-    stop_time = task_detail[3]
-    forward_warning_status = task_detail[4]
-    ts = int(task_detail[5])
+    sensitive_words = task_detail[3]
+    stop_time = task_detail[4]
+    forward_warning_status = task_detail[5]
+    ts = int(task_detail[7])
     forward_result = get_forward_numerical_info(task_name, ts, keywords_list)
     # 之前时间阶段内的原创微博list
     forward_origin_weibo_list = query_mid_list(ts-time_interval, keywords_list, forward_time_range)
@@ -651,15 +654,71 @@ def specific_keywords_burst_dection(task_detail):
             if forward_warning_status == signal_brust: # 已有事件发生，改为事件追踪
                 warning_status = signal_track
 
-        if int(stop_time) <= ts: # 检查任务是否已经完成
-            finish = finish_signal 
+    if int(stop_time) <= ts: # 检查任务是否已经完成
+        finish = finish_signal 
 
+    # 7. 感知到的事, all_mid_list
+    if burst_reason: # 有事情发生
+        text_list = []
+        if all_mid_list:
+            origin_sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": all_mid_list}, fields=["mid", "text"])["docs"]
+            sensing_query_body = {
+                "query":{
+                    "filtered":{
+                        "filter":{
+                            "terms":{
+                                "root_mid": all_mid_list
+                            }
+                        }
+                    }
+                },
+                "size": 50000
+            }
+            search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=sensing_query_body)["hits"]["hits"]
+            if origin_sensing_text:
+                for item in origin_sensing_text:
+                    origin_text_dict = dict() # 原创微博文本, mid:text
+                    if item["found"]:
+                        iter_mid = item["fields"]["mid"][0]
+                        iter_text = item["fields"]["text"][0]
+                        temp_dict = dict()
+                        temp_dict["mid"] = iter_mid
+                        temp_dict["text"] = iter_text
+                        text_list.append(temp_dict) # 整理后的文本，mid，text
+                        origin_text_dict[iter_mid] = iter_text
+                if search_results:
+                    for item in search_results:
+                        iter_text = item['_source']["text"] + origin_text_dict.get(item['_source']['root_mid'], '') #将原创微博的text加入
+                        iter_mid = item['_source']['mid']
+                        temp_dict = dict()
+                        temp_dict["mid"] = iter_mid
+                        temp_dict["text"] = iter_text
+                        text_list.append(temp_dict)
+
+
+        feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
+        word_label, evaluation_results = kmeans(feature_words, text_list) #聚类
+        inputs = text_classify(text_list, word_label, feature_words)
+        clustering_topic = cluster_evaluation(inputs)
+        print "========================================================================================"
+        print "========================================================================================="
+        sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
+        topic_list = []
+        if sorted_dict:
+            for item in sorted_dict:
+                topic_list.append(word_label[item[0]])
+        print topic_list
+        sys.exit(1)
 
     results = dict()
     results['origin_weibo_number'] = current_origin_count
     results['retweeted_weibo_number'] = current_retweeted_count
     results['comment_weibo_number'] = current_comment_count
     results['weibo_total_number'] = current_total_count
+    results['sensitive_origin_weibo_number'] = sensitive_origin_weibo_number
+    results['sensitive_retweeted_weibo_number'] = sensitive_retweeted_weibo_number
+    results['sensitive_comment_weibo_number'] = sensitive_comment_weibo_number
+    results['sensitive_weibo_total_number'] = sensitive_total_weibo_number
     results['sentiment_distribution'] = json.dumps(sentiment_count)
     results['important_users'] = json.dumps(filter_important_list)
     results['burst_reason'] = burst_reason
@@ -674,7 +733,7 @@ def specific_keywords_burst_dection(task_detail):
     temporal_result['burst_reason'] = burst_reason
     temporal_result['finish'] = finish
     history_status = json.loads(temporal_result['history_status'])
-    history_status.append([ts, '_'.join(keywords_list), warning_status])
+    history_status.append([ts, ' '.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)
     #es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
 

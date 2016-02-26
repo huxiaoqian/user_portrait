@@ -125,7 +125,7 @@ def get_task_detail_2(task_name, keywords, ts):
                 sentiment_variation_count += 1
                 sentiment_variation_time.append([ts2date_min(item[0]), negetive_sentiment_list[item[1]]])
             if signal_sensitive_variation in item[2]:
-                tmp_count += 1
+                tmp_common += 1
                 sensitive_variation_count += 1
                 sensitive_variation_time.append([ts2date_min(item[0]), sensitive_total_number_list[item[1]]])
 
