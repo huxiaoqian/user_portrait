@@ -12,7 +12,7 @@ from user_portrait.global_utils import es_user_portrait, portrait_index_name, po
                         es_user_profile, profile_index_name, profile_index_type,\
                         es_group_result, group_index_name, group_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
-from user_portrait.parameter import MAX_VALUE, DAY
+from user_portrait.parameter import MAX_VALUE, DAY, SENTIMENT_SECOND
 
 index_name = 'group_result'
 index_type = 'group'
@@ -603,8 +603,12 @@ def search_group_sentiment_weibo(task_name, start_ts, sentiment):
     iter_date = ts2datetime(start_ts)
     flow_text_index_name = flow_text_index_name_pre + str(iter_date)
     #step4: get query_body
-    query_body = [{'terms': {'uid': uid_list}}, {'term':{'sentiment': sentiment}}, \
+    if sentiment != '2':
+        query_body = [{'terms': {'uid': uid_list}}, {'term':{'sentiment': sentiment}}, \
                 {'range':{'timestamp':{'gte':start_ts, 'lt': start_ts+DAY}}}]
+    else:
+        query_body = [{'terms':{'uid':uid_list}}, {'terms':{'sentiment': SENTIMENT_SECOND}},\
+                {'range':{'timestamp':{'gte':start_ts, 'lt':start_ts+DAY}}}]
     try:
         flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
                 body={'query':{'bool':{'must': query_body}}, 'sort': [{'timestamp':{'order':'asc'}}], 'size': MAX_VALUE})['hits']['hits']
