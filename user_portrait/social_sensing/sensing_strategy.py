@@ -7,7 +7,7 @@ import numpy as np
 from elasticsearch import Elasticsearch
 from  mappings_social_sensing import mappings_sensing_task
 from aggregation_weibo import get_forward_numerical_info, query_mid_list, query_related_weibo, aggregation_sentiment_related_weibo
-from clustering import kmeans, tfidf
+from clustering import kmeans, tfidf, text_classify, cluster_evaluation
 reload(sys)
 sys.path.append("./../")
 from global_utils import es_flow_text as es_text
@@ -201,17 +201,26 @@ def sensors_keywords_detection(task_detail):
             sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": all_mid_list}, fields=["mid", "text"])["docs"]
             if sensing_text:
                 for item in sensing_text:
-                    iter_mid = item["fields"]["mid"][0]
-                    iter_text = item["fields"]["text"][0]
-                    temp_dict = dict()
-                    temp_dict["mid"] = iter_mid
-                    temp_dict["text"] = iter_text
-                    text_list.append(temp_dict)
+                    if item['found']:
+                        iter_mid = item["fields"]["mid"][0]
+                        iter_text = item["fields"]["text"][0]
+                        temp_dict = dict()
+                        temp_dict["mid"] = iter_mid
+                        temp_dict["text"] = iter_text
+                        text_list.append(temp_dict)
 
 
         feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
         word_label, evaluation_results = kmeans(word, inputs) #聚类
-        print word_label
+        inputs = text_classify(text_list, word_label, feature_words)
+        clustering_topic = cluster_evaluation(inputs)
+        print clustering_topic
+        sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
+        topic_list = []
+        if sorted_dict:
+            for item in sorted_dict:
+                topic_list.append(word_label[item[0]])
+        print topic_list
 
 
 
@@ -228,10 +237,12 @@ def sensors_keywords_detection(task_detail):
     results['important_users'] = json.dumps(important_users)
     results['burst_reason'] = burst_reason
     results['timestamp'] = ts
+    if burst_reason:
+        results["clustering_topic"] = json.dumps(topic_list)
 
     # es存储当前时段的信息
     doctype = task_name
-    #es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
+    es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
 
     # 更新manage social sensing的es信息
     temporal_result = es_user_portrait.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)['_source']
@@ -241,7 +252,7 @@ def sensors_keywords_detection(task_detail):
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)
-    #es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
+    es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
 
     return "1"
 
