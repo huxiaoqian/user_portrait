@@ -286,6 +286,7 @@ function Draw_top_location2(){
     myChart.setOption(option);
                     
 }
+
 function moving_geo(){
     var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
     $('#move_location').empty();
@@ -366,6 +367,139 @@ function Draw_more_top_platform(){
     $('#top_more_platform').append(html);
 }
 
+function draw_active_distribution(){
+    var mychart1 = echarts.init(document.getElementById('active_distribution'));
+    var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'value',
+            boundaryGap : [0, 0.01]
+        }
+    ],
+    yAxis : [
+        {
+            type : 'category',
+            name : '人数',
+            data : ['巴西','印尼','美国','印度','中国','100-200']
+        }
+    ],
+    series : [
+        {
+            name:'2011年',
+            type:'bar',
+            data:[18203, 23489, 29034, 104970, 131744, 230230]
+        }
+    ]
+};
+  mychart1.setOption(option);
+}
+
+function show_active_users(div_name){
+    $('#' + div_name).empty();
+    var html = '';
+    html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < 1; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+    };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
+    html += '</table>'; 
+    $('#'+div_name).append(html);
+}
+function show_more_active_users(div_name){
+    $('#' + div_name).empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px;margin-bottom:0px;">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < 1; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+    };
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
+    html += '</table>'; 
+    $('#'+div_name).append(html);
+}
+
+function group_activity(){
+   var mychart = echarts.init(document.getElementById('group_activity'));
+   var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['邮件营销','联盟广告','视频广告']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : ['周一','周二','周三','周四','周五','周六','周日']
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'邮件营销',
+            type:'line',
+            stack: '总量',
+            data:[120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+            name:'联盟广告',
+            type:'line',
+            stack: '总量',
+            data:[220, 182, 191, 234, 290, 330, 310]
+        },
+        {
+            name:'视频广告',
+            type:'line',
+            stack: '总量',
+            data:[150, 232, 201, 154, 190, 330, 410]
+        }
+        
+    ]
+};
+  mychart.setOption(option);
+}
+
 // var activity_data = []
 var time_data = [23,3,4,55,22,6]
 Draw_activity();
@@ -375,3 +509,10 @@ moving_geo();
 Draw_more_moving_geo();
 Draw_top_platform();
 Draw_more_top_platform();
+draw_active_distribution();
+group_activity();
+show_active_users('active_users');
+show_active_users('unactive_users');
+show_more_active_users('show_rank_active_users');
+show_more_active_users('show_rank_unactive_users');
+$('#activity_conclusion').append('结论结论结论结论');

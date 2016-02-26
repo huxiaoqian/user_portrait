@@ -6,6 +6,7 @@
 	    <link href="/static/css/charisma-app.css" rel="stylesheet">
 	    <link href="/static/personal/css/activity.css" rel="stylesheet" type="text/css">
 	    <link href="/static/css/timeline.css" rel="stylesheet" type="text/css">
+	    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/>
 	    <style type="text/css">
     body {
   font-family: '微软雅黑';
@@ -66,6 +67,7 @@
 	<script type="text/javascript" src='/static/js/esl.js'></script>
 	<script type="text/javascript" src='/static/js/echarts-all.js'></script>
 	<script type="text/javascript" src='/static/js/echarts.js'></script>
+	<script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
 
   {% endblock head_js %}
 
@@ -376,6 +378,7 @@ function pageDown(pageNum,pageCount){
 	<script type="text/javascript" src="/static/js/portrait/group_activity.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_basic.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_preference.js"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_spread.js"></script>
     {% endblock Own_js %}
     {% block end_js %}
     {{ super() }}
