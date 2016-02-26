@@ -1095,11 +1095,11 @@ function show_members(){
 
 $(document).ready(function(){
 	var downloadurl = window.location.host;
-    Draw_group_weibo_date();
-    Draw_think_emotion();
-    Draw_think_domain();
-    Draw_think_topic();
-    Draw_think_tendency();
+    // Draw_group_weibo_date();
+    // Draw_think_emotion();
+    // Draw_think_domain();
+    // Draw_think_topic();
+    // Draw_think_tendency();
 
     var overviewdata = ['媒体','2013-09-01','关注的媒体','0.2222','0.542','6.233','10000.345','某某']
     Search_weibo.Draw_overview(overviewdata);
