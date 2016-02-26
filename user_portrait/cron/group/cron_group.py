@@ -1058,19 +1058,38 @@ def get_attr_evaluate_trend(uid_list):
             if index_key_list[0]=='activeness' and '-' in index_key:
                 date = index_key_list[1] # 2013-09-07
                 ts = datetime2ts(date)
+                
+                #normal activeness key
+                #testtest
+                evaluate_max = get_evaluate_max_trend(index_key)
+                activeness_index = user_dict[index_key]
+                normal_activeness_index = math.log((activeness_index / evaluate_max) * 9 + 1, 10) * 100
+                
                 if ts in activeness_dict:
-                    activeness_dict[ts][uid] = user_dict[index_key]
+                    #activeness_dict[ts][uid] = user_dict[index_key]
+                    activeness_dict[ts][uid] = normal_activeness_index
                 else:
-                    activeness_dict[ts] = {uid: user_dict[index_key]}
-
+                    #activeness_dict[ts] = {uid: user_dict[index_key]}
+                    activeness_dict[ts] = {uid: normal_activeness_index}
+                    
             #get user influence index
             if len(index_key_list)==1 and index_key != 'uid' and '-' not in index_key:
                 date = index_key # 20130907
                 ts = datetimestr2ts(date)
+                
+                #normal influence key
+                #testtest
+                evaluate_max = get_evaluate_max_trend(index_key)
+                influence_index = user_dict[index_key]
+                normal_influence_index = math.log((influence_index / evaluate_max) * 9 + 1, 10) * 100
+                
                 if ts in influence_dict:
-                    influence_dict[ts][uid] = user_dict[index_key]
+                    #influence_dict[ts][uid] = user_dict[index_key]
+                    influence_dict[ts][uid] = normal_influence_index
                 else:
-                    influence_dict[ts] = {uid: user_dict[index_key]}
+                    #influence_dict[ts] = {uid: user_dict[index_key]}
+                    influence_dict[ts] = {uid: normal_influence_index}
+
     #get activeness trend--ave_value/min_value/max_value
     activeness_time_list = []
     ave_list = []
@@ -1100,8 +1119,8 @@ def get_attr_evaluate_trend(uid_list):
         #get max/min uid-uname
         max_uname = uid2uname[sort_ts_index[0][0]]
         min_uname = uid2uname[sort_ts_index[-1][0]]
-        max_list.append([sort_ts_index[0][0], sort_ts_index[0][1], uname])
-        min_list.append([sort_ts_index[-1][0], sort_ts_index[-1][1], uname])
+        max_list.append([sort_ts_index[0][0], sort_ts_index[0][1], max_uname])
+        min_list.append([sort_ts_index[-1][0], sort_ts_index[-1][1], min_uname])
         #get main max uid-uname
         max_uid_uname = sort_ts_index[0][0] + '&' + max_uname
         try:
@@ -1137,8 +1156,8 @@ def get_attr_evaluate_trend(uid_list):
         #get max/min uid-uname
         max_uname = uid2uname[sort_ts_index[0][0]]
         min_uname = uid2uname[sort_ts_index[-1][0]]
-        max_list.append([sort_ts_index[0][0], sort_ts_index[0][1], uname])
-        min_list.append([sort_ts_index[-1][0], sort_ts_index[-1][1], uname])
+        max_list.append([sort_ts_index[0][0], sort_ts_index[0][1], max_uname])
+        min_list.append([sort_ts_index[-1][0], sort_ts_index[-1][1], min_uname])
         #get main max uid-uname
         max_uid_uname = sort_ts_index[0][0] + '&' + max_uname
         try:
@@ -1288,6 +1307,25 @@ def get_evaluate_max():
         max_result[evaluate] = max_evaluate
 
     return max_result
+
+#use to normal evaluate trend max
+#input: index_key
+#output: max_value
+def get_evaluate_max_trend(index_key):
+    query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size': 1,
+            'sort': [{index_key: {'order': 'desc'}}]
+        }
+    try:
+        index_max_value = es_user_portrait.search(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)['hits']['hits']
+    except Exception, e:
+        raise e
+    index_max = index_max_value[0]['_source'][index_key]
+    return index_max
+
 
 
 def get_attr_bci(uid_list):
