@@ -224,8 +224,8 @@ def search_group_results(task_name, module):
         result['mention'] = source['mention']
     elif module == 'think':
         result['sentiment_trend'] = json.loads(source['sentiment_trend'])
-        result['main_negative'] = json.loads(source['main_negative'])
-        
+        result['sentiment_pie'] = json.loads(source['sentiment_pie'])
+        result['character'] = json.loads(source['character'])
     return result
 
 
