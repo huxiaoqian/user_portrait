@@ -116,7 +116,7 @@ def classify_topic(uid_list,start_date,end_date,flag):
     for ts in range(start_ts,end_ts,dis):
         date_str = time.strftime('%Y-%m-%d',time.localtime(float(ts)))
         uid_weibo = search_text(uid_list,date_str,uid_weibo)
-    print uid_weibo
+    #print uid_weibo
     com_result = classify(uid_weibo,uid_list)
         
     return com_result

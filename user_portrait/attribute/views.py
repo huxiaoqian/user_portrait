@@ -10,6 +10,7 @@ from search import delete_action, search_identify_uid, get_activeness_trend
 from search import get_activity_weibo, search_comment, search_be_comment
 from search import search_bidirect_interaction, search_preference_attribute, search_sentiment_trend, search_tendency_psy
 from search import search_sentiment_weibo, get_influence_trend, search_remark, edit_remark
+from search import search_character_psy
 from search_daily_info import search_origin_attribute, search_retweeted_attribute, search_user_index
 from search_mid import index_mid
 from user_portrait.search_user_profile import es_get_source
@@ -96,9 +97,11 @@ def ajax_portrait_search():
         query.append({'bool':{'should':query_list}})
     else:
         fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
-        select_item = ['gender', 'verified', 'psycho_feature', 'psycho_status']
-        range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
-        multi_item = ['topic_string', 'domain']
+        #select_item = ['gender', 'verified', 'psycho_feature', 'psycho_status']
+
+        #range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
+        #multi_item = ['topic_string', 'domain']
+        multi_item = ['psycho_status_by_emotion','psycho_status_by_word','domain','topic_string']
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:
@@ -107,11 +110,13 @@ def ajax_portrait_search():
                 #print 'item_data:', item_data, type(item_data)
                 query.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1
+        '''
         for item in select_item:
             item_data = request.args.get(item, '')
             if item_data:
                 query.append({'match':{item: item_data}})
                 condition_num += 1
+        '''
         # custom_attribute
         tag_items = request.args.get('tag', '')
         if tag_items != '':
@@ -362,6 +367,19 @@ def ajax_tendency_psy():
     uid = request.args.get('uid', '')
     uid = str(uid)
     results = search_tendency_psy(uid)
+    if not results:
+        results = {}
+    return json.dumps(results)
+
+#use to get user character and psy
+#write in version: 16-02-25
+#input: uid
+#ouput: character, psy(first level and second level)
+@mod.route('/character_psy/')
+def ajax_chracter_psy():
+    uid = request.args.get('uid', '')
+    uid = str(uid)
+    results = search_character_psy(uid)
     if not results:
         results = {}
     return json.dumps(results)

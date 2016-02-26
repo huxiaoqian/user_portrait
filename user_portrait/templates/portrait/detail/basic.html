@@ -144,7 +144,7 @@ margin-top:0px;
 
 <div id="Pdetail">
     <div id="yesterday_influence" style="width:1000px;float:left;">
-        <h3>昨日影响力 (No.<span id="influence_index" style="color:red"></span>)</h3>
+        <h3>昨日影响力 (No.<span id="influence_index" style='color:red;'></span>/<span id='influence_total'></span>)</h3>
         <hr>
         <div id = "influence_table" style="width:100%;margin-bottom:-15px;"></div>
         <div style = 'font-size:16px' id = "all_influenced_users_style0"></div>
@@ -185,9 +185,10 @@ margin-top:0px;
     <div id="influence_chart" style="float:left;height:300px;width:1000px;margin-top:10px;"></div>
     <div id=""  style="float:left;width:1000px;line-height:48px;font-size:18px;font-family:"Microsoft YaHei UI";">
         <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
-        <span id="saysth"style="line-height:32px;"></span><span class="red" id="sayimportant"style="line-height:32px;">
+        <span id="saysth"style="line-height:32px;"></span>
+        <span class="red" id="sayimportant" style="line-height:32px;"></span>。
     </div>
-    <div id="influence_conclusion" style="margin-bottom:-10px;width:100%;">
+    <div id="influence_conclusion" style="display:none;margin-bottom:-10px;width:100%;">
         <span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:10px;display:black;"></span>
         <h4 id="influence_conclusion_all" style="line-height:40px;"></h4>
     </div>
