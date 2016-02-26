@@ -136,13 +136,16 @@
         var adkeyword = "{{ adkeyword }}";
         var hashtag = "{{ hashtag }}";
         var psycho_feature = "{{ psycho_feature }}";
-        var psycho_status = "{{ psycho_status }}";
+        var psycho_status_by_emotion = "{{ psycho_status_by_emotion }}";
+        var psycho_status_by_word = "{{ psycho_status_by_word }}";
         var domain = "{{ domain }}";
         var topic = "{{ topic }}";
         var tag = "{{ tag }}";
         var url_search_result = '/attribute/portrait_search/?stype='+stype+'&';
-        pars = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag', 'psycho_feature', 'psycho_status', 'domain', 'topic', 'tag'];
-        values = [uid, uname, mlocation, activity_geo, adkeyword, hashtag, psycho_feature, psycho_status, domain, topic, tag];
+        console.log(domain);
+        console.log(psycho_status_by_emotion);
+        pars = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag', 'psycho_feature', 'psycho_status_by_emotion','psycho_status_by_word', 'domain', 'topic', 'tag'];
+        values = [uid, uname, mlocation, activity_geo, adkeyword, hashtag,psycho_feature, psycho_status_by_emotion,psycho_status_by_word, domain, topic, tag];
         url_search_result += par2url(pars, values);
     }
 </script>

@@ -14,7 +14,7 @@ Influence.prototype = {   //获取数据，重新画表
   Draw_influence:function(data){
 
 	var item_x = data.time_line;
-  var item_y = data.influence;
+    var item_y = data.influence;
 	var conclusion = data.description;
 
 	document.getElementById('saysth').innerHTML = conclusion[0];
@@ -177,8 +177,15 @@ Draw_pie_all0:function(data){
     html += '<tr><th rowspan="2" style="text-align:center;vertical-align:middle;">&nbsp;类别</th>';
     html += '<th colspan="4" style="text-align:center;">转发情况<u id="retweet_distribution" style="font-size:12px;color:#555555;margin-left:20px;cursor: pointer">查看详情</u></th>';
     html += '<th colspan="4" style="text-align:center;">评论情况<u id="comment_distribution" style="font-size:12px;color:#555555;margin-left:20px;cursor: pointer">查看详情</u></th></tr>';
-    html += '<tr><th style="text-align:center">总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发数</th>';
-    html += '<th style="text-align:center">总数</th><th style="text-align:center">平均数</th><th style="text-align:center">最高数</th><th style="text-align:center">爆发数</th></tr>';
+    html += '<tr><th style="text-align:center">总数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="所有发布微博被转发的总次数"></i></th>';
+    html += '<th style="text-align:center">平均数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="平均每条发布微博被转发的平均数"></i></th>';
+    html += '<th style="text-align:center">最高数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="单条发布微博被转发的最高次数"></i></th>';
+    html += '<th style="text-align:center">爆发数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="所有微博在15分钟被转发的总次数"></i></th>';
+    html += '<th style="text-align:center">总数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="所有发布微博被评论的总次数"></i></th>';
+    html += '<th style="text-align:center">平均数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="平均每条发布微博被评论的平均数"></i></th>';
+    html += '<th style="text-align:center">最高数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="单条发布微博被评论的最高次数"></i></th>';
+    html += '<th style="text-align:center">爆发数<i class="glyphicon glyphicon-question-sign" data-toggle="tootlip" data-placement="right" title="所有微博在15分钟被评论的总次数"></i></th>';
+    html += '</tr>';
     html += '<tr><th style="text-align:center">原创微博 ('+data['origin_weibo_number']+')</th>';
     html += '<th style="text-align:center">'+data['origin_weibo_retweeted_total_number']+'</th>';
     html += '<th style="text-align:center">'+data['origin_weibo_retweeted_average_number'].toFixed(0)+'</th>';
@@ -202,10 +209,15 @@ Draw_pie_all0:function(data){
     html += '</table>';
     $('#influence_table').append(html);
 
-    var html_index='';
-    html_index +=  data['order_count'] + '/' +data['total_count'] ;
-    //console.log(html_index);
-    $('#influence_index').append(html_index);
+    $('#influence_index').html(data['order_count']);
+    var total_count;
+    if (data['total_count'] > 10000){
+        total_count = Math.floor(data['total_count'] / 10000) + '万';
+    }
+    else{
+        total_count = data['total_count'];
+    }
+    $('#influence_total').html(total_count);
   },
 
   Influence_tag_vector:function(data){
@@ -514,18 +526,20 @@ function click_action(){
 }
 
 var Influence = new Influence();
-var influence_url = '/attribute/influence_trend/?uid='+parent.personalData.uid ;
+var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
 var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
 
 
 $('input[name="choose_module"]').click(function(){             
   var index = $('input[name="choose_module"]:checked').val();
-  console.log(index);
+  //console.log(index);
   if(index == 1){
+    var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
     Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
   }
   else{
+    var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=30';
     Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
   }
 })

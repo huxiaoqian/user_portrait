@@ -1152,6 +1152,7 @@ def search_ip(now_ts, uid):
         job_ip = ['']
         job_ip_city = ''
     results['tag_vector'] = [[u'家庭IP', home_ip[0], home_ip_city], [u'工作IP', job_ip[0], job_ip_city]]
+    print 'results:', results
     return results
 
 #get ip information conclusion
@@ -1170,27 +1171,50 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     sort_home_dict = sorted(home_segment_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     
     home_ip_string = ''
+    home_ip_list = []
     for item in sort_home_dict:
+        '''
         home_ip_string += item[0]
+        home_ip_city = ip2city(item[0])
+        home_ip_string += home_ip_city
         home_ip_string += ' '
         home_ip.append(item[0])
-    conclusion.append(home_ip_string)
+        '''
+        home_ip_list.append(item[0])
+        home_ip_city = ip2city(item[0])
+        print ''
+        home_ip_list.append(home_ip_city)
+        home_ip.append(item[0])
 
+    #conclusion.append(home_ip_string)
+    conclusion.append(home_ip_list)
     conclusion.append( u',工作IP为')
+    
     job_ip_string = ''
+    job_ip_list = []
     for item in sort_job_dict:
+        '''
         job_ip_string += item[0]
-        job_ip_string += u' '
-        job_ip.append([item[0]])
+        job_ip_city = ip2city(item[0])
+        job_ip_string += job_ip_city
+        job_ip_string += ' '
+        job_ip.append(item[0])
+        '''
+        job_ip_list.append(item[0])
+        job_ip_city = ip2city(item[0])
+        job_ip_list.append(job_ip_city)
+        job_ip.append(item[0])
 
-    conclusion.append(job_ip_string)
+    #conclusion.append(job_ip_string)
+    conclusion.append(job_ip_list)
 
     #get abnormal use IP
     day_ip_set = set(all_day_top.keys())
     week_ip_set = set(all_week_top.keys())
     abnormal_set = day_ip_set - week_ip_set
     if len(abnormal_set)==0:
-        return conclusion[:-1], home_ip, job_ip
+        print 'description_conclusion:',conclusion
+        return conclusion, home_ip, job_ip
     else:
         conclusion.append(u',异常使用的IP为')
     abnormal_dict = dict()
@@ -1198,12 +1222,21 @@ def get_ip_description(week_result, all_week_top, all_day_top):
         abnormal_dict[abnormal_ip] = all_day_top[abnormal_ip]
     sort_abnormal_dict = sorted(abnormal_dict.items(), key=lambda x:x[1], reverse=True)[:IP_CONCLUSION_TOP]
     abnormal_ip_string = ''
+    abnormal_ip_list = []
     for item in sort_abnormal_dict:
+        '''
         abnormal_ip_string += item[0]
         abnormal_ip_string += ' '
+        '''
+        abnormal_ip_list.append(item[0])
+        abnormal_ip_city = ip2city(item[0])
+        abnormal_ip_list.append(abnormal_ip_city)
 
-    conclusion.append(abnormal_ip_string)
+    #conclusion.append(abnormal_ip_string)
+    conclusion.append(abnormal_ip_list)
+
     #print 'conclusion:', conclusion, home_ip, job_ip
+    print 'description_conclusion:', conclusion
     return conclusion, home_ip, job_ip
 
 #abandon in version:15-12-08
@@ -1483,8 +1516,8 @@ def search_activity_flow_text(uid):
                     'term': {'uid': uid},
                     'range':{
                         'timestamp':{
-                        'from': i,
-                        'to': i + 3600*4
+                        'gte': i,
+                        'lt': i + 3600*4
                         }
                     }
                 }
@@ -1635,7 +1668,7 @@ def ip_dict2geo(ip_dict):
 # get importance max & activeness max & influence max
 def get_evaluate_max():
     max_result = {}
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     evaluate_index = ['activeness', 'importance', 'influence']
     for evaluate in evaluate_index:
@@ -1726,8 +1759,8 @@ def search_preference_attribute(uid):
     sort_keywords = sorted(keywords_dict, key=lambda x:x[1], reverse=True)[:50]
     results['keywords'] = sort_keywords
     #hashtag
-    if portrait_result['hashtag']:
-        hashtag_dict = json.loads(portrait_result['hashtag'])
+    if portrait_result['hashtag_dict']:
+        hashtag_dict = json.loads(portrait_result['hashtag_dict'])
     else:
         hashtag_dict = {}
     sort_hashtag = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)[:50]
@@ -1865,6 +1898,18 @@ def get_all_ave_psy():
     results = json.loads(overview_result['ave_psy'])
 
     return results
+
+
+
+#use to get character and psycho_status
+#write in version: 16-02-25
+#input: uid
+#output: character and psycho_status
+def search_character_psy(uid):
+    results = {}
+    return results
+
+
 
 
 #use to get tendency and psy
@@ -2098,8 +2143,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     "range":{
                         "importance":{
-                        "from": results['importance'],
-                        "to": 1000000
+                        "gte": results['importance'],
+                        "lt": 1000000
                         }
                         }
                     }
@@ -2118,8 +2163,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     "range":{
                         "activeness":{
-                            "from":results['activeness'],
-                            "to": 1000000
+                            "gte":results['activeness'],
+                            "lt": 1000000
                             }
                         }
                     }
@@ -2135,8 +2180,8 @@ def search_attribute_portrait(uid):
                 'query':{
                     'range':{
                         'influence':{
-                            'from':results['influence'],
-                            'to': 1000000
+                            'gte':results['influence'],
+                            'lt': 1000000
                             }
                         }
                     }
@@ -2167,6 +2212,8 @@ def search_attribute_portrait(uid):
     #print 'importance:', results['importance']
     #print 'normal importance:', normal_importance*100
     results['importance'] = int(normal_importance * 100)
+    print 'influence:', results['influence']
+    print 'influence_max:', evaluate_max
     normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
     results['influence'] = int(normal_influence * 100)
     '''
@@ -2212,7 +2259,7 @@ def get_link_conclusion(link_ratio):
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):
     user_result = []
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     if condition_num > 0:
         try:
@@ -2229,6 +2276,8 @@ def search_portrait(condition_num, query, sort, size):
         except Exception, e:
             raise e
     if result:
+        search_result_max = get_evaluate_max()
+        
         #print 'result:', result
         filter_set = all_delete_uid() # filter_uids_set
         for item in result:
@@ -2236,6 +2285,12 @@ def search_portrait(condition_num, query, sort, size):
             score = item['_score']
 
             if not user_dict['uid'] in filter_set:
+                result_normal_activeness = math.log(user_dict['activeness'] / search_result_max['activeness'] * 9 + 1, 10)
+                result_normal_importance = math.log(user_dict['importance'] / search_result_max['importance'] * 9 + 1, 10)
+                result_normal_influence = math.log(user_dict['influence'] / search_result_max['influence'] * 9 + 1, 10)
+                user_dict['activeness'] = result_normal_activeness*100
+                user_dict['importance'] = result_normal_importance*100
+                user_dict['influence'] = result_normal_influence*100
                 user_result.append([user_dict['uid'], user_dict['uname'], user_dict['location'], user_dict['activeness'], user_dict['importance'], user_dict['influence'], score])
 
     return user_result
@@ -2325,9 +2380,9 @@ def get_activeness_trend(uid):
 
 #use to get influence_trend
 #write in version: 15-12-08
-#input: uid
+#input: uid, day_count(7/30)
 #output: {'time_line':[], 'influence':[]}
-def get_influence_trend(uid):
+def get_influence_trend(uid, day_count):
     print 'uid:', uid
     results = {}
     try:
@@ -2372,7 +2427,7 @@ def get_influence_trend(uid):
                 normal_value = math.log((value / iter_max) * 9 + 1 , 10) * 100
                 results[item_list[0]] = normal_value
     #print 'results:', results
-    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))
+    sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))[0-day_count:]
     time_list = [ts2datetime(datetimestr2ts(item[0])) for item in sort_results]
     influence_list = [item[1] for item in sort_results]
     

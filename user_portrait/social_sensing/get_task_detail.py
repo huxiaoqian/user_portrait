@@ -116,22 +116,28 @@ def get_task_detail_2(task_name, keywords, ts):
     if burst_time_list:
         for item in burst_time_list:
             tmp_common = 0
+            x1 = 0
+            x2 = 0
+            x3 = 0
             if signal_count_varition in item[2]:
                 weibo_variation_count += 1
                 weibo_variation_time.append([ts2date_min(item[0]), total_number_list[item[1]]])
+                x1 = total_number_list[item[1]]
                 tmp_common += 1
             if signal_sentiment_varition in item[2]:
                 tmp_common += 1
                 sentiment_variation_count += 1
+                x2 = negetive_sentiment_list[item[1]]
                 sentiment_variation_time.append([ts2date_min(item[0]), negetive_sentiment_list[item[1]]])
             if signal_sensitive_variation in item[2]:
                 tmp_common += 1
                 sensitive_variation_count += 1
+                x3 = sensitive_total_number_list[item[1]]
                 sensitive_variation_time.append([ts2date_min(item[0]), sensitive_total_number_list[item[1]]])
 
             if tmp_common >= 2:
                 common_variation_count += 1
-                common_variation_time.append(ts2date_min(item[0]))
+                common_variation_time.append([ts2date_min(item[0]), x1, x2, x3])
 
     warning_conclusion = "不需要说明了吧"
     variation_distribution = []

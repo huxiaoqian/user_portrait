@@ -32,6 +32,8 @@ sw = load_scws()
 #cx_dict = set(['Ag','a','an','Ng','n','nr','ns','nt','nz','Vg','v','vd','vn','@','j'])
 cx_dict = set(['Ng','n','nr','ns','nt','nz']) # 关键词词性词典, 保留名词
 
+
+
 def freq_word(items):
     """
     统计一条文本的词频，对文本进行过滤后再分词

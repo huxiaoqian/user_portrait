@@ -32,7 +32,7 @@
 
         var point = new BMap.Point(startPoint.x, startPoint.y);
         map.centerAndZoom(point, 5);
-        map.enableScrollWheelZoom(true);
+        //map.enableScrollWheelZoom(true);
         //console.log(data);
         // process
         var timelist = new Array();
@@ -72,6 +72,7 @@
                     var marker = new BMap.Marker(fixpoint);
                     addedlist[geoname] = addedlist[geoname] + ',' + timename;
                     marker.setTitle(geoname+addedlist[geoname]);
+                    marker.setOffset(new BMap.Size(2,10));
                     map.addOverlay(marker);
                     newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
                 }
@@ -236,7 +237,7 @@ function location_all(){
     activity_call_ajax_request(url, location_month);
     function location_month(data){
         //console.log(data);
-        $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>"); //description
+        $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>。"); //description
         //month
         location_geo = data.all_top;
         html += '<tr><th style="text-align:center">最近30天</th>';
@@ -251,22 +252,27 @@ function location_all(){
         html += '<th style="text-align:center"><a id="monthly_location_map" href="#map">查看地图</a></th>';
         html += '</tr>';
         // track map
-        month_process(data.month_track, true);
+        // month_process(data.month_track, true);
         bind_map();
         function bind_map(){
             $('#month_track').click(function(){
+                $('#map').css('display', 'block');
                 month_process(data.month_track, true);
             });
             $('#total_daily_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(daily_map_data, false);
             });
             $('#total_weekly_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(weekly_map_data, false);
             });
             $('#span_daily_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(span_daily_map_data, true);
             });
             $('#span_weekly_ip_map').click(function(){
+                $('#map').css('display', 'block');
                 month_process(span_weekly_map_data, true);
             });
         }
@@ -287,5 +293,5 @@ function location_all(){
     }
 
 }
-//location_all();
+location_all();
 

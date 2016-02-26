@@ -293,15 +293,24 @@ function draw_out_list(data){
 
 function draw_in_list(data){
     $('#in_list').empty();
-    html = '';
+    var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th  style="width:90px;text-align:center;">用户ID</th><th style="width:150px;text-align:center;">昵称</th><th style="text-align:center;">影响力</th><th style="text-align:center;">重要度</th><th style="text-align:center;">转发数</th><th style="text-align:center;">' + '<input name="in_choose_all" id="in_choose_all" type="checkbox" value="" onclick="in_choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
+    var user_url = 'http://weibo.com/u/'+ uid;
+    html += '<tr id=' + uid +'>';
+    html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ uid +'</td>';
+    html += '<td style="text-align:center" style="width:150px;">'+ personalData.uname +'</td>';
+    html += '<td style="text-align:center" style="width:70px;">'+ personalData.influence.toFixed(2) +'</td>';
+    html += '<td style="text-align:center" style="width:70px;">'+ personalData.importance.toFixed(2) +'</td>';
+    html += '<td style="text-align:center" style="width:70px;">-</td>';
+    html += '<td style="text-align:center"><input name="in_list_option" class="search_result_option" type="checkbox" value="' + uid + '" /></td>';
+    html += '</tr>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
       //item = replace_space(item);
       //global_data[item[0]] = item; // make global data
-      user_url = 'http://weibo.com/u/'+ item[0];
+      var user_url = 'http://weibo.com/u/'+ item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
       html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
@@ -330,22 +339,27 @@ function out_list_button(){
   });
   var compute_type = $('input[name="compute-type"]:checked').val();
   var recommend_date = getDate();
-  if (compute_type==2){
-    var a = confirm('确定要推荐入库吗？');
-    if (a == true){
-        var compute_url = '/recommentation/identify_in/?date='+recommend_date+'&uid='+cur_uids+'&status'+compute_type;
-        Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
-    }
+  if (cur_uids.length == 0){
+    alert("请选择至少一个用户！");
   }
   else{
-      var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
-      if(sure==true){
-        // $('#out_list').empty();
-        // var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
-        // $('#out_list').append(waiting_html);
-        var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids + '&status=' + compute_type;
-        Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
-      }    
+      if (compute_type==2){
+        var a = confirm('您选择了预约计算，系统将在今日24:00自动启动计算！');
+        if (a == true){
+            var compute_url = '/recommentation/identify_in/?date='+recommend_date+'&uid_list='+cur_uids+'&status='+compute_type;
+            Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
+        }
+      }
+      else{
+          var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
+          if(sure==true){
+            // $('#out_list').empty();
+            // var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
+            // $('#out_list').append(waiting_html);
+            var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids + '&status=' + compute_type;
+            Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
+          }    
+      }
   }
 }
 
@@ -359,6 +373,10 @@ function in_list_button(){
   var group_url = '/index/group/';
   var group_name = $('input[name="so_group_name"]').val();
   var remark = $('input[name="so_states"]').val();
+  if (group_confirm_uids.length == 0){
+      alert('请至少选择一名用户！');
+      return;
+  }
   if (group_name.length == 0){
       alert('群体名称不能为空');
       return;

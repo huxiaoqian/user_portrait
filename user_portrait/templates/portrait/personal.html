@@ -67,12 +67,15 @@ $(function(){
             <div style="width:180px; float:left;margin:10px;"><span class="img-photo"><img id="portraitImg" src="http://tp2.sinaimg.cn/1878376757/50/0/1" alt="Photo" width="170" height="170" /></span></div>
             <div style="width:750px; float:right;padding-top:10px;padding-right:10px;">
                 <div style="height:70px; margin-bottom: 8px;">
-                  <div style="width:500px; float:left;">
+                  <div style="width:640px; float:left;">
                       <span class="nickname" id="nickname"></span>
                     <a style="font-size:15px;margin-left:15px;" href='#detail' onclick="$('#detail').css('display','block');">查看详细属性</a>
-                    <div class="PersonPre" style="margin-bottom:5px;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail"></span></div>
+                    <div class="PersonPre" style="margin-bottom:5px;">
+                        <!--<span class="lightw">个人描述：</span>-->
+                        <span class="" style="font-family: "宋体";" id="portraitDetail"></span>
+                    </div>
                   </div>
-                  <div style="width:240px; font-size:15px;float:right; text-align: right;">
+                  <div style="width:100px; font-size:15px;float:right; text-align: right;">
                       <br />
                       <a id="homepage" target="_blank" style="cursor:pointer;">ta的微博主页</a>
                       <br />
@@ -85,29 +88,29 @@ $(function(){
                 <div style="height:90px;font-weight:bold;font-size:14px;margin-right:10px;border-style:solid;border-width: 1px; padding: 5px; border-color: #CCCCCC; background-color: #FFFFFF;">
                     <div class="cols" style="width:700px;margin-top:0px;">
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">用户ID</span>
+                            <span class="lightw fleft lineh42 mright38">用户ID</span>
                             <span class="fleft lineh42 mright38" id="userId" ></span>
                         </div>
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">注册地</span>
+                            <span class="lightw fleft lineh42 mright38">注册地</span>
                             <span class="fleft lineh42 mright38" id="userLocation" ></span>
                         </div>
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">性别</span>
+                            <span class="lightw fleft lineh42 mright38">性&nbsp;&nbsp;&nbsp;别</span>
                             <span class="fleft lineh42 mright38" id="userGender" ></span>
                         </div>
                     </div>
                     <div class="cols" style="width:700px;margin-top:0px;">
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">粉丝数</span>
+                            <span class="lightw fleft lineh42 mright38">粉丝数</span>
                             <span class="fleft lineh42 mright38" id="userFans" ></span>
                         </div>
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">关注数</span>
+                            <span class="lightw fleft lineh42 mright38">关注数</span>
                             <span class="fleft lineh42 mright38" id="userFriend" ></span>
                         </div>
                         <div style="width:230px;height:40px;float:left;">
-                            <span class="fleft lineh42 mright38">微博数</span>
+                            <span class="lightw fleft lineh42 mright38">微博数</span>
                             <span class="fleft lineh42 mright38" id="userWeibo" ></span>
                         </div>
                     </div>
@@ -118,18 +121,35 @@ $(function(){
             <div class="framepost">
                 <h3 class="title">系统画像信息</h3>
                 <div class="entry">
-                    <div class="power" style="height:60px;line-height:30px;">
-                        <span class="activePower" style="color:black;">当前状态&nbsp;&nbsp;</span>
-                        <span class="activePower lightw">活跃度：</span><span class=" red" id="APnum">100</span>（No.<span id="APrank"></span>/<span id="APsum"></span>）
-                        <span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
-                        <br/>
-                        <span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（No.<span id="FPrank"></span>/<span id="FPsum"></span>）
-                    </div>
-                    <div class="power" style="height:60px;line-height:30px;">
-                        <span class="activePower" style="color:black;">历史状态&nbsp;&nbsp;</span>
-                        <span class="activePower lightw">活跃度：</span><span class="red" id="histAPnum">100</span>（No.<span id="histAPrank"></span>/<span id="histAPsum"></span>）
-                        <br/>
-                        <span class="influencePower lightw">影响力：</span><span class=" red" id="histFPnum">100</span>（No.<span id="histFPrank"></span>/<span id="histFPsum"></span>）
+                    <div style="height:160px;width:100%;" id='overview'>
+                        <div style='height:150px;width:10%;float:left;'>
+                            <select style='margin-top:108px;margin-left:10px;' id='status_option'>
+                                <option value='latest'>最新</option>
+                                <option value='longterm'>长期</option>
+                            </select>
+                        </div>
+                        <table style="height:150px;width:90%;">
+                            <tr>
+                                <td style="text-align:center;vertical-align:middle;width:185px;"><img src="/static/img/activeness.png" style="height:80px"></td>
+                                <td style="text-align:center;vertical-align:middle;width:185px;"><img src="/static/img/importance.png" style="height:80px"></td>
+                                <td style="text-align:center;vertical-align:middle;width:185px;"><img src="/static/img/influence.png" style="height:80px"></td>
+                            </tr>
+                            <tr style='font-size:14px;'>
+                                <td style="text-align:center;vertical-align:middle">
+                                    <span class=" red" id="APnum">100</span>(No.<span id="APrank"></span>/<span id="APsum"></span>)
+                                </td>
+                                <td style="text-align:center;vertical-align:middle">
+                                    <span class=" red" id="IPnum">100</span>(No.<span id="IPrank"></span>/<span id="IPsum"></span>)
+                                </td>
+                                <td style="text-align:center;vertical-align:middle">
+                                    <span class=" red" id="FPnum">100</span>(No.<span id="FPrank"></span>/<span id="FPsum"></span>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0px;font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量该用户线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>
+                                <td style="padding:0px;font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量该用户对社会网络安全业务的重要程度，通过所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>
+                                <td style="padding:0px;font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量该用户整体的影响力，通过原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td></tr>
+                        </table>
                     </div>
                     <div class="m-wrap" style="margin-top;0px;">
                         <ul id="vector_table"class="clearfix">
@@ -323,12 +343,7 @@ Personal.prototype = {   //群组搜索
     },
     historyData:function(data){
         console.log(data);
-        $('#histAPnum').html(data[0].toFixed(2));
-        $('#histAPrank').html(data[1]);
-        $('#histAPsum').html(data[4]);
-        $('#histFPnum').html(data[2].toFixed(2));
-        $('#histFPrank').html(data[3]);
-        $('#histFPsum').html(data[4]);
+        histData = data;
     },
 }
 var global_tag_vector = new Array(); //全局标签化向量
@@ -336,6 +351,7 @@ var global_tag_vector = new Array(); //全局标签化向量
 var uid = "{{ uid }}";
 var Personal = new Personal();
 var personalData; // global data
+var histData;
 var url = "/attribute/portrait_attribute/?uid=" + uid;
 Personal.call_sync_ajax_request(url, Personal.ajax_method, Personal.personData);
 var url = "/attribute/get_remark/?uid=" + uid;
@@ -349,6 +365,71 @@ function currentData(data){
     //console.log(data);
     //global_tag_vector.push(['昨日影响力评价',data[0]]);
 }
+function bind_status_option(){
+    $('#status_option').change(function(){
+        console.log($(this).val());
+        if ($(this).val() == 'latest'){
+            var APsum = document.getElementById('APsum');
+            APsum.innerHTML = personalData.all_count;
+            var IPsum = document.getElementById('IPsum');
+            IPsum.innerHTML = personalData.all_count;
+            var FPsum = document.getElementById('FPsum');
+            FPsum.innerHTML = personalData.all_count;
+            var influencePower = document.getElementById('FPnum');
+            if(personalData.influence){
+                influencePower.innerHTML = personalData.influence.toFixed(2);
+            }else{
+                influencePower.innerHTML = "无此数据";
+            }
+            var importantPower = document.getElementById('IPnum');
+            if(personalData.importance){
+                importantPower.innerHTML = personalData.importance.toFixed(2);
+            }else{
+                importantPower.innertHTML = "无此数据";
+            }
+            var activePower = document.getElementById('APnum');
+            if(personalData.activeness){
+                activePower.innerHTML = personalData.activeness.toFixed(2);
+            }else{
+                activePower.innerHTML = "无此数据";
+            }
+            var I_rank = document.getElementById('IPrank');
+            if(personalData.importance_rank){
+                I_rank.innerHTML = personalData.importance_rank;
+            }else{
+                I_rank.innerHTML = "无此数据";
+            }
+            var A_rank = document.getElementById('APrank');
+            if(personalData.activeness_rank){
+                A_rank.innerHTML = personalData.activeness_rank;
+            }else{
+                A_rank.innerHTML = "无此数据";
+            }
+            var F_rank = document.getElementById('FPrank');
+            if(personalData.influence_rank){
+                F_rank.innerHTML = personalData.influence_rank;
+            }else{
+                F_rank.innerHTML = "无此数据";
+            }
+        }
+        else{
+            var hist_sum;
+            if (histData[4] > 10000){
+                hist_sum = Math.floor(histData[4]/10000) + '万';
+            }
+            else{
+                hist_sum = histData[4];
+            }
+            $('#APnum').html(histData[0].toFixed(2));
+            $('#APrank').html(histData[1]);
+            $('#APsum').html(hist_sum);
+            $('#FPnum').html(histData[2].toFixed(2));
+            $('#FPrank').html(histData[3]);
+            $('#FPsum').html(hist_sum);
+        }
+    });
+}
+bind_status_option();
 function bind_remark_edit(Personal){
     $('#extraDetail').click(function(){
         var td = $(this);
