@@ -526,16 +526,16 @@ def get_social_inter_content(uid1, uid2):
     now_date_ts = datetime2ts('2013-09-08')
     #uid2uname
     uid2uname = {}
-    #try:
-    portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
+    try:
+        portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
                                 body={'ids': [uid1, uid2]}, _source=False, fields=['uid', 'uname'])['docs']
-    #except:
-    #    portrait_result = []
+    except:
+        portrait_result = []
     
     for item in portrait_result:
         uid = item['_id']
         if item['found'] == True:
-            uname = item['uname']
+            uname = item['fields']['uname'][0]
             uid2uname[uid] = uname
         else:
             uid2uname[uid] = 'unknown'
