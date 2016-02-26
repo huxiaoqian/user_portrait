@@ -123,7 +123,7 @@ Search_weibo.prototype = {
     $('#overview').empty();
     html = '';
     html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px">' + data[7] +'</p><p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;<span style="cursor:pointer;"><u>群体标签</u></span></p>';
+    html += '<p style="font-size:16px">' + data.task_name +'</p><p style="font-size:16px">' + data.submit_date +'</p><p style="font-size:16px">' + data.state +'</p><p style="font-size:16px">' + data.submit_user +'</p><p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;<span style="cursor:pointer;"><u>群体标签</u></span></p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -1057,9 +1057,9 @@ function show_members(){
 	var downloadurl = window.location.host;
     var model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
     base_call_ajax_request(model_url, Draw_model);
-    $("#myModal").modal();
+    $("#myModal_group").modal();
     function Draw_model(data){
-        $('#group_user').empty();
+        $('#group_member_user').empty();
         html = '';
         html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
         html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
@@ -1081,7 +1081,7 @@ function show_members(){
         };
         html += '</tbody>';
         html += '</table>';
-        $('#group_user').append(html);
+        $('#group_member_user').append(html);
         $('#modal_table').dataTable({
             "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
             "sPaginationType": "custom_bootstrap",
@@ -1096,15 +1096,16 @@ function show_members(){
 $(document).ready(function(){
 	var downloadurl = window.location.host;
     Draw_group_weibo_date();
-    Draw_think_emotion();
-    Draw_think_domain();
-    Draw_think_topic();
-    Draw_think_tendency();
+    // Draw_think_emotion();
+    // Draw_think_domain();
+    // Draw_think_topic();
+    // Draw_think_tendency();
 
+    var group_overview_url = 'http://219.224.134.213:9040/group/show_group_result/?module=overview&task_name=媒体';
     var overviewdata = ['媒体','2013-09-01','关注的媒体','0.2222','0.542','6.233','10000.345','某某']
     Search_weibo.Draw_overview(overviewdata);
     // var weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
-    // Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
+     Search_weibo.call_sync_ajax_request(group_overview_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
     // var tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
     // Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
     // var basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
