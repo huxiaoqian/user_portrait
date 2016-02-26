@@ -103,19 +103,20 @@ def hashtag_description(result):
 # conclusion of a user based on history influence info
 def conclusion_on_influence(uid):
     # test
-    index_name = "this_is_a_copy_user_portrait"
-    index_type = "manage"
+    index_name = copy_portrait_index_name
+    index_type = copy_portrait_index_type
     total_number = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type)["count"]
 
     try:
         influ_result = es.get(index=index_name, doc_type=index_type, id=uid)['_source']
     except:
         influ_result = {}
-        result = [0, 0, 0, 0, total_number] # aver_activeness, sotred, aver_influence, sorted
+        result = [0, 0, 0, 0, 0, 0, total_number] # aver_activeness, sorted, aver_influence, sorted
         return result
 
     aver_activeness = influ_result.get("aver_activeness", 0)
     aver_influence = influ_result.get("aver_influence", 0)
+    aver_importance = influ_result.get('aver_importance', 0)
     influence_query_body = {
         "query":{
             "match_all": {}
@@ -125,6 +126,14 @@ def conclusion_on_influence(uid):
     }
     top_influence = es.search(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=influence_query_body)['hits']['hits'][0]['sort'][0]
 
+    importance_query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort": {"aver_importance": {"order": "desc"}},
+        "size": 1
+    }
+    top_importance = es.search(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=importance_query_body)['hits']['hits'][0]['sort'][0]
 
     activeness_query_body = {
         "query":{
@@ -163,18 +172,33 @@ def conclusion_on_influence(uid):
         }
     }
 
+    importance_query_body = {
+        "query": {
+            "filtered":{
+                "filter": {
+                    "range": {
+                        "aver_importance": {
+                            "gt": aver_importance
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     influence_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=influence_query_body)['count']
     activeness_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=activeness_query_body)['count']
+    importance_count = es.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=importance_query_body)['count']
 
-    result = [aver_activeness*100.0/top_activeness, activeness_count, aver_influence*100.0/top_influence, influence_count, total_number]
+    result = [int(aver_activeness*100.0/top_activeness), activeness_count, int(aver_influence*100.0/top_influence), influence_count, int(aver_importance*100.0/top_importance), importance_count, total_number]
     return result
 
 # version: 2015-12-22
 # conclusion of a user based on history influence info
 def conclusion_on_activeness(uid):
     # test
-    index_name = "this_is_a_copy_user_portrait"
-    index_type = "manage"
+    index_name = copy_portrait_index_name
+    index_type = copy_portrait_index_type
     try:
         influ_result = es.get(index=index_name, doc_type=index_type, id=uid)['_source']
     except:
