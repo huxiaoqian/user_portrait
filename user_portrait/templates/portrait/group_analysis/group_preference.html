@@ -30,7 +30,7 @@
 <div class="col-lg-6" style="margin-top:15px;">
     <div class="panel panel-default">
         <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
-            <div><span class="showmore" id="showmore_domain" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_domain" ><u>查看更多</u></span>用户领域分布</div>
+            <div>用户领域分布</div>
         </div>
         <div class="panel-body">
           <div id="preference_domain"  style="width:450px;height:300px;margin-left: -30px;">
@@ -42,7 +42,7 @@
 <div class="col-lg-6" style="margin-top:15px;">
     <div class="panel panel-default">
         <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
-            <div><span class="showmore" id="showmore_topic" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_topic" ><u>查看更多</u></span>用户话题分布</div>
+            <div>用户话题分布</div>
         </div>
         <div class="panel-body">
           <div id="preference_topic"  style="width:450px;height:300px;margin-left: -30px;">
@@ -80,35 +80,15 @@
   </div>
 </div>
 
-<div class="modal fade" id="more_domain" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">用户领域分布</h4>
-      </div>
-      <div class="modal-body" id='domain_WordList'>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="more_topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content"  style="width: 500px;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">用户话题分布</h4>
-      </div>
-      <div class="modal-body" id='topic_WordList'>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script type="text/javascript">
-ajax_method = 'GET';
-function call_sync_ajax_request(url, method, callback){
+function Show_pref(url,div){
+    that = this;
+    this.ajax_method = 'GET';
+    this.div = div;
+}
+Show_pref.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
     $.ajax({
       url: url,
       type: method,
@@ -116,7 +96,23 @@ function call_sync_ajax_request(url, method, callback){
       async: false,
       success:callback
     });
+  },
+  Draw_table:function(data){
+    console.log(data);
+    var keywords_data = data['keywords'];
+    var keywords_name = 'Language';
+    var keywords_more = 'key_WordList';
+    var hashtag_data = data['hashtag'];
+    var hashtag_name = 'hashtag_words';
+    var hashtag_more = 'hashtag_WordList';
+    var topic_data = data['topic'];
+    var domain_data = data['domain'];
+    Draw_keyword(keywords_data, keywords_name, keywords_more, showmore_keyWords);
+    Draw_keyword(hashtag_data, hashtag_name, hashtag_more, showmore_hashtagWords);
+    Draw_topic(topic_data,'preference_topic');
+    Draw_topic(domain_data,'preference_domain');
   }
+}
 
 function show_conclusion(data){
   var html = '';
@@ -220,28 +216,15 @@ function get_radar_data (data) {
   topic_result.push(topic_value);
   return topic_result;
 }
-function Draw_topic(data, radar_div, motal_div, show_more){
+function Draw_topic(data, radar_div){
   var topic = [];
   var html = '';
-  $('#'+ motal_div).empty();
   if(data.length == 0){
-      $('#'+ motal_div).empty();
-      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      var html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
       //$('#'+ more_div).append(html);
       $('#'+ radar_div).append(html);
-      $('#'+ motal_div).append(html);
-      $('#'+ show_more).empty();
+      //$('#'+ show_more).empty();
   }else{
-      html = '';
-      html += '<table class="table table-striped table-bordered" style="width:450px;">';
-      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
-      for (var i = 0; i < data.length; i++) {
-         var s = i.toString();
-         var m = i + 1;
-         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
-      };
-      html += '</table>'; 
-      $('#'+ motal_div).append(html);
     };
   var topic_result = [];
   topic_result = get_radar_data(data);
@@ -442,43 +425,44 @@ function show_domain(data){
 }
 
 function show_results(data){
-  //console.log(data.results.keywords);
+  console.log(data);
 //  var keywordsCloud = data.results.keywords;
-  var keywordsCloud = ['111','222','333','444','555','666'];
+  
   //console.log(keywordsCloud);
 //  var hashtag = data.results.hashtag;
-  var hashtag = ['000','111','222','333','444','555','666'];
-  var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
-  var domain = [];
+//var hashtag = ['000','111','222','333','444','555','666'];
+//var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
+//var domain = [];
 
 //  var conclusion = data.description;
-  var conclusion = 'conclusion///';
+//var conclusion = 'conclusion///';
 //  var domain = data.results.domain;
-  var keywords_name = 'Language';
-  var hashtag_name = 'hashtag_words';
-  var keywords_more = 'key_WordList';
-  var hashtag_more = 'hashtag_WordList';
-  var key_more = 'key_more';
-  var hash_more = 'hash_more';
-  Draw_keyword(keywordsCloud, keywords_name, keywords_more, showmore_keyWords);
-  Draw_keyword(hashtag, hashtag_name, hashtag_more, showmore_hashtagWords);
-  Draw_topic(topic,'preference_topic', 'topic_WordList','showmore_topic');
-  Draw_topic(topic,'preference_domain', 'domain_WordList','showmore_domain');
+//  var keywords_name = 'Language';
+  //var hashtag_name = 'hashtag_words';
+ // var keywords_more = 'key_WordList';
+  
+//var key_more = 'key_more';
+//var hash_more = 'hash_more';
+ 
+  //Draw_keyword(keywordsCloud, keywords_name, keywords_more, showmore_keyWords);
+  //Draw_keyword(hashtag, hashtag_name, hashtag_more, showmore_hashtagWords);
+  //Draw_topic(topic,'preference_topic', 'topic_WordList','showmore_topic');
+  //Draw_topic(topic,'preference_domain', 'domain_WordList','showmore_domain');
   show_conclusion(conclusion);
 //  show_domain(domain);
 
-  var tag_vector = data.tag_vector;
-  //console.log(tag_vector);
-  for(var i=0; i<tag_vector.length;i++){
-    if(tag_vector[i][1] == ''){
-      tag_vector[i][1] = '暂无数据'
-    }
-    global_tag_vector.push(tag_vector[i]);
-  }
-  }
+  // var tag_vector = data.tag_vector;
+  // //console.log(tag_vector);
+  // for(var i=0; i<tag_vector.length;i++){
+  //   if(tag_vector[i][1] == ''){
+  //     tag_vector[i][1] = '暂无数据'
+  //   }
+  //   global_tag_vector.push(tag_vector[i]);
+  // }
+  // }
 
-show_results('aaa');
+var Show_pref = new Show_pref();
 //var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
-//var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
-//call_sync_ajax_request(prefrence_url, ajax_method, show_results);
+var prefrence_url = '/group/show_group_result/?task_name=媒体&module=preference';
+Show_pref.call_sync_ajax_request(prefrence_url, Show_pref.ajax_method, Show_pref.Draw_table);
   </script>
