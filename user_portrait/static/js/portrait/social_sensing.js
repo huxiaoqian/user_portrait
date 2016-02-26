@@ -477,7 +477,7 @@ function so_group_data(){
 	    a['keywords'] = $('#so_keywords').val();
 	 	a['keywords'] = a['keywords'].split(/\s+/g);
 	    a['keywords0'] = $('#so_keywords_nor').val();
-	 	a['keywords0'] = a['keywords_nor'].split(/\s+/g);
+	 	a['keywords0'] = a['keywords0'].split(/\s+/g);
 	    $('[name="so_more_option_0"]:checked').each(function(){
 		  	    a['keywords0'].push($(this).val());
 		  	});
