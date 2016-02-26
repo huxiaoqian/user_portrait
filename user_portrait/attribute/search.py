@@ -35,7 +35,7 @@ from user_portrait.global_utils import be_comment_index_name_pre, be_comment_ind
 from user_portrait.global_utils import copy_portrait_index_name, copy_portrait_index_type
 from user_portrait.global_utils import R_RECOMMENTATION as r_recomment
 from user_portrait.global_config import R_BEGIN_TIME
-from user_portrait.parameter import DAY, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
+from user_portrait.parameter import DAY, WEEK, MAX_VALUE, HALF_HOUR, FOUR_HOUR, GEO_COUNT_THRESHOLD, PATTERN_THRESHOLD
 from user_portrait.parameter import PSY_DESCRIPTION_FIELD, psy_en2ch_dict, psy_description_dict
 from user_portrait.search_user_profile import search_uid2uname
 from user_portrait.filter_uid import all_delete_uid
@@ -1925,8 +1925,8 @@ def search_character_psy(uid):
                 uid_sentiment_dict[sentiment] += item['doc_count']
             except:
                 uid_sentiment_dict[sentiment] = item['doc_count']
-        
-    return uid_sentiment_dict
+    results['sentiment_pie'] = uid_sentiment_dict
+    return results
 
 
 #get psy all ave dict from overview es
@@ -1939,17 +1939,6 @@ def get_all_ave_psy():
     results = json.loads(overview_result['ave_psy'])
 
     return results
-
-
-
-#use to get character and psycho_status
-#write in version: 16-02-25
-#input: uid
-#output: character and psycho_status
-def search_character_psy(uid):
-    results = {}
-    return results
-
 
 
 
