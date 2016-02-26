@@ -319,7 +319,7 @@ function draw_daily_ip_table(ip_data){
         global_tag_vector.push([tag_name, tag_value]);
     }
     //var div_name = ['daily_ip','weekly_ip'];
-    console.log(ip_data);
+    //console.log(ip_data);
     var this_desc = '';
     if (ip_data.description[1]){
         this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description
