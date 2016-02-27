@@ -102,7 +102,7 @@ es_copy_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 # elasticsearch index_name and index_type
 profile_index_name = 'weibo_user'  # user profile es
 profile_index_type = 'user'
-portrait_index_name = 'user_portrait' # user portrait
+portrait_index_name = 'user_portrait_1222' # user portrait
 portrait_index_type = 'user'
 flow_text_index_name_pre = 'flow_text_' # flow text: 'flow_text_2013-09-01'
 flow_text_index_type = 'text'
