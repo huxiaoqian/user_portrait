@@ -120,6 +120,23 @@ Search_weibo.prototype = {
 },
 
   Draw_overview: function(data){
+    var importance_star = '';
+    for(var i=0;i<data.importance_star;i++){
+        importance_star += '<img src="/static/img/star-yellow.png" style="width:25px">'
+    };
+    var activeness_star = '';
+    for(var i=0;i<data.activeness_star;i++){
+        activeness_star += '<img src="/static/img/star-yellow.png" style="width:25px">'
+    };
+    var density_star = '';
+    for(var i=0;i<data.density_star;i++){
+        density_star += '<img src="/static/img/star-yellow.png" style="width:25px" >'
+    };
+    var influence_star = '';
+    for(var i=0;i<data.influence_star;i++){
+        influence_star += '<img src="/static/img/star-yellow.png" style="width:25px" >'
+    };
+
     $('#overview').empty();
     html = '';
     html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
@@ -130,8 +147,8 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3] + '(连接紧密)</td><td style="text-align:center;vertical-align:middle">' + data[4] + '(一般活跃)</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data[5] + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6] + '(影响较大)</td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle">' + density_star + '</td><td style="text-align:center;vertical-align:middle">' + activeness_star + '</td>';
+    html += '<td style="text-align:center;vertical-align:middle">' + importance_star + '</td><td style="text-align:center;vertical-align:middle">' + influence_star + '</td></tr>';
     html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
     html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>';
