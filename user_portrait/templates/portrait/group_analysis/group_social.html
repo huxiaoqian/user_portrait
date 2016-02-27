@@ -2,7 +2,9 @@
 table tr th{
 	text-align:center;width:300px
 }
-
+.dataTables_filter{text-align:right;margin-bottom:5px;
+.dataTables_paginate{margin-top:-10px;margin-bottom:-20px;
+}
 </style>
 <div class="col-lg-12">
 	<div class="panel panel-default" >
@@ -21,7 +23,7 @@ table tr th{
 		             <div id='relation_net' style='width:900px;height:350px'>test111111111111</div>                 
 		         </div>
 		         <div class="tab-pane" id="group_in_tables" style="margin-top:10px">
-		         	 <div type="button" data-toggle="modal" data-target="#modal_group_in_table" style="font-size:16px;cursor:pointer;margin-left: 820px;margin-bottom: 5px;"><u>查看更多</u></div>
+		         	 <!-- <div type="button" data-toggle="modal" data-target="#modal_group_in_table" style="font-size:16px;cursor:pointer;margin-left: 820px;margin-bottom: 5px;"><u>查看更多</u></div> -->
 		             <div id='group_in_table' style='overflow-x:hidden;height:350px'></div>
 		         </div>          
 		     </div>
@@ -66,7 +68,7 @@ table tr th{
 		             <div id='relation_out_net' style='width:900px;height:350px'></div>                 
 		         </div>
 		         <div class="tab-pane" id="group_out_tables" style="margin-top:10px">
-		         	<div type="button" data-toggle="modal" data-target="#modal_group_out_table" style="font-size:16px;cursor:pointer;margin-left: 820px;margin-bottom: 5px;"><u>查看更多</u></div>
+		         	<!-- <div type="button" data-toggle="modal" data-target="#modal_group_out_table" style="font-size:16px;cursor:pointer;margin-left: 820px;margin-bottom: 5px;"><u>查看更多</u></div> -->
 		            <div id='group_out_table' style='overflow-x:hidden;height:350px'></div>
 		         </div>          
 		     </div>
@@ -231,7 +233,7 @@ function pageDown(pageNum,pageCount,div_name){
 		break;
 	}
 }
-function page_group_weibo1(start_row,end_row,data,div_name){
+function page_group_weibo1(start_row,end_row,data,div_name,sub_div_name){
 	console.log(div_name);
     var weibo_num = end_row - start_row;
     $("#"+div_name+" #group_weibo_text").empty();
@@ -416,7 +418,7 @@ function draw_relation_net(data,name){
             }
     )
 }
-function draw_relation_out_net(data,name){
+function draw_relation_out_net(data,name,symbols){
     var total_content = [];
     var source_content = []
     for (var i=0;i<data[name].length;i++){
@@ -509,7 +511,7 @@ function draw_relation_out_net(data,name){
             gravity: 1.1,
             scaling: 1.2,
             draggable: false,
-            linkSymbol: 'none',
+            linkSymbol: symbols,
             steps: 10,
             coolDown: 0.9,
             //preventOverlap: true,
@@ -553,10 +555,10 @@ function draw_in_table(data){
     var s = '';
     var html = '';
     html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
-    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:30px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_weibo">' + data['social_in_record'][s]['2'] +'</a></td></tr>';
     };
     html += '</table>';
     $('#group_in_table').append(html);
@@ -565,11 +567,11 @@ function draw_out_table(data){
     $('#group_out_table').empty();
     var s = '';
     var html = '';
-    html = '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
+    html = '<table id="group_out_body" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<5;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['5'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['2'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['5'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_out_weibo">' + data['social_out_record'][s]['2'] +'</a></td></tr>';
     };
     html += '</table>';
     $('#group_out_table').append(html);
@@ -579,10 +581,10 @@ function draw_more_in_table(data){
     $('#group_in_more_table').empty();
     var html = '';
     html = '<table id="group_more_in" class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="height: 300px;    overflow-y: scroll;">';
-    html += '<tr><td style="text-align:center">原始微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">原始微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">转发微博ID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_in_record'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:30px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center">' + data['social_in_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
     $('#group_in_more_table').append(html);
@@ -613,14 +615,23 @@ function draw_more_out_table(data){
     //    }
     // });
 }
-function draw_group_weibo0(data,div_name){
+function draw_group_weibo0(data,div_name,sub_div_name){
     var page_num = 10;
+    console.log(data);
     if (data.length < page_num) {
-          page_num = data.length;
-          page_group_weibo1( 0, page_num, data,div_name);
+        $('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
+        $('#'+ div_name + ' #pageGro .pageList').css('display', 'none'); 
+        $('#'+ div_name + ' #pageGro .pageDown').css('display', 'none'); 
+        if (data.length == 0) {
+            $('#' + sub_div_name).empty();
+            $('#' + sub_div_name).append('该时段没有与此事件相关的微博！')
+        }else{
+            page_num = data.length
+            page_group_weibo1( 0, page_num, data, div_name, sub_div_name);
+        }
       }
       else {
-          page_group_weibo1( 0, page_num, data,div_name);
+          page_group_weibo1( 0, page_num, data,div_name,sub_div_name);
           var total_pages = 0;
           if (data.length % page_num == 0) {
               total_pages = data.length / page_num;
@@ -652,7 +663,7 @@ function draw_group_weibo0(data,div_name){
       end_row = start_row + page_num;
       if (end_row > data.length){
           end_row = data.length;}
-      page_group_weibo1(start_row,end_row,data,div_name);
+      page_group_weibo1(start_row,end_row,data,div_name,sub_div_name);
     });
 
     $("#"+div_name+" #pageGro .pageUp").click(function(){
@@ -672,7 +683,7 @@ function draw_group_weibo0(data,div_name){
       if (end_row > data.length){
           end_row = data.length;
       }
-        page_group_weibo1(start_row,end_row,data,div_name);
+        page_group_weibo1(start_row,end_row,data,div_name,sub_div_name);
     });
     
 
@@ -694,16 +705,18 @@ function draw_group_weibo0(data,div_name){
       if (end_row > data.length){
           end_row = data.length;
       }
-       page_group_weibo1(start_row,end_row,data,div_name);
+       page_group_weibo1(start_row,end_row,data,div_name,sub_div_name);
     });
 }
 function draw_group_weibo1(data){
 	var div_name = 'weiboTabContent';
-	draw_group_weibo0(data,div_name);
+    var sub_div_name = 'group_weibo_text';
+	draw_group_weibo0(data,div_name,sub_div_name);
 }
 function draw_group_weibo2(data){
 	var div_name = 'outWeiboTabContent';
-	draw_group_weibo0(data,div_name);
+    var sub_div_name = 'group_weibo_text';
+	draw_group_weibo0(data,div_name,sub_div_name);
 }
 
 function show_conclusion(data){
@@ -714,14 +727,41 @@ function show_conclusion(data){
   $("#social_conclusion").append(html);
 }
 
+$(function(){
+    $('a[id^="group_change_weibo"]').click(function(){
+    var uid1 = $(this).parent().prev().prev().text();
+    var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
+    var url = '/group/social_inter_content/?uid1='+uid1+'&uid2='+uid2;
+    console.log(url);
+    g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo1);
+
+   });
+})
+
+
+$('a[id^="group_change_out_weibo"]').click(function(){
+    var uid1 = $(this).parent().prev().prev().prev().html();
+    var uid2 = $(this).parent().prev().prev().prev().prev().prev().html();
+    var url = '/group/social_out_content/?uid1='+uid1+'&uid2='+uid2;
+    g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo2);
+    });
+
+$('#group_out_body').dataTable({
+   "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+   "sPaginationType": "bootstrap",
+   "oLanguage": {
+       "sLengthMenu": "_MENU_ 每页"
+   }
+});
+
 function draw_social(data){
 	Draw_group(data);
 	Draw_out_group(data);
 	draw_in_table(data);
 	draw_more_in_table(data);
 	draw_more_out_table(data);
-	draw_relation_net(data,'social_in_record');
-	draw_relation_out_net(data,'social_out_record');
+	draw_relation_net(data,'social_in_record','arrow');
+	draw_relation_out_net(data,'social_out_record','none');
 	draw_out_table(data);
 	show_conclusion(data);
 }
@@ -729,7 +769,7 @@ function draw_social(data){
 
 var social_url = '/group/show_group_result/?task_name=%E5%AA%92%E4%BD%93&module=social';
 var g_social = new g_social();
-var group_weibo_url = '/group/social_inter_content/?uid1=2803301701&uid2=1999472465';
+var group_weibo_url = '/group/social_inter_content/?uid1=1999472465&uid2=2803301701';
 g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
 g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo1);
 g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo2);
