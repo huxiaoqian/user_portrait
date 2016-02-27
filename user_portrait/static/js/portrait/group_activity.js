@@ -13,7 +13,7 @@ function Draw_activity(data){
 	var data_y_ = [];
 
 	for(var i=0;i<data.length;i++){
-		var time_line  = new Date(parseInt(data[i][0])*1000).format("yyyy-MM-dd");
+		var time_line  = new Date(parseInt(data[i][0])*1000).format("yyyy-MM-dd hh: mm");
 		data_x_.push(time_line);
 		data_y_.push(data[i][1]);
 
@@ -49,7 +49,7 @@ function Draw_activity(data){
             categories: data_x_,
             labels:{
               rotation: 0,
-              step: 6,
+              step: 8,
               y:25
             }
         },
@@ -140,7 +140,6 @@ function show_online_time(data){
     $('#online_time_table').append(html);
     $('#online_time_conclusion').append(data[1]);
 
-    online_time_conclusion
 
 }
 
