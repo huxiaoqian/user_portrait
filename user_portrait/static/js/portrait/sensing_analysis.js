@@ -324,13 +324,19 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var geo = weibo[6];
         var attitude = weibo[4];
         var sensor_words = weibo[7];
-        //console.log(sensor_words);
         highlight_words.push(sensor_words);
 
         var profile_image_url = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
         //var repost_tree_link = 'http://219.224.135.60:8080/show_graph/' + mid;
-        if (geo==''){
+        if (!geo){
            geo = '未知';
+        }
+        geo = geo.split('&').join('\t');
+        if (name == 'unknown'){
+            name = '未知';
+        }
+        if (sensor_words.length == 0){
+            sensor_words = '无';
         }
         //console.log(attitude);
         if (attitude == 0){
