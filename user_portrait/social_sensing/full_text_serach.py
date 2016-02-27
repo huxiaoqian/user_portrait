@@ -27,7 +27,7 @@ day_time = 24*3600
 
 
 # 获得敏感微博内容，按照时间排序
-def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, size):
+def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, message_type, size=100):
     results = []
     query_body = {
         "query":{
@@ -41,6 +41,7 @@ def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, size):
                                     "lt": ts
                                 }
                             }},
+                            {"term": {"message_type": message_type}},
                             {"terms":{"keywords_string": sensitive_words_list}}
                         ]
                     }
