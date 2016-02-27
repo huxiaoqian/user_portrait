@@ -125,6 +125,7 @@ function group_influ(data){
       mind.push(min_data[i][1]);
    }
    for(var i=0;i<max_data.length;i++){
+	  
       maxd.push(max_data[i][1]);
    }
    time_data = data['time_list'];
