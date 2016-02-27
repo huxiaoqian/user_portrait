@@ -1122,9 +1122,9 @@ $(document).ready(function(){
     // Draw_think_topic();
     // Draw_think_tendency();
 
-    var group_overview_url = 'http://219.224.134.213:9040/group/show_group_result/?module=overview&task_name=媒体';
+    var group_overview_url = '/group/show_group_result/?module=overview&task_name=媒体';
     var overviewdata = ['媒体','2013-09-01','关注的媒体','0.2222','0.542','6.233','10000.345','某某']
-    Search_weibo.Draw_overview(overviewdata);
+    //Search_weibo.Draw_overview(overviewdata);
     // var weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
      Search_weibo.call_sync_ajax_request(group_overview_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
     // var tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";

@@ -49,7 +49,7 @@ function Draw_activity(data){
             categories: data_x_,
             labels:{
               rotation: 0,
-              step: 8,
+              step: 15,
               y:25
             }
         },
@@ -69,8 +69,10 @@ function Draw_activity(data){
                 cursor:'pointer',
                 events:{
                     click:function(event){
-                        console.log('传递的是',data_x_[event.point.x]);
-                        draw_content(data_x_[event.point.x]);
+                        var activity_weibo_url = '/group/activity_weibo/?task_name='+'媒体'+'&start_ts=' + data[event.point.x][0];
+                        call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content)
+                        console.log(activity_weibo_url);
+                        // draw_content(data_x_[event.point.x]);
                     }
                 }
             }
@@ -101,7 +103,7 @@ function draw_content(data){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i]+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span style='font-size:12px;'>"+data[i].text+"</span><br></div>";
         }
 
     }
