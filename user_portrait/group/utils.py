@@ -12,7 +12,7 @@ from user_portrait.global_utils import es_user_portrait, portrait_index_name, po
                         es_user_profile, profile_index_name, profile_index_type,\
                         es_group_result, group_index_name, group_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
-from user_portrait.parameter import MAX_VALUE, DAY, SENTIMENT_SECOND
+from user_portrait.parameter import MAX_VALUE, DAY, FOUR_HOUR, SENTIMENT_SECOND
 
 index_name = 'group_result'
 index_type = 'group'
@@ -495,6 +495,61 @@ def get_group_user_track(uid):
     return results
 
 
+
+# show group members weibo for activity ---week
+# input: task_name, start_ts
+# output: weibo_list
+def get_activity_weibo(task_name, start_ts):
+    results = []
+    #step1: get task_name uid
+    try:
+        group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type ,\
+                id=task_name, _source=False, fields=['uid_list'])
+    except:
+        group_result = {}
+    if group_result == {}:
+        return 'task name invalid'
+    try:
+        uid_list = group_result['fields']['uid_list']
+    except:
+        uid_list = []
+    if uid_list == []:
+        return 'task uid list null'
+    #step2: get uid2uname
+    uid2uname = {}
+    try:
+        user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                body = {'ids':uid_list}, _source=False, fields=['uname'])['docs']
+    except:
+        user_portrait_result = []
+    for item in user_portrait_result:
+        uid = item['_id']
+        if item['found']==True:
+            uname = item['fields']['uname'][0]
+        uid2uname[uid] = uname
+    #step3: search time_segment weibo
+    time_segment = FOUR_HOUR
+    end_ts = start_ts + time_segment
+    time_date = ts2datetime(start_ts)
+    flow_text_index_name = flow_text_index_name_pre + time_date
+    query = []
+    query.append({'terms':{'uid': uid_list}})
+    query.append({'range':{'timestamp':{'gte':start_ts, 'lt':end_ts}}})
+    try:
+        flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, \
+                body={'query':{'bool':{'must':query}}, 'sort':'timestamp', 'size':MAX_VALUE})['hits']['hits']
+    except:
+        flow_text_es_result = []
+    for item in flow_text_es_result:
+        weibo = {}
+        source = item['_source']
+        weibo['timestamp'] = ts2date(source['timestamp'])
+        weibo['ip'] = source['ip']
+        weibo['text'] = source['text']
+        weibo['geo'] = '\t'.join(source['geo'])
+        results.append(weibo)
+
+    return results
 
 #show group members weibo for influence content
 #input: uid, timestamp_from, timestamp_to
