@@ -217,21 +217,19 @@ def show_out_uid(fields):
 
     return return_list
 
-def decide_out_uid(date, data):
+def decide_out_uid(date, data): # 日期：2016-02-26；data：uid，uid
     uid_list = []
     now_date = date
     if data:
         uid_list = data.split(",") # decide to delete uids
         exist_data = r_out.hget("decide_delete_list", now_date)
-        if exist_data and exist_data != []:
+        if exist_data:
             uid_list.extend(json.loads(exist_data))
             uid_list = list(set(uid_list))
         r_out.hset("decide_delete_list", now_date, json.dumps(uid_list))
 
-    """
-    if uid_list and uid_list != []:
-        update_record_index(not_out_list)
-    """
+
+    #从推荐出库的recommend_list中去除已经决定出库的人
     filter_uid = all_delete_uid()
     uid_list = data.split(",")
     current_date_list = json.loads(r_out.hget("recommend_delete_list", date))
