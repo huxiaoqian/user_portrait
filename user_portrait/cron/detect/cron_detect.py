@@ -188,10 +188,10 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
     iter_count = 0
     all_count = len(sort_all_union_result)
     in_portrait_result = []
-    filter_importance_from = filter_dict['importance']['from']
-    filter_importance_to = filter_dict['importance']['to']
-    filter_influence_from = filter_dict['influence']['from']
-    filter_influence_to = filter_dict['influence']['to']
+    filter_importance_from = filter_dict['importance']['gte']
+    filter_importance_to = filter_dict['importance']['lt']
+    filter_influence_from = filter_dict['influence']['gte']
+    filter_influence_to = filter_dict['influence']['lt']
     while iter_count < all_count:
         iter_user_list = [item[0] for item in sort_all_union_result[iter_count:iter_count + DETECT_ITER_COUNT]]
         try:
@@ -1077,8 +1077,8 @@ if __name__=='__main__':
     new_influence_from, new_influence_to = modify_evaluate_index(influence_from, influence_to, 'influence')
     single_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'0', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5, \
-            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':new_importance_from, 'to':new_importance_to}, 'influence':{'from':new_influence_from, 'to':new_influence_to}}}}
-    #results = single_detect(single_input_dict)
+            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to}, 'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
+    results = single_detect(single_input_dict)
     multi_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'multi', \
             'uid_list':['2172653252','2698626560','1981307823','1268043470']},\
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'1', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5 ,\
@@ -1102,6 +1102,6 @@ if __name__=='__main__':
             'query_condition':{'attribute':[], 'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
-    results = event_detect(event_dict)
-    print 'results:', results
-    #save_mark = save_detect_results(results, 'test')
+    #results = event_detect(event_dict)
+    #print 'results:', results
+    save_mark = save_detect_results(results, 'test')

@@ -87,6 +87,8 @@ update_day_redis = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
 UPDATE_DAY_REDIS_KEY = 'update_day'
 update_week_redis  = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
 UPDATE_WEEK_REDIS_KEY = 'update_week'
+update_month_redis = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
+UPDATE_MONTH_REDIS_KEY = 'update_month'
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
