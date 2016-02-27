@@ -203,8 +203,8 @@ function draw_group_kind(data){
 	var myChart1 = echarts.init(document.getElementById('group_kind')); 
     var option = {
     title : {
-        text: '根据语言特征划分         根据情绪特征划分',
-        textStyle:{fontSize:16, fontWeight: 'lighter'},
+        text: '语言特征                                   情绪特征',
+        textStyle:{fontSize:14},
         x:'center'
     },
     tooltip : {
@@ -230,7 +230,7 @@ function draw_group_kind(data){
             name:'',
             type:'pie',
             selectedMode: 'single',
-            radius : [0, 50],
+            radius : [0, 60],
             center:['30%','50%'],
             // for funnel
             x: '20%',
@@ -243,7 +243,7 @@ function draw_group_kind(data){
         {
             name:'',
             type:'pie',
-            radius : [0, 50],
+            radius : [0, 60],
             center:['70%','50%'],
             // for funnel
             x: '60%',
@@ -348,7 +348,7 @@ function group_emotions(data){
                     });
                 var html0 = '';
                 $('#group_select_time').empty();  
-                html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+time_name[param.dataIndex]+"</div><div>当前选择情绪：</div><div style='color:brown;'>"+names[sentiment]+'</div>';
+                html0 += "<div style='float:left'>当前选择时间段：</div><div style='color:brown;'>"+time_name[param.dataIndex]+"</div><br><div style='float:left'>当前选择情绪：</div><div style='color:brown;'>"+names[sentiment]+'</div>';
                 $('#group_select_time').append(html0);
                 }
             myChart1.on(ecConfig.EVENT.CLICK, focus);
@@ -370,7 +370,7 @@ function Draw_group_trend(data){
         var url_content = '/group/group_sentiment_weibo/?task_name=媒体&sentiment=0&start_ts='+times_init;
         g_psy.call_sync_ajax_request(url_content,g_psy.ajax_method,group_draw_content);
         $('#group_select_time').empty();  
-        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['sentiment_trend']['time_list'][0]+"</div><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
+        html0 += "<div style='float:left'>当前选择时间段：</div><div style='color:brown;'>"+items['sentiment_trend']['time_list'][0]+"</div><br><div style='float:left' >当前选择情绪：</div><div style='color:brown;'>中性</div>";
         $('#group_select_time').append(html0);
     }   
 }
