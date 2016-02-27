@@ -389,9 +389,10 @@ def get_evaluate_max():
 def get_group_list(task_name):
     results = []
     try:
-        es_results = es.get(index=index_name, doc_type=index_type, id=task_name)['_source']
+        es_results = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
     except:
         return results
+    print 'es_results:', es_results
     #print 'es_result:', es_results['uid_list'], type(es_results['uid_list'])
     uid_list = es_results['uid_list']
     user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
