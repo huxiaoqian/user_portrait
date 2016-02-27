@@ -54,8 +54,14 @@ def get_text_detail(task_name, ts, text_type, size=100):
     elif int(text_type) == 5: # 消极微博
         results = get_positive_weibo_detail(ts, social_sensors, keywords_list, size, "2")
 
-    elif int(text_type) == 6 and social_sensors: # 敏感微博
-        results = get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, size)
+    elif int(text_type) == 6 and social_sensors: # 原创敏感微博
+        results = get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, 1, size)
+
+    elif int(text_type) == 7 and social_sensors: # 转发敏感微博
+        results = get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, 3, size)
+
+    elif int(text_type) == 8 and social_sensors: # 评论敏感微博
+        results = get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, 2, size)
 
     else:
         print "input error"
