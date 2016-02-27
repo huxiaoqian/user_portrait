@@ -322,8 +322,12 @@ function moving_geo(data){
     console.log(data.activiy_geo_vary);
     //var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
     $('#move_location').empty();
+    var key_count = [];
+    for(var key in data){
+        key_count.push(key);
+    }
     var html = '';
-    if (data[0] == undefined){
+    if (key_count.length == 0){
         html += '<span style="margin:20px;">暂无数据</span>';
         $('#geo_show_more').css('display', 'none');
         $('#move_location').css('height', '260px');
@@ -381,40 +385,42 @@ function Draw_top_platform(data){
         online_pattern.push(key);
         pattern_num.push(data[key]);
     };
-    $('#top_platform').empty();
+    var key_count = [];
+    for(var key in data){
+        key_count.push(key);
+    }
     var html = '';
-    html += '<table class="table table-striped" style="width:260px;font-size:14px;margin-bottom:0px;">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < online_pattern.length; i++) {
-       var s = i.toString();
-       var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + online_pattern[i] + '</th><th style="text-align:center">' + pattern_num[i] + '</th></tr>';
-    };
-    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
-    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
-    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
-    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
-    html += '</table>'; 
+    if (key_count.length == 0){
+        html += '<span style="margin:20px;">暂无数据</span>';
+        $('#top_platform').css('height', '260px');
+    }else{
+        $('#top_platform').empty();
+        var html = '';
+        html += '<table class="table table-striped" style="width:260px;font-size:14px;margin-bottom:0px;">';
+        html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
+        for (var i = 0; i < online_pattern.length; i++) {
+           var s = i.toString();
+           var m = i + 1;
+           html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + online_pattern[i] + '</th><th style="text-align:center">' + pattern_num[i] + '</th></tr>';
+        };
+        html += '</table>'; 
+    }
     $('#top_platform').append(html);
 }
 
-function Draw_more_top_platform(){
-    $('#top_more_platform').empty();
-    var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" font-size:14px">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < 1; i++) {
-       var s = i.toString();
-       var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
-    };
-    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
-    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
-    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">huawei</th><th style="text-align:center">74</th></tr>';
-    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">30</th></tr>';
-    html += '</table>'; 
-    $('#top_more_platform').append(html);
-}
+// function Draw_more_top_platform(data){
+//     $('#top_more_platform').empty();
+//     var html = '';
+//     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" font-size:14px">';
+//     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
+//     for (var i = 0; i < 1; i++) {
+//        var s = i.toString();
+//        var m = i + 1;
+//        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+//     };
+//     html += '</table>'; 
+//     $('#top_more_platform').append(html);
+// }
 
 function draw_active_distribution(data){
     var xdata = [];
