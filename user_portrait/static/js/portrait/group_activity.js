@@ -374,15 +374,21 @@ function Draw_more_moving_geo(data){
     $('#move_location_more_detail').append(html);
 }
 
-function Draw_top_platform(){
+function Draw_top_platform(data){
+    var online_pattern = [];
+    var pattern_num = [];
+    for(var key in data){
+        online_pattern.push(key);
+        pattern_num.push(data[key]);
+    };
     $('#top_platform').empty();
     var html = '';
     html += '<table class="table table-striped" style="width:260px;font-size:14px;margin-bottom:0px;">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">平台</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < 1; i++) {
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < online_pattern.length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + 'web' + '</th><th style="text-align:center">2819</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + online_pattern[i] + '</th><th style="text-align:center">' + pattern_num[i] + '</th></tr>';
     };
     html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
     html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">ipad</th><th style="text-align:center">158</th></tr>';
@@ -411,11 +417,8 @@ function Draw_more_top_platform(){
 }
 
 function draw_active_distribution(data){
-    xdata = [];
-    // for (var i = 0; i < data[0].length; i++) {
-    //    x_value = data['1']['0'][s];
-    //    x_data.push(x_value);
-    // };
+    var xdata = [];
+
     for (i = 0; i< data[1].length-1; i++){
         xdata.push(data[1][i] + '-' + data[1][i+1])
     };
@@ -510,23 +513,39 @@ function group_activity(data){
 	//var legend_data = []
 	var xAxis_data = data.time_list;
 	var yAxis_ave = data.ave_list;
+
 	var max_list = data.max_list;
 	var yAxis_max = [];
 	for(var i=0; i<max_list.length;i++){
-		yAxis_max.push(max_list[i][1])
+		yAxis_max.push(max_list[i][1]);
 
 	};
+
 	var min_list = data.min_list;
 	var yAxis_min = [];
 	for(var i=0; i<min_list.length;i++){
 		yAxis_min.push(min_list[i][1])
-
 	};
+
 
    var mychart = echarts.init(document.getElementById('group_activity'));
    var option = {
     tooltip : {
-        trigger: 'axis'
+        trigger: 'axis',
+        formatter: function (params) {
+        var max_user_name = [];
+        var min_user_name = [];
+        for(var i=0; i<max_list.length;i++){
+            max_user_name.push(max_list[i][2]);
+            min_user_name.push(min_list[i][2]);
+
+        };
+            var res = '' + params[0].name;
+            var index = params[0].dataIndex;
+            res +=  ': <br/>最高值用户: ' + max_user_name[index];
+            res +=  ' <br/>最低值用户: ' + min_user_name[index];
+            return res
+        }
     },
     legend: {
         data:['最高值','最低值','平均值']
@@ -592,7 +611,7 @@ function show_activity(data) {
 	//位置转移统计
 	moving_geo(data.activiy_geo_vary);
 
-	Draw_top_platform();
+	Draw_top_platform(data.online_pattern);
 	//Draw_more_top_platform();
 
 	draw_active_distribution(data.activeness_his);
