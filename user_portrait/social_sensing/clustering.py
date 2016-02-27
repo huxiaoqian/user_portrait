@@ -113,9 +113,11 @@ def process_for_cluto(word, inputs, gram=PROCESS_GRAM):
         cluto输出文件位置
     """
 
-    row = len(word) #词数
+    #row = len(word) #词数
     column = len(inputs) #特征列数
+    row = 0
     nonzero_count = 0 #非0特征数
+    count = 0
 
     cluto_input_folder = os.path.join(AB_PATH, CLUTO_FOLDER)
     if not os.path.exists(cluto_input_folder):
@@ -132,12 +134,19 @@ def process_for_cluto(word, inputs, gram=PROCESS_GRAM):
                 if n != 0:
                     nonzero_count += 1
                     row_record.append('%s %s' %(str(i+1), n))
-            line = ' '.join(row_record) + '\r\n'
-            lines.append(line)
+            if row_record:
+                line = ' '.join(row_record) + '\r\n'
+                lines.append(line)
+                row += 1
+            else:
+                word.pop(count) #删除空行对应的特征词
+                print "======"
+                print w
+            count += 1
+        row = len(word)
         fw.write('%s %s %s\r\n' %(row, column, nonzero_count))
         fw.writelines(lines)
-
-    return file_name
+    return file_name, word
 
 
 def cluto_kmeans_vcluster(k=CLUSTERING_KMEANS_CLUSTERING_NUM, input_file=None, vcluster=None):
@@ -226,10 +235,12 @@ def kmeans(word, inputs, k=CLUSTERING_KMEANS_CLUSTERING_NUM, gram=PROCESS_GRAM):
     if len(inputs) < 2:
         raise ValueError("length of input items must be larger than 2")
 
-    input_file = process_for_cluto(word, inputs, gram=gram)
+    input_file, word = process_for_cluto(word, inputs, gram=gram)
     labels, evaluation_results = cluto_kmeans_vcluster(k=k, input_file=input_file)
     label2id = label2uniqueid(labels)
 
+    print len(labels)
+    print len(word)
     #将词对归类，{类标签：[词1，词2，...]}
     word_label = {}
     for i in range(len(word)):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-copy es_portrait to a new es, for the use of record user_index
-
+定时任务：
+    将user_portrait中，未复制到copy_user_portrait的用户复制过来，以作后用
 """
 
 import sys
@@ -11,13 +11,13 @@ from elasticsearch.helpers import scan
 
 reload(sys)
 sys.path.append('./../../')
-from global_utils import ES_CLUSTER_FLOW1 as es
+from global_utils import es_user_portrait as es
 from global_utils import es_user_profile
 from global_utils import portrait_index_name, portrait_index_type, copy_portrait_index_name, copy_portrait_index_type
-user_portrait = "user_portrait" # act as portrait database
-user_portrait_doctype = "user"
-index_destination = 'copy_user_portrait'
-index_destination_doctype = "user"
+user_portrait = portrait_index_name # act as portrait database
+user_portrait_doctype = portrait_index_type
+index_destination = copy_portrait_index_name
+index_destination_doctype = copy_portrait_index_type
 
 def expand_index_action(data):
     _id = data['uid']
@@ -62,7 +62,6 @@ def co_search(es, user_list, bulk_action, count_n, tb):
 if __name__ == "__main__":
 
     tb = time.time()
-    es = ES_CLUSTER_FLOW1
 
     index_exist = es.indices.exists(index=index_destination)
     if not index_exist:
