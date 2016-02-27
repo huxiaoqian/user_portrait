@@ -3,6 +3,7 @@
 import os
 import time
 import json
+import math
 
 from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import es_group_result, group_index_name, group_index_type
@@ -366,6 +367,27 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
         
     return results
 
+def get_evaluate_max():
+    max_result = {}
+    index_name = 'user_portrait_1222'
+    index_type = 'user'
+    evaluate_index = ['activeness', 'importance', 'influence']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size':1,
+            'sort':[{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    #print 'result:', max_result
+    return max_result
 
 
 #use to show detect task result
@@ -397,9 +419,16 @@ def show_detect_result(task_name):
             if item['found']==True:
                 source = item['_source']
                 uname = source['uname']
+                evaluate_max = get_evaluate_max()
+                '''
                 activeness = source['activeness']
                 importance = source['importance']
                 influence = source['influence']
+                '''
+                activeness = math.log(source['activeness']/evaluate_max['activeness'] * 9 + 1 ,10)*100
+                importance = math.log(source['importance']/evaluate_max['importance'] * 9 + 1 ,10)*100
+                influence = math.log(source['influence']/evaluate_max['influence'] * 9 + 1 ,10)*100
+            
             else:
                 uname = u'未知'
                 activeness = u'未知'

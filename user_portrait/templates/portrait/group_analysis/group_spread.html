@@ -1,5 +1,5 @@
 <div style="float: left;">
-<h3 style='margin-top:20px;'><b>影响力走势</b></h3><hr>
+<h3 style='margin-top:0px;'><b>影响力走势</b></h3>
 	<div class="panel panel-default" style='width: 350px;float: left;margin-top:10px;'>
 	    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 	        <div>影响力分布</div>
@@ -13,7 +13,7 @@
 	        <div>主要影响力用户</div>
 	    </div>
 	    <div class="panel-body" style='padding:0;'>
-			<div id='influ_active_users' style='overflow-x:hidden;width:288px;height:225px;float:left;'></div>
+			<div id='influ_active_users' style='overflow-x:hidden;width:288px;height:225px;float:left;padding-top:5px;'></div>
 	  	</div>
 	</div>
 	<div class="panel panel-default" style='width: 290px;float: left;margin-top:10px;margin-left:14px;'>
@@ -21,7 +21,7 @@
 	        <div>主要非影响力用户</div>
 	    </div>
 	    <div class="panel-body" style='padding:0;'>
-			<div id='influ_unactive_users' style='overflow-x:hidden;width:288px;height:225px;float:left;'></div>
+			<div id='influ_unactive_users' style='overflow-x:hidden;width:288px;height:225px;float:left;padding-top:5px;'></div>
 	  	</div>
 	</div>
 	<div class="panel panel-default" style='width: 960px;float: left;margin-top:10px;'>
@@ -32,11 +32,13 @@
 			<div id='group_influ' style='overflow-x:hidden;width:940px;height:300px;float:left;'></div>
 	  	</div>
 	</div>
+	<!--
 	<div id="group_influence_conclusion" style='float:left;margin-top:15px;'><img src="/static/img/warning.png"></div>
+	-->
 </div>
 
 <div style='float:left'>
-	<h3 style='margin-top:20px;'><b>影响力内容</b></h3><hr>
+	<h3 style='margin-top:20px;'><b>影响力内容</b></h3>
 	<div class="panel panel-default" style='width: 960px;float: left;margin-top:10px;'>
 	    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 	        <div>群组成员微博</div>
@@ -79,8 +81,8 @@
 </div>
 
 <div style="float:left">
-	<h3 style='margin-top:20px;'><b>影响力波及用户</b></h3><hr>
-    <div id="select_user_type" style="margin:10px;">
+	<h3 style='margin-top:20px;'><b>影响力波及用户</b></h3>
+    <div id="select_user_type" style="margin:10px;margin-left:18px;">
       <input type="radio" name="user_select" checked value="0" /> 入库用户
       <input type="radio" name="user_select" value="1" style="margin-left:5px" /> 非入库用户          
 	</div>
@@ -113,7 +115,7 @@
 		            <div>影响力分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_influ_distribution" style="width:450px;height:280px;margin:30px 40px;margin:-10px 50px 0px -35px;">
+		          <div id="group_influ_distribution" style="width:450px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
 		          </div>
 		      </div>
 		  	</div>
@@ -124,7 +126,7 @@
 		            <div>重要度分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_impor_distribution" style="width:450px;height:280px;margin:30px 40px;margin:-10px 50px 0px -35px;">
+		          <div id="group_impor_distribution" style="width:450px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
 		          </div>
 		      </div>
 		  	</div>
@@ -137,7 +139,7 @@
 		            <div>粉丝数分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_fans_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -45px;">
+		          <div id="group_fans_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -10px;">
 		          </div>
 		      </div>
 		  </div>
@@ -148,7 +150,7 @@
 		            <div>朋友数分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_friends_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -45px;">
+		          <div id="group_friends_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -15px;">
 		          </div>
 		      </div>
 		  	</div>
@@ -159,7 +161,7 @@
 		            <div>微博数分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_weiboshu_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -45px;">
+		          <div id="group_weiboshu_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -10px;">
 		          </div>
 		      	</div>
 		  	</div>

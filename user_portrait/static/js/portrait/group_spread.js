@@ -1,7 +1,15 @@
-function draw_influ_distribution(data){
-    var mychart1 = echarts.init(document.getElementById('influ_distribution'));
+//影响力分布
+function draw_influ_distribution(data,radar_div){
+    console.log(data);
+    var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
+    var xdata = [];
+
+    for (i = 0; i< data[1].length-1; i++){
+        xdata.push(data[1][i] + '-' + data[1][i+1])
+    };
+
     var option = {
     tooltip : {
         trigger: 'axis'
@@ -26,15 +34,15 @@ function draw_influ_distribution(data){
     yAxis : [
         {
             type : 'category',
-            name : '人数',
-            data : y_axi
+            name : '区间',
+            data : xdata
         }
     ],
     series : [
         {
-            name:'2011年',
+            name:'人数',
             type:'bar',
-            data:x_axi
+            data:data[0]
         }
     ]
 };
@@ -58,22 +66,46 @@ Show_influ.prototype = {
     });
   },
   Draw_table:function(data){
-    influ_his = data['influence_his'];
-    influ_in_user = data['influence_in_user'];
-    influ_out_user = data['influence_out_user'];
-    influ_trend = data['influence_trend'];
-    draw_influ_distribution(influ_his);
+    console.log(data);
+    var influ_his = data['influence_his'];
+    var influ_in_user = data['influence_in_user'];
+    var influ_out_user = data['influence_out_user'];
+    var influ_trend = data['influence_trend'];
+    draw_influ_distribution(influ_his,'influ_distribution');
     show_influ_users('influ_active_users',influ_trend['main_max']);
     show_influ_users('influ_unactive_users',influ_trend['main_min']);
     //console.log(influ_trend['main_max']);
     //console.log(influ_out_user);
     group_influ(influ_trend);
+    var influ_in = data['influence_in_user'];
+    var topics = [];
+    for(var key in influ_in['topic']){
+        var tt = [];
+        tt.push(key,influ_in['topic'][key])
+        topics.push(tt);
+    }
+    var domains = [];
+    for(var key in influ_in['domain']){
+        var dd = [];
+        dd.push(key,influ_in['domain'][key])
+        domains.push(dd);
+    }
+    //console.log(domains);
+    Draw_topic(topics,'influence_topic', 'topic_WordList','showmore_topic_influ');
+    Draw_topic(domains,'influence_domain', 'domain_WordList','showmore_domain_influ');
+    draw_influ_distribution(influ_in['influence'],'group_influ_distribution');
+    draw_influ_distribution(influ_in['importance'],'group_impor_distribution');
+    var influ_out = data['influence_out_user'];
+    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution');
+    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution');
+    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution');
   }
 }
 
 var Show_influ = new Show_influ();
 var group_influ_url = '/group/show_group_result/?task_name=媒体&module=influence';
 Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
+//影响用户
 function show_influ_users(div_name,data){
     $('#' + div_name).empty();
     
@@ -95,6 +127,7 @@ function show_influ_users(div_name,data){
     html += '</table>'; 
     $('#'+div_name).append(html);
 }
+//更多影响用户
 function show_more_influ_active_users(div_name){
     $('#' + div_name).empty();
     var html = '';
@@ -112,7 +145,7 @@ function show_more_influ_active_users(div_name){
     html += '</table>'; 
     $('#'+div_name).append(html);
 }
-
+//群体影响力走势图
 function group_influ(data){
    var mychart = echarts.init(document.getElementById('group_influ'));
    var mind = []
@@ -125,6 +158,7 @@ function group_influ(data){
       mind.push(min_data[i][1]);
    }
    for(var i=0;i<max_data.length;i++){
+	  
       maxd.push(max_data[i][1]);
    }
    time_data = data['time_list'];
@@ -183,7 +217,7 @@ function group_influ(data){
   mychart.setOption(option);
 }
 
-
+//显示成员微博信息
 function Draw_group_influ_weibo(data, div_name, sub_div_name){
     page_num = 5;
     console.log(div_name);
@@ -287,7 +321,7 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
     weibo_num = end_row - start_row;
     $('#'+ sub_div_name).empty();
     var html = "";
-    html += '<div class="group_weibo_font">';
+    html += '<div class="group_weibo_font" style="margin-right:5px;">';
     for (var i = start_row; i < end_row; i += 1){
         s=i.toString();
         //uid = data[s]['uid'];
@@ -327,7 +361,7 @@ var from_date = min_date_ms.format('yyyy/MM/dd');
 
 $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-
+//获取微博成员信息
 function Draw_group_weibo_user(uids,unames){
     
     $('#group_influ_weibo_user').empty();
@@ -346,7 +380,7 @@ function Draw_group_weibo_user(uids,unames){
     $('#group_influ_weibo_user').append(html);
 }
 
-
+//显示群组成员微博
 function submit_date_user(){
     var timestamp_from=1377964800;
     var timestamp_to=1378051200;
@@ -536,9 +570,9 @@ console.log(url_all);
 //显示内容
 //Draw_group_influ_weibo(data0,'group_influ_weibo', 'group_influ_weibo_result');
 
-var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
-Draw_topic(topic,'influence_topic', 'topic_WordList','showmore_topic_influ');
-Draw_topic(topic,'influence_domain', 'domain_WordList','showmore_domain_influ');
+//var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
+//Draw_topic(topic,'influence_topic', 'topic_WordList','showmore_topic_influ');
+//Draw_topic(topic,'influence_domain', 'domain_WordList','showmore_domain_influ');
 
 //波及用户
 $(' input[name="user_select"]').click(function(){
@@ -550,3 +584,28 @@ $(' input[name="user_select"]').click(function(){
         $('#influence_out_user').css('display', 'none');
     }
 });
+//影响力波及用户
+/*
+function Influ_person(){
+    this.ajax_method = 'GET';
+}
+
+Influ_person.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+  Draw:function(data){
+    console.log(data);
+  }
+}
+
+var Influ_person = new Influ_person();
+var influ_person_url = '/group/show_group_result/?task_name=媒体&module=influence';
+Influ_person.call_sync_ajax_request(influ_person_url, Influ_person.ajax_method, Influ_person.Draw);
+*/
