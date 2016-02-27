@@ -95,6 +95,91 @@ function Draw_activity(data){
     });
 }
 
+function Draw_activeness(data){
+    x_data = [];
+    y_data = [];
+    for (var i = 0; i < data['1']['0'].length; i++) {
+       var s = i.toString();
+       x_value = data['1']['0'][s];
+       x_data.push(x_value);
+    };
+    for (var i = 0; i < data['1']['1'].length; i++) {
+       var s = i.toString();
+       y_value = data['1']['1'][s].toFixed(0);
+       y_data.push(y_value);
+    };
+    xdata = [];
+    for (i = 0; i< y_data.length-1; i++){
+        xdata.push(y_data[i] + '-' + y_data[i+1])
+    };
+
+    $('#active_distribution').highcharts({
+        chart: {
+        type: 'column',
+        margin: [ 50, 50, 100, 80]
+    },
+    title: {
+        //text: '活跃度排名分布'
+    },
+    lang: {
+        printChart: "打印",
+        downloadJPEG: "下载JPEG 图片",
+        downloadPDF: "下载PDF文档",
+        downloadPNG: "下载PNG 图片",
+        downloadSVG: "下载SVG 矢量图",
+        exportButtonTitle: "导出图片"
+    },
+    xAxis: {
+        title: {
+                text: '排名'
+            },
+        categories: xdata,
+        labels: {
+            rotation: -45,
+            align: 'right'
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: '数量 (人)'
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    tooltip: {
+        pointFormat: '<b>{point.y:.1f} 人</b>',
+    },
+    plotOptions: {
+           series: {
+               pointPadding: 0, //数据点之间的距离值
+               groupPadding: 0, //分组之间的距离值
+               borderWidth: 0,
+               shadow: false,
+               pointWidth:38//柱子之间的距离值
+           }
+       },
+    series: [{
+        name: '',
+        data: x_data ,
+        dataLabels: {
+            // enabled: true,
+            rotation: 0,
+            color: '#FFFFFF',
+            align: 'right',
+            x: 4,
+            y: 10,
+            style: {
+                fontSize: '13px',
+                fontFamily: '微软雅黑',
+                textShadow: '0 0 3px black'
+            }
+        }
+    }]
+});
+}
+
 function draw_content(data){
     //console.log(data);
     var html = '';
@@ -234,28 +319,35 @@ function Draw_top_location(data){
 }
 
 function moving_geo(data){
+    console.log(data.activiy_geo_vary);
     //var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
     $('#move_location').empty();
     var html = '';
-    if (data == ''){
-        html += '<span>暂无数据</span>';
+    if (data[0] == undefined){
+        html += '<span style="margin:20px;">暂无数据</span>';
         $('#geo_show_more').css('display', 'none');
+        $('#move_location').css('height', '260px');
     }else{
-        html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
-        html += '<tr><th style="text-align:center">起始地</th>';
-        html += '<th style="text-align:right"></th>';
-        html += '<th style="text-align:left">目的地</th>';
-        html += '<th style="text-align:center">人数</th>';
-        html += '</tr>';
-        for (var i = 0; i < data.length; i++) {
-            html += '<tr>';
-            html += '<td style="text-align:center">' + data[i][0] + '</td>';
-            html += '<td style="text-align:center"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
-            html += '<td style="text-align:left">' + data[i][1] + '</td>';
-            html += '<td style="text-align:center">' + data[i][2] + '</td>';
-        html += '</tr>'; 
-        };
-        html += '</table>'; 
+        if(data.length < 5){
+            $('#geo_show_more').css('display', 'none');
+        }else{
+            Draw_more_moving_geo(data.activiy_geo_vary);
+            html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
+            html += '<tr><th style="text-align:center">起始地</th>';
+            html += '<th style="text-align:right"></th>';
+            html += '<th style="text-align:left">目的地</th>';
+            html += '<th style="text-align:center">人数</th>';
+            html += '</tr>';
+            for (var i = 0; i < data.length; i++) {
+                html += '<tr>';
+                html += '<td style="text-align:center">' + data[i][0] + '</td>';
+                html += '<td style="text-align:center"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
+                html += '<td style="text-align:left">' + data[i][1] + '</td>';
+                html += '<td style="text-align:center">' + data[i][2] + '</td>';
+            html += '</tr>'; 
+            };
+            html += '</table>'; 
+        }
     }
     $('#move_location').append(html);
 }
@@ -319,6 +411,14 @@ function Draw_more_top_platform(){
 }
 
 function draw_active_distribution(data){
+    xdata = [];
+    // for (var i = 0; i < data[0].length; i++) {
+    //    x_value = data['1']['0'][s];
+    //    x_data.push(x_value);
+    // };
+    for (i = 0; i< data[1].length-1; i++){
+        xdata.push(data[1][i] + '-' + data[1][i+1])
+    };
     var mychart1 = echarts.init(document.getElementById('active_distribution'));
     var option = {
     tooltip : {
@@ -344,13 +444,13 @@ function draw_active_distribution(data){
     yAxis : [
         {
             type : 'category',
-            name : '人数',
-            data : data[1]
+            name : '区间',
+            data : xdata
         }
     ],
     series : [
         {
-            name:'2011年',
+            name:'人数',
             type:'bar',
             data:data[0]
         }
@@ -380,21 +480,21 @@ function show_active_users(data, div_name){
     html += '</table>'; 
     $('#'+div_name).append(html);
 }
-function show_more_active_users(data, div_name){
-    $('#' + div_name).empty();
-    var html = '';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px;margin-bottom:0px;">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
-    for (var i = 0; i < data.length; i++) {
-    	var name_list = data[i][0].split('&');
-        var name = name_list[1];
-        var s = i.toString();
-        var m = i + 1;
-        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
-    };
-    html += '</table>'; 
-    $('#'+div_name).append(html);
-}
+// function show_more_active_users(data, div_name){
+//     $('#' + div_name).empty();
+//     var html = '';
+//     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px;margin-bottom:0px;">';
+//     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
+//     for (var i = 0; i < data.length; i++) {
+//     	var name_list = data[i][0].split('&');
+//         var name = name_list[1];
+//         var s = i.toString();
+//         var m = i + 1;
+//         html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
+//     };
+//     html += '</table>'; 
+//     $('#'+div_name).append(html);
+// }
 
 function group_activity(data){
 
@@ -488,12 +588,12 @@ function show_activity(data) {
 
 	//活跃地区分布
 	Draw_top_location(data.activity_geo_disribution);
-	
+
+	//位置转移统计
 	moving_geo(data.activiy_geo_vary);
-	Draw_more_moving_geo(data.activiy_geo_vary);
 
 	Draw_top_platform();
-	Draw_more_top_platform();
+	//Draw_more_top_platform();
 
 	draw_active_distribution(data.activeness_his);
 
