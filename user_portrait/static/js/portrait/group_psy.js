@@ -231,6 +231,9 @@ function group_emotions(data){
     tooltip : {
         trigger: 'axis'
     },
+    grid:{
+        width:'80%'
+    },
     legend: {
         data:names
     },
