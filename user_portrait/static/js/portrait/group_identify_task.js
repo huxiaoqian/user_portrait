@@ -39,7 +39,7 @@ Group_identify_task.prototype = {   //获取数据，重新画表
   },
 
 Draw_resultTable: function(data){
-    console.log('bbb');
+    // console.log('bbb');
     $('#content_manage').empty();
     var item = data;
 	var html = '';
@@ -81,7 +81,6 @@ Draw_resultTable: function(data){
 	},
 
 Draw_dis_Table:function(data){
-	console.log('555');
 	$('#dis_table').empty();
 	var html = '';
 	html += '<a id="turnback"  href="javascript:void(0)" onclick="redraw()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#table_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
@@ -125,6 +124,7 @@ Draw_dis_Table:function(data){
     $('#dis_table_body').dataTable({
        "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
        "sPaginationType": "bootstrap",
+        "aoColumnDefs":[ {"bSortable": true, "aTargets":[5]}],
        "oLanguage": {
            "sLengthMenu": "_MENU_ 每页"
        }
@@ -175,9 +175,14 @@ var min_date = '-1970/01/30';
 $('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
 function submit_analyze(that){
+			console.log('hi');
+
 	$('a[id^="group_commit_analyze"]').click(function(e){
+		console.log('hi');
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
+		console.log('temp', temp);
 		var percent = $(this).parent().prev().text();
+		console.log('percent', percent);
 		if(percent.replace(/[^0-9]/ig,"") != 100){
 			alert('进度没有达到100%，无法提交分析任务！');
 		}
@@ -263,8 +268,8 @@ function draw_control_table(data){
 
 
 function draw_table(data,div){
-	console.log(data);
-	console.log(div);
+	// console.log(data);
+	// console.log(div);
 	$(div).empty();
 	//var datas = data['topic'];
     html = '';
@@ -304,7 +309,7 @@ function delRow(obj){
 function group_analyze_confirm_button(){
   	var group_confirm_uids = [];
   	$('[name="analyze_list_option"]:checked').each(function(){
-  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().text());
+  	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
   	});
   	console.log(group_confirm_uids);
   	var group_ajax_url = '/detect/add_detect2analysis/';
@@ -313,15 +318,18 @@ function group_analyze_confirm_button(){
   	console.log(group_name);
   	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
   	console.log(job);
-  	// $.ajax({
-  	//     type:'POST',
-  	//     url: group_ajax_url,
-  	//     contentType:"application/json",
-  	//     data: JSON.stringify(job),
-  	//     dataType: "json",
-  	//     success: callback
-  	// });
+  	$.ajax({
+  	    type:'POST',
+  	    url: group_ajax_url,
+  	    contentType:"application/json",
+  	    data: JSON.stringify(job),
+  	    dataType: "json",
+  	    success: callback
+  	});
 }
+// function submit_group_analyze_final(){
+
+// }
 
 function callback(data){
   	    console.log(data);
