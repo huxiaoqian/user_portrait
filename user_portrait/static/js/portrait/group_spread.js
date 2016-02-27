@@ -170,7 +170,7 @@ function draw_influ_distribution(data,radar_div, title){
     yAxis : [
         {
             type : 'category',
-            name : '区间',
+            name : '影响力',
             data : xdata
         }
     ],
@@ -247,7 +247,7 @@ function show_influ_users(div_name,data){
     $('#' + div_name).empty();
     
     var html = '';
-    html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
+    html += '<table class="table table-striped" style="font-size:10px;margin-bottom:0px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">频数</th></tr>';
     for (var i = 0; i < data.length; i++) {
        var s = i.toString();
@@ -340,7 +340,8 @@ function group_influ(data){
     ],
     yAxis : [
         {
-            type : 'value'
+            type : 'value',
+            name : '影响力'
         }
     ],
     series : [

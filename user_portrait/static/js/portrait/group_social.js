@@ -55,7 +55,6 @@ function g_pageGroup(pageNum,pageCount,div_name){
 
 //根据当前选中页生成页面点击按钮
 function g_page_icon(page,count,eq,div_name){
-	console.log('333');
 	var ul_html = "";
 	for(var i=page; i<=count; i++){
 		ul_html += "<li>"+i+"</li>";
@@ -66,7 +65,7 @@ function g_page_icon(page,count,eq,div_name){
 
 //上一页
 function g_pageUp(pageNum,pageCount,div_name){
-	console.log(div_name);
+	//console.log(div_name);
 	switch(pageNum){
 		case 1:
 		break;
@@ -87,7 +86,6 @@ function g_pageUp(pageNum,pageCount,div_name){
 
 //下一页
 function g_pageDown(pageNum,pageCount,div_name){
-	console.log('222');
 	switch(pageNum){
 		case 1:
 			g_page_icon(1,5,1,div_name);
@@ -119,13 +117,13 @@ function g_page_group_weibo1(start_row,end_row,data,div_name,sub_div_name){
         var timestamp = data[s]['timestamp'];
         var date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
         if (i%2 ==0){
-            html += '<div style="background:whitesmoke;font-size:14px">';
+            html += '<div style="background:whitesmoke;font-size:14px;padding:5px;">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
             html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
             html += '</div>'
     }
         else{
-            html += '<div>';
+            html += '<div style="padding:5px;">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
             html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
             html += '</div>';
@@ -431,10 +429,11 @@ function draw_in_table(data){
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_in_record'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:30px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_weibo">' + data['social_in_record'][s]['2'] +'</a></td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:25px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_weibo">' + data['social_in_record'][s]['2'] +'</a></td></tr>';
     };
     html += '</table>';
     $('#group_in_table').append(html);
+    /*
     $('#group_in_table_body').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
@@ -443,6 +442,7 @@ function draw_in_table(data){
             "sLengthMenu": "_MENU_ 每页"
         }
     });
+    */
 }
 function draw_out_table(data){
     $('#group_out_table').empty();
@@ -456,6 +456,7 @@ function draw_out_table(data){
     };
     html += '</table>';
     $('#group_out_table').append(html);
+    /*
     $('#group_out_table_body').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
@@ -463,7 +464,8 @@ function draw_out_table(data){
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
         }
-    });
+    })
+    */
 }
 
 function draw_more_in_table(data){
@@ -506,7 +508,7 @@ function draw_more_out_table(data){
 }
 function draw_group_weibo0(data,div_name,sub_div_name){
     var page_num = 5;
-    console.log(data);
+    //console.log(data);
     if (data.length < page_num) {
         $('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
         $('#'+ div_name + ' #pageGro .pageList').css('display', 'none'); 
@@ -550,7 +552,7 @@ function draw_group_weibo0(data,div_name,sub_div_name){
             $(this).siblings("li").removeClass("on");
         }
       var page = parseInt($("#"+div_name+" #pageGro li.on").html());
-      console.log(page);         
+      //console.log(page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -603,12 +605,13 @@ function draw_group_weibo0(data,div_name,sub_div_name){
 function draw_group_weibo1(data){
 	var div_name = 'weiboTabContent';
     var sub_div_name = 'group_weibo_text';
+    $('#' + div_name).css('display','block');
 	draw_group_weibo0(data,div_name,sub_div_name);
 }
 function draw_group_weibo2(data){
-    console.log('sdflkaj1');
 	var div_name = 'outWeiboTabContent';
     var sub_div_name = 'group_weibo_text';
+    $('#' + div_name).css('display','block');
 	draw_group_weibo0(data,div_name,sub_div_name);
 }
 
@@ -616,11 +619,11 @@ function show_conclusion(data){
   var html = '';
   html += '<span class="fleft" style="margin: 10px 5px 5px 15px;/* margin-right:10px; */width:32px;height:32px;background-image:url(/static/img/warning.png);/* margin-top:5px; */display:black;"></span>';
   //html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>，'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
-  html += '<span  class="fleft" style="    margin-top: 15px;    margin-left: 10px;    font-size: 16px;    font-weight: bold;">'+data['density_description']+'</span>';
+  html += '<span  class="fleft" style="    margin-top: 15px;    margin-left: 10px;    font-size: 16px;    font-weight: bold;">'+data['density_description']+'。</span>';
   $("#social_conclusion").append(html);
 }
 
-$(function(){
+function social_click(){
     $('a[id^="group_change_weibo"]').click(function(){
     var uid1 = $(this).parent().prev().prev().text();
     var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
@@ -635,7 +638,7 @@ $(function(){
     var url = '/group/social_out_content/?uid1='+uid1+'&uid2='+uid2;
     g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo2);
     });
-
+    /*
     var init_in_uid1 = $('#group_in_table tr:eq(1) td:eq(3)').text();
     var init_in_uid2 = $('#group_in_table tr:eq(1) td:eq(0)').text();
     g_social.call_sync_ajax_request('/group/social_inter_content/?uid1='+init_in_uid1+'&uid2='+init_in_uid2, g_social.ajax_method, draw_group_weibo1);
@@ -644,19 +647,20 @@ $(function(){
     var init_out_uid2 = $('#group_out_table tr:eq(1) td:eq(0)').text();
     console.log('/group/social_out_content/?uid1='+init_out_uid1+'&uid2='+init_out_uid2);
     g_social.call_sync_ajax_request('/group/social_out_content/?uid1='+init_out_uid1+'&uid2='+init_out_uid2, g_social.ajax_method, draw_group_weibo2);
-
-})
+    */
+}
 
 function draw_social(data){
 	Draw_group(data);
 	Draw_out_group(data);
 	draw_in_table(data);
+	draw_relation_net(data,'social_in_record','arrow');
+	draw_out_table(data);
+	draw_relation_out_net(data,'social_out_record','none');
+    social_click();
+	show_conclusion(data);
 	//draw_more_in_table(data);
 	//draw_more_out_table(data);
-	draw_relation_net(data,'social_in_record','arrow');
-	draw_relation_out_net(data,'social_out_record','none');
-	draw_out_table(data);
-	show_conclusion(data);
 }
 
 
