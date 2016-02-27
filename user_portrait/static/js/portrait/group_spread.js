@@ -290,21 +290,24 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
     html += '<div class="group_weibo_font">';
     for (var i = start_row; i < end_row; i += 1){
         s=i.toString();
-        uid = data[s]['uid'];
+        //uid = data[s]['uid'];
+        uid = document.getElementById('select_group_weibo_user').value;
         text = data[s]['text'];
-        uname = data[s]['uname'];
+        //uname = data[s]['uname'];
+        var selectIndex  = document.getElementById('select_group_weibo_user').selectedIndex
+        uname = document.getElementById('select_group_weibo_user').options[selectIndex].text;
         timestamp = data[s]['timestamp'];
-        date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
+        //date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
         if (i%2 ==0){
             html += '<div style="background:whitesmoke;font-size:14px">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
-            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + timestamp + '</font></p>';
             html += '</div>'
     }
         else{
             html += '<div>';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
-            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + timestamp + '</font></p>';
             html += '</div>';
         }
     }
@@ -325,25 +328,52 @@ var from_date = min_date_ms.format('yyyy/MM/dd');
 $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 
-function Draw_group_weibo_user(){
+function Draw_group_weibo_user(uids,unames){
+    
     $('#group_influ_weibo_user').empty();
     html = '';
     html += '<select id="select_group_weibo_user" style="max-width:150px;">';
     // var timestamp = Date.parse(new Date());
     // date = new Date(parseInt(timestamp)).format("yyyy-MM-dd");
-    var all= '全部用户'
-    html += '<option value="' + all + '" selected="selected">' + all + '</option>';      
-    for (var i = 0; i < 6; i++) {
+    //var all= '全部用户'
+    //html += '<option value="' + all + '" selected="selected">' + all + '</option>';      
+    for (var i = 0; i < unames.length; i++) {
         // timestamp = timestamp-24*3600*1000;
         // date = new Date(parseInt(timestamp)).format("yyyy-MM-dd");
-        html += '<option value="' + i + '">' + i + '</option>';
+        html += '<option value="' + uids[i] + '">' + unames[i] + '</option>';
     }
     html += '</select>';
     $('#group_influ_weibo_user').append(html);
 }
 
+
 function submit_date_user(){
-    alert('aaa');
+    var timestamp_from=1377964800;
+    var timestamp_to=1378051200;
+    var select_uid = document.getElementById('select_group_weibo_user').value;
+    var submit_date_user_url = '/group/influence_content/?uid=' + select_uid + '&timestamp_from=' + timestamp_from + '&timestamp_to=' + timestamp_to;
+    console.log(submit_date_user_url);
+    function Weibo(){
+        this.ajax_method = 'GET';
+    }
+    Weibo.prototype = {
+      call_sync_ajax_request:function(url, method, callback){
+        $.ajax({
+          url: url,
+          type: method,
+          dataType: 'json',
+          async: false,
+          success:callback
+        });
+       },
+       Draw:function(data){
+	     console.log(data);
+		 Draw_group_influ_weibo(data,'group_influ_weibo', 'group_influ_weibo_result');
+        }
+      
+     }
+    var Weibo = new Weibo();
+    Weibo.call_sync_ajax_request(submit_date_user_url, Weibo.ajax_method, Weibo.Draw);
 }
 
 function get_radar_data (data) {
@@ -461,7 +491,34 @@ $('#group_influence_conclusion').append('结论结论结论结论');
 
 //影响力内容：用户微博
     //选择用户
-Draw_group_weibo_user();  
+function Weibo_user(){
+    this.ajax_method = 'GET';
+}
+Weibo_user.prototype = {
+  call_sync_ajax_request:function(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+  },
+  Draw_user:function(data){
+	  var unames = [];
+	  var uids = [];
+	  for(var key in data){
+        uids.push(key);
+        unames.push(data[key]);
+	  }
+      Draw_group_weibo_user(uids,unames);
+  }
+      
+}
+var Weibo_user = new Weibo_user();
+var weibo_user_url = '/group/group_member/?task_name=媒体';
+Weibo_user.call_sync_ajax_request(weibo_user_url,Weibo_user.ajax_method,Weibo_user.Draw_user)
+//Draw_group_weibo_user();  
     //选择时间
 var url_all = [];
 var time_from = Date.parse($('#group_influ_weibo #weibo_from').val())/1000;
@@ -477,7 +534,7 @@ console.log(url_all);
 //提交条件
 //submit_date_user();
 //显示内容
-Draw_group_influ_weibo(data0,'group_influ_weibo', 'group_influ_weibo_result');
+//Draw_group_influ_weibo(data0,'group_influ_weibo', 'group_influ_weibo_result');
 
 var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
 Draw_topic(topic,'influence_topic', 'topic_WordList','showmore_topic_influ');
