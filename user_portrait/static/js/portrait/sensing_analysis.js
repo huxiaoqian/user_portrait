@@ -150,7 +150,7 @@ function pageUp(pageNum, pageCount, div_name){
 }
 
 //下一页
-function pageDown(pageNum,pageCount){
+function pageDown(pageNum,pageCount, div_name){
 	switch(pageNum){
 		case 1:
 			page_icon(1,5,1, div_name);
@@ -170,13 +170,13 @@ function pageDown(pageNum,pageCount){
 }
 
 //点击跳转页面
-function pageGroup(pageNum,pageCount){
+function pageGroup(pageNum,pageCount, div_name){
 	switch(pageNum){
 		case 1:
 			page_icon(1,5,0, div_name);
 		break;
 		case 2:
-			page_icon(1,5,1);
+			page_icon(1,5,1, div_name);
 		break;
 		case pageCount-1:
 			page_icon(pageCount-4,pageCount,3, div_name);
@@ -230,22 +230,21 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         }
     var pageCount = total_pages;
 
-    if(pageCount>10){
-        page_icon(1,10,0, div_name);
+    if(pageCount>5){
+        page_icon(1,5,0, div_name);
     }else{
         page_icon(1,pageCount,0, div_name);
     }
     
-    $("#"+div_name+" #pageGro li").bind("click", function(){
+    $("#"+div_name+" #pageGro li").live("click", function(){
         if(pageCount > 5){
             var pageNum = parseInt($(this).html());
-            pageGroup(pageNum,pageCount);
+            pageGroup(pageNum,pageCount, div_name);
         }else{
             $(this).addClass("on");
             $(this).siblings("li").removeClass("on");
         }
       var page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      //console.log(page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length)
@@ -259,7 +258,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     $("#"+div_name+" #pageGro .pageUp").click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
-            pageUp(pageNum,pageCount);
+            pageUp(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
             if(index > 0){
@@ -282,7 +281,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
 
-            pageDown(pageNum,pageCount);
+            pageDown(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
             if(index+1 < pageCount){
@@ -301,7 +300,12 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     });
 }
 function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
-	var highlight_words = []; //高亮词数组
+	//console.log(start_row);
+    //console.log(end_row);
+    //console.log(data);
+    //console.log(div_name);
+    //console.log(sub_div_name);
+    var highlight_words = []; //高亮词数组
     weibo_num = end_row - start_row;
     $('#'+ sub_div_name).empty();
     var html = "";
@@ -504,11 +508,12 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    var timestamp2 = Date.parse(new Date(param.name));
 					timestamp2 = timestamp2 / 1000;
 				    sensi_click_time = timestamp2;
-				    sensi_index = param.seriesIndex+7
+				    
+                    sensi_index = param.seriesIndex+7
 				    var data=[['人民日报',1,2,'条结论这里是一条结论这里里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+sensi_click_time;
 				    $('#sensi_weibo').css("display", 'block');
-					Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
+                    Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
 					
 				}
 			}
@@ -655,7 +660,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 					timestamp2 = timestamp2 / 1000;
 				    mood_click_time = timestamp2;
 				    // mood_index = param.seriesIndex+4;
-				    var index_type
+				    var index_type;
 				    if (param.seriesIndex==3){
 			    		index_type = 5;
 			    	}else if(param.seriesIndex==0){
