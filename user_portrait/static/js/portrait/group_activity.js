@@ -71,7 +71,7 @@ function Draw_activity(data){
                     click:function(event){
                         var activity_weibo_url = '/group/activity_weibo/?task_name='+'媒体'+'&start_ts=' + data[event.point.x][0];
                         call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content)
-                        console.log(activity_weibo_url);
+                        //console.log(activity_weibo_url);
                         // draw_content(data_x_[event.point.x]);
                     }
                 }
@@ -631,11 +631,23 @@ function show_activity(data) {
     // body...
 }
 function show_activity_track(data){
-    console.log(data);
-    data = [];
-    month_process(data);
+    $('#track_weibo_user').empty();
+    var html = '';
+    html += '<select id="select_track_weibo_user" style="max-width:150px;">';
+    for (var i = 0; i < data.length; i++) {
+        html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
+    }
+    html += '</select>';
+    $('#track_weibo_user').append(html);
+
+    $('#track_user_commit').click(function(){
+        var track_user_id = $('#select_track_weibo_user').val();
+        var group_track_url = '/group/show_group_member_track/?uid=' + track_user_id;
+        call_sync_ajax_request(group_track_url,ajax_method, month_process);
+    });
+    track_init();
 }
-function month_process(data){
+function track_init(){
     require.config({
         paths: {
             echarts: '/static/js/bmap/js'
@@ -665,6 +677,45 @@ function month_process(data){
         var startPoint = {
             x: 85.114129,
             y: 50.550339
+        };
+
+        var point = new BMap.Point(startPoint.x, startPoint.y);
+        map.centerAndZoom(point, 5);
+        //map.enableScrollWheelZoom(true);
+    }
+);
+}
+function month_process(data){
+    //console.log(data);
+    require.config({
+        paths: {
+            echarts: '/static/js/bmap/js'
+        },
+        packages: [
+            {
+                name: 'BMap',
+                location: '/static/js/bmap',
+                main: 'main'
+            }
+        ]
+    });
+
+    require(
+    [
+        'echarts',
+        'BMap',
+        'echarts/chart/map'
+    ],
+    function (echarts, BMapExtension) {
+        // 初始化地图
+        var BMapExt = new BMapExtension($('#user_geo_map')[0], BMap, echarts,{
+            enableMapClick: false
+        });
+        var map = BMapExt.getMap();
+        var container = BMapExt.getEchartsContainer();
+        var startPoint = {
+            x: 110.114129,
+            y: 35.550339
         };
 
         var point = new BMap.Point(startPoint.x, startPoint.y);
@@ -705,7 +756,7 @@ function month_process(data){
             }
             myGeo.getPoint(geoname, function(point){
                 if (point){
-                    var fixpoint= new BMap.Point(point.lng+3.5,point.lat-0.5);
+                    var fixpoint= new BMap.Point(point.lng,point.lat+0.5);
                     var marker = new BMap.Marker(fixpoint);
                     addedlist[geoname] = addedlist[geoname] + ',' + timename;
                     marker.setTitle(geoname+addedlist[geoname]);
@@ -813,7 +864,7 @@ function month_process(data){
 
 var group_activity_url = '/group/show_group_result/?module=activity&task_name=媒体';
 call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
-var group_track_url = '/group/show_group_member_track/?uid=1292808363';
-call_sync_ajax_request(group_track_url,ajax_method, show_activity_track);
+var group_user_url =  "/group/show_group_list/?task_name=" + name;
+call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
 // var activity_data = []
 

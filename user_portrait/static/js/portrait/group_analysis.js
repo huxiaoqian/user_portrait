@@ -445,7 +445,7 @@ Draw_group_weibo: function(data){
             $(this).siblings("li").removeClass("on");
         }
       page = parseInt($("#pageGro li.on").html())  
-      console.log(page);         
+      //console.log(page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length)
@@ -465,7 +465,7 @@ Draw_group_weibo: function(data){
             }
         }
       page = parseInt($("#pageGro li.on").html())  
-      console.log(page);
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -488,7 +488,7 @@ Draw_group_weibo: function(data){
             }
         }
       page = parseInt($("#pageGro li.on").html()) 
-      console.log(page);
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -568,7 +568,7 @@ function add_group_tag(){
             select_uids.push(temp_list[i]);
         }
     }
-    console.log(select_uids);
+    //console.log(select_uids);
 
     for (var i = 0; i < select_uids.length; i++) {
         s=i.toString();
@@ -608,7 +608,7 @@ function Draw_group(data){
 
 
 function active_geo(data){
-    console.log(data);
+    //console.log(data);
     $('#top_active_geo').empty();
     html = '';
     html += '<div style="font-size:17px">一周轨迹</div>';
@@ -748,7 +748,7 @@ function draw_relation_picture(data){
                 myChart.on(ecConfig.EVENT.CLICK, focus)
 
                 myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-                    console.log(myChart.chart.force.getPosition());
+                    //console.log(myChart.chart.force.getPosition());
                 });
             }
     )
@@ -1076,7 +1076,7 @@ function createRandomItemStyle(){
 }
 function show_members(){
 	var downloadurl = window.location.host;
-    var model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
+    var model_url =   "/group/show_group_list/?task_name=媒体";
     base_call_ajax_request(model_url, Draw_model);
     $("#myModal_group").modal();
     function Draw_model(data){

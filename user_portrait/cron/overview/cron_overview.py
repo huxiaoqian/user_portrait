@@ -362,6 +362,189 @@ def get_scan_results():
                 activity_count += 1
     return result_dict
 
+def get_scan_results_v2():
+    result_dict = dict()
+
+    # gender ratio count
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"gender"}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    gender_result = dict()
+    for item in search_results:
+        gender_result[str(item['key'])] = item['doc_count']
+    count = sum(gender_result.values())
+    if count==0:
+        gender_ratio = {'1':0.5, '2':0.5}
+    else:
+        gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
+    result_dict['gender_ratio'] = json.dumps(gender_ratio)
+
+    # verified ratio count
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"verified"}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    verified_result = dict()
+    for item in search_results:
+        verified_result[item['key']] = item['doc_count']
+    count = sum(verified_result.values())
+    if count==0:
+        verified_ratio = {'yes':0.5, 'no':0.5}
+    else:
+        verified_ratio = {'yes':float(verified_result['']) / count, 'no':float(verified_result['unknown'])/count}
+    result_dict['verified_ratio'] = json.dumps(verified_ratio)
+
+    # loation top
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"location","size":5}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        location_top = []
+        for item in search_results:
+            location_top.append([item['key'],item['doc_count']])
+    else:
+        location_top = {}
+    result_dict['location_top'] = json.dumps(location_top)
+
+    # activity geo
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"activity_geo","size":50}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        activity_geo_top = []
+        for item in search_results:
+            activity_geo_top.append([item['key'],item['doc_count']])
+    else:
+        activity_geo_top = {}
+    result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
+
+    # keywords
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"keywords_string","size":50}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        keywords_top = []
+        for item in search_results:
+            keywords_top.append([item['key'],item['doc_count']])
+    else:
+        keywords_top = {}
+    result_dict['keywords_top'] = json.dumps(keywords_top)
+
+    # hashtag top
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"hashtag","size":50}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        hashtag_top = []
+        for item in search_results:
+            hashtag_top.append([item['key'],item['doc_count']])
+    else:
+        hashtag_top = {}
+    result_dict['hashtag_top'] = json.dumps(hashtag_top)
+
+    # topic top
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"topic_string","size":50}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        topic_top = []
+        for item in search_results:
+            topic_top.append([item['key'],item['doc_count']])
+    else:
+        topic_top = {}
+    result_dict['topic_top'] = json.dumps(topic_top)
+
+    # domain top
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"domain","size":20}
+            }
+        }
+    }
+
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        domain_top = []
+        for item in search_results:
+            domain_top.append([item['key'],item['doc_count']])
+    else:
+        domain_top = {}
+    result_dict['domain_top'] = json.dumps(domain_top)
+    result_dict['domain_top_user'] = json.dumps(get_domain_top_user(domain_top))
+    result_dict['topic_top_user'] = json.dumps(get_topic_top_user(topic_top))
+    
+    # online pattern top
+
+    # activity_count
+
+    return result_dict
+
 # origin retweeted number top 5 user and mid
 def get_retweeted_top():
     top_results = []
@@ -605,7 +788,7 @@ def compute_overview():
     results = {}
     results['user_count'] = get_user_count()
     #results['total_status'] = get_total_status()
-    scan_result = get_scan_results()
+    scan_result = get_scan_results_v2()
     #print 'scan_result:', scan_result
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
