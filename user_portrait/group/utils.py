@@ -202,6 +202,7 @@ def search_group_results(task_name, module):
         result['activeness_trend'] = json.loads(source['activeness'])
         result['activeness_his'] = json.loads(source['activeness_his'])
         result['activeness_description'] = source['activeness_description']
+        result['online_pattern'] = json.loads(source['online_pattern'])
     elif module == 'preference':
         result['keywords'] = json.loads(source['keywords'])
         result['hashtag'] = json.loads(source['hashtag'])
