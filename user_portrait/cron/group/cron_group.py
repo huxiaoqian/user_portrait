@@ -336,7 +336,7 @@ def get_attr_portrait(uid_list):
     sort_hashtag_dict = sorted(hashtag_ratio.items(), key=lambda x:x[1], reverse=True)[:GROUP_HASHTAG_COUNT]
     results['hashtag'] = json.dumps(sort_hashtag_dict)
     if len(sort_hashtag_dict) != 0:
-        tag_vector_result['hashtag'] = [u'hastag', sort_hashtag_dict[0][0]]
+        tag_vector_result['hashtag'] = [u'hashtag', sort_hashtag_dict[0][0]]
     else:
         tag_vector_result['hashtag'] = [u'hashtag', '暂无']
     return results, tag_vector_result
