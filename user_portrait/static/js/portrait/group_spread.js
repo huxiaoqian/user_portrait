@@ -1,3 +1,92 @@
+//test
+function Draw_top_location(data){
+  var timeline_data = [];
+  var bar_data = [];
+  var bar_data_x = [];
+  var bar_data_y = [];
+  for(var key in data){
+    var key_time = new Date(parseInt(key)*1000).format("yyyy-MM-dd");
+    timeline_data.push(key_time);
+    bar_data.push(data[key]);
+  }
+  for(var i=0;i<bar_data.length;i++){
+    var bar_data_x_single = [];
+    var bar_data_y_single = [];
+    for(var key in bar_data[i]){
+      bar_data_x_single.push(key);
+      bar_data_y_single.push(bar_data[i][key]);
+    }
+    bar_data_x.push(bar_data_x_single);
+    bar_data_y.push(bar_data_y_single);
+  }
+  // console.log(bar_data_y);
+  
+    //console.log(timeline_data);
+    var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
+    var option = {
+        timeline:{
+            data:timeline_data,
+            // label : {
+            //     formatter : function(s) {
+            //         return s.slice(0, 4);
+            //     }
+            // },
+            autoPlay : true,
+            playInterval : 1000
+        },
+        toolbox : {
+            'show':false, 
+            orient : 'vertical',
+            x: 'right', 
+            y: 'center',
+            'feature':{
+                'mark':{'show':true},
+                'dataView':{'show':true,'readOnly':false},
+                'magicType':{'show':true,'type':['line','bar','stack','tiled']},
+                'restore':{'show':true},
+                'saveAsImage':{'show':true}
+            }
+        },
+        options : (function () {
+          var option_data = [];
+          for(var i=0;i<timeline_data.length;i++){
+            var option_single_data = {};
+
+            option_single_data.title={'text': '整体用户地理位置分布' };
+            option_single_data.tooltip ={'trigger':'axis'};
+            option_single_data.calculable = true;
+                option_single_data.grid = {'y':80,'y2':100};
+                option_single_data.xAxis = [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':bar_data_x[i]
+                }];
+                option_single_data.yAxis = [
+                    {
+                        'type':'value',
+                        'name':'次数',
+                        //'max':53500
+                    }
+                ];
+                option_single_data.series = [
+                    {
+                        'name':'活跃次数',
+                        'type':'bar',
+                        'data': bar_data_y[i]
+                    },
+
+                ];
+                option_data.push(option_single_data);
+          };
+          // console.log(option_data);
+          return option_data;
+        }
+        )()
+    };
+    myChart.setOption(option);
+                    
+}
+
 //影响力分布
 function draw_influ_distribution(data,radar_div, title){
     console.log(data);
@@ -96,9 +185,9 @@ Show_influ.prototype = {
     draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力');
     draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
     var influ_out = data['influence_out_user'];
-    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
-    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
-    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
+    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '人数');
+    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '人数');
+    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '人数');
   }
 }
 
@@ -373,8 +462,10 @@ var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd');
 
-$('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-$('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+// $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+// $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+$('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
+$('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
 //获取微博成员信息
 function Draw_group_weibo_user(uids,unames){
     
