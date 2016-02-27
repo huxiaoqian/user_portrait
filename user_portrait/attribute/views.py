@@ -101,7 +101,7 @@ def ajax_portrait_search():
 
         #range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
         #multi_item = ['topic_string', 'domain']
-        multi_item = ['psycho_status_by_emotion','psycho_status_by_word','domain','topic_string']
+        multi_item = ['character_sentiment','character_text','domain','topic_string']
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:

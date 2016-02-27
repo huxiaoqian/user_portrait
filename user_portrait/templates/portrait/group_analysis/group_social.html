@@ -29,7 +29,7 @@ table tr th{
 
 		   <div class="box-content">
 		     <div id="weiboTabContent" class="tab-content">
-				<div id="group_weibo" style="width:960px;margin-top:20px"></div>
+				<div id="group_weibo_text" style="margin-top:20px"></div>
 				<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
 					<div class="pageUp">上一页</div>
 				    <div class="pageList">
@@ -73,43 +73,21 @@ table tr th{
 		    </div>
 
 		   <div class="box-content">
-		     <ul class="nav nav-tabs" id="outWeiboTab">
-		         <li class="active" title="转发微博"><a href="#group_out_repost_weibo" data-toggle="tab">转发微博</a></li>
-		         <li title="评论微博"><a  href="#group_out_comment_weibo" data-toggle="tab">评论微博</a></li>
-		     </ul>
 		     <div id="outWeiboTabContent" class="tab-content">
-		         <div class="tab-pane active" id="group_out_repost_weibo" style="margin-top:10px">
-					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
-					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
-						<div class="pageUp">上一页</div>
-					    <div class="pageList">
-					        <ul>
-					            <li>1</li>
-					            <li>2</li>
-					            <li>3</li>
-					            <li>4</li>
-					            <li>5</li>
-					        </ul>
-					    </div>
-					    <div class="pageDown">下一页</div>
-					</div>               
-		         </div>     
-		         <div class="tab-pane" id="group_out_comment_weibo" style="margin-top:10px">
-					<div id="group_weibo" style="width:960px;margin-top:20px"></div>
-					<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
-						<div class="pageUp">上一页</div>
-					    <div class="pageList">
-					        <ul>
-					            <li>1</li>
-					            <li>2</li>
-					            <li>3</li>
-					            <li>4</li>
-					            <li>5</li>
-					        </ul>
-					    </div>
-					    <div class="pageDown">下一页</div>
-					</div>               
-		         </div>      
+				<div id="group_weibo_text" style="margin-top:20px"></div>
+				<div id="pageGro" class="cb" style="float:left;width:990px;height:60px;margin-left:350px">
+					<div class="pageUp">上一页</div>
+				    <div class="pageList">
+				        <ul>
+				            <li>1</li>
+				            <li>2</li>
+				            <li>3</li>
+				            <li>4</li>
+				            <li>5</li>
+				        </ul>
+				    </div>
+				    <div class="pageDown">下一页</div>
+				</div>                        
 		     </div>
 		    </div>
     	</div>
@@ -146,6 +124,26 @@ table tr th{
 
 
 <script type="text/javascript">
+Date.prototype.format = function(format) {
+    var o = {
+        "M+" : this.getMonth()+1, //month
+        "d+" : this.getDate(), //day
+        "h+" : this.getHours(), //hour
+        "m+" : this.getMinutes(), //minute
+        "s+" : this.getSeconds(), //second
+        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+        "S" : this.getMilliseconds() //millisecond
+    }
+    if(/(y+)/.test(format)){
+        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(format)){
+            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        }
+    }
+    return format;
+}
 function g_social(){
   this.ajax_method = 'GET';
 }
@@ -161,76 +159,107 @@ g_social.prototype = {   //获取数据，重新画表
   }
 }
 //点击跳转页面
-function pageGroup(pageNum,pageCount){
+function pageGroup(pageNum,pageCount,div_name){
 	switch(pageNum){
 		case 1:
-			page_icon(1,5,0);
+			page_icon(1,5,0,div_name);
 		break;
 		case 2:
-			page_icon(1,5,1);
+			page_icon(1,5,1,div_name);
 		break;
 		case pageCount-1:
-			page_icon(pageCount-4,pageCount,3);
+			page_icon(pageCount-4,pageCount,3,div_name);
 		break;
 		case pageCount:
-			page_icon(pageCount-4,pageCount,4);
+			page_icon(pageCount-4,pageCount,4,div_name);
 		break;
 		default:
-			page_icon(pageNum-2,pageNum+2,2);
+			page_icon(pageNum-2,pageNum+2,2,div_name);
 		break;
 	}
 }
 
 //根据当前选中页生成页面点击按钮
 function page_icon(page,count,eq,div_name){
+	console.log('333');
 	var ul_html = "";
 	for(var i=page; i<=count; i++){
 		ul_html += "<li>"+i+"</li>";
 	}
-	$("#"+div_name+"pageGro ul").html(ul_html);
-	$("#"+div_name+"pageGro ul li").eq(eq).addClass("on");
+	$("#"+div_name+" #pageGro ul").html(ul_html);
+	$("#"+div_name+" #pageGro ul li").eq(eq).addClass("on");
 }
 
 //上一页
-function pageUp(pageNum,pageCount){
+function pageUp(pageNum,pageCount,div_name){
+	console.log(div_name);
 	switch(pageNum){
 		case 1:
 		break;
 		case 2:
-			page_icon(1,5,0);
+			page_icon(1,5,0,div_name);
 		break;
 		case pageCount-1:
-			page_icon(pageCount-4,pageCount,2);
+			page_icon(pageCount-4,pageCount,2,div_name);
 		break;
 		case pageCount:
-			page_icon(pageCount-4,pageCount,3);
+			page_icon(pageCount-4,pageCount,3,div_name);
 		break;
 		default:
-			page_icon(pageNum-2,pageNum+2,1);
+			page_icon(pageNum-2,pageNum+2,1,div_name);
 		break;
 	}
 }
 
 //下一页
-function pageDown(pageNum,pageCount){
+function pageDown(pageNum,pageCount,div_name){
+	console.log('222');
 	switch(pageNum){
 		case 1:
-			page_icon(1,5,1);
+			page_icon(1,5,1,div_name);
 		break;
 		case 2:
-			page_icon(1,5,2);
+			page_icon(1,5,2,div_name);
 		break;
 		case pageCount-1:
-			page_icon(pageCount-4,pageCount,4);
+			page_icon(pageCount-4,pageCount,4,div_name);
 		break;
 		case pageCount:
 		break;
 		default:
-			page_icon(pageNum-2,pageNum+2,3);
+			page_icon(pageNum-2,pageNum+2,3,div_name);
 		break;
 	}
 }
-
+function page_group_weibo1(start_row,end_row,data,div_name){
+	console.log(div_name);
+    var weibo_num = end_row - start_row;
+    $("#"+div_name+" #group_weibo_text").empty();
+	var html = "";
+    html += '<div class="group_weibo_font">';
+    for (var i = start_row; i < end_row; i += 1){
+        var s=i.toString();
+        var uid = data[s]['uid'];
+        var text = data[s]['text'];
+        var uname = data[s]['uname'];
+        var timestamp = data[s]['timestamp'];
+        var date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
+        if (i%2 ==0){
+            html += '<div style="background:whitesmoke;font-size:14px">';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>'
+    }
+        else{
+            html += '<div>';
+            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
+            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
+            html += '</div>';
+        }
+    }
+    html += '</div>'; 
+    $("#"+div_name+" #group_weibo_text").append(html);
+}
 $('#weiboTab li a').click(function (e) {
   e.preventDefault()
   $(this).tab('show')
@@ -258,7 +287,6 @@ function Draw_out_group(data){
 function draw_relation_net(data,name){
     var total_content = [];
     var source_content = []
-    console.log('1');
     for (var i=0;i<data[name].length;i++){
         var s=i.toString();
         var content = {};
@@ -585,51 +613,52 @@ function draw_more_out_table(data){
     //    }
     // });
 }
-function draw_group_weibo(data,div_name){
-    page_num = 10;
+function draw_group_weibo0(data,div_name){
+    var page_num = 10;
     if (data.length < page_num) {
-          page_num = data.length
-          page_group_weibo( 0, page_num, data,div_name);
+          page_num = data.length;
+          page_group_weibo1( 0, page_num, data,div_name);
       }
       else {
-          page_group_weibo( 0, page_num, data,div_name);
+          page_group_weibo1( 0, page_num, data,div_name);
           var total_pages = 0;
           if (data.length % page_num == 0) {
               total_pages = data.length / page_num;
           }
           else {
               total_pages = Math.round(data.length / page_num) + 1;
+              console.log(total_pages);
           }
         }
     var pageCount = total_pages;
 
     if(pageCount>5){
-        page_icon(1,5,0);
+        page_icon(1,5,0,div_name);
     }else{
-        page_icon(1,pageCount,0);
+        page_icon(1,pageCount,0,div_name);
     }
     
     $("#"+div_name+" #pageGro ").on("click",'li',function(){
         if(pageCount > 5){
             var pageNum = parseInt($(this).html());
-            pageGroup(pageNum,pageCount);
+            pageGroup(pageNum,pageCount,div_name);
         }else{
             $(this).addClass("on");
             $(this).siblings("li").removeClass("on");
         }
-      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
+      var page = parseInt($("#"+div_name+" #pageGro li.on").html());
       console.log(page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
-      if (end_row > data.length)
-          end_row = data.length;
-        page_group_weibo(start_row,end_row,data,div_name);
+      if (end_row > data.length){
+          end_row = data.length;}
+      page_group_weibo1(start_row,end_row,data,div_name);
     });
 
     $("#"+div_name+" #pageGro .pageUp").click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
-            pageUp(pageNum,pageCount);
+            pageUp(pageNum,pageCount,div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
             if(index > 0){
@@ -638,13 +667,12 @@ function draw_group_weibo(data,div_name){
             }
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
           end_row = data.length;
       }
-        page_group_weibo(start_row,end_row,data,div_name);
+        page_group_weibo1(start_row,end_row,data,div_name);
     });
     
 
@@ -652,7 +680,7 @@ function draw_group_weibo(data,div_name){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
 
-            pageDown(pageNum,pageCount);
+            pageDown(pageNum,pageCount,div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
             if(index+1 < pageCount){
@@ -661,47 +689,21 @@ function draw_group_weibo(data,div_name){
             }
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
-      console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
           end_row = data.length;
       }
-        page_group_weibo(start_row,end_row,data,div_name);
+       page_group_weibo1(start_row,end_row,data,div_name);
     });
 }
-function page_group_weibo(start_row,end_row,data,div_name){
-    weibo_num = end_row - start_row;
-    $("#"+div_name+" #group_weibo").empty();
-	var html = "";
-    html += '<div class="group_weibo_font">';
-    for (var i = start_row; i < end_row; i += 1){
-        s=i.toString();
-        uid = data[s]['uid'];
-        text = data[s]['text'];
-        uname = data[s]['uname'];
-        timestamp = data[s]['timestamp'];
-        //date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
-        date = '2016';
-        if (i%2 ==0){
-            html += '<div style="background:whitesmoke;font-size:14px">';
-            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
-            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
-            html += '</div>'
-    }
-        else{
-            html += '<div>';
-            html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
-            html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + date + '</font></p>';
-            html += '</div>';
-        }
-    }
-    html += '</div>'; 
-    $("#"+div_name+" #group_weibo").append(html);
-}
 function draw_group_weibo1(data){
-	var div_name = 'group_repost_weibo';
-	draw_group_weibo(data,div_name);
+	var div_name = 'weiboTabContent';
+	draw_group_weibo0(data,div_name);
+}
+function draw_group_weibo2(data){
+	var div_name = 'outWeiboTabContent';
+	draw_group_weibo0(data,div_name);
 }
 
 function show_conclusion(data){
@@ -727,5 +729,8 @@ function draw_social(data){
 
 var social_url = '/group/show_group_result/?task_name=%E5%AA%92%E4%BD%93&module=social';
 var g_social = new g_social();
+var group_weibo_url = '/group/social_inter_content/?uid1=2803301701&uid2=1999472465';
 g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
+g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo1);
+g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo2);
 </script>

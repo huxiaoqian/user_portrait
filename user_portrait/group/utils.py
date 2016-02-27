@@ -411,6 +411,36 @@ def get_group_list(task_name):
             results.append([uid])
     return results
 
+#use to get group member uid_uname
+#version: write in 2016-02-26
+#input: task_name
+#output: uid_uname dict
+def get_group_member_name(task_name):
+    results = {}
+    #try:
+    group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
+                id=task_name)['_source']
+    #except:
+    #    return results
+    uid_list = group_result['uid_list']
+    print 'uid_list:', uid_list
+    try:
+        user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
+                body={'ids':uid_list})['docs']
+    except:
+        return results
+    for item in user_portrait_result:
+        uid = item['_id']
+        if item['found'] == True:
+            source = item['_source']
+            uname = source['uname']
+        else:
+            uname = 'unkown'
+        results[uid] = uname
+
+    return results
+
+
 
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):
@@ -517,7 +547,7 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
 #show group members interaction weibo content
 #input: uid1, uid2
 #ouput: weibo_list
-def get_social_inter_content(uid1, uid2):
+def get_social_inter_content(uid1, uid2, type_mark):
     weibo_list = []
     #get two type relation about uid1 and uid2
     #search weibo list
@@ -547,10 +577,11 @@ def get_social_inter_content(uid1, uid2):
         flow_text_index_name = flow_text_index_name_pre + str(iter_date)
         query = []
         query.append({'bool':{'must':[{'term':{'uid':uid1}}, {'term':{'directed_uid': int(uid2)}}]}})
-        query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid2)}}]}})
+        if type_mark=='out':
+            query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid1)}}]}})
         try:
             flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
-                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}]})['hits']['hits']
+                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}], 'size':MAX_VALUE})['hits']['hits']
         except:
             flow_text_result = []
         for flow_text in flow_text_result:
