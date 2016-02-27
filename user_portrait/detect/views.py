@@ -107,7 +107,7 @@ def ajax_single_person():
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to):
                 return 'invalid input for filter'
-            filter_item_value = {'from': int(filter_item_from), 'to': int(filter_item_to)}
+            filter_item_value = {'gte': int(filter_item_from), 'lt': int(filter_item_to)}
         filter_dict[filter_item] = filter_item_value
     if filter_dict['count'] == 0:
         return 'invalid input for count'
@@ -233,7 +233,7 @@ def ajax_multi_person():
                     return 'valid input for filter'
                 if filter_item_to != '0':
                     filter_condition_num += 1
-                filter_item_value = {'from':int(filter_item_from), 'to':int(filter_item_to)}
+                filter_item_value = {'gte':int(filter_item_from), 'lt':int(filter_item_to)}
             filter_dict[filter_item] = filter_item_value
         if filter_condition_num == 0:
             return 'valid input for filter'
@@ -337,7 +337,7 @@ def ajax_attribute_pattern():
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to):
                 return 'invalid input for filter'
-            filter_item_value = {'from': int(filter_item_from), 'to':int(filter_item_to)}
+            filter_item_value = {'gte': int(filter_item_from), 'lt':int(filter_item_to)}
         filter_dict[filter_item] = filter_item_value
     if filter_dict['count'] == 0:
         return 'invalid input for count'
@@ -420,7 +420,7 @@ def ajax_event_detect():
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
             if int(filter_item_from) > int(filter_item_to) or (not item_value_from) or (not item_value_to):
                 return 'invalid input for filter'
-            filter_item_value = {'from': int(filter_item_from), 'to': int(filter_item_to)}
+            filter_item_value = {'gte': int(filter_item_from), 'lt': int(filter_item_to)}
         filter_dict[filter_item] = filter_item_value
     if filter_dict['count'] == 0:
         return 'invalid input for count'
