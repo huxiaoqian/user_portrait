@@ -7,7 +7,7 @@ import time
 from search import search_text_sentiment,search_text,search_profile
 from global_utils import WORD_DICT,TOPIC_LIST,EVENT_STA,re_cut,EVENT_DICT,abs_path
 from triple_sentiment_classifier import triple_classifier
-from test_data import input_data2
+from test_data import input_data2,input_data
 
 def event_classify(uid_list, uid_dict):
     '''
@@ -19,21 +19,22 @@ def event_classify(uid_list, uid_dict):
 
     uid_count = dict()
     for k in uid_list:
-        if uid_dict.has_key(k):
-            v = uid_dict[k]
-        else:
-            v = []
+        if not uid_dict.has_key(k):
+            uid_count[k] = 0
+            continue
+
+        v = set(uid_dict[k].keys())
+        word_dict = uid_dict[k]
         uid = k
-        text_str = ''
-        for i in v:
-            text_str = text_str + '_' + re_cut(i)
+        com_set = v & WORD_DICT
 
         count = 0
-        if len(text_str) <= 2:
+        if not len(com_set):
             uid_count[uid] = 0
-        else:            
-            for w in WORD_DICT:
-                count = count + text_str.count(w)
+            continue
+           
+        for w in com_set:
+            count = count + word_dict[w]
 
         if count >= EVENT_STA:
             uid_count[uid] = 1
@@ -57,17 +58,16 @@ def topic_classify(uid_list):
         item = topic_result[uid]
         if item:
             row = item.split('&')
-            com_set = set(row) & set(TOPIC_LIST)
+            com_set = set(row) & TOPIC_LIST
         else:
             com_set = []
         if len(com_set) >= 2:
             flag = 1
         else:
             flag = 0
-        topic_dict[uid] = flag
-
-        if flag == 0:
             not_uid.append(uid)
+
+        topic_dict[uid] = flag
 
     return topic_dict,not_uid
 
@@ -78,20 +78,9 @@ def classify(uid_weibo,uid_list):
       输出数据：字典对象 {uid1:str1,uid2:str2,...}
     '''
 
-    uid_text = dict()
-    for uid,text,ts in uid_weibo:
-        if uid_text.has_key(uid):
-            item = uid_text[uid]
-            item.append(text)
-            uid_text[uid] = item
-        else:
-            item = []
-            item.append(text)
-            uid_text[uid] = item
-
     t_result,not_uid = topic_classify(uid_list)
 
-    e_result = event_classify(not_uid,uid_text)
+    e_result = event_classify(not_uid,uid_weibo)
 
     com_result = dict()
     for uid in uid_list:
@@ -102,25 +91,15 @@ def classify(uid_weibo,uid_list):
 
     return com_result
 
-def classify_topic(uid_list,start_date,end_date,flag):
+def classify_topic(uid_list,uid_weibo):
     '''
         分类主函数：
-        输入：用户id列表，查询es的开始时间（字符串），查询es的结束时间（字符串），是否需要再计算情绪（int，1表示需要计算，0表示不需要计算）
-        输入样例：[uid1,uid2,uid3,...],'2013-09-01','2013-09-07',0
+        输入：用户id列表，用户微博分词列表
+        输入样例：[uid1,uid2,uid3,...],{uid1:{'w1':f1,'w2':f2...}...}
     '''
-    start_ts = int(time.mktime(time.strptime(start_date,'%Y-%m-%d')))
-    end_ts = int(time.mktime(time.strptime(end_date,'%Y-%m-%d'))) + 24*3600
-    dis = 24*3600
-
-    uid_weibo = []
-    for ts in range(start_ts,end_ts,dis):
-        date_str = time.strftime('%Y-%m-%d',time.localtime(float(ts)))
-        uid_weibo = search_text(uid_list,date_str,uid_weibo)
-    #print uid_weibo
     com_result = classify(uid_weibo,uid_list)
         
-    return com_result
-    
+    return com_result    
 
 ###以下函数仅供测试使用，目的是学习对应的参数
 def get_event(uid_weibo,name):#学习文本有关的参数
@@ -163,16 +142,15 @@ def write_e_result(result_dict,name):
 
 if __name__ == '__main__':
 
-    uid_list = input_data2('test_0126')
+    uid_list,uid_weibo = input_data('test_0126')
     start = time.time()
-    result_dict = classify_topic(uid_list,'2013-09-01','2013-09-07',0)
+    result_dict = classify_topic(uid_list,uid_weibo)
     end = time.time()
     print 'it takes %s seconds...' % (end-start)
-    print result_dict
-##    with open('./result0122/test_0129_data.csv', 'wb') as f:
-##        writer = csv.writer(f)
-##        for k,v in result_dict.iteritems():
-##            writer.writerow((k,v))
+    with open('/home/ubuntu8/yuanshi/character/result0122/test_0226_content_new.csv', 'wb') as f:
+        writer = csv.writer(f)
+        for k,v in result_dict.iteritems():
+            writer.writerow((k,v))
 ##    get_event(uid_weibo,'sta_in_event')
 ##    get_sentiment(uid_weibo,'sta_in_sentiment')
 ##    uid_weibo = input_data2('notin')

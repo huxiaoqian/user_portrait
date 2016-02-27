@@ -1709,6 +1709,9 @@ def ip2geo(ip_dict):
                 geo_dict[city] = ip_dict[ip]
     return geo_dict
 
+
+#use to compute group task for multi-process
+#version: 16-02-27
 '''
 def compute_group_task():
     results = dict()
@@ -1717,36 +1720,58 @@ def compute_group_task():
         if not task:
             break
         else:
+            results = dict()
             task = json.loads(task)
-            #uid_list should be keep list type to save in es
-            uid_list = task['uid_list']
             task_name = task['task_name']
-            submit_date = task['submit_date']
-            submit_state = task['state']
-            # attr1 member count
+            uid_list = task['uid_list']
+            submit_date = task['submit_date']  #submit_date = timestamp
+            results['task_type'] = task['task_type']
             results['count'] = len(uid_list)
-            # get attr from es_user_portrait
-            attr_in_portrait = get_attr_portrait(uid_list)
+            #get uid2uname dict for other module using
+            uid2uname = {}
+            try:
+                portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type,\
+                                              body={'ids':uid_list},  _source=False, fields=['uname'])['docs']
+            except:
+                portrait_result = []
+            for item in portrait_result:
+                uid = item['_id']
+                if item['found'] == True:
+                    uname = item['fields']['uname'][0]
+                uid2uname[uid] = uname
+            #step1: get attr from es_user_portrait--basic/activity_geo/online_pattern/evaluate_index_his/preference/psycho_ratio
+            attr_in_portrait, tag_vector_result = get_attr_portrait(uid_list)
             results['task_name'] = task_name
             results['uid_list'] = uid_list
             results['submit_date'] = submit_date
             results['state'] = task['state']
+            results['submit_user'] = task['submit_user']
             results = dict(results, **attr_in_portrait)
-            attr_in_social = get_attr_social(uid_list)
+            #step2: get attr from social es----es_retweet&es_comment
+            attr_in_social = get_attr_social(uid_list, uid2uname)
             results = dict(results, **attr_in_social)
-            attr_weibo_trend = get_attr_trend(uid_list)
+            #step3: get attr activity trend and activity_time----redis for activity time
+            attr_weibo_trend = get_attr_trend(uid_list) # {'activity_trend':[], 'activity_time':{}}
             results = dict(results, **attr_weibo_trend)
-            attr_user_bci = get_attr_bci(uid_list)
-            results = dict(results, **attr_user_bci)
-            attr_group_activeness = get_attr_activeness(json.loads(results['activity_trend']), results['total_weibo_number'], json.loads(results['activity_geo']))
-            results = dict(results, **attr_group_activeness)
-            attr_group_importance = get_attr_importance(json.loads(results['domain']), json.loads(results['topic']), results['count'], results['be_retweeted_out'],results['be_retweeted_count_out'])
-            results = dict(results , **attr_group_importance)
-            attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['retweet_user_count'])
-            results = dict(results, **attr_group_tightness)
-            attr_group_influence = get_attr_influence(uid_list)
-            results = dict(results, **attr_group_influence)
+            #step4: get evaluate index trend----copy_user_portrait
+            evaluate_index_trend_dict = get_attr_evaluate_trend(uid_list) # {'importance_trend':[], 'influence_trend❯
+            results = dict(results, **evaluate_index_trend_dict)
+            #step5: get sentiment trend----flow_text_es
+            sentiment_trend, sentiment_tag_vector = get_attr_sentiment_trend(uid_list)
+            results = dict(results, **sentiment_trend)
+            tag_vector_result = dict(tag_vector_result, **sentiment_tag_vector)
+            #step6: get influence user
+            influence_user_result = get_influence_user(uid_list)
+            results = dict(results, **influence_user_result)
+            #step7: get user sentiment words
+            user_sentiment_words = get_attr_sentiment_word(uid_list)
+            results = dict(results, **user_sentiment_words)
+            results['tag_vector'] = json.dumps(tag_vector_result)
+            #step8: update compute status to completed
+            results['status'] = 1
+            #step9: save results
             save_group_results(results)
+
     return results
 '''
 
@@ -1759,6 +1784,7 @@ def compute_group_task():
     task_name = task['task_name']
     uid_list = task['uid_list']
     submit_date = task['submit_date']  #submit_date = timestamp
+    results['task_type'] = task['task_type']
     results['count'] = len(uid_list)
     #get uid2uname dict for other module using
     uid2uname = {}
@@ -1800,22 +1826,9 @@ def compute_group_task():
     user_sentiment_words = get_attr_sentiment_word(uid_list)
     results = dict(results, **user_sentiment_words)
     results['tag_vector'] = json.dumps(tag_vector_result)
-    '''
-    #step8: get general evaluate index---activeness/influence/importance/tightness
-    attr_user_bci, influence_dict = get_attr_bci(uid_list)
-    results = dict(results, **attr_user_bci)
-    attr_group_activeness = get_attr_activeness(json.loads(results['activity_trend']), results['total_weibo_number'], json.loads(results['activity_geo']))
-    results = dict(results, **attr_group_activeness)
-    attr_group_importance = get_attr_importance(json.loads(results['domain']), json.loads(results['topic']), results['count'], results['be_retweeted_out'], results['be_retweeted_count_out'])
-    results = dict(results , **attr_group_importance)
-    attr_group_tightness = get_attr_tightness(results['density'], results['retweet_weibo_count'], results['retweet_user_count'])
-    results = dict(results, **attr_group_tightness)
-    attr_group_influence = get_attr_influence(uid_list, influence_dict)
-    results = dict(results, **attr_group_influence)
-    '''
-    #step7: update compute status to completed
+    #step8: update compute status to completed
     results['status'] = 1
-    #step8: save results
+    #step9: save results
     save_group_results(results)
 
     return results
@@ -1837,6 +1850,7 @@ if __name__=='__main__':
     input_data['submit_date'] = datetime2ts('2013-09-08')
     input_data['state'] = u'关注的媒体'
     input_data['submit_user'] = 'admin'
+    input_data['task_type'] = 'analysis'
     #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)
     result = compute_group_task()

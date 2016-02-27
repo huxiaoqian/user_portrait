@@ -30,7 +30,7 @@
 <div class="col-lg-6" style="margin-top:15px;">
     <div class="panel panel-default">
         <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
-            <div>用户领域分布</div>
+            <div><span class="showmore" id="showmore_domain" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_domain" ><u>查看更多</u></span>用户领域分布</div>
         </div>
         <div class="panel-body">
           <div id="preference_domain"  style="width:450px;height:300px;margin-left: -30px;">
@@ -42,7 +42,7 @@
 <div class="col-lg-6" style="margin-top:15px;">
     <div class="panel panel-default">
         <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
-            <div>用户话题分布</div>
+            <div><span class="showmore" id="showmore_topic" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_topic" ><u>查看更多</u></span>用户话题分布</div>
         </div>
         <div class="panel-body">
           <div id="preference_topic"  style="width:450px;height:300px;margin-left: -30px;">
@@ -80,6 +80,31 @@
   </div>
 </div>
 
+<div class="modal fade" id="more_domain" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">用户领域分布</h4>
+      </div>
+      <div class="modal-body" id='domain_WordList'>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="more_topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"  style="width: 500px;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">用户话题分布</h4>
+      </div>
+      <div class="modal-body" id='topic_WordList'>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript">
 function Show_pref(url,div){
@@ -109,8 +134,8 @@ Show_pref.prototype = {
     var domain_data = data['domain'];
     Draw_keyword(keywords_data, keywords_name, keywords_more, showmore_keyWords);
     Draw_keyword(hashtag_data, hashtag_name, hashtag_more, showmore_hashtagWords);
-    Draw_topic(topic_data,'preference_topic');
-    Draw_topic(domain_data,'preference_domain');
+    Draw_topic(topic_data,'preference_topic', 'topic_WordList');
+    Draw_topic(domain_data,'preference_domain', 'domain_WordList');
   }
 }
 
@@ -216,15 +241,28 @@ function get_radar_data (data) {
   topic_result.push(topic_value);
   return topic_result;
 }
-function Draw_topic(data, radar_div){
+function Draw_topic(data, radar_div, motal_div){
   var topic = [];
   var html = '';
+  $('#'+ motal_div).empty();
   if(data.length == 0){
-      var html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      $('#'+ motal_div).empty();
+      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
       //$('#'+ more_div).append(html);
       $('#'+ radar_div).append(html);
+      $('#'+ motal_div).append(html);
       //$('#'+ show_more).empty();
   }else{
+      html = '';
+      html += '<table class="table table-striped table-bordered" style="width:450px;">';
+      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
+      for (var i = 0; i < data.length; i++) {
+         var s = i.toString();
+         var m = i + 1;
+         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
+      };
+      html += '</table>'; 
+      $('#'+ motal_div).append(html);
     };
   var topic_result = [];
   topic_result = get_radar_data(data);
@@ -451,6 +489,7 @@ function show_results(data){
   show_conclusion(conclusion);
 //  show_domain(domain);
 
+
   // var tag_vector = data.tag_vector;
   // //console.log(tag_vector);
   // for(var i=0; i<tag_vector.length;i++){
@@ -459,7 +498,8 @@ function show_results(data){
   //   }
   //   global_tag_vector.push(tag_vector[i]);
   // }
-  // }
+
+  }
 
 var Show_pref = new Show_pref();
 //var url = http://219.224.135.93:9040/index/personal/?uid=2074370833

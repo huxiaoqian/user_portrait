@@ -8,21 +8,49 @@ import csv
 import time
 import datetime
 from global_utils import abs_path
+from config import load_scws
 
-def input_data():#测试输入
+def input_data(name):#测试输入
 
-    uid_weibo = []
+    uid_list = []
+    reader = csv.reader(file(abs_path + '/weibo_data/0122_uid.txt', 'rb'))
+    for line in reader:
+        uid = line[0].strip('\t\r\n')
+        uid = uid.strip('\xef\xbb\xbf')
+        uid_list.append(uid)
+
+    uid_weibo = dict()
+    sw = load_scws()
     reader = csv.reader(file(abs_path + '/test_weibo/com_weibo0126.csv', 'rb'))
     for mid,w_text,ts in reader:
         mid = mid.strip('\xef\xbb\xbf')
-        uid_weibo.append(mid)
+        if mid in uid_list:
+            if uid_weibo.has_key(mid):
+                item = uid_weibo[mid]
+                item = item + '_' + w_text
+                uid_weibo[mid] = item
+            else:
+                item = w_text
+                uid_weibo[mid] = item
+
+    uid_word = dict()
+    for k,v in uid_weibo.iteritems():
+        item = dict()
+        words = sw.participle(v)
+        for word in words:
+            if item.has_key(word[0]):
+                item[word[0]] = item[word[0]] + 1
+            else:
+                item[word[0]] = 1
+        uid_word[k] = item
     
-    return uid_weibo
+    return uid_list,uid_word
 
 def input_data2(name):#测试输入
     
     uid_list = []
-    reader = csv.reader(file(abs_path + '/weibo_data/%s_uid.txt' % name, 'rb'))
+    #reader = csv.reader(file(abs_path + '/weibo_data/%s_uid.txt' % name, 'rb'))
+    reader = csv.reader(file(abs_path + '/weibo_data/0122_uid.txt', 'rb'))
     for line in reader:
         uid = line[0].strip('\t\r\n')
         uid = uid.strip('\xef\xbb\xbf')
@@ -33,9 +61,9 @@ def input_data2(name):#测试输入
     for mid,w_text,ts in reader:
         mid = mid.strip('\xef\xbb\xbf')
         if mid in uid_list:
-            uid_weibo.append(mid)
+            uid_weibo.append([mid,w_text,ts])
     
-    return uid_weibo
+    return uid_list,uid_weibo
 
 
 def combine_weibo():

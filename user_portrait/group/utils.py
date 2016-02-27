@@ -411,6 +411,36 @@ def get_group_list(task_name):
             results.append([uid])
     return results
 
+#use to get group member uid_uname
+#version: write in 2016-02-26
+#input: task_name
+#output: uid_uname dict
+def get_group_member_name(task_name):
+    results = {}
+    #try:
+    group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
+                id=task_name)['_source']
+    #except:
+    #    return results
+    uid_list = group_result['uid_list']
+    print 'uid_list:', uid_list
+    try:
+        user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
+                body={'ids':uid_list})['docs']
+    except:
+        return results
+    for item in user_portrait_result:
+        uid = item['_id']
+        if item['found'] == True:
+            source = item['_source']
+            uname = source['uname']
+        else:
+            uname = 'unkown'
+        results[uid] = uname
+
+    return results
+
+
 
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):
