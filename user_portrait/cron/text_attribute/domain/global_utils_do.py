@@ -5,16 +5,12 @@ import re
 import scws
 import sys
 import csv
-from elasticsearch import Elasticsearch
+
 sys.path.append('../../../')
 from parameter import DOMAIN_ABS_PATH as abs_path
-
-ES_CLUSTER_HOST_FLOW1 = ["219.224.135.93", "219.224.135.94"]
-def _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1):
-    es = Elasticsearch(host, timeout=60, retry_on_timeout=True, max_retries=6)
-    return es
-
-ES_CLUSTER_FLOW1 = _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1)
+from time_utils import get_db_num
+from global_utils import es_user_profile,es_retweet,profile_index_name,\
+                         profile_index_type,retweet_index_name_pre,retweet_index_type
 
 ##加载领域标签
 

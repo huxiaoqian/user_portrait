@@ -133,3 +133,14 @@ def load_train_ori():#加载原始词频文档，计算每个词语的tfidf，�
     return domain_dict,domain_count
 
 DOMAIN_DICT_ORI,DOMAIN_COUNT_ORI = load_train_ori()
+
+def sta_dict():#标准化话题字典
+
+    topic_dict = dict()
+    for name in name_list:
+        topic_dict[name] = 0
+
+    return topic_dict
+
+TOPIC_DICT = sta_dict()
+    
