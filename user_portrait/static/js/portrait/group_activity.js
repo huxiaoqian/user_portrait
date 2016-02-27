@@ -632,7 +632,6 @@ function show_activity(data) {
 }
 function show_activity_track(data){
     console.log(data);
-    data = [];
     month_process(data);
 }
 function month_process(data){
