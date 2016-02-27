@@ -82,12 +82,12 @@
 
 <div class="modal fade" id="more_domain" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content" style="width:500px;">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" style="font-size:18px" id="myModalLabel">用户领域分布</h4>
       </div>
-      <div class="modal-body" id='domain_WordList' style="margin-left:50px;">
+      <div class="modal-body" id='domain_WordList'>
       </div>
     </div>
   </div>
@@ -260,7 +260,7 @@ function Draw_topic(data, radar_div, motal_div){
       for (var i = 0; i < data.length; i++) {
          var s = i.toString();
          var m = i + 1;
-         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
+         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(2) + '</th></tr>';
       };
       html += '</table>'; 
       $('#'+ motal_div).append(html);
