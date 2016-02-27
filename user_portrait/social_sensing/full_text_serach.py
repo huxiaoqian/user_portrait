@@ -93,7 +93,7 @@ def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, message
             temp.append(ts2date(item['timestamp']))
             temp.append(item['geo'])
             keywords_set = set(item['keywords_string'].split('&'))
-            common_keywords = set(keywords_list) & keywords_set
+            common_keywords = set(sensitive_words_list) & keywords_set
             temp.append(list(common_keywords))
             results.append(temp)
 
