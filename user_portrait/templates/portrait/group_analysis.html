@@ -15,6 +15,24 @@
 	ul,li{
 	  list-style:none;
 	}
+	#accordion > .panel-default{
+		border-bottom: :1px solid #A09D9D;
+		border-color:#A09D9D;
+	}
+/*	#accordion .penel-default > .panel-heading{
+		border-color:#5D9AFF;
+	}*/
+	.panel-color{
+		background-color:#BCBCBC!important;
+		border-color:#A09D9D!important;
+	}
+	.panel-group .panel-heading{border-bottom: 1px solid;}
+/*	div[id^="heading"]{
+		background-color:#5D9AFF;
+	}*/
+	#accordion h4{
+		color:#555555;
+	}
 	.gs_ul{
 	  overflow:hidden;
 	  padding:3em;
@@ -82,7 +100,7 @@
 
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingOne">
+			    <div class="panel-heading panel-color" role="tab" id="headingOne">
 			      <h4 class="panel-title">
 			        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
 			          基本特征
@@ -98,7 +116,7 @@
 
 
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingTwo">
+			    <div class="panel-heading panel-color" role="tab" id="headingTwo">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
 			          活动特征
@@ -115,7 +133,7 @@
 
 
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingThree">
+			    <div class="panel-heading panel-color" role="tab" id="headingThree">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
 			          偏好特征
@@ -130,7 +148,7 @@
 			  </div>
 
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingFour">
+			    <div class="panel-heading panel-color" role="tab" id="headingFour">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
 			          传播特征
@@ -145,7 +163,7 @@
 			  </div>
 
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingSix">
+			    <div class="panel-heading panel-color" role="tab" id="headingSix">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
 			          社交特征
@@ -161,7 +179,7 @@
 
 
 			  <div class="panel panel-default">
-			    <div class="panel-heading" role="tab" id="headingSeven">
+			    <div class="panel-heading panel-color" role="tab" id="headingSeven">
 			      <h4 class="panel-title">
 			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
 			          思想特征
