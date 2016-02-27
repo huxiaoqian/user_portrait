@@ -1,8 +1,15 @@
 //影响力分布
-function draw_influ_distribution(data){
-    var mychart1 = echarts.init(document.getElementById('influ_distribution'));
+function draw_influ_distribution(data,radar_div){
+    console.log(data);
+    var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
+    var xdata = [];
+
+    for (i = 0; i< data[1].length-1; i++){
+        xdata.push(data[1][i] + '-' + data[1][i+1])
+    };
+
     var option = {
     tooltip : {
         trigger: 'axis'
@@ -27,15 +34,15 @@ function draw_influ_distribution(data){
     yAxis : [
         {
             type : 'category',
-            name : '人数',
-            data : y_axi
+            name : '区间',
+            data : xdata
         }
     ],
     series : [
         {
-            name:'2011年',
+            name:'人数',
             type:'bar',
-            data:x_axi
+            data:data[0]
         }
     ]
 };
@@ -60,17 +67,17 @@ Show_influ.prototype = {
   },
   Draw_table:function(data){
     console.log(data);
-    influ_his = data['influence_his'];
-    influ_in_user = data['influence_in_user'];
-    influ_out_user = data['influence_out_user'];
-    influ_trend = data['influence_trend'];
-    draw_influ_distribution(influ_his);
+    var influ_his = data['influence_his'];
+    var influ_in_user = data['influence_in_user'];
+    var influ_out_user = data['influence_out_user'];
+    var influ_trend = data['influence_trend'];
+    draw_influ_distribution(influ_his,'influ_distribution');
     show_influ_users('influ_active_users',influ_trend['main_max']);
     show_influ_users('influ_unactive_users',influ_trend['main_min']);
     //console.log(influ_trend['main_max']);
     //console.log(influ_out_user);
     group_influ(influ_trend);
-    influ_in = data['influence_in_user'];
+    var influ_in = data['influence_in_user'];
     var topics = [];
     for(var key in influ_in['topic']){
         var tt = [];
@@ -86,7 +93,12 @@ Show_influ.prototype = {
     //console.log(domains);
     Draw_topic(topics,'influence_topic', 'topic_WordList','showmore_topic_influ');
     Draw_topic(domains,'influence_domain', 'domain_WordList','showmore_domain_influ');
-    influ_out = data['influence_out_user'];
+    draw_influ_distribution(influ_in['influence'],'group_influ_distribution');
+    draw_influ_distribution(influ_in['importance'],'group_impor_distribution');
+    var influ_out = data['influence_out_user'];
+    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution');
+    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution');
+    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution');
   }
 }
 
