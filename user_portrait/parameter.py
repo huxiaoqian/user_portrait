@@ -113,6 +113,10 @@ ACTIVENESS_TREND_TAG_VECTOR = {
          '5': '活跃度低且波动性大'
     }
 
+#cron/text_attribute/weibo_api
+# weibo_api.py read_flow_text_sentiment/read_flow_text 
+WEIBO_API_INPUT_TYPE = 1 # 1 mark: need compute sentiment
+                         # 0 mark: not need compute sentiment
 #cron/text_attribute/topic
 TOPIC_ABS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/model_file/topic'
 
