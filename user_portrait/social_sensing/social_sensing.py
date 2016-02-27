@@ -23,7 +23,7 @@ def social_sensing_task():
         task_detail = json.loads(temp)
         print "task_detail: ", task_detail
         if int(task_detail[6]) == 2:
-            print specific_keywords_burst_dection(task_detail)
+            specific_keywords_burst_dection(task_detail)
         elif int(task_detail[6]) == 3:
             sensors_keywords_detection(task_detail)
         else:
