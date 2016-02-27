@@ -142,9 +142,6 @@ $('input[name="so_mode_choose"]').change(function(){
     }
     else{
         $('#so_have_users_ext').css('display','none');
-        if(so_user_option == 'so_new_users'){
-        	window.location.href='/index/group/';
-        }
     }
     //seed_user_init();
     //if (!seed_user_flag) seed_user_flag = true; // no more html init
@@ -163,7 +160,7 @@ function so_draw_control_table(data){
 	var item =data;
 	var item_name = '';
 	var html='';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;">';
     html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th style="text-align:center">活跃度</th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
     for (var i=0;i<data.length;i++) {
     	if(item[i][1]=='unknown'){
@@ -181,7 +178,7 @@ function so_draw_control_table(data){
     	// }else{
     	// 	item_num = item[i][5].toFixed(2);
     	// }
-        html += '<tr><td name="'+item[i][0]+'" style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td><td style="text-align:center">' + item[i][8] + '</td></tr>';
+        html += '<tr><td name="'+item[i][0]+'" style="text-align:center"><img class="img-circle shadow-5"  style="height:30px;" title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td><td style="text-align:center">' + item[i][8] + '</td></tr>';
   	}
     html += '</table>'; 
 	$('#so_control_confirm').append(html);
@@ -242,7 +239,7 @@ function draw_sensor(data){
 	var item_keys = data['keywords'];
 	var item_sensor = data['social_sensors'];
     html += '<div style="width:100%"><div  style="margin-right: 25px;float:left;display:inline-block">传感词：</div>';
-    if(item_keys[0] != ''){
+    if(item_keys.length > 0){
     	html += '<div style="margin-right: 9px;padding:0px;width: 89%;display:inline-block">';
 	    for (var j =0;j<item_keys.length;j++){
 	    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>';
@@ -250,13 +247,13 @@ function draw_sensor(data){
 	    html += '</div>';
     }else{html += '<span style="margin-right:20px;">无</span>'}
     html += '</div>';
-    if (item_sensor[0] == undefined){
+    if (item_sensor.length == 0){
     	html += '<div style="margin-top:10px;">传感群：<span style="margin-left:25px;">全库用户</span></div>'
     }else{
     	html += '<div style="margin-top:10px;overflow-y:auto;height:300px;">';
 	    html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
 	    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th><th style="text-align:center">领域</th><th style="text-align:center">话题</th><th style="text-align:center">重要度</th></tr>';
-	    for (var i=0;i<item.length;i++) {
+        for (var i=0;i<item.length;i++) {
 	    	if(item[i][1]=='unknown'){
 	    		item_name = '未知';
 	    	}else{
@@ -272,7 +269,9 @@ function draw_sensor(data){
 	    	}else{
 	    		item_num = item[i][5].toFixed(2);
 	    	}
-	        html += '<tr><td style="text-align:center"><img class="small-photo shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
+	        html += '<tr><td style="text-align:center"><img class="img-circle shadow-5"  style="height:30px;" title="'+item[i][0]+'"  src="' + item_img + '" ></td>';
+            html += '<td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td>';
+            html += '<td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item_num + '</td></tr>';
 	 	}
 	 	html += '</div>';
 	    html += '</table>'; 
@@ -282,17 +281,22 @@ function draw_sensor(data){
 
 function draw_more(data){
 	var item = data;
+    console.log(data);
 	$('#so_more_content').empty();
 	html = '';
 	//html += '<table id="so_more_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<div>敏感词<input style="margin-left:50px;"margin-right:10px; name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>';
-	for (var i=0;i<item[0].length;i++){
-		html += '<input  name="so_more_option_1" class="search_result_option" value="'+item[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[i]+'</span> ';
+	html += '<div style="font-size:18px;font-weight:bold;">敏感词<input style="margin-left:50px;"margin-right:10px; name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>';
+	html += '<div style="margin:8px 0px;">';
+    for (var i=0;i<item[0].length;i++){
+		html += '<input  name="so_more_option_1" class="search_result_option" value="'+item[0][i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[0][i]+'</span> ';
 	}
-	html += '<div>一般关键词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>';
+	html += '</div><hr/>';
+	html += '<div style="font-size:18px;font-weight:bold;">一般关键词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>';
+	html += '<div style="margin:8px 0px;">';
 	for (var j=0;j<item[1].length;j++){
-		html += '<input  name="so_more_option_0" class="search_result_option" value="'+item[j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[j]+'</span> ';
+		html += '<input  name="so_more_option_0" class="search_result_option" value="'+item[1][j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[1][j]+'</span> ';
 	}
+	html += '</div>';
 	$('#so_more_content').append(html);
 }
 
@@ -300,7 +304,6 @@ function draw_more(data){
 function so_ready(){
 	$('a[id^="so_keys"]').click(function(e){
 		var temp = $(this).parent().text();
-		console.log(temp);
 		$('span[id^="so_group_name0"]').html(temp);
 		$('#so_sensor_content').empty();
 		$('span[id="so_remark0"]').html('');
@@ -398,8 +401,8 @@ function draw_history(data){
 		html += '<div>暂无历史状态</div>';
 	}else{
 		html += '<div style="overflow-y:auto;height:300px;">'
-	    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
-	    html += '<tr><th style="text-align:center">时间</th><th style="text-align:center">传感词</th><th style="text-align:center">预警状态</th><th style="text-align:center">查看详情</a></th></tr>';
+	    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;">';
+	    html += '<tr><th style="text-align:center">时间</th><th style="width:520px;text-align:center">传感词</th><th style="text-align:center">预警状态</th><th style="text-align:center">查看详情</a></th></tr>';
 	    for (var i=0;i<item_his.length ;i++) {
 	    	if(item_his[i][2]==0){
 				warn = '无事件';
@@ -409,7 +412,7 @@ function draw_history(data){
 				warn = '事件跟踪';
 			}
 			item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm');
-	       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
+	       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a target="_blank" href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
 	 	}
 	    html += '</table>'; 
 	    html += '</div>';
@@ -462,7 +465,7 @@ function so_user_check(){             // check validation
 function so_group_data(){
 	var flag = so_user_check();
 	var a = new Array();
-	if(flag = true){
+	if(flag == true){
 	    a['task_name'] = $('#so_name').val();
 	    a['remark'] = $('#so_remarks').val();
 		a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;

@@ -3,8 +3,8 @@
 	{% block css %}
         {{ super() }}
         <style type="text/css">
-          
           .dataTables_paginate{float:inherit;}
+          .dataTables_filter, .dataTables_length {display:none;}
           #sensing_graph hr{margin-top: 2px;}
           #weibo_list{max-height:300px; overflow-y:scroll}
           .weibo_detail {margin: 5px 0; width: 100%;padding: 0 10px;}
@@ -22,9 +22,7 @@
           #pageGro .pageDown{ width:63px; border:1px solid #999; cursor:pointer;}
           #pageGro .pageUp{ text-indent:23px;background:url(/static/img/pageUp.png) 5px 7px no-repeat;}
           #pageGro .pageDown{ text-indent:5px;background:url(/static/img/pageDown.png) 46px 6px no-repeat;}
-        </style>
-        <link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css"/>
-        <link href="/static/bootstrap/css/bootstrap-cerulean.min.css" rel="stylesheet">
+      </style>
 
 
     {% endblock css %}
@@ -36,18 +34,16 @@
     	<div id="sensing_analysis">
     		<h4 class="page-header">社会感知</h4>
     		<div id="task_detail" style="font-size:14px;line-height: 30px;">         
-      		<span>
-              <b>任务名称：<span id="sensing_task_name"></span></b>&nbsp;(
+      		<span><b>任务名称：</b><span id="sensing_task_name"></span>&nbsp;
           <span id="sensing_analysing_sonsor" style="font-size:13px;cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#sensor_modal">
             <u>查看传感人群</u>
-          </span>)<br>
+          </span><br>
           <b>传感词：</b><span id="sensing_keywords"></span><br>
           <b>备注信息：</b><span id= "remark_info"></span>   		
       		</span>
     		</div>
-        <br>
     		<div>
-           <div id="warning_num">
+           <div style="margin-top:5px;" id="warning_num">
             <b>预警点：</b>
             微博热度中共有
             <span id="weibo_warning_num" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#modal_warning_weibo"></span>
@@ -64,12 +60,14 @@
             <div style="width:100%;float: left;" >
               <span style='font-size:14px;'><b>微博发布情况</b></span>
               <hr style="width:100%;margin-bottom: -25px;">             
-              <div id="num_line_charts" style="width:100%;float: left;height:300px;margin-left:-25px;"></div>
+              <div id="num_line_charts" style="width:100%;float: left;height:300px;"></div>
               <div id="num_weibo"  style="display:none;float:left;margin-top:10px;">
+                <!--  
                 <div id="select_style_num" style="margin:10px;">
                   <input type="radio" name="num_select" checked value="0" /> 按微博发布时间排序
                   <input type="radio" name="num_select" value="1" style="margin-left:5px" /> 按微博热度排序             
                 </div>
+                -->
                 <div id="num_related_weibo" style="float:left;background-color:whitesmoke;width:100%;"></div>
                 <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
                     <div class="pageUp">上一页</div>
@@ -90,12 +88,14 @@
             <div style="width:100%;float: left;margin-top:20px;">
               <span style='font-size:14px;margin-bottom: -20px;'><b>情绪走势</b></span>
               <hr style="width:100%;margin-bottom: -25px;">             
-              <div id="mood_line_charts" style="width:100%;float: left;height:300px;margin-left:-25px;"></div>
+              <div id="mood_line_charts" style="width:100%;float: left;height:300px;"></div>
               <div id="mood_weibo" style="display:none;float:left;margin-top:10px;">
+                <!--
                 <div id="select_style_num" style="margin:10px;">
                   <input type="radio" name="mood_select" checked value="0" /> 按微博发布时间排序
                   <input type="radio" name="mood_select" value="1" style="margin-left:5px" /> 按微博热度排序             
-                </div>
+              </div>
+              -->
                 <div id="mood_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;"></div>
                 <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
                   <div class="pageUp">上一页</div>               
@@ -116,12 +116,14 @@
             <div style="width:100%;float: left;margin-top:20px;">
               <span style='font-size:14px;margin-bottom: -20px;'><b>敏感微博走势</b></span>
               <hr style="width:100%;margin-bottom: -25px;">             
-              <div id="sensi_line_charts" style="width:100%;float: left;height:300px;margin-left:-25px;"></div>
+              <div id="sensi_line_charts" style="width:100%;float: left;height:300px;"></div>
               <div id="sensi_weibo" style="display:none;float:left;margin-top:10px;">
+                <!--  
                 <div id="select_style_sensi" style="margin:10px;">
                   <input type="radio" name="sensi_select" checked value="0" /> 按微博发布时间排序
                   <input type="radio" name="sensi_select" value="1" style="margin-left:5px" /> 按微博热度排序             
-                </div>
+              </div>
+              -->
                 <div id="sensi_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;"></div>
                 <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
                   <div class="pageUp">上一页</div>
@@ -135,15 +137,15 @@
                       </ul>
                   </div>
                   <div class="pageDown">下一页</div>
-                  <div style="float:right;margin-left:50px;cursor: pointer;" onclick="fold('sensi_weibo');" ><u>收起</u></div>
                 </div>
+                <div style="float:right;margin-left:50px;cursor: pointer;" onclick="fold('sensi_weibo');" ><u>收起</u></div>
               </div>
             </div>
           </div>
 
           <div style="width:100%;margin-bottom:20px;height:500px;margin-top:20px;float: left;">
       			<div id="sensing_participate" style="width:100%;float: left;margin-right:15px;">
-        			<span style='font-size:14px;'><b>参与人群（<span id='participate_num'></span>）</b></span>
+        			<span style='font-size:14px;'><b>参与人群</b></span>
         			<hr style="width:100%">        			
         			<div id="sensing_participate_table" style="padding:10px;width:100%;float: left;overflow-x: hidden;"></div>
             </div>
@@ -161,12 +163,9 @@
       	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
       		<span aria-hidden="true">&times;</span>
       	</button>
-        <h4 class="modal-title" id="myModalLabel">社会感知传感器<span id="sensor_num"></span></h4>
+        <h4 class="modal-title" id="myModalLabel">社会感知传感</h4>
       </div>
       <div id="modal_sensor_table" class="modal-body" style="max-height:520px; margin:5px 0;">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
       </div>
     </div>
 </div>
@@ -191,10 +190,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
       </div>
-      <div id="modal_warning_weibo_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-      </div>
+      <div id="modal_warning_weibo_content" class="modal-body" style="max-height:500px; margin:5px 0;padding-left:70px;"></div>
     </div>
 </div>
 
@@ -204,10 +200,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
       </div>
-      <div id="modal_warning_mood_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-      </div>
+      <div id="modal_warning_mood_content" class="modal-body" style="max-height:500px; margin:5px 0;padding-left:70px;"></div>
     </div>
 </div>
 
@@ -217,10 +210,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
       </div>
-      <div id="modal_warning_sensing_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-      </div>
+      <div id="modal_warning_sensing_content" class="modal-body" style="max-height:500px; margin:5px 0;padding-left:70px;"></div>
     </div>
 </div>
 
@@ -230,10 +220,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">异常点时间</h4>
       </div>
-      <div id="modal_warning_total_content" class="modal-body" style="max-height:500px; margin:5px 0;pading:15px;"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-      </div>
+      <div id="modal_warning_total_content" class="modal-body" style="max-height:500px; margin:5px 0;padding-left:70px;"></div>
     </div>
 </div>
 
