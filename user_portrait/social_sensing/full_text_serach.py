@@ -26,6 +26,78 @@ from user_portrait.time_utils import ts2date
 day_time = 24*3600
 
 
+# 获得敏感微博内容，按照时间排序
+def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, message_type, size=100):
+    results = []
+    query_body = {
+        "query":{
+            "filtered":{
+                "filter":{
+                    "bool":{
+                        "must":[
+                            {"range":{
+                                "timestamp":{
+                                    "gte": ts - time_interval,
+                                    "lt": ts
+                                }
+                            }},
+                            {"term": {"message_type": message_type}},
+                            {"terms":{"keywords_string": sensitive_words_list}}
+                        ]
+                    }
+                }
+            }
+        },
+        "size": size,
+        "sort": {"timestamp": {"order": "desc"}}
+    }
+
+    if social_sensors:
+        query_body['query']['filtered']['filter']['bool']['must'].append({"terms": {"uid": social_sensors}})
+
+    datetime = ts2datetime(ts)
+    datetime_1 = ts2datetime(ts-time_interval)
+    index_name = flow_text_index_name_pre + datetime
+    exist_es = es_text.indices.exists(index_name)
+    index_name_1 = flow_text_index_name_pre + datetime_1
+    exist_es_1 = es_text.indices.exists(index_name_1)
+
+    if datetime == datetime_1 and exist_es:
+        search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body)["hits"]["hits"]
+    elif datetime != datetime_1 and exist_es_1:
+        search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body)["hits"]["hits"]
+    else:
+        search_results = []
+
+    uid_list = []
+    if search_results:
+        for item in search_results:
+            uid_list.append(item["_source"]['uid'])
+        if uid_list:
+            portrait_result = es_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids":uid_list}, fields=['nick_name', 'photo_url'])["docs"]
+
+        for i in range(len(uid_list)):
+            item = search_results[i]['_source']
+            temp = []
+            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords
+            temp.append(item['uid'])
+            if portrait_result[i]['found']:
+                temp.append(portrait_result[i]["fields"]["nick_name"][0])
+                temp.append(portrait_result[i]["fields"]["photo_url"][0])
+            else:
+                temp.append("unknown")
+                temp.append("")
+            temp.append(item["text"])
+            #print item['text']
+            temp.append(item["sentiment"])
+            temp.append(ts2date(item['timestamp']))
+            temp.append(item['geo'])
+            keywords_set = set(item['keywords_string'].split('&'))
+            common_keywords = set(sensitive_words_list) & keywords_set
+            temp.append(list(common_keywords))
+            results.append(temp)
+
+    return results
 
 # 获得原创微博内容，按时间排序
 def get_origin_weibo_detail(ts, social_sensors, keywords_list, size=100, message_type=1):
@@ -89,7 +161,7 @@ def get_origin_weibo_detail(ts, social_sensors, keywords_list, size=100, message
                 temp.append("unknown")
                 temp.append("")
             temp.append(item["text"])
-            print item['text']
+            #print item['text']
             temp.append(item["sentiment"])
             temp.append(ts2date(item['timestamp']))
             temp.append(item['geo'])

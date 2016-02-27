@@ -204,7 +204,7 @@ function Draw_sensi_weibo (data){
 
 function Draw_group_weibo(data, div_name, sub_div_name){
     var page_num = 5;
-    // console.log(div_name);
+    console.log(data);
     if (data.length < page_num) {
     	//console.log('data_length', data.length);
     	$('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
@@ -324,13 +324,19 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var geo = weibo[6];
         var attitude = weibo[4];
         var sensor_words = weibo[7];
-        //console.log(sensor_words);
         highlight_words.push(sensor_words);
 
         var profile_image_url = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
         //var repost_tree_link = 'http://219.224.135.60:8080/show_graph/' + mid;
-        if (geo==''){
+        if (!geo){
            geo = '未知';
+        }
+        geo = geo.split('&').join('\t');
+        if (name == 'unknown'){
+            name = '未知';
+        }
+        if (sensor_words.length == 0){
+            sensor_words = '无';
         }
         //console.log(attitude);
         if (attitude == 0){
@@ -508,12 +514,23 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    var timestamp2 = Date.parse(new Date(param.name));
 					timestamp2 = timestamp2 / 1000;
 				    sensi_click_time = timestamp2;
-				    
-                    sensi_index = param.seriesIndex+7
-				    var data=[['人民日报',1,2,'条结论这里是一条结论这里里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
-				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+sensi_click_time;
-				    $('#sensi_weibo').css("display", 'block');
-                    Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
+                    var sensi_index;
+				    if (param.seriesIndex==0){
+			    		sensi_index = 6;
+			    	}else if(param.seriesIndex==4){
+			    		sensi_index = 6;
+			    	}else if(param.seriesIndex==3){
+			    		sensi_index = 8;
+			   		}else if(param.seriesIndex == 1){
+			   			sensi_index = 6;
+			   		}else if(param.seriesIndex == 2){
+			   			sensi_index = 7;
+			   		};
+
+				    //var data=[['人民日报',1,2,'条结论这里是一条结论这里里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
+				    var num_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + sensi_click_time + '&text_type=' + sensi_index;
+                    call_sync_ajax_request(num_line_url, Draw_sensi_weibo);
+                    $('#sensi_weibo').css("display", 'block');
 					
 				}
 			}
@@ -670,9 +687,9 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			   		}else if(param.seriesIndex == 2){
 			   			index_type = 4;
 			   		};
-			   		$('#mood_weibo').css("display", 'block');
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
-	   			    call_sync_ajax_request(mood_line_url, Draw_mood_weibo)
+	   			    call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
+			   		$('#mood_weibo').css("display", 'block');
 					//Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
 					//console.log(mood_line_url);
 					//Draw_group_weibo(data, 'mood_weibo', 'mood_related_weibo');
@@ -848,9 +865,9 @@ function draw_num_line_charts(data, div_name, legend_data){
 			    }else{
 			    	index_type = param.seriesIndex-1
 			    }
-			     $('#num_weibo').css("display", 'block');
 			    var num_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + num_click_time +'&text_type=' + index_type; 
    			    call_sync_ajax_request(num_line_url, Draw_num_weibo)
+			     $('#num_weibo').css("display", 'block');
 				//Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
 				//console.log(num_line_url);
 			}

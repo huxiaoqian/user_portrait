@@ -92,6 +92,7 @@ function docReady() {
     });
 
     //datatable
+    /*
     $('#weibo_table').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "bootstrap",
@@ -100,6 +101,7 @@ function docReady() {
             "sLengthMenu": "_MENU_ 每页"
         }
     });
+    */
 
 }
 

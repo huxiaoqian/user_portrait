@@ -5,9 +5,9 @@ import csv
 import datetime
 import time
 from search import search_text_sentiment,search_text,search_profile
-from global_utils import WORD_DICT,TOPIC_LIST,EVENT_STA,re_cut,EVENT_DICT,abs_path
+from global_utils_ch import WORD_DICT,TOPIC_LIST,EVENT_STA,re_cut,EVENT_DICT,abs_path
 from triple_sentiment_classifier import triple_classifier
-from test_data import input_data2,input_data
+#from test_data import input_data2,input_data
 
 def event_classify(uid_list, uid_dict):
     '''

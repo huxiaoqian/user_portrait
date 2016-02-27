@@ -2,8 +2,8 @@
 
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
-"""
 import sys
+"""
 reload(sys)
 sys.path.append('./../')
 from global_utils import es_user_portrait as es
@@ -45,4 +45,4 @@ def delete_es(task_name):
     return "1"
 
 if __name__ == "__main__":
-    delete_es("媒体感知社会".decode('utf-8'))
+    delete_es("律师群体言论".decode('utf-8'))

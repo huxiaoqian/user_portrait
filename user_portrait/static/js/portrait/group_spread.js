@@ -1,5 +1,94 @@
+//test
+function Draw_top_location(data){
+  var timeline_data = [];
+  var bar_data = [];
+  var bar_data_x = [];
+  var bar_data_y = [];
+  for(var key in data){
+    var key_time = new Date(parseInt(key)*1000).format("yyyy-MM-dd");
+    timeline_data.push(key_time);
+    bar_data.push(data[key]);
+  }
+  for(var i=0;i<bar_data.length;i++){
+    var bar_data_x_single = [];
+    var bar_data_y_single = [];
+    for(var key in bar_data[i]){
+      bar_data_x_single.push(key);
+      bar_data_y_single.push(bar_data[i][key]);
+    }
+    bar_data_x.push(bar_data_x_single);
+    bar_data_y.push(bar_data_y_single);
+  }
+  // console.log(bar_data_y);
+  
+    //console.log(timeline_data);
+    var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
+    var option = {
+        timeline:{
+            data:timeline_data,
+            // label : {
+            //     formatter : function(s) {
+            //         return s.slice(0, 4);
+            //     }
+            // },
+            autoPlay : true,
+            playInterval : 1000
+        },
+        toolbox : {
+            'show':false, 
+            orient : 'vertical',
+            x: 'right', 
+            y: 'center',
+            'feature':{
+                'mark':{'show':true},
+                'dataView':{'show':true,'readOnly':false},
+                'magicType':{'show':true,'type':['line','bar','stack','tiled']},
+                'restore':{'show':true},
+                'saveAsImage':{'show':true}
+            }
+        },
+        options : (function () {
+          var option_data = [];
+          for(var i=0;i<timeline_data.length;i++){
+            var option_single_data = {};
+
+            option_single_data.title={'text': '整体用户地理位置分布' };
+            option_single_data.tooltip ={'trigger':'axis'};
+            option_single_data.calculable = true;
+                option_single_data.grid = {'y':80,'y2':100};
+                option_single_data.xAxis = [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':bar_data_x[i]
+                }];
+                option_single_data.yAxis = [
+                    {
+                        'type':'value',
+                        'name':'次数',
+                        //'max':53500
+                    }
+                ];
+                option_single_data.series = [
+                    {
+                        'name':'活跃次数',
+                        'type':'bar',
+                        'data': bar_data_y[i]
+                    },
+
+                ];
+                option_data.push(option_single_data);
+          };
+          // console.log(option_data);
+          return option_data;
+        }
+        )()
+    };
+    myChart.setOption(option);
+                    
+}
+
 //影响力分布
-function draw_influ_distribution(data,radar_div){
+function draw_influ_distribution(data,radar_div, title){
     console.log(data);
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
@@ -40,7 +129,7 @@ function draw_influ_distribution(data,radar_div){
     ],
     series : [
         {
-            name:'人数',
+            name:title,
             type:'bar',
             data:data[0]
         }
@@ -71,7 +160,7 @@ Show_influ.prototype = {
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
     var influ_trend = data['influence_trend'];
-    draw_influ_distribution(influ_his,'influ_distribution');
+    draw_influ_distribution(influ_his,'influ_distribution', '影响力');
     show_influ_users('influ_active_users',influ_trend['main_max']);
     show_influ_users('influ_unactive_users',influ_trend['main_min']);
     //console.log(influ_trend['main_max']);
@@ -93,12 +182,12 @@ Show_influ.prototype = {
     //console.log(domains);
     Draw_topic(topics,'influence_topic', 'topic_WordList','showmore_topic_influ');
     Draw_topic(domains,'influence_domain', 'domain_WordList','showmore_domain_influ');
-    draw_influ_distribution(influ_in['influence'],'group_influ_distribution');
-    draw_influ_distribution(influ_in['importance'],'group_impor_distribution');
+    draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力');
+    draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
     var influ_out = data['influence_out_user'];
-    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution');
-    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution');
-    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution');
+    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '人数');
+    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '人数');
+    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '人数');
   }
 }
 
@@ -164,10 +253,24 @@ function group_influ(data){
    time_data = data['time_list'];
    var option = {
     tooltip : {
-        trigger: 'axis'
+        trigger: 'axis',
+        formatter: function (params) {
+        var max_user_name = [];
+        var min_user_name = [];
+        for(var i=0; i<max_data.length;i++){
+            max_user_name.push(max_data[i][2]);
+            min_user_name.push(min_data[i][2]);
+
+        };
+            var res = '' + params[0].name;
+            var index = params[0].dataIndex;
+            res +=  '<br/>最高值用户: ' + max_user_name[index];
+            res +=  '<br/>最低值用户: ' + min_user_name[index];
+            return res
+        }
     },
     legend: {
-        data:['最高','平均','最小']
+        data:['最高值','平均值','最低值']
     },
     toolbox: {
         show : true,
@@ -194,19 +297,19 @@ function group_influ(data){
     ],
     series : [
         {
-            name:'最高',
+            name:'最高值',
             type:'line',
             stack: '总量',
             data:mind
         },
         {
-            name:'平均',
+            name:'平均值',
             type:'line',
             stack: '总量',
             data:ave_data
         },
         {
-            name:'最小',
+            name:'最低值',
             type:'line',
             stack: '总量',
             data:maxd
@@ -359,8 +462,10 @@ var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd');
 
-$('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-$('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+// $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+// $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+$('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
+$('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
 //获取微博成员信息
 function Draw_group_weibo_user(uids,unames){
     

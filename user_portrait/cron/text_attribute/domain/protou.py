@@ -4,7 +4,7 @@ from operator import itemgetter, attrgetter
 import datetime
 import json
 import sys
-from global_utils import txt_labels as classes,xs,read_by_xapian
+from global_utils_do import txt_labels as classes,xs,read_by_xapian
 
 def readUidByArea(area):
     uidlist = []
