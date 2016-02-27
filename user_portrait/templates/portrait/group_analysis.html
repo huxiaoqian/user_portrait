@@ -176,7 +176,7 @@
 			  </div>
 
 
-				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal fade" id="myModal_group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				  <div class="modal-dialog" role="document" style="width:950px">
 				    <div class="modal-content">
 				      <div class="modal-header">
@@ -188,7 +188,7 @@
 						<div>
 							<span>选择类别：</span><span id='attribute_name' style="margin-left:10px"></span>
 							<span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">添加</button></span>
-				      	<div id= "group_user" style="margin-top:14px"></div>
+				      	<div id= "group_member_user" style="margin-top:14px"></div>
 				      </div>
 				    </div>
 				    </div>
@@ -300,7 +300,7 @@
 		//首页大事记
 		$('.course_nr2 li').find('.shiji').slideDown(600);	
 	});
-	var myChart = echarts.init(document.getElementById('relation_picture'));
+	//var myChart = echarts.init(document.getElementById('relation_picture'));
 
 //点击跳转页面
 function pageGroup(pageNum,pageCount){
