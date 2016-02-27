@@ -188,10 +188,10 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
     iter_count = 0
     all_count = len(sort_all_union_result)
     in_portrait_result = []
-    filter_importance_from = filter_dict['importance']['from']
-    filter_importance_to = filter_dict['importance']['to']
-    filter_influence_from = filter_dict['influence']['from']
-    filter_influence_to = filter_dict['influence']['to']
+    filter_importance_from = filter_dict['importance']['gte']
+    filter_importance_to = filter_dict['importance']['lt']
+    filter_influence_from = filter_dict['influence']['gte']
+    filter_influence_to = filter_dict['influence']['lt']
     while iter_count < all_count:
         iter_user_list = [item[0] for item in sort_all_union_result[iter_count:iter_count + DETECT_ITER_COUNT]]
         try:
@@ -271,8 +271,8 @@ def filter_event(all_union_user, event_condition_list):
     for event_condition_item in event_condition_list:
         if 'range' in event_condition_item:
             range_dict = event_condition_item['range']
-            from_ts = range_dict['timestamp']['from']
-            to_ts = range_dict['timestamp']['to']
+            from_ts = range_dict['timestamp']['gte']
+            to_ts = range_dict['timestamp']['lt']
             from_date_ts = datetime2ts(ts2datetime(from_ts))
             to_date_ts = datetime2ts(ts2datetime(to_ts))
             new_range_dict_list = []
@@ -1034,16 +1034,16 @@ def compute_group_detect():
             task_name = task_information_dict['task_name']
             #step1: modify filter dict evalute index to abnormal
             filter_dict = detect_task_information['query_condition']['filter']
-            importance_from = filter_dict['importance']['from']
-            importance_to = filter_dict['importance']['to']
+            importance_from = filter_dict['importance']['gte']
+            importance_to = filter_dict['importance']['lt']
             new_importance_from ,new_importance_to = modify_evaluate_index(importance_from, importance_to, 'importance')
-            influence_from = filter_dict['influence']['from']
-            influence_to = filter_dict['influence']['to']
+            influence_from = filter_dict['influence']['gte']
+            influence_to = filter_dict['influence']['lt']
             new_influence_from, new_influence_to = modify_evaluate_index(influence_from, influence_to, 'influence')
-            filter_dict['importance']['from'] = new_importance_from
-            filter_dict['importance']['to'] = new_importance_to
-            filter_dict['influence']['from'] = new_influence_from
-            filter_dict['influence']['to'] = new_influence_to
+            filter_dict['importance']['gte'] = new_importance_from
+            filter_dict['importance']['lt'] = new_importance_to
+            filter_dict['influence']['gte'] = new_influence_from
+            filter_dict['influence']['lt'] = new_influence_to
             detect_task_information['query_condition']['filter'] = filter_dict
             #step2:according task type to do group detect
             detect_task_type = task_information_dict['detect_type']
@@ -1077,15 +1077,15 @@ if __name__=='__main__':
     new_influence_from, new_influence_to = modify_evaluate_index(influence_from, influence_to, 'influence')
     single_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'0', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5, \
-            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'from':new_importance_from, 'to':new_importance_to}, 'influence':{'from':new_influence_from, 'to':new_influence_to}}}}
+            'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to}, 'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
     #results = single_detect(single_input_dict)
-    multi_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'multi', \
+    multi_input_dict = {'task_information':{'task_name': 'test2', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'multi', \
             'uid_list':['2172653252','2698626560','1981307823','1268043470']},\
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'1', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5 ,\
             'text':[{'wildcard':{'text':'*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}], \
-            'filter':{'count':100, 'importance':{'from':new_importance_from, 'to':new_importance_to},\
-            'influence':{'from':new_influence_from, 'to':new_influence_to}}}}
-    #results = multi_detect(multi_input_dict)
+            'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
+            'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
+    results = multi_detect(multi_input_dict)
     attribute_pattern_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'attribute'},\
             'query_condition':{'attribute':[{'wildcard':{'domain':'*'+'媒体'+'*'}}, {'wildcard':{'topic': '*'+'民生类_社会保障'+'*'}}],\
             'pattern':[{'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}, {'terms':{'message_type':1}}], \
@@ -1102,6 +1102,6 @@ if __name__=='__main__':
             'query_condition':{'attribute':[], 'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
-    results = event_detect(event_dict)
-    print 'results:', results
-    #save_mark = save_detect_results(results, 'test')
+    #results = event_detect(event_dict)
+    #print 'results:', results
+    save_mark = save_detect_results(results, 'test2')
