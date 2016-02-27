@@ -87,7 +87,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" style="font-size:18px" id="myModalLabel">用户领域分布</h4>
       </div>
-      <div class="modal-body" id='domain_WordList'>
+      <div class="modal-body" id='domain_WordList' style="margin-left:50px;">
       </div>
     </div>
   </div>
@@ -242,6 +242,7 @@ function get_radar_data (data) {
   return topic_result;
 }
 function Draw_topic(data, radar_div, motal_div){
+  console.log(data);
   var topic = [];
   var html = '';
   $('#'+ motal_div).empty();
