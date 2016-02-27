@@ -25,8 +25,13 @@
             <div>用户轨迹</div>
         </div>
         <div class="panel-body">
-			<div id='active_geo' style='width:650px;height:585px;float:left;background-color: #F5F5F5;'>
-				<div id="user_geo_map" style='width:100%;height:100%;'></div>
+			<div id='active_geo' style='width:650px;height:585px;float:left;'>
+                <div class='col-md-6' style="margin:0px 0px 10px 15px;width:315px;float:left;">
+                    <span class="input-group-addon" style="margin-right:15px;width:60px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;">选择用户</span>
+                    <span id="track_weibo_user"></span>
+                	<span id="track_user_commit" class="label label-success" style='margin-top:2px;float:right;cursor:pointer; background-color:rgba(69, 133, 195, 0.89);'>确定</span>
+                </div>
+				<div id="user_geo_map" style='width:100%;height:90%;'></div>
 			</div>
         </div>
  	</div>
