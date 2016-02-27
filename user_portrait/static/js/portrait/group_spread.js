@@ -1,5 +1,5 @@
 //影响力分布
-function draw_influ_distribution(data,radar_div){
+function draw_influ_distribution(data,radar_div, title){
     console.log(data);
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
@@ -40,7 +40,7 @@ function draw_influ_distribution(data,radar_div){
     ],
     series : [
         {
-            name:'人数',
+            name:title,
             type:'bar',
             data:data[0]
         }
@@ -71,7 +71,7 @@ Show_influ.prototype = {
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
     var influ_trend = data['influence_trend'];
-    draw_influ_distribution(influ_his,'influ_distribution');
+    draw_influ_distribution(influ_his,'influ_distribution', '影响力');
     show_influ_users('influ_active_users',influ_trend['main_max']);
     show_influ_users('influ_unactive_users',influ_trend['main_min']);
     //console.log(influ_trend['main_max']);
@@ -93,12 +93,12 @@ Show_influ.prototype = {
     //console.log(domains);
     Draw_topic(topics,'influence_topic', 'topic_WordList','showmore_topic_influ');
     Draw_topic(domains,'influence_domain', 'domain_WordList','showmore_domain_influ');
-    draw_influ_distribution(influ_in['influence'],'group_influ_distribution');
-    draw_influ_distribution(influ_in['importance'],'group_impor_distribution');
+    draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力');
+    draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
     var influ_out = data['influence_out_user'];
-    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution');
-    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution');
-    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution');
+    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
+    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
+    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
   }
 }
 
@@ -164,10 +164,24 @@ function group_influ(data){
    time_data = data['time_list'];
    var option = {
     tooltip : {
-        trigger: 'axis'
+        trigger: 'axis',
+        formatter: function (params) {
+        var max_user_name = [];
+        var min_user_name = [];
+        for(var i=0; i<max_data.length;i++){
+            max_user_name.push(max_data[i][2]);
+            min_user_name.push(min_data[i][2]);
+
+        };
+            var res = '' + params[0].name;
+            var index = params[0].dataIndex;
+            res +=  '<br/>最高值用户: ' + max_user_name[index];
+            res +=  '<br/>最低值用户: ' + min_user_name[index];
+            return res
+        }
     },
     legend: {
-        data:['最高','平均','最小']
+        data:['最高值','平均值','最低值']
     },
     toolbox: {
         show : true,
@@ -194,19 +208,19 @@ function group_influ(data){
     ],
     series : [
         {
-            name:'最高',
+            name:'最高值',
             type:'line',
             stack: '总量',
             data:mind
         },
         {
-            name:'平均',
+            name:'平均值',
             type:'line',
             stack: '总量',
             data:ave_data
         },
         {
-            name:'最小',
+            name:'最低值',
             type:'line',
             stack: '总量',
             data:maxd
