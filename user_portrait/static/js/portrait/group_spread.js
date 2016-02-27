@@ -170,7 +170,7 @@ function draw_influ_distribution(data,radar_div, title){
     yAxis : [
         {
             type : 'category',
-            name : '区间',
+            name : title,
             data : xdata
         }
     ],
@@ -188,6 +188,7 @@ function draw_influ_distribution(data,radar_div, title){
 //粉丝数分布
 function draw_fans_distribution(data,radar_div, title){
     //console.log(data);
+    var y_name = title+'（/百万人）';
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
@@ -221,7 +222,7 @@ function draw_fans_distribution(data,radar_div, title){
     yAxis : [
         {
             type : 'category',
-            name : '区间（/百万人）',
+            name : y_name,
             data : xdata
         }
     ],
@@ -239,6 +240,7 @@ function draw_fans_distribution(data,radar_div, title){
 //微博数分布
 function draw_status_distribution(data,radar_div, title){
     //console.log(data);
+    var y_name = title + '（/万人）';
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
@@ -272,7 +274,7 @@ function draw_status_distribution(data,radar_div, title){
     yAxis : [
         {
             type : 'category',
-            name : '区间（/万人）',
+            name : y_name,
             data : xdata
         }
     ],
@@ -290,6 +292,7 @@ function draw_status_distribution(data,radar_div, title){
 //朋友数分布
 function draw_friends_distribution(data, radar_div, title){
     //console.log(data);
+    var y_name = title + '（/千人）';
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
@@ -323,7 +326,7 @@ function draw_friends_distribution(data, radar_div, title){
     yAxis : [
         {
             type : 'category',
-            name : '区间（/千人）',
+            name : y_name,
             data : xdata
         }
     ],
@@ -387,9 +390,9 @@ Show_influ.prototype = {
     draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
     var influ_out = data['influence_out_user'];
     //Draw_top_location2(influ_out['out_fansnum_his'], influ_out['out_friendsnum_his'], influ_out['out_statusnum_his']);
-    draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '人数');
-    draw_friends_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '人数');
-    draw_status_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '人数');
+    draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
+    draw_friends_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
+    draw_status_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
   }
 }
 
