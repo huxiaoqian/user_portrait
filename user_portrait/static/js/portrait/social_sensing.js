@@ -149,15 +149,14 @@ $('input[name="so_mode_choose"]').change(function(){
     //seed_user_init();
     //if (!seed_user_flag) seed_user_flag = true; // no more html init
 });
-//var current_date = new Date().format('yyyy/MM/dd hh:mm');
 var current_date0 = new Date();
-var current_date = current_date0.format('yyyy/MM/dd hh:mm')
-current_date0.setDate(current_date0.getDate()+7);
+//var current_date = current_date0.format('yyyy/MM/dd hh:mm')
+current_date0.setDate(current_date0.getDate()+1);
 var v_date = current_date0.format('yyyy/MM/dd hh:mm');
-var max_date = '+1970/01/30';
-var min_date = '-1970/01/30';
-$('input[name="so_end_time"]').datetimepicker({value:v_date,minDate:current_date,step:10});
-$('input[id="so_re_end_time"]').datetimepicker({value:v_date,minDate:current_date,step:10});
+//var max_date = '+1970/01/30';
+var min_date = '-1970/01/01';
+$('input[name="so_end_time"]').datetimepicker({value:v_date,minDate:min_date,step:10});
+$('input[id="so_re_end_time"]').datetimepicker({value:v_date,minDate:min_date,step:10});
 
 function so_draw_control_table(data){
 	$('#so_control_confirm').empty();
