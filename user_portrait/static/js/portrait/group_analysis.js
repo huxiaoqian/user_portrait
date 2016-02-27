@@ -141,7 +141,7 @@ Search_weibo.prototype = {
 
     $('#overview').empty();
     html = '';
-    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
+    html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-65px"><li><a>';
     html += '<p style="font-size:16px">' + data.task_name +'</p><p style="font-size:16px">' + data.submit_date +'</p><p style="font-size:16px">' + data.state +'</p><p style="font-size:16px">' + data.submit_user +'</p>';
     html += '<p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;';
     html += '<span style="float:right;cursor:pointer;font-size:16px;" type="button"data-toggle="modal" data-target="#group_tag2"><u>群组标签</u></span></p>';

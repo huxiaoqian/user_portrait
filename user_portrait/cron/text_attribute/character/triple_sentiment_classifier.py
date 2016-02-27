@@ -8,7 +8,7 @@ import csv
 from gensim import corpora
 from utils import load_scws, cut, load_emotion_words
 from flow_psy import flow_psychology_classfiy
-from global_utils import abs_path
+from global_utils_ch import abs_path
 #from test_data import input_data2 #测试输入
 
 AB_PATH = os.path.join(abs_path, './data')
