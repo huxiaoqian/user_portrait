@@ -109,20 +109,38 @@ function draw_content(data){
 }
 function show_online_time(data){
     $('#online_time_table').empty();
+    var time_split =[];
+    var online_time_data = [];
+    for(var key in data[0]){
+        key_new = parseInt(key)/(60*15*16)
+        switch(key_new)
+        {
+            case 0: value = "00:00-04:00";break;
+            case 1: value = "04:00-08:00";break;
+            case 2: value = "08:00-12:00";break;
+            case 3: value = "12:00-16:00";break;
+            case 4: value = "16:00-20:00";break;
+            case 5: value = "20:00-24:00";break;
+        }
+        time_split.push(value);
+        online_time_data.push(data[0][key]);
+    }
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:100%;font-size:14px">';
-    html += '<tr><th style="text-align:center">00:00 - 04:00</th>';
-    html += '<th style="text-align:center">04:00 - 08:00</th>';
-    html += '<th style="text-align:center">08:00 - 12:00</th>';
-    html += '<th style="text-align:center">12:00 - 16:00</th>';
-    html += '<th style="text-align:center">16:00 - 20:00</th>';
-    html += '<th style="text-align:center">20:00 - 24:00</th></tr>';
+    html += '<tr>';
+    for(var i=0; i < time_split.length;i++){
+        html += '<th style="text-align:center">'+time_split[i]+'</th>';
+    }
+    html += '</tr>';
     html += '<tr>'
-    for (var i = 0; i < data.length; i++) {
-       html += '<th style="text-align:center">' + data[i] + '</th>';
+    for (var i = 0; i < online_time_data.length; i++) {
+       html += '<th style="text-align:center">' + online_time_data[i] + '</th>';
     };
     html += '</tr></table>'; 
     $('#online_time_table').append(html);
+    $('#online_time_conclusion').append(data[1]);
+
+    online_time_conclusion
 
 }
 
@@ -460,7 +478,7 @@ function show_activity(data) {
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
 
-	show_online_time(time_data);
+	show_online_time(data.activity_time);
 
 	//活跃地区分布
 	Draw_top_location(data.activity_geo_disribution);

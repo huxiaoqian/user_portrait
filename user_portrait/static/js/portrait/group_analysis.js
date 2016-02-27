@@ -153,10 +153,10 @@ Search_weibo.prototype = {
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
     html += '<tr><td style="text-align:center;vertical-align:middle">' + density_star + '</td><td style="text-align:center;vertical-align:middle">' + activeness_star + '</td>';
     html += '<td style="text-align:center;vertical-align:middle">' + importance_star + '</td><td style="text-align:center;vertical-align:middle">' + influence_star + '</td></tr>';
-    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
+    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
     html += '</table>';
     $('#overview').append(html);
 },
@@ -1706,13 +1706,30 @@ function Draw_think_status(){
 function group_tag_vector(data){
     $('#group_tag_vector').empty();
     var html = '';
+    html += '<table class="table table-striped">';
+    html += '<tr>';
     for(var key in data){
-        // var unit = global_tag_vector[i];
-        html += '<li class="li_1"><span class="pt_title">';
-        html += key + '</span><span class="pt_detail">';
-        html += data[key] + '</span></li>';
+        html += '<tr>';
+        html += '<th>'+ data[key][0] + '</th>';
+        if(data[key][0] == '主要消极情绪'){
+            var value_emotion='';
+            // console.log('情绪',data[key][0])
+            switch(data[key][1])
+            {
+            case '2': value_emotion = "生气";break;
+            case '3': value_emotion = "焦虑";break;
+            case '4': value_emotion = "悲伤";break;
+            case '5': value_emotion = "厌恶";break;
+            case '6': value_emotion = "消极其他";break;
+            } 
+            html += '<th>'+ value_emotion + '</th>';
+        }else{
+            html += '<th>'+ data[key][1] + '</th>';
+        }
+        //html += data[key][1] + '</span></li>';
+        html += '</tr>'
     }
-
+    html += '</table>'
     //console.log('tagvector');
     //console.log(global_tag_vector);
     $('#group_tag_vector').html(html);
