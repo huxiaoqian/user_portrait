@@ -161,7 +161,7 @@ def save_bulk_action(uid_list, hashtag_results, geo_results, activeness_results,
         bulk_action.extend([action, {'doc': user_results}])
 
     #print 'bulk_action:', bulk_action
-    #es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+    es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
 
 
 #use to update day for activity_geo, activity_geo_dict, hashtag, activeness, influence, activeness_history, influence_history

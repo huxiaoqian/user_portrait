@@ -120,22 +120,43 @@ Search_weibo.prototype = {
 },
 
   Draw_overview: function(data){
+    var importance_star = '';
+    for(var i=0;i<data.importance_star;i++){
+        importance_star += '<img src="/static/img/star-yellow.png" style="width:25px">'
+    };
+    var activeness_star = '';
+    for(var i=0;i<data.activeness_star;i++){
+        activeness_star += '<img src="/static/img/star-yellow.png" style="width:25px">'
+    };
+    var density_star = '';
+    for(var i=0;i<data.density_star;i++){
+        density_star += '<img src="/static/img/star-yellow.png" style="width:25px" >'
+    };
+    var influence_star = '';
+    for(var i=0;i<data.influence_star;i++){
+        influence_star += '<img src="/static/img/star-yellow.png" style="width:25px" >'
+    };
+
+    group_tag_vector(data.tag_vector);
+
     $('#overview').empty();
     html = '';
     html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
-    html += '<p style="font-size:16px">' + data[0] +'</p><p style="font-size:16px">' + data[1] +'</p><p style="font-size:16px">' + data[2] +'</p><p style="font-size:16px">' + data[7] +'</p><p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;<span style="cursor:pointer;"><u>群体标签</u></span></p>';
+    html += '<p style="font-size:16px">' + data.task_name +'</p><p style="font-size:16px">' + data.submit_date +'</p><p style="font-size:16px">' + data.state +'</p><p style="font-size:16px">' + data.submit_user +'</p>';
+    html += '<p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;';
+    html += '<span style="float:right;cursor:pointer;font-size:16px;" type="button"data-toggle="modal" data-target="#group_tag2"><u>群组标签</u></span></p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/activeness.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/importance.png" style="height:80px"></td>';
     html += '<td style="text-align:center;vertical-align:middle"><img src="/static/img/influence.png" style="height:80px"></td></tr>';
-    html += '<tr><td style="text-align:center;vertical-align:middle">' + data[3] + '(连接紧密)</td><td style="text-align:center;vertical-align:middle">' + data[4] + '(一般活跃)</td>';
-    html += '<td style="text-align:center;vertical-align:middle">' + data[5] + '(一般重要)</td><td style="text-align:center;vertical-align:middle">' + data[6] + '(影响较大)</td></tr>';
-    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>';
-    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
+    html += '<tr><td style="text-align:center;vertical-align:middle">' + density_star + '</td><td style="text-align:center;vertical-align:middle">' + activeness_star + '</td>';
+    html += '<td style="text-align:center;vertical-align:middle">' + importance_star + '</td><td style="text-align:center;vertical-align:middle">' + influence_star + '</td></tr>';
+    html += '<tr><td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;紧密度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员相互转发行为的多少程度，通过聚类系数、微博转发频率及参与转发的成员比例计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;活跃度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员线上线下的活跃程度，通过发布微博综述、活跃地区数、发布微博的时间走势计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;重要度<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员对社会网络安全业务的重要程度，通过群体成员的所属领域和偏好话题计算得到"></i>&nbsp;&nbsp;</b></td>';
+    html += '<td style="font-size:14px;text-align:center;vertical-align:middle"><b>&nbsp;&nbsp;&nbsp;&nbsp;影响力<i id="" class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="衡量群体内部成员整体的影响力，通过群体成员原创微博、转发微博的评论和转发的最高值、均值、总量计算得到"></i>&nbsp;&nbsp;</b></td></tr>';
     html += '</table>';
     $('#overview').append(html);
 },
@@ -1057,9 +1078,9 @@ function show_members(){
 	var downloadurl = window.location.host;
     var model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
     base_call_ajax_request(model_url, Draw_model);
-    $("#myModal").modal();
+    $("#myModal_group").modal();
     function Draw_model(data){
-        $('#group_user').empty();
+        $('#group_member_user').empty();
         html = '';
         html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
         html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
@@ -1081,7 +1102,7 @@ function show_members(){
         };
         html += '</tbody>';
         html += '</table>';
-        $('#group_user').append(html);
+        $('#group_member_user').append(html);
         $('#modal_table').dataTable({
             "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
             "sPaginationType": "custom_bootstrap",
@@ -1096,15 +1117,16 @@ function show_members(){
 $(document).ready(function(){
 	var downloadurl = window.location.host;
     Draw_group_weibo_date();
-    Draw_think_emotion();
-    Draw_think_domain();
-    Draw_think_topic();
-    Draw_think_tendency();
+    // Draw_think_emotion();
+    // Draw_think_domain();
+    // Draw_think_topic();
+    // Draw_think_tendency();
 
+    var group_overview_url = '/group/show_group_result/?module=overview&task_name=媒体';
     var overviewdata = ['媒体','2013-09-01','关注的媒体','0.2222','0.542','6.233','10000.345','某某']
-    Search_weibo.Draw_overview(overviewdata);
+    //Search_weibo.Draw_overview(overviewdata);
     // var weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
-    // Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
+     Search_weibo.call_sync_ajax_request(group_overview_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
     // var tag_url =  'http://' + downloadurl + "/tag/show_attribute_name/";
     // Search_weibo.call_sync_ajax_request(tag_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_name);
     // var basic_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=basic";
@@ -1679,4 +1701,36 @@ function Draw_think_status(){
     };                
         // 为echarts对象加载数据 
         myChart.setOption(option); 
+}
+
+function group_tag_vector(data){
+    $('#group_tag_vector').empty();
+    var html = '';
+    html += '<table class="table table-striped">';
+    html += '<tr>';
+    for(var key in data){
+        html += '<tr>';
+        html += '<th>'+ data[key][0] + '</th>';
+        if(data[key][0] == '主要消极情绪'){
+            var value_emotion='';
+            // console.log('情绪',data[key][0])
+            switch(data[key][1])
+            {
+            case '2': value_emotion = "生气";break;
+            case '3': value_emotion = "焦虑";break;
+            case '4': value_emotion = "悲伤";break;
+            case '5': value_emotion = "厌恶";break;
+            case '6': value_emotion = "消极其他";break;
+            } 
+            html += '<th>'+ value_emotion + '</th>';
+        }else{
+            html += '<th>'+ data[key][1] + '</th>';
+        }
+        //html += data[key][1] + '</span></li>';
+        html += '</tr>'
+    }
+    html += '</table>'
+    //console.log('tagvector');
+    //console.log(global_tag_vector);
+    $('#group_tag_vector').html(html);
 }

@@ -12,7 +12,7 @@ from user_portrait.global_utils import es_user_portrait, portrait_index_name, po
                         es_user_profile, profile_index_name, profile_index_type,\
                         es_group_result, group_index_name, group_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
-from user_portrait.parameter import MAX_VALUE, DAY, SENTIMENT_SECOND
+from user_portrait.parameter import MAX_VALUE, DAY, FOUR_HOUR, SENTIMENT_SECOND
 
 index_name = 'group_result'
 index_type = 'group'
@@ -202,6 +202,7 @@ def search_group_results(task_name, module):
         result['activeness_trend'] = json.loads(source['activeness'])
         result['activeness_his'] = json.loads(source['activeness_his'])
         result['activeness_description'] = source['activeness_description']
+        result['online_pattern'] = json.loads(source['online_pattern'])
     elif module == 'preference':
         result['keywords'] = json.loads(source['keywords'])
         result['hashtag'] = json.loads(source['hashtag'])
@@ -209,6 +210,7 @@ def search_group_results(task_name, module):
         result['domain'] = json.loads(source['domain'])
         result['topic'] = json.loads(source['topic'])
     elif module == 'influence':
+        result['influence_his'] = json.loads(source['influence_his'])
         result['influence_trend'] = json.loads(source['influence'])
         result['influence_in_user'] = json.loads(source['influence_in_user'])
         result['influence_out_user'] = json.loads(source['influence_out_user'])
@@ -387,9 +389,10 @@ def get_evaluate_max():
 def get_group_list(task_name):
     results = []
     try:
-        es_results = es.get(index=index_name, doc_type=index_type, id=task_name)['_source']
+        es_results = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
     except:
         return results
+    print 'es_results:', es_results
     #print 'es_result:', es_results['uid_list'], type(es_results['uid_list'])
     uid_list = es_results['uid_list']
     user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
@@ -409,6 +412,36 @@ def get_group_list(task_name):
         except:
             results.append([uid])
     return results
+
+#use to get group member uid_uname
+#version: write in 2016-02-26
+#input: task_name
+#output: uid_uname dict
+def get_group_member_name(task_name):
+    results = {}
+    #try:
+    group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
+                id=task_name)['_source']
+    #except:
+    #    return results
+    uid_list = group_result['uid_list']
+    print 'uid_list:', uid_list
+    try:
+        user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
+                body={'ids':uid_list})['docs']
+    except:
+        return results
+    for item in user_portrait_result:
+        uid = item['_id']
+        if item['found'] == True:
+            source = item['_source']
+            uname = source['uname']
+        else:
+            uname = 'unkown'
+        results[uid] = uname
+
+    return results
+
 
 
 # delete group results from es_user_portrait 'group_analysis'
@@ -464,6 +497,61 @@ def get_group_user_track(uid):
 
 
 
+# show group members weibo for activity ---week
+# input: task_name, start_ts
+# output: weibo_list
+def get_activity_weibo(task_name, start_ts):
+    results = []
+    #step1: get task_name uid
+    try:
+        group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type ,\
+                id=task_name, _source=False, fields=['uid_list'])
+    except:
+        group_result = {}
+    if group_result == {}:
+        return 'task name invalid'
+    try:
+        uid_list = group_result['fields']['uid_list']
+    except:
+        uid_list = []
+    if uid_list == []:
+        return 'task uid list null'
+    #step2: get uid2uname
+    uid2uname = {}
+    try:
+        user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, \
+                body = {'ids':uid_list}, _source=False, fields=['uname'])['docs']
+    except:
+        user_portrait_result = []
+    for item in user_portrait_result:
+        uid = item['_id']
+        if item['found']==True:
+            uname = item['fields']['uname'][0]
+        uid2uname[uid] = uname
+    #step3: search time_segment weibo
+    time_segment = FOUR_HOUR
+    end_ts = start_ts + time_segment
+    time_date = ts2datetime(start_ts)
+    flow_text_index_name = flow_text_index_name_pre + time_date
+    query = []
+    query.append({'terms':{'uid': uid_list}})
+    query.append({'range':{'timestamp':{'gte':start_ts, 'lt':end_ts}}})
+    try:
+        flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, \
+                body={'query':{'bool':{'must':query}}, 'sort':'timestamp', 'size':MAX_VALUE})['hits']['hits']
+    except:
+        flow_text_es_result = []
+    for item in flow_text_es_result:
+        weibo = {}
+        source = item['_source']
+        weibo['timestamp'] = ts2date(source['timestamp'])
+        weibo['ip'] = source['ip']
+        weibo['text'] = source['text']
+        weibo['geo'] = '\t'.join(source['geo'])
+        results.append(weibo)
+
+    return results
+
 #show group members weibo for influence content
 #input: uid, timestamp_from, timestamp_to
 #output: weibo_list
@@ -516,7 +604,7 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
 #show group members interaction weibo content
 #input: uid1, uid2
 #ouput: weibo_list
-def get_social_inter_content(uid1, uid2):
+def get_social_inter_content(uid1, uid2, type_mark):
     weibo_list = []
     #get two type relation about uid1 and uid2
     #search weibo list
@@ -546,10 +634,11 @@ def get_social_inter_content(uid1, uid2):
         flow_text_index_name = flow_text_index_name_pre + str(iter_date)
         query = []
         query.append({'bool':{'must':[{'term':{'uid':uid1}}, {'term':{'directed_uid': int(uid2)}}]}})
-        query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid2)}}]}})
+        if type_mark=='out':
+            query.append({'bool':{'must':[{'term':{'uid':uid2}}, {'term':{'directed_uid': int(uid1)}}]}})
         try:
             flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
-                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}]})['hits']['hits']
+                    body={'query': {'bool':{'should': query}}, 'sort':[{'timestamp':{'order': 'asc'}}], 'size':MAX_VALUE})['hits']['hits']
         except:
             flow_text_result = []
         for flow_text in flow_text_result:

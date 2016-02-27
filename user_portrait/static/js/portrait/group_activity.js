@@ -1,19 +1,24 @@
-function Draw_activity(){
-    var data_x_=['周一','周二','周三','周四','周五','周六','周日'];
-    // Draw_top_location(data);
-    // Draw_top_platform(data);
-    // Draw_more_top_location(data);
-    // Draw_more_top_platform(data);
-    // active_geo(data);
-    // data_x = [];
-    // data_y = [];
-    // for (var i = 0; i < data['1'].length; i++) {
-    //     var s = i.toString();
-    //     value_x = new Date(parseInt(data['1'][s]['0'])*1000).format("MM-dd hh:mm");
-    //     value_y = data['1'][s]['1'];
-    //     data_x.push(value_x);
-    //     data_y.push(value_y);
-    //    }
+ajax_method = 'GET';
+function call_sync_ajax_request(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: true,
+      success:callback
+    });
+}
+function Draw_activity(data){
+	var data_x_ = [];
+	var data_y_ = [];
+
+	for(var i=0;i<data.length;i++){
+		var time_line  = new Date(parseInt(data[i][0])*1000).format("yyyy-MM-dd hh: mm");
+		data_x_.push(time_line);
+		data_y_.push(data[i][1]);
+
+	}
+
     $('#line').highcharts({
         chart: {
             type: 'spline',// line,
@@ -31,7 +36,7 @@ function Draw_activity(){
             }
         },
         
-    lang: {
+    	lang: {
             printChart: "打印",
             downloadJPEG: "下载JPEG 图片",
             downloadPDF: "下载PDF文档",
@@ -44,7 +49,7 @@ function Draw_activity(){
             categories: data_x_,
             labels:{
               rotation: 0,
-              step: 6,
+              step: 15,
               y:25
             }
         },
@@ -64,8 +69,10 @@ function Draw_activity(){
                 cursor:'pointer',
                 events:{
                     click:function(event){
-                        console.log(event.point.x)
-                        draw_content(data_x_[event.point.x]);
+                        var activity_weibo_url = '/group/activity_weibo/?task_name='+'媒体'+'&start_ts=' + data[event.point.x][0];
+                        call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content)
+                        console.log(activity_weibo_url);
+                        // draw_content(data_x_[event.point.x]);
                     }
                 }
             }
@@ -75,14 +82,15 @@ function Draw_activity(){
             xDateFormat: '%Y-%m-%d %H:%M:%S'
         },
         legend: {
+        	enabled: false,
             layout: 'vertical',
             align: 'right',
-            verticalAlign: 'middle',
+            verticalAlign: 'top',
             borderWidth: 0
         },
         series: [{
             name:'微博量',
-            data: [11, 11, 15, 13, 12, 13, 10]
+            data: data_y_
         }]
     });
 }
@@ -91,11 +99,11 @@ function draw_content(data){
     //console.log(data);
     var html = '';
     $('#line_content').empty();
-    if(data==''){
+    if(data==[]){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i]+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span style='font-size:12px;'>"+data[i].text+"</span><br></div>";
         }
 
     }
@@ -103,212 +111,156 @@ function draw_content(data){
 }
 function show_online_time(data){
     $('#online_time_table').empty();
+    var time_split =[];
+    var online_time_data = [];
+    for(var key in data[0]){
+        key_new = parseInt(key)/(60*15*16)
+        switch(key_new)
+        {
+            case 0: value = "00:00-04:00";break;
+            case 1: value = "04:00-08:00";break;
+            case 2: value = "08:00-12:00";break;
+            case 3: value = "12:00-16:00";break;
+            case 4: value = "16:00-20:00";break;
+            case 5: value = "20:00-24:00";break;
+        }
+        time_split.push(value);
+        online_time_data.push(data[0][key]);
+    }
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:100%;font-size:14px">';
-    html += '<tr><th style="text-align:center">00:00 - 04:00</th>';
-    html += '<th style="text-align:center">04:00 - 08:00</th>';
-    html += '<th style="text-align:center">08:00 - 12:00</th>';
-    html += '<th style="text-align:center">12:00 - 16:00</th>';
-    html += '<th style="text-align:center">16:00 - 20:00</th>';
-    html += '<th style="text-align:center">20:00 - 24:00</th></tr>';
+    html += '<tr>';
+    for(var i=0; i < time_split.length;i++){
+        html += '<th style="text-align:center">'+time_split[i]+'</th>';
+    }
+    html += '</tr>';
     html += '<tr>'
-    for (var i = 0; i < data.length; i++) {
-       html += '<th style="text-align:center">' + data[i] + '</th>';
+    for (var i = 0; i < online_time_data.length; i++) {
+       html += '<th style="text-align:center">' + online_time_data[i] + '</th>';
     };
     html += '</tr></table>'; 
     $('#online_time_table').append(html);
+    $('#online_time_conclusion').append(data[1]);
+
 
 }
 
-function Draw_top_location2(){
+function Draw_top_location(data){
+	var timeline_data = [];
+	var bar_data = [];
+	var bar_data_x = [];
+	var bar_data_y = [];
+	for(var key in data){
+		var key_time = new Date(parseInt(key)*1000).format("yyyy-MM-dd");
+		timeline_data.push(key_time);
+		bar_data.push(data[key]);
+	}
+	for(var i=0;i<bar_data.length;i++){
+		var bar_data_x_single = [];
+		var bar_data_y_single = [];
+		for(var key in bar_data[i]){
+			bar_data_x_single.push(key);
+			bar_data_y_single.push(bar_data[i][key]);
+		}
+		bar_data_x.push(bar_data_x_single);
+		bar_data_y.push(bar_data_y_single);
+	}
+	// console.log(bar_data_y);
+	
+		//console.log(timeline_data);
     var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
     var option = {
         timeline:{
-            data:[
-                '2002-01-01','2003-01-01','2004-01-01','2005-01-01','2006-01-01',
-                '2007-01-01','2008-01-01','2009-01-01'
-            ],
-            label : {
-                formatter : function(s) {
-                    return s.slice(0, 4);
-                }
-            },
+            data:timeline_data,
+            // label : {
+            //     formatter : function(s) {
+            //         return s.slice(0, 4);
+            //     }
+            // },
             autoPlay : true,
             playInterval : 1000
         },
-        options:[
-            {
-                title : {
-                    'text':'整体用户地理位置分布'
-                },
-                tooltip : {'trigger':'axis'},
-                legend : {
-                    x:'right',
-                    'data':['GDP','金融','房地产'],
-                    'selected':{
-                        'GDP':true,
-                        '金融':false,
-                        '房地产':true
-                        
-                    }
-                },
-                toolbox : {
-                    'show':false, 
-                    orient : 'vertical',
-                    x: 'right', 
-                    y: 'center',
-                    'feature':{
-                        'mark':{'show':true},
-                        'dataView':{'show':true,'readOnly':false},
-                        'magicType':{'show':true,'type':['line','bar','stack','tiled']},
-                        'restore':{'show':true},
-                        'saveAsImage':{'show':true}
-                    }
-                },
-                calculable : true,
-                grid : {'y':80,'y2':100},
-                xAxis : [{
+        toolbox : {
+            'show':false, 
+            orient : 'vertical',
+            x: 'right', 
+            y: 'center',
+            'feature':{
+                'mark':{'show':true},
+                'dataView':{'show':true,'readOnly':false},
+                'magicType':{'show':true,'type':['line','bar','stack','tiled']},
+                'restore':{'show':true},
+                'saveAsImage':{'show':true}
+            }
+        },
+        options : (function () {
+        	var option_data = [];
+        	for(var i=0;i<timeline_data.length;i++){
+        		var option_single_data = {};
+
+        		option_single_data.title={'text': '整体用户地理位置分布' };
+        		option_single_data.tooltip ={'trigger':'axis'};
+        		option_single_data.calculable = true;
+                option_single_data.grid = {'y':80,'y2':100};
+                option_single_data.xAxis = [{
                     'type':'category',
                     'axisLabel':{'interval':0},
-                    'data':[
-                        '北京','\n天津','河北','\n山西','内蒙古','\n辽宁','吉林','\n黑龙江',
-                        '上海','\n江苏','浙江','\n安徽','福建','\n江西','山东','\n河南',
-                        '湖北','\n湖南','广东','\n广西','海南','\n重庆','四川','\n贵州',
-                        '云南','\n西藏','陕西','\n甘肃','青海','\n宁夏','新疆'
-                    ]
-                }],
-                yAxis : [
+                    'data':bar_data_x[i]
+                }];
+                option_single_data.yAxis = [
                     {
                         'type':'value',
-                        'name':'GDP（亿元）',
-                        'max':53500
-                    },
-                    {
-                        'type':'value',
-                        'name':'其他（亿元）'
+                        'name':'次数',
+                        //'max':53500
                     }
-                ],
-                series : [
+                ];
+                option_single_data.series = [
                     {
-                        'name':'GDP',
+                        'name':'活跃次数',
                         'type':'bar',
-                        'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]
+                        'data': bar_data_y[i]
                     },
-                    {
-                        'name':'金融','yAxisIndex':1,'type':'bar',
-                        'data':  [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]
-                    },
-                    {
-                        'name':'房地产','yAxisIndex':1,'type':'bar',
-                        'data':  [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]
-                    }
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                 series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                 series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                 series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                 series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            },
-            {
-                title : {'text':'整体用户地理位置分布'},
-                series : [
-                    {'data': [120,37,44,245,34,226,34,205,54,345,234,234,134,35,546,45]},
-                    {'data': [22,33,44,245,324,116,364,25,54,345,234,234,134,35,546,45]},
-                    {'data': [221,30,44,245,24,46,4,25,54,345,234,234,134,35,546,45]},
-                    // {'data': dataMap.dataPI['2003']},
-                    // {'data': dataMap.dataSI['2003']},
-                    // {'data': dataMap.dataTI['2003']}
-                ]
-            }
-        ]
+
+                ];
+                option_data.push(option_single_data);
+        	};
+        	// console.log(option_data);
+        	return option_data;
+        }
+        )()
     };
     myChart.setOption(option);
                     
 }
-function moving_geo(){
-    var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
+
+function moving_geo(data){
+    //var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
     $('#move_location').empty();
     var html = '';
-    html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
-    html += '<tr><th style="text-align:center">起始地</th>';
-    html += '<th style="text-align:right"></th>';
-    html += '<th style="text-align:left">目的地</th>';
-    html += '<th style="text-align:center">人数</th>';
-    html += '</tr>';
-    for (var i = 0; i < data.length; i++) {
-        html += '<tr>';
-        html += '<td style="text-align:center">' + data[i][0] + '</td>';
-        html += '<td style="text-align:center"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
-        html += '<td style="text-align:left">' + data[i][1] + '</td>';
-        html += '<td style="text-align:center">' + data[i][2] + '</td>';
-    html += '</tr>'; 
-    };
-    html += '</table>'; 
+    if (data == ''){
+        html += '<span>暂无数据</span>';
+        $('#geo_show_more').css('display', 'none');
+    }else{
+        html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
+        html += '<tr><th style="text-align:center">起始地</th>';
+        html += '<th style="text-align:right"></th>';
+        html += '<th style="text-align:left">目的地</th>';
+        html += '<th style="text-align:center">人数</th>';
+        html += '</tr>';
+        for (var i = 0; i < data.length; i++) {
+            html += '<tr>';
+            html += '<td style="text-align:center">' + data[i][0] + '</td>';
+            html += '<td style="text-align:center"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
+            html += '<td style="text-align:left">' + data[i][1] + '</td>';
+            html += '<td style="text-align:center">' + data[i][2] + '</td>';
+        html += '</tr>'; 
+        };
+        html += '</table>'; 
+    }
     $('#move_location').append(html);
 }
 
-function Draw_more_moving_geo(){
+function Draw_more_moving_geo(data){
     var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
     $('#move_location_more_detail').empty();
     var html = '';
@@ -366,12 +318,193 @@ function Draw_more_top_platform(){
     $('#top_more_platform').append(html);
 }
 
+function draw_active_distribution(data){
+    var mychart1 = echarts.init(document.getElementById('active_distribution'));
+    var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'value',
+            boundaryGap : [0, 0.01]
+        }
+    ],
+    yAxis : [
+        {
+            type : 'category',
+            name : '人数',
+            data : data[1]
+        }
+    ],
+    series : [
+        {
+            name:'2011年',
+            type:'bar',
+            data:data[0]
+        }
+    ]
+};
+  mychart1.setOption(option);
+}
+
+function show_active_users(data, div_name){
+	// console.log(data[1])
+	if(data.length<5){
+		var show_count = data.length;
+	} else{
+		show_count = 5
+	};
+    $('#' + div_name).empty();
+    var html = '';
+    html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < show_count; i++) {
+        var name_list = data[i][0].split('&');
+        var name = name_list[1];
+        var s = i.toString();
+        var m = i + 1;
+        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#'+div_name).append(html);
+}
+function show_more_active_users(data, div_name){
+    $('#' + div_name).empty();
+    var html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="font-size:14px;margin-bottom:0px;">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
+    for (var i = 0; i < data.length; i++) {
+    	var name_list = data[i][0].split('&');
+        var name = name_list[1];
+        var s = i.toString();
+        var m = i + 1;
+        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#'+div_name).append(html);
+}
+
+function group_activity(data){
+
+	//活跃非活跃用户
+	var main_active = data.main_max;
+	var main_unactive = data.main_min;
+	show_active_users(main_active, 'active_users');
+	show_active_users(main_unactive, 'unactive_users');
+	//show_more_active_users(main_active, 'show_rank_active_users');
+	//show_more_active_users(main_unactive, 'show_rank_unactive_users');
+
+	//折线图
+	//var legend_data = []
+	var xAxis_data = data.time_list;
+	var yAxis_ave = data.ave_list;
+	var max_list = data.max_list;
+	var yAxis_max = [];
+	for(var i=0; i<max_list.length;i++){
+		yAxis_max.push(max_list[i][1])
+
+	};
+	var min_list = data.min_list;
+	var yAxis_min = [];
+	for(var i=0; i<min_list.length;i++){
+		yAxis_min.push(min_list[i][1])
+
+	};
+
+   var mychart = echarts.init(document.getElementById('group_activity'));
+   var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['最高值','最低值','平均值']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : xAxis_data
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'最高值',
+            type:'line',
+            stack: '总量',
+            data:yAxis_max
+        },
+        {
+            name:'最低值',
+            type:'line',
+            stack: '总量',
+            data:yAxis_min
+        },
+        {
+            name:'平均值',
+            type:'line',
+            stack: '总量',
+            data:yAxis_ave
+        }
+        
+    ]
+};
+  mychart.setOption(option);
+}
+
+function show_activity(data) {
+	var time_data = [23,3,4,55,22,6]
+	//微博走势，点击后显示微博
+	Draw_activity(data.activity_trend);
+
+	show_online_time(data.activity_time);
+
+	//活跃地区分布
+	Draw_top_location(data.activity_geo_disribution);
+	
+	moving_geo(data.activiy_geo_vary);
+	Draw_more_moving_geo(data.activiy_geo_vary);
+
+	Draw_top_platform();
+	Draw_more_top_platform();
+
+	draw_active_distribution(data.activeness_his);
+
+	group_activity(data.activeness_trend);
+
+	$('#activity_conclusion').append(data.activeness_description);
+	// body...
+}
+
+
+var group_activity_url = '/group/show_group_result/?module=activity&task_name=媒体';
+call_sync_ajax_request(group_activity_url,ajax_method, show_activity)
 // var activity_data = []
-var time_data = [23,3,4,55,22,6]
-Draw_activity();
-show_online_time(time_data);
-Draw_top_location2();
-moving_geo();
-Draw_more_moving_geo();
-Draw_top_platform();
-Draw_more_top_platform();
+

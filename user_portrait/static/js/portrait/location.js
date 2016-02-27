@@ -295,7 +295,7 @@ function draw_content(data){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span></div>";
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span><br></div>";
         }
 
     }
@@ -319,7 +319,7 @@ function draw_daily_ip_table(ip_data){
         global_tag_vector.push([tag_name, tag_value]);
     }
     //var div_name = ['daily_ip','weekly_ip'];
-    console.log(ip_data);
+    //console.log(ip_data);
     var this_desc = '';
     if (ip_data.description[1]){
         this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description

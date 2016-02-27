@@ -87,6 +87,8 @@ update_day_redis = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
 UPDATE_DAY_REDIS_KEY = 'update_day'
 update_week_redis  = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
 UPDATE_WEEK_REDIS_KEY = 'update_week'
+update_month_redis = _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=5)
+UPDATE_MONTH_REDIS_KEY = 'update_month'
 
 # elasticsearch initialize, one for user_profile, one for user_portrait
 es_user_profile = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
@@ -141,4 +143,5 @@ def get_client(api_host=WEIBO_API_HOST, api_port=WEIBO_API_PORT):
     return Client(api_host, api_port)
 
 ES_DAILY_RANK = _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1)
+
 
