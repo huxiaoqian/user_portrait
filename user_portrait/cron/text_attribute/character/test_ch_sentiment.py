@@ -5,9 +5,9 @@ import csv
 import datetime
 import time
 from search import search_text_sentiment,search_text,search_profile
-from global_utils import COUNT_STA,re_cut,ZERO_STA,SEN_DICT,TOTAL_STA,abs_path
+from global_utils_ch import COUNT_STA,re_cut,ZERO_STA,SEN_DICT,TOTAL_STA,abs_path
 from triple_sentiment_classifier import triple_classifier
-from test_data import input_data2,input_data  
+#from test_data import input_data2,input_data  
 
 def sentiment_classify(uid_sentiment,start_date,end_date):
     '''

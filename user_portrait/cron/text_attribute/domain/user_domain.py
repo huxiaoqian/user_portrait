@@ -3,7 +3,7 @@
 import os
 import sys
 import json
-from global_utils import STATUS_THRE,FOLLOWER_THRE,labels,outlist,lawyerw,cut,load_scws,adminw,mediaw,businessw
+from global_utils_do import STATUS_THRE,FOLLOWER_THRE,labels,outlist,lawyerw,cut,load_scws,adminw,mediaw,businessw
 
 s = load_scws()
 

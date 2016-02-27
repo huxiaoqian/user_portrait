@@ -9,7 +9,7 @@ import heapq
 import scws
 import time
 from decimal import *
-from global_utils import txt_labels,DOMAIN_DICT,DOMAIN_COUNT,LEN_DICT,TOTAL
+from global_utils_do import txt_labels,DOMAIN_DICT,DOMAIN_COUNT,LEN_DICT,TOTAL
 
 class TopkHeap(object):
     def __init__(self, k):

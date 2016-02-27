@@ -6,15 +6,9 @@ import sys
 from elasticsearch import Elasticsearch
 
 sys.path.append('../../../')
-from parameter import CH_ABS_PATH as abs_path
-
-#查询人物属性的es配置
-USER_PROFILE_ES_HOST = ['219.224.134.211:9200','219.224.134.212:9200','219.224.134.213:9200']
-es_user_profile = Elasticsearch(USER_PROFILE_ES_HOST, timeout = 60)
-
-#查询文本的es配置
-TEXT_ES_HOST = ['219.224.134.211:9206','219.224.134.212:9206','219.224.134.213:9206']
-es_text_profile = Elasticsearch(TEXT_ES_HOST, timeout = 60)
+from parameter import CH_ABS_PATH as abs_path,MAX_VALUE
+from global_utils import es_user_portrait,es_flow_text,portrait_index_name,portrait_index_type,\
+                         flow_text_index_name_pre,flow_text_index_type
 
 def load_words():
 
