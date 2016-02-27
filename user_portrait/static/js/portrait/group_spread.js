@@ -1,39 +1,50 @@
 //test
-function Draw_top_location(data){
-  var timeline_data = [];
-  var bar_data = [];
-  var bar_data_x = [];
-  var bar_data_y = [];
-  for(var key in data){
-    var key_time = new Date(parseInt(key)*1000).format("yyyy-MM-dd");
-    timeline_data.push(key_time);
-    bar_data.push(data[key]);
-  }
-  for(var i=0;i<bar_data.length;i++){
-    var bar_data_x_single = [];
-    var bar_data_y_single = [];
-    for(var key in bar_data[i]){
-      bar_data_x_single.push(key);
-      bar_data_y_single.push(bar_data[i][key]);
-    }
-    bar_data_x.push(bar_data_x_single);
-    bar_data_y.push(bar_data_y_single);
-  }
+function Draw_top_location2(data1, data2, data3){
+    //console.log('data1!!', data1);
+    var y_axi_1 = data1[0];
+    var x_axi_1 = data1[1];
+    var xdata_1 = [];
+
+    for (var i = 0; i< x_axi_1.length-1; i++){
+        xdata_1.push(data1[1][i] + '-' + data1[1][i+1])
+    };
+
+    var y_axi_2 = data2[0];
+    var x_axi_2 = data2[1];
+    var xdata_2 = [];
+
+    for (var i = 0; i< data2[1].length-1; i++){
+        xdata_2.push(data2[1][i] + '-' + data2[1][i+1])
+    };
+
+    var y_axi_3 = data3[0];
+    var x_axi_3 = data3[1];
+    var xdata_3 = [];
+
+    for (var i = 0; i< data3[1].length-1; i++){
+        xdata_3.push(data3[1][i] + '-' + data3[1][i+1])
+    };
   // console.log(bar_data_y);
   
     //console.log(timeline_data);
-    var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
+    var myChart = echarts.init(document.getElementById('whole_out_user')); 
+
     var option = {
         timeline:{
-            data:timeline_data,
-            // label : {
-            //     formatter : function(s) {
-            //         return s.slice(0, 4);
-            //     }
-            // },
+            data:['用户粉丝数','dd','dd'],
             autoPlay : true,
-            playInterval : 1000
+            playInterval : 2000
         },
+        tooltip : {'trigger':'axis',
+                    formatter:  function (params) {
+                    console.log(params)
+                    var res = 'Function formatter : <br/>' + params[0].name;
+                    for (var i = 0, l = params.length; i < l; i++) {
+                        res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+                    }
+
+                    return res; 
+            }},
         toolbox : {
             'show':false, 
             orient : 'vertical',
@@ -47,41 +58,77 @@ function Draw_top_location(data){
                 'saveAsImage':{'show':true}
             }
         },
-        options : (function () {
-          var option_data = [];
-          for(var i=0;i<timeline_data.length;i++){
-            var option_single_data = {};
-
-            option_single_data.title={'text': '整体用户地理位置分布' };
-            option_single_data.tooltip ={'trigger':'axis'};
-            option_single_data.calculable = true;
-                option_single_data.grid = {'y':80,'y2':100};
-                option_single_data.xAxis = [{
+        options : [
+            {
+                title : {'text':'粉丝数分布'},
+                tooltip : {'trigger':'axis',
+                    formatter: "{b}<br/>{a}:{c}"},
+                calculable : true,
+                grid : {'y':80,'y2':100},
+                xAxis :  [{
                     'type':'category',
                     'axisLabel':{'interval':0},
-                    'data':bar_data_x[i]
-                }];
-                option_single_data.yAxis = [
-                    {
-                        'type':'value',
-                        'name':'次数',
-                        //'max':53500
+                    'data':xdata_1
+                }],
+                yAxis : [{
+                    'type':'value',
+                    'name':'次数',
+                    //'max':53500
                     }
-                ];
-                option_single_data.series = [
+                ],
+                series : [
                     {
-                        'name':'活跃次数',
+                        title : {'text':'数值'},
                         'type':'bar',
-                        'data': bar_data_y[i]
-                    },
-
-                ];
-                option_data.push(option_single_data);
-          };
-          // console.log(option_data);
-          return option_data;
-        }
-        )()
+                        'data': y_axi_1
+                    }
+                ]
+            },
+            {
+                title : {'text':'朋友数分布'},
+                tooltip : {'trigger':'axis'},
+                calculable:  true,
+                grid :  {'y':80,'y2':100},
+                xAxis : [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':xdata_2
+                }],
+                yAxis : [{
+                    'type':'value',
+                    'name':'次数',
+                    //'max':53500
+                    }
+                ],
+                series : [{
+                    title : {'text':'数值'},
+                    'type':'bar',
+                    'data': y_axi_2}
+                ]
+            },
+            {
+                title : {'text':'微博数分布'},
+                tooltip : {'trigger':'axis'},
+                calculable :  true,
+                grid : {'y':80,'y2':100},
+                xAxis : [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':xdata_3
+                }],
+                yAxis : [{
+                    'type':'value',
+                    'name':'次数',
+                    //'max':53500
+                    }
+                ],
+                series : [{
+                    title : {'text':'数值'},
+                    'type':'bar',
+                    'data': y_axi_3
+                }]
+            }
+        ]
     };
     myChart.setOption(option);
                     
@@ -89,7 +136,7 @@ function Draw_top_location(data){
 
 //影响力分布
 function draw_influ_distribution(data,radar_div, title){
-    console.log(data);
+    //console.log(data);
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
@@ -155,7 +202,7 @@ Show_influ.prototype = {
     });
   },
   Draw_table:function(data){
-    console.log(data);
+    //console.log(data);
     var influ_his = data['influence_his'];
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
@@ -185,6 +232,7 @@ Show_influ.prototype = {
     draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力');
     draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
     var influ_out = data['influence_out_user'];
+    //Draw_top_location2(influ_out['out_fansnum_his'], influ_out['out_friendsnum_his'], influ_out['out_statusnum_his']);
     draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '人数');
     draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '人数');
     draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '人数');
@@ -323,9 +371,9 @@ function group_influ(data){
 //显示成员微博信息
 function Draw_group_influ_weibo(data, div_name, sub_div_name){
     page_num = 5;
-    console.log(div_name);
+    //console.log(div_name);
     if (data.length < page_num) {
-        console.log('data_length', data.length);
+        //console.log('data_length', data.length);
         $('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
         $('#'+ div_name + ' #pageGro .pageList').css('display', 'none'); 
         $('#'+ div_name + ' #pageGro .pageDown').css('display', 'none'); 
@@ -364,14 +412,14 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             $(this).siblings("li").removeClass("on");
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log('page', page);         
+      //console.log('page', page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length)
           end_row = data.length;
-        console.log('start', start_row);
-        console.log('end', end_row);
-        console.log('data',data);
+        // console.log('start', start_row);
+        // console.log('end', end_row);
+        // console.log('data',data);
         page_group_influ_weibo(start_row,end_row,data, sub_div_name);
     });
 
@@ -387,7 +435,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             }
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log(page);
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -410,7 +458,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             }
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
-      console.log(page);
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -491,7 +539,7 @@ function submit_date_user(){
     var timestamp_to=1378051200;
     var select_uid = document.getElementById('select_group_weibo_user').value;
     var submit_date_user_url = '/group/influence_content/?uid=' + select_uid + '&timestamp_from=' + timestamp_from + '&timestamp_to=' + timestamp_to;
-    console.log(submit_date_user_url);
+    //console.log(submit_date_user_url);
     function Weibo(){
         this.ajax_method = 'GET';
     }
@@ -506,8 +554,8 @@ function submit_date_user(){
         });
        },
        Draw:function(data){
-	     console.log(data);
-		 Draw_group_influ_weibo(data,'group_influ_weibo', 'group_influ_weibo_result');
+	    //console.log(data);
+		Draw_group_influ_weibo(data,'group_influ_weibo', 'group_influ_weibo_result');
         }
       
      }
@@ -668,7 +716,7 @@ url_all.push(timestamp_from_url);
 var timestamp_to_url = '';
 timestamp_to_url = 'timestamp_to=' + time_to;
 url_all.push(timestamp_to_url);
-console.log(url_all);
+//console.log(url_all);
 
 //提交条件
 //submit_date_user();
