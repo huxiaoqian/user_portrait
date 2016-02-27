@@ -1076,7 +1076,7 @@ function createRandomItemStyle(){
 }
 function show_members(){
 	var downloadurl = window.location.host;
-    var model_url =  'http://' + downloadurl + "/group/show_group_list/?task_name=" + name;
+    var model_url =   "/group/show_group_list/?task_name=媒体";
     base_call_ajax_request(model_url, Draw_model);
     $("#myModal_group").modal();
     function Draw_model(data){
