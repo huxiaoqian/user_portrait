@@ -8,7 +8,7 @@ import csv
 import random
 from find_users import get_friends, get_user
 from domain_by_text import domain_classfiy_by_text
-from global_utils import labels,zh_labels,txt_labels,r_labels,proto_users,train_users
+from global_utils_do import labels,zh_labels,txt_labels,r_labels,proto_users,train_users
 from user_domain import user_domain_classifier_v2
 #from test_data import input_data #测试输入
 
@@ -70,13 +70,12 @@ def get_recommend_result(v_type,label):#根据三种分类结果选出一个标�
     else:
         return label[2]
 
-def domain_classfiy(uid_weibo):#领域分类主函数
+def domain_classfiy(uid_list,uid_weibo):#领域分类主函数
     '''
     用户领域分类主函数
     输入数据示例：
-    uid_weibo:字典
-    分词之后的词频字典
-    {uid1:{'key1':f1,'key2':f2...}...}
+    uid_list:uid列表 [uid1,uid2,uid3,...]
+    uid_weibo:分词之后的词频字典  {uid1:{'key1':f1,'key2':f2...}...}
 
     输出数据示例：
     domain：标签字典
@@ -86,10 +85,8 @@ def domain_classfiy(uid_weibo):#领域分类主函数
     re_label：推荐标签字典
     {uid1:label,uid2:label2...}
     '''
-
-    uidlist = uid_weibo.keys()
-    users = get_user(uidlist)
-    frineds = get_friends(uidlist)
+    users = get_user(uid_list)
+    frineds = get_friends(uid_list)
 
     domain = dict()
     r_domain = dict()
@@ -120,13 +117,14 @@ def domain_classfiy(uid_weibo):#领域分类主函数
             field2 = user_domain_classifier_v2(r)
         result_label.append(field2)
 
-        field_dict,result = domain_classfiy_by_text({k: uid_weibo[k]})#根据用户文本进行分类
-        field3 = field_dict[k]
+        if uid_weibo.has_key(k):
+            field_dict,result = domain_classfiy_by_text({k: uid_weibo[k]})#根据用户文本进行分类
+            field3 = field_dict[k]
+        else:
+            field3 = 'other'
         result_label.append(field3)
                 
         domain[str(uid)] = result_label
-        user_result[str(uid)] = sorted_mbr#有问题
-        text_result[str(uid)] = result[k]#有问题
 
         if r == 'other':
             re_label = get_recommend_result('other',result_label)#没有认证类型字段

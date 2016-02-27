@@ -7,14 +7,15 @@ import csv
 import time
 import json
 import redis
-from global_utils import es_user_profile,es_text_profile,MAX_SIZE
+from global_utils_ch import es_user_portrait,es_flow_text,portrait_index_name,portrait_index_type,\
+                         flow_text_index_name_pre,flow_text_index_type,MAX_VALUE
 
 #根据uid查询用户属性
 def search_profile(uid_list):
     '''
     输入：uid列表
     '''
-    es_profile_results = es_user_profile.mget(index='user_portrait_1222', doc_type='user', body={'ids':uid_list})['docs']
+    es_profile_results = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
 
     result_list = dict()
     for i in range(len(es_profile_results)):
@@ -39,7 +40,7 @@ def search_text_sentiment(uid_list, date, result):
     nest_body_list = [{'match':{'uid':k}} for k in uid_list]
     query = [{'bool':{'should': nest_body_list}}]
     try:
-        portrait_result = es_text_profile.search(index='flow_text_'+date, doc_type='text', body={'query':{'bool':{'must':query}}, 'size':MAX_SIZE})['hits']['hits']
+        portrait_result = es_flow_text.search(index=flow_text_index_name_pre+date, doc_type=flow_text_index_type, body={'query':{'bool':{'must':query}}, 'size':MAX_VALUE})['hits']['hits']
     except:
         portrait_result = []
 
@@ -62,7 +63,7 @@ def search_text(uid_list, date, result):
     nest_body_list = [{'match':{'uid':k}} for k in uid_list]
     query = [{'bool':{'should': nest_body_list}}]
     try:
-        portrait_result = es_text_profile.search(index='flow_text_'+date, doc_type='text', body={'query':{'bool':{'must':query}}, 'size':MAX_SIZE})['hits']['hits']
+        portrait_result = es_flow_text.search(index=flow_text_index_name_pre+date, doc_type=flow_text_index_type, body={'query':{'bool':{'must':query}}, 'size':MAX_VALUE})['hits']['hits']
     except:
         portrait_result = []
 

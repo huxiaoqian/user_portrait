@@ -7,8 +7,10 @@ import json
 import csv
 import time
 import datetime
-from global_utils import abs_path
+from global_utils_ch import abs_path
 from config import load_scws
+from test_ch_sentiment import classify_sentiment
+from test_ch_topic import classify_topic
 
 def input_data(name):#测试输入
 
@@ -65,6 +67,16 @@ def input_data2(name):#测试输入
     
     return uid_list,uid_weibo
 
+def input_data3():#测试输入
+
+    uid_list = []
+    reader = csv.reader(file(abs_path + '/weibo_data/0122_uid.txt', 'rb'))
+    for line in reader:
+        uid = line[0].strip('\t\r\n')
+        uid = uid.strip('\xef\xbb\xbf')
+        uid_list.append(uid)
+    
+    return uid_list
 
 def combine_weibo():
 
@@ -85,6 +97,6 @@ def combine_weibo():
            writer.writerow((item[0],item[1],item[2]))
 
 if __name__ == '__main__':
-    combine_weibo()
+    uid_list = input_data3()
             
     
