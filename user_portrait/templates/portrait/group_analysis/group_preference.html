@@ -123,7 +123,7 @@ Show_pref.prototype = {
     });
   },
   Draw_table:function(data){
-    console.log(data);
+    //console.log(data);
     var keywords_data = data['keywords'];
     var keywords_name = 'Language';
     var keywords_more = 'key_WordList';
@@ -242,7 +242,7 @@ function get_radar_data (data) {
   return topic_result;
 }
 function Draw_topic(data, radar_div, motal_div){
-  console.log(data);
+  //console.log(data);
   var topic = [];
   var html = '';
   $('#'+ motal_div).empty();
@@ -464,7 +464,7 @@ function show_domain(data){
 }
 
 function show_results(data){
-  console.log(data);
+  // console.log(data);
 //  var keywordsCloud = data.results.keywords;
   
   //console.log(keywordsCloud);
@@ -492,7 +492,7 @@ function show_results(data){
 
 
   // var tag_vector = data.tag_vector;
-  // //console.log(tag_vector);
+  // console.log(tag_vector);
   // for(var i=0; i<tag_vector.length;i++){
   //   if(tag_vector[i][1] == ''){
   //     tag_vector[i][1] = '暂无数据'

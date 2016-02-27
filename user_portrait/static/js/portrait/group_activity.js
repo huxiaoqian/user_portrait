@@ -71,7 +71,7 @@ function Draw_activity(data){
                     click:function(event){
                         var activity_weibo_url = '/group/activity_weibo/?task_name='+'媒体'+'&start_ts=' + data[event.point.x][0];
                         call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content)
-                        console.log(activity_weibo_url);
+                        //console.log(activity_weibo_url);
                         // draw_content(data_x_[event.point.x]);
                     }
                 }
@@ -631,7 +631,7 @@ function show_activity(data) {
     // body...
 }
 function show_activity_track(data){
-    console.log(data);
+    //console.log(data);
     month_process(data);
 }
 function month_process(data){
