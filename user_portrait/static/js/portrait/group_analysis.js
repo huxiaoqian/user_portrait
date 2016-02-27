@@ -137,10 +137,14 @@ Search_weibo.prototype = {
         influence_star += '<img src="/static/img/star-yellow.png" style="width:25px" >'
     };
 
+    group_tag_vector(data.tag_vector);
+
     $('#overview').empty();
     html = '';
     html += '<div id="stickynote" style="height:180px;width:250px;float:left"><ul class="gs_ul" style="margin-top:-50px"><li><a>';
-    html += '<p style="font-size:16px">' + data.task_name +'</p><p style="font-size:16px">' + data.submit_date +'</p><p style="font-size:16px">' + data.state +'</p><p style="font-size:16px">' + data.submit_user +'</p><p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;<span style="cursor:pointer;"><u>群体标签</u></span></p>';
+    html += '<p style="font-size:16px">' + data.task_name +'</p><p style="font-size:16px">' + data.submit_date +'</p><p style="font-size:16px">' + data.state +'</p><p style="font-size:16px">' + data.submit_user +'</p>';
+    html += '<p><span style="font-size:16px;cursor:pointer;text-decoration:underline" onclick="show_members();">群组成员</span>&nbsp;&nbsp;';
+    html += '<span style="float:right;cursor:pointer;font-size:16px;" type="button"data-toggle="modal" data-target="#group_tag2"><u>群组标签</u></span></p>';
     html += '</a></li></ul></div>';
     html += '<table style="height:150px;width:750px;float:right">';
     html += '<tr><td style="text-align:center;vertical-align:middle"><img src="/static/img/closeness.png" style="height:80px"></td>';
@@ -1697,4 +1701,19 @@ function Draw_think_status(){
     };                
         // 为echarts对象加载数据 
         myChart.setOption(option); 
+}
+
+function group_tag_vector(data){
+    $('#group_tag_vector').empty();
+    var html = '';
+    for(var key in data){
+        // var unit = global_tag_vector[i];
+        html += '<li class="li_1"><span class="pt_title">';
+        html += key + '</span><span class="pt_detail">';
+        html += data[key] + '</span></li>';
+    }
+
+    //console.log('tagvector');
+    //console.log(global_tag_vector);
+    $('#group_tag_vector').html(html);
 }
