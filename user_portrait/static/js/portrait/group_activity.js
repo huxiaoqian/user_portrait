@@ -704,7 +704,7 @@ function month_process(data){
             }
             myGeo.getPoint(geoname, function(point){
                 if (point){
-                    var fixpoint= new BMap.Point(point.lng+3.5,point.lat-0.5);
+                    var fixpoint= new BMap.Point(point.lng,point.lat+0.5);
                     var marker = new BMap.Marker(fixpoint);
                     addedlist[geoname] = addedlist[geoname] + ',' + timename;
                     marker.setTitle(geoname+addedlist[geoname]);
