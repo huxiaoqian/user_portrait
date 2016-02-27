@@ -1,8 +1,7 @@
-ajax_method = 'GET';
-function call_sync_ajax_request(url, method, callback){
+function call_sync_ajax_request(url, callback){
     $.ajax({
       url: url,
-      type: method,
+      type: 'GET',
       dataType: 'json',
       async: true,
       success:callback
@@ -35,7 +34,6 @@ function sensing_sensors_table (head, data, div_name) {
     if (data.length==0) {
     	html = '传感人群为全库用户';
     }else{
-    	 $('#sensor_num').append('('+data.length+')');
 	    if(data.length>7){
 			$('#'+div_name).css("overflow-y", "auto");
 		}
@@ -74,7 +72,6 @@ function sensing_sensors_table (head, data, div_name) {
 }
 
 function sensing_participate_table (head, data, div_name) {
-	$('#participate_num').append(data.length);
     $('#'+div_name).empty();
 	if(data.length>6){
 		$('#'+div_name).css("overflow-y", "auto");
@@ -153,7 +150,7 @@ function pageUp(pageNum, pageCount, div_name){
 }
 
 //下一页
-function pageDown(pageNum,pageCount){
+function pageDown(pageNum,pageCount, div_name){
 	switch(pageNum){
 		case 1:
 			page_icon(1,5,1, div_name);
@@ -173,13 +170,13 @@ function pageDown(pageNum,pageCount){
 }
 
 //点击跳转页面
-function pageGroup(pageNum,pageCount){
+function pageGroup(pageNum,pageCount, div_name){
 	switch(pageNum){
 		case 1:
 			page_icon(1,5,0, div_name);
 		break;
 		case 2:
-			page_icon(1,5,1);
+			page_icon(1,5,1, div_name);
 		break;
 		case pageCount-1:
 			page_icon(pageCount-4,pageCount,3, div_name);
@@ -206,10 +203,10 @@ function Draw_sensi_weibo (data){
 }
 
 function Draw_group_weibo(data, div_name, sub_div_name){
-    page_num = 5;
-    console.log(div_name);
+    var page_num = 5;
+    // console.log(div_name);
     if (data.length < page_num) {
-    	console.log('data_length', data.length);
+    	//console.log('data_length', data.length);
     	$('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
     	$('#'+ div_name + ' #pageGro .pageList').css('display', 'none'); 
     	$('#'+ div_name + ' #pageGro .pageDown').css('display', 'none'); 
@@ -217,7 +214,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     		$('#' + sub_div_name).empty();
     		$('#' + sub_div_name).append('该时段没有与此事件相关的微博！')
     	}else{
-	        page_num = data.length
+	        page_num = data.length;
 	        page_group_weibo( 0, page_num, data, div_name, sub_div_name);
     	}
       }
@@ -233,36 +230,35 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         }
     var pageCount = total_pages;
 
-    if(pageCount>10){
-        page_icon(1,10,0, div_name);
+    if(pageCount>5){
+        page_icon(1,5,0, div_name);
     }else{
         page_icon(1,pageCount,0, div_name);
     }
     
-    $("#"+div_name+" #pageGro li").bind("click", function(){
+    $("#"+div_name+" #pageGro li").live("click", function(){
         if(pageCount > 5){
             var pageNum = parseInt($(this).html());
-            pageGroup(pageNum,pageCount);
+            pageGroup(pageNum,pageCount, div_name);
         }else{
             $(this).addClass("on");
             $(this).siblings("li").removeClass("on");
         }
-      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log(page);         
+      var page = parseInt($("#"+div_name+" #pageGro li.on").html())  
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length)
           end_row = data.length;
-      	console.log('start', start_row);
-      	console.log('end', end_row);
-      	console.log('data',data);
+      	//console.log('start', start_row);
+      	//console.log('end', end_row);
+      	//console.log('data',data);
         page_group_weibo(start_row,end_row,data, div_name, sub_div_name);
     });
 
     $("#"+div_name+" #pageGro .pageUp").click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
-            pageUp(pageNum,pageCount);
+            pageUp(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
             if(index > 0){
@@ -270,8 +266,8 @@ function Draw_group_weibo(data, div_name, sub_div_name){
                 $("#"+div_name+" #pageGro ul li").eq(index-1).addClass("on");
             }
         }
-      page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log(page);
+      var page = parseInt($("#"+div_name+" #pageGro li.on").html())  
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -285,7 +281,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
 
-            pageDown(pageNum,pageCount);
+            pageDown(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
             if(index+1 < pageCount){
@@ -293,8 +289,8 @@ function Draw_group_weibo(data, div_name, sub_div_name){
                 $("#"+div_name+" #pageGro ul li").eq(index+1).addClass("on");
             }
         }
-      page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
-      console.log(page);
+      var page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -304,7 +300,12 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     });
 }
 function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
-	var highlight_words = []; //高亮词数组
+	//console.log(start_row);
+    //console.log(end_row);
+    //console.log(data);
+    //console.log(div_name);
+    //console.log(sub_div_name);
+    var highlight_words = []; //高亮词数组
     weibo_num = end_row - start_row;
     $('#'+ sub_div_name).empty();
     var html = "";
@@ -323,7 +324,7 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var geo = weibo[6];
         var attitude = weibo[4];
         var sensor_words = weibo[7];
-        console.log(sensor_words);
+        //console.log(sensor_words);
         highlight_words.push(sensor_words);
 
         var profile_image_url = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
@@ -331,8 +332,7 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         if (geo==''){
            geo = '未知';
         }
-        
-        console.log(attitude);
+        //console.log(attitude);
         if (attitude == 0){
         	var attitude_s = '中性';
         };
@@ -348,7 +348,8 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail">';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: '+ attitude_s + '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容:&nbsp;&nbsp;<span class="weibo_text">' + text + '</span></p>';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: '+ attitude_s + '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;';
+        html += '发布内容:&nbsp;&nbsp;<span class="weibo_text">' + text + '</span></p>';
         html += '</div>';
         html += '<div class="weibo_info"style="width:100%">';
         html += '<div class="weibo_pz">';
@@ -507,11 +508,12 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    var timestamp2 = Date.parse(new Date(param.name));
 					timestamp2 = timestamp2 / 1000;
 				    sensi_click_time = timestamp2;
-				    sensi_index = param.seriesIndex+7
+				    
+                    sensi_index = param.seriesIndex+7
 				    var data=[['人民日报',1,2,'条结论这里是一条结论这里里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 				    var num_line_url = '传递的'+(param.seriesIndex+7) +',时间是'+sensi_click_time;
 				    $('#sensi_weibo').css("display", 'block');
-					Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
+                    Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
 					
 				}
 			}
@@ -658,7 +660,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 					timestamp2 = timestamp2 / 1000;
 				    mood_click_time = timestamp2;
 				    // mood_index = param.seriesIndex+4;
-				    var index_type
+				    var index_type;
 				    if (param.seriesIndex==3){
 			    		index_type = 5;
 			    	}else if(param.seriesIndex==0){
@@ -670,9 +672,9 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			   		};
 			   		$('#mood_weibo').css("display", 'block');
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
-	   			    call_sync_ajax_request(mood_line_url,ajax_method, Draw_mood_weibo)
+	   			    call_sync_ajax_request(mood_line_url, Draw_mood_weibo)
 					//Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
-					console.log(mood_line_url);
+					//console.log(mood_line_url);
 					//Draw_group_weibo(data, 'mood_weibo', 'mood_related_weibo');
 				}
 			}
@@ -711,7 +713,7 @@ function draw_num_line_charts(data, div_name, legend_data){
 	var col_markpoint = data[6];
 	var col_line = data[7];
 	var myChart = echarts.init(document.getElementById(div_name)); 
-	option = {  
+	var option = {  
 	    tooltip : {
 	        trigger: 'axis',
 	        show : true,
@@ -848,9 +850,9 @@ function draw_num_line_charts(data, div_name, legend_data){
 			    }
 			     $('#num_weibo').css("display", 'block');
 			    var num_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + num_click_time +'&text_type=' + index_type; 
-   			    call_sync_ajax_request(num_line_url,ajax_method, Draw_num_weibo)
+   			    call_sync_ajax_request(num_line_url, Draw_num_weibo)
 				//Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
-				console.log(num_line_url);
+				//console.log(num_line_url);
 			}
 		
 		myChart.on(ecConfig.EVENT.CLICK, eConsole);
@@ -996,7 +998,7 @@ function social_sensing_all(data){
 	show_warning_time('modal_warning_weibo_content', data.variation_distribution[0]);
 	show_warning_time('modal_warning_mood_content', data.variation_distribution[1]);
 	show_warning_time('modal_warning_sensing_content', data.variation_distribution[2]);
-	show_warning_time_all('modal_warning_total_content', data.variation_distribution[3]);
+	show_warning_time('modal_warning_total_content', data.variation_distribution[3]);
 	var col_line = [];
 	for(var i=0; i<data.time_series.length; i++){
 		col_line[i] = 0;
@@ -1040,6 +1042,7 @@ function social_sensing_all(data){
     var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
     var data1=[['人民日报2222',1,2,'2222这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
 	//微博排序方式	
+    /*
 	$('input[name="num_select"]').click(function(){
 		if($('input[name="num_select"]:checked').val()=='1'){		
 			Draw_group_weibo(data1, 'num_weibo', 'num_related_weibo');
@@ -1064,15 +1067,16 @@ function social_sensing_all(data){
 
 		}
 	});	
+    */
 
 	//参与人表格
-	var participate_head=['uid','昵称','领域','话题','热度','重要度','影响力','活跃度']
+	var participate_head=['用户ID','昵称','领域','话题','热度','重要度','影响力','活跃度']
 	var user_detail = new Array();
 	user_detail = data.important_user_detail;
 	sensing_participate_table(participate_head,user_detail,"sensing_participate_table");
 
 	//传感器模态框数据
-	var sensor_head=['uid','昵称','领域','话题','重要度','影响力','活跃度']
+	var sensor_head=['用户ID','昵称','领域','话题','重要度','影响力','活跃度']
 	var sensor_data = new Array();
 	sensor_data = data.social_sensors_detail;
 	sensing_sensors_table(sensor_head,sensor_data,"modal_sensor_table");
@@ -1107,4 +1111,4 @@ var sensi_index;
 $('#sensing_task_name').append(task_name);
 var sensing_url = '';
 sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
-call_sync_ajax_request(sensing_url, ajax_method, social_sensing_all);
+call_sync_ajax_request(sensing_url, social_sensing_all);
