@@ -3,10 +3,14 @@
 	{% block css %}
         {{ super() }}
         <style type="text/css">
+           
+        .group_block{
+         background-color:#FF8C00;height: 30px;padding: 5px 8px;color: white;font-weight: bold;border-radius: 0.25em;margin: 5px;display: inline-block;text-align: center;
+        }
           .dataTables_paginate{float:inherit;}
           .dataTables_filter, .dataTables_length {display:none;}
           #sensing_graph hr{margin-top: 2px;}
-          #weibo_list{height:300px; overflow-y:scroll}
+          #weibo_list{max-height:300px; overflow-y:scroll}
           .weibo_detail {margin: 5px 0; width: 100%;padding: 0 10px;}
           .weibo_info {color: #666;margin:0;}
           .weibo_info .weibo_pz {margin-left:10px;color: #858585;height: 18px;line-height: 18px;}
@@ -62,12 +66,12 @@
               <hr style="width:100%;margin-bottom: -25px;">             
               <div id="num_line_charts" style="width:100%;float: left;height:300px;"></div>
               <div id="num_weibo"  style="display:none;float:left;margin-top:10px;">
-                <!--  
+                 
                 <div id="select_style_num" style="margin:10px;">
-                  <input type="radio" name="num_select" checked value="0" /> 按微博发布时间排序
-                  <input type="radio" name="num_select" value="1" style="margin-left:5px" /> 按微博热度排序             
+                  <input type="radio" name="num_select" checked value="0" /> 微博内容
+                  <input type="radio" name="num_select" value="1" style="margin-left:5px" /> 感知事件             
                 </div>
-                -->
+               
                 <div id="num_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;"></div>
                 <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
                     <div class="pageUp">上一页</div>
@@ -90,12 +94,12 @@
               <hr style="width:100%;margin-bottom: -25px;">             
               <div id="mood_line_charts" style="width:100%;float: left;height:300px;"></div>
               <div id="mood_weibo" style="display:none;float:left;margin-top:10px;">
-                <!--
+                
                 <div id="select_style_num" style="margin:10px;">
-                  <input type="radio" name="mood_select" checked value="0" /> 按微博发布时间排序
-                  <input type="radio" name="mood_select" value="1" style="margin-left:5px" /> 按微博热度排序             
+                  <input type="radio" name="mood_select" checked value="0" /> 微博内容
+                  <input type="radio" name="mood_select" value="1" style="margin-left:5px" /> 感知事件             
               </div>
-              -->
+              
                 <div id="mood_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;"></div>
                 <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
                   <div class="pageUp">上一页</div>               
@@ -118,12 +122,12 @@
               <hr style="width:100%;margin-bottom: -25px;">             
               <div id="sensi_line_charts" style="width:100%;float: left;height:300px;"></div>
               <div id="sensi_weibo" style="display:none;float:left;margin-top:10px;">
-                <!--  
+                 
                 <div id="select_style_sensi" style="margin:10px;">
-                  <input type="radio" name="sensi_select" checked value="0" /> 按微博发布时间排序
-                  <input type="radio" name="sensi_select" value="1" style="margin-left:5px" /> 按微博热度排序             
+                  <input type="radio" name="sensi_select" checked value="0" /> 微博内容
+                  <input type="radio" name="sensi_select" value="1" style="margin-left:5px" /> 感知事件             
               </div>
-              -->
+             
                 <div id="sensi_related_weibo" style="padding:10px;float:left;background-color:whitesmoke;width:100%;"></div>
                 <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
                   <div class="pageUp">上一页</div>
