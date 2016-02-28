@@ -22,8 +22,8 @@ def scan_compute_redis():
             iter_user_list.append(uid)
             mapping_dict[uid] = json.dumps([in_date, '3']) # mark status:3 computing
         #print 'mapping_dict:', mapping_dict
-        if len(iter_user_list)  == 3 and len(iter_user_list) != 0:
-            #r.hmset('compute', mapping_dict)
+        if len(iter_user_list) % 100 == 0 and len(iter_user_list) != 0:
+            r.hmset('compute', mapping_dict)
             #acquire bulk user weibo data
             if WEIBO_API_INPUT_TYPE == 0:
                 user_keywords_dict, user_weibo_dict = read_flow_text_sentiment(iter_user_list)
@@ -31,17 +31,15 @@ def scan_compute_redis():
                 user_keywords_dict, user_weibo_dict = read_flow_text(iter_user_list)
             print 'user_keywords_dict:', user_keywords_dict
             #compute text attribute
-            '''
             compute_status = test_cron_text_attribute(user_keywords_dict, user_weibo_dict)
 
             if compute_status==True:
                 change_status_computed(mapping_dict)
             else:
                 change_status_compute_fail(mapping_dict)
-            '''
             iter_user_list = []
             mapping_dict = {}
-            break
+            
     if iter_user_list != [] and mapping_dict != {}:
         r.mset('compute', mapping_dict)
         #acquire bulk user weibo date
