@@ -29,6 +29,7 @@ def sensing_analysis():
 @mod.route('/group/')
 def group_identify():
     return render_template('portrait/group_identify.html')
+
 @mod.route('/group_analysis/')
 def group_analysis():
     name = request.args.get('name', 'test_task')

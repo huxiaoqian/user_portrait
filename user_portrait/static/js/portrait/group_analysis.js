@@ -39,14 +39,12 @@ Search_weibo.prototype = {
   Draw_attribute_name: function(data){
     $('#attribute_name').empty();
     html = '';
-    html += '<select id="select_attribute_name">';
+    html += '<select id="select_attribute_name" style="min-width:75px;" >';
 
-    for (var i = 0; i < data.length-1; i++) {
+    for (var i = 0; i < data.length; i++) {
         var s = i.toString();
         html += '<option value="' + data[s] + '">' + data[s] + '</option>';
 }
-    var t = (data.length-1).toString();
-    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
     $('#attribute_name').append(html);
   },
 
@@ -55,13 +53,11 @@ Search_weibo.prototype = {
     $('#attribute_value').empty();
     html = '';
     html += '';
-    html += '<select id="select_attribute_value">';
-    for (var i = 0; i < data.length-1; i++) {
+    html += '<select id="select_attribute_value" style="min-width:75px;">';
+    for (var i = 0; i < data.length; i++) {
         var s = i.toString();
         html += '<option value="' + data[s] + '">' + data[s] + '</option>';
-}
-    var t = (data.length-1).toString();
-    html += '<option value="' + data[0] + '" selected="selected">' + data[0] + '</option></select>';
+} 
     $('#attribute_value').append(html);
   },
   Draw_add_group_tag: function(data){
@@ -1078,7 +1074,7 @@ function createRandomItemStyle(){
 }
 function show_members(){
 	var downloadurl = window.location.host;
-    var model_url =   "/group/show_group_list/?task_name=媒体";
+    var model_url =   "/group/show_group_list/?task_name=" + name;
     base_call_ajax_request(model_url, Draw_model);
     $("#myModal_group").modal();
     function Draw_model(data){
@@ -1124,8 +1120,8 @@ $(document).ready(function(){
     // Draw_think_topic();
     // Draw_think_tendency();
 
-    var group_overview_url = '/group/show_group_result/?module=overview&task_name=媒体';
-    var overviewdata = ['媒体','2013-09-01','关注的媒体','0.2222','0.542','6.233','10000.345','某某']
+    var group_overview_url = '/group/show_group_result/?module=overview&task_name=' + name;
+    //var overviewdata = ['媒体','2013-09-01','关注的媒体','0.2222','0.542','6.233','10000.345','某某']
     //Search_weibo.Draw_overview(overviewdata);
     // var weibo_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=overview";
      Search_weibo.call_sync_ajax_request(group_overview_url, Search_weibo.ajax_method, Search_weibo.Draw_overview);
@@ -1137,7 +1133,7 @@ $(document).ready(function(){
     console.log(select_attribute_name);
     var attribute_value_url = '';
     attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
-    attribute_value_url = '/tag/show_attribute_value/?attribute_name=风暴';
+    //attribute_value_url = '/tag/show_attribute_value/?attribute_name=风暴';
     Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
 
     //var show_group_tag_url = '/tag/show_group_tag/?task_name=' + '媒体';
@@ -1155,6 +1151,13 @@ $(document).ready(function(){
     // Search_weibo.call_sync_ajax_request(text_url, Search_weibo.ajax_method, Search_weibo.Draw_keyword);
     // var influence_url =  'http://' + downloadurl + "/group/show_group_result/?task_name=" + name + "&module=influence";
     // Search_weibo.call_sync_ajax_request(influence_url, Search_weibo.ajax_method, Search_weibo.Draw_weibo);
+
+    $('#select_attribute_name').change(function(){
+            // console.log($(this).val());
+            var attribute_value_url = '/tag/show_attribute_value/?attribute_name=' ;
+            attribute_value_url += $(this).val();
+            Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+        });
     
 })
 
@@ -1165,17 +1168,25 @@ $(document).ready(function(){
 //     attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
 //     Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
 // });
+/*
+$('#select_attribute_name').click(function(){
+    console.log('dfsd');
+    var select_attribute_name = $("#select_attribute_name").val();
+    var attribute_value_url = '';
+    url_attribute_value = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
+    Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
+});
 
-$('#select_attribute_name').change(function(){
+function Valuechange(){
       console.log('asdasd');
-      var select_attribute_name = $("#select_attribute_name").val();
+      var select_attribute_name = document.getElementById("select_attribute_name").value;
       console.log(select_attribute_name);
       var attribute_value_url = '';
       // attribute_value_url = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
-      attribute_value_url = '/tag/show_attribute_value/?attribute_name=风暴' ;
+      attribute_value_url = '/tag/show_attribute_value/?attribute_name=' +select_attribute_name ;
       Search_weibo.call_sync_ajax_request(attribute_value_url, Search_weibo.ajax_method, Search_weibo.Draw_attribute_value);
-    });
-
+    }
+*/
 function Draw_verify(data){
     var myChart = echarts.init(document.getElementById('verify')); 
         var dataStyle = {

@@ -397,7 +397,7 @@ Show_influ.prototype = {
 }
 
 var Show_influ = new Show_influ();
-var group_influ_url = '/group/show_group_result/?task_name=媒体&module=influence';
+var group_influ_url = '/group/show_group_result/?task_name='+name+'&module=influence';
 console.log('aaaaa');
 Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
 //影响用户
@@ -864,7 +864,7 @@ Weibo_user.prototype = {
       
 }
 var Weibo_user = new Weibo_user();
-var weibo_user_url = '/group/group_member/?task_name=媒体';
+var weibo_user_url = '/group/group_member/?task_name=' + name;
 Weibo_user.call_sync_ajax_request(weibo_user_url,Weibo_user.ajax_method,Weibo_user.Draw_user)
 //Draw_group_weibo_user();  
     //选择时间
@@ -898,28 +898,4 @@ $(' input[name="user_select"]').click(function(){
         $('#influence_out_user').css('display', 'none');
     }
 });
-//影响力波及用户
-/*
-function Influ_person(){
-    this.ajax_method = 'GET';
-}
 
-Influ_person.prototype = {
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-  Draw:function(data){
-    console.log(data);
-  }
-}
-
-var Influ_person = new Influ_person();
-var influ_person_url = '/group/show_group_result/?task_name=媒体&module=influence';
-Influ_person.call_sync_ajax_request(influ_person_url, Influ_person.ajax_method, Influ_person.Draw);
-*/

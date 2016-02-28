@@ -69,7 +69,7 @@ function Draw_activity(data){
                 cursor:'pointer',
                 events:{
                     click:function(event){
-                        var activity_weibo_url = '/group/activity_weibo/?task_name='+'媒体'+'&start_ts=' + data[event.point.x][0];
+                        var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + data[event.point.x][0];
                         call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content)
                         //console.log(activity_weibo_url);
                         // draw_content(data_x_[event.point.x]);
@@ -899,9 +899,9 @@ function month_process(data){
 }
 
 
-var group_activity_url = '/group/show_group_result/?module=activity&task_name=媒体';
+var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
 call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
-var group_user_url =  "/group/show_group_list/?task_name=媒体";
+var group_user_url =  "/group/show_group_list/?task_name=" + name;
 call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
 // var activity_data = []
 
