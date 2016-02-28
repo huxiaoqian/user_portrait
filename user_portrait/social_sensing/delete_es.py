@@ -3,9 +3,9 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 import sys
-"""
 reload(sys)
 sys.path.append('./../')
+"""
 from global_utils import es_user_portrait as es
 from parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 """

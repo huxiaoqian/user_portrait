@@ -53,6 +53,7 @@ def freq_word(items):
     for w in cut_word_list:
         word_list.append(w)
 
+
     counter = Counter(word_list)
     total = sum(counter.values())
     topk_words = counter.most_common()
@@ -76,8 +77,8 @@ def tfidf(inputs):
     count_dict = {} #词出现的文本数
     count = 0 #记录每类下词频总数
     input_word_dict = {} #每条记录每个词的tfidf,{"_id":{词：tfidf，词：tfidf}}
-    for input in inputs:
-        word_count = freq_word(input)
+    for iter_input in inputs:
+        word_count = freq_word(iter_input)
         count += sum(word_count.values())
         word_tfidf_row = {}#每一行中词的tfidf
         for k,v in word_count.iteritems():
@@ -90,13 +91,14 @@ def tfidf(inputs):
                 tfidf_dict[k] += tfidf
             except:
                 tfidf_dict[k] = 1
-        input_word_dict[input["mid"]] = word_tfidf_row
+        input_word_dict[iter_input["mid"]] = word_tfidf_row
 
     for k,v in tfidf_dict.iteritems():
         tfidf_dict[k] =  float(tfidf_dict[k])/float(len(inputs))
 
     sorted_tfidf = sorted(tfidf_dict.iteritems(), key = lambda asd:asd[1],reverse = True)
-    result_tfidf = [(k,v)for k,v in sorted_tfidf]
+    #result_tfidf = [(k,v)for k,v in sorted_tfidf]
+    result_tfidf = sorted_tfidf
 
     topk = int(math.ceil(float(len(result_tfidf))*0.2))#取前20%的tfidf词
     return result_tfidf[:topk],input_word_dict
@@ -113,9 +115,9 @@ def process_for_cluto(word, inputs, gram=PROCESS_GRAM):
         cluto输出文件位置
     """
 
-    #row = len(word) #词数
+    row = len(word) #词数
     column = len(inputs) #特征列数
-    row = 0
+    #row = 0
     nonzero_count = 0 #非0特征数
     count = 0
 
@@ -134,19 +136,13 @@ def process_for_cluto(word, inputs, gram=PROCESS_GRAM):
                 if n != 0:
                     nonzero_count += 1
                     row_record.append('%s %s' %(str(i+1), n))
-            if row_record:
-                line = ' '.join(row_record) + '\r\n'
-                lines.append(line)
-                row += 1
-            else:
-                word.pop(count) #删除空行对应的特征词
-                print "======"
-                print w
-            count += 1
-        row = len(word)
+            line = ' '.join(row_record) + '\r\n'
+            lines.append(line)
+
         fw.write('%s %s %s\r\n' %(row, column, nonzero_count))
         fw.writelines(lines)
-    return file_name, word
+
+    return file_name
 
 
 def cluto_kmeans_vcluster(k=CLUSTERING_KMEANS_CLUSTERING_NUM, input_file=None, vcluster=None):
@@ -235,12 +231,10 @@ def kmeans(word, inputs, k=CLUSTERING_KMEANS_CLUSTERING_NUM, gram=PROCESS_GRAM):
     if len(inputs) < 2:
         raise ValueError("length of input items must be larger than 2")
 
-    input_file, word = process_for_cluto(word, inputs, gram=gram)
+    input_file = process_for_cluto(word, inputs, gram=gram)
     labels, evaluation_results = cluto_kmeans_vcluster(k=k, input_file=input_file)
     label2id = label2uniqueid(labels)
 
-    print len(labels)
-    print len(word)
     #将词对归类，{类标签：[词1，词2，...]}
     word_label = {}
     for i in range(len(word)):

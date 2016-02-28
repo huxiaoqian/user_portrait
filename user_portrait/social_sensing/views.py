@@ -356,4 +356,25 @@ def ajax_get_clustering_topic():
 
     return json.dumps(topic_list)
 
+# 返回传感词
+@mod.route('/get_sensing_words/')
+def ajax_get_sensing_words():
+    tmp = json.dumps([])
+    sensing_words = r.hget('sensing_words', "sensing_words")
+    if sensing_words:
+        return sensing_words
+    else:
+        return tmp
+
+# 返回敏感词
+@mod.route('/get_sensitive_words/')
+def ajax_get_sensitive_words():
+    tmp = json.dumps([])
+    sensitive_words = r.hget("sensitive_words", "sensitive_words")
+    if sensitive_words:
+        return sensitive_words
+    else:
+        return tmp
+
+
 
