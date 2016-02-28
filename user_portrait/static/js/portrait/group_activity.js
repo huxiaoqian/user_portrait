@@ -322,39 +322,26 @@ function Draw_top_location(data){
 
 function get_max_data (data) {
   // var topic = data;
-  console.log(data);
+  //console.log(data);
   var data_name = [];
   var data_value = [];
   for(var key in data){
     data_name.push(key);
     data_value.push(data[key]);
   }
-  console.log(data_value);
-  // for(var i=0; i<data.length;i++){
-  //   data_value.push(data[i][1])
-  //   data_name.push(data[i][0])
-  // };
-
   var data_value_after = [];
   var data_name_after = [];
   for(var i=0; i<data_value.length;i++){ //排序
     a=data_value.indexOf(Math.max.apply(Math, data_value));
     data_value_after.push(data_value[a]);
     data_name_after.push(data_name[a]);
-    data_value[a]=-1;
+    data_value[a]= -1;
   }
   var data_name3 = [];
-  // for(var i=0;i<8;i++){ //设置最大值的话题的阈值
-  //   var name_dict = {};
-  //   var index = data_name2[i];
-  //   name_dict["text"] = index;
-  //   name_dict["max"] = Math.max.apply(Math, data_value2).toFixed(3)+0.2;
-  //   data_name3.push(name_dict);
-  // }
+
   var data_result = [];
   data_result.push(data_name_after);
   data_result.push(data_value_after);
-  console.log(data_result);
   return data_result;
 }
 
@@ -622,19 +609,16 @@ function group_activity(data){
         {
             name:'最高值',
             type:'line',
-            stack: '总量',
             data:yAxis_max
         },
         {
             name:'最低值',
             type:'line',
-            stack: '总量',
             data:yAxis_min
         },
         {
             name:'平均值',
             type:'line',
-            stack: '总量',
             data:yAxis_ave
         }
         

@@ -13,7 +13,7 @@ from elasticsearch.helpers import scan
 from weibo_api_v2 import read_flow_text_sentiment, read_flow_text
 from evaluate_index import get_importance
 # compute user topic
-from topic.test_topic import topics_classfiy
+from topic.test_topic import topic_classfiy
 
 reload(sys)
 sys.path.append('../../')
@@ -193,5 +193,6 @@ def update_atttribute_week():
 '''
 
 if __name__=='__main__':
-    status = update_attribute_week_v2()
-    print 'update week status:', status
+    print 'start update_attribute_week_v2'
+    update_attribute_week_v2()
+    print 'end update_attribute_week_v2'

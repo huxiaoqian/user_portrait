@@ -1,11 +1,14 @@
 # -*- coding: UTF-8 -*-
 import csv
+import sys
 import time
 import json
 from collections import Counter
-from user_portrait.parameter import DAY, WEEK,MAX_VALUE
-from user_portrait.time_utils import ts2datetime, datetime2ts
-from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
+
+sys.path.append('../../')
+from parameter import DAY, WEEK,MAX_VALUE
+from time_utils import ts2datetime, datetime2ts
+from global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
 
 def read_flow_text_sentiment(uid_list):
     '''
