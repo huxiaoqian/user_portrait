@@ -305,7 +305,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         */
     	if (data.length == 0) {
     		$('#' + sub_div_name).empty();
-    		$('#' + sub_div_name).append('该时段没有与此事件相关的微博！')
+    		$('#' + sub_div_name).append('暂无相关微博')
     	}else{
 	        page_num = data.length;
 	        page_group_weibo( 0, page_num, data, div_name, sub_div_name);
@@ -494,7 +494,20 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 	var col_markpoint = data[6];
 	var col_line = data[7];
 	var myChart = echarts.init(document.getElementById(div_name)); 
-	var option = {  
+	var option = { 
+        title : {
+            text  :'注：蓝色箭头代表感知的异常点，红色箭头表示重合异常点',
+            // subtext:'    ',
+            textStyle:{
+                    fontSize: 12,
+                    color: '#555555'
+            },
+            subtextStyle:{
+                    fontSize: 12,
+                    color: '#555555'
+            },            x: 'right',
+            y: 37
+        }, 
 	    tooltip : {
 	        trigger: 'axis',
 	        show : true,
@@ -679,8 +692,20 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	var col_markpoint = data[5];
 	var col_line = data[6];
 	var myChart = echarts.init(document.getElementById(div_name)); 
-	option = {  
-	    tooltip : {
+	var option = {  
+        title : {
+            text  :'注：蓝色箭头代表感知的异常点，红色箭头表示重合异常点',
+            // subtext:'    ',
+            textStyle:{
+                    fontSize: 12,
+                    color: '#555555'
+            },
+            subtextStyle:{
+                    fontSize: 12,
+                    color: '#555555'
+            },            x: 'right',
+            y: 37
+        },	    tooltip : {
 	        trigger: 'axis',
 	        show : true,
 	        formatter:  function (params) {
@@ -855,7 +880,19 @@ function draw_num_line_charts(data, div_name, legend_data){
 	var col_line = data[7];
 	var myChart = echarts.init(document.getElementById(div_name)); 
 	var option = {  
-	    tooltip : {
+        title : {
+            text  :'注：蓝色箭头代表感知的异常点，红色箭头表示重合异常点',
+            // subtext:'    ',
+            textStyle:{
+                    fontSize: 12,
+                    color: '#555555'
+            },
+            subtextStyle:{
+                    fontSize: 12,
+                    color: '#555555'
+            },            x: 'right',
+            y: 37
+        }, 	    tooltip : {
 	        trigger: 'axis',
 	        show : true,
 	        formatter:  function (params) {
