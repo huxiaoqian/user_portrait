@@ -139,15 +139,17 @@ function draw_social_sensing_table (data) {
 		}
 		html += '</tbody></table>';	
         $('#social_sensing #social_sensing_table').append(html);
-		$('#social_sensing #social_table').dataTable({
+        /*
+        $('#social_sensing #social_table').dataTable({
         	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-        	"sPaginationType": "custom_bootstrap",
+        	"sPaginationType": "bootstrap",
         	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         	"bAutoWidth": true,
         	"oLanguage": {
             	"sLengthMenu": "_MENU_ 每页"
             }
         });
+        */
 	}
 
 function social_sensing_select_all(){
