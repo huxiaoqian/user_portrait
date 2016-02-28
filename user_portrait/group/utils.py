@@ -158,7 +158,11 @@ def search_task(task_name, submit_date, state, status):
     result = []
     #print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:
-        result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], task_dict['_source']['state'], task_dict['_source']['status']])
+        try:
+            state = task_dict['_source']['state']
+        except:
+            state = ''
+        result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], state, task_dict['_source']['status']])
     
     return result
 
@@ -475,14 +479,16 @@ def get_group_user_track(uid):
     #step1:get user_portrait activity_geo_dict
     try:
         portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type,\
-                id=uid, _source=False, fields=['activity_geo_dict'])['hits']['hits']
+                id=uid, _source=False, fields=['activity_geo_dict'])
     except:
         portrait_result = {}
+    #print 'portrait_result:', portrait_result
     if portrait_result == {}:
         return 'uid is not in user_portrait'
-    activity_geo_dict = portrait_result['fields']['activity_geo_dict'][0]
+    activity_geo_dict = json.loads(portrait_result['fields']['activity_geo_dict'][0])
+    #print 'activity_geo_dict:', activity_geo_dict, type(activity_geo_dict)
     now_date_ts = datetime2ts(ts2datetime(int(time.time())))
-    start_ts = now_date_ts - DAY * len(acitivity_geo_dict)
+    start_ts = now_date_ts - DAY * len(activity_geo_dict)
     #step2: iter date to get month track
     for geo_item in activity_geo_dict:
         iter_date = ts2datetime(start_ts)

@@ -12,16 +12,16 @@
 	    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 	        <div>主要影响力用户</div>
 	    </div>
-	    <div class="panel-body" style='padding:0;'>
-			<div id='influ_active_users' style='overflow-x:hidden;width:288px;height:225px;float:left;padding-top:5px;'></div>
+	    <div class="panel-body" style='padding:5px;'>
+			<div id='influ_active_users' style='overflow-x:hidden;width:278px;height:212px;float:left;padding-top:5px;'></div>
 	  	</div>
 	</div>
 	<div class="panel panel-default" style='width: 290px;float: left;margin-top:10px;margin-left:14px;'>
 	    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 	        <div>主要非影响力用户</div>
 	    </div>
-	    <div class="panel-body" style='padding:0;'>
-			<div id='influ_unactive_users' style='overflow-x:hidden;width:288px;height:225px;float:left;padding-top:5px;'></div>
+	    <div class="panel-body" style='padding:5px;'>
+			<div id='influ_unactive_users' style='overflow-x:hidden;width:278px;height:212px;float:left;padding-top:5px;'></div>
 	  	</div>
 	</div>
 	<div class="panel panel-default" style='width: 960px;float: left;margin-top:10px;'>
@@ -56,13 +56,13 @@
 		            <span id="group_influ_weibo_user"></span>
 	          	</div>
                 <!-- <div class='col-md-6' style='text-align:right;padding-right:60px;'> -->
-                	<span id="attribute_pattern_commit" onclick="submit_date_user()" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>提交</span>
+                	<span id="attribute_pattern_commit" onclick="submit_date_user()" class="label label-success" style='cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>确定</span>
                 <!-- </div> -->
               </div>
 <!--               <div id="group_influ_weibo_result"></div>
  -->               
  				<div id="group_influ_weibo_result" style="float:left;width:100%;"></div>
-                <div id="pageGro" class="cb" style="float:left;width:600px;height:60px;margin-left:350px">
+                <div id="pageGro" class="cb" style="display:none;float:left;width:600px;height:60px;margin-left:350px">
                     <div class="pageUp">上一页</div>
                     <div class="pageList">
                         <ul>
@@ -90,10 +90,10 @@
 		<div class="col-lg-6">
 		    <div class="panel panel-default">
 		        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
-		            <div><span class="showmore" id="showmore_domain_influ" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_domain" ><u>查看详情</u></span>用户领域分布</div>
+		            <div><span class="showmore" id="showmore_domain_influ" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_domain_influ" ><u>查看详情</u></span>用户领域分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="influence_domain" style="width:300px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
+		          <div id="influence_domain" style="width:400px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
 		          </div>
 		      </div>
 		  </div>
@@ -101,10 +101,10 @@
 		<div class="col-lg-6">
 		    <div class="panel panel-default">
 		        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
-		            <div><span class="showmore" id="showmore_topic_influ" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_topic" ><u>查看详情</u></span>用户话题分布</div>
+		            <div><span class="showmore" id="showmore_topic_influ" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_topic_influ" ><u>查看详情</u></span>用户话题分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="influence_topic" style="width:300px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
+		          <div id="influence_topic" style="width:400px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
 		          </div>
 		      </div>
 		  	</div>
@@ -133,40 +133,41 @@
 		</div>
 	</div>
 	<div id="influence_out_user" style="display:none;">
-		<div class="col-lg-6" style="width:33%">
+		<div class="col-lg-6" style="width:33%;padding:0 5px;">
 		    <div class="panel panel-default">
 		        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 		            <div>粉丝数分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_fans_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -10px;">
+		          <div id="group_fans_distribution" style="width:365px;height:240px;margin:30px 40px;margin:-10px 50px 0px -10px;">
 		          </div>
 		      </div>
 		  </div>
 		</div>
-		<div class="col-lg-6" style="width:33%">
+		<div class="col-lg-6" style="width:33%;padding:0 5px;">
 		    <div class="panel panel-default">
 		        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 		            <div>朋友数分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_friends_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -15px;">
+		          <div id="group_friends_distribution" style="width:365px;height:240px;margin:30px 40px;margin:-10px 50px 0px -15px;">
 		          </div>
 		      </div>
 		  	</div>
 		</div>
-		<div class="col-lg-6" style="width:33%;">
+		<div class="col-lg-6" style="width:33%;padding:0 5px;">
 		    <div class="panel panel-default">
 		        <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 		            <div>微博数分布</div>
 		        </div>
 		        <div class="panel-body">
-		          <div id="group_weiboshu_distribution" style="width:340px;height:280px;margin:30px 40px;margin:-10px 50px 0px -10px;">
+		          <div id="group_weiboshu_distribution" style="width:365px;height:240px;margin:30px 40px;margin:-10px 50px 0px -10px;">
 		          </div>
 		      	</div>
 		  	</div>
 		</div>
-
+<!-- 		<div id='whole_out_user' style="float:left;width:960px;height:400px;"></div>
+ -->
 	</div>
 </div>
 
@@ -178,27 +179,29 @@
  </div> -->
 
 <!-- 模态框 -->
- <div class="modal fade" id="rank_influ_users" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <div class="modal fade" id="more_topic_influ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">主要活跃用户</h4>
+        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">主要话题分布</h4>
       </div>
-      <div class="modal-body" id='show_rank_influ_users'>
+      <div class="modal-body" id='influ_topic_WordList'>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="rank_uninflu_users" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+
+ <div class="modal fade" id="more_domain_influ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">主要非活跃用户</h4>
+        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">主要领域分布</h4>
       </div>
-      <div class="modal-body" id='show_rank_uninflu_users'>
+      <div class="modal-body" id='influ_domain_WordList'>
       </div>
     </div>
   </div>

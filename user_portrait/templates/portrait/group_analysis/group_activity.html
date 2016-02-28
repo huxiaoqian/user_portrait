@@ -8,31 +8,40 @@
 <h3><b>微博走势</b></h3>
 <hr>
 	<div id="line" style="height:300px;width:650px;float:left;"></div>
-	<div id="line_content" style="margin-left:30px;height:300px;width:280px;background-color:whitesmoke;float:left;overflow-y: auto;">该时段暂无微博</div>
-	<div id="online_time" style = "width:100%;float: left;margin-top: 10px;margin-bottom: 20px;">
-		<h4 style="font-size:16px;color:#555555">上网时间分布</h4>
-		<div id="online_time_table" ></div>
-		<div id="online_time_conclusion" style='margin-left:15px;font-size:16px;float:left;margin-bottom:15px;'><img src="/static/img/warning.png"></div>
+	<div id="line_content" style="padding:10px;margin-left:30px;height:300px;width:280px;background-color:whitesmoke;float:left;overflow-y: auto;">该时段暂无微博</div>
+	<div id="online_time" style = "width:100%;float: left;margin-top: 20px;margin-bottom: 20px;">
+        <!--
+        <h4 style="font-size:16px;color:#555555;margin-bottom:15px;">上网时间分布</h4>
+        -->
+        <div id="online_time_table" ></div>
+        <div style='margin-left:15px;font-size:16px;float:left;margin-bottom:15px;'><img src="/static/img/warning.png">
+            <span id="online_time_conclusion"></span>
+        </div>
 	</div>
 
 <h3><b>地理位置</b></h3><hr>
-    <div class="panel panel-default" style='width: 680px;float: left;'>
+    <div class="panel panel-default" style='width: 680px;float: left;height:656px;'>
         <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
             <div>用户轨迹</div>
         </div>
         <div class="panel-body">
-			<div id='active_geo' style='overflow-x:hidden;width:650px;height:520px;float:left;background-color: #F5F5F5;'>
-				<div id="user_geo_map"></div>
+			<div id='active_geo' style='width:650px;height:585px;float:left;'>
+                <div class='col-md-6' style="margin:0px 0px 10px 15px;width:315px;float:left;">
+                    <span class="input-group-addon" style="margin-right:15px;width:60px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;">选择用户</span>
+                    <span id="track_weibo_user"></span>
+                	<span id="track_user_commit" class="label label-success" style='margin-top:2px;float:right;cursor:pointer; background-color:rgba(69, 133, 195, 0.89);'>确定</span>
+                </div>
+				<div id="user_geo_map" style='width:100%;height:90%;'></div>
 			</div>
-      </div>
+        </div>
  	</div>
 	<div style='float:left;margin-left:18px;width:270px'>
 		<div class="panel panel-default" style='width: 265px;float: left;'>
 		    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 		        <div><span id="geo_show_more" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#move_location_more"><u>查看更多</u></span>位置转移统计</div>
 		    </div>
-		    <div class="panel-body" style='padding:0;'>
-				<div id='move_location' style='overflow-x:hidden;width:260px;padding-top:5px;'></div>
+		    <div class="panel-body" style='padding:5px;'>
+				<div id='move_location' style='overflow-x:hidden;width:250px;padding-top:5px;'></div>
 			</div>
 		</div>
 
@@ -40,7 +49,7 @@
 		    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 		        <div>上网方式排名</div>
 		    </div>
-		    <div class="panel-body" style='padding:0;'>
+		    <div class="panel-body" style='padding:5px;'>
 				<div id='top_platform' style='overflow-x:hidden;float:left;min-height:280px;padding-top:5px;'>
 				</div>
 		  	</div>
@@ -52,7 +61,7 @@
 	    </div>
 	    <div class="panel-body">
 			<div id='top_geo' style='overflow-x:hidden;width:960px;float:left;'>
-				<div id="top_active_geo_line" style="height:350px;width:950px;"></div>
+				<div id="top_active_geo_line" style="height:350px;width:940px;"></div>
 			</div>
 	  	</div>
 	</div><br>
@@ -71,16 +80,16 @@
 	    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 	        <div>主要活跃用户</div>
 	    </div>
-	    <div class="panel-body" style='padding:0;'>
-			<div id='active_users' style='overflow-x:hidden;width:288px;min-height:225px;float:left;padding-top:5px;'></div>
+	    <div class="panel-body" style='padding:5px;'>
+			<div id='active_users' style='overflow-x:hidden;width:278px;height:212px;float:left;padding-top:5px;'></div>
 	  	</div>
 	</div>
 	<div class="panel panel-default" style='width: 290px;float: left;margin-top:10px;margin-left:14px;'>
 	    <div class="panel-heading" style="border-bottom: 1px solid transparent;border-color: #dddddd;">
 	        <div>主要非活跃用户</div>
 	    </div>
-	    <div class="panel-body" style='padding:0;'>
-			<div id='unactive_users' style='overflow-x:hidden;width:288px;min-height:225px;float:left;padding-top:5px;'></div>
+	    <div class="panel-body" style='padding:5px;'>
+			<div id='unactive_users' style='overflow-x:hidden;width:278px;height:212px;float:left;padding-top:5px;'></div>
 	  	</div>
 	</div>
 		<div class="panel panel-default" style='width: 960px;float: left;margin-top:10px;'>
@@ -92,7 +101,9 @@
 	  	</div>
 	</div>
 </div>
-<div id="activity_conclusion" style='font-size:16px;float:left;margin-top:15px;'><img src="/static/img/warning.png"></div>
+<div style='font-size:16px;float:left;margin-top:15px;'><img src="/static/img/warning.png">
+    <span id="activity_conclusion"></span>
+</div>
 
 <!-- 模态框 -->
 <!-- <div class="modal fade" id="rank_platform" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

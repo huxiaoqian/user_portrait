@@ -8,7 +8,7 @@ import csv
 import time
 import json
 import redis
-from global_utils import R_DICT,es_user_profile,es_user_portrait
+from global_utils_do import R_DICT,es_user_profile,es_user_portrait
 
 #search:'be_retweet_' + str(uid) return followers {br_uid1:count1, br_uid2:count2}
 #redis:{'be_retweet_'+uid:{br_uid:count}}

@@ -1,6 +1,142 @@
+//test
+function Draw_top_location2(data1, data2, data3){
+    //console.log('data1!!', data1);
+    var y_axi_1 = data1[0];
+    var x_axi_1 = data1[1];
+    var xdata_1 = [];
+
+    for (var i = 0; i< x_axi_1.length-1; i++){
+        xdata_1.push(data1[1][i] + '-' + data1[1][i+1])
+    };
+
+    var y_axi_2 = data2[0];
+    var x_axi_2 = data2[1];
+    var xdata_2 = [];
+
+    for (var i = 0; i< data2[1].length-1; i++){
+        xdata_2.push(data2[1][i] + '-' + data2[1][i+1])
+    };
+
+    var y_axi_3 = data3[0];
+    var x_axi_3 = data3[1];
+    var xdata_3 = [];
+
+    for (var i = 0; i< data3[1].length-1; i++){
+        xdata_3.push(data3[1][i] + '-' + data3[1][i+1])
+    };
+  // console.log(bar_data_y);
+  
+    //console.log(timeline_data);
+    var myChart = echarts.init(document.getElementById('whole_out_user')); 
+
+    var option = {
+        timeline:{
+            data:['用户粉丝数','dd','dd'],
+            autoPlay : true,
+            playInterval : 2000
+        },
+        tooltip : {'trigger':'axis',
+                    formatter:  function (params) {
+                    console.log(params)
+                    var res = 'Function formatter : <br/>' + params[0].name;
+                    for (var i = 0, l = params.length; i < l; i++) {
+                        res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+                    }
+
+                    return res; 
+            }},
+        toolbox : {
+            'show':false, 
+            orient : 'vertical',
+            x: 'right', 
+            y: 'center',
+            'feature':{
+                'mark':{'show':true},
+                'dataView':{'show':true,'readOnly':false},
+                'magicType':{'show':true,'type':['line','bar','stack','tiled']},
+                'restore':{'show':true},
+                'saveAsImage':{'show':true}
+            }
+        },
+        options : [
+            {
+                title : {'text':'粉丝数分布'},
+                tooltip : {'trigger':'axis',
+                    formatter: "{b}<br/>{a}:{c}"},
+                calculable : true,
+                grid : {'y':80,'y2':100},
+                xAxis :  [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':xdata_1
+                }],
+                yAxis : [{
+                    'type':'value',
+                    'name':'次数',
+                    //'max':53500
+                    }
+                ],
+                series : [
+                    {
+                        title : {'text':'数值'},
+                        'type':'bar',
+                        'data': y_axi_1
+                    }
+                ]
+            },
+            {
+                title : {'text':'朋友数分布'},
+                tooltip : {'trigger':'axis'},
+                calculable:  true,
+                grid :  {'y':80,'y2':100},
+                xAxis : [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':xdata_2
+                }],
+                yAxis : [{
+                    'type':'value',
+                    'name':'次数',
+                    //'max':53500
+                    }
+                ],
+                series : [{
+                    title : {'text':'数值'},
+                    'type':'bar',
+                    'data': y_axi_2}
+                ]
+            },
+            {
+                title : {'text':'微博数分布'},
+                tooltip : {'trigger':'axis'},
+                calculable :  true,
+                grid : {'y':80,'y2':100},
+                xAxis : [{
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':xdata_3
+                }],
+                yAxis : [{
+                    'type':'value',
+                    'name':'次数',
+                    //'max':53500
+                    }
+                ],
+                series : [{
+                    title : {'text':'数值'},
+                    'type':'bar',
+                    'data': y_axi_3
+                }]
+            }
+        ]
+    };
+    myChart.setOption(option);
+                    
+}
+
 //影响力分布
 function draw_influ_distribution(data,radar_div, title){
-    console.log(data);
+    //console.log(data);
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
@@ -34,7 +170,7 @@ function draw_influ_distribution(data,radar_div, title){
     yAxis : [
         {
             type : 'category',
-            name : '区间',
+            name : title,
             data : xdata
         }
     ],
@@ -45,9 +181,166 @@ function draw_influ_distribution(data,radar_div, title){
             data:data[0]
         }
     ]
-};
-  mychart1.setOption(option);
+    };
+    mychart1.setOption(option);
 }
+
+//粉丝数分布
+function draw_fans_distribution(data,radar_div, title){
+    //console.log(data);
+    var y_name = title+'（/百万人）';
+    var mychart1 = echarts.init(document.getElementById(radar_div));
+    var y_axi = data[0];
+    var x_axi = data[1];
+    var xdata = [];
+
+    for (i = 0; i< data[1].length-1; i++){
+        xdata.push((data[1][i]/1000000).toFixed(2) + '-' + (data[1][i+1]/1000000).toFixed(2))
+    };
+
+    var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'value',
+            boundaryGap : [0, 0.01]
+        }
+    ],
+    yAxis : [
+        {
+            type : 'category',
+            name : y_name,
+            data : xdata
+        }
+    ],
+    series : [
+        {
+            name:title,
+            type:'bar',
+            data:data[0]
+        }
+    ]
+    };
+    mychart1.setOption(option);
+}
+
+//微博数分布
+function draw_status_distribution(data,radar_div, title){
+    //console.log(data);
+    var y_name = title + '（/万人）';
+    var mychart1 = echarts.init(document.getElementById(radar_div));
+    var y_axi = data[0];
+    var x_axi = data[1];
+    var xdata = [];
+
+    for (i = 0; i< data[1].length-1; i++){
+        xdata.push((data[1][i]/10000).toFixed(2) + '-' + (data[1][i+1]/10000).toFixed(2))
+    };
+
+    var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'value',
+            boundaryGap : [0, 0.01]
+        }
+    ],
+    yAxis : [
+        {
+            type : 'category',
+            name : y_name,
+            data : xdata
+        }
+    ],
+    series : [
+        {
+            name:title,
+            type:'bar',
+            data:data[0]
+        }
+    ]
+    };
+    mychart1.setOption(option);
+}
+
+//朋友数分布
+function draw_friends_distribution(data, radar_div, title){
+    //console.log(data);
+    var y_name = title + '（/千人）';
+    var mychart1 = echarts.init(document.getElementById(radar_div));
+    var y_axi = data[0];
+    var x_axi = data[1];
+    var xdata = [];
+
+    for (i = 0; i< data[1].length-1; i++){
+        xdata.push((data[1][i]/1000).toFixed(2) + '-' + (data[1][i+1]/1000).toFixed(2))
+    };
+
+    var option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'value',
+            boundaryGap : [0, 0.01]
+        }
+    ],
+    yAxis : [
+        {
+            type : 'category',
+            name : y_name,
+            data : xdata
+        }
+    ],
+    series : [
+        {
+            name:title,
+            type:'bar',
+            data:data[0]
+        }
+    ]
+    };
+    mychart1.setOption(option);
+}
+
 
 function Show_influ(url,div){
     that = this;
@@ -66,7 +359,7 @@ Show_influ.prototype = {
     });
   },
   Draw_table:function(data){
-    console.log(data);
+    //console.log(data);
     var influ_his = data['influence_his'];
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
@@ -91,26 +384,28 @@ Show_influ.prototype = {
         domains.push(dd);
     }
     //console.log(domains);
-    Draw_topic(topics,'influence_topic', 'topic_WordList','showmore_topic_influ');
-    Draw_topic(domains,'influence_domain', 'domain_WordList','showmore_domain_influ');
+    Draw_topic2(topics,'influence_topic', 'influ_topic_WordList','showmore_topic_influ');
+    Draw_topic2(domains,'influence_domain', 'influ_domain_WordList','showmore_domain_influ');
     draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力');
     draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
     var influ_out = data['influence_out_user'];
-    draw_influ_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
-    draw_influ_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
-    draw_influ_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
+    //Draw_top_location2(influ_out['out_fansnum_his'], influ_out['out_friendsnum_his'], influ_out['out_statusnum_his']);
+    draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
+    draw_friends_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
+    draw_status_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
   }
 }
 
 var Show_influ = new Show_influ();
 var group_influ_url = '/group/show_group_result/?task_name=媒体&module=influence';
+console.log('aaaaa');
 Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
 //影响用户
 function show_influ_users(div_name,data){
     $('#' + div_name).empty();
     
     var html = '';
-    html += '<table class="table table-striped" style="font-size:14px;margin-bottom:0px;">';
+    html += '<table class="table table-striped" style="font-size:10px;margin-bottom:0px;">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">频数</th></tr>';
     for (var i = 0; i < data.length; i++) {
        var s = i.toString();
@@ -203,7 +498,8 @@ function group_influ(data){
     ],
     yAxis : [
         {
-            type : 'value'
+            type : 'value',
+            name : '影响力'
         }
     ],
     series : [
@@ -234,9 +530,9 @@ function group_influ(data){
 //显示成员微博信息
 function Draw_group_influ_weibo(data, div_name, sub_div_name){
     page_num = 5;
-    console.log(div_name);
+    //console.log(div_name);
     if (data.length < page_num) {
-        console.log('data_length', data.length);
+        //console.log('data_length', data.length);
         $('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
         $('#'+ div_name + ' #pageGro .pageList').css('display', 'none'); 
         $('#'+ div_name + ' #pageGro .pageDown').css('display', 'none'); 
@@ -244,11 +540,13 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             $('#' + sub_div_name).empty();
             $('#' + sub_div_name).append('此条件下没有与此事件相关的微博！');
         }else{
+            $('#'+ div_name + ' #pageGro').css('display', 'block');
             page_num = data.length
             page_group_influ_weibo( 0, page_num, data, sub_div_name);
         }
       }
       else {
+          $('#'+ div_name + ' #pageGro').css('display', 'block');
           page_group_influ_weibo( 0, page_num, data, sub_div_name);
           var total_pages = 0;
           if (data.length % page_num == 0) {
@@ -275,14 +573,14 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             $(this).siblings("li").removeClass("on");
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log('page', page);         
+      //console.log('page', page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length)
           end_row = data.length;
-        console.log('start', start_row);
-        console.log('end', end_row);
-        console.log('data',data);
+        // console.log('start', start_row);
+        // console.log('end', end_row);
+        // console.log('data',data);
         page_group_influ_weibo(start_row,end_row,data, sub_div_name);
     });
 
@@ -298,7 +596,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             }
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      console.log(page);
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -321,7 +619,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
             }
         }
       page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
-      console.log(page);
+      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -347,13 +645,13 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
         timestamp = data[s]['timestamp'];
         //date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
         if (i%2 ==0){
-            html += '<div style="background:whitesmoke;font-size:14px">';
+            html += '<div style="padding:5px;background:whitesmoke;font-size:14px">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
             html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + timestamp + '</font></p>';
             html += '</div>'
     }
         else{
-            html += '<div>';
+            html += '<div style="padding;5px;">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
             html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + timestamp + '</font></p>';
             html += '</div>';
@@ -366,15 +664,17 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
 //日期选择
 var date = new Date();
 date.setHours(0,0,0,0);
-var max_date = date.format('yyyyMMdd');
-var current_date = date.format('yyyy/MM/dd');
+var max_date = date.format('yyyyMMdd hh:mm');
+var current_date = date.format('yyyy/MM/dd hh:mm');
 var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24*30;
 var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
-var from_date = min_date_ms.format('yyyy/MM/dd');
+var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 
 $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+// $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
+// $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
 //获取微博成员信息
 function Draw_group_weibo_user(uids,unames){
     
@@ -400,7 +700,7 @@ function submit_date_user(){
     var timestamp_to=1378051200;
     var select_uid = document.getElementById('select_group_weibo_user').value;
     var submit_date_user_url = '/group/influence_content/?uid=' + select_uid + '&timestamp_from=' + timestamp_from + '&timestamp_to=' + timestamp_to;
-    console.log(submit_date_user_url);
+    //console.log(submit_date_user_url);
     function Weibo(){
         this.ajax_method = 'GET';
     }
@@ -415,8 +715,8 @@ function submit_date_user(){
         });
        },
        Draw:function(data){
-	     console.log(data);
-		 Draw_group_influ_weibo(data,'group_influ_weibo', 'group_influ_weibo_result');
+	    //console.log(data);
+		Draw_group_influ_weibo(data,'group_influ_weibo', 'group_influ_weibo_result');
         }
       
      }
@@ -453,78 +753,78 @@ function get_radar_data (data) {
   topic_result.push(topic_value);
   return topic_result;
 }
-// function Draw_topic(data, radar_div, motal_div, show_more){
-//   var topic = [];
-//   var html = '';
-//   $('#'+ motal_div).empty();
-//   if(data.length == 0){
-//       $('#'+ motal_div).empty();
-//       html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
-//       //$('#'+ more_div).append(html);
-//       $('#'+ radar_div).append(html);
-//       $('#'+ motal_div).append(html);
-//       $('#'+ show_more).empty();
-//   }else{
-//       html = '';
-//       html += '<table class="table table-striped table-bordered" style="width:450px;">';
-//       html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
-//       for (var i = 0; i < data.length; i++) {
-//          var s = i.toString();
-//          var m = i + 1;
-//          html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
-//       };
-//       html += '</table>'; 
-//       $('#'+ motal_div).append(html);
-//     };
-//   var topic_result = [];
-//   topic_result = get_radar_data(data);
-//   var topic_name = topic_result[0];
-//   var topic_value = topic_result[1];
-//   var myChart2 = echarts.init(document.getElementById(radar_div));
-//   var option = {
-//     // title : {
-//     //   text: '用户话题分布',
-//     //   subtext: ''
-//     // },
-//       tooltip : {
-//         trigger: 'axis'
-//       },
-//       toolbox: {
-//         show : true,
-//         feature : {
-//             mark : {show: true},
-//             dataView : {show: true, readOnly: false},
-//             restore : {show: true},
-//             saveAsImage : {show: true}
-//         }
-//       },
-//       calculable : true,
-//       polar : [
-//        {
-//         indicator :topic_name,
-//         radius : 90
-//        }
-//       ],
-//       series : [
-//        {
-//         name: '话题分布情况',
-//         type: 'radar',
-//         itemStyle: {
-//          normal: {
-//           areaStyle: {
-//             type: 'default'
-//           }
-//          }
-//         },
-//        data : [
-//         {
-//          value : topic_value,
-//          name : '用户话题分布'}
-//        ]
-//       }]
-//   };
-//   myChart2.setOption(option);
-// }
+function Draw_topic2(data, radar_div, motal_div, show_more){
+  var topic = [];
+  var html = '';
+  $('#'+ motal_div).empty();
+  if(data.length == 0){
+      $('#'+ motal_div).empty();
+      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+      //$('#'+ more_div).append(html);
+      $('#'+ radar_div).append(html);
+      $('#'+ motal_div).append(html);
+      $('#'+ show_more).empty();
+  }else{
+      html = '';
+      html += '<table class="table table-striped table-bordered">';
+      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
+      for (var i = 0; i < data.length; i++) {
+         var s = i.toString();
+         var m = i + 1;
+         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(2) + '</th></tr>';
+      };
+      html += '</table>'; 
+      $('#'+ motal_div).append(html);
+    };
+  var topic_result = [];
+  topic_result = get_radar_data(data);
+  var topic_name = topic_result[0];
+  var topic_value = topic_result[1];
+  var myChart2 = echarts.init(document.getElementById(radar_div));
+  var option = {
+    // title : {
+    //   text: '用户话题分布',
+    //   subtext: ''
+    // },
+      tooltip : {
+        trigger: 'axis'
+      },
+      toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+      },
+      calculable : true,
+      polar : [
+       {
+        indicator :topic_name,
+        radius : 90
+       }
+      ],
+      series : [
+       {
+        name: '话题分布情况',
+        type: 'radar',
+        itemStyle: {
+         normal: {
+          areaStyle: {
+            type: 'default'
+          }
+         }
+        },
+       data : [
+        {
+         value : topic_value,
+         name : '用户话题分布'}
+       ]
+      }]
+  };
+  myChart2.setOption(option);
+}
 
 var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
 
@@ -577,7 +877,7 @@ url_all.push(timestamp_from_url);
 var timestamp_to_url = '';
 timestamp_to_url = 'timestamp_to=' + time_to;
 url_all.push(timestamp_to_url);
-console.log(url_all);
+//console.log(url_all);
 
 //提交条件
 //submit_date_user();

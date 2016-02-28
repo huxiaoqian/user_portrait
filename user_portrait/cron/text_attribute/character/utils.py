@@ -5,7 +5,7 @@ import os
 import scws
 import time
 import re
-from global_utils import abs_path
+from global_utils_ch import abs_path
 
 SCWS_ENCODING = 'utf-8'
 SCWS_RULES = '/usr/local/scws/etc/rules.utf8.ini'

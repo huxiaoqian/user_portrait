@@ -1,65 +1,14 @@
 # -*- coding: UTF-8 -*-
+import sys
 import csv
 import time
 import json
 from collections import Counter
-from cron_text_attribute import test_cron_text_attribute
-from user_portrait.parameter import DAY, WEEK,MAX_VALUE
-from user_portrait.time_utils import ts2datetime, datetime2ts
-from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
-
-#read blacklist user list
-def read_black_list():
-    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black_list.csv', 'rb')
-    reader = csv.reader(f)
-    item_list = []
-    for item in reader:
-        if len(item)!= 10:
-            item = item[:10]
-        item_list.append(item)
-    return iten_list
-
-
-#test: read user weibo
-def read_user_weibo():
-    user_weibo_dict = dict()
-    csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/uid_text_0728.csv', 'rb')
-    reader = csv.reader(csvfile)
-    count = 0
-    for line in reader:
-        count += 1
-        '''
-        if count>=10:
-            break
-        '''
-        weibo = dict()
-        user = line[0]
-        weibo['uname'] = 'unknown'
-        weibo['text'] = line[1].decode('utf-8')
-        weibo['online_pattern'] = 'weibo.com'
-        try:
-            user_weibo_dict[user].append(weibo)
-        except:
-            user_weibo_dict[user] = [weibo]
-    print 'all count:', len(user_weibo_dict)
-    
-    iter_count = 0
-    iter_weibo_dict = {}
-    start_ts = time.time()
-    for user in user_weibo_dict:
-        iter_count += 1
-        iter_weibo_dict[user] = user_weibo_dict[user]
-        if iter_count % 100==0:
-            status = test_cron_text_attribute(iter_weibo_dict)
-            iter_weibo_dict = {}
-
-    if iter_weibo_dict:
-        status = test_cron_text_attribute(iter_weibo_dict)
-    end_ts = time.time()
-    
-    print 'all end count:', iter_count
-    print 'time_segment:', end_ts - start_ts
-    
+reload(sys)
+sys.path.append('../../')
+from parameter import DAY, WEEK,MAX_VALUE
+from time_utils import ts2datetime, datetime2ts
+from global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type    
 
 def read_flow_text_sentiment(uid_list):
     '''
@@ -71,6 +20,7 @@ def read_flow_text_sentiment(uid_list):
     '''
     word_dict = dict()#词频字典
     weibo_list = []#微博列表
+    online_pattern_dict = {} #{uid:{pattern1:count, pattern2:count},...}
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     now_date_ts = datetime2ts('2013-09-08')
@@ -104,8 +54,18 @@ def read_flow_text_sentiment(uid_list):
                 word_dict[uid] = keywords_dict
 
             weibo_list.append([uid,text,sentiment,ts])
+            #test online pattern
+            online_pattern = u'weibo.com'
+            try:
+                user_online_pattern = online_pattern_dict[uid]
+            except:
+                online_pattern_dict[uid] = {}
+            try:
+                online_pattern_dict[uid][online_pattern] += 1
+            except:
+                online_pattern_dict[uid][online_pattern] = 1
             
-    return  word_dict,weibo_list
+    return  word_dict,weibo_list, online_pattern_dict
 
 def read_flow_text(uid_list):
     '''
@@ -117,6 +77,7 @@ def read_flow_text(uid_list):
     '''
     word_dict = dict()#词频字典
     weibo_list = []#微博列表
+    online_pattern_dict = {} # {uid:[online_pattern1, ..],...}
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     now_date_ts = datetime2ts('2013-09-08')
@@ -149,10 +110,20 @@ def read_flow_text(uid_list):
                 word_dict[uid] = keywords_dict
 
             weibo_list.append([uid,text,ts])
+            #test online pattern
+            online_pattern = u'weibo.com'
+            try:
+                user_online_pattern_dict = online_pattern_dict[uid]
+            except:
+                online_pattern_dict[uid] = {}
+            try:
+                online_pattern_dict[uid][online_pattern] += 1
+            except:
+                online_pattern_dict[uid][online_pattern] = 1
             
-    return  word_dict,weibo_list        
+    return  word_dict,weibo_list, online_pattern_dict
 
 if __name__=='__main__':
     #read_user_weibo()
-    word_dict,weibo_list = read_flow_text(['2098261223','2991483613'])
-    
+    word_dict,weibo_list,online_pattern_dict = read_flow_text(['2098261223','2991483613'])
+    print 'online_pattern_dict:', online_pattern_dict

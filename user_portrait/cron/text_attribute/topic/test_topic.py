@@ -7,7 +7,7 @@ import csv
 import heapq
 import random
 from decimal import *
-from config import abs_path,DOMAIN_DICT,DOMAIN_COUNT,LEN_DICT,TOTAL,name_list
+from config import abs_path,DOMAIN_DICT,DOMAIN_COUNT,LEN_DICT,TOTAL,name_list,TOPIC_DICT
 #from test_data import input_data #测试输入
 
 class TopkHeap(object):
@@ -81,12 +81,12 @@ def rank_result(domain_p):
 
     return uid_topic
 
-def topic_classfiy(uid_weibo):#话题分类主函数
+def topic_classfiy(uid_list,uid_weibo):#话题分类主函数
     '''
     用户话题分类主函数
-    输入数据示例：字典
-    分词之后的词频字典
-    {uid1:{'key1':f1,'key2':f2...}...}
+    输入数据示例：
+    uidlist:uid列表（[uid1,uid2,uid3,...]）
+    uid_weibo:分词之后的词频字典（{uid1:{'key1':f1,'key2':f2...}...}）
 
     输出数据示例：字典
     用户18个话题的分布：
@@ -96,6 +96,11 @@ def topic_classfiy(uid_weibo):#话题分类主函数
     '''
 
     result_data,uid_topic = load_weibo(uid_weibo)#话题分类主函数
+
+    for uid in uid_list:
+        if not result_data.has_key(uid):
+            result_data[uid] = TOPIC_DICT
+            uid_topic[uid] = ['life']
     
     return result_data,uid_topic
 

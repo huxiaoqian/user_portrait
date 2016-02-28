@@ -78,15 +78,10 @@ def get_flow_information(uid_list):
             iter_results[uid]['geo_track'].append(uid_day_geo[uid])
             count += 1
         
-        #compute keywords:
-        nest_body_list = []
-        query = []
-        for uid in uid_list:
-            nest_body_list.append({'match':{'uid':uid}})
-        query.append({'bool':{'should': nest_body_list}})
-        
+        #compute keywords:        
         try:
-            text_results = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'size':MAX_VALUE}, _source=True, fields=['uid', 'keywords_dict'])['hits']['hits']
+            text_results = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, \
+                                               body={'query':{'filtered':{'filter':{'terms':{'uid': uid_list}}}}, 'size':MAX_VALUE}, _source=True, fields=['uid', 'keywords_dict'])['hits']['hits']
         except:
             text_results = {}
         for item in text_results:
@@ -121,6 +116,87 @@ def get_flow_information(uid_list):
         results[uid]['keywords_string'] = keywords_top50_string
         
     return results
+
+
+# use to compute flow information for new user attribute compute
+# write in version: 2016-02-28
+# input: uid_list, keywords_dict
+def get_flow_information_v2(uid_list, all_user_keywords_dict):
+    results = {}      
+    #results = {uid:{'hashtag_dict':{},'hashtag':'', 'keywords_dict':{}, 'keywords_string':'', 'activity_geo':'', 'activity_geo_dict':dict}}
+    iter_results = {} # iter_results = {uid:{'hashtag': hashtag_dict, 'geo':geo_dict, 'keywords':keywords_dict}}
+    now_ts = time.time()
+    now_date_ts = datetime2ts(ts2datetime(now_ts))
+    #test
+    now_date_ts = test_ts
+    for i in range(7,0,-1):
+        ts = now_date_ts - DAY*i
+        uid_day_geo = {}
+        #compute hashtag and geo
+        hashtag_results = r_cluster.hmget('hashtag_'+str(ts), uid_list)
+        ip_results = r_cluster.hmget('new_ip_'+str(ts), uid_list)
+        count = 0 
+        for uid in uid_list:
+            #init iter_results[uid]
+            if uid not in iter_results:
+                iter_results[uid] = {'hashtag':{}, 'geo':{},'geo_track':[],'keywords':{}}
+            #compute hashtag
+            hashtag_item = hashtag_results[count]
+            if hashtag_item:
+                uid_hashtag_dict = json.loads(hashtag_item)
+            else:
+                uid_hashtag_dict = {}
+            for hashtag in uid_hashtag_dict:
+                try:
+                    iter_results[uid]['hashtag'][hashtag] += uid_hashtag_dict[hashtag]
+                except:
+                    iter_results[uid]['hashtag'][hashtag] = uid_hashtag_dict[hashtag]
+            #compute geo
+            uid_day_geo[uid] = {}
+            ip_item = ip_results[count]
+            if ip_item:
+                uid_ip_dict = json.loads(ip_item)
+            else:
+                uid_ip_dict = {}
+            for ip in uid_ip_dict:
+                ip_count = len(uid_ip_dict[ip].split('&'))
+                geo = ip2city(ip)
+                if geo:
+                    #print 'geo:', geo
+                    try:
+                        iter_results[uid]['geo'][geo] += ip_count
+                    except:
+                        iter_results[uid]['geo'][geo] = ip_count
+                    try:
+                        uid_day_geo[uid][geo] += ip_count
+                    except:
+                        uid_day_geo[uid][geo] = ip_count
+            iter_results[uid]['geo_track'].append(uid_day_geo[uid])
+            count += 1
+               
+    #get keywords top
+    for uid in uid_list:
+        results[uid] = {}
+        hashtag_dict = iter_results[uid]['hashtag']
+        results[uid]['hashtag_dict'] = json.dumps(hashtag_dict)
+        results[uid]['hashtag'] = '&'.join(hashtag_dict.keys())
+        geo_dict = iter_results[uid]['geo']
+        geo_track_list = iter_results[uid]['geo_track']
+        results[uid]['activity_geo_dict'] = json.dumps(geo_track_list)
+        geo_dict_keys = geo_dict.keys()
+        #print 'geo_dict_keys:', geo_dict_keys
+        results[uid]['activity_geo'] = '&'.join(['&'.join(item.split('\t')) for item in geo_dict_keys])
+        #print 'activity_geo:',  results[uid]['activity_geo']
+
+        keywords_dict = all_user_keywords_dict[uid]
+        keywords_top50 = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]
+        keywords_top50_string = '&'.join([keyword_item[0] for keyword_item in keywords_top50])
+        results[uid]['keywords'] = json.dumps(keywords_top50)
+        results[uid]['keywords_string'] = keywords_top50_string
+        
+    return results
+
+
 
 def ip2city(ip):
     try:

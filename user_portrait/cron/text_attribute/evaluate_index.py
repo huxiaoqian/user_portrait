@@ -100,12 +100,13 @@ def get_influence(uid_list):
     now_date = ts2datetime(now_ts - 3600*24)
     # test
     now_date = '2013-09-07'
-    index_time = ''.join(now_date.split('-'))
+    index_time = 'bci_' + ''.join(now_date.split('-'))
     index_type = 'bci'
     try:
         es_result = es.mget(index=index_time, doc_type=index_type, body={'ids': uid_list})['docs']
     except Exception, e:
         raise e
+    #print 'es_result:', es_result
     for es_item in es_result:
         uid = es_item['_id']
         if es_item['found'] == True:

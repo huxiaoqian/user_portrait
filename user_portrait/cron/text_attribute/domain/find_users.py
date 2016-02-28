@@ -6,7 +6,8 @@ import scws
 import csv
 import sys
 import json
-from global_utils import abs_path,ES_CLUSTER_FLOW1 as es
+from global_utils_do import abs_path,es_user_profile,es_retweet,profile_index_name,\
+                         profile_index_type,retweet_index_name_pre,retweet_index_type,get_db_num
 
 zh_text = ['nick_name','rel_name','description','sp_type','user_location']
 
@@ -68,7 +69,7 @@ def get_user(uidlist):#返回用户的背景信息
         输出数据：users列表
     '''
     user_list = dict()
-    search_result = es.mget(index='weibo_user', doc_type='user', body={"ids": uidlist})["docs"]
+    search_result = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type, body={"ids": uidlist})["docs"]
     for item in search_result:
         uid = item['_id']
         if not item['found']:
@@ -92,8 +93,9 @@ def get_friends(uidlist):#返回用户的粉丝结构
         输出数据：friend列表
     '''
 
+    ts = get_db_num(time.time())    
     friend_list = dict()
-    search_result = es.mget(index='retweet_1', doc_type='user', body={"ids": uidlist})["docs"]
+    search_result = es_retweet.mget(index=retweet_index_name_pre+str(ts), doc_type=retweet_index_type, body={"ids": uidlist})["docs"]
     for item in search_result:
         uid = item['_id']
         if not item['found']:
