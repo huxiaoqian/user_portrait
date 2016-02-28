@@ -84,11 +84,24 @@
                 <span style="margin-top:10px;display:inline-block">终止时间：</span>
                 <input name="con_end_time" type='text' style='margin-left:10px;width:145px;margin-top:10px;display:inline-block;height:25px'>
             </div>
-            <span class='control-label' style='padding-top:10px;'>关键词：&nbsp;&nbsp;</span>
-            <input name="con_keywords" type='text' style='margin-left:16px;width:30%;margin-top:10px;margin-right:50px;  display:inline-block;height:25px' placeholder='多个词用空格隔开'>
-            <input name="keys_choose_all" id="keys_choose_all" type="checkbox" value="" onclick="keys_choose_all()" />
-            <span>全选</span>
-            <div id="show_keys" style="margin:5px;margin-left:90px;"></div>
+            <span class='control-label' style='padding-top:10px;'>传感词：&nbsp;&nbsp;</span>
+            <input name="con_keywords" type='text' style='margin-left:16px;width:35%;margin-top:10px;  display:inline-block;height:25px' placeholder='（选填，敏感传感词）多个词用空格隔开'>
+            <input name="con_nor_keywords" type='text' style='margin-left:16px;width:35%;margin-top:10px;margin-right:5px;  display:inline-block;height:25px' placeholder='（选填，普通传感词）多个词用空格隔开'>
+            <!-- <span id="con_more" class="btn btn-default" style="height: 25px;font-size: 14px;padding-top: 0px;">更多已有传感词</span> -->
+            <!-- <div id="so_more_content" style="margin-top:10px;"> -->
+              <div style="margin:5px;margin-left:90px;">敏感传感词<input style="margin-left:50px;margin-right:10px;" name="con_more_all_1" id="con_more_all_1" type="checkbox" value="" onclick="con_more_all_1()" /><span>全选</span></div>
+              <div id="con_sen_content"  style="margin:5px;margin-left:90px;"></div>
+
+              <div style="margin:5px;margin-left:90px;">一般传感词<input style="margin-left:50px;margin-right:10px;" name="con_more_all_0" id="con_more_all_0" type="checkbox" value="" onclick="con_more_all_0()" /><span>全选</span></div>
+              <div id="con_nor_content"   style="margin:5px;margin-left:90px;width: 83%;"></div>
+
+
+
+<!--              <input name="keys_choose_all" id="keys_choose_all" type="checkbox" value="" onclick="keys_choose_all()" />
+            <span>全选</span> 
+            <div id="show_keys" style="margin:5px;margin-left:90px;"></div> -->
+
+
             <div id="group_control_confirm" style="margin-top:30px;overflow-y:auto;height:300px;"></div>
           </div>
           <div class="modal-footer">
@@ -178,6 +191,9 @@
         </div>
       </div>
     </div>
+
+
+
     {% endblock main %}
     {% block Own_js %}
         {{ super() }}

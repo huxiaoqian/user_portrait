@@ -290,9 +290,9 @@ function show_members(){
         $('#group_member_user').empty();
         html = '';
         html += '<table id="modal_table" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
-        html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center">性别</th>';
+        html += '<thead><tr><th class="center" style="text-align:center">用户ID</th><th class="center" style="text-align:center">昵称</th><th class="center" style="text-align:center;width：auto;">性别</th>';
         html += '<th class="center" style="text-align:center">注册地</th><th class="center" style="text-align:center">重要度</th><th class="center" style="text-align:center;width:72px">影响力</th>';
-        html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
+        html += '<th class="center" style="text-align:center"><input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
         html += '</tr></thead>';
         html += '<tbody>';
         for ( i=0 ; i<data.length; i++){
@@ -312,7 +312,7 @@ function show_members(){
         $('#group_member_user').append(html);
         $('#modal_table').dataTable({
             "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-            "sPaginationType": "custom_bootstrap",
+            "sPaginationType": "bootstrap",
             "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
             "oLanguage": {
                 "sLengthMenu": "_MENU_ 每页"

@@ -22,6 +22,50 @@ from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
 from parameter import WEIBO_API_INPUT_TYPE
 from config import topic_en2ch_dict, domain_en2ch_dict
 
+
+def deal_bulk_action(user_info_list, fansnum_max):
+    start_ts = time.time()
+    uid_list = user_info_list.keys()
+    #acquire bulk user weibo data
+    if WEIBO_API_INPUT_TYPE == 0:
+        user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text_sentiment(uid_list)
+    else:
+        user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text(uid_list)
+    #compute attribute--keywords, topic, online_pattern            
+    #get user topic results by bulk action
+    topic_results_dict, topic_results_label = topic_classfiy(uid_list, user_keywords_dict)
+    #get bulk action
+    bulk_action = []
+    for uid in uid_list:
+        results = {}
+        results['uid'] = uid
+        #add user topic attribute
+        user_topic_dict = topic_results_dict[uid]
+        user_label_dict = topic_results_label[uid]
+        results['topic'] = json.dumps(user_topic_dict)
+        results['topic_string'] = topic_en2ch(user_label_dict)
+        #add user keywords attribute
+        keywords_dict = user_keywords_dict[uid]
+        keywords_top50 = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]
+        keywords_top50_string = '&'.join([keyword_item[0] for keyword_item in keywords_top50])
+        results['keywords'] = json.dumps(keywords_top50)
+        results['keywords_string'] = keywords_top50_string
+        #add online_pattern
+        user_online_pattern = json.dumps(online_pattern_dict[uid])
+        results['online_pattern'] = user_online_pattern
+        #add user importance
+        user_domain = user_info_list[uid]['domain'].encode('utf-8')
+        user_fansnum = user_info_list[uid]['fansnum']
+        results['importance'] = get_importance(user_domain, results['topic_string'], user_fansnum, fansnum_max)
+        #bulk action
+        action = {'update':{'_id': uid}}
+        bulk_action.extend([action, {'doc': results}])
+    es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+    end_ts = time.time()
+    print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
+    start_ts = end_ts
+    #print 'bulk_action:', bulk_action
+
 #use to update attribute every week for topic, keywords, online_pattern, importance
 #write in version: 16-02-28
 #this file run after the file: scan_es2redis_week.py function:scan_es2redis_week()
@@ -30,7 +74,6 @@ def update_attribute_week_v2():
     count = 0
     user_list = []
     user_info_list = {}
-    start_ts = time.time()
     #get fansnum max
     fansnum_max = get_fansnum_max()
     while True:
@@ -44,47 +87,13 @@ def update_attribute_week_v2():
             break
         
         if count % 1000 == 0:
-            uid_list = user_info_list.keys()
-            #acquire bulk user weibo data
-            if WEIBO_API_INPUT_TYPE == 0:
-                user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text_sentiment(uid_list)
-            else:
-                user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text(uid_list)
-            #compute attribute--keywords, topic, online_pattern            
-            #get user topic results by bulk action
-            topic_results_dict, topic_results_label = topic_classfiy(uid_list, user_keywords_dict)
+            #get bulk action
+            deal_bulk_action(user_info_list, fansnum_max)
+            user_info_list = {}
             
-            bulk_action = []
-            for uid in uid_list:
-                results = {}
-                results['uid'] = uid
-                #add user topic attribute
-                user_topic_dict = topic_results_dict[uid]
-                user_label_dict = topic_results_label[uid]
-                results['topic'] = json.dumps(user_topic_dict)
-                results['topic_string'] = topic_en2ch(user_label_dict)
-                #add user keywords attribute
-                keywords_dict = user_keywords_dict[uid]
-                keywords_top50 = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]
-                keywords_top50_string = '&'.join([keyword_item[0] for keyword_item in keywords_top50])
-                results['keywords'] = json.dumps(keywords_top50)
-                results['keywords_string'] = keywords_top50_string
-                #add online_pattern
-                user_online_pattern = json.dumps(online_pattern_dict[uid])
-                results['online_pattern'] = user_online_pattern
-                #add user importance
-                user_domain = user_info_list[uid]['domain']
-                user_fansnum = user_info_list[uid]['fansnum']
-                results['importance'] = get_importance(user_domain, results['topic_string'], user_fansnum, fansnum_max)
-                #bulk action
-                action = {'update':{'_id': uid}}
-                bulk_action.extend([action, {'doc': results}])
-            es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
-            end_ts = time.time()
-            print '%s sec count 1000' % (end_ts - start_ts)
-            start_ts = end_ts
-    
-    print 'count:', count
+    if user_info_list != {}:
+        #get bulk action
+        deal_bulk_action(user_info_list, fansnum_max)
 
 
 

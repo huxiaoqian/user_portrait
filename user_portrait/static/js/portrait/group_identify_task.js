@@ -141,7 +141,7 @@ function redraw_result(){
 	//deleteGroup();
 	control_click();
 }
-window.setInterval(redraw,30000);
+window.setInterval(redraw,10000);
 function redraw(){
 	deurl= '/detect/show_detect_task/';
 	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
@@ -231,6 +231,41 @@ function have_keys(data){
 	$('#show_keys').append(html);
 }
 
+
+function draw_con_sen_more(data){
+	var item = data;
+	//$('#so_more_content').empty();
+	$('#con_sen_content').empty();
+	var html = '';
+    for (var i=0;i<item.length;i++){
+		html += '<input  name="con_more_option_1" class="search_result_option" value="'+item[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[i]+'</span> ';
+	}
+
+	$('#con_sen_content').append(html);
+}
+
+function draw_con_nor_more(data){
+	var item = data;
+	$('#con_nor_content').empty();
+	var html = '';
+	for (var i=0;i<item.length;i++){
+		html += '<input  name="con_more_option_0" class="search_result_option" value="'+item[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[i]+'</span> ';
+	}
+	$('#con_nor_content').append(html);
+}
+function con_more_all_0(){
+  $('input[name="con_more_option_0"]').prop('checked', $("#con_more_all_0").prop('checked'));
+}
+
+function con_more_all_1(){
+  $('input[name="con_more_option_1"]').prop('checked', $("#con_more_all_1").prop('checked'));
+}
+var con_sen_word_url='/social_sensing/get_sensitive_words';
+Group_identify_task.call_sync_ajax_request(con_sen_word_url,Group_identify_task.ajax_method,draw_con_sen_more);
+var con_nor_word_url='/social_sensing/get_sensing_words';
+Group_identify_task.call_sync_ajax_request(con_nor_word_url,Group_identify_task.ajax_method,draw_con_nor_more);
+
+
 function draw_control_table(data){
 	$('#group_control_confirm').empty();
 	var html='';
@@ -278,7 +313,13 @@ function draw_table(data,div){
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
     html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="analyze_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
     for (var i=0;i<data.length;i++) {
-        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+        var uname = data[i][1];
+        if (uname == 'unknown'){
+            uname == '未知';
+        }
+        html += '<tr><th style="text-align:center">' + data[i][0] + '</th>';
+        html += '<th style="text-align:center">' + uname + '</th>';
+        html += '<th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
     	//i = i + 1;
  	}
     html += '</table>'; 
@@ -342,9 +383,15 @@ function callback(data){
   	        alert('已存在相同名称的群体分析任务,请重试一次!');
   	    }
   	}
+$()
 $('#group_control_confirm_button').click(function(){
 	group_control_data();
 });
+
+$('span[id^="con_more"]').click(function(e){
+	console.log('sadfasdf');
+	$('#con_more_block').modal();
+ });
 
 function group_control_check(){             // check validation 
     //group_information check starts  
@@ -376,24 +423,34 @@ function group_control_data(){
     a['remark'] = $('input[name="con_remark"]').val();
 	a['stop_time'] = Date.parse($('input[name="con_end_time"]').val())/1000;
 	a['keywords'] = '';
+	a['sensitive_words'] = '';
 	a['create_at'] =  Date.parse(new Date())/1000;
-	a['social_sensors'] =[];
+	a['social_sensors'] ='';
 	var url0 = [];
 	var url1 = '';
 	var url_create = '/social_sensing/create_task/?';
 	if(flag = true){
-	   a['keywords'] = $('input[name="con_keywords"]').val();
+	   a['keywords'] = $('input[name="con_nor_keywords"]').val();
 	    if(a['keywords'].length){
 		 	a['keywords'] = a['keywords'].split(/\s+/g);
 	    }else{
 	    	a['keywords'] = [];
 	    }
-	    $('[name="keys_list_option"]:checked').each(function(){
+	    $('[name="con_more_option_0"]:checked').each(function(){
 		  	    a['keywords'].push($(this).val());
 		  	});
-	    $('[name="control_list_option"]:checked').each(function(){
-		  	    a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().prev().prev().attr('name'));
+	    a['sensitive_words'] = $('input[name="con_keywords"]').val();
+	    if(a['sensitive_words'].length){
+		 	a['sensitive_words'] = a['sensitive_words'].split(/\s+/g);
+	    }else{
+	    	a['sensitive_words'] = [];
+	    }
+	    $('[name="con_more_option_1"]:checked').each(function(){
+		  	    a['sensitive_words'].push($(this).val());
 		  	});
+    	$('[name="control_list_option"]:checked').each(function(){
+	  	    a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().prev().prev().attr('name'));
+	  	});
 		for(var k in a){
 			if(a[k]){
 				url0.push(k +'='+a[k]);
