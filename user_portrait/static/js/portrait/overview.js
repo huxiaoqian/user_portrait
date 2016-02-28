@@ -5,7 +5,7 @@
 
 Search_weibo.prototype = {
   call_sync_ajax_request:function(url, method, callback){
-    console.log(url);
+    //console.log(url);
     $.ajax({
       url: url,
       type: method,
@@ -16,9 +16,9 @@ Search_weibo.prototype = {
   },
 
   Draw_usernumber: function(data){
-    console.log(data);
-    compute = data['compute'];
-    console.log(compute);
+    //console.log(data);
+    //compute = data['compute'];
+    //console.log(compute);
     in_count = data['in_count'];
     out_count = data['out_count'];
     $('#user_num').empty();
@@ -40,9 +40,9 @@ Search_weibo.prototype = {
     draw_retweeted_user(data);
     draw_domain_portrait(data);
     draw_statistics_infor(data);
-    Draw_think_emotion();
+    //Draw_think_emotion();
     Draw_think_domain();
-    Draw_think_topic();
+    Draw_think_topic(data);
     draw_more_onlinepattern(data);
     draw_more_hastag(data);
     draw_more_retweeted_user(data);
@@ -53,7 +53,7 @@ Search_weibo.prototype = {
     draw_top_influence(data);
     draw_top_activeness(data);
     draw_more_top_activeness(data);
-    draw_top_influence_vary(data);
+    //draw_top_influence_vary(data);
     draw_topic_portrait(data);
     draw_more_domain_portrait(data);
     draw_more_topic_portrait(data);
@@ -157,9 +157,13 @@ function Draw_think_emotion(){
                     
 }
 
-function Draw_think_topic(){
+function Draw_think_topic(data){
     var myChart = echarts.init(document.getElementById('user_topic')); 
-        
+    var topics = data['topic_top'];
+	var datas = [];
+    for(var i = 0;i<topics.length;i++){
+        datas.push({'value':topics[i][1],'name':topics[i][0]});
+	}
     var option = {
     title : {
         text: '',
@@ -182,21 +186,8 @@ function Draw_think_topic(){
             name:'话题',
             type:'pie',
             radius : '55%',
-            center: ['50%', '60%'],
-            data:[
-                {value:435, name:'娱乐'},
-                {value:310, name:'计算机'},
-                {value:234, name:'经济'},
-                {value:135, name:'自然'},
-                {value:548, name:'健康'},
-                {value:235, name:'教育'},
-                {value:110, name:'军事'},
-                {value:135, name:'政治'},
-                {value:248, name:'体育'},
-                {value:234, name:'交通'},
-                {value:435, name:'民生'},
-                {value:448, name:'生活'}
-            ]
+            center: ['60%', '60%'],
+            data:datas
         }
     ]
 };                    

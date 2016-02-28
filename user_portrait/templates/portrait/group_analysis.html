@@ -205,93 +205,15 @@
 				      <div class="modal-body">
 			      	    <div style="font-size:18px;margin-bottom:10px">选择用户添加标签</div>
 						<div>
-							<span>选择类别：</span><span id='attribute_name' style="margin-left:10px"></span>
-							<span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">添加</button></span>
+							<span>选择类别：</span><span id='attribute_name' style="min-width:75px;margin-left:10px" ></span>
+							<span style='margin-left:20px'>选择标签：</span><span id='attribute_value' style="min-width:75px;margin-left:10px"></span><span style="margin-left:10px"><button class="btn btn-primary btn-sm" style="width:80px;height:30px" id="add_group_tag_button" title="确定选择" onclick="add_group_tag()">添加</button></span>
 				      	<div id= "group_member_user" style="margin-top:14px"></div>
 				      </div>
 				    </div>
 				    </div>
 				  </div>
 				</div>
-                <!--
-				<div class="modal fade" id="more_group_out" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document" style="width:950px">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">群组外转发该群组微博数</h4>
-				      </div>
-				      <div class="modal-body" id='more_group_out_user'>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-				<div class="modal fade" id="rank_hashtag" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">hashtag排名</h4>
-				      </div>
-				      <div class="modal-body" id='more_hashtag'>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-				<div class="modal fade" id="rank_emotion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">表情符号排名</h4>
-				      </div>
-				      <div class="modal-body" id='more_emotion'>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-				<div class="modal fade" id="rank_platform" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">发布平台排名</h4>
-				      </div>
-				      <div class="modal-body" id='top_more_platform'>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-				<div class="modal fade" id="rank_geo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">发布地点排名</h4>
-				      </div>
-				      <div class="modal-body" id='top_more_location'>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-				<div class="modal fade" id="modal_keyword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" style="font-size:18px" id="myModalLabel">关键词</h4>
-				      </div>
-				      <div class="modal-body" id='more_keyword'>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-                -->  
+               
 				<div class="modal fade" id="group_tag2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 				  <div class="modal-dialog" role="document">
 				    <div class="modal-content">
@@ -311,8 +233,10 @@
 
     {% block Own_js %}
     {{ super() }}
+
     <script>
         var name = "{{ name }}";
+        console.log('dddd', name);
         $(document).ready(function(){
             $("#closeness_tooltip").tooltip();
             $("#weibo_tooltip").tooltip();

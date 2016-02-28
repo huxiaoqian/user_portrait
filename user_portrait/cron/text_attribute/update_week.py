@@ -1,34 +1,97 @@
 # -*- coding: UTF-8 -*-
 '''
 update attribute of user portrait one week
-update attr: text attribute
+update attr: topic, keywords, online_pattern, importance
 update freq: one week
 '''
 import sys
 import time
 import json
 from save_utils import save_user_results
-from weibo_api import read_user_weibo
-from cron_text_attribute import compute2in
+from cron_text_attribute import topic_en2ch, get_fansnum_max
 from elasticsearch.helpers import scan
-from weibo_api import read_user_weibo # get user_weibo_dict from weibo_bulk_data
-from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
-
-from event.event_user import event_classfiy
-from domain.test_domain_v2 import domain_classfiy
+from weibo_api_v2 import read_flow_text_sentiment, read_flow_text
+from evaluate_index import get_importance
+# compute user topic
 from topic.test_topic import topic_classfiy
-from psy.new_psy import psychology_classfiy
 
 reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
 from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
+from parameter import WEIBO_API_INPUT_TYPE
 from config import topic_en2ch_dict, domain_en2ch_dict
+
+#use to update attribute every week for topic, keywords, online_pattern, importance
+#write in version: 16-02-28
+#this file run after the file: scan_es2redis_week.py function:scan_es2redis_week()
+def update_attribute_week_v2():
+    bulk_action = []
+    count = 0
+    user_list = []
+    user_info_list = {}
+    start_ts = time.time()
+    #get fansnum max
+    fansnum_max = get_fansnum_max()
+    while True:
+        r_user_info = update_week_redis.rpop(UPDATE_WEEK_REDIS_KEY)
+        if r_user_info:
+            r_user_info = json.loads(r_user_info)
+            uid = r_user_info.keys()[0]
+            count += 1
+            user_info_list[uid] = r_user_info[uid]
+        else:
+            break
+        
+        if count % 1000 == 0:
+            uid_list = user_info_list.keys()
+            #acquire bulk user weibo data
+            if WEIBO_API_INPUT_TYPE == 0:
+                user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text_sentiment(uid_list)
+            else:
+                user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text(uid_list)
+            #compute attribute--keywords, topic, online_pattern            
+            #get user topic results by bulk action
+            topic_results_dict, topic_results_label = topic_classfiy(uid_list, user_keywords_dict)
+            
+            bulk_action = []
+            for uid in uid_list:
+                results = {}
+                results['uid'] = uid
+                #add user topic attribute
+                user_topic_dict = topic_results_dict[uid]
+                user_label_dict = topic_results_label[uid]
+                results['topic'] = json.dumps(user_topic_dict)
+                results['topic_string'] = topic_en2ch(user_label_dict)
+                #add user keywords attribute
+                keywords_dict = user_keywords_dict[uid]
+                keywords_top50 = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]
+                keywords_top50_string = '&'.join([keyword_item[0] for keyword_item in keywords_top50])
+                results['keywords'] = json.dumps(keywords_top50)
+                results['keywords_string'] = keywords_top50_string
+                #add online_pattern
+                user_online_pattern = json.dumps(online_pattern_dict[uid])
+                results['online_pattern'] = user_online_pattern
+                #add user importance
+                user_domain = user_info_list[uid]['domain']
+                user_fansnum = user_info_list[uid]['fansnum']
+                results['importance'] = get_importance(user_domain, results['topic_string'], user_fansnum, fansnum_max)
+                #bulk action
+                action = {'update':{'_id': uid}}
+                bulk_action.extend([action, {'doc': results}])
+            es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+            end_ts = time.time()
+            print '%s sec count 1000' % (end_ts - start_ts)
+            start_ts = end_ts
+    
+    print 'count:', count
+
 
 
 #use to update attribute every month for domain, topic, psy, tendency
 #write in version: 15-12-08
-#this file run after the file: scan_es2redis.py function:scan_es2redis_month()
+#this file run after the file: scan_es2redis.py function:scan_es2redis_week()
+'''
 def update_attribute_week():
     bulk_action = []
     count = 0
@@ -92,7 +155,7 @@ def update_attribute_week():
             start_ts = end_ts
     
     print 'count:', count
-
+'''
 
 #abandon in version: 15-12-08
 '''
@@ -130,5 +193,6 @@ def update_atttribute_week():
 '''
 
 if __name__=='__main__':
-    status = update_attribute_week()
-    print 'update week status:', status
+    print 'start update_attribute_week_v2'
+    update_attribute_week_v2()
+    print 'end update_attribute_week_v2'
