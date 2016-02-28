@@ -504,6 +504,6 @@ function show_results(data){
 
 var Show_pref = new Show_pref();
 //var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
-var prefrence_url = '/group/show_group_result/?task_name=媒体&module=preference';
+var prefrence_url = '/group/show_group_result/?task_name='+name+'&module=preference';
 Show_pref.call_sync_ajax_request(prefrence_url, Show_pref.ajax_method, Show_pref.Draw_table);
   </script>
