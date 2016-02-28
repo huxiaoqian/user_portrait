@@ -38,7 +38,7 @@ function Draw_sensi_related_event(data){
     */
 	var html = '';
     //html += '<div></div>';
-    html += '<div>';
+    html += '<div style="padding:5px">';
     if (data.length == 0){
         html += '<span>暂无感知事件</span>';
     }
@@ -68,7 +68,7 @@ function Draw_num_related_event(data){
 	*/
     var html = '';
     //html += '<div></div>';
-    html += '<div>';
+    html += '<div style="padding:5px">';
     if (data.length == 0){
         html += '<span>暂无感知事件</span>';
     }
@@ -97,7 +97,7 @@ function Draw_mood_related_event(data){
 	*/
     var html = '';
     //html += '<div></div>';
-    html += '<div>';
+    html += '<div style="padding:5px">';
     if (data.length == 0){
         html += '<span>暂无感知事件</span>';
     }
