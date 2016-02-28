@@ -1738,7 +1738,7 @@ function group_tag_vector(data){
     html += '<tr>';
     for(var key in data){
         html += '<tr>';
-        html += '<th>'+ data[key][0] + '</th>';
+        html += '<th style="font-weight:normal;">'+ data[key][0] + '</th>';
         if(data[key][0] == '主要消极情绪'){
             var value_emotion='';
             // console.log('情绪',data[key][0])
