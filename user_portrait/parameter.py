@@ -290,7 +290,7 @@ GROUP_AVE_IMPORTANCE_RANK_DESCRIPTION = {
         }
 GROUP_DENSITY_THRESHOLD = [0.1, 0.3]
 GROUP_DENSITY_DESCRIPTION = {
-        '0': u'群体内交互紧密读较低',
+        '0': u'群体内交互紧密度较低',
         '1': u'群体内交互进密度一般',
         '2': u'群体内交互进密度较高'
         }
