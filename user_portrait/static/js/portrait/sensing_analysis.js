@@ -38,11 +38,11 @@ function Draw_sensi_related_event(data){
     */
 	var html = '';
     //html += '<div></div>';
+    html += '<div>';
     if (data.length == 0){
-        html += '<b>暂无感知事件</b>';
+        html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<div>';
         html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
@@ -68,11 +68,11 @@ function Draw_num_related_event(data){
 	*/
     var html = '';
     //html += '<div></div>';
+    html += '<div>';
     if (data.length == 0){
-        html += '<b>暂无感知事件</b>';
+        html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<div>';
         html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
@@ -97,11 +97,11 @@ function Draw_mood_related_event(data){
 	*/
     var html = '';
     //html += '<div></div>';
+    html += '<div>';
     if (data.length == 0){
-        html += '<b>暂无感知事件</b>';
+        html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<div>';
         html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
@@ -294,7 +294,7 @@ function Draw_sensi_weibo (data){
 
 function Draw_group_weibo(data, div_name, sub_div_name){
     var page_num = 5;
-    console.log(data);
+    //console.log(data);
     if (data.length < page_num) {
     	//console.log('data_length', data.length);
         $('#'+ div_name + ' #pageGro').css('display', 'none');
