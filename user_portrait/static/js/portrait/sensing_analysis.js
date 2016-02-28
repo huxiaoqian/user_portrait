@@ -622,7 +622,11 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    var sensi_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + sensi_click_time + '&text_type=' + sensi_index;
                     var sensi_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
 	   			    
-	   			    call_sync_ajax_request(sensi_line_url, Draw_sensi_weibo);
+                    if($('input[name="sensi_select"]:checked').val()=='1'){	
+                        call_sync_ajax_request(sensi_line_event_url, Draw_sensi_related_event);
+                    }else{
+                        call_sync_ajax_request(sensi_line_url, Draw_sensi_weibo);
+                    }
 					
 					//微博 or 感知	
 					$('input[name="sensi_select"]').click(function(){
@@ -792,14 +796,15 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	   			    //var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name=' + task_name + '&ts=' + mood_click_time;
 	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
 	   			    
-	   			    call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
-						//微博 or 感知	
-    
-
+                    if($('input[name="mood_select"]:checked').val()=='1'){	
+                        call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
+                    }else{
+                        call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
+                    }
+                    //微博 or 感知	
 					$('input[name="mood_select"]').click(function(){
 						if($('input[name="mood_select"]:checked').val()=='1'){	
 	   			    		call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
-							//Draw_group_weibo(data1, 'mood_weibo', 'mood_related_weibo');
 						}else{
 	   			    		call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
 						}
@@ -977,19 +982,22 @@ function draw_num_line_charts(data, div_name, legend_data){
 			    }else{
 			    	index_type = param.seriesIndex-1
 			    }
-				    var num_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + num_click_time + '&text_type=' + num_index;
-                    var num_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
-	   			    
-	   			    call_sync_ajax_request(num_line_url, Draw_num_weibo);
-					
-					//微博 or 感知	
-					$('input[name="num_select"]').click(function(){
-						if($('input[name="num_select"]:checked').val()=='1'){	
-	   			    		call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
-						}else{
-	   			    		call_sync_ajax_request(num_line_url, Draw_num_weibo);
-						}
-					});	
+                var num_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + num_click_time + '&text_type=' + num_index;
+                var num_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
+                if($('input[name="num_select"]:checked').val()=='1'){	
+                    call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
+                }else{
+                    call_sync_ajax_request(num_line_url, Draw_num_weibo);
+                }
+
+                //微博 or 感知	
+                $('input[name="num_select"]').click(function(){
+                    if($('input[name="num_select"]:checked').val()=='1'){	
+                        call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
+                    }else{
+                        call_sync_ajax_request(num_line_url, Draw_num_weibo);
+                    }
+                });	
 			}
 		
 		myChart.on(ecConfig.EVENT.CLICK, eConsole);
