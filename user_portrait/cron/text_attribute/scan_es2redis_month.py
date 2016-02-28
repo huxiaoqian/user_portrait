@@ -46,4 +46,6 @@ def scan_es2redis_month():
     print 'count:', count
 
 if __name__=='__main__':
-    scan_es2redis()
+    print 'start scan_es2redis_month'
+    scan_es2redis_month()
+    print 'end scan_es2redis_month'
