@@ -75,8 +75,8 @@ def re_cut(w_text):#根据一些规则把无关内容过滤掉
     w_text = a1.sub('',w_text)
     a1 = re.compile(r'\@.*?\:' )
     w_text = a1.sub('',w_text)
-    a1 = re.compile(r'\@.*?\s' )
-    w_text = a1.sub('',w_text)
+    #a1 = re.compile(r'\@.*?\s' )
+    #w_text = a1.sub('',w_text)
     a1 = re.compile(r'转发微博')
     w_text = a1.sub('',w_text)
 

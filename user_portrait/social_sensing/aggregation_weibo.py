@@ -704,7 +704,7 @@ def specific_keywords_burst_dection(task_detail):
         results['clustering_topic'] = json.dumps(topic_list)
     # es存储当前时段的信息
     doctype = task_name
-    #es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
+    es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
 
     # 更新manage social sensing的es信息
     temporal_result = es_user_portrait.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)['_source']
@@ -714,7 +714,7 @@ def specific_keywords_burst_dection(task_detail):
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)
-    #es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
+    es_user_portrait.index(index=index_manage_social_task, doc_type=task_doc_type, id=task_name, body=temporal_result)
 
     return "1"
 
