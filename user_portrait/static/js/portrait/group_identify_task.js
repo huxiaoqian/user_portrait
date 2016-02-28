@@ -378,6 +378,7 @@ function callback(data){
   	    console.log(data);
   	    if (data == '1'){
   	        alert('提交成功！');
+            redraw_result();
   	    }
   	    else{
   	        alert('已存在相同名称的群体分析任务,请重试一次!');
