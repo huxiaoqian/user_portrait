@@ -320,45 +320,87 @@ function Draw_top_location(data){
                     
 }
 
+function get_max_data (data) {
+  // var topic = data;
+  console.log(data);
+  var data_name = [];
+  var data_value = [];
+  for(var key in data){
+    data_name.push(key);
+    data_value.push(data[key]);
+  }
+  console.log(data_value);
+  // for(var i=0; i<data.length;i++){
+  //   data_value.push(data[i][1])
+  //   data_name.push(data[i][0])
+  // };
+
+  var data_value_after = [];
+  var data_name_after = [];
+  for(var i=0; i<data_value.length;i++){ //排序
+    a=data_value.indexOf(Math.max.apply(Math, data_value));
+    data_value_after.push(data_value[a]);
+    data_name_after.push(data_name[a]);
+    data_value[a]=-1;
+  }
+  var data_name3 = [];
+  // for(var i=0;i<8;i++){ //设置最大值的话题的阈值
+  //   var name_dict = {};
+  //   var index = data_name2[i];
+  //   name_dict["text"] = index;
+  //   name_dict["max"] = Math.max.apply(Math, data_value2).toFixed(3)+0.2;
+  //   data_name3.push(name_dict);
+  // }
+  var data_result = [];
+  data_result.push(data_name_after);
+  data_result.push(data_value_after);
+  console.log(data_result);
+  return data_result;
+}
+
 function moving_geo(data){
-    //var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
+    //var data = {'北京&上海2': 150,'北京2&上海': 122,'北京2&上海2': 170,'北京4&上海2': 750, '北京5&上海': 120};
+    var dealt_data = get_max_data(data);
     $('#move_location').empty();
-    var key_count = [];
-    for(var key in data){
-        key_count.push(key);
+    var from_city = [];
+    var end_city = [];
+    for(var i=0;i < dealt_data[0].length;i++){
+        var city_split = dealt_data[0][i].split('&');
+        from_city.push(city_split[0])
+        end_city.push(city_split[1]);
     }
     var html = '';
-    if (key_count.length == 0){
+    if (dealt_data[0].length == 0){
         html += '<span style="margin:20px;">暂无数据</span>';
         $('#geo_show_more').css('display', 'none');
         $('#move_location').css('height', '260px');
     }else{
-        if(data.length < 5){
+        if(dealt_data[0].length < 5){
             $('#geo_show_more').css('display', 'none');
-        }else{
-            Draw_more_moving_geo(data.activiy_geo_vary);
+        };
+            Draw_more_moving_geo(from_city, end_city, dealt_data);
             html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
             html += '<tr><th style="text-align:center">起始地</th>';
             html += '<th style="text-align:right"></th>';
             html += '<th style="text-align:left">目的地</th>';
             html += '<th style="text-align:center">人数</th>';
             html += '</tr>';
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0; i < 5; i++) {
                 html += '<tr>';
-                html += '<td style="text-align:center">' + data[i][0] + '</td>';
-                html += '<td style="text-align:center"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
-                html += '<td style="text-align:left">' + data[i][1] + '</td>';
-                html += '<td style="text-align:center">' + data[i][2] + '</td>';
+                html += '<td style="text-align:center;vertical-align: middle;">' + from_city[i] + '</td>';
+                html += '<td style="text-align:center;"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
+                html += '<td style="text-align:left;vertical-align: middle;">' + end_city[i] + '</td>';
+                html += '<td style="text-align:center;vertical-align: middle;">' + dealt_data[1][i] + '</td>';
             html += '</tr>'; 
             };
             html += '</table>'; 
-        }
+        
     }
     $('#move_location').append(html);
 }
 
-function Draw_more_moving_geo(data){
-    var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
+function Draw_more_moving_geo(from_city, end_city, dealt_data){
+    // var data = [['北京', '上海', 100], ['北京', '1上海', 100], ['北京', '上1海', 20],['北京', '1上海', 100],  ['北京', '上海', 30]];
     $('#move_location_more_detail').empty();
     var html = '';
     html += '<table class="table table-striped " font-size:14px">';
@@ -367,31 +409,25 @@ function Draw_more_moving_geo(data){
     html += '<th style="text-align:left">目的地</th>';
     html += '<th style="text-align:center">人数</th>';
     html += '</tr>';
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < dealt_data[0].length; i++) {
         html += '<tr>';
-        html += '<td style="text-align:center">' + data[i][0] + '</td>';
-        html += '<td style="text-align:left"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
-        html += '<td style="text-align:left">' + data[i][1] + '</td>';
-        html += '<td style="text-align:center">' + data[i][2] + '</td>';
+        html += '<td style="text-align:center;vertical-align: middle;">' + from_city[i] + '</td>';
+        html += '<td style="text-align:center;"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
+        html += '<td style="text-align:left;vertical-align: middle;">' + end_city[i] + '</td>';
+        html += '<td style="text-align:center;vertical-align: middle;">' + dealt_data[1][i] + '</td>';
     html += '</tr>'; 
     };
     html += '</table>'; 
     $('#move_location_more_detail').append(html);
 }
 
-function Draw_top_platform(data){
+function Draw_top_platform(dealt_data){
+    var data = get_max_data(dealt_data)
     var online_pattern = [];
     var pattern_num = [];
-    for(var key in data){
-        online_pattern.push(key);
-        pattern_num.push(data[key]);
-    };
-    var key_count = [];
-    for(var key in data){
-        key_count.push(key);
-    }
     var html = '';
-    if (key_count.length == 0){
+
+    if (data[0].length == 0){
         html += '<span style="margin:20px;">暂无数据</span>';
         $('#top_platform').css('height', '260px');
     }else{
@@ -399,10 +435,10 @@ function Draw_top_platform(data){
         var html = '';
         html += '<table class="table table-striped" style="width:250px;font-size:14px;margin-bottom:0px;">';
         html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">上网方式</th><th style="text-align:center">微博数</th></tr>';
-        for (var i = 0; i < online_pattern.length; i++) {
+        for (var i = 0; i < data[0].length; i++) {
            var s = i.toString();
            var m = i + 1;
-           html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + online_pattern[i] + '</th><th style="text-align:center">' + pattern_num[i] + '</th></tr>';
+           html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data[0][i] + '</th><th style="text-align:center">' + data[1][i] + '</th></tr>';
         };
         html += '</table>'; 
     }
@@ -618,7 +654,8 @@ function show_activity(data) {
 	Draw_top_location(data.activity_geo_disribution);
 
 	//位置转移统计
-	moving_geo(data.activiy_geo_vary);
+    moving_geo(data.activiy_geo_vary);
+    //var data333 = {'北京&上海2': 150,'北京2&上海': 122,'北京2&上海2': 170,'北京4&上海2': 750, '北京5&上海': 120};
 
 	Draw_top_platform(data.online_pattern);
 	//Draw_more_top_platform();
@@ -864,7 +901,7 @@ function month_process(data){
 
 var group_activity_url = '/group/show_group_result/?module=activity&task_name=媒体';
 call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
-var group_user_url =  "/group/show_group_list/?task_name=" + name;
+var group_user_url =  "/group/show_group_list/?task_name=媒体";
 call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
 // var activity_data = []
 
