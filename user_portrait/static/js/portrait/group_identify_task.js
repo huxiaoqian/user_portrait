@@ -141,7 +141,7 @@ function redraw_result(){
 	//deleteGroup();
 	control_click();
 }
-window.setInterval(redraw,30000);
+window.setInterval(redraw,10000);
 function redraw(){
 	deurl= '/detect/show_detect_task/';
 	Group_identify_task.call_sync_ajax_request(deurl, Group_identify_task.ajax_method, Group_identify_task.Draw_dis_Table);
@@ -313,7 +313,13 @@ function draw_table(data,div){
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
     html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="analyze_choose_all" id="analyze_choose_all" type="checkbox" value="" onclick="analyze_choose_all()" /></th></tr>';
     for (var i=0;i<data.length;i++) {
-        html += '<tr><th style="text-align:center">' + data[i][0] + '</th><th style="text-align:center">' + data[i][1] + '</th><th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
+        var uname = data[i][1];
+        if (uname == 'unknown'){
+            uname == '未知';
+        }
+        html += '<tr><th style="text-align:center">' + data[i][0] + '</th>';
+        html += '<th style="text-align:center">' + uname + '</th>';
+        html += '<th style="text-align:center">' + data[i][2].toFixed(2) + '</th><th style="text-align:center">' + data[i][3].toFixed(2) + '</th><th style="text-align:center">' + data[i][4].toFixed(2) + '</th><th><input name="analyze_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></th></tr>';
     	//i = i + 1;
  	}
     html += '</table>'; 
