@@ -15,7 +15,7 @@ from evaluate_index import get_importance
 #compute user domain
 from domain.test_domain_v2 import domain_classfiy
 #compute user character
-from character.test_ch_sentiment import classfiy_sentiment
+from character.test_ch_sentiment import classify_sentiment
 from character.test_ch_topic import classify_topic
 
 sys.path.append('../../')
@@ -87,7 +87,7 @@ def update_attribute_month_v2():
                 #bulk action                                
                 action = {'update':{'_id': uid}}
                 bulk_action.extend([action, {'doc': results}])
-            es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+            #es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
             end_ts = time.time()
             print '%s sec count 1000' % (end_ts - start_ts)
             start_ts = end_ts
@@ -95,5 +95,6 @@ def update_attribute_month_v2():
     print 'count:', count
     
 if __name__=='__main__':
-    status = update_attribute_month_v2()
-    print 'update week status:', status
+    print 'start update_attribute_month_v2'
+    update_attribute_month_v2()
+    print 'end update_attribute_month_v2'

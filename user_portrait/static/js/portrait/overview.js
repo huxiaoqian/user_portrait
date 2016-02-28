@@ -5,7 +5,7 @@
 
 Search_weibo.prototype = {
   call_sync_ajax_request:function(url, method, callback){
-    console.log(url);
+    //console.log(url);
     $.ajax({
       url: url,
       type: method,
@@ -16,9 +16,9 @@ Search_weibo.prototype = {
   },
 
   Draw_usernumber: function(data){
-    console.log(data);
-    compute = data['compute'];
-    console.log(compute);
+    //console.log(data);
+    //compute = data['compute'];
+    //console.log(compute);
     in_count = data['in_count'];
     out_count = data['out_count'];
     $('#user_num').empty();
@@ -186,7 +186,7 @@ function Draw_think_topic(data){
             name:'话题',
             type:'pie',
             radius : '55%',
-            center: ['70%', '60%'],
+            center: ['60%', '60%'],
             data:datas
         }
     ]
