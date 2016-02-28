@@ -16,6 +16,7 @@ from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
 #write in version: 15-12-08
 #order time task for every week
 def scan_es2redis_week():
+    print 'start scan_es2redis_week'
     count = 0
     s_re = scan(es_user_portrait, query={'query':{'match_all': {}}, 'size':1000}, index=portrait_index_name, doc_type=portrait_index_type)
     user_info = {}
@@ -48,3 +49,4 @@ def scan_es2redis_week():
 
 if __name__=='__main__':
     scan_es2redis_week()
+    print 'end scan_es2redis_week'
