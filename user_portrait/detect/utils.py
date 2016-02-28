@@ -507,6 +507,10 @@ def submit_sensing(input_dict):
     submit_date = int(time.time())
     input_dict['task_information']['submit_date'] = submit_date
     input_dict['task_information']['count'] = len(input_dict['task_information']['uid_list'])
+    input_dict['task_information']['state'] = input_dict['task_information']['state']
+    input_dict['task_information']['status'] = 0
+    input_dict['task_information']['detect_type'] = 'sensing'
+    input_dict['task_information']['task_type'] = input_dict['task_information']['task_type']
     es_status = save_compute2es(input_dict)
     print 'es_status:', es_status
     #step3: save to compute redis
