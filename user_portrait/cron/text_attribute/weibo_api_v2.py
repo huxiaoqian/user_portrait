@@ -20,6 +20,7 @@ def read_flow_text_sentiment(uid_list):
     '''
     word_dict = dict()#词频字典
     weibo_list = []#微博列表
+    online_pattern_dict = {} #{uid:{pattern1:count, pattern2:count},...}
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     now_date_ts = datetime2ts('2013-09-08')
@@ -53,8 +54,18 @@ def read_flow_text_sentiment(uid_list):
                 word_dict[uid] = keywords_dict
 
             weibo_list.append([uid,text,sentiment,ts])
+            #test online pattern
+            online_pattern = u'weibo.com'
+            try:
+                user_online_pattern = online_pattern_dict[uid]
+            except:
+                online_pattern_dict[uid] = {}
+            try:
+                online_pattern_dict[uid][online_pattern] += 1
+            except:
+                online_pattern_dict[uid][online_pattern] = 1
             
-    return  word_dict,weibo_list
+    return  word_dict,weibo_list, online_pattern_dict
 
 def read_flow_text(uid_list):
     '''
@@ -66,6 +77,7 @@ def read_flow_text(uid_list):
     '''
     word_dict = dict()#词频字典
     weibo_list = []#微博列表
+    online_pattern_dict = {} # {uid:[online_pattern1, ..],...}
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     now_date_ts = datetime2ts('2013-09-08')
@@ -98,10 +110,20 @@ def read_flow_text(uid_list):
                 word_dict[uid] = keywords_dict
 
             weibo_list.append([uid,text,ts])
+            #test online pattern
+            online_pattern = u'weibo.com'
+            try:
+                user_online_pattern_dict = online_pattern_dict[uid]
+            except:
+                online_pattern_dict[uid] = {}
+            try:
+                online_pattern_dict[uid][online_pattern] += 1
+            except:
+                online_pattern_dict[uid][online_pattern] = 1
             
-    return  word_dict,weibo_list        
+    return  word_dict,weibo_list, online_pattern_dict
 
 if __name__=='__main__':
     #read_user_weibo()
-    word_dict,weibo_list = read_flow_text(['2098261223','2991483613'])
-    
+    word_dict,weibo_list,online_pattern_dict = read_flow_text(['2098261223','2991483613'])
+    print 'online_pattern_dict:', online_pattern_dict
