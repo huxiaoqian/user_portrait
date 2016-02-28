@@ -681,7 +681,7 @@ function draw_social(data){
 }
 
 
-var social_url = '/group/show_group_result/?task_name=%E5%AA%92%E4%BD%93&module=social';
+var social_url = '/group/show_group_result/?task_name='+name+'&module=social';
 var g_social = new g_social();
 var group_weibo_url = '/group/social_out_content/?uid1=3270561561&uid2=2656274875';
 g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
