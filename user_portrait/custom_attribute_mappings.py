@@ -2,12 +2,16 @@
 import sys
 import json
 from elasticsearch import Elasticsearch
+from global_utils import es_tag as es
+from global_utils import tag_index_name as attribute_index_name
+from global_utils import tag_index_type as attribute_index_type
 
-es = Elasticsearch('219.224.135.93')
+'''
+es = Elasticsearch('219.224.134.213')
 
 attribute_index_name = 'custom_attribute'
 attribute_index_type = 'attribute'
-
+'''
 #custom attribute information
 attribute_dict_key = ['attribute_name', 'attribute_value', 'date', 'user']
 
