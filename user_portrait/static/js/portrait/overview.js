@@ -40,7 +40,7 @@ Search_weibo.prototype = {
     draw_retweeted_user(data);
     draw_domain_portrait(data);
     draw_statistics_infor(data);
-    Draw_think_emotion();
+    //Draw_think_emotion();
     Draw_think_domain();
     Draw_think_topic();
     draw_more_onlinepattern(data);
