@@ -214,6 +214,7 @@ function draw_relation_net(data,name,symbols){
         {
             type:'force',
             name : "",
+            size:'80%',
             ribbonType: false,
             categories : [
                 {
@@ -346,6 +347,7 @@ function draw_relation_out_net(data,name,symbols){
         {
             type:'force',
             name : "",
+            size:'70%',
             ribbonType: false,
             categories : [
                 {
