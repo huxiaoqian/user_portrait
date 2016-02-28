@@ -99,7 +99,13 @@ def update_day_geo(uid_list, user_info_list):
             week_geo_list.extend(geo_list)
         week_geo_list = list(set(week_geo_list))
         week_geo_string = '&'.join(['&'.join(item.split('\t')) for item in week_geo_list])
+        try:
+            week_geo_aggs_string = '&'.join([item.split('\t')[-1] for item in week_geo_list])
+        except:
+            week_geo_aggs_string = ''
+
         results[uid]['activity_geo'] = week_geo_string
+        results[uid]['activity_geo_aggs'] = week_geo_aggs_string
 
     return results
 
@@ -186,6 +192,19 @@ def update_attribute_day():
             end_ts = time.time()
             print '%s sec count 1000' % (end_ts - start_ts)
             start_ts = end_ts
+    
+    if user_info_list != {}:
+        uid_list = user_info_list.keys()
+        #get user_list hashtag_results
+        hashtag_results = update_day_hashtag(uid_list)
+        #get user geo today
+        geo_results = update_day_geo(uid_list, user_info_list)
+        #get user activeness evaluate
+        activeness_results = update_day_activeness(geo_results, user_info_list)
+        #get user influence
+        influence_results = update_day_influence(uid_list, user_info_list)
+        #update to es by bulk action
+        save_bulk_action(uid_list, hashtag_results, geo_results, activeness_results, influence_results)
 
     print 'count:', count
 

@@ -131,12 +131,6 @@ def get_user_count():
     #print 'all user count:', count
     return count
 
-'''
-# total status
-def get_total_status():
-    total_count = 0
-    return total_count
-'''
 
 def get_scan_results():
     result_dict = {}
@@ -431,15 +425,16 @@ def get_scan_results_v2():
     else:
         location_top = {}
     result_dict['location_top'] = json.dumps(location_top)
-
+    
     # activity geo
+    '''
     query_body = {
         "query":{
             "match_all":{}
             },
         "aggs":{
             "all_interests":{
-                "terms":{"field":"activity_geo","size":50}
+                "terms":{"field":"activity_geo_aggs","size":50}
             }
         }
     }
@@ -452,7 +447,7 @@ def get_scan_results_v2():
     else:
         activity_geo_top = {}
     result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
-
+    '''
     # keywords
     query_body = {
         "query":{
@@ -562,6 +557,16 @@ def get_scan_results_v2():
     result_dict['online_pattern_top'] = json.dumps(online_pattern_top)
     '''
     # activity_count
+    now_ts = time.time()
+    now_date = ts2datetime(now_ts - DAY)
+    index_time = ''.join(now_date.split('-'))
+    #test
+    index_time = '2013-09-07'
+    no_activity_count = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, \
+            body={'query':{'filtered':{'filter':{'term':{'influence': 0}}}}})['count']
+    all_count = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type ,\
+            body={'query':{'match_all':{}}})['count']
+    result_dict['activity_count'] = 1 - float(no_activity_count) / all_count
 
     return result_dict
 
@@ -807,9 +812,9 @@ def save_result(results):
 def compute_overview():
     results = {}
     results['user_count'] = get_user_count()
-    #results['total_status'] = get_total_status()
     scan_result = get_scan_results_v2()
-    #print 'scan_result:', scan_result
+    print 'scan_result:', scan_result
+    
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
     results = dict(results, **retweeted_top)
@@ -821,8 +826,11 @@ def compute_overview():
     results = dict(results, **importance_top)
     influence_top = get_influence_top()
     results = dict(results, **influence_top)
+    #abandon
+    '''
     influence_vary_top = get_influence_vary_top()
     results = dict(results, **influence_vary_top)
+    '''
     top_threshold = 900 # it can be changed
     top_influence_ratio = get_influence_top_count(top_threshold, results['user_count'])
     results = dict(results, **top_influence_ratio)
@@ -830,6 +838,7 @@ def compute_overview():
     results = dict(results, **operate_result)
     # print 'results:', results
     save_result(results)
+    
     return results
 
 
