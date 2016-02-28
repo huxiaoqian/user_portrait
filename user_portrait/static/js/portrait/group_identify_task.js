@@ -39,11 +39,10 @@ Group_identify_task.prototype = {   //获取数据，重新画表
   },
 
 Draw_resultTable: function(data){
-    // console.log('bbb');
     $('#content_manage').empty();
     var item = data;
 	var html = '';
-	html += '<a id="turnback"  href="javascript:void()" onclick="redraw_result()" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#task_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
+	html += '<a id="turnback" onclick="redraw_result();" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#task_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
@@ -66,16 +65,14 @@ Draw_resultTable: function(data){
     html += '</table>';
 	$('#content_manage').append(html);
     $('a[id="analyze_del"]').click(function(e){
-		console.log('444');
 		var a = confirm('确定要删除吗？');
     	if (a == true){
     		var url = '/detect/delete_task/?';
 			var temp = $(this).parent().prev().prev().prev().prev().prev().html();
 			url = url + 'task_name=' + temp;
-			console.log(url);
+			//console.log(url);
 			//window.location.href = url;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
-			console.log('222');
 		}
 	});	
 	},
@@ -108,7 +105,6 @@ Draw_dis_Table:function(data){
 	$('#dis_table').append(html);
     //deleteGroup();
     $('a[id="task_del"]').click(function(e){
-		console.log('333');
 		var a = confirm('确定要删除吗？');
     	if (a == true){
 			var url = '/detect/delete_task/?';
@@ -116,7 +112,6 @@ Draw_dis_Table:function(data){
 			url = url + 'task_name=' + temp;
 			//window.location.href = url;
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
-			console.log('111');
 		}
 	});	
 	submit_analyze();
@@ -136,7 +131,8 @@ Draw_dis_Table:function(data){
 }
 var Group_identify_task = new Group_identify_task();
 function redraw_result(){
-	url = '/group/show_task/'; 
+    console.log('iiiii');
+	url = '/group/show_task/';
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 	//deleteGroup();
 	control_click();
@@ -151,7 +147,7 @@ redraw_result();
 
 
 function del(data){
-		console.log(data);
+		//console.log(data);
 		if(data==true){
 			alert('操作成功！');
 			location.reload();
@@ -177,14 +173,13 @@ var min_date = '-1970/01/30';
 $('input[name="so_end_time"]').datetimepicker({value:current_date,minDate:current_date,step:10});
 
 function submit_analyze(that){
-			console.log('hi');
 
 	$('a[id^="group_commit_analyze"]').click(function(e){
-		console.log('hi');
+		//console.log('hi');
 		var temp = $(this).parent().prev().prev().prev().prev().prev().prev().html();
-		console.log('temp', temp);
+		//console.log('temp', temp);
 		var percent = $(this).parent().prev().text();
-		console.log('percent', percent);
+		//console.log('percent', percent);
 		if(percent.replace(/[^0-9]/ig,"") != 100){
 			alert('进度没有达到100%，无法提交分析任务！');
 		}
@@ -358,13 +353,13 @@ function group_analyze_confirm_button(){
   	$('[name="analyze_list_option"]:checked').each(function(){
   	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
   	});
-  	console.log(group_confirm_uids);
+  	//console.log(group_confirm_uids);
   	var group_ajax_url = '/detect/add_detect2analysis/';
   	var group_url = '/index/group_result/';
   	var group_name = $('#group_name0').text();
-  	console.log(group_name);
+  	//console.log(group_name);
   	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
-  	console.log(job);
+  	//console.log(job);
   	$.ajax({
   	    type:'POST',
   	    url: group_ajax_url,
@@ -374,27 +369,22 @@ function group_analyze_confirm_button(){
   	    success: callback
   	});
 }
-// function submit_group_analyze_final(){
-
-// }
 
 function callback(data){
-  	    console.log(data);
-  	    if (data == '1'){
-  	        alert('提交成功！');
-            redraw_result();
-  	    }
-  	    else{
-  	        alert('已存在相同名称的群体分析任务,请重试一次!');
-  	    }
-  	}
-$()
+    //console.log(data);
+    if (data == '1'){
+        redraw_result();
+        alert('提交成功！');
+    }
+    else{
+        alert('已存在相同名称的群体分析任务,请重试一次!');
+    }
+}
 $('#group_control_confirm_button').click(function(){
 	group_control_data();
 });
 
 $('span[id^="con_more"]').click(function(e){
-	console.log('sadfasdf');
 	$('#con_more_block').modal();
  });
 
@@ -403,7 +393,7 @@ function group_control_check(){             // check validation
     var group_name = $('input[name="con_group_name"]').val();
     var remark = $('input[name="con_remark"]').val();
     var sensors = '';
-    console.log(group_name, remark); 
+    //console.log(group_name, remark); 
     if (group_name.length == 0){
         alert('群体名称不能为空');
         return false;
@@ -467,7 +457,7 @@ function group_control_data(){
 			url1 = url0;
 		}
 		url_create += url1;
-		console.log(url_create);
+		//console.log(url_create);
 	    $.ajax({
 	        type:'GET',
 	        url: url_create,
@@ -510,7 +500,7 @@ function group_search_button(){ //表单搜索
 		url1 = url0;
 	}
 	var search_url = '/detect/search_detect_task/?'+url1;
-	console.log(search_url);
+	//console.log(search_url);
 	$.ajax({
   	    type:'GET',
   	    url: search_url,
@@ -540,7 +530,7 @@ function task_search_button(){ //表单搜索
 		url1 = url0;
 	}
 	var search_url = '/group/show_task/?'+url1;
-	console.log(search_url);
+	//console.log(search_url);
 	$.ajax({
   	    type:'GET',
   	    url: search_url,

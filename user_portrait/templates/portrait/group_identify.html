@@ -197,6 +197,8 @@
     {% endblock main %}
     {% block Own_js %}
         {{ super() }}
+        <script type="text/javascript" src="/static/js/portrait/group_identify_task.js"></script>
+        <script type="text/javascript" src="/static/js/portrait/group_pattern.js"></script>
         <script>
             $(function(){
                 $("#tab_left_1").click(function(){
@@ -247,10 +249,9 @@
                     $(this).parent('li').siblings().removeClass('active');
                     $(this).parent('li').addClass('active');
                     $('#content_discovery').css('display','none');
+                    redraw_result();
                     $('#content_manage').css('display','block');
                 });
             });
         </script>
-        <script type="text/javascript" src="/static/js/portrait/group_identify_task.js"></script>
-        <script type="text/javascript" src="/static/js/portrait/group_pattern.js"></script>
     {% endblock Own_js %}
