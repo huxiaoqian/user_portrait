@@ -60,11 +60,11 @@ def deal_bulk_action(user_info_list, fansnum_max):
         #bulk action
         action = {'update':{'_id': uid}}
         bulk_action.extend([action, {'doc': results}])
-    #es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+    es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
     end_ts = time.time()
     print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
     start_ts = end_ts
-    print 'bulk_action:', bulk_action
+    #print 'bulk_action:', bulk_action
 
 #use to update attribute every week for topic, keywords, online_pattern, importance
 #write in version: 16-02-28
@@ -89,6 +89,7 @@ def update_attribute_week_v2():
         if count % 1000 == 0:
             #get bulk action
             deal_bulk_action(user_info_list, fansnum_max)
+            user_info_list = {}
             
     if user_info_list != {}:
         #get bulk action
