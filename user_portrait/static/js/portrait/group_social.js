@@ -36,19 +36,19 @@ g_social.prototype = {   //获取数据，重新画表
 function g_pageGroup(pageNum,pageCount,div_name){
 	switch(pageNum){
 		case 1:
-			page_icon(1,5,0,div_name);
+			g_page_icon(1,5,0,div_name);
 		break;
 		case 2:
-			page_icon(1,5,1,div_name);
+			g_page_icon(1,5,1,div_name);
 		break;
 		case pageCount-1:
-			page_icon(pageCount-4,pageCount,3,div_name);
+			g_page_icon(pageCount-4,pageCount,3,div_name);
 		break;
 		case pageCount:
-			page_icon(pageCount-4,pageCount,4,div_name);
+			g_page_icon(pageCount-4,pageCount,4,div_name);
 		break;
 		default:
-			page_icon(pageNum-2,pageNum+2,2,div_name);
+			g_page_icon(pageNum-2,pageNum+2,2,div_name);
 		break;
 	}
 }
@@ -552,7 +552,6 @@ function draw_group_weibo0(data,div_name,sub_div_name){
             $(this).siblings("li").removeClass("on");
         }
       var page = parseInt($("#"+div_name+" #pageGro li.on").html());
-      //console.log(page);         
       start_row = (page - 1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
