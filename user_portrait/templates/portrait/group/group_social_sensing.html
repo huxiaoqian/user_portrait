@@ -106,10 +106,20 @@ function draw_social_sensing_table (data) {
 
         //keywords
         var keywords = data.keywords;
-        $('#social_sensing #sensing_keywords').html(keywords.join(' '));
+        if (keywords.length == 0){
+            $('#social_sensing #sensing_keywords').html('无');
+        }
+        else{
+            $('#social_sensing #sensing_keywords').html(keywords.join(' '));
+        }    
         //remarks
         var remark = data.remark;
-        $('#social_sensing #sensing_remarks').html(remark);
+        if (remark == ''){
+            $('#social_sensing #sensing_remarks').html(无);
+        }
+        else{
+            $('#social_sensing #sensing_remarks').html(remark);
+        }
         // group_list
         var group_list = data.group_list;
         $('#social_sensing #social_sensing_table').empty();

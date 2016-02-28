@@ -42,8 +42,7 @@ Draw_tag:function(data){
 	$('#ptag').append(html);
   }
 }
-//url ="/tag/show_user_tag/?uid_list="+parent.personalData.uid;
-url ="/tag/show_user_tag/?uid_list=3697357313";
+var url ="/tag/show_user_tag/?uid_list=" + uid;
 var Tag_show = new Tag_show();
 Tag_show.call_sync_ajax_request(url, Tag_show.ajax_method, Tag_show.Draw_tag);
 //选择类别
@@ -130,10 +129,8 @@ Tag_add.prototype = {   //获取数据，重新画表
   },
 
 Draw_tag_add:function(data){
-	//console.log(data);
-	//Tag_show.call_sync_ajax_request(url, Tag_show.ajax_method, Tag_show.Draw_tag);
 	//刷新页面
-	url ="/tag/show_user_tag/?uid_list=3697357313";
+	url ="/tag/show_user_tag/?uid_list=" + uid;
 	Tag_show.call_sync_ajax_request(url, Tag_show.ajax_method, Tag_show.Draw_tag);
   }
 }
@@ -155,7 +152,7 @@ Tag_change.prototype = {   //获取数据，重新画表
 
 Draw_tag_change:function(data){
 	//console.log(data);
-	url ="/tag/show_user_tag/?uid_list=3697357313";
+	url ="/tag/show_user_tag/?uid_list=" + uid;
 	Tag_show.call_sync_ajax_request(url, Tag_show.ajax_method, Tag_show.Draw_tag);
 	//刷新页面
 	//location.reload();
@@ -185,13 +182,12 @@ function add_person_tag(){
 	if(count==attributeNames.length){
 		//添加新tag
 		var add_url = '';
-		//add_url = '/tag/add_attribute/?uid='+parent.personalData.uid+'&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
-		add_url = '/tag/add_attribute/?uid=3697357313&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
-		Tag_add.call_sync_ajax_request(add_url, Tag_add.ajax_method, Tag_add.Draw_tag_add);
+		add_url = '/tag/add_attribute/?uid=' + uid + '&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value + '&user=admint';
+        Tag_add.call_sync_ajax_request(add_url, Tag_add.ajax_method, Tag_add.Draw_tag_add);
 	}else{
 		alert("已经存在相同的标签类型，新的标签名将替换原有的标签名！");
 		var change_url = '';
-		change_url = '/tag/change_attribute_portrait/?uid=3697357313&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
+		change_url = '/tag/change_attribute_portrait/?uid=' + uid + '&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
 		//console.log(change_url);
 		Tag_change.call_sync_ajax_request(change_url, Tag_change.ajax_method, Tag_change.Draw_tag_change);
 	}
@@ -212,10 +208,8 @@ Tag_del.prototype = {   //获取数据，重新画表
   },
 
 Draw_tag_del:function(data){
-	//console.log(data);
-	//Tag_show.call_sync_ajax_request(url, Tag_show.ajax_method, Tag_show.Draw_tag);
 	//刷新页面
-	url ="/tag/show_user_tag/?uid_list=3697357313";
+	url ="/tag/show_user_tag/?uid_list=" + uid;
 	Tag_show.call_sync_ajax_request(url, Tag_show.ajax_method, Tag_show.Draw_tag);
   }
 }
@@ -225,7 +219,7 @@ function deleteTag(that){
 		var del_url = that.url;
 		var temp = $(this).parent().parent().parent().parent().remove();
 		var delname = $(this).parent().parent().parent().prev().html();
-		del_url = del_url +'uid=3697357313&attribute_name='+delname+'&user=admit';
+		del_url = del_url +'uid=' + uid + '&attribute_name='+delname+'&user=admit';
 		that.call_sync_ajax_request(del_url, Tag_del.ajax_method, Tag_del.Draw_tag_del);
 	});
 }
