@@ -350,7 +350,7 @@ def ajax_get_text_detail():
 def ajax_get_clustering_topic():
     task_name = request.args.get('task_name','') # task_name
     ts = int(request.args.get('ts', '')) # timestamp: 123456789
-
+    topic_list = []
     try:
         task_detail = es.get(index=index_sensing_task, doc_type=task_name, id=ts)['_source']
     except:
