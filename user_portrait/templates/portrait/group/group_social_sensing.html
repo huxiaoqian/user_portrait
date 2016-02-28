@@ -6,18 +6,18 @@
                 <select id="sensing_event" class="form-control" style='width:175px; margin-left:15px;display:inline-block;height:25px;padding: 0px 10px;'>
                 </select>
                 <span id="sensing_event_commit" onclick="submit_sensing_event();" class="label label-success" style='padding:5px;margin-left:35px;cursor:pointer; background-color:rgba(69, 133, 195, 0.89);margin-bottom:10px;'>查看相关用户</span>
+                <span><a id='check_sensors' data-toggle='modal' data-target='#check_sensors_modal' style='margin-left:20px;cursor:pointer;'>查看传感器</a></span>
             </div>    
             <div class='col-md-12' style="padding-left:0px;margin-bottom:10px;width:820px;">
                  <div class='col-md-8'>
                      <span class="input-group-addon" style="padding:0px;margin-left:-4px;font-weight:bold;width:50px;border:1px solid white;background-color:white; display:inline-block" id="">关键词</span>
                      <span class="input-group-addon" style="width:150px;border:1px solid white;background-color:white; display:inline-block" id="sensing_keywords"></span>
-                     <span><a id='check_sensors' data-toggle='modal' data-target='#check_sensors_modal' style='margin-left:20px;cursor:pointer;'>查看传感器</a></span>
                  </div>
             </div>
             <div class='col-md-12' style="padding-left:0px;margin-bottom:10px;width:820px;">
                  <div class='col-md-8'>
                      <span class="input-group-addon" style="padding:0px;margin-left:-10px;font-weight:bold;width:50px;border:1px solid white;background-color:white; display:inline-block" id="">备注</span>
-                     <span class="input-group-addon" style="margin-left:5px;width:120px;border:1px solid white;background-color:white; display:inline-block" id="sensing_remarks"></span>
+                     <span class="input-group-addon" style="margin-left:5px;border:1px solid white;background-color:white; display:inline-block" id="sensing_remarks"></span>
                  </div>
             </div>
             <div id="social_sensing_table" style="">
@@ -106,10 +106,20 @@ function draw_social_sensing_table (data) {
 
         //keywords
         var keywords = data.keywords;
-        $('#social_sensing #sensing_keywords').html(keywords.join(' '));
+        if (keywords.length == 0){
+            $('#social_sensing #sensing_keywords').html('无');
+        }
+        else{
+            $('#social_sensing #sensing_keywords').html(keywords.join(' '));
+        }    
         //remarks
         var remark = data.remark;
-        $('#social_sensing #sensing_remarks').html(remark);
+        if (remark == ''){
+            $('#social_sensing #sensing_remarks').html(无);
+        }
+        else{
+            $('#social_sensing #sensing_remarks').html(remark);
+        }
         // group_list
         var group_list = data.group_list;
         $('#social_sensing #social_sensing_table').empty();
@@ -139,15 +149,17 @@ function draw_social_sensing_table (data) {
 		}
 		html += '</tbody></table>';	
         $('#social_sensing #social_sensing_table').append(html);
-		$('#social_sensing #social_table').dataTable({
+        /*
+        $('#social_sensing #social_table').dataTable({
         	"sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-        	"sPaginationType": "custom_bootstrap",
+        	"sPaginationType": "bootstrap",
         	"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         	"bAutoWidth": true,
         	"oLanguage": {
             	"sLengthMenu": "_MENU_ 每页"
             }
         });
+        */
 	}
 
 function social_sensing_select_all(){

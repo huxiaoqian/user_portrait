@@ -282,7 +282,7 @@ Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Sear
 var portrait = Search_weibo.Return_data();
 Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var tag_data = Search_weibo.Return_data();
-//console.log(tag_data);
+console.log(tag_data);
 function Compare(){
     var html = '';
     var num = 0;

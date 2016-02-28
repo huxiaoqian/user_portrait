@@ -1,6 +1,5 @@
 //test
 function Draw_top_location2(data1, data2, data3){
-    //console.log('data1!!', data1);
     var y_axi_1 = data1[0];
     var x_axi_1 = data1[1];
     var xdata_1 = [];
@@ -37,7 +36,7 @@ function Draw_top_location2(data1, data2, data3){
         },
         tooltip : {'trigger':'axis',
                     formatter:  function (params) {
-                    console.log(params)
+                    //console.log(params)
                     var res = 'Function formatter : <br/>' + params[0].name;
                     for (var i = 0, l = params.length; i < l; i++) {
                         res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
@@ -240,7 +239,7 @@ function draw_fans_distribution(data,radar_div, title){
 //微博数分布
 function draw_status_distribution(data,radar_div, title){
     //console.log(data);
-    var y_name = title + '（/万人）';
+    var y_name = title + '（/万）';
     var mychart1 = echarts.init(document.getElementById(radar_div));
     var y_axi = data[0];
     var x_axi = data[1];
@@ -397,8 +396,8 @@ Show_influ.prototype = {
 }
 
 var Show_influ = new Show_influ();
-var group_influ_url = '/group/show_group_result/?task_name=媒体&module=influence';
-console.log('aaaaa');
+var group_influ_url = '/group/show_group_result/?task_name='+name+'&module=influence';
+//console.log('aaaaa');
 Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
 //影响用户
 function show_influ_users(div_name,data){
@@ -440,22 +439,24 @@ function show_more_influ_active_users(div_name){
     html += '</table>'; 
     $('#'+div_name).append(html);
 }
+
 //群体影响力走势图
 function group_influ(data){
    var mychart = echarts.init(document.getElementById('group_influ'));
    var mind = []
    var maxd = []
    ave_data = data['ave_list'];
-   
    max_data = data['max_list'];
    min_data = data['min_list'];
    for(var i=0;i<min_data.length;i++){
       mind.push(min_data[i][1]);
    }
+   // console.log('min',mind);
    for(var i=0;i<max_data.length;i++){
 	  
       maxd.push(max_data[i][1]);
    }
+   // console.log('max',maxd);
    time_data = data['time_list'];
    var option = {
     tooltip : {
@@ -470,8 +471,8 @@ function group_influ(data){
         };
             var res = '' + params[0].name;
             var index = params[0].dataIndex;
-            res +=  '<br/>最高值用户: ' + max_user_name[index];
-            res +=  '<br/>最低值用户: ' + min_user_name[index];
+            res +=  '<br/>最高值用户: ' + max_user_name[index] ;
+            res +=  '<br/>最低值用户: ' + min_user_name[index] ;
             return res
         }
     },
@@ -506,20 +507,17 @@ function group_influ(data){
         {
             name:'最高值',
             type:'line',
-            stack: '总量',
-            data:mind
+            data:maxd
         },
         {
             name:'平均值',
             type:'line',
-            stack: '总量',
             data:ave_data
         },
         {
             name:'最低值',
             type:'line',
-            stack: '总量',
-            data:maxd
+            data:mind
         }
         
     ]
@@ -741,7 +739,11 @@ function get_radar_data (data) {
   //   topic_value[a]=0;
   // }
   var topic_name3 = [];
-  for(var i=0;i<8;i++){ //设置最大值的话题的阈值
+  var max_topic = 8
+  if(topic.length<8){
+    max_topic = topic.length;
+  }
+  for(var i=0;i<max_topic;i++){ //设置最大值的话题的阈值
     var name_dict = {};
     var index = topic_name[i];
     name_dict["text"] = index;
@@ -864,7 +866,7 @@ Weibo_user.prototype = {
       
 }
 var Weibo_user = new Weibo_user();
-var weibo_user_url = '/group/group_member/?task_name=媒体';
+var weibo_user_url = '/group/group_member/?task_name=' + name;
 Weibo_user.call_sync_ajax_request(weibo_user_url,Weibo_user.ajax_method,Weibo_user.Draw_user)
 //Draw_group_weibo_user();  
     //选择时间
@@ -898,28 +900,4 @@ $(' input[name="user_select"]').click(function(){
         $('#influence_out_user').css('display', 'none');
     }
 });
-//影响力波及用户
-/*
-function Influ_person(){
-    this.ajax_method = 'GET';
-}
 
-Influ_person.prototype = {
-  call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  },
-  Draw:function(data){
-    console.log(data);
-  }
-}
-
-var Influ_person = new Influ_person();
-var influ_person_url = '/group/show_group_result/?task_name=媒体&module=influence';
-Influ_person.call_sync_ajax_request(influ_person_url, Influ_person.ajax_method, Influ_person.Draw);
-*/

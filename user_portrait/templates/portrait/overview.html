@@ -46,13 +46,17 @@
 
         <div>
           <div>
-            <span style='font-size:17px;color:#777'>话题占比</span>
-            <span style="margin-left:300px;font-size:17px;color:#777">心理状态占比</span>
-            <span style="margin-left:290px;font-size:17px;color:#777">领域占比</span>
+            <span style='font-size:17px;color:#777;margin-left:80px;'>话题占比</span>
+            
+            <span style="margin-left:300px;font-size:17px;color:#777"></span>
+            
+            <span style="margin-left:290px;font-size:17px;color:#777;margin-left:80px;">领域占比</span>
           </div>
-            <div id='user_topic' style='float:left;width:320px;height:300px'></div>       
-            <div id='user_domain' style='float:right;width:340px;height:300px'></div>
-            <div id='user_emotion' style='float:left;width:340px;height:300px'></div>
+            <div id='user_topic' style='float:left;width:480px;height:300px;margin-left:0px;'></div>
+            
+            <div id='user_domain' style='float:right;width:520px;height:300px'></div>
+            
+            <div id='user_emotion' style='float:left;width:0px;height:300px'></div>
         </div>
 
         <div><h4 class="page-header"style='margin-top:320px'>人物信息</h4></div>
@@ -77,13 +81,7 @@
            </div>
      <div>
         <div><h4 class="page-header"style='margin-top:30px'>排名信息</h4></div>	
-        <div><span style='font-size:16px;color:#777'>影响力排名</span><span style='font-size:16px;margin-left:175px'><a href="/index/influence_rank/" target="_blank"><u><font color="#555555">查看更多</font></u></a></span><span style="margin-left:20px;font-size:16px;color:#777">变动影响力排名</span><span style='font-size:16px;margin-left:145px'><a href="/index/influence_rank/" target="_blank"><u><font color="#555555">查看更多</font></u></a></span><span style="margin-left:20px;font-size:16px;color:#777">活跃度排名</span><span type="button"data-toggle="modal" data-target="#rank_activeness" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span></div>
-         <div class="table-responsive"id='top_influence' style='overflow-x:hidden;width:320px;height:250px;float:left'>
-        </div>
-         <div class="table-responsive"id='top_activeness' style='overflow-x:hidden;width:320px;height:250px;float:right'>
-        </div>
-         <div class="table-responsive"id='top_influence_vary' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>
-        </div>
+        
          <div><span style='font-size:16px;color:#777;'>重要度排名</span><span type="button"data-toggle="modal" data-target="#rank_importance" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;font-size:16px;color:#777;">被评论量排名</span><span type="button"data-toggle="modal" data-target="#rank_comment"  style='font-size:16px;margin-left:160px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;font-size:16px;color:#777">被转发量排名</span><span data-toggle="modal" type="button"data-target="#rank_retweeted"  style='font-size:16px;margin-left:160px;cursor: pointer'><u>查看更多</u></span></div>
          <div class="table-responsive"id='importance' style='overflow-x:hidden;width:320px;height:250px;float:left'>
         </div>
@@ -98,6 +96,15 @@
         </div>
          <div class="table-responsive"id='hashtag' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>              
         </div>
+        <div><span style='font-size:16px;color:#777'>影响力排名</span><span style='font-size:16px;margin-left:175px'><a href="/index/influence_rank/" target="_blank"><u><font color="#555555">查看更多</font></u></a></span><span style="margin-left:20px;font-size:16px;color:#777">活跃度排名</span><span type="button"data-toggle="modal" data-target="#rank_activeness" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span></div>
+         <div class="table-responsive"id='top_influence' style='overflow-x:hidden;width:320px;height:250px;float:left'>
+        </div>
+         <div class="table-responsive"id='top_activeness' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>
+        <!--
+        </div>
+         <div class="table-responsive"id='top_influence_vary' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>
+        </div>
+        -->
       </div>
 
 <div class="modal fade" id="rank_activeness" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

@@ -229,11 +229,15 @@ function get_radar_data (data) {
   //   topic_value[a]=0;
   // }
   var topic_name3 = [];
-  for(var i=0;i<8;i++){ //设置最大值的话题的阈值
+  var max_topic = 8
+  if(topic.length<8){
+    max_topic = topic.length;
+  }
+  for(var i=0;i<max_topic;i++){ //设置最大值的话题的阈值
     var name_dict = {};
     var index = topic_name[i];
     name_dict["text"] = index;
-    name_dict["max"] = Math.max.apply(Math, topic_value).toFixed(3)+0.2;
+    name_dict["max"] = Math.max.apply(Math, topic_value).toFixed(3)+10;
     topic_name3.push(name_dict);
   }
   var topic_result = [];
@@ -242,7 +246,6 @@ function get_radar_data (data) {
   return topic_result;
 }
 function Draw_topic(data, radar_div, motal_div){
-  //console.log(data);
   var topic = [];
   var html = '';
   $('#'+ motal_div).empty();
@@ -315,195 +318,11 @@ function Draw_topic(data, radar_div, motal_div){
   myChart2.setOption(option);
 }
 
-function show_domain(data){
-
-  // var html = '';
-  //html += '<h3>用户领域分析</h3>';
-  data1 = '根据注册信息分类：'+data[0][0];
-  data2 = '根据转发结构分类：'+data[0][1];
-  data3 = '根据发帖内容分类：'+data[0][2];
-  data4 = data[1];
-  var myChart1 = echarts.init(document.getElementById('preference_domain')); 
-  var option = {
-    tooltip : {
-        trigger: 'item',
-        formatter: "{b}"
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-    },
-    calculable : false,
-
-    series : [
-        {
-            name:'树图',
-            type:'tree',
-            orient: 'horizontal',  // vertical horizontal
-            rootLocation: {x: 30, y: 'center'}, // 根节点位置  {x: 'center',y: 10}
-            nodePadding: 50,
-            symbol: 'circle',
-            symbolSize: 60,
-            itemStyle: {
-                normal: {
-                    label: {
-                        show: false,
-                        position: 'inside',
-                        textStyle: {
-                            color: '#000',
-                            fontSize: 14,
-                            font_family: "Microsoft YaHei UI"
-                        }
-                    },
-                    lineStyle: {
-                        color: '#000',
-                        width: 1,
-                        type: 'curve' // 'curve'|'broken'|'solid'|'dotted'|'dashed'
-                    }
-                },
-                emphasis: {
-                    label: {
-                        show: false,
-                        fontSize: 14,
-                    }
-                }
-            },
-            data: [
-                {
-                    name: data4,
-                    //value: 2,
-                    // symbolSize: [90, 70],
-                    // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
-                    itemStyle: {
-                        normal: {
-                           color: '#95C6E2',
-                            label: {
-                                show: true
-                            }
-                        }
-                    },
-                    children: [
-                        {
-                          name: data1,
-                          symbol: 'circle',
-                          symbolSize: 20,
-                          value: 4,
-                          itemStyle: {
-                              normal: {
-                                  color: '#77B1E2',
-                                  label: {
-                                      show: true,
-                                      position: 'right'
-                                  },
-                                  
-                              },
-                              emphasis: {
-                                  label: {
-                                      show: false
-                                  },
-                                  borderWidth: 0
-                              }
-                          }
-                        },
-                        {
-                          name: data2,
-                          symbol: 'circle',
-                          symbolSize: 20,
-                          value: 4,
-                          itemStyle: {
-                              normal: {
-                                  color: '#367FBD',
-                                  label: {
-                                      show: true,
-                                      position: 'right'
-                                  },
-                                  
-                              },
-                              emphasis: {
-                                  label: {
-                                      show: false
-                                  },
-                                  borderWidth: 0
-                              }
-                          }
-                        },
-                        {
-                          name: data3,
-                          symbol: 'circle',
-                          symbolSize: 20,
-                          value: 4,
-                          itemStyle: {
-                              normal: {
-                                  color: '#31708F',
-                                  label: {
-                                      show: true,
-                                      position: 'right'
-                                  },
-                                  
-                              },
-                              emphasis: {
-                                  label: {
-                                      show: false
-                                  },
-                                  borderWidth: 0
-                              }
-                          }
-                        }    
-                    ]
-                }
-            ]
-        }
-    ]
-  };
-   myChart1.setOption(option);               
+function show_results(data){
+  show_conclusion(conclusion);
 }
 
-function show_results(data){
-  // console.log(data);
-//  var keywordsCloud = data.results.keywords;
-  
-  //console.log(keywordsCloud);
-//  var hashtag = data.results.hashtag;
-//var hashtag = ['000','111','222','333','444','555','666'];
-//var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
-//var domain = [];
-
-//  var conclusion = data.description;
-//var conclusion = 'conclusion///';
-//  var domain = data.results.domain;
-//  var keywords_name = 'Language';
-  //var hashtag_name = 'hashtag_words';
- // var keywords_more = 'key_WordList';
-  
-//var key_more = 'key_more';
-//var hash_more = 'hash_more';
- 
-  //Draw_keyword(keywordsCloud, keywords_name, keywords_more, showmore_keyWords);
-  //Draw_keyword(hashtag, hashtag_name, hashtag_more, showmore_hashtagWords);
-  //Draw_topic(topic,'preference_topic', 'topic_WordList','showmore_topic');
-  //Draw_topic(topic,'preference_domain', 'domain_WordList','showmore_domain');
-  show_conclusion(conclusion);
-//  show_domain(domain);
-
-
-  // var tag_vector = data.tag_vector;
-  // console.log(tag_vector);
-  // for(var i=0; i<tag_vector.length;i++){
-  //   if(tag_vector[i][1] == ''){
-  //     tag_vector[i][1] = '暂无数据'
-  //   }
-  //   global_tag_vector.push(tag_vector[i]);
-  // }
-
-  }
-
 var Show_pref = new Show_pref();
-//var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
-var prefrence_url = '/group/show_group_result/?task_name=媒体&module=preference';
+var prefrence_url = '/group/show_group_result/?task_name='+ name +'&module=preference';
 Show_pref.call_sync_ajax_request(prefrence_url, Show_pref.ajax_method, Show_pref.Draw_table);
   </script>

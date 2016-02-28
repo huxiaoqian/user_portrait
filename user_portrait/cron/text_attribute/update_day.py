@@ -121,12 +121,6 @@ def update_day_activeness(geo_results, user_info_list):
         day_activeness = activeness_weight_dict['activity_time'] * math.log(max_freq + 1) + \
                          activeness_weight_dict['activity_geo'] * math.log(geo_count + 1) + \
                          activeness_weight_dict['statusnum'] * math.log(statusnum + 1)
-        '''
-        activeness_history_list = json.loads(user_info_list[uid]['activeness_history'])
-        activeness_history_list.append(day_activeness)
-        activeness_history_list = activeness_history_list[-30:]
-        results[uid] = {'activeness':day_activeness, 'activeness_history':json.dumps(activeness_history_list)}
-        '''
         results[uid] = {'activeness':day_activeness}
     return results
 
@@ -139,12 +133,6 @@ def update_day_influence(uid_list, user_info_list):
     day_influence_results = get_influence(uid_list)
     for uid in uid_list:
         day_influence = day_influence_results[uid]
-        '''
-        influence_history_list = json.loads(user_info_list[uid]['influence_history'])
-        influence_history_list.append(day_influence)
-        influence_history_list = influence_history_list[-30:]
-        results[uid] = {'influence':day_influence, 'influence_history':json.dumps(influence_history_list)}
-        '''
         results[uid] = {'influence': day_influence}
     return results
 
@@ -176,7 +164,6 @@ def update_attribute_day():
         r_user_info = update_day_redis.rpop(UPDATE_DAY_REDIS_KEY)
         if r_user_info:
             r_user_info = json.loads(r_user_info)
-            #print 'r_user_info:', r_user_info
             uid = r_user_info.keys()[0]
             user_info_list[uid] = r_user_info[uid]
             count += 1
@@ -247,4 +234,6 @@ def update_attribute_day():
 '''
 
 if __name__=='__main__':
+    print 'start update_day'
     update_attribute_day()
+    print 'end update_day'

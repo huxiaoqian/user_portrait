@@ -30,33 +30,29 @@ Date.prototype.format = function(format) {
 
 function Draw_sensi_related_event(data){
 	$('#sensi_related_weibo').empty();
-	$('#sensi_weibo #pageGro').css('display', 'none');
+    $('#sensi_weibo #pageGro').css('display', 'none');
+    /*
+    $('#sensi_weibo #pageGro .pageUp').css('display', 'none');
+    $('#sensi_weibo #pageGro .pageList').css('display', 'none'); 
+    $('#sensi_weibo #pageGro .pageDown').css('display', 'none'); 
+    */
 	var html = '';
-    html += '<div></div>';
+    //html += '<div></div>';
+    html += '<div style="padding:5px">';
+    if (data.length == 0){
+        html += '<span>暂无感知事件</span>';
+    }
     for (var i = 0; i < data.length; i++){
-        html += '<div>';
         html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
         }
         for(var j=0;j<x; j++){
-        	if(j%2 == 0){
-            	html += '<span class="group_block">' + data[i][j] + '</span>';
-        	}
-        	else{
-            	html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
-        	}
+            html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
         }
 
-        // var key = sentiment_dict[i]
-        // if (key == character_sent){
-        //     html += '<span class="group_block">' + key + '</span>';
-        // }
-        // else{
-        //     html += '<span style="background-color:gray;" class="group_block">' + key + '</span>';
-        // }
         html+= '</div>';
     
     $('#sensi_related_weibo').html(html);
@@ -64,69 +60,58 @@ function Draw_sensi_related_event(data){
 
 function Draw_num_related_event(data){
 	$('#num_related_weibo').empty();
-	$('#num_weibo #pageGro').css('display', 'none');
-	var html = '';
-    html += '<div></div>';
+    $('#num_weibo #pageGro').css('display', 'none');
+    /*
+    $('#num_weibo #pageGro .pageUp').css('display', 'none');
+    $('#num_weibo #pageGro .pageList').css('display', 'none'); 
+    $('#num_weibo #pageGro .pageDown').css('display', 'none'); 
+	*/
+    var html = '';
+    //html += '<div></div>';
+    html += '<div style="padding:5px">';
+    if (data.length == 0){
+        html += '<span>暂无感知事件</span>';
+    }
     for (var i = 0; i < data.length; i++){
-        html += '<div>';
         html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
         }
         for(var j=0;j<x; j++){
-        	if(j%2 == 0){
-            	html += '<span class="group_block">' + data[i][j] + '</span>';
-        	}
-        	else{
-            	html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
-        	}
+            html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
-        }
-
-        // var key = sentiment_dict[i]
-        // if (key == character_sent){
-        //     html += '<span class="group_block">' + key + '</span>';
-        // }
-        // else{
-        //     html += '<span style="background-color:gray;" class="group_block">' + key + '</span>';
-        // }
-        html+= '</div>';
+    }
+    html+= '</div>';
     
     $('#num_related_weibo').html(html);
 }
 
 function Draw_mood_related_event(data){
 	$('#mood_related_weibo').empty();
-	$('#mood_weibo #pageGro').css('display', 'none');
-	var html = '';
-    html += '<div></div>';
+    $('#mood_weibo #pageGro').css('display', 'none');
+    /*
+    $('#mood_weibo #pageGro .pageUp').css('display', 'none');
+    $('#mood_weibo #pageGro .pageList').css('display', 'none'); 
+    $('#mood_weibo #pageGro .pageDown').css('display', 'none'); 
+	*/
+    var html = '';
+    //html += '<div></div>';
+    html += '<div style="padding:5px">';
+    if (data.length == 0){
+        html += '<span>暂无感知事件</span>';
+    }
     for (var i = 0; i < data.length; i++){
-        html += '<div>';
         html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
         }
         for(var j=0;j<x; j++){
-        	if(j%2 == 0){
-            	html += '<span class="group_block">' + data[i][j] + '</span>';
-        	}
-        	else{
-            	html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
-        	}
+            html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
-        }
-
-        // var key = sentiment_dict[i]
-        // if (key == character_sent){
-        //     html += '<span class="group_block">' + key + '</span>';
-        // }
-        // else{
-        //     html += '<span style="background-color:gray;" class="group_block">' + key + '</span>';
-        // }
-        html+= '</div>';
-    
+    }
+    html+= '</div>';
     $('#mood_related_weibo').html(html);
 }
 
@@ -258,7 +243,7 @@ function pageDown(pageNum,pageCount, div_name){
 			page_icon(1,5,1, div_name);
 		break;
 		case 2:
-			page_icon(1,5,2);
+			page_icon(1,5,2, div_name);
 		break;
 		case pageCount-1:
 			page_icon(pageCount-4,pageCount,4, div_name);
@@ -294,24 +279,30 @@ function pageGroup(pageNum,pageCount, div_name){
 
 function Draw_num_weibo (data){
 	Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
+    $('#num_weibo').css("display", 'block');
 }
 
 function Draw_mood_weibo (data){
 	Draw_group_weibo(data, 'mood_weibo', 'mood_related_weibo');
+    $('#mood_weibo').css("display", 'block');
 }
 
 function Draw_sensi_weibo (data){
 	Draw_group_weibo(data, 'sensi_weibo', 'sensi_related_weibo');
+    $('#sensi_weibo').css("display", 'block');
 }
 
 function Draw_group_weibo(data, div_name, sub_div_name){
     var page_num = 5;
-    console.log(data);
+    //console.log(data);
     if (data.length < page_num) {
     	//console.log('data_length', data.length);
+        $('#'+ div_name + ' #pageGro').css('display', 'none');
+        /*
     	$('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
     	$('#'+ div_name + ' #pageGro .pageList').css('display', 'none'); 
     	$('#'+ div_name + ' #pageGro .pageDown').css('display', 'none'); 
+        */
     	if (data.length == 0) {
     		$('#' + sub_div_name).empty();
     		$('#' + sub_div_name).append('该时段没有与此事件相关的微博！')
@@ -321,6 +312,12 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     	}
       }
       else {
+        $('#'+ div_name + ' #pageGro').css('display', 'block');
+          /*
+        $('#'+ div_name + ' #pageGro .pageUp').css('display', 'block');
+        $('#'+ div_name + ' #pageGro .pageList').css('display', 'block'); 
+        $('#'+ div_name + ' #pageGro .pageDown').css('display', 'block'); 
+        */
           page_group_weibo( 0, page_num, data, div_name, sub_div_name);
           var total_pages = 0;
           if (data.length % page_num == 0) {
@@ -631,10 +628,13 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 
 				    //var data=[['人民日报',1,2,'条结论这里是一条结论这里里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 				    var sensi_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + sensi_click_time + '&text_type=' + sensi_index;
-                    var sensi_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
+                    var sensi_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=' + sensi_click_time;
 	   			    
-	   			    call_sync_ajax_request(sensi_line_url, Draw_sensi_weibo);
-			   		$('#sensi_weibo').css("display", 'block');
+                    if($('input[name="sensi_select"]:checked').val()=='1'){	
+                        call_sync_ajax_request(sensi_line_event_url, Draw_sensi_related_event);
+                    }else{
+                        call_sync_ajax_request(sensi_line_url, Draw_sensi_weibo);
+                    }
 					
 					//微博 or 感知	
 					$('input[name="sensi_select"]').click(function(){
@@ -801,21 +801,17 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			   			index_type = 4;
 			   		};
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
-	   			    //var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name=' + task_name + '&ts=' + mood_click_time;
-	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
+	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=' + mood_click_time;
 	   			    
-	   			    call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
-			   		$('#mood_weibo').css("display", 'block');
-					//Draw_group_weibo(data, 'num_weibo', 'num_related_weibo');
-					//console.log(mood_line_url);
-					//Draw_group_weibo(data, 'mood_weibo', 'mood_related_weibo');
-						//微博 or 感知	
-    
-
+                    if($('input[name="mood_select"]:checked').val()=='1'){	
+                        call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
+                    }else{
+                        call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
+                    }
+                    //微博 or 感知	
 					$('input[name="mood_select"]').click(function(){
 						if($('input[name="mood_select"]:checked').val()=='1'){	
 	   			    		call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
-							//Draw_group_weibo(data1, 'mood_weibo', 'mood_related_weibo');
 						}else{
 	   			    		call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
 						}
@@ -993,20 +989,22 @@ function draw_num_line_charts(data, div_name, legend_data){
 			    }else{
 			    	index_type = param.seriesIndex-1
 			    }
-				    var num_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + num_click_time + '&text_type=' + num_index;
-                    var num_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=1378045800';
-	   			    
-	   			    call_sync_ajax_request(num_line_url, Draw_num_weibo);
-			   		$('#sensi_weibo').css("display", 'block');
-					
-					//微博 or 感知	
-					$('input[name="num_select"]').click(function(){
-						if($('input[name="num_select"]:checked').val()=='1'){	
-	   			    		call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
-						}else{
-	   			    		call_sync_ajax_request(num_line_url, Draw_num_weibo);
-						}
-					});	
+                var num_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + num_click_time + '&text_type=' + num_index;
+                var num_line_event_url = '/social_sensing/get_clustering_topic/?task_name=律师群体言论&ts=' + num_click_time;
+                if($('input[name="num_select"]:checked').val()=='1'){	
+                    call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
+                }else{
+                    call_sync_ajax_request(num_line_url, Draw_num_weibo);
+                }
+
+                //微博 or 感知	
+                $('input[name="num_select"]').click(function(){
+                    if($('input[name="num_select"]:checked').val()=='1'){	
+                        call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
+                    }else{
+                        call_sync_ajax_request(num_line_url, Draw_num_weibo);
+                    }
+                });	
 			}
 		
 		myChart.on(ecConfig.EVENT.CLICK, eConsole);
