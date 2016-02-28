@@ -17,6 +17,7 @@ from global_utils import update_day_redis, UPDATE_DAY_REDIS_KEY
 #order time task for every day
 #data in redis: [{'uid':uid, 'activity_geo_dict':json.dumps([activity_geo_dict])}, {'uid':uid, 'activity_geo_dict':...}]
 def scan_es2redis_day():
+    print 'start scan_es2redis_day'
     count = 0
     s_re = scan(es_user_portrait, query={'query':{'match_all':{}}, 'size':1000}, index=portrait_index_name, doc_type=portrait_index_type)
     start_ts = time.time()
@@ -51,3 +52,4 @@ def scan_es2redis_day():
 
 if __name__=='__main__':
     scan_es2redis_day()
+    print 'end scan_es2redis_day'

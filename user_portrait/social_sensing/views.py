@@ -346,13 +346,15 @@ def ajax_get_clustering_topic():
     task_name = request.args.get('task_name','') # task_name
     ts = int(request.args.get('ts', '')) # timestamp: 123456789
 
-    task_detail = es.get(index=index_sensing_task, doc_type=task_name, id=ts)['_source']
+    try:
+        task_detail = es.get(index=index_sensing_task, doc_type=task_name, id=ts)['_source']
+    except:
+        return json.dumps([])
     burst_reason = task_detail['burst_reason']
     if burst_reason:
         topic_list = task_detail.get("clustering_topic", [])
         if topic_list:
             topic_list = json.loads(topic_list)
-        print topic_list
 
     return json.dumps(topic_list)
 
@@ -376,5 +378,50 @@ def ajax_get_sensitive_words():
     else:
         return tmp
 
+# 增加传感词
+@mod.route('/add_sensing_words/')
+def ajax_add_sensing_words():
+    add_words = request.args.get("add_words_list", "") #seperate with ","
+    add_words_list = add_words.split(',')
+    sensing_words = json.loads(r.hget('sensing_words', "sensing_words"))
+    new_words_list = list(set(sensing_words) | set(add_words_list))
+    r.hset('sensing_words', "sensing_words", json.dumps(new_words_list))
+
+    return "1"
+
+# 增加敏感词
+@mod.route('/add_sensitive_words/')
+def ajax_add_sensitive_words():
+    add_words = request.args.get("add_words_list", "") #seperate with ","
+    add_words_list = add_words.split(',')
+    sensing_words = json.loads(r.hget('sensitive_words', "sensitive_words"))
+    new_words_list = list(set(sensing_words) | set(add_words_list))
+    r.hset('sensitive_words', "sensitive_words", json.dumps(new_words_list))
+
+    return "1"
+
+
+# 删除传感词
+@mod.route('/delete_sensing_words/')
+def ajax_delete_sensing_words():
+    delete_words = request.args.get("delete_words_list", "") #seperate with ","
+    delete_words_list = delete_words.split(',')
+    sensing_words = json.loads(r.hget('sensing_words', "sensing_words"))
+    new_words_list = list(set(sensing_words) - set(delete_words_list))
+    r.hset('sensing_words', "sensing_words", json.dumps(new_words_list))
+
+    return "1"
+
+
+# 删除敏感词
+@mod.route('/delete_sensitive_words/')
+def ajax_delete_sensitive_words():
+    delete_words = request.args.get("delete_words_list", "") #seperate with ","
+    delete_words_list = delete_words.split(',')
+    sensentive_words = json.loads(r.hget('sensitive_words', "sensitive_words"))
+    new_words_list = list(set(sensitive_words) - set(delete_words_list))
+    r.hset('sensitive_words', "sensitive_words", json.dumps(new_words_list))
+
+    return "1"
 
 
