@@ -12,7 +12,7 @@ g_psy.prototype = {   //获取数据，重新画表
     });
   }
 }
-var psy_url='/group/show_group_result/?task_name=媒体&module=think';
+var psy_url='/group/show_group_result/?task_name='+name+'&module=think';
 var g_psy = new g_psy();
 g_psy.call_sync_ajax_request(psy_url,g_psy.ajax_method,draw_think_all);
 function draw_think_all(data){
@@ -298,7 +298,7 @@ function group_emotions(data){
                 var date = new Date(time_name[param.dataIndex]);
                 var starts_ts = date.getTime().toString().substr(0,10);
                 var start_ts = parseInt(starts_ts)-28800;                 
-                var ajax_url = '/group/group_sentiment_weibo/?task_name=媒体&sentiment=0&start_ts='+start_ts;
+                var ajax_url = '/group/group_sentiment_weibo/?task_name='+name+'&sentiment=0&start_ts='+start_ts;
                 // ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({
                       url: ajax_url,
@@ -328,7 +328,7 @@ function Draw_group_trend(data){
         var time_init = new Date(items['sentiment_trend']['time_list'][0]);
         var times_init = time_init.getTime().toString().substr(0,10);
         var html0 = '';
-        var url_content = '/group/group_sentiment_weibo/?task_name=媒体&sentiment=0&start_ts='+times_init;
+        var url_content = '/group/group_sentiment_weibo/?task_name='+name+'&sentiment=0&start_ts='+times_init;
         g_psy.call_sync_ajax_request(url_content,g_psy.ajax_method,group_draw_content);
         $('#group_select_time').empty();  
         html0 += "<div style='float:left'>当前选择时间段：</div><div style='color:brown;'>"+items['sentiment_trend']['time_list'][0]+"</div><br><div style='float:left' >当前选择情绪：</div><div style='color:brown;'>中性</div>";
