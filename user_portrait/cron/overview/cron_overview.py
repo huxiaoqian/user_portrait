@@ -540,7 +540,27 @@ def get_scan_results_v2():
     result_dict['topic_top_user'] = json.dumps(get_topic_top_user(topic_top))
     
     # online pattern top
+    '''
+    query_body = {
+        "query":{
+            "match_all":{}
+            },
+        "aggs":{
+            "all_interests":{
+                "terms":{"field":"online_pattern_aggs","size":50}
+            }
+        }
+    }
 
+    search_results = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["aggregations"]['all_interests']['buckets']
+    if len(search_results):
+        online_pattern_top = []
+        for item in search_results:
+            online_pattern_top.append([item['key'],item['doc_count']])
+    else:
+        online_pattern_top = {}
+    result_dict['online_pattern_top'] = json.dumps(online_pattern_top)
+    '''
     # activity_count
 
     return result_dict
