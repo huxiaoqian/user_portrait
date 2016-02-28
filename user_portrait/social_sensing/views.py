@@ -245,7 +245,7 @@ def ajax_get_task_detail_info():
 @mod.route('/get_group_list/')
 def ajax_get_group_list():
     # get all group list from group manage
-    results = [] # 
+    results = [] #
     query_body = {
         "query":{
             "filtered":{
@@ -253,7 +253,7 @@ def ajax_get_group_list():
                     "bool":{
                         "must":[
                             {"term": {"task_type": "analysis"}},
-                            {"term": {"status": 0}} # attention-------------------------
+                            {"term": {"status": 1}} # attention-------------------------
                         ]
                     }
                 }
@@ -272,8 +272,11 @@ def ajax_get_group_list():
             temp.append(item['submit_user'])
             temp.append(item['submit_date'])
             temp.append(item['count'])
-            temp.append(item['state'])
-            temp.append(json.loads(item['uid_list']))
+            temp.append(item.get('state', ""))
+            try:
+                temp.append(json.loads(item['uid_list']))
+            except:
+                temp.append(item['uid_list'])
             results.append(temp)
 
     return json.dumps(results)
@@ -284,8 +287,10 @@ def ajax_get_group_detail():
     portrait_detail = []
     search_result = es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name).get('_source', {})
     if search_result:
-        uid_list = json.loads(search_result['uid_list'])
-        print uid_list
+        try:
+            uid_list = json.loads(search_result['uid_list'])
+        except:
+            uid_list = search_result['uid_list']
         search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":uid_list}, fields=SOCIAL_SENSOR_INFO)['docs']
         for item in search_results:
             temp = []
