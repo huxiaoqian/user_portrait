@@ -645,13 +645,13 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
         timestamp = data[s]['timestamp'];
         //date = new Date(parseInt(timestamp)*1000).format("yyyy-MM-dd hh:mm:ss");
         if (i%2 ==0){
-            html += '<div style="background:whitesmoke;font-size:14px">';
+            html += '<div style="padding:5px;background:whitesmoke;font-size:14px">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';
             html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + timestamp + '</font></p>';
             html += '</div>'
     }
         else{
-            html += '<div>';
+            html += '<div style="padding;5px;">';
             html += '<p><a target="_blank" href="/index/personal/?uid=' + uid + '">' + uname + '</a>&nbsp;&nbsp;发布:<font color=black>' + text + '</font></p>';    
             html += '<p style="margin-top:-5px"><font color:#e0e0e0>' + timestamp + '</font></p>';
             html += '</div>';

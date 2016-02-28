@@ -15,10 +15,10 @@ g_psy.prototype = {   //获取数据，重新画表
 var psy_url='/group/show_group_result/?task_name=媒体&module=think';
 var g_psy = new g_psy();
 g_psy.call_sync_ajax_request(psy_url,g_psy.ajax_method,draw_think_all);
-functon draw_think_all(data){
-    draw_group_kind;
-    Draw_group_think;
-    Draw_group_trend;
+function draw_think_all(data){
+    draw_group_kind(data);
+    Draw_group_think(data);
+    Draw_group_trend(data);
 }
 function Draw_group_think(data){
 	var g_think = data['sentiment_pie'];
