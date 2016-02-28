@@ -165,6 +165,17 @@ function draw_group_kind(data){
         {
             name:'',
             type:'pie',
+            itemStyle:{
+                normal: {
+                    color: function(params) {
+                        // build a color map as your need.
+                        var colorList = [
+                         '#FFB980','#87CEFA','#B6A2DE','#FFB980','#F3A43B','#B6A2DE','#9BCA63','#FE8463'
+                        ];
+                        return colorList[params.dataIndex]
+                    } 
+                }
+            },
             selectedMode: 'single',
             radius : [0, 60],
             center:['30%','50%'],
@@ -179,6 +190,17 @@ function draw_group_kind(data){
         {
             name:'',
             type:'pie',
+            itemStyle:{
+                normal: {
+                    color: function(params) {
+                        // build a color map as your need.
+                        var colorList = [
+                         '#FFB980','#87CEFA','#B6A2DE','#FFB980','#F3A43B','#B6A2DE','#9BCA63','#FE8463'
+                        ];
+                        return colorList[params.dataIndex]
+                    } 
+                }
+            },
             radius : [0, 60],
             center:['70%','50%'],
             // for funnel

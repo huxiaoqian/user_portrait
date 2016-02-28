@@ -258,7 +258,12 @@ Personal.prototype = {   //群组搜索
         }
         var nickName = document.getElementById('nickname');
         if(personalData.uname){
-            nickName.innerHTML = personalData.uname;
+            if (personalData.uname == 'unknown') {
+                nickName.innerHTML = '未知';
+            }
+            else{
+                nickName.innerHTML = personalData.uname;
+            }
         }else{
             nickName.innerHTML = "无此数据";
         }

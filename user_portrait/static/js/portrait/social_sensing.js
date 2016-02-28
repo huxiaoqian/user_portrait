@@ -237,18 +237,27 @@ function draw_sensor(data){
 	var item_img = '';
 	var item_num = '';
 	var item_keys = data['keywords'];
+	var item_sen_keys = data['sensitive_words'];
 	var item_sensor = data['social_sensors'];
-    html += '<div style="width:100%"><div  style="margin-right: 25px;float:left;display:inline-block">传感词：</div>';
+    html += '<div style="width:100%"><div  style="float:left;display:inline-block">敏感传感词：</div>';
     if(item_keys.length > 0){
-    	html += '<div style="margin-right: 9px;padding:0px;width: 89%;display:inline-block">';
+    	html += '<div style="margin-right: 9px;padding:0px;width: 83%;display:inline-block">';
+	    for (var j =0;j<item_sen_keys.length;j++){
+	    	html += '<span style="margin-right:20px;">'+item_sen_keys[j]+'</span>';
+	    }
+	    html += '</div>';
+	}else{html += '<span style="margin-right:20px;">无</span>'}
+	html += '<div style="width:100%;margin-top:10px;"><div  style="float:left;display:inline-block">普通传感词：</div>';
+    if(item_keys.length > 0){
+    	html += '<div style="margin-right: 9px;padding:0px;width: 83%;display:inline-block">';
 	    for (var j =0;j<item_keys.length;j++){
 	    	html += '<span style="margin-right:20px;">'+item_keys[j]+'</span>';
 	    }
-	    html += '</div>';
+	    html += '</div>';  
     }else{html += '<span style="margin-right:20px;">无</span>'}
     html += '</div>';
     if (item_sensor.length == 0){
-    	html += '<div style="margin-top:10px;">传感群：<span style="margin-left:25px;">全库用户</span></div>'
+    	html += '<div style="margin-top:10px;">传感群：<span style="margin-left:28px;">全库用户</span></div>'
     }else{
     	html += '<div style="margin-top:10px;overflow-y:auto;height:300px;">';
 	    html += '<table style="margin-top:10px;font-weight:lighter;" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
@@ -279,28 +288,36 @@ function draw_sensor(data){
     $('#so_sensor_content').append(html); 
 }
 
-function draw_more(data){
+function draw_sen_more(data){
 	var item = data;
-    console.log(data);
-	$('#so_more_content').empty();
-	html = '';
+	//$('#so_more_content').empty();
+	$('#so_sen_content').empty();
+	var html = '';
 	//html += '<table id="so_more_body" class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<div style="font-size:18px;font-weight:bold;">敏感词<input style="margin-left:50px;"margin-right:10px; name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>';
-	html += '<div style="margin:8px 0px;">';
-    for (var i=0;i<item[0].length;i++){
-		html += '<input  name="so_more_option_1" class="search_result_option" value="'+item[0][i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[0][i]+'</span> ';
+	// html += '<div style="font-size:18px;font-weight:bold;">敏感词<input style="margin-left:50px;"margin-right:10px; name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>';
+	//html += '<div style="margin:8px 0px;">';
+    for (var i=0;i<item.length;i++){
+		html += '<input  name="so_more_option_1" class="search_result_option" value="'+item[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[i]+'</span> ';
 	}
-	html += '</div><hr/>';
-	html += '<div style="font-size:18px;font-weight:bold;">一般关键词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>';
-	html += '<div style="margin:8px 0px;">';
-	for (var j=0;j<item[1].length;j++){
-		html += '<input  name="so_more_option_0" class="search_result_option" value="'+item[1][j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[1][j]+'</span> ';
-	}
-	html += '</div>';
-	$('#so_more_content').append(html);
+	//html += '</div><hr/>';
+	//html += '<div style="font-size:18px;font-weight:bold;">一般关键词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>';
+	// html += '<div style="margin:8px 0px;">';
+	// for (var j=0;j<item[1].length;j++){
+	// 	html += '<input  name="so_more_option_0" class="search_result_option" value="'+item[1][j]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[1][j]+'</span> ';
+	// }
+	// html += '</div>';
+	$('#so_sen_content').append(html);
 }
 
-
+function draw_nor_more(data){
+	var item = data;
+	$('#so_nor_content').empty();
+	var html = '';
+	for (var i=0;i<item.length;i++){
+		html += '<input  name="so_more_option_0" class="search_result_option" value="'+item[i]+'" type="checkbox"/><span style="margin-left:10px;margin-right:20px;">'+item[i]+'</span> ';
+	}
+	$('#so_nor_content').append(html);
+}
 function so_ready(){
 	$('a[id^="so_keys"]').click(function(e){
 		var temp = $(this).parent().text();
@@ -363,8 +380,10 @@ function so_ready(){
 			Social_sense.call_sync_ajax_request(url,Social_sense.ajax_method,callback);
 	}
 	});
-	test=[['111','222','333','444'],['qqq','www','eee','rrr']];
-	draw_more(test);
+	var sen_word_url='/social_sensing/get_sensitive_words';
+	Social_sense.call_sync_ajax_request(sen_word_url,Social_sense.ajax_method,draw_sen_more);
+	var nor_word_url='/social_sensing/get_sensing_words';
+	Social_sense.call_sync_ajax_request(nor_word_url,Social_sense.ajax_method,draw_nor_more);
 
 	$('span[id^="so_more"]').click(function(e){
 		$('#so_more_block').modal();
@@ -390,6 +409,28 @@ function draw_history(data){
 	}else{
 		$('span[id^="so_remark0"]').html('无');
 	}
+	if(data['sensitive_words']){
+		$('span[id^="so_sen_keys"]').empty();
+		var s_html ='';
+		for (var j =0;j<data['sensitive_words'].length;j++){
+			s_html +=  '<span style="margin-right:20px;">'+data['sensitive_words'][j]+'</span>';
+		}
+		$('span[id^="so_sen_keys"]').append(s_html);
+	}else{
+		$('span[id^="so_sen_keys"]').html('无');
+	}
+
+	if(data['keywords']){
+		$('span[id^="so_nor_keys"]').empty();
+		var s_html ='';
+		for (var j =0;j<data['keywords'].length;j++){
+			s_html +=  '<span style="margin-right:20px;">'+data['keywords'][j]+'</span>';
+		}
+		$('span[id^="so_nor_keys"]').append(s_html);		
+		//$('span[id^="so_nor_keys"]').html(data['keywords']);
+	}else{
+		$('span[id^="so_nor_keys"]').html('无');
+	}
 	//$('span[id="so_remark0"]').html('');
 	//$('span[id="so_remark0"]').html(data['remark']);
     var item_his = data['history_status'];
@@ -402,7 +443,7 @@ function draw_history(data){
 	}else{
 		html += '<div style="overflow-y:auto;height:300px;">'
 	    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;">';
-	    html += '<tr><th style="text-align:center">时间</th><th style="width:520px;text-align:center">传感词</th><th style="text-align:center">预警状态</th><th style="text-align:center">查看详情</a></th></tr>';
+	    html += '<tr><th style="text-align:center">时间</th><th style="text-align:center">预警状态</th><th style="text-align:center">查看详情</a></th></tr>';
 	    for (var i=0;i<item_his.length ;i++) {
 	    	if(item_his[i][2]==0){
 				warn = '无事件';
@@ -412,7 +453,7 @@ function draw_history(data){
 				warn = '事件跟踪';
 			}
 			item_time = new Date(item_his[i][0]*1000).format('yyyy/MM/dd hh:mm');
-	       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + item_his[i][1] + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a target="_blank" href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
+	       html += '<tr><td style="text-align:center">' + item_time + '</td><td style="text-align:center">' + warn + '</td><td style="text-align:center"><a target="_blank" href="/index/sensing_analysis/?task_name='+data['task_name']+'&keywords='+data['keywords']+'&ts='+item_his[i][0]+'" id="show_detail">查看详情</a></td></tr>';
 	 	}
 	    html += '</table>'; 
 	    html += '</div>';
@@ -478,10 +519,10 @@ function so_group_data(){
 		var url_create = '/social_sensing/create_task/?';
 	    a['keywords'] = $('#so_keywords').val();
 	 	a['keywords'] = a['keywords'].split(/\s+/g);
-	    a['keywords0'] = $('#so_keywords_nor').val();
-	 	a['keywords0'] = a['keywords0'].split(/\s+/g);
+	    a['sensitive_words'] = $('#so_keywords_nor').val();
+	 	a['sensitive_words'] = a['sensitive_words'].split(/\s+/g);
 	    $('[name="so_more_option_0"]:checked').each(function(){
-		  	    a['keywords0'].push($(this).val());
+		  	    a['sensitive_words'].push($(this).val());
 		  	});
 	   	$('[name="so_more_option_1"]:checked').each(function(){
 		  	    a['keywords'].push($(this).val());

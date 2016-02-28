@@ -214,6 +214,7 @@ function draw_relation_net(data,name,symbols){
         {
             type:'force',
             name : "",
+            size:'80%',
             ribbonType: false,
             categories : [
                 {
@@ -346,6 +347,7 @@ function draw_relation_out_net(data,name,symbols){
         {
             type:'force',
             name : "",
+            size:'70%',
             ribbonType: false,
             categories : [
                 {
@@ -428,8 +430,16 @@ function draw_in_table(data){
     html = '<table id="group_in_table_body" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_in_record'].length;i++){
-        s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['4'] +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:25px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_in_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_weibo">' + data['social_in_record'][s]['2'] +'</a></td></tr>';
+    s =i.toString();
+    var uname1 = data['social_in_record'][s]['4'];
+    var uname2 = data['social_in_record'][s]['3'];
+    if (uname1 =='unknown'){
+        uname1 = '未知';
+    }
+    if (uname2 =='unknown'){
+        uname2 = '未知';
+    }
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + uname1 +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:25px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + uname2 +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_weibo">' + data['social_in_record'][s]['2'] +'</a></td></tr>';
     };
     html += '</table>';
     $('#group_in_table').append(html);
@@ -452,7 +462,15 @@ function draw_out_table(data){
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_out_record'].length;i++){
         s =i.toString();
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['4'] +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + data['social_out_record'][s]['5'] +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_out_weibo">' + data['social_out_record'][s]['2'] +'</a></td></tr>';
+            var uname1 = data['social_out_record'][s]['4'];
+            var uname2 = data['social_out_record'][s]['5'];
+            if (uname1 =='unknown'){
+                uname1 = '未知';
+            }
+            if (uname2 =='unknown'){
+                uname2 = '未知';
+            }
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + uname1 +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + uname2 +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_out_weibo">' + data['social_out_record'][s]['2'] +'</a></td></tr>';
     };
     html += '</table>';
     $('#group_out_table').append(html);

@@ -37,8 +37,8 @@
         </div>
     </div>
     <label class='control-label' style='padding-top:5px;font-weight:lighter;margin-right:14px;'>传感词 </label>
-    <input id="so_keywords" type='text' class="form-control" style='padding:0px;width: 280px;margin-top:10px;margin-right: 18px;  display:inline-block;height:25px' placeholder='（选填，敏感词）多个词用空格隔开'>
-    <input id="so_keywords_nor" type='text' class="form-control" style='padding:0px;width: 280px;margin-top:10px;margin-right: 18px;  display:inline-block;height:25px' placeholder='（选填，普通关键词）多个词用空格隔开'>
+    <input id="so_keywords" type='text' class="form-control" style='padding:0px;width: 280px;margin-top:10px;margin-right: 18px;  display:inline-block;height:25px' placeholder='（选填，敏感传感词）多个词用空格隔开'>
+    <input id="so_keywords_nor" type='text' class="form-control" style='padding:0px;width: 280px;margin-top:10px;margin-right: 18px;  display:inline-block;height:25px' placeholder='（选填，普通传感词）多个词用空格隔开'>
     <!-- <input name="keys_choose_all" id="keys_choose_all" type="checkbox" value="" onclick="keys_choose_all()" />
     <span>全选</span> -->
     <span id="so_more" class="btn btn-default" style="height: 25px;font-size: 14px;padding-top: 0px;">更多已有传感词</span>
@@ -75,8 +75,8 @@
             <h4 class="modal-title" id="myModalLabel">传感词与传感群</h4>
           </div>
           <div class="modal-body">
-            <span>任务名称：</span><span id="so_group_name0" style="margin-left:10px;margin-right:250px;"></span>
-            <div style="margin-top:10px;"><span style="margin-right:34px;">备注：</span>
+            <span>任务名称：</span><span id="so_group_name0" style="margin-left:13px;margin-right:250px;"></span>
+            <div style="margin-top:10px;"><span style="margin-right:37px;">备注：</span>
             <span id="so_remark0" style="width:400px"></span></div>
             <div id="so_sensor_content" style="margin-top:10px;"></div>
           </div>
@@ -92,9 +92,13 @@
             <h4 class="modal-title" id="myModalLabel">历史状态</h4>
           </div>
           <div class="modal-body">
-            <span>任务名称：</span><span id="so_group_name0" style="margin-left:10px;margin-right:250px;"></span>
+            <span>任务名称：</span><span id="so_group_name0" style="margin-left:18px;margin-right:250px;"></span>
             <div style="margin-top:10px;"><span >备注：</span>
-            <span id="so_remark0" style="width:400px;margin-left:35px;"></span></div>
+            <span id="so_remark0" style="width:400px;margin-left:42px;"></span></div>
+            <div style="margin-top:10px;"><span >敏感传感词：</span>
+            <span id="so_sen_keys" style="width:400px;"></span></div>
+            <div style="margin-top:10px;"><span style="float: left;">普通传感词：</span>
+            <span id="so_nor_keys" style="width: 83%;display: inline-block;margin-left: 5px;"></span></div>
             <div id="so_his_content" style="margin-top:10px;"></div>
           </div>
         </div>
@@ -150,7 +154,13 @@
             <h4 class="modal-title" id="myModalLabel">已有传感词</h4>
           </div>
           <div class="modal-body">
-            <div id="so_more_content" style="margin-top:10px;"></div>
+            <div id="so_more_content" style="margin-top:10px;">
+              <div style="font-size:18px;font-weight:bold;">敏感传感词<input style="margin-left:50px;margin-right:10px;" name="so_more_all_1" id="so_more_all_1" type="checkbox" value="" onclick="so_more_all_1()" /><span>全选</span></div>
+              <div id="so_sen_content" style="margin:8px 0px;"></div>
+              <hr>
+              <div style="font-size:18px;font-weight:bold;">一般传感词<input style="margin-left:21px;margin-right:10px;" name="so_more_all_0" id="so_more_all_0" type="checkbox" value="" onclick="so_more_all_0()" /><span>全选</span></div>
+              <div id="so_nor_content"  style="margin:8px 0px;"></div>
+            </div>
           </div>
         </div>
       </div>
