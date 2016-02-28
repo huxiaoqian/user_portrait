@@ -55,7 +55,8 @@ function draw_basic(data){
 	draw_sex(data);
 	draw_verify(data);
 	Draw_totalnumber(data);
-	draw_tag();
+	//draw_tag(data);
+	draw_tag({'user_tag':{'好':13,'中':21,'坏':9}});
 }
 g_basic = new g_basic();
 function draw_sex(data){
@@ -214,8 +215,25 @@ function Draw_totalnumber(data){
     html += '<div>' + data['count'] + '</div></a>';
     $('#totalnumber').append(html);
 }
-function draw_tag(){
+function toarray(a,b){
+	this.names=a;
+	this.num=b;
+}
+function draw_tag(data){
 	var mychart1 = echarts.init(document.getElementById('group_tag'));
+	var item = data['user_tag'];
+	var items = [];
+	var tagname= [];
+	var tagvalue = [];
+	for (var k in item){
+		items.push(new toarray(k,item[k]));
+	}
+	items.sort(function(a,b){return a.num-b.num});
+	console.log(items);
+	for (var i=0;i< items.length;i++){
+		tagname.push(items[i].names);
+		tagvalue.push(items[i].num);
+	}
 	var option = {
     tooltip : {
         trigger: 'axis'
@@ -240,21 +258,22 @@ function draw_tag(){
     yAxis : [
         {
             type : 'category',
-            data : ['巴西','印尼','美国','印度','中国','世界人口(万)']
+            data :tagname
         }
     ],
     series : [
         {
-            name:'2011年',
+            // name:'2011年',
             type:'bar',
-            data:[18203, 23489, 29034, 104970, 131744, 630230]
+            data:tagvalue
         }
     ]
 };
   mychart1.setOption(option);
 }
-var basic_name=$("#stickynote").html();
-//console.log(basic_name);
+//var basic_name=document.getElementById('').text();
+var basic_name=$("#stickynote").text();
+console.log(basic_name);
 var basic_url='/group/show_group_result/?task_name=%E5%AA%92%E4%BD%93'
 g_basic.call_sync_ajax_request(basic_url,g_basic.ajax_method,draw_basic);
 </script>
