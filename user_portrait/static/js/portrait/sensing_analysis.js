@@ -1266,17 +1266,23 @@ function social_sensing_all(data){
 	sensor_data = data.social_sensors_detail;
 	sensing_sensors_table(sensor_head,sensor_data,"modal_sensor_table");
 
-	//备注信息---数据未加
+	//备注信息
 	var remark_info = data.warning_conclusion;
 	//warning_conclusion = data.warning_conclusion.split('：');
 	$('#remark_info').empty();
 	$('#remark_info').append(remark_info);
 
-	//事件关键词
-	var keywords_list = ''
-	keywords_list = data.keywords.join('&nbsp;&nbsp;');
-	$('#sensing_keywords').empty();
-	$('#sensing_keywords').append(keywords_list);
+    //事件传感关键词
+    var keywords_list = ''
+    keywords_list = data.keywords.join('&nbsp;&nbsp;');
+    $('#sensor_sensing_keywords').empty();
+    $('#sensor_sensing_keywords').append(keywords_list);   //事件关键词
+
+    //敏感关键词
+    var sensi_keywords_list = ''
+    sensi_keywords_list = data.sensitive_words.join('&nbsp;&nbsp;');
+    $('#sensing_keywords').empty();
+    $('#sensing_keywords').append(sensi_keywords_list);
 
 }
 
