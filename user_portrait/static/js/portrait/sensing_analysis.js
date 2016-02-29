@@ -1272,7 +1272,7 @@ function social_sensing_all(data){
 	$('#remark_info').empty();
 	$('#remark_info').append(remark_info);
 
-    //事件关键词
+    //事件传感关键词
     var keywords_list = ''
     keywords_list = data.keywords.join('&nbsp;&nbsp;');
     $('#sensor_sensing_keywords').empty();
@@ -1280,7 +1280,7 @@ function social_sensing_all(data){
 
     //敏感关键词
     var sensi_keywords_list = ''
-    sensi_keywords_list = data.sensi_keywords.join('&nbsp;&nbsp;');
+    sensi_keywords_list = data.sensitive_words.join('&nbsp;&nbsp;');
     $('#sensing_keywords').empty();
     $('#sensing_keywords').append(sensi_keywords_list);
 
