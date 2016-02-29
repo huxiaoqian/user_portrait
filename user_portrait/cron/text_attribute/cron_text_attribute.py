@@ -330,12 +330,10 @@ def get_fansnum_max():
 
 #use to compute new user attribute by scan_compute_redis.py
 #version: write in 2016-02-28
-def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_pattern_dict):
+def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts):
     status = False
-    #get user weibo 7day {user:[weibos]}
     print 'start cron_text_attribute'
     uid_list = user_keywords_dict.keys()
-    print 'user count:', len(uid_list)
     
     #get user flow information: hashtag, activity_geo, keywords
     print 'get flow result'
@@ -359,11 +357,8 @@ def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_patt
     #get user character attribute
     print 'get character result'
     #type_mark = 0/1 for identify the task input status---just sentiment or text
-    now_ts = time.time()
-    #test
-    now_ts = datetime2ts('2013-09-08')
-    character_end_time = ts2datetime(now_ts - DAY)
-    character_start_time = ts2datetime(now_ts - DAY * CHARACTER_TIME_GAP)
+    character_end_time = ts2datetime(character_start_ts)
+    character_start_time = ts2datetime(character_start_ts - DAY * CHARACTER_TIME_GAP)
     character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
     character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
     print 'character result len:', len(character_sentiment_result_dict), len(character_text_result_dict)
@@ -380,13 +375,11 @@ def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_patt
     print 'influence results len:', len(influence_results)
     
     # compute text attribute
-    user_set = set()
     bulk_action = []
     count = 0
     for user in uid_list:
         count += 1
         results = {}       
-        user_set.add(user)
         #get user text attribute: online_pattern
         results['online_pattern'] = online_pattern_dict[user]
         try:
@@ -432,22 +425,8 @@ def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_patt
         #bulk_action
         action = {'index':{'_id': str(user)}}
         bulk_action.extend([action, results])
-        if count >= 20:
-            mark = save_user_results(bulk_action)
-            #print 'bulk_action:', bulk_action
-            bulk_action = []
-            count = 0
-    
-    end_ts = time.time()
-    
-    print 'user_set len:', len(user_set)
-    print 'count:', count
-    print 'bulk_action count:', len(bulk_action)
-    
-    print 'bulk_action:', bulk_action
-    
-    if bulk_action:
-        status = save_user_results(bulk_action)
+        
+    status = save_user_results(bulk_action)
     
     return status
 
