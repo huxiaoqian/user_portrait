@@ -10,6 +10,7 @@ from user_portrait.global_utils import es_tag
 from user_portrait.global_utils import tag_index_name as attribute_index_name
 from user_portrait.global_utils import tag_index_type as attribute_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts
+from user_portrait.parameter import IDENTIFY_ATTRIBUTE_LIST as identify_attribute_list
 
 '''
 attribute_index_name = 'custom_attribute'
@@ -30,12 +31,11 @@ def submit_attribute(attribute_name, attribute_value, submit_user, submit_date):
     status = False
     #maybe there have to identify the user admitted to submit attribute
     try:
-        attribute_exist = es_tag.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['docs']
+        attribute_exist = es_tag.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
     except:
         attribute_exist = {}
-    try:
-        source = attribute_exist['_source']
-    except:
+    #identify the tag name not same with the identify_attribute_list
+    if attribute_exist == {} and attribute_name not in identify_attribute_list:
         input_data = dict()
         now_ts = time.time()
         date = ts2datetime(now_ts)
@@ -45,6 +45,9 @@ def submit_attribute(attribute_name, attribute_value, submit_user, submit_date):
         input_data['date'] = submit_date
         es_tag.index(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name, body=input_data)
         status = True
+        #put mappings to es_user_portrait
+        es.indices.put_mapping(index=user_index_name, doc_type=user_index_type, \
+                body={'properties':{attribute_name:{'type':'string', 'index':'not_analyzed'}}}, ignore=400)
     return status
 
 # use to search attribute table
@@ -200,12 +203,14 @@ def delete_attribute_portrait(uid, attribute_name, submit_user):
 
     return status
 
+'''
 identify_attribute_list = ['emoticon','domain', 'psycho_status_string', 'uid', 'hashtag_dict', \
                            'importance', 'online_pattern', 'influence', 'keywords_string', 'topic', \
                            'activity_geo', 'link', 'hashtag', 'keywords', 'fansnum', 'psycho_status', \
                            'text_len', 'photo_url', 'verified', 'uname', 'statusnum', 'gender', \
                            'topic_string', 'activeness', 'location', 'activity_geo_dict', \
                            'emotion_words', 'psycho_feature', 'friendsnum']
+'''
 
 # use to get user custom tag
 # return {uid:['attribute_name1:attribute_value1', 'attribute_name2:attribtue_value2']}
