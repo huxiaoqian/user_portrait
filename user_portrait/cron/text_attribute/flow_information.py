@@ -123,7 +123,7 @@ def get_flow_information(uid_list):
 # input: uid_list, keywords_dict
 def get_flow_information_v2(uid_list, all_user_keywords_dict):
     results = {}      
-    #results = {uid:{'hashtag_dict':{},'hashtag':'', 'keywords_dict':{}, 'keywords_string':'', 'activity_geo':'', 'activity_geo_dict':dict}}
+    #results = {uid:{'hashtag_dict':{},'hashtag':'', 'keywords_dict':{}, 'keywords_string':'', 'activity_geo':'', 'activity_geo_dict':dict, 'activity_geo_aggs':''}}
     iter_results = {} # iter_results = {uid:{'hashtag': hashtag_dict, 'geo':geo_dict, 'keywords':keywords_dict}}
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
@@ -186,6 +186,10 @@ def get_flow_information_v2(uid_list, all_user_keywords_dict):
         geo_dict_keys = geo_dict.keys()
         #print 'geo_dict_keys:', geo_dict_keys
         results[uid]['activity_geo'] = '&'.join(['&'.join(item.split('\t')) for item in geo_dict_keys])
+        try:
+            results[uid]['activity_geo_aggs'] = '&'.join([item.split('\t')[-1] for item in geo_dict_keys])
+        except:
+            results[uid]['activity_geo_aggs'] = ''
         #print 'activity_geo:',  results[uid]['activity_geo']
 
         keywords_dict = all_user_keywords_dict[uid]

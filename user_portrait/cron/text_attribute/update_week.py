@@ -53,6 +53,10 @@ def deal_bulk_action(user_info_list, fansnum_max):
         #add online_pattern
         user_online_pattern = json.dumps(online_pattern_dict[uid])
         results['online_pattern'] = user_online_pattern
+        try:
+            results['online_pattern_aggs'] = '&'.join(user_online_pattern.keys())
+        except:
+            results['online_pattern_aggs'] = ''
         #add user importance
         user_domain = user_info_list[uid]['domain'].encode('utf-8')
         user_fansnum = user_info_list[uid]['fansnum']

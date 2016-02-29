@@ -253,7 +253,8 @@ DETECT_EVENT_TEXT_RANGE_ITEM = ['timestamp']
 IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influence', 'domain_v3', \
         'online_pattern', 'keywords_string', 'topic', 'activity_geo', 'uname', 'hashtag', 'keywords', 'fansnum', \
         'psycho_status', 'tendency', 'photo_url', 'verified', 'statusnum', 'gender', 'topic_string',\
-        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark', 'character_text','character_sentiment']
+        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark', 'character_text',\
+        'character_sentiment', 'activity_geo_aggs', 'online_pattern_aggs']
 
 #cron_group
 ACTIVITY_GEO_TOP = 3
