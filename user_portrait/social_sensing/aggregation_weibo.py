@@ -7,7 +7,7 @@ import json
 import numpy as np
 from elasticsearch import Elasticsearch
 from  mappings_social_sensing import mappings_sensing_task
-from clustering import tfidf, kmeans, text_classify, cluster_evaluation
+from clustering import freq_word, tfidf, kmeans, text_classify, cluster_evaluation
 reload(sys)
 sys.path.append("./../")
 from global_utils import es_flow_text as es_text
@@ -605,6 +605,8 @@ def specific_keywords_burst_dection(task_detail):
                 }
             }
         }
+        if social_sensors:
+            query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
 
         sensitive_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_sensitive_body)['aggregations']['all_list']["buckets"]
         if sensitive_results:
@@ -633,7 +635,7 @@ def specific_keywords_burst_dection(task_detail):
             warning_status = signal_track
         else:
             warning_status = signal_brust
-        brust_reason = signal_sensitive_variation
+        burst_reason = signal_sensitive_variation
 
     if forward_result[0]:
         # 根据移动平均判断是否有时间发生
@@ -658,9 +660,47 @@ def specific_keywords_burst_dection(task_detail):
         finish = finish_signal 
 
     # 7. 感知到的事, all_mid_list
+    tmp_burst_reason = burst_reason
+    # 判断是否有敏感微博出现:有，则聚合敏感微博，replace；没有，聚合普通微博
     if burst_reason: # 有事情发生
         text_list = []
-        if all_mid_list:
+        if signal_sensitive_variation in burst_reason:
+            query_sensitive_body = {
+                "query":{
+                    "filtered":{
+                        "filter":{
+                            "bool":{
+                                "must":[
+                                    {"range":{
+                                        "timestamp":{
+                                            "gte": ts - time_interval,
+                                            "lt": ts
+                                        }}
+                                    },
+                                    {"terms": {"keywords_string": sensitive_words}}
+                                ]
+                            }
+                        }
+                    }
+                },
+                "size": 10000
+            }
+
+            if social_sensors:
+                query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
+
+            sensitive_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_sensitive_body)['hits']['hits']
+            if sensitive_results:
+                for item in sensitive_results:
+                    iter_mid = item['_source']['mid']
+                    text = item['_source']['text']
+                    temp_dict = dict()
+                    temp_dict["mid"] = iter_mid
+                    temp_dict["text"] = iter_text
+                    text_list.append(temp_dict) # 整理后的文本，mid，text
+            burst_reason.replace(signal_sensitive_variation, "")
+
+        if burst_reason and all_mid_list:
             origin_sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": all_mid_list}, fields=["mid", "text"])["docs"]
             if origin_sensing_text:
                 for item in origin_sensing_text:
@@ -672,20 +712,21 @@ def specific_keywords_burst_dection(task_detail):
                         temp_dict["text"] = iter_text
                         text_list.append(temp_dict) # 整理后的文本，mid，text
 
-
-        feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
-        word_label, evaluation_results = kmeans(feature_words, text_list) #聚类
-        inputs = text_classify(text_list, word_label, feature_words)
-        clustering_topic = cluster_evaluation(inputs)
-        print "========================================================================================"
-        print "========================================================================================="
-        sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
-        topic_list = []
-        if sorted_dict:
-            for item in sorted_dict:
-                topic_list.append(word_label[item[0]])
-        #print topic_list
-        #sys.exit(1)
+        if len(text_list) == 1:
+            top_word = freq_word(text_list)
+            topic_list = top_word.keys()
+        else:
+            feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
+            word_label, evaluation_results = kmeans(feature_words, text_list) #聚类
+            inputs = text_classify(text_list, word_label, feature_words)
+            clustering_topic = cluster_evaluation(inputs)
+            print "========================================================================================"
+            print "========================================================================================="
+            sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
+            topic_list = []
+            if sorted_dict:
+                for item in sorted_dict:
+                    topic_list.append(word_label[item[0]])
 
     results = dict()
     results['origin_weibo_number'] = current_origin_count
@@ -698,7 +739,7 @@ def specific_keywords_burst_dection(task_detail):
     results['sensitive_weibo_total_number'] = sensitive_total_weibo_number
     results['sentiment_distribution'] = json.dumps(sentiment_count)
     results['important_users'] = json.dumps(filter_important_list)
-    results['burst_reason'] = burst_reason
+    results['burst_reason'] = tmp_burst_reason
     results['timestamp'] = ts
     if burst_reason:
         results['clustering_topic'] = json.dumps(topic_list)
