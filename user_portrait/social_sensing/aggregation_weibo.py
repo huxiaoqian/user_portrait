@@ -693,7 +693,7 @@ def specific_keywords_burst_dection(task_detail):
             if sensitive_results:
                 for item in sensitive_results:
                     iter_mid = item['_source']['mid']
-                    text = item['_source']['text']
+                    iter_text = item['_source']['text']
                     temp_dict = dict()
                     temp_dict["mid"] = iter_mid
                     temp_dict["text"] = iter_text
