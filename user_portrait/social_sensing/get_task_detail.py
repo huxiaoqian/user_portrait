@@ -32,6 +32,7 @@ def get_task_detail_2(task_name, keywords, ts):
     history_status = json.loads(task_detail['history_status'])
     start_time = task_detail['create_at']
     stop_time = task_detail['stop_time']
+    remark = task_detail['remark']
     portrait_detail = []
     count = 0 # 计数
 
@@ -139,7 +140,7 @@ def get_task_detail_2(task_name, keywords, ts):
                 common_variation_count += 1
                 common_variation_time.append([ts2date_min(item[0]), x1, x2, x3])
 
-    warning_conclusion = "不需要说明了吧"
+    warning_conclusion = remark
     variation_distribution = []
     if weibo_variation_count:
         variation_distribution.append(weibo_variation_time)
@@ -198,7 +199,7 @@ def get_task_detail_2(task_name, keywords, ts):
         revise_time_series.append(ts2date_min(item))
 
     results['keywords'] = keywords_list
-    #results['keywords_list'] = sorted_keywords_list
+    results["sensitive_words"] = sensitive_words
     results['important_user_detail'] = user_detail_info
     results['burst_time'] = burst_time_list # 爆发时间点，以及爆发原因
     results['time_series'] = revise_time_series

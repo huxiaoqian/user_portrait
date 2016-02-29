@@ -228,8 +228,8 @@ def kmeans(word, inputs, k=CLUSTERING_KMEANS_CLUSTERING_NUM, gram=PROCESS_GRAM):
         聚类效果评价文件路径
     """
 
-    if len(inputs) < 2:
-        raise ValueError("length of input items must be larger than 2")
+    #if len(inputs) < 2:
+        #raise ValueError("length of input items must be larger than 2")
 
     input_file = process_for_cluto(word, inputs, gram=gram)
     labels, evaluation_results = cluto_kmeans_vcluster(k=k, input_file=input_file)

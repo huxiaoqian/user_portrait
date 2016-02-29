@@ -7,7 +7,7 @@ import numpy as np
 from elasticsearch import Elasticsearch
 from  mappings_social_sensing import mappings_sensing_task
 from aggregation_weibo import get_forward_numerical_info, query_mid_list, query_related_weibo, aggregation_sentiment_related_weibo
-from clustering import kmeans, tfidf, text_classify, cluster_evaluation
+from clustering import kmeans, tfidf, text_classify, cluster_evaluation, freq_word
 reload(sys)
 sys.path.append("./../")
 from global_utils import es_flow_text as es_text
@@ -197,7 +197,43 @@ def sensors_keywords_detection(task_detail):
     # 7. 感知到的事, all_mid_list
     if burst_reason: # 有事情发生
         text_list = []
-        if all_mid_list:
+        if signal_sensitive_variation in burst_reason:
+            query_sensitive_body = {
+                "query":{
+                    "filtered":{
+                        "filter":{
+                            "bool":{
+                                "must":[
+                                    {"range":{
+                                        "timestamp":{
+                                            "gte": ts - time_interval,
+                                            "lt": ts
+                                        }}
+                                    },
+                                    {"terms": {"keywords_string": sensitive_words}}
+                                ]
+                            }
+                        }
+                    }
+                },
+                "size": 10000
+            }
+            if social_sensors:
+                query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
+
+            sensitive_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_sensitive_body)['hits']["hits"]
+            if sensitive_results:
+                for item in sensitive_results:
+                    iter_mid = item['_source']['mid']
+                    iter_text = item['_source']['text']
+                    temp_dict = dict()
+                    temp_dict["mid"] = iter_mid
+                    temp_dict["text"] = iter_text
+                    text_list.append(temp_dict) # 整理后的文本，mid，text
+            burst_reason.replace(signal_sensitive_variation, "")
+
+
+        if burst_reason and all_mid_list:
             sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": all_mid_list}, fields=["mid", "text"])["docs"]
             if sensing_text:
                 for item in sensing_text:
@@ -209,19 +245,20 @@ def sensors_keywords_detection(task_detail):
                         temp_dict["text"] = iter_text
                         text_list.append(temp_dict)
 
-
-        feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
-        word_label, evaluation_results = kmeans(word, inputs) #聚类
-        inputs = text_classify(text_list, word_label, feature_words)
-        clustering_topic = cluster_evaluation(inputs)
-        print clustering_topic
-        sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
-        topic_list = []
-        if sorted_dict:
-            for item in sorted_dict:
-                topic_list.append(word_label[item[0]])
-        print topic_list
-
+        if len(text_list) == 1:
+            top_word = freq_word(text_list)
+            topic_list = top_word.keys()
+        else:
+            feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
+            word_label, evaluation_results = kmeans(word, inputs) #聚类
+            inputs = text_classify(text_list, word_label, feature_words)
+            clustering_topic = cluster_evaluation(inputs)
+            sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
+            topic_list = []
+            if sorted_dict:
+                for item in sorted_dict:
+                    topic_list.append(word_label[item[0]])
+            print topic_list
 
 
     results = dict()
