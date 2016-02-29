@@ -12,7 +12,7 @@ function bindSearchFunc(that){
         if (ev.keyCode == 13){
             var term = $("#keyword").val();
             var simple_url = "/index/search_result/?stype=1&term=" + term;
-            console.log(simple_url);
+            //console.log(simple_url);
             window.location.href = simple_url;
         }
     }).bind('keydown', function(e){
@@ -105,7 +105,7 @@ function base_call_ajax_request(url, callback){
 }
 
 function draw_value_option(data){
-    console.log(data);
+    //console.log(data);
     if (data == 'no attribute'){
         data = [];
     }
