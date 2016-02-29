@@ -34,7 +34,6 @@ def read_flow_text_sentiment(uid_list):
         iter_date_ts = start_date_ts + DAY * i
         flow_text_index_date = ts2datetime(iter_date_ts)
         flow_text_index_name = flow_text_index_name_pre + flow_text_index_date
-        print flow_text_index_name
         try:
             flow_text_exist = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
                     body={'query':{'filtered':{'filter':{'terms':{'uid': uid_list}}}}, 'size': MAX_VALUE}, _source=False,  fields=['text','uid','sentiment','keywords_dict','timestamp'])['hits']['hits']
@@ -69,8 +68,8 @@ def read_flow_text_sentiment(uid_list):
                 online_pattern_dict[uid][online_pattern] += 1
             except:
                 online_pattern_dict[uid][online_pattern] = 1
-            
-    return  word_dict,weibo_list, online_pattern_dict
+    
+    return  word_dict,weibo_list, online_pattern_dict, start_date_ts
 
 def read_flow_text(uid_list):
     '''
@@ -129,8 +128,8 @@ def read_flow_text(uid_list):
                 online_pattern_dict[uid][online_pattern] += 1
             except:
                 online_pattern_dict[uid][online_pattern] = 1
-            
-    return  word_dict,weibo_list, online_pattern_dict
+    
+    return  word_dict,weibo_list, online_pattern_dict, start_date_ts
 
 if __name__=='__main__':
     word_dict,weibo_list,online_pattern_dict = read_flow_text(['2098261223','2991483613'])

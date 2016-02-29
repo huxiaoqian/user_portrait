@@ -28,23 +28,17 @@ def deal_bulk_action(user_info_list, fansnum_max):
     uid_list = user_info_list.keys()
     #acquire bulk user weibo data
     if WEIBO_API_INPUT_TYPE == 0:
-        user_keywords_dict, user_weibo_dict = read_flow_text_sentiment(uid_list)
+        user_keywords_dict, user_weibo_dict, character_start_ts = read_flow_text_sentiment(uid_list)
     else:
-        user_keywords_dict, user_weibo_dict = read_flow_text(uid_list)
+        user_keywords_dict, user_weibo_dict, character_start_ts = read_flow_text(uid_list)
     #compute attribute--domain, character, importance
     #get user domain
     domain_results = domain_classfiy(uid_list, user_keywords_dict)
     domain_results_dict = domain_results[0]
     domain_results_label = domain_results[1]
     #get user character
-    #run_type
-    if RUN_TYPE == 1:
-        now_ts = time.time()
-    else:
-        now_ts = datetime2ts(RUN_TEST_TIME)
-
-    character_end_time = ts2datetime(now_ts - DAY)
-    character_start_time = ts2datetime(now_ts - DAY * CHARACTER_TIME_GAP)
+    character_end_time = ts2datetime(character_start_ts)
+    character_start_time = ts2datetime(character_start_ts - DAY * CHARACTER_TIME_GAP)
     character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
     character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
     bulk_action = []

@@ -7,6 +7,7 @@ from collections import Counter
 
 sys.path.append('../../')
 from parameter import DAY, WEEK,MAX_VALUE
+from parameter import RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime, datetime2ts
 from global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
 
@@ -21,14 +22,16 @@ def read_flow_text_sentiment(uid_list):
     word_dict = dict()#词频字典
     weibo_list = []#微博列表
     now_ts = time.time()
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    now_date_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = datetime2ts(RUN_TEST_TIME)
     start_date_ts = now_date_ts - DAY * WEEK
     for i in range(0,WEEK):
         iter_date_ts = start_date_ts + DAY * i
         flow_text_index_date = ts2datetime(iter_date_ts)
         flow_text_index_name = flow_text_index_name_pre + flow_text_index_date
-        print flow_text_index_name
         try:
             flow_text_exist = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
                     body={'query':{'filtered':{'filter':{'terms':{'uid': uid_list}}}}, 'size': MAX_VALUE}, _source=False,  fields=['text','uid','sentiment','keywords_dict','timestamp'])['hits']['hits']
@@ -54,7 +57,7 @@ def read_flow_text_sentiment(uid_list):
 
             weibo_list.append([uid,text,sentiment,ts])
             
-    return  word_dict,weibo_list
+    return  word_dict,weibo_list, start_date_ts
 
 def read_flow_text(uid_list):
     '''
@@ -67,8 +70,12 @@ def read_flow_text(uid_list):
     word_dict = dict()#词频字典
     weibo_list = []#微博列表
     now_ts = time.time()
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    now_date_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE = 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = datetime2ts(RUN_TEST_TIME)
+
     start_date_ts = now_date_ts - DAY * WEEK
     for i in range(0,WEEK):
         iter_date_ts = start_date_ts + DAY * i
@@ -99,9 +106,8 @@ def read_flow_text(uid_list):
 
             weibo_list.append([uid,text,ts])
             
-    return  word_dict,weibo_list        
+    return  word_dict,weibo_list, start_date_ts
 
 if __name__=='__main__':
-    #read_user_weibo()
     word_dict,weibo_list = read_flow_text(['2098261223','2991483613'])
     

@@ -26,9 +26,9 @@ def deal_bulk_action(user_info_list, fansnum_max):
     uid_list = user_info_list.keys()
     #acquire bulk user weibo data
     if WEIBO_API_INPUT_TYPE == 0:
-        user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text_sentiment(uid_list)
+        user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text_sentiment(uid_list)
     else:
-        user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text(uid_list)
+        user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text(uid_list)
     #compute attribute--keywords, topic, online_pattern            
     #get user topic results by bulk action
     topic_results_dict, topic_results_label = topic_classfiy(uid_list, user_keywords_dict)
