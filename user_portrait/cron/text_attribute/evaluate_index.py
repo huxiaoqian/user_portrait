@@ -131,7 +131,6 @@ def get_importance(domain, topic, user_fansnum, fansnum_max):
         topic_result += topic_weight_dict[topic]
     result = (importance_weight_dict['fansnum']*math.log(float(user_fansnum)/ fansnum_max*9+1, 10) + \
             importance_weight_dict['domain']*domain_result + importance_weight_dict['topic']*(topic_result / 3))*100
-    #print 'importance:', result
     return result
 
 def ip2geo(ip_list):
