@@ -5,23 +5,19 @@ import json
 import time
 from elasticsearch import Elasticsearch
 from filter_rules import filter_activity, filter_ip, filter_retweet_count, filter_mention
-from parameter import DAY
 
 reload(sys)
 sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2,  R_DICT, ES_DAILY_RANK, es_user_portrait
-from global_utils import R_RECOMMENTATION as r, portrait_index_name, portrait_index_type
+from global_utils import R_RECOMMENTATION as r
+from global_utils import portrait_index_name, portrait_index_type
 from global_config import RECOMMENTATION_TOPK as k
 from time_utils import datetime2ts, ts2datetime
-
-#test
-portrait_index_name = 'user_portrait_1222'
+from parameter import DAY, RUN_TYPE, RUN_TEST_TIME
+from parameter import RECOMMEND_IN_SENSITIVE_TOP, RECOMMEND_IN_BLACK_USER1, RECOMMEND_IN_BLACK_USER2
 
 def search_from_es(date):
-    # test
-    k = 10000
     index_time = 'bci_' + ''.join(date.split('-'))
-    print 'index_time:', index_time
     index_type = 'bci'
     query_body = {
         'query':{
@@ -33,11 +29,10 @@ def search_from_es(date):
     try:
         result = ES_DAILY_RANK.search(index=index_time, doc_type=index_type, body=query_body)['hits']['hits']
     except:
-        print 'recommentation in: there is not %s es' % index_time
+        print 'cron/recommend_in/recommend_in.py&error-1&'
         return None, None
     user_set = []
     user_set = [user_dict['_id'] for user_dict in result]
-    print 'len user_set:',len(user_set)
     return set(user_set), result
 
 def filter_in(top_user_set):
@@ -45,12 +40,9 @@ def filter_in(top_user_set):
     try:
         in_results = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':list(top_user_set)})
     except Exception as e:
-        raise e
+        print 'cron/recommend_in/recommend_in.py&error-2&'
     filter_list = [item['_id'] for item in in_results['docs'] if item['found'] is True]
-    print 'before filter in:', len(top_user_set)
-    print 'filter_list:', len(filter_list)
     results = set(top_user_set) - set(filter_list)
-    print 'after filter in:', len(results)
     return results
 
 def filter_rules(candidate_results):
@@ -84,74 +76,76 @@ def save_recommentation2redis(date, user_set):
 
 def read_black_user():
     results = set()
-    f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/blacklist_2.csv', 'rb')
+    f = open(RECOMMEND_IN_BLACK_USER1, 'rb')
     reader = csv.reader(f)
     for line in reader:
         uid = line[0]
+        results.add(uid)
+    f.close()
+    f = open(RECOMMEND_IN_BLACK_USER2, 'rb')
+    for line in f:
+        uid = line.split('\r')[0]
+        if len(uid)==13:
+            uid = uid[3:13]
         results.add(uid)
     f.close()
     return results
 
 # get sensitive user and filt in
 def get_sensitive_user(date):
-    SENSITIVE_TOP = 10000
     results = set()
     r_cluster = R_CLUSTER_FLOW2
     ts = datetime2ts(date)
     results = r_cluster.hgetall('sensitive_'+str(ts))
     if results:
         results = sorted(results.iteritems(), key=lambda t:t[1], reverse=True)
-        user_list = [result[0] for result in results[0:SENSITIVE_TOP]]
+        user_list = [result[0] for result in results[0:RECOMMEND_IN_SENSITIVE_TOP]]
     else:
-        user_list = []
+        return []
     results = filter_in(user_list)
     return results
 
 def main():
-    now_ts = time.time()
-    #test
-    now_ts = datetime2ts('2013-09-07')
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
     date = ts2datetime(now_ts - DAY)
     #step1: read from top es_daily_rank
     top_user_set, user_dict = search_from_es(date)
     #step2: filter black_uid
     black_user_set = read_black_user()
-    print 'black_user_set:', len(black_user_set)
-    intersection = top_user_set & black_user_set
-    print 'intersection:', len(intersection)
     subtract_user_set = top_user_set - black_user_set
-    print 'after filter blacklist:', len(subtract_user_set)
     #step3: filter users have been in
+    subtract_user_set = list(subtract_user_set)
     candidate_results = filter_in(subtract_user_set)
     #step4: filter rules about ip count& reposts/bereposts count&activity count
     results = filter_rules(candidate_results)
-    print 'after filter:', len(results)
     #step5: get sensitive user
     sensitive_user = list(get_sensitive_user(date))
-    print 'sensitive_user:', len(sensitive_user)
-    print 'sensitive_user_2:', sensitive_user[2]
-    print 'before extend results:', len(results), type(results)
     results.extend(sensitive_user)
-    print 'after list extend:', len(results), type(results)
     results = set(results)
-    print 'end:', len(results)
     #step6: write to recommentation csv/redis
     status = save_recommentation2redis(date, results)
-    status = True
-    # write_recommentation(date, results, user_dict)
-    if status==True:
-        print 'date:%s recommentation done' % date
+    if status != True:
+        print 'cron/recommend_in/recommend_in.py&error-3&'
 
-
+#abandon in version: 16-02-29
+'''
 def write_sensitive_user(results):
     csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/sensitive_user.csv', 'wb')
     writer = csv.writer(csvfile)
     for user in results:
         writer.writerow([user])
     return True
+'''
 
 if __name__=='__main__':
+    log_time_start_ts = time.time()
+    log_time_start_date = ts2datetime(log_time_start_ts)
     main()
-    #results = get_sensitive_user('2013-09-07')
-    #print 'sensitive_user:', len(results)
-    #write_sensitive_user(results)
+    print 'cron/recommend_in/recommend_in.py&start&' + log_time_start_date
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/recommend_in/recommend_in.py&end&' + log_time_date
