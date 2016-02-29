@@ -7,7 +7,6 @@ update freq: one month
 import sys
 import time
 import json
-from save_utils import save_user_results
 from weibo_api_v3 import read_flow_text_sentiment, read_flow_text
 from cron_text_attribute import domain_en2ch, get_fansnum_max
 from evaluate_index import get_importance
@@ -21,6 +20,7 @@ from character.test_ch_topic import classify_topic
 sys.path.append('../../')
 from global_utils import update_month_redis, UPDATE_MONTH_REDIS_KEY
 from parameter import CHARACTER_TIME_GAP, DAY, WEIBO_API_INPUT_TYPE
+from parameter import RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime, datetime2ts
 
 def deal_bulk_action(user_info_list, fansnum_max):
@@ -37,9 +37,12 @@ def deal_bulk_action(user_info_list, fansnum_max):
     domain_results_dict = domain_results[0]
     domain_results_label = domain_results[1]
     #get user character
-    now_ts = time.time()
-    #test
-    now_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
+
     character_end_time = ts2datetime(now_ts - DAY)
     character_start_time = ts2datetime(now_ts - DAY * CHARACTER_TIME_GAP)
     character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
@@ -70,9 +73,9 @@ def deal_bulk_action(user_info_list, fansnum_max):
         bulk_action.extend([action, {'doc': results}])
     es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
     end_ts = time.time()
+    #log_should_delete
     print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
-    #print 'bulk_action:', bulk_action
-    
+    #log_should_delete
 
 
 #use to update attribute every week for character, domain
@@ -102,9 +105,13 @@ def update_attribute_month_v2():
     if user_info_list != {}:
         deal_bulk_action(user_info_list, fansnum_max)
     
-    print 'count:', count
-    
 if __name__=='__main__':
-    print 'start update_attribute_month_v2'
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/update_month.py&start&' + log_time_date
+
     update_attribute_month_v2()
-    print 'end update_attribute_month_v2'
+    
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/update_month.py&end&' + log_time_date
