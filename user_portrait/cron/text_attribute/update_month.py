@@ -23,6 +23,58 @@ from global_utils import update_month_redis, UPDATE_MONTH_REDIS_KEY
 from parameter import CHARACTER_TIME_GAP, DAY, WEIBO_API_INPUT_TYPE
 from time_utils import ts2datetime, datetime2ts
 
+def deal_bulk_action(user_info_list, fansnum_max):
+    start_ts = time.time()
+    uid_list = user_info_list.keys()
+    #acquire bulk user weibo data
+    if WEIBO_API_INPUT_TYPE == 0:
+        user_keywords_dict, user_weibo_dict = read_flow_text_sentiment(uid_list)
+    else:
+        user_keywords_dict, user_weibo_dict = read_flow_text(uid_list)
+    #compute attribute--domain, character, importance
+    #get user domain
+    domain_results = domain_classfiy(uid_list, user_keywords_dict)
+    domain_results_dict = domain_results[0]
+    domain_results_label = domain_results[1]
+    #get user character
+    now_ts = time.time()
+    #test
+    now_ts = datetime2ts('2013-09-08')
+    character_end_time = ts2datetime(now_ts - DAY)
+    character_start_time = ts2datetime(now_ts - DAY * CHARACTER_TIME_GAP)
+    character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
+    character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
+    bulk_action = []
+    for uid in uid_list:
+        results = {}
+        results['uid'] = uid
+        #add user domain attribute
+        user_domain_dict = domain_results_dict[uid]
+        user_label_dict = domain_results_label[uid]
+        results['domain_v3'] = json.dumps(user_domain_dict)
+        results['domain'] = domain_en2ch(user_label_dict)
+
+        #add user character_sentiment attribute
+        character_sentiment = character_sentiment_result_dict[uid]
+        results['character_sentiment'] = character_sentiment
+
+        #add user character_text attribute
+        character_text = character_text_result_dict[uid]
+        results['character_text'] = character_text
+        #get user importance
+        user_topic_string = user_info_list[uid]['topic_string'].encode('utf-8')
+        user_fansnum = user_info_list[uid]['fansnum']
+        results['importnace'] = get_importance(results['domain'], user_topic_string, user_fansnum, fansnum_max)
+        #bulk action                                
+        action = {'update':{'_id': uid}}
+        bulk_action.extend([action, {'doc': results}])
+    es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
+    end_ts = time.time()
+    print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
+    #print 'bulk_action:', bulk_action
+    
+
+
 #use to update attribute every week for character, domain
 #write in version: 16-02-28
 #this file run after the file: scan_es2redis_month.py function:scan_es2redis_month()
@@ -44,53 +96,11 @@ def update_attribute_month_v2():
         else:
             break
         if count % 1000 == 0:
-            uid_list = user_info_list.keys()
-            #acquire bulk user weibo data
-            if WEIBO_API_INPUT_TYPE == 0:
-                user_keywords_dict, user_weibo_dict = read_flow_text_sentiment(uid_list)
-            else:
-                user_keywords_dict, user_weibo_dict = read_flow_text(uid_list)
-            #compute attribute--domain, character, importance
-            #get user domain
-            domain_results = domain_classfiy(uid_list, user_keywords_dict)
-            domain_results_dict = domain_results[0]
-            domain_results_label = domain_results[1]
-            #get user character
-            now_ts = time.time()
-            #test
-            now_ts = datetime2ts('2013-09-08')
-            character_end_time = ts2datetime(now_ts - DAY)
-            character_start_time = ts2datetime(now_ts - DAY * CHARACTER_TIME_GAP)
-            character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
-            character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
-            bulk_action = []
-            for uid in uid_list:
-                results = {}
-                results['uid'] = uid
-                #add user domain attribute
-                user_domain_dict = domain_results_dict[uid]
-                user_label_dict = domain_results_label[uid]
-                results['domain_v3'] = json.dumps(user_domain_dict)
-                results['domain'] = domain_en2ch(user_label_dict)
-
-                #add user character_sentiment attribute
-                character_sentiment = character_sentiment_result_dict[uid]
-                results['character_sentiment'] = character_sentiment
-
-                #add user character_text attribute
-                character_text = character_text_result_dict[uid]
-                results['character_text'] = character_text
-                #get user importance
-                user_topic_string = user_info_list[uid]['topic_string']
-                user_fansnum = user_info_list[uid]['fansnum']
-                results['importnace'] = get_importance(results['domain'], user_topic_string, user_fansnum, fansnum_max)
-                #bulk action                                
-                action = {'update':{'_id': uid}}
-                bulk_action.extend([action, {'doc': results}])
-            #es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
-            end_ts = time.time()
-            print '%s sec count 1000' % (end_ts - start_ts)
-            start_ts = end_ts
+            deal_bulk_action(user_info_list, fansnum_max)
+            user_info_list = {}
+            
+    if user_info_list != {}:
+        deal_bulk_action(user_info_list, fansnum_max)
     
     print 'count:', count
     

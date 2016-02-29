@@ -388,7 +388,11 @@ def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_patt
         results = {}       
         user_set.add(user)
         #get user text attribute: online_pattern
-        results['online_pattern'] = online_pattern_dict[user] 
+        results['online_pattern'] = online_pattern_dict[user]
+        try:
+            results['online_pattern_aggs'] = '&'.join(online_pattern_dict[user].keys())
+        except:
+            results['online_pattern_aggs'] = ''
         results['uid'] = str(user)
         #add user flow information: hashtag, activity_geo, keywords
         flow_dict = flow_result[str(user)]

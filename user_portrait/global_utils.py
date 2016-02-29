@@ -99,6 +99,7 @@ es_group_result = Elasticsearch(USER_PORTRAIT_ES_HOST, time_out=600)
 es_retweet = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 es_comment = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 es_copy_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+es_tag = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout=600)
 
 # elasticsearch index_name and index_type
 profile_index_name = 'weibo_user'  # user profile es
@@ -124,6 +125,9 @@ copy_portrait_index_type = 'manage'
 group_index_name = 'group_manage'
 group_index_type = 'group'
 
+# es for tag
+tag_index_name = 'custom_attribute'
+tag_index_type = 'attribute'
 #use to load balck words of weibo keywords
 BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black.txt'
 

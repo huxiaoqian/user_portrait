@@ -3,6 +3,7 @@
 import json
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
+from global_utils import es_user_portrait as es
 
 index_info = {
     "settings":{
@@ -129,14 +130,23 @@ index_info = {
                 'character_sentiment':{
                     'type': 'string',
                     'index': 'not_analyzed'
+                },
+                'activity_geo_aggs':{
+                    'type': 'string',
+                    'analyzer': 'my_analyzer'
+                },
+                'online_pattern_aggs':{
+                    'type': 'string',
+                    'analyzer': 'my_analyzer'
                 }
             }
         }
     }
 }
 
-
+'''
 es = Elasticsearch('219.224.134.213')
+'''
 
 #es.indices.create(index="user_portrait_1222", body=index_info, ignore=400)
 es.indices.put_mapping(index='user_portrait_1222', doc_type='user', \
