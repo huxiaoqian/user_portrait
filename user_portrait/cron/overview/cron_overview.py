@@ -843,12 +843,13 @@ def compute_overview():
 
 
 if __name__=='__main__':
+    log_ts = time.time()
+    log_date = ts2datetime(log_ts)
+    print 'cron/overview/cron_overview.py&start&' + log_date
+
     compute_overview()
-    #get_retweeted_top()
-    #get_operate_information()
-    #get_comment_top()
-    #get_activeness_top()
-    #get_importance_top()
-    #get_influence_top()
-    #get_influence_vary_top()
-    #get_influence_top_count(900, 3795)
+
+    log_ts = time.time()
+    log_date = ts2datetime(log_ts)
+    print 'cron/overview/cron_overview.py&end&' + log_date
+
