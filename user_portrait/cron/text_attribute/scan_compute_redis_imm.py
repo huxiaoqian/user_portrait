@@ -22,17 +22,14 @@ def scan_compute_redis():
             iter_user_list.append(uid)
             mapping_dict[uid] = json.dumps([in_date, '3']) # mark status:3 computing
         if len(iter_user_list) % 100 == 0 and len(iter_user_list) != 0:
-            print 'iter_user_list:', iter_user_list
             r.hmset('compute', mapping_dict)
             #acquire bulk user weibo data
-            print 'get weibo_api_v2'
             if WEIBO_API_INPUT_TYPE == 0:
-                user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text_sentiment(iter_user_list)
+                user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text_sentiment(iter_user_list)
             else:
-                user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text(iter_user_list)
+                user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text(iter_user_list)
             #compute text attribute
-            print 'compute test_cron_text_attribtue_v2'
-            compute_status = test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_pattern_dict)
+            compute_status = test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts)
             
             if compute_status==True:
                 change_status_computed(mapping_dict)
@@ -46,11 +43,11 @@ def scan_compute_redis():
         r.mset('compute', mapping_dict)
         #acquire bulk user weibo date
         if WEIBO_API_INPUT_TYPE == 0:
-            user_keywords_dict, user_weibo_dict = read_flow_text_sentiment(iter_user_list)
+            user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text_sentiment(iter_user_list)
         else:
-            user_keywords_dict, user_weibo_dict = read_flow_text(iter_user_list)
+            user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text(iter_user_list)
         #compute text attribute
-        compute_status = test_cron_text_attribute(user_keywords_dict, user_weibo_dict)
+        compute_status = test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts)
         if compute_status==True:
             change_status_computed(mapping_dict)
         else:
@@ -80,4 +77,10 @@ def change_status_compute_fail(mapping_dict):
 
 
 if __name__=='__main__':
+    log_time_ts = int(time.time())
+    print 'cron/text_attribute/scan_compute_redis_imm.py&start&' + str(log_time_ts)
+
     scan_compute_redis()
+
+    log_time_ts = int(time.time())
+    print 'cron/text_attribute/scan_compute_redis_imm.py&end&' + str(log_time_ts)

@@ -2,13 +2,17 @@
 '''
 use to save parameter
 '''
+#for test
+RUN_TYPE = 0 #0 mark run for test; 1 mark run for operation
+RUN_TEST_TIME = '2013-09-08'
+
 #for all
 DAY = 24*3600
 HALF_HOUR = 1800
 FOUR_HOUR = 3600*4
 MAX_VALUE = 99999999
 WEEK = 7
-EXPIRE_TIME = 7*24*3600
+EXPIRE_TIME = 8*24*3600
 
 #attribute: IP
 IP_TIME_SEGMENT = 4*3600 # return every 4 hour statistic result for ip information

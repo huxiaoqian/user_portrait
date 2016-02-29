@@ -7,7 +7,6 @@ update freq: one week
 import sys
 import time
 import json
-from save_utils import save_user_results
 from cron_text_attribute import topic_en2ch, get_fansnum_max
 from elasticsearch.helpers import scan
 from weibo_api_v2 import read_flow_text_sentiment, read_flow_text
@@ -19,18 +18,17 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
 from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
-from parameter import WEIBO_API_INPUT_TYPE
-from config import topic_en2ch_dict, domain_en2ch_dict
-
+from parameter import WEIBO_API_INPUT_TYPE, WEEK, RUN_TYPE, RUN_TEST_TIME
+from time_utils import ts2datetime
 
 def deal_bulk_action(user_info_list, fansnum_max):
     start_ts = time.time()
     uid_list = user_info_list.keys()
     #acquire bulk user weibo data
     if WEIBO_API_INPUT_TYPE == 0:
-        user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text_sentiment(uid_list)
+        user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text_sentiment(uid_list)
     else:
-        user_keywords_dict, user_weibo_dict, online_pattern_dict = read_flow_text(uid_list)
+        user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text(uid_list)
     #compute attribute--keywords, topic, online_pattern            
     #get user topic results by bulk action
     topic_results_dict, topic_results_label = topic_classfiy(uid_list, user_keywords_dict)
@@ -66,9 +64,11 @@ def deal_bulk_action(user_info_list, fansnum_max):
         bulk_action.extend([action, {'doc': results}])
     es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
     end_ts = time.time()
+    #log_should_delete
     print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
+    #log_should_delete
     start_ts = end_ts
-    #print 'bulk_action:', bulk_action
+
 
 #use to update attribute every week for topic, keywords, online_pattern, importance
 #write in version: 16-02-28
@@ -78,6 +78,7 @@ def update_attribute_week_v2():
     count = 0
     user_list = []
     user_info_list = {}
+    start_ts = time.time()
     #get fansnum max
     fansnum_max = get_fansnum_max()
     while True:
@@ -94,18 +95,18 @@ def update_attribute_week_v2():
             #get bulk action
             deal_bulk_action(user_info_list, fansnum_max)
             user_info_list = {}
-            
+
     if user_info_list != {}:
         #get bulk action
         deal_bulk_action(user_info_list, fansnum_max)
 
 
-
+#abandon in version: 16-02-28
 #use to update attribute every month for domain, topic, psy, tendency
 #write in version: 15-12-08
 #this file run after the file: scan_es2redis.py function:scan_es2redis_week()
 '''
-def update_attribute_week():
+def update_attribute_week_v1():
     bulk_action = []
     count = 0
     user_info_list = {}
@@ -206,6 +207,12 @@ def update_atttribute_week():
 '''
 
 if __name__=='__main__':
-    print 'start update_attribute_week_v2'
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/update_week.py&start&' + log_time_date
+
     update_attribute_week_v2()
-    print 'end update_attribute_week_v2'
+    
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/update_week.py&start&' + log_time_date
