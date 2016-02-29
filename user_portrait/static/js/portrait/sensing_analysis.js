@@ -151,6 +151,7 @@ function sensing_sensors_table (head, data, div_name) {
 	$('#sensor_table').DataTable({
 	   "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
 	   "sPaginationType": "bootstrap",
+        "aaSorting": [[ 4, "desc" ]],
 	   "oLanguage": {
 	       "sLengthMenu": "_MENU_ 每页"
 	   }
@@ -296,6 +297,7 @@ function Draw_sensi_weibo (data){
 function Draw_group_weibo(data, div_name, sub_div_name){
     var page_num = 5;
     //console.log(data);
+    $('#' + sub_div_name).css('height', 'auto');
     if (data.length < page_num) {
     	//console.log('data_length', data.length);
         $('#'+ div_name + ' #pageGro').css('display', 'none');
@@ -313,6 +315,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     	}
       }
       else {
+        $('#' + sub_div_name).css('height', '315px');
         $('#'+ div_name + ' #pageGro').css('display', 'block');
           /*
         $('#'+ div_name + ' #pageGro .pageUp').css('display', 'block');
