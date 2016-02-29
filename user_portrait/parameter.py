@@ -8,7 +8,7 @@ HALF_HOUR = 1800
 FOUR_HOUR = 3600*4
 MAX_VALUE = 99999999
 WEEK = 7
-EXPIRE_TIME = 7*24*3600
+EXPIRE_TIME = 8*24*3600
 
 #attribute: IP
 IP_TIME_SEGMENT = 4*3600 # return every 4 hour statistic result for ip information
