@@ -14,9 +14,10 @@ sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import flow_text_index_name_pre, flow_text_index_type, es_flow_text
 from parameter import DAY, MAX_VALUE
+from parameter import RUN_TYPE, RUN_TEST_TIME, WEEK
 from time_utils import datetime2ts, ts2datetime, ts2date
 
-test_ts = datetime2ts('2013-09-08')
+test_ts = datetime2ts(RUN_TEST_TIME)
 
 
 #use to get hashtag information from flow
@@ -126,10 +127,12 @@ def get_flow_information_v2(uid_list, all_user_keywords_dict):
     #results = {uid:{'hashtag_dict':{},'hashtag':'', 'keywords_dict':{}, 'keywords_string':'', 'activity_geo':'', 'activity_geo_dict':dict, 'activity_geo_aggs':''}}
     iter_results = {} # iter_results = {uid:{'hashtag': hashtag_dict, 'geo':geo_dict, 'keywords':keywords_dict}}
     now_ts = time.time()
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = test_ts
-    for i in range(7,0,-1):
+    #run_type
+    if RUN_TYPE == 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = test_ts
+    for i in range(WEEK,0,-1):
         ts = now_date_ts - DAY*i
         uid_day_geo = {}
         #compute hashtag and geo
@@ -162,7 +165,6 @@ def get_flow_information_v2(uid_list, all_user_keywords_dict):
                 ip_count = len(uid_ip_dict[ip].split('&'))
                 geo = ip2city(ip)
                 if geo:
-                    #print 'geo:', geo
                     try:
                         iter_results[uid]['geo'][geo] += ip_count
                     except:
@@ -184,13 +186,11 @@ def get_flow_information_v2(uid_list, all_user_keywords_dict):
         geo_track_list = iter_results[uid]['geo_track']
         results[uid]['activity_geo_dict'] = json.dumps(geo_track_list)
         geo_dict_keys = geo_dict.keys()
-        #print 'geo_dict_keys:', geo_dict_keys
         results[uid]['activity_geo'] = '&'.join(['&'.join(item.split('\t')) for item in geo_dict_keys])
         try:
             results[uid]['activity_geo_aggs'] = '&'.join([item.split('\t')[-1] for item in geo_dict_keys])
         except:
             results[uid]['activity_geo_aggs'] = ''
-        #print 'activity_geo:',  results[uid]['activity_geo']
 
         keywords_dict = all_user_keywords_dict[uid]
         keywords_top50 = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)[:50]

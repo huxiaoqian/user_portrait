@@ -21,7 +21,7 @@ sys.path.append('../../')
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import ES_CLUSTER_FLOW1 as es
 from global_utils import es_user_portrait, es_user_profile, profile_index_name, profile_index_type
-from parameter import DAY
+from parameter import DAY, WEEK, RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime, datetime2ts
 
 
@@ -34,11 +34,13 @@ def get_activity_time(uid_list):
     results = {}
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
-    timestamp = datetime2ts(now_date)
-    #test
-    timestamp = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        timestamp = datetime2ts(now_date)
+    else:
+        timestamp = datetime2ts(RUN_TEST_TIME)
     activity_list_dict = {} # {uid:[activity_list], uid:[]}
-    for i in range(1,8):
+    for i in range(1,WEEK+1):
         ts = timestamp - DAY*i
         r_result = r_cluster.hmget('activity_'+str(ts), uid_list)
         if r_result:
@@ -97,16 +99,18 @@ def get_activeness(user_activeness_geo, user_activeness_time):
 def get_influence(uid_list):
     result = {}
     now_ts = time.time()
-    now_date = ts2datetime(now_ts - 3600*24)
-    # test
-    now_date = '2013-09-07'
+    #run_type
+    if RUN_TYPE = 1:
+        now_date = ts2datetime(now_ts - DAY)
+    else:
+        now_date = RUN_TEST_TIME
+
     index_time = 'bci_' + ''.join(now_date.split('-'))
     index_type = 'bci'
     try:
         es_result = es.mget(index=index_time, doc_type=index_type, body={'ids': uid_list})['docs']
     except Exception, e:
         raise e
-    #print 'es_result:', es_result
     for es_item in es_result:
         uid = es_item['_id']
         if es_item['found'] == True:
