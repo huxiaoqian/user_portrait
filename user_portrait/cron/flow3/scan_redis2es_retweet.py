@@ -38,20 +38,24 @@ def scan_retweet():
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     #get redis db number
     db_number = get_db_num(now_date_ts)
-    #retweet/be_retweet es mappings
-    '''
-    retweet_es_mappings(str(db_number))
-    be_retweet_es_mappings(str(db_number))
-    '''
     #get redis db
     retweet_redis = retweet_redis_dict[str(db_number)]
 
-    # 1. 判断redis数据库中db0和db1的dbsize的变化，决定起始时间
-    redis_host_list.pop(str(db_number))
-    other_db_number = 
+    # 1. 判断即将切换的db中是否有数据
+    while 1:
+        redis_host_list.pop(str(db_number))
+        other_db_number = retweet_redis_dict[redis_host_list[0]] # 获得对应的redis
+        current_dbsize = other_db_number.dbsize()
+        if current_dbsize:
+            break # 已经开始写入新的db，说明前一天的数据已经写完
+        else:
+            time.sleep(60)
 
+    # 2. 删除之前的es
+    retweet_es_mappings(str(db_number))
+    be_retweet_es_mappings(str(db_number))
 
-
+    # 3. scan
     retweet_bulk_action = []
     be_retweet_bulk_action = []
     start_ts = time.time()
@@ -101,6 +105,8 @@ def scan_retweet():
     print 'count:', count
     print 'end'
 
+    # 4. flush redis
+    retweet_redis.flushdb()
 
 
 def split_bulk_action(bulk_action, index_name):

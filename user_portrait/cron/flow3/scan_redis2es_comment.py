@@ -10,7 +10,7 @@ import redis
 reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
-from global_utils import retweet_redis_dict, comment_redis_dict
+from global_utils import retweet_redis_dict, comment_redis_dict, redis_host_list
 from global_config import R_BEGIN_TIME
 from parameter import DAY
 from time_utils import ts2datetime, datetime2ts
@@ -39,11 +39,25 @@ def scan_comment():
     db_number = get_db_num(now_date_ts)
     #comment/be_comment es mappings
     '''
-    comment_es_mappings(str(db_number))
-    be_comment_es_mappings(str(db_number))
     '''
     #get redis db
     comment_redis = comment_redis_dict[str(db_number)]
+
+    # 1. 判断即将切换的db中是否有数据
+    while 1:
+        redis_host_list.pop(str(db_number))
+        other_db_number = comment_redis_dict[redis_host_list[0]]
+        current_dbsize = other_db_number.dbsize()
+        if current_dbsize:
+            break # 已经开始写入新的db，说明前一天的数据已经写完
+        else:
+            time.sleep(60)
+
+    # 2. 删除之前的es
+    comment_es_mappings(str(db_number))
+    be_comment_es_mappings(str(db_number))
+
+    # 3. scan
     comment_bulk_action = []
     be_comment_bulk_action = []
     start_ts = time.time()
@@ -95,6 +109,9 @@ def scan_comment():
             break
     print 'count:', count
     print 'end'
+
+    # 4. flush redis
+    comment_redis.flushdb()
 
 
 def split_bulk_action(bulk_action, index_name):
