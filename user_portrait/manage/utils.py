@@ -3,15 +3,6 @@ import sys
 import time
 import json
 import math
-#test
-'''
-reload(sys)
-sys.path.append('../')
-from global_utils import es_user_portrait as es
-from global_utils import R_CLUSTER_FLOW2 as r_cluster
-from global_utils import es_user_profile
-from time_utils import ts2datetime, datetime2ts,ts2date
-'''
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
@@ -19,10 +10,7 @@ from user_portrait.global_utils import es_user_profile, profile_index_name, prof
 from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.parameter import DAY, WEEK, MAX_VALUE, SENTIMENT_FIRST, SENTIMENT_SECOND
-
-#test
-portrait_index_name = 'user_portrait_1222'
-portrait_index_type = 'user'
+from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME
 
 #use to get evaluate max
 def get_evaluate_max():
@@ -236,15 +224,16 @@ def compare_user_activity(uid_list):
     timesegment_result = {}
     now_ts = time.time()
     date = ts2datetime(now_ts)
-    ts = datetime2ts(date)
-    # test
-    ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        ts = datetime2ts(date)
+    else:
+        ts = datetime2ts(RUN_TEST_TIME)
     for i in range(1,8):
         ts = ts - DAY
         hash_name = 'activity_' + str(ts)
         r_result = r_cluster.hmget(hash_name, uid_list)
         if r_result:
-            #r_result = json.loads(r_result)
             count = 0
             for r_item in r_result:
                 if r_item:
@@ -287,7 +276,6 @@ def compare_user_activity(uid_list):
                 user_list[user].append(count)
             except:
                 user_list[user] = [count]
-    #print 'user_list, user_timesegment_list, ts_list:', user_list, user_timesegment_list, ts_list
     return user_list, user_timesegment_list, ts_list
 
 # compare the user profile
