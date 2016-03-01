@@ -269,7 +269,6 @@ function add_group_tag(){
             select_uids.push(temp_list[i]);
         }
     }
-
     for (var i = 0; i < select_uids.length; i++) {
         s=i.toString();
         select_uids_string += select_uids[s] + ',';
@@ -277,8 +276,14 @@ function add_group_tag(){
     console.log(select_uids_string);
     add_tag_attribute_name = $("#select_attribute_name").val();
     add_tag_attribute_value = $("#select_attribute_value").val();
-    add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
-    Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
+    add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
+    console.log(add_group_tag_url);
+    if(select_uids.length!=0){
+        Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
+    }else{
+        alert('请至少选择一名用户！')
+    }
+
 }
 
 
@@ -313,6 +318,7 @@ function show_members(){
         $('#modal_table').dataTable({
             "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
             "sPaginationType": "bootstrap",
+            "aaSorting": [[ 4, "desc" ]],
             "aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
             "oLanguage": {
                 "sLengthMenu": "_MENU_ 每页"
