@@ -258,7 +258,7 @@ function bindOption(){
       draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
   });
   
-  /*
+  
   $('#recommend_date_button').click(function(){
     console.log($("#recommend_date_select").val());
     var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val() + '&fields=uid,uname,domain,topic,influence,importance,activeness';
@@ -266,7 +266,7 @@ function bindOption(){
     draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
     draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
   });
-  */
+  
 
   $('#history_date_button').click(function(){
     console.log($("#history_date_select").val());
@@ -288,11 +288,11 @@ var recommend_choose_uids = new Array();
 var history_choose_uids = new Array();
 // page control end
 
-var tomorrow = new Date();
+var tomorrow = new Date(2013,8,8);
 var now = tomorrow.getFullYear()+"-"+((tomorrow.getMonth()+1)<10?"0":"")+(tomorrow.getMonth()+1)+"-"+((tomorrow.getDate())<10?"0":"")+(tomorrow.getDate());
 
 var url_recommend = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
-console.log(url_recommend);
+//console.log(url_recommend);
 draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
 draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Re_Draw_table);
 
@@ -302,10 +302,10 @@ draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Re_Draw_table);
 
 function date_initial(){
-  /*
+  
   var recommend_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(tomorrow-24*60*60*1000*(6-i));
+    var today = new Date(tomorrow-24*60*60*1000*(7-i));
     recommend_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
   }
   $("#recommend_date_select").empty();
@@ -318,11 +318,11 @@ function date_initial(){
   recommend_date_html += '<option value="' + recommend_date[5] + '">' + recommend_date[5] + '</option>';
   recommend_date_html += '<option value="' + recommend_date[6] + '" selected="selected">' + recommend_date[6] + '</option>';
   $("#recommend_date_select").append(recommend_date_html);
-  */
+  
 
   var history_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(tomorrow-24*60*60*1000*(6-i));
+    var today = new Date(tomorrow-24*60*60*1000*(7-i));
     history_date[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
   }
   $("#history_date_select").empty();
