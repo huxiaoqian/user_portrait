@@ -385,8 +385,9 @@ function in_list_button(){
       group_confirm_uids.push($(this).attr('value'));
   })
   var group_ajax_url = '/group/submit_task/';
+  //var group_ajax_url = '/detect/add_detect2analysis/';
   //var group_url = '/index/group_result/';
-  var group_url = '/index/group/';
+  var group_url = '/index/group/#';
   var group_name = $('input[name="so_group_name"]').val();
   var remark = $('input[name="so_states"]').val();
   if (group_confirm_uids.length == 0){
