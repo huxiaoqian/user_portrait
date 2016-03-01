@@ -11,17 +11,11 @@ rank_field = ['top_retweeted_user', 'top_comment_user', 'top_activeness', 'top_i
 def get_attr(date):
     results = {}
     overview_result = r.hgetall(hash_name)
-    #print 'overview_result:', overview_result
     for item in overview_result:
         value = overview_result[item]
         if isinstance(value, str):
             value = json.loads(value)
-            '''
-            if item in rank_field:
-                value = value[:5]
-            '''
         results[item] = value
-    #print 'overview result:', results
     return results
 
 def get_retweeted_top():

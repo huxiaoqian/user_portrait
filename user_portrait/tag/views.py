@@ -21,7 +21,6 @@ def ajax_submit_attribute():
     attribute_value = request.args.get('attribute_value', '') # attribute_value ='tag1,tag2'
     submit_user = request.args.get('user', '')           # user_name = admin1
     submit_date = request.args.get('date', '')         # submit_date = 2013-09-08
-    print 'attribute_name:', attribute_name
     status = submit_attribute(attribute_name, attribute_value, submit_user, submit_date) # mark success or fail
     return json.dumps(status)
 
@@ -44,7 +43,6 @@ def ajax_search_attribute():
         if item:
             query_body.append({'match':{term: item}})
             condition_num += 1
-    print 'query_body,condition_num:', query_body, condition_num
     result = search_attribute(query_body, condition_num)
     return json.dumps(result)
 
@@ -65,7 +63,6 @@ def ajax_change_attribtue():
 def ajax_delete_attribute():
     status = False
     attribute_name = request.args.get('attribute_name', '')
-    print 'attribute_name:', attribute_name
     status = delete_attribute(attribute_name)
     return json.dumps(status)
 
@@ -125,9 +122,6 @@ def ajax_show_user_attribute_name():
 @mod.route('/show_group_tag/')
 def ajax_show_group_tag():
     result = {}
-    #uid_list_string = request.args.get('uid_list', '') # uid_list = 'uid1,uid2'
-    #uid_list = uid_list_string.split(',')
-    #result = get_group_tag(uid_list)
     group_task_name = request.args.get('task_name', '')
     result = get_group_tag(group_task_name)
     return json.dumps(result)

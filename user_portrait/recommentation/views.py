@@ -8,23 +8,24 @@ from flask import Blueprint, url_for, render_template, request, abort, flash, se
 from utils import show_out_uid,decide_out_uid, search_history_delete, show_all_out
 from utils import recommentation_in, identify_in, show_in_history, show_compute, identify_compute, recommentation_more_information
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
-from user_portrait.time_utils import datetime2ts
+from user_portrait.time_utils import datetime2ts, ts2datetime
+from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME, DAY
 from update_activeness_record import update_record_index
 
-# use to test 13-09-08
-test_time = 1378569600
-test_date = '2013-09-07'
+#run_type
+test_time = datetime2ts(RUN_TEST_TIME)
 
 mod = Blueprint('recommentation', __name__, url_prefix='/recommentation')
 
 @mod.route('/show_in/')
 def ajax_recommentation_in():
     date = request.args.get('date', '') # '2013-09-01'
-    # test
-    #date = test_date 
     input_ts = datetime2ts(date)
-    now_ts = time.time()
-    now_ts = test_time
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time
     if now_ts - 3600*24*7 > input_ts:
         return None
     else:
@@ -53,12 +54,9 @@ def ajax_identify_in():
     status = request.args.get('status', '') # 1 compute right now; 2 appointment
     data = []
     if date and uid_list:
-        #test
-        #date = '2013-09-07'
         for uid in uid_list:
             data.append([date, uid, status])
         results = identify_in(data)
-        print 'results:', results
     else:
         results = None
     return json.dumps(results)
@@ -71,8 +69,11 @@ def ajax_show_in_history():
     results = {}
     date = request.args.get('date', '')
     input_ts = datetime2ts(date)
-    now_ts = time.time()
-    now_ts = test_time
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time
     if now_ts - 24*3600*7 > input_ts:
         return None
     else:
@@ -95,22 +96,16 @@ def ajax_compute_identify():
     results = {}
     date = request.args.get('date', '') # 'date1, date2'
     uid_string = request.args.get('uid_list', '') # 'uid1, uid2'
-    input_data = []
+    input_data = [] #input_data = [['2015-07-15', '1767905823']]
     if date and uid_string:
-        #test
-        #input_data = [('2015-07-15','1767905823')]
         date_list = date.split(',')
         uid_list = uid_string.split(',')
         for i in range(0,len(date_list)):
             date = date_list[i]
             uid = uid_list[i]
             input_data.append([date ,uid])
-        print 'input_data:', input_data
         results = identify_compute(input_data)
     return json.dumps(results)
-
-
-
 
 # show recommentaion out uid
 @mod.route('/show_out/')
