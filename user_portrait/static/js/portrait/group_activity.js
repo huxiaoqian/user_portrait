@@ -70,7 +70,14 @@ function Draw_activity(data){
                 events:{
                     click:function(event){
                         var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + data[event.point.x][0];
-                        call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content)
+                        call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
+                        var html0 = '';
+                        $('#line_select_time').empty();  
+                        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div><br>";
+                        console.log(html0);
+                        console.log(event.point.x);
+                        $('#line_select_time').append(html0);
+                        
                         //console.log(activity_weibo_url);
                         // draw_content(data_x_[event.point.x]);
                     }

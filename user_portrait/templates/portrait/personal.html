@@ -302,7 +302,11 @@ Personal.prototype = {   //群组搜索
             
         var userlocation = document.getElementById('userLocation');
         if(personalData.location){
-            userlocation.innerHTML = personalData.location;
+            if(personalData.location == 'unknown'){
+                userlocation.innerHTML = "无此数据";
+            }else{
+                userlocation.innerHTML = personalData.location;
+            }
         }else{
             userlocation.innerHTML = "无此数据";
         }

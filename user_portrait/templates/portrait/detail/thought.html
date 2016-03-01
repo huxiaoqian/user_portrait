@@ -157,8 +157,10 @@ function th_draw_content(data){
 function emotions(data){
     var times = [];
     var time_name = [];
+    var index = $('input[name="time-type"]:checked').val();
     if (index =='week'){
-        times = data['time_list'];}
+        times = data['time_list'];
+    }
     else{
         for (var t in data['time_list']){
             //console.log(data['time_list'][t]);

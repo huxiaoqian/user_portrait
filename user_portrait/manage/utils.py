@@ -296,7 +296,6 @@ def compare_user_profile(uid_list):
 
     search_results = es_user_profile.mget(index=profile_index_name, doc_type=profile_index_type,\
             body={'ids':uid_list})['docs']
-    #print 'results:', search_results
     for result in search_results:
         uid = result['_id']
         results[uid] = []
@@ -304,9 +303,12 @@ def compare_user_profile(uid_list):
             item = result['_source']
         except:
             next
-        photo_url = item['photo_url']
+        try:
+            photo_url = item['photo_url']
+        except:
+            photo_url = 'unkown'
+
         results[uid] = photo_url
-    #print 'results:', results
     return results
 
 if __name__=='__main__':

@@ -456,8 +456,8 @@ function Draw_get_top_weibo(data,div_name){
         html += '<div class="m">';
         html += '<u>' + date + '</u>&nbsp;-&nbsp;';
         html += '<a target="_blank" href="' + weibo_link + '">微博</a>&nbsp;-&nbsp;';
-        html += '<a target="_blank" href="' + user_link + '">用户</a>&nbsp;-&nbsp;';
-        html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
+        html += '<a target="_blank" href="' + user_link + '">用户</a>;';
+       // html += '<a target="_blank" href="' + repost_tree_link + '">转发树</a>';
         html += '</div>';
         html += '</div>';
         html += '</div>';
