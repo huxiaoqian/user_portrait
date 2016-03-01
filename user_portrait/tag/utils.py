@@ -111,7 +111,7 @@ def delete_attribute(attribute_name):
         query.append({'match':{attribute_name: value}})
     try:
         attribute_user_result = es.search(index=user_index_name, doc_type=user_index_type, \
-                                         body={'query':{'bool':{'must':query}}})['hits']['hits']
+                                         body={'query':{'bool':{'should':query}}})['hits']['hits']
     except:
         attribute_user_result = []
     if attribute_user_result==[]:
@@ -127,7 +127,7 @@ def delete_attribute(attribute_name):
         user = user_item['uid']
         action = {'index':{'_id':str(user)}}
         bulk_action.extend([action, user_item])
-    es.bulk(bulk_action, index=user_index_name, doc_type=index_type)
+    es.bulk(bulk_action, index=user_index_name, doc_type=user_index_type)
     
     status = True
     return status

@@ -45,7 +45,7 @@ def get_user_detail(date, input_result, status):
     if date!='all':
         index_name = ''.join(date.split('-'))
         #test
-        index_name = '20130907'
+        #index_name = '20130907'
     else:
         now_ts = time.time()
         now_date = ts2datetime(now_ts)
