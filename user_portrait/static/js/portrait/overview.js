@@ -603,7 +603,10 @@ function draw_more_top_influence(data){
     for (var i = 0; i < data['top_influence'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'] +  '</th></tr>';
+       if(data['top_influence'][s]['1']=='unknown'){
+            data['top_influence'][s]['1'] = '未知';
+       }
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(1) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_influence').append(html);                  
