@@ -135,7 +135,6 @@ call_ajax_request(url_character,draw_character);
 function choose_time(){            
     var index = $('input[name="time-type"]:checked').val();
     var url = '/attribute/sentiment_trend/?uid='+uid+'&time_type='+index;
-    console.log(url);
     Thought.call_sync_ajax_request(url, Thought.ajax_method, Thought.Draw_emotion);
     //$('#emotion').empty();
   }
@@ -158,8 +157,10 @@ function th_draw_content(data){
 function emotions(data){
     var times = [];
     var time_name = [];
+    var index = $('input[name="time-type"]:checked').val();
     if (index =='week'){
-        times = data['time_list'];}
+        times = data['time_list'];
+    }
     else{
         for (var t in data['time_list']){
             //console.log(data['time_list'][t]);
