@@ -2,12 +2,17 @@
 '''
 use to save parameter
 '''
+#for test
+RUN_TYPE = 0 #0 mark run for test; 1 mark run for operation
+RUN_TEST_TIME = '2013-09-08'
+
 #for all
 DAY = 24*3600
 HALF_HOUR = 1800
 FOUR_HOUR = 3600*4
 MAX_VALUE = 99999999
 WEEK = 7
+EXPIRE_TIME = 8*24*3600
 
 #attribute: IP
 IP_TIME_SEGMENT = 4*3600 # return every 4 hour statistic result for ip information
@@ -63,7 +68,16 @@ psy_description_dict = {
         '3':u'心理状态平稳正常'
         }
 
-# recommend out threshould
+#recommend in
+RECOMMEND_IN_SENSITIVE_TOP = 2000
+RECOMMEND_IN_BLACK_USER1 = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/recommentation_in/blacklist_2.csv'
+RECOMMEND_IN_BLACK_USER2 = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/recommentation_in/blacklist_0808.txt'
+RECOMMEND_IN_ACTIVITY_THRESHOLD = 50
+RECOMMEND_IN_IP_THRESHOLD = 7
+RECOMMEND_IN_RETWEET_THRESHOLD = 20
+RECOMMEND_IN_MENTION_THRESHOLD = 15
+
+#recommend out threshould
 RECOMMEND_OUT_THRESHOULD = 30
 
 
@@ -253,7 +267,8 @@ DETECT_EVENT_TEXT_RANGE_ITEM = ['timestamp']
 IDENTIFY_ATTRIBUTE_LIST = ['domain', 'uid', 'hashtag_dict', 'importance', 'influence', 'domain_v3', \
         'online_pattern', 'keywords_string', 'topic', 'activity_geo', 'uname', 'hashtag', 'keywords', 'fansnum', \
         'psycho_status', 'tendency', 'photo_url', 'verified', 'statusnum', 'gender', 'topic_string',\
-        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark', 'character_text','character_sentiment']
+        'activeness', 'location', 'activity_geo_dict', 'friendsnum', 'group', 'remark', 'character_text',\
+        'character_sentiment', 'activity_geo_aggs', 'online_pattern_aggs']
 
 #cron_group
 ACTIVITY_GEO_TOP = 3

@@ -18,11 +18,10 @@ def scan_compute_redis():
         user_list = json.loads(results[uid])
         in_date = user_list[0]
         status = user_list[1]
-        if status == '1':
+        if status == '2':     #imme
             iter_user_list.append(uid)
             mapping_dict[uid] = json.dumps([in_date, '3']) # mark status:3 computing
         if len(iter_user_list) % 100 == 0 and len(iter_user_list) != 0:
-            #mark status from 1 to 3 as identify_compute to computing
             r.hmset('compute', mapping_dict)
             #acquire bulk user weibo data
             if WEIBO_API_INPUT_TYPE == 0:
@@ -78,12 +77,10 @@ def change_status_compute_fail(mapping_dict):
 
 
 if __name__=='__main__':
-    log_time_ts = time.time()
-    log_time_date = ts2datetime(log_time_ts)
-    print 'cron/text_attribute/scan_compute_redis.py&start&' + log_time_date
-    
+    log_time_ts = int(time.time())
+    print 'cron/text_attribute/scan_compute_redis_imm.py&start&' + str(log_time_ts)
+
     scan_compute_redis()
 
-    log_time_ts = time.time()
-    log_time_date = ts2datetime(log_time_ts)
-    print 'cron/text_attribute/scan_compute_redis.py&end&' + log_time_date
+    log_time_ts = int(time.time())
+    print 'cron/text_attribute/scan_compute_redis_imm.py&end&' + str(log_time_ts)

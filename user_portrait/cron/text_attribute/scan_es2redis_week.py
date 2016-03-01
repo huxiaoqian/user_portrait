@@ -11,6 +11,7 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
+from time_utils import ts2datetime
 
 #scan es to redis as a queue for update_week
 #write in version: 15-12-08
@@ -29,12 +30,13 @@ def scan_es2redis_week():
             user_info[uid] = {'fansnum':scan_re['fansnum'], 'domain':scan_re['domain']}
             update_week_redis.lpush(UPDATE_WEEK_REDIS_KEY, json.dumps(user_info))
             user_info = {}
+            #log_should_delete
             if count % 1000 == 0 and count != 0:
                 end_ts = time.time()
                 print '%s sec count 1000' % (end_ts - start_ts)
                 start_ts = end_ts
+            #log_should_delete
         except StopIteration:
-            print 'all done'
             if user_info:
                 update_week_redis.lpush(UPDATE_WEEK_REDIS_KEY, json.dumps(user_info))
                 user_info = {}
@@ -45,8 +47,14 @@ def scan_es2redis_week():
 
     if user_info:
         update_week_redis.lpush(UPDATE_WEEK_REDIS_KEY, json.dumps(user_info))
-    print 'count:', count
 
 if __name__=='__main__':
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/scan_es2redis_week.py&start&' + log_time_date
+
     scan_es2redis_week()
-    print 'end scan_es2redis_week'
+
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/scan_es2redis_week.py&end&' + log_time_date

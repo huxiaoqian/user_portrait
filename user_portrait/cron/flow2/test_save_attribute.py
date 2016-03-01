@@ -54,10 +54,8 @@ def save_city(uid, ip, timestamp):
 def save_city_timestamp(uid, ip, timestamp):
     date = ts2datetime(timestamp)
     ts = datetime2ts(date)
-    #print 'new_ip_'+str(ts)
     try:
         ip_timestamp_string = r_cluster.hget('new_ip_'+str(ts), str(uid))
-        #print 'ip_timestamp_string:', ip_timestamp_string
         ip_timestamp_string_dict = json.loads(ip_timestamp_string)
         try:
             add_string = '&'+str(timestamp)

@@ -20,10 +20,11 @@ from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from global_utils import update_day_redis, UPDATE_DAY_REDIS_KEY
 from time_utils import ts2datetime, datetime2ts
-from parameter import DAY
+from parameter import DAY, WEEK, RUN_TYPE
+from parameter import RUN_TEST_TIME
 
-#test
-test_ts = datetime2ts('2013-09-08')
+
+test_ts = datetime2ts(RUN_TEST_TIME)
 
 #get user hashtag by bulk action
 #write in version: 15-12-08
@@ -33,10 +34,13 @@ def update_day_hashtag(uid_list):
     results = {}
     all_results = {}
     now_ts = time.time()
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = test_ts
-    for i in range(7,0,-1):
+    #run_type
+    if RUN_TYPE == 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = test_ts
+
+    for i in range(WEEK,0,-1):
         ts = now_date_ts - DAY*i
         count = 0
         hashtag_results = r_cluster.hmget('hashtag_'+str(ts), uid_list)
@@ -66,9 +70,11 @@ def update_day_hashtag(uid_list):
 def update_day_geo(uid_list, user_info_list):
     results = {}
     now_ts = time.time()
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = test_ts
+    #run_type
+    if RUN_TYPE == 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = test_ts
     ip_results = r_cluster.hmget('new_ip__'+str(now_date_ts - DAY), uid_list)
     count = 0
     for uid in uid_list:
@@ -99,7 +105,13 @@ def update_day_geo(uid_list, user_info_list):
             week_geo_list.extend(geo_list)
         week_geo_list = list(set(week_geo_list))
         week_geo_string = '&'.join(['&'.join(item.split('\t')) for item in week_geo_list])
+        try:
+            week_geo_aggs_string = '&'.join([item.split('\t')[-1] for item in week_geo_list])
+        except:
+            week_geo_aggs_string = ''
+
         results[uid]['activity_geo'] = week_geo_string
+        results[uid]['activity_geo_aggs'] = week_geo_aggs_string
 
     return results
 
@@ -184,10 +196,24 @@ def update_attribute_day():
             save_bulk_action(uid_list, hashtag_results, geo_results, activeness_results, influence_results)
             user_info_list = {}
             end_ts = time.time()
+            #log_should_delete
             print '%s sec count 1000' % (end_ts - start_ts)
+            #log_should_delete
             start_ts = end_ts
+    
+    if user_info_list != {}:
+        uid_list = user_info_list.keys()
+        #get user_list hashtag_results
+        hashtag_results = update_day_hashtag(uid_list)
+        #get user geo today
+        geo_results = update_day_geo(uid_list, user_info_list)
+        #get user activeness evaluate
+        activeness_results = update_day_activeness(geo_results, user_info_list)
+        #get user influence
+        influence_results = update_day_influence(uid_list, user_info_list)
+        #update to es by bulk action
+        save_bulk_action(uid_list, hashtag_results, geo_results, activeness_results, influence_results)
 
-    print 'count:', count
 
 #abandon in version: 15-12-08
 '''
@@ -234,6 +260,12 @@ def update_attribute_day():
 '''
 
 if __name__=='__main__':
-    print 'start update_day'
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/update_day.py&start&'+ log_time_date
+
     update_attribute_day()
-    print 'end update_day'
+    
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/text_attribute/update_day.py&end&' + log_time_date

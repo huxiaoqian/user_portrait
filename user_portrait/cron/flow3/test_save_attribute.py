@@ -15,6 +15,7 @@ from time_utils import ts2datetime, datetime2ts
 from global_config import R_BEGIN_TIME
 from global_utils import retweet_redis_dict, comment_redis_dict
 from global_utils import R_DICT
+from parameter import RUN_TYPE, RUN_TEST_TIMe
 
 r_begin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -24,7 +25,9 @@ def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
     db_number = (((date_ts - r_begin_ts) / Day) / 7) % 2 + 1
-
+    #run_type
+    if RUN_TYPE == 0:
+        db_number = 1
     return db_number
 
 #use to save retweet and be_retweet
@@ -55,4 +58,3 @@ if __name__=='__main__':
     date2 = '2013-09-15'
     ts2 = datetime2ts(date2)
     db_number = get_db_num(ts2)
-    print 'r:', db_number

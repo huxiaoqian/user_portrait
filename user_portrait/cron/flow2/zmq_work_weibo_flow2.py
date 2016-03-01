@@ -16,7 +16,7 @@ sys.path.append('../../')
 from time_utils import ts2datetime, datetime2ts
 from global_config import ZMQ_VENT_PORT_FLOW2, ZMQ_CTRL_VENT_PORT_FLOW2,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
-
+from parameter import RUN_TYPE, RUN_TEST_TIME
 
 def extract_uname(text):
     at_uname_list = []
@@ -37,7 +37,7 @@ def cal_propage_work(item):
     # attribute location
     if ip:
         save_city_timestamp(uid, ip, timestamp)
-    '''
+    
     # attribute activity
     date = ts2datetime(timestamp)
     ts = datetime2ts(date)
@@ -53,7 +53,7 @@ def cal_propage_work(item):
         save_at(uid, at_uname, timestamp)
     except:
         pass
-    '''
+    
 
 
 if __name__ == "__main__":
@@ -72,10 +72,8 @@ if __name__ == "__main__":
     tb = time.time()
     ts = tb
     while 1:
-        try:
-            item = receiver.recv_json()
-        except Exception, e:
-            print Exception, ":", e 
+        item = receiver.recv_json()
+        
         if not item:
             continue 
         
@@ -86,8 +84,8 @@ if __name__ == "__main__":
                 pass
         
         count += 1
-
-        if count % 10000 == 0:
+        #run_type
+        if count % 10000 == 0 and RUN_TYPE == 0:
             te = time.time()
             print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
             if count % 100000 == 0:

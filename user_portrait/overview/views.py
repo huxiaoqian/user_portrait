@@ -9,9 +9,6 @@ from utils import get_attr, get_retweeted_top, get_comment_top, get_activeness_t
 
 from user_portrait.time_utils import datetime2ts
 
-# use to test 13-09-08
-test_time = 1378569600
-test_date = '2013-09-07'
 
 mod = Blueprint('overview', __name__, url_prefix='/overview')
 

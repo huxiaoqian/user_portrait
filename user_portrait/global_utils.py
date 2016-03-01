@@ -29,6 +29,7 @@ R_CLUSTER_FLOW2 = _default_cluster_redis(host=REDIS_CLUSTER_HOST_FLOW2, port=RED
 def _default_redis(host=REDIS_HOST, port=REDIS_PORT, db=1):
     return redis.StrictRedis(host, port, db)
 
+redis_host_list = ["1", "2"]
 #use to save retweet/be_retweet
 retweet_r_1 = _default_redis(host=RETWEET_REDIS_HOST,port=RETWEET_REDIS_PORT, db=1)
 retweet_r_2 = _default_redis(host=RETWEET_REDIS_HOST, port=RETWEET_REDIS_PORT, db=2)
@@ -98,6 +99,7 @@ es_group_result = Elasticsearch(USER_PORTRAIT_ES_HOST, time_out=600)
 es_retweet = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 es_comment = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
 es_copy_portrait = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout = 600)
+es_tag = Elasticsearch(USER_PORTRAIT_ES_HOST, timeout=600)
 
 # elasticsearch index_name and index_type
 profile_index_name = 'weibo_user'  # user profile es
@@ -123,6 +125,9 @@ copy_portrait_index_type = 'manage'
 group_index_name = 'group_manage'
 group_index_type = 'group'
 
+# es for tag
+tag_index_name = 'custom_attribute'
+tag_index_type = 'attribute'
 #use to load balck words of weibo keywords
 BLACK_WORDS_PATH = '/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/text_attribute/black.txt'
 

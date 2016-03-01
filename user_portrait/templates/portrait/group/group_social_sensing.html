@@ -196,6 +196,7 @@ function submit_social_sensing(){
             sensing_job['state'] = $('#social_sensing #first_remarks').val();
             sensing_job['submit_user'] = 'admin';
             sensing_job['uid_list'] = select_uids;
+            sensing_job['task_type'] = 'analysis';
             $.ajax({   
                 type:"POST",  
                 url:social_sensing_url,

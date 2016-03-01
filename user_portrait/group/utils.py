@@ -162,7 +162,11 @@ def search_task(task_name, submit_date, state, status):
             state = task_dict['_source']['state']
         except:
             state = ''
-        result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], state, task_dict['_source']['status']])
+        try:
+            status = task_dict['_source']['status']
+        except:
+            status = 0
+        result.append([task_dict['_source']['task_name'], task_dict['_source']['submit_date'], task_dict['_source']['count'], state, status])
     
     return result
 
