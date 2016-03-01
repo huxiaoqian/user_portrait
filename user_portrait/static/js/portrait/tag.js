@@ -228,8 +228,10 @@ function deleteGroup(that){
 		var temp = $(this).parent().prev().prev().prev().prev().html();
 		console.log(temp);
 		url = url + 'attribute_name=' + temp;
+		if(confirm("确认要删除吗？")){
+			that.call_sync_ajax_request(url,that.ajax_method,that.del);
+		}
 		//window.location.href = url;
-		that.call_sync_ajax_request(url,that.ajax_method,that.del);
 		console.log(url);
 	});
 }
