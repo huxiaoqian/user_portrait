@@ -368,7 +368,8 @@ function in_list_button(){
   $('input[name="in_list_option"]:checked').each(function(){
       group_confirm_uids.push($(this).attr('value'));
   })
-  var group_ajax_url = '/group/submit_task/';
+  //var group_ajax_url = '/group/submit_task/';
+  var group_ajax_url = '/detect/add_detect2analysis/';
   //var group_url = '/index/group_result/';
   var group_url = '/index/group/';
   var group_name = $('input[name="so_group_name"]').val();
@@ -394,7 +395,7 @@ function in_list_button(){
     alert("请选择至少1个用户");
     return ;
   }
-  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids};//, "state":remark
   $.ajax({
       type:'POST',
       url: group_ajax_url,

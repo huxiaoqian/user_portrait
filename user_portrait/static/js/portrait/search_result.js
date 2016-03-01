@@ -615,8 +615,8 @@ function group_confirm_button(){
       alert('至少需要选择1名用户!');
       return;
   }
-  //console.log(group_confirm_uids);
-  var group_ajax_url = '/group/submit_task/';
+  //console.log(group_confirm_uids);/group/submit_task/
+  var group_ajax_url = '/detect/add_detect2analysis/';
   var group_url = '/index/group_result/';
   var group_name = $('input[name="group_name"]').val();
   var remark = $('input[name="remark"]').val();
@@ -636,7 +636,7 @@ function group_confirm_button(){
     alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
-  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids};//"state":remark
   $.ajax({
       type:'POST',
       url: group_ajax_url,
