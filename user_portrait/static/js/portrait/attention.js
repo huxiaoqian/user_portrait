@@ -47,7 +47,12 @@ function attention(data,UserID,UserName,texts){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 2;
-            nod['name'] = out_data[i][0];
+            if(out_data[i][0]=='unknow'){
+              var nod_name_out = '未知';
+            }else{
+              var nod_name_out = out_data[i][0]
+            }
+            nod['name'] = nod_name_out;
             nod['label'] = out_data[i][1];
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
@@ -57,7 +62,12 @@ function attention(data,UserID,UserName,texts){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 1;
-            nod['name'] = in_data[i][0]
+            if(out_data[i][0]=='unknow'){
+              var nod_name_in = '未知';
+            }else{
+              var nod_name_in = out_data[i][0]
+            }
+            nod['name'] = nod_name_in;
             nod['label'] = in_data[i][1];
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
@@ -374,8 +384,7 @@ function in_list_button(){
   $('input[name="in_list_option"]:checked').each(function(){
       group_confirm_uids.push($(this).attr('value'));
   })
-  //var group_ajax_url = '/group/submit_task/';
-  var group_ajax_url = '/detect/add_detect2analysis/';
+  var group_ajax_url = '/group/submit_task/';
   //var group_url = '/index/group_result/';
   var group_url = '/index/group/';
   var group_name = $('input[name="so_group_name"]').val();
@@ -401,7 +410,7 @@ function in_list_button(){
     alert("请选择至少1个用户");
     return ;
   }
-  var job = {"task_name":group_name, "uid_list":group_confirm_uids};//, "state":remark
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
   $.ajax({
       type:'POST',
       url: group_ajax_url,
