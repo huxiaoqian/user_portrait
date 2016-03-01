@@ -5,7 +5,6 @@
 
 Search_weibo.prototype = {
   call_sync_ajax_request:function(url, method, callback){
-    //console.log(url);
     $.ajax({
       url: url,
       type: method,
@@ -16,9 +15,6 @@ Search_weibo.prototype = {
   },
 
   Draw_usernumber: function(data){
-    //console.log(data);
-    //compute = data['compute'];
-    //console.log(compute);
     in_count = data['in_count'];
     out_count = data['out_count'];
     $('#user_num').empty();
@@ -65,8 +61,8 @@ var Search_weibo = new Search_weibo();
 
 
 $(document).ready(function(){
-	var downloadurl = window.location.host;
-    weibo_url =  'http://' + downloadurl + "/overview/show/?date=2013-09-07";
+    var test_date = choose_time_for_mode();
+    var weibo_url = "/overview/show/?date=" + test_date.format('yyyy-MM-dd');
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_usernumber);
 })
 
@@ -596,7 +592,6 @@ function draw_more_top_geo(data){
 
 function draw_more_top_influence(data){
     $('#more_top_influence').empty();
-    console.log(data);
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">影响力</th></tr>';
