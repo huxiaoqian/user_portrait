@@ -82,30 +82,46 @@
      <div>
         <div><h4 class="page-header"style='margin-top:30px'>排名信息</h4></div>	
         
-         <div><span style='font-size:16px;color:#777;'>重要度排名</span><span type="button"data-toggle="modal" data-target="#rank_importance" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;font-size:16px;color:#777;">被评论量排名</span><span type="button"data-toggle="modal" data-target="#rank_comment"  style='font-size:16px;margin-left:160px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;font-size:16px;color:#777">被转发量排名</span><span data-toggle="modal" type="button"data-target="#rank_retweeted"  style='font-size:16px;margin-left:160px;cursor: pointer'><u>查看更多</u></span></div>
-         <div class="table-responsive"id='importance' style='overflow-x:hidden;width:320px;height:250px;float:left'>
-        </div>
-         <div class="table-responsive"id='retweeted_user' style='overflow-x:hidden;width:320px;height:250px;float:right'>             
-        </div>
-         <div class="table-responsive"id='top_comment_user' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>              
-        </div>
-        <div><span style='color:#777;font-size:16px'>活跃地排名</span><span type="button"data-toggle="modal" data-target="#rank_active_geo" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;color:#777;font-size:16px">hashtag排名</span><span type="button"data-toggle="modal" data-target="#rank_hashtag" style='color:#777;font-size:16px;margin-left:162px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;color:#777;font-size:16px">上网方式排名</span><span type="button" data-toggle="modal" data-target="#rank_online_pattern" style='font-size:16px;margin-left:160px;cursor: pointer'><u>查看更多</u></span></div>
-         <div class="table-responsive"id='top_geo' style='overflow-x:hidden;width:320px;height:250px;float:left'>
-        </div>
-         <div class="table-responsive"id='online_pattern' style='overflow-x:hidden;width:320px;height:250px;float:right'>             
-        </div>
-         <div class="table-responsive"id='hashtag' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>              
-        </div>
-        <div><span style='font-size:16px;color:#777'>影响力排名</span><span type="button"data-toggle="modal" data-target="#influence_rank" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span><span style="margin-left:20px;font-size:16px;color:#777">活跃度排名</span><span type="button"data-toggle="modal" data-target="#rank_activeness" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span></div>
-         <div class="table-responsive"id='top_influence' style='overflow-x:hidden;width:320px;height:250px;float:left'>
-        </div>
-         <div class="table-responsive"id='top_activeness' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>
+         <div>
+		      <span style='font-size:16px;color:#777;'>重要度排名</span>
+			  <span type="button"data-toggle="modal" data-target="#rank_importance" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span>
+			  <span style="margin-left:10px;font-size:16px;color:#777">活跃度排名</span>
+			  <span type="button"data-toggle="modal" data-target="#rank_activeness" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span>
+			  <span style='margin-left:10px;font-size:16px;color:#777'>影响力排名</span>
+			  <span type="button"data-toggle="modal" data-target="#influence_rank" style='font-size:16px;margin-left:175px;cursor: pointer'><u>查看更多</u></span>
+		</div>
+         <div class="table-responsive"id='importance' style='overflow-x:hidden;width:320px;height:250px;float:left'></div>
+		 <div class="table-responsive"id='top_activeness' style='overflow-x:hidden;width:320px;height:250px;float:left;margin-left:20px'></div>
+		 <div class="table-responsive"id='top_influence' style='overflow-x:hidden;width:320px;height:250px;float:right'></div>
+         
+         
+        
+		<div>
+		    <span style="margin-left:5px;font-size:16px;color:#777">被转发量排名</span>
+			<span data-toggle="modal" type="button"data-target="#rank_retweeted"  style='font-size:16px;margin-left:150px;cursor: pointer'><u>查看更多</u></span>
+			<span style="margin-left:20px;color:#777;font-size:16px">hashtag排名</span>
+			<span type="button"data-toggle="modal" data-target="#rank_hashtag" style='color:#777;font-size:16px;margin-left:152px;cursor: pointer'><u>查看更多</u></span>
+			<span style="margin-left:20px;color:#777;font-size:16px">上网方式排名</span>
+			<span type="button" data-toggle="modal" data-target="#rank_online_pattern" style='font-size:16px;margin-left:150px;cursor: pointer'><u>查看更多</u></span>
+		</div>
+		 <div class="table-responsive"id='retweeted_user' style='overflow-x:hidden;width:320px;height:250px;float:left'></div>
+		 <div class="table-responsive"id='hashtag' style='overflow-x:hidden;width:320px;height:250px;margin-left:20px;float:left;'></div>
+         <div class="table-responsive"id='online_pattern' style='overflow-x:hidden;width:320px;height:250px;float:right'></div>
+        <div>
+		    <span style="margin-left:5px;font-size:16px;color:#777;">被评论量排名</span>
+			<span type="button"data-toggle="modal" data-target="#rank_comment"  style='font-size:16px;margin-left:150px;cursor: pointer'><u>查看更多</u></span>
+			<span style='margin-left:20px;color:#777;font-size:16px'>活跃地排名</span>
+			<span type="button"data-toggle="modal" data-target="#rank_active_geo" style='font-size:16px;margin-left:165px;cursor: pointer'><u>查看更多</u></span>
+		</div>
+		  <div class="table-responsive"id='top_comment_user' style='overflow-x:hidden;width:320px;height:250px;float:left;'></div>
+          <div class="table-responsive"id='top_geo' style='overflow-x:hidden;width:320px;height:250px;float:left;margin-left:20px;'></div>
+         
         <!--
         </div>
          <div class="table-responsive"id='top_influence_vary' style='overflow-x:hidden;width:320px;height:250px;margin-left:340px'>
         </div>
         -->
-      </div>
+      
 
 <div class="modal fade" id="rank_activeness" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
