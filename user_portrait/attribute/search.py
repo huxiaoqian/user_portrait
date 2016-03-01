@@ -10,17 +10,7 @@ import json
 import math
 import redis
 from description import active_geo_description, active_time_description, hashtag_description
-'''
-reload(sys)
-sys.path.append('../')
-from time_utils import ts2datetime, datetime2ts
-from global_utils import R_CLUSTER_FLOW2 as r_cluster
-from global_utils import R_DICT
-from global_utils import es_user_portrait
-from global_utils import es_user_profile
-from search_user_profile import search_uid2uname
-from filter_uid import all_delete_uid
-'''
+
 from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date, datetimestr2ts
 
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
@@ -1751,9 +1741,6 @@ def get_online_pattern(now_ts, uid):
 #output: keywords, hashtag, domain, topic
 def search_preference_attribute(uid):
     results = {}
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
     try:
         portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -2035,128 +2022,13 @@ def search_tendency_psy(uid):
 #use to search user_portrait to show the attribute saved in es_user_portrait
 def search_attribute_portrait(uid):
     results = dict()
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
     try:
         results = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
         results = None
         return None
     keyword_list = []
-    '''
-    if results['keywords']:
-        keywords_dict = json.loads(results['keywords'])
-        sort_word_list = sorted(keywords_dict.items(), key=lambda x:x[1], reverse=True)
-        #print 'sort_word_list:', sort_word_list
-        results['keywords'] = sort_word_list
-    else:
-        results['keywords'] = []
-    #print 'keywords:', results
-    geo_top = []
-    if results['activity_geo_dict']:
-        geo_dict = json.loads(results['activity_geo_dict'])
-        sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
-        geo_top = sort_geo_dict
-        results['activity_geo'] = geo_top
-    else:
-        results['activity_geo'] = []
-
     
-    #geo ip-timestamp
-    if results['activity_geo_dict']:
-        geo_dict_list = json.loads(results['activity_geo_dict'])[-7:]
-        geo_dict = union_dict(geo_dict_list)
-        sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
-        geo_top = sort_geo_dict
-        results['activity_geo'] = geo_top
-    else:
-        results['activity_geo'] = []
-    
-    if results['hashtag_dict']:
-        hashtag_dict = json.loads(results['hashtag_dict'])
-        sort_hashtag_dict = sorted(hashtag_dict.items(), key=lambda x:x[1], reverse=True)
-        results['hashtag_dict'] = sort_hashtag_dict[:5]
-        descriptions = hashtag_description(hashtag_dict)
-        results['hashtag_description'] = descriptions
-    else:
-        results['hashtag_dict'] = []
-        results['hashtag_description'] = ''
-    emotion_result = {}
-    emotion_conclusion_dict = {}
-    if results['emotion_words']:
-        emotion_words_dict = json.loads(results['emotion_words'])
-        for word_type in emotion_mark_dict:
-            try:
-                word_dict = emotion_words_dict[word_type]
-                if word_type=='126' or word_type=='127':
-                    emotion_conclusion_dict[word_type] = word_dict
-                sort_word_dict = sorted(word_dict.items(), key=lambda x:x[1], reverse=True)
-                #print 'sort_word_dict:', sort_word_dict
-                word_list = sort_word_dict[:5]
-            except:
-                word_list = []
-            emotion_result[emotion_mark_dict[word_type]] = word_list
-    #print 'emotion_words:', type(emotion_result)
-    results['emotion_words'] = emotion_result
-    #emotion_conclusion
-    results['emotion_conclusion'] = get_emotion_conclusion(emotion_conclusion_dict)
-    #topic--old
-    if results['topic']:
-        topic_dict = json.loads(results['topic'])
-        sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
-        results['topic'] = sort_topic_dict[:5]
-    else:
-        results['topic'] = []
-    
-    
-    #topic_label--new
-    if results['topic_string']:
-        results['topic_label'] = results['topic_string'].split('&')
-    else:
-        results['topic_label'] = []
-    #topic_dict--new
-    if results['topic']:
-        results['topic'] = json.loads(results['topic'])
-    else:
-        results['topic'] = {}
-    
-    
-    #domain
-    if results['domain']:
-        domain_string = results['domain']
-        domain_list = domain_string.split('_')
-        results['domain'] = domain_list
-    else:
-        results['domain'] = []
-    #emoticon
-    if results['emoticon']:
-        emoticon_dict = json.loads(results['emoticon'])
-        sort_emoticon_dict = sorted(emoticon_dict.items(), key=lambda x:x[1], reverse=True)
-        results['emoticon'] = sort_emoticon_dict[:5]
-    else:
-        results['emoticon'] = []
-    #online_pattern
-    if results['online_pattern']:
-        online_pattern_dict = json.loads(results['online_pattern'])
-        sort_online_pattern_dict = sorted(online_pattern_dict.items(), key=lambda x:x[1], reverse=True)
-        results['online_pattern'] = sort_online_pattern_dict[:5]
-    else:
-        results['online_pattern'] = []
-    #psycho_status
-    if results['psycho_status']:
-        psycho_status_dict = json.loads(results['psycho_status'])
-        sort_psycho_status_dict = sorted(psycho_status_dict.items(), key=lambda x:x[1], reverse=True)
-        results['psycho_status'] = sort_psycho_status_dict[:5]
-    else:
-        results['psycho_status'] = []
-    #psycho_feature
-    if results['psycho_feature']:
-        psycho_feature_list = results['psycho_feature'].split('_')
-        results['psycho_feature'] = psycho_feature_list
-    else:
-        results['psycho_feature'] = []
-    '''
     #state
     if results['uid']:
         uid = results['uid']
@@ -2175,7 +2047,6 @@ def search_attribute_portrait(uid):
     
     # get importance value
     if results['importance']:
-        #print results['importance']
         query_body = {
                 'query':{
                     "range":{
@@ -2188,7 +2059,6 @@ def search_attribute_portrait(uid):
                 }
         importance_rank = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)
         if importance_rank['_shards']['successful'] != 0:
-            #print 'importance_rank:', importance_rank
             results['importance_rank'] = importance_rank['count']
         else:
             print 'es_importance_rank error'
@@ -2246,18 +2116,9 @@ def search_attribute_portrait(uid):
     normal_activeness = math.log(results['activeness'] / evaluate_max['activeness'] * 9 + 1, 10)
     results['activeness'] = int(normal_activeness * 100)
     normal_importance = math.log(results['importance'] / evaluate_max['importance'] * 9 + 1, 10)
-    #print 'importance:', results['importance']
-    #print 'normal importance:', normal_importance*100
     results['importance'] = int(normal_importance * 100)
-    print 'influence:', results['influence']
-    print 'influence_max:', evaluate_max
     normal_influence = math.log(results['influence'] / evaluate_max['influence'] * 9 + 1, 10)
     results['influence'] = int(normal_influence * 100)
-    '''
-    #link conclusion
-    link_ratio = results['link']
-    results['link_conclusion'] = get_link_conclusion(link_ratio)
-    '''
     return results
 
 #get emotion conclusion
