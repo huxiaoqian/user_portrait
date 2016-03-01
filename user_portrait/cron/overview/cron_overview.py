@@ -661,14 +661,19 @@ def get_activeness_top():
     except Exception, e:
         es_result = None
     if es_result:
+        max_eval = get_evaluate_max()
         for user_dict in es_result:
             item = user_dict['_source']
             activeness = item['activeness']
+            activeness = math.log(activeness/max_eval['activeness'] * 9 + 1 ,10)
+            activeness = activeness * 100
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, activeness])
     else:
         result = None
+    result = sorted(result,key=lambda result:result[2],reverse=True)
+    #print "activeness result",result
     return {'top_activeness': json.dumps(result)}
 
 # get importance top 100
@@ -680,14 +685,18 @@ def get_importance_top():
     except Exception, e:
         es_result = None
     if es_result:
+        max_eval = get_evaluate_max()
         for user_dict in es_result:
             item = user_dict['_source']
             importance = item['importance']
+            importance = math.log(importance/max_eval['importance'] * 9 + 1 ,10)
+            importance = importance * 100
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, importance])
     else:
         result = None
+    result = sorted(result,key=lambda result:result[2],reverse=True)
     return {'top_importance': json.dumps(result)}
 
 
@@ -736,6 +745,7 @@ def get_influence_top():
             result.append([uid, uname, influence])
     else:
         result = None
+    result = sorted(result,key=lambda result:result[2],reverse=True)
     return {'top_influence': json.dumps(result)}
 
 # abandon in version: 16-02-28
@@ -831,7 +841,8 @@ def save_result(results):
 def compute_overview():
     results = {}
     results['user_count'] = get_user_count()
-    scan_result = get_scan_results_v2()
+    #scan_result = get_scan_results_v2()
+    scan_result = get_scan_results()
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
     results = dict(results, **retweeted_top)

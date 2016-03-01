@@ -465,7 +465,8 @@ def detect2analysis(input_data):
     #get task information dict
     task_information_dict = {'task_name':task_name, 'uid_list':uid_list, 'status':0, 'count':len(uid_list),\
             'task_type':'analysis', 'submit_user':task_exist_result['submit_user'], 'submit_date':task_exist_result['submit_date'], \
-            'detect_type':task_exist_result['detect_type'], 'detect_process':task_exist_result['detect_process']}
+            'detect_type':task_exist_result['detect_type'], 'detect_process':task_exist_result['detect_process'], \
+            'state': task_exist_result['state']}
     
     add_es_dict = {'task_information':task_information_dict, 'query_condition':task_exist_result['query_condition']}
     es_status = save_compute2es(add_es_dict)

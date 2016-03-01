@@ -644,9 +644,10 @@ function draw_more_importance(data){
           more_importance = '未知';
        }else{
           more_importance = data['top_importance'][s]['1'];
+       }
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_importance'][s]['0'] + '">' + more_importance + '</a></th><th style="text-align:center">' + data['top_importance'][s]['2'].toFixed(1) +  '</th></tr>';
-    };
-  }
+    }
+  
     html += '</table>'; 
     $('#more_importance').append(html);                  
 }
