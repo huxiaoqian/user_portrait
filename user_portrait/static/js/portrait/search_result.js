@@ -617,7 +617,8 @@ function group_confirm_button(){
   }
   //console.log(group_confirm_uids);/group/submit_task/
   var group_ajax_url = '/group/submit_task/'; ///detect/add_detect2analysis/';
-  var group_url = '/index/group_result/';
+  var group_url = '/index/group/#';
+ // var group_url = '/index/group_result/';
   var group_name = $('input[name="group_name"]').val();
   var remark = $('input[name="remark"]').val();
   //console.log(group_name, remark);
