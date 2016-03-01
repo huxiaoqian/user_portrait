@@ -237,7 +237,7 @@ CURRENT_WARNING_DICT = {
 
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
-                          'activity_geo', 'tendency', 'tag', 'remark']
+                          'activity_geo', 'tag', 'remark']
 DETECT_QUERY_ATTRIBUTE_MULTI = ['topic_string', 'keywords_string', 'hashtag', 'activity_geo']
 DETECT_QUERY_STRUCTURE = ['retweet', 'comment', 'hop']
 DETECT_QUERY_FILTER = ['count', 'influence', 'importance']

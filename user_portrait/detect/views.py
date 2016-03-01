@@ -148,6 +148,7 @@ def ajax_multi_person():
         if len(uid)==10:
             uid_list.append(uid)
     task_information_dict['uid_list'] = uid_list
+    print 'uid_list:', len(uid_list), uid_list, len(uid_list)
     if len(uid_list)==0:
         return 'no seed user'
     #task information
@@ -159,6 +160,7 @@ def ajax_multi_person():
     extend_mark = input_data['extend'] # extend_mark = 0/1
     if extend_mark == '0':
         task_information_dict['task_type'] = 'analysis'
+        task_information_dict['status'] = 0
         input_dict['task_information'] = task_information_dict
         print 'no extend save'
         results = save_detect_multi_task(input_dict, extend_mark)
