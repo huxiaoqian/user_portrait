@@ -12,7 +12,6 @@ import redis
 import math
 from elasticsearch import Elasticsearch
 from update_activeness_record import update_record_index
-#from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
@@ -22,16 +21,7 @@ from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.global_utils import portrait_index_name, portrait_index_type, profile_index_name, profile_index_type
-#test
-'''
-def save_uid2compute(uid_list):
-    test_date = '2013-09-01'
-    hash_name = 'compute'
-    status = 0
-    for uid in uid_list:
-        value_string = [test_date, status]
-        r.hset(hash_name, uid, json.dumps(value_string))
-'''
+from user_portrait.parameter import DAY, WEEK, RUN_TYPE, RUN_TEST_TIME
 
 #get user detail
 #output: uid, uname, location, fansnum, statusnum, influence
@@ -45,20 +35,14 @@ def get_user_detail(date, input_result, status):
         uid_list = input_result.keys()
     if date!='all':
         index_name = 'bci_' + ''.join(date.split('-'))
-        #test
-        #index_name = '20130907'
     else:
         now_ts = time.time()
         now_date = ts2datetime(now_ts)
         index_name = 'bci_' + ''.join(now_date.split('-'))
-    print 'inde_name:', index_name
     index_type = 'bci'
     user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
-    #print 'user_portrait_result:', user_bci_result[0]
     user_profile_result = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
-    #print 'user_profile_result:', user_profile_result
     max_evaluate_influ = get_evaluate_max(index_name)
-    #print "max_evaluate" ,max_evaluate_influ
     for i in range(0, len(uid_list)):
         uid = uid_list[i]
         bci_dict = user_bci_result[i]
@@ -90,7 +74,6 @@ def get_user_detail(date, input_result, status):
         if status == 'show_in':
             results.append([uid, uname, location, fansnum, statusnum, influence])
         if status == 'show_compute':
-            print 'input_result:', json.loads(input_result[uid])
             in_date = json.loads(input_result[uid])[0]
             compute_status = json.loads(input_result[uid])[1]
             if compute_status == '1':
@@ -113,7 +96,7 @@ def recommentation_in(input_ts):
     results = r.hgetall(hash_name)
     if not results:
         return results
-    # search from user_profile to rich th show information
+    # search from user_profile to rich the show information
     for item in results:
         status = results[item]
         if status=='0':
@@ -138,11 +121,9 @@ def identify_in(data):
         value_string = []
         r.hset(in_hash_key, uid, in_status)
         if status == '1':
-            #in_date = ts2datetime(time.time())
             in_date = date
             compute_status = '1'
         elif status == '2':
-            #in_date = ts2datetime(time.time())
             in_date = date
             compute_status = '2'
         r.hset(compute_hash_name, uid, json.dumps([in_date, compute_status]))
@@ -191,7 +172,6 @@ def identify_compute(data):
     for item in data:
         uid = item[1]
         result = r.hget(hash_name, uid)
-        print 'result:', result
         in_date = json.loads(result)[0]
         r.hset(hash_name, uid, json.dumps([in_date, compute_status]))
 
@@ -297,10 +277,12 @@ def show_all_out():
 def get_user_trend(uid):
     activity_result = dict()
     now_ts = time.time()
-    date = ts2datetime(now_ts-24*3600)
-    ts = datetime2ts(date)
-    #test
-    ts = datetime2ts('2013-09-08')
+    date = ts2datetime(now_ts)
+    #run_type
+    if RUN_TYPE == 1:
+        ts = datetime2ts(date)
+    else:
+        ts = datetime2ts(RUN_TEST_TIME)
     timestamp = ts
     results = dict()
     for i in range(1, 8):
@@ -337,9 +319,11 @@ def get_user_hashtag(uid):
     user_hashtag_result = {}
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
-    ts = datetime2ts(now_date)
-    #test
-    ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        ts = datetime2ts(now_date)
+    else:
+        ts = datetime2ts(RUN_TEST_TIME)
     for i in range(1, 8):
         ts = ts - 3600*24
         results = r_cluster.hget('hashtag_'+str(ts), uid)
@@ -362,9 +346,11 @@ def get_user_geo(uid):
     user_ip_result = dict()
     now_ts = time.time()
     now_date = ts2datetime(now_ts)
-    ts = datetime2ts(now_date)
-    #test
-    ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        ts = datetime2ts(now_date)
+    else:
+        ts = datetime2ts(RUN_TEST_TIME)
     for i in range(1, 8):
         ts = ts - 3600*24
         results = r_cluster.hget('ip_'+str(ts), uid)
@@ -375,7 +361,6 @@ def get_user_geo(uid):
                     user_ip_result[ip] += ip_dict[ip]
                 except:
                     user_ip_result[ip] = ip_dict[ip]
-    #print 'user_ip_result:', user_ip_result
     user_geo_dict = ip2geo(user_ip_result)
     user_geo_result = sorted(user_geo_dict.items(), key=lambda x:x[1], reverse=True)
 
@@ -410,7 +395,6 @@ def recommentation_more_information(uid):
     result['time_trend'] = get_user_trend(uid)
     result['hashtag'] = get_user_hashtag(uid)
     result['activity_geo'] = get_user_geo(uid)
-    #print 'result:', result
     return result
 
 
@@ -432,13 +416,10 @@ def get_evaluate_max(index_name):
             raise e
         max_evaluate = result[0]['_source'][evaluate]
         max_result[evaluate] = max_evaluate
-    #print 'result:', max_result
     return max_result
 
 if __name__=='__main__':
     #test
     test_uid_list = ['2101413011','1995786393','2132734472','2776631980','2128524603',\
                      '1792702427','2703153040','2787852095','1599102507','1726544024']
-    #save_uid2compute(test_uid_list)
-    recommentation_more_information('2101413011')
 

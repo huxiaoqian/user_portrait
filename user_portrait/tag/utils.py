@@ -12,16 +12,6 @@ from user_portrait.global_utils import tag_index_type as attribute_index_type
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.parameter import IDENTIFY_ATTRIBUTE_LIST as identify_attribute_list
 
-'''
-attribute_index_name = 'custom_attribute'
-attribute_index_type = 'attribute'
-
-user_index_name = 'test_user_portrait'
-user_index_type = 'user'
-
-group_index_name = 'group_result'
-group_index_type = 'group'
-'''
 
 attribute_dict_key = ['attribute_value', 'attribute_user', 'date', 'user']
 
@@ -68,7 +58,6 @@ def search_attribute(query_body, condition_num):
             raise e
     if result:
         for item in result:
-            print 'item:', item
             source = item['_source']
             item_list.append(source)
     return item_list
@@ -98,12 +87,10 @@ def delete_attribute(attribute_name):
     status = False
     try:
         result = es_tag.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
-        print 'result:', result
     except Exception, e:
         raise e
         return status
     es_tag.delete(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)
-    print 'yes delete attribute'
     # delete attribute in user_portrait
     query = []
     attribute_value = result['attribute_value'].split('&')
@@ -139,7 +126,6 @@ def add_attribute_portrait(uid, attribute_name, attribute_value, submit_user):
     # identify the attribute exist
     # identify the attribute exist in user_portrait
     # add attribute in user_portrait
-    # submit user should has power to change???without
     try:
         user_result = es.get(index=user_index_name, doc_type=user_index_type, id=uid)['_source']
     except:
@@ -217,7 +203,6 @@ identify_attribute_list = ['emoticon','domain', 'psycho_status_string', 'uid', '
 def get_user_tag(uid_list):
     result = {}
     user_result = es.mget(index=user_index_name, doc_type=user_index_type, body={'ids':uid_list})['docs']
-    print 'user_result:', user_result
     for user_item in user_result:
         uid = user_item['_id']
         result[uid] = []
@@ -279,7 +264,6 @@ def get_attribute_value(attribute_name):
         attribute_result = es_tag.get(index=attribute_index_name, doc_type=attribute_index_type, id=attribute_name)['_source']
     except:
         return 'no attribute'
-    print 'attribute_result:', attribute_result
     attribute_value_string = attribute_result['attribute_value']
     attribute_value_list = attribute_value_string.split('&')
     return attribute_value_list
@@ -318,33 +302,7 @@ def get_group_tag(group_name):
                 except:
                     result[tag_string] = 1
     order_result = sorted(result.items(), key=lambda x:x[1], reverse=True)
-    #print 'order_result:', order_result
     return order_result
-
-'''
-def get_group_tag(uid_list):
-    result = {}
-    try:
-        user_result = es.mget(index=user_index_name, doc_type=user_index_type, body={'ids':uid_list})['docs']
-    except Exception, e:
-        raise e
-    for user_item in user_result:
-        uid = user_item['_id']
-        try:
-            source = user_item['_source']
-        except:
-            source = {}
-        for key in source:
-            if key not in identify_attribute_list:
-                value = source[key]
-                tag_string = key + ':' + value
-                try:
-                    result[tag_string] += 1
-                except:
-                    result[tag_string] = 1
-
-    return result
-'''
 
 
 # use to get user attribute name for imagin
@@ -352,8 +310,6 @@ def get_user_attribute_name(uid):
     result = []
     user_result = es.get(index=user_index_name, doc_type=user_index_type, \
                         id=uid)
-    print 'user_result:', user_result
-
     try:
         source = user_result['_source']
     except:
