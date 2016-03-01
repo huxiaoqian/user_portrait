@@ -101,26 +101,14 @@ def ajax_portrait_search():
         query.append({'bool':{'should':query_list}})
     else:
         fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
-        #select_item = ['gender', 'verified', 'psycho_feature', 'psycho_status']
-
-        #range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
-        #multi_item = ['topic_string', 'domain']
         multi_item = ['character_sentiment','character_text','domain','topic_string']
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:
                 if item=='keywords':
                     item = 'keywords_string'
-                #print 'item_data:', item_data, type(item_data)
                 query.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1
-        '''
-        for item in select_item:
-            item_data = request.args.get(item, '')
-            if item_data:
-                query.append({'match':{item: item_data}})
-                condition_num += 1
-        '''
         # custom_attribute
         tag_items = request.args.get('tag', '')
         if tag_items != '':
@@ -145,11 +133,8 @@ def ajax_portrait_search():
                 query.append({'bool':{'should':nest_body_list}})
         
         
-    #size = request.args.get('size', 1000)
     size = 1000
     sort = '_score'
-    #sort = request.args.get('sort', 'influence')
-    #print 'condition_num, query:', condition_num, query
     result = search_portrait(condition_num, query, sort, size)
     return json.dumps(result)
 

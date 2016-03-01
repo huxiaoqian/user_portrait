@@ -18,6 +18,7 @@ from user_portrait.global_utils import R_DICT
 from user_portrait.global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import es_user_profile, profile_index_name, profile_index_type
 from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, flow_text_index_type
+from user_portrait.global_utils import es_retweet, es_comment, es_copy_portrait
 from user_portrait.global_utils import retweet_index_name_pre, retweet_index_type
 from user_portrait.global_utils import be_retweet_index_name_pre, be_retweet_index_type
 from user_portrait.global_utils import comment_index_name_pre, comment_index_type
@@ -36,6 +37,7 @@ from user_portrait.parameter import ACTIVENESS_TREND_SPAN_THRESHOLD, ACTIVENESS_
                                     ACTIVENESS_TREND_AVE_MAX_THRESHOLD, ACTIVENESS_TREND_DESCRIPTION_TEXT
 from user_portrait.parameter import SENTIMENT_DICT,  ACTIVENESS_TREND_TAG_VECTOR
 from user_portrait.parameter import SENTIMENT_SECOND
+from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME
 
 r_beigin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -47,7 +49,7 @@ link_ratio_threshold = [0, 0.5, 1]
 def search_identify_uid(uid):
     result = 0
     try:
-        user_dict = es_user_portrait.get(index='user_portrait', doc_type='user', id=uid)
+        user_dict = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)
         result = 1
     except:
         result = 0
@@ -58,8 +60,9 @@ def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) %2 +1
-    #test
-    db_number = 1
+    #run_type
+    if RUN_TYPE == 0:
+        db_number = 1
     return db_number
 
 
@@ -68,9 +71,6 @@ def get_db_num(timestamp):
 #input: uid
 #output: remark
 def search_remark(uid):
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -89,9 +89,6 @@ def search_remark(uid):
 #output: status
 def edit_remark(uid, remark):
     status = 'yes'
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -112,12 +109,8 @@ def search_attention(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
     center_uid = uid
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
-    #test
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
+        retweet_result = es_retweet.get(index=index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -260,12 +253,8 @@ def search_follower(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
     center_uid = uid
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
-    #end test
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=be_retweet_index_type, id=uid)['_source']
+        retweet_result = es_retweet.get(index=index_name, doc_type=be_retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -361,12 +350,8 @@ def search_comment(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
     center_uid = uid
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
-    #test
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=comment_index_type, id=uid)['_source']
+        retweet_result = es_comment.get(index=index_name, doc_type=comment_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -463,12 +448,8 @@ def search_be_comment(uid, top_count):
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
     center_uid = uid
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
-    #end test
     try:
-        retweet_result = es_user_portrait.get(index=index_name, doc_type=be_comment_index_type, id=uid)['_source']
+        retweet_result = es_comment.get(index=index_name, doc_type=be_comment_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     if retweet_result:
@@ -572,13 +553,13 @@ def search_bidirect_interaction(uid, top_count):
     center_uid = uid
     #bidirect interaction in retweet and be_retweet
     try:
-        retweet_result = es_user_portrait.get(index=retweet_index_name, doc_type=retweet_index_type, id=uid)['_source']
+        retweet_result = es_retweet.get(index=retweet_index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
     retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
     retweet_uid_list = retweet_uid_dict.keys()
     try:
-        be_retweet_result = es_user_portrait.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
+        be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
     except Exception, e:
         raise e
     for be_retweet_item in be_retweet_result:
@@ -589,7 +570,7 @@ def search_bidirect_interaction(uid, top_count):
                 retweet_inter_dict[be_retweet_uid] = be_retweet_dict[uid] + retweet_uid_dict[be_retweet_uid]
     #bidirect interaction in comment and be_comment
     try:
-        comment_result = es_user_portrait.get(index=comment_index_name, doc_type=comment_index_type, id=uid)['_source']
+        comment_result = es_comment.get(index=comment_index_name, doc_type=comment_index_type, id=uid)['_source']
     except:
         comment_result = {}
     if comment_result:
@@ -598,7 +579,7 @@ def search_bidirect_interaction(uid, top_count):
         comment_uid_dict = {}
     comment_uid_list = comment_uid_dict.keys()
     try:
-        be_comment_result = es_user_portrait.mget(index=be_comment_index_name, doc_type=be_comment_index_type, body={'ids':comment_uid_list})['docs']
+        be_comment_result = es_comment.mget(index=be_comment_index_name, doc_type=be_comment_index_type, body={'ids':comment_uid_list})['docs']
     except:
         be_comment_result = []
     for be_comment_item in be_comment_result:
@@ -609,8 +590,6 @@ def search_bidirect_interaction(uid, top_count):
                 comment_inter_dict[be_comment_uid] = be_comment_dict[uid] + comment_uid_dict[be_comment_uid]
     
     #get bidirect_interaction dict
-    #print 'retweet_inter_dict:', retweet_inter_dict
-    #print 'comment_inter_dict:', comment_inter_dict
     all_interaction_dict = union_dict(retweet_inter_dict, comment_inter_dict)
     sort_all_interaction_dict = sorted(all_interaction_dict.items(), key=lambda x:x[1], reverse=True)
     #get in_portrait_list, in_portrait_results and out_portrait_list
@@ -621,7 +600,6 @@ def search_bidirect_interaction(uid, top_count):
     in_portrait_result['domain'] = {}
     out_portrait_list = []
     count = 0
-    #print 'all_interaction_uid_list:', all_interaction_uid_list
     while True:
         uid_list = [item for item in all_interaction_uid_list[count: count+20]]
         try:
@@ -677,7 +655,6 @@ def search_bidirect_interaction(uid, top_count):
     except:
         out_user_result = []
     out_portrait_list = []
-    #print 'out_user_results:', out_user_result
     for out_user_item in out_user_result:
         uid = out_user_item['_id']
         if out_user_item['found'] == True:
@@ -767,7 +744,6 @@ def search_mention(now_ts, uid, top_count):
                 stat_results[at_uname] += result_dict[at_uname]
             except:
                 stat_results[at_uname] = result_dict[at_uname]
-    #print 'stat_result:', stat_results
     sort_stat_results = sorted(stat_results.items(), key=lambda x:x[1], reverse=True)
     all_count = len(sort_stat_results) # all mention count
     #select in_portrait and out_portrait
@@ -806,8 +782,6 @@ def search_mention(now_ts, uid, top_count):
             break
         else:
             count += 20
-    #print 'in_portrait_list:', in_portrait_list
-    #print 'out_portrait_list:', out_list
     out_query_list = [{'match':{'uname':item}} for item in out_list]
     if len(out_query_list) != 0:
         query = [{'bool':{'should': out_query_list}}]
@@ -854,7 +828,6 @@ def search_location(now_ts, uid, time_type):
 def search_location_day(uid, now_date_ts):
     results = {}
     all_results = {}
-    #print 'now_date:', ts2datetime(now_date_ts)
     try:
         day_ip_string = r_cluster.hget('new_ip_'+str(now_date_ts), uid)
     except Exception, e:
@@ -884,11 +857,9 @@ def search_location_day(uid, now_date_ts):
 #output: geo track week
 def search_location_week(uid, now_date_ts):
     results = {}
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
-    now_date_ts += DAY
-    #test end
+    #run_type:
+    if RUN_TYPE == 0:
+        now_date_ts += DAY
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -919,11 +890,10 @@ def search_location_week(uid, now_date_ts):
 def search_location_month(uid, now_date_ts):
     results = {}
     all_results = {}
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
-    now_date_ts += DAY
-    #end test
+    #run_type
+    if RUN_TYPE == 0:
+        now_date_ts += DAY
+    
     try:
         user_portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)['_source']
     except:
@@ -1079,7 +1049,7 @@ def search_ip(now_ts, uid):
         try:
             ip_time_string = r_cluster.hget('new_ip_'+str(timestamp), str(uid))
         except Exception, e:
-            raise e
+            ip_time_string = {}
         if ip_time_string:
             ip_time_dict = json.loads(ip_time_string)
         else:
@@ -1128,7 +1098,6 @@ def search_ip(now_ts, uid):
     results['all_week_top'] = new_sort_all_week_top
 
     #conclusion
-    #print 'all_week_result:', all_week_result
     description, home_ip, job_ip = get_ip_description(week_time_ip_dict, all_week_result, all_day_result)
     results['description'] = description
     #tag vector
@@ -1143,7 +1112,6 @@ def search_ip(now_ts, uid):
         job_ip = ['']
         job_ip_city = ''
     results['tag_vector'] = [[u'家庭IP', home_ip[0], home_ip_city], [u'工作IP', job_ip[0], job_ip_city]]
-    print 'results:', results
     return results
 
 #get ip information conclusion
@@ -1288,9 +1256,10 @@ def search_ip(now_ts, uid):
 #output: {'day_trend':[(time_segment, count), (),...], 'week_trend':[(time_segment,count),(),...], 'description':''}
 def search_activity(now_ts, uid):
     activity_result = {}
-    now_date = ts2datetime(now_ts)
-    #test
-    now_date = '2013-09-07'
+    if RUN_TYPE == 1:
+        now_date = ts2datetime(now_ts)
+    else:
+        now_date = ts2datetime(now_ts - DAY)
     #compute day trend
     day_weibo = dict()
     day_time_count = []
@@ -1299,21 +1268,19 @@ def search_activity(now_ts, uid):
         day_result = r_cluster.hget('activity_'+str(now_day_ts), str(uid))
     except:
         day_result = ''
-    #print 'day_result:', day_result
     if day_result != '':
         day_dict = json.loads(day_result)
         for segment in day_dict:
             time_segment = int(segment)/2 + 1
-            #print 'segment, time_segment:', segment, time_segment
             try:
                 day_weibo[time_segment*HALF_HOUR] += day_dict[segment]
             except:
                 day_weibo[time_segment*HALF_HOUR] = day_dict[segment]
-        #print 'day_weibo:', day_weibo
-        #max_time = max(day_weibo.keys())
-        max_time = int(time.time() - now_day_ts)
-        #test
-        max_time = datetime2ts('2013-09-08') - datetime2ts('2013-09-07')
+        #run_type
+        if RUN_TYPE == 1:
+            max_time = int(time.time() - now_day_ts)
+        else:
+            max_time = DAY
         for time_segment in range(HALF_HOUR, max_time+1, HALF_HOUR):
             if time_segment in day_weibo:
                 day_time_count.append((time_segment, day_weibo[time_segment]))
@@ -1323,6 +1290,9 @@ def search_activity(now_ts, uid):
     week_weibo = dict()
     segment_result = dict()
     week_weibo_count = []
+    #run_type
+    if RUN_TYPE == 1:
+        now_day_ts  = now_day_ts - DAY
     for i in range(0, 7):
         ts = now_day_ts - DAY*i
         try:
@@ -1380,7 +1350,7 @@ def get_activity_weibo(uid, time_type, start_ts):
     flow_text_index_name = flow_text_index_name_pre + time_date # get flow text es index name: flow_text_2013-09-07
     query = []
     query.append({'term': {'uid': uid}})
-    query.append({'range': {'timestamp': {'from': start_ts, 'to': end_ts}}})
+    query.append({'range': {'timestamp': {'gte': start_ts, 'lt': end_ts}}})
     try:
         flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort': 'timestamp', 'size': MAX_VALUE})['hits']['hits']
     except:
@@ -1416,7 +1386,7 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
         query.append({'term': {'sentiment': sentiment}})
     else:
         query.append({'terms':{'sentiment': SENTIMENT_SECOND}})
-    query.append({'range':{'timestamp':{'from':start_ts, 'to':end_ts}}})
+    query.append({'range':{'timestamp':{'gte':start_ts, 'lt':end_ts}}})
     try:
         flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort':'timestamp', 'size':1000000})['hits']['hits']
     except Exception, e:
@@ -1808,7 +1778,6 @@ def search_sentiment_trend(uid, time_type, now_ts):
             source = flow_text_item['_source']
             timestamp = source['timestamp']
             time_segment = int((timestamp - now_date_ts) / HALF_HOUR) * HALF_HOUR + now_date_ts
-            #print 'timestamp, time_segment:', timestamp, ts2date(timestamp), ts2date(time_segment), time_segment
             sentiment = str(source['sentiment'])
             if sentiment != '0' and sentiment != '1':
                 sentiment = '2'
@@ -1829,16 +1798,15 @@ def search_sentiment_trend(uid, time_type, now_ts):
         for sentiment in trend_results:
             description_result[sentiment] = sum(trend_results[sentiment])
         sort_description_result = sorted(description_result.items(), key=lambda x:x[1], reverse=True)
-        #print 'sort_description_result:', sort_description_result
         max_sentiment = SENTIMENT_DICT[sort_description_result[0][0]]
         description_text = u'该用户今日主要情绪为'
         description = [description_text, max_sentiment]
         new_time_list = [ts2date(item) for item in time_list]
         return {'trend_result':trend_results, 'description':description, 'time_list':new_time_list}
     elif time_type=='week':
-        #test
-        now_date_ts += DAY
-        #end_test
+        #run_type
+        if RUN_TYPE == 0:
+            now_date_ts += DAY
         for i in range(7,0,-1):
             iter_date_ts = now_date_ts - i*DAY
             iter_date = ts2datetime(iter_date_ts)
@@ -1849,8 +1817,6 @@ def search_sentiment_trend(uid, time_type, now_ts):
                 flow_text_count = []
             for flow_text_item in flow_text_count:
                 source = flow_text_item['_source']
-                #timestamp = source['timestamp']
-                #time_segment = int((timestamp - iter_date_ts) / HALF_HOUR) * HALF_HOUR + iter_date_ts
                 time_segment = iter_date_ts
                 sentiment = str(source['sentiment'])
                 if sentiment != '0' and sentiment != '1':
@@ -1860,7 +1826,6 @@ def search_sentiment_trend(uid, time_type, now_ts):
                 except:
                     results[sentiment][time_segment] = 1
             
-            #time_list = [item for item in range(iter_date_ts, iter_date_ts+DAY, HALF_HOUR)]
             results['time_list'].append(iter_date_ts)
         for time_segment in results['time_list']:
             for sentiment in sentiment_list:
@@ -1888,9 +1853,6 @@ def search_sentiment_trend(uid, time_type, now_ts):
 #output: character, psycho_status
 def search_character_psy(uid):
     results = {}
-    #test
-    portrait_index_name = 'user_portrait_1222'
-    portrait_index_type = 'user'
     #get user_portrait_result
     try:
         portrait_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, \
@@ -1903,8 +1865,11 @@ def search_character_psy(uid):
     
     #get psycho_status
     uid_sentiment_dict = {}
-    now_ts = time.time()
-    now_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     start_date_ts = now_date_ts - DAY * WEEK
     for i in range(0, WEEK):
@@ -2157,14 +2122,12 @@ def get_link_conclusion(link_ratio):
 #use to search user_portrait by lots of condition 
 def search_portrait(condition_num, query, sort, size):
     user_result = []
-    index_name = 'user_portrait_1222'
-    index_type = 'user'
+    index_name = portrait_index_name
+    index_type = portrait_index_type
     if condition_num > 0:
         try:
-            #print query
             result = es_user_portrait.search(index=index_name, doc_type=index_type, \
                     body={'query':{'bool':{'must':query}}, 'sort':sort, 'size':size})['hits']['hits']
-            #print 'result:', result
         except Exception,e:
             raise e
     else:
@@ -2176,7 +2139,6 @@ def search_portrait(condition_num, query, sort, size):
     if result:
         search_result_max = get_evaluate_max()
         
-        #print 'result:', result
         filter_set = all_delete_uid() # filter_uids_set
         for item in result:
             user_dict = item['_source']
@@ -2195,8 +2157,8 @@ def search_portrait(condition_num, query, sort, size):
 
 
 def delete_action(uid_list):
-    index_name = 'user_portrait'
-    index_type = 'user'
+    index_name = portrait_index_name
+    index_type = portrait_index_type
     bulk_action = []
     for uid in uid_list:
         action = {'delete':{'_id': uid}}
@@ -2212,32 +2174,18 @@ def delete_action(uid_list):
 def get_activeness_trend(uid):
     results = {}
     try:
-        es_result = es_user_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
+        es_result = es_copy_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
     except:
         return None
     value_list = []
-    #print 'es_result:', es_result
     for item in es_result:
         item_list = item.split('_')
         if len(item_list)==2 and '-' in item_list[1]:
             value = es_result[item]
             value_list.append(value)
-            '''
-            query_body = {
-                    'query':{
-                        'range':{
-                            item:{
-                                'from':value,
-                                'to':MAX_VALUE
-                            }
-                        }
-                    }
-                }
-            rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
-            '''
+            
             if '-' in item_list[1]:
                 results[item_list[1]] = value
-    #print 'results:', results
     sort_results = sorted(results.items(), key=lambda x:datetime2ts(x[0]))
     time_list = [item[0] for item in sort_results]
     activeness_list = [item[1] for item in sort_results]
@@ -2281,10 +2229,9 @@ def get_activeness_trend(uid):
 #input: uid, day_count(7/30)
 #output: {'time_line':[], 'influence':[]}
 def get_influence_trend(uid, day_count):
-    print 'uid:', uid
     results = {}
     try:
-        es_result = es_user_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
+        es_result = es_copy_portrait.get(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, id=uid)['_source']
     except:
         return None
     influence_value_list = []
@@ -2293,21 +2240,7 @@ def get_influence_trend(uid, day_count):
         if len(item_list)==1 and item_list[0] != 'uid':
             value = es_result[item]
             influence_value_list.append(value)
-            '''
-            query_body = {
-                    'query':{
-                        'range':{
-                            item:{
-                                'from':value,
-                                'to': MAX_VALUE
-                            }
-                        }
-                    }
-                }
-            rank = es_user_portrait.count(index=copy_portrait_index_name, doc_type=copy_portrait_index_type, body=query_body)
-            if '-' not in item_list[0]:
-                results[item_list[0]] = rank['count']
-            '''
+            
             query_key = item
             query_body = {
                     'query':{
@@ -2321,10 +2254,14 @@ def get_influence_trend(uid, day_count):
             except Exception, e:
                 raise e
             iter_max = iter_max_value[0]['_source'][query_key]
+            
             if '-' not in item_list[0]:
-                normal_value = math.log((value / iter_max) * 9 + 1 , 10) * 100
-                results[item_list[0]] = normal_value
-    #print 'results:', results
+                #run_type
+                if RUN_TYPE == 0:
+                    normal_value = math.log((value / iter_max) * 9 + 1 , 10) * 100
+                    results[item_list[0]] = normal_value
+                else:
+                    results[item_list[0]] = value
     sort_results = sorted(results.items(), key=lambda x:datetimestr2ts(x[0]))[0-day_count:]
     time_list = [ts2datetime(datetimestr2ts(item[0])) for item in sort_results]
     influence_list = [item[1] for item in sort_results]
