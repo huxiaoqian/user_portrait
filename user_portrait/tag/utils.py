@@ -111,7 +111,7 @@ def delete_attribute(attribute_name):
         query.append({'match':{attribute_name: value}})
     try:
         attribute_user_result = es.search(index=user_index_name, doc_type=user_index_type, \
-                                         body={'query':{'bool':{'must':query}}})['hits']['hits']
+                                         body={'query':{'bool':{'should':query}}})['hits']['hits']
     except:
         attribute_user_result = []
     if attribute_user_result==[]:
