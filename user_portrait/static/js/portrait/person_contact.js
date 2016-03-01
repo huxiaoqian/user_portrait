@@ -21,7 +21,7 @@ Search_weibo.prototype = {
     },
 
     Draw_user_tag: function(data){
-      console.log(data);
+      //console.log(data);
       $('#user_lable').empty();
       user_lable_html = '';
       user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
@@ -49,7 +49,7 @@ Search_weibo.prototype = {
     },
 
     Draw_table: function(data){
-        console.log(data);
+        //console.log(data);
         that.data = data;
         if(data=='0'){
             alert("没有相关人物推荐");
@@ -385,7 +385,7 @@ function get_choose_data(uid){
     else{
         url = '';
     }
-    console.log(url);
+    //console.log(url);
     return url;
 }
 
@@ -524,7 +524,7 @@ function draw_table_group_confirm(uids, div){
     for(var i in uids){
       var item = global_data[uids[i]];
       html += '<tr">';
-      html += '<td class="center" name="compare_confirm_uids">'+ item[0] +'</td>';
+      html += '<td class="center" name="group_confirm_uids">'+ item[0] +'</td>';
       html += '<td class="center">'+ item[1] + '</td>';
       html += '<td class="center">'+ item[2].toFixed(2) + '</td>';
       html += '<td class="center" style="width:100px;">'+ item[3].toFixed(2) + '</td>';
@@ -591,7 +591,7 @@ function group_confirm_button(){
   })
   console.log(group_confirm_uids);
   var group_ajax_url = '/group/submit_task/';
-  var group_url = '/index/group_result/';
+  var group_url = '/index/group/';
   var group_name = $('input[name="group_name"]').val();
   var remark = $('input[name="remark"]').val();
   console.log(group_name, remark);
@@ -599,8 +599,7 @@ function group_confirm_button(){
       alert('群体名称不能为空');
       return;
   }
-
-
+  //console.log(group_url);
   var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";
   if (!group_name.match(reg)){
     alert('群体名称只能包含英文、汉字、数字和下划线,请重新输入!');
@@ -624,8 +623,9 @@ function group_confirm_button(){
       success: callback
   });
   function callback(data){
-      console.log(data);
+      //console.log(data);
       if (data == '1'){
+          //console.log('seceed',group_ajax_url)
           window.location.href = group_url;
       }
       else{

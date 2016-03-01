@@ -47,7 +47,12 @@ function attention(data,UserID,UserName,texts){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 2;
-            nod['name'] = out_data[i][0];
+            if(out_data[i][0]=='unknow'){
+              var nod_name_out = '未知';
+            }else{
+              var nod_name_out = out_data[i][0]
+            }
+            nod['name'] = nod_name_out;
             nod['label'] = out_data[i][1];
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
@@ -57,7 +62,12 @@ function attention(data,UserID,UserName,texts){
             nod = {};
             //console.log(data[i][1][2]);
             nod['category'] = 1;
-            nod['name'] = in_data[i][0]
+            if(out_data[i][0]=='unknow'){
+              var nod_name_in = '未知';
+            }else{
+              var nod_name_in = out_data[i][0]
+            }
+            nod['name'] = nod_name_in;
             nod['label'] = in_data[i][1];
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
@@ -292,6 +302,9 @@ function draw_out_list(data){
 
 
 function draw_in_list(data){
+    if(personalData.uname == 'unknown'){
+      var uname = '未知';
+    };
     $('#in_list').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -300,7 +313,7 @@ function draw_in_list(data){
     var user_url = 'http://weibo.com/u/'+ uid;
     html += '<tr id=' + uid +'>';
     html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ uid +'</td>';
-    html += '<td style="text-align:center" style="width:150px;">'+ personalData.uname +'</td>';
+    html += '<td style="text-align:center" style="width:150px;">'+ uname +'</td>';
     html += '<td style="text-align:center" style="width:70px;">'+ personalData.influence.toFixed(2) +'</td>';
     html += '<td style="text-align:center" style="width:70px;">'+ personalData.importance.toFixed(2) +'</td>';
     html += '<td style="text-align:center" style="width:70px;">-</td>';
@@ -313,7 +326,10 @@ function draw_in_list(data){
       var user_url = 'http://weibo.com/u/'+ item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
-      html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
+      if(item[1] == 'unknown'){
+        var user_name = '未知';
+      }
+      html += '<td style="text-align:center" style="width:150px;">'+ user_name +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[2].toFixed(2) +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[3].toFixed(2) +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[4] +'</td>';
@@ -395,7 +411,7 @@ function in_list_button(){
     alert("请选择至少1个用户");
     return ;
   }
-  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};//
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
   $.ajax({
       type:'POST',
       url: group_ajax_url,
