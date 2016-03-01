@@ -636,7 +636,7 @@ function show_conclusion(data){
   var html = '';
   html += '<span class="fleft" style="margin: 10px 5px 5px 15px;/* margin-right:10px; */width:32px;height:32px;background-image:url(/static/img/warning.png);/* margin-top:5px; */display:black;"></span>';
   //html += '<h4>'+data[0]+'<span style="color:red;">'+data[1]+'</span>，'+data[2]+'<span style="color:red;">'+data[3]+'</span>。</h4>';
-  html += '<span  class="fleft" style="    margin-top: 15px;    margin-left: 10px;    font-size: 16px;    font-weight: bold;">'+data['density_description']+'。</span>';
+  html += '<span  class="fleft" style="    margin-top: 15px;    margin-left: 10px;    font-size: 16px;">'+data['density_description']+'。</span>';
   $("#social_conclusion").append(html);
 }
 
