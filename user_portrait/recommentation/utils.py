@@ -9,6 +9,7 @@ import time
 import datetime
 import json
 import redis
+import math
 from elasticsearch import Elasticsearch
 from update_activeness_record import update_record_index
 from user_portrait.global_utils import R_RECOMMENTATION as r
@@ -41,6 +42,7 @@ def get_user_detail(date, input_result, status):
     index_type = 'bci'
     user_bci_result = es_cluster.mget(index=index_name, doc_type=index_type, body={'ids':uid_list}, _source=True)['docs']
     user_profile_result = es_user_profile.mget(index='weibo_user', doc_type='user', body={'ids':uid_list}, _source=True)['docs']
+    max_evaluate_influ = get_evaluate_max(index_name)
     for i in range(0, len(uid_list)):
         uid = uid_list[i]
         bci_dict = user_bci_result[i]
@@ -51,6 +53,8 @@ def get_user_detail(date, input_result, status):
             bci_source = None
         if bci_source:
             influence = bci_source['user_index']
+            influence = math.log(influence/max_evaluate_influ['user_index'] * 9 + 1 ,10)
+            influence = influence * 100
         else:
             influence = ''
         try:
@@ -394,10 +398,28 @@ def recommentation_more_information(uid):
     return result
 
 
+def get_evaluate_max(index_name):
+    max_result = {}
+    index_type = 'bci'
+    evaluate_index = ['user_index']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size':1,
+            'sort':[{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es_cluster.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    return max_result
+
 if __name__=='__main__':
     #test
     test_uid_list = ['2101413011','1995786393','2132734472','2776631980','2128524603',\
                      '1792702427','2703153040','2787852095','1599102507','1726544024']
-    #save_uid2compute(test_uid_list)
-    recommentation_more_information('2101413011')
 

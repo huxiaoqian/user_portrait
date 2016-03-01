@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import sys
 import json
+import math
 import time
 from elasticsearch.helpers import scan
 reload(sys)
@@ -689,6 +690,30 @@ def get_importance_top():
         result = None
     return {'top_importance': json.dumps(result)}
 
+
+def get_evaluate_max():
+    max_result = {}
+    index_name = 'user_portrait_1222'
+    index_type = 'user'
+    evaluate_index = ['activeness', 'importance', 'influence']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size':1,
+            'sort':[{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    #print 'result:', max_result
+    return max_result
+
+
 # get influence top 100
 def get_influence_top():
     result = []
@@ -698,9 +723,14 @@ def get_influence_top():
     except Exception, e:
         es_result = None
     if es_result:
+        max_eval = get_evaluate_max()
+        print "max_eval:",max_eval
         for user_dict in es_result:
             item = user_dict['_source']
             influence = item['influence']
+            influence = math.log(influence/max_eval['influence'] * 9 + 1 ,10)
+            influence = influence * 100
+            print "influence:",influence
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, influence])
