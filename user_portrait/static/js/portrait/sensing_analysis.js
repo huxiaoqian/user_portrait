@@ -31,11 +31,7 @@ Date.prototype.format = function(format) {
 function Draw_sensi_related_event(data){
 	$('#sensi_related_weibo_event').empty();
     $('#sensi_weibo #pageGro').css('display', 'none');
-    /*
-    $('#sensi_weibo #pageGro .pageUp').css('display', 'none');
-    $('#sensi_weibo #pageGro .pageList').css('display', 'none'); 
-    $('#sensi_weibo #pageGro .pageDown').css('display', 'none'); 
-    */
+
 	var html = '';
     //html += '<div></div>';
     html += '<div>';
@@ -43,7 +39,7 @@ function Draw_sensi_related_event(data){
         html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+        html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
@@ -51,6 +47,7 @@ function Draw_sensi_related_event(data){
         for(var j=0;j<x; j++){
             html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
+        html+='</div>';
         }
 
         html+= '</div>';
@@ -73,7 +70,7 @@ function Draw_num_related_event(data){
         html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+        html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
@@ -81,6 +78,7 @@ function Draw_num_related_event(data){
         for(var j=0;j<x; j++){
             html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
+        html+='</div>';
     }
     html+= '</div>';
     
@@ -99,10 +97,10 @@ function Draw_mood_related_event(data){
     //html += '<div></div>';
     html += '<div>';
     if (data.length == 0){
-        html += '<span>暂无感知事件</span>';
+        html += '<div><span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+        html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
@@ -110,6 +108,7 @@ function Draw_mood_related_event(data){
         for(var j=0;j<x; j++){
             html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
+        html+='</div>';
     }
     html+= '</div>';
     $('#mood_related_weibo_event').html(html);
