@@ -15,10 +15,9 @@ from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_config import ZMQ_VENT_PORT_FLOW4, ZMQ_CTRL_VENT_PORT_FLOW4,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 from global_config import SENSITIVE_WORDS_PATH
+from parameter import RUN_TYPE, RUN_TEST_TIME
 
 f = open(SENSITIVE_WORDS_PATH, 'rb')
-# test
-#f = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/flow2/zz.txt', 'rb')
 
 def load_sensitive_words():
     ZZ_WORD = []
@@ -30,14 +29,12 @@ def load_sensitive_words():
     return ZZ_WORD
 
 SENSITIVE_WORD = load_sensitive_words()
-print 'sensitive_word:', SENSITIVE_WORD
 
 def cal_text_work(item):
     uid = item['uid']
     timestamp = item['timestamp']
     date = ts2datetime(timestamp)
     ts = datetime2ts(date)
-    #print 'ts:', date, ts
     text = item['text']
     if isinstance(text, str):
         text = text.decode('utf-8', 'ignore')
@@ -53,8 +50,6 @@ def cal_text_work(item):
                 hashtag_dict[hashtag] = 1
         try:
             hashtag_count_string = r_cluster.hget('hashtag_'+str(ts), str(uid))
-            #print 'key:hashtag_'+ str(ts)
-            #print 'hget hashtag result:', hashtag_count_string
             hashtag_count_dict = json.loads(hashtag_count_string)
             for hashtag in hashtag_dict:
                 count = hashtag_dict[hashtag]
@@ -62,10 +57,8 @@ def cal_text_work(item):
                     hashtag_count_dict[hashtag] += count
                 except:
                     hashtag_count_dict[hashtag] = count
-            #print 'hashtag_count_dict:', hashtag_count_dict
             r_cluster.hset('hashtag_'+str(ts), str(uid), json.dumps(hashtag_count_dict))
         except:
-            #print 'hash_dict:', hashtag_dict
             r_cluster.hset('hashtag_'+str(ts), str(uid), json.dumps(hashtag_dict))
         
 def cal_text_sensitive(item):
@@ -84,11 +77,8 @@ def cal_text_sensitive(item):
                 sensitive_dict[word] += 1
             except:
                 sensitive_dict[word] = 1
-        #print 'sensitive_dict:', sensitive_dict
         try:
             sensitive_count_string = r_cluster.hget('sensitive_'+str(ts), str(uid))
-            #print 'key:sensitive_', str(ts)
-            #print 'hget sensitive result:', sensitive_count_string
             sensitive_count_dict = json.loads(sensitive_count_string)
             for word in sensitive_dict:
                 count = sensitive_dict[word]
@@ -96,10 +86,8 @@ def cal_text_sensitive(item):
                     sensitive_count_dict[word] += count
                 except:
                     sensitive_count_dict[word] = count
-            #print 'sensitive_count_dict:', sensitive_count_dict
             r_cluster.hset('sensitive_'+str(ts), str(uid), json.dumps(sensitive_count_dict))
         except:
-            #print 'sensitive:', sensitive_dict
             r_cluster.hset('sensitive_'+str(ts), str(uid), json.dumps(sensitive_dict))
 
 
@@ -119,10 +107,8 @@ if __name__ == "__main__":
     tb = time.time()
     ts = tb
     while 1:
-        try:
-            item = receiver.recv_json()
-        except Exception, e:
-            print Exception, ":", e 
+        item = receiver.recv_json()
+        
         if not item:
             continue 
         
@@ -135,9 +121,10 @@ if __name__ == "__main__":
                 pass
         
         count += 1
-        if count % 10000 == 0:
+        #run_type
+        if count % 10000 == 0 and RUN_TYPE == 0:
             te = time.time()
             print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
-            #if count % 100000 == 0:
-            #    print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 
+            if count % 100000 == 0:
+                print '[%s] total cal %s, cost %s sec [avg %s per/sec]' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), count, te - tb, count / (te - tb)) 
             ts = te
