@@ -48,6 +48,7 @@ Search_weibo.prototype = {
     draw_more_retweeted_user(data);
     draw_more_importance(data);
     draw_more_top_geo(data);
+    draw_more_top_influence(data);
     draw_top_comment_user(data);
     draw_more_top_comment_user(data);
     draw_top_influence(data);
@@ -592,6 +593,22 @@ function draw_more_top_geo(data){
     html += '</table>'; 
     $('#more_top_geo').append(html);                  
 }
+
+function draw_more_top_influence(data){
+    $('#more_top_influence').empty();
+    console.log(data);
+    html = '';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">影响力</th></tr>';
+    for (var i = 0; i < data['top_influence'].length; i++) {
+       var s = i.toString();
+       var m = i + 1;
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'] +  '</th></tr>';
+    };
+    html += '</table>'; 
+    $('#more_top_influence').append(html);                  
+}
+
 
 function draw_importance(data){
     $('#importance').empty();

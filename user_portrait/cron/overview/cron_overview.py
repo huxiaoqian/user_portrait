@@ -849,7 +849,6 @@ def compute_overview():
     operate_result = get_operate_information()
     results = dict(results, **operate_result)
     save_result(results)
-    print 'results:', results
     
 
 
