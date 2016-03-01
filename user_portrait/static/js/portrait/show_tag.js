@@ -215,7 +215,7 @@ Draw_tag_del:function(data){
 }
 
 function deleteTag(that){
-	$('a[id^=delIcon]').click(function(e){
+	$('a[id^=delIcon]').live('click', function(){
 		var del_url = that.url;
 		var temp = $(this).parent().parent().parent().parent().remove();
 		var delname = $(this).parent().parent().parent().prev().html();

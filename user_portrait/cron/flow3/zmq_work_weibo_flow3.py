@@ -16,7 +16,7 @@ from global_config import ZMQ_VENT_PORT_FLOW3, ZMQ_CTRL_VENT_PORT_FLOW3,\
                           ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1
 from global_config import UNAME2UID_HASH as uname2uid_hash
 from global_utils import uname2uid_redis
-
+from parameter import RUN_TYPE, RUN_TEST_TIME
 
 #uname2uid from redis
 def uname2uid(uname):
@@ -86,27 +86,20 @@ if __name__ == "__main__":
     tb = time.time()
     ts = tb
     while 1:
-        try:
-            item = receiver.recv_json()
-        except Exception, e:
-            print Exception, ":", e 
+        item = receiver.recv_json()
         if not item:
             continue 
         
         if item['sp_type'] == '1':
             message_type = item['message_type']
-            '''
+            
             if message_type==3:
                 retweet_uname2uid(item)
             elif message_type==2:
                 comment_uname2uid(item)
-            '''
-            #test
-            if message_type==2:
-                comment_uname2uid(item)
 
         count += 1
-        if count % 10000 == 0:
+        if count % 10000 == 0 and RUN_TYPE == 0:
             te = time.time()
             print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
             if count % 100000 == 0:

@@ -60,18 +60,14 @@ def be_retweet_es_mappings(db_number):
         }
     index_name = '1225_be_retweet_'+db_number
     exist_indice = es.indices.exists(index=index_name)
-    print 'before exist:', exist_indice
     if exist_indice:
         es.indices.delete(index=index_name)
 
     es.indices.create(index=index_name, body=index_info, ignore=400)
-    exist_indice = es.indices.exists(index=index_name)
-    print 'after exist:', exist_indice
     return True
 
 if __name__=='__main__':
-    print 'test'
+    #test
     db_number = '1'
     retweet_mark = retweet_es_mappings(db_number)
-    #be_retweet_mark = be_retweet_es_mappings(db_number)
-    print 'mark:', retweet_mark
+    be_retweet_mark = be_retweet_es_mappings(db_number)

@@ -36,12 +36,9 @@ from parameter import ACTIVITY_GEO_TOP, MAX_VALUE, DAY, HIS_BINS_COUNT, GROUP_AC
         IDENTIFY_ATTRIBUTE_LIST, GROUP_DENSITY_THRESHOLD, GROUP_DENSITY_DESCRIPTION,\
         GROUP_SENTIMENT_LIST, GROUP_NEGATIVE_SENTIMENT, GROUP_KEYWORD_COUNT,\
         GROUP_HASHTAG_COUNT, GROUP_SENTIMENT_WORD_COUNT
-
+from parameter import RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime, datetime2ts, datetimestr2ts
 
-#test
-portrait_index_name = 'user_portrait_1222'
-portrait_index_type = 'user'
 
 r_begin_ts = datetime2ts(R_BEGIN_TIME)
 
@@ -509,8 +506,9 @@ def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
     db_number = (((date_ts - r_begin_ts) / DAY) / 7) % 2 + 1
-    #test
-    db_number = 1
+    #run_type
+    if RUN_TYPE == 0:
+        db_number = 1
     return db_number
 
 #use to get group social attribute
@@ -784,7 +782,6 @@ def get_influence_user(uid_list):
     #step2:get uid_list in user_portrait by split all_influence_user
     iter_count = 0
     all_influence_user_count = len(all_influence_user_list)
-    print 'all influence user count:', all_influence_user_count
     in_user_dict = {'domain':{}, 'topic':{}, 'influence':[], 'importance':[]}
     out_user_dict = {}
     in_user_list = []
@@ -797,7 +794,6 @@ def get_influence_user(uid_list):
         except:
             in_portrait_result = []
         #step3:get uid_list out user_portrait
-        #print 'len in_portrait_result:', len(in_portrait_result)
         for item in in_portrait_result:
             uid = item['_id']
             if item['found']==True:
@@ -826,8 +822,6 @@ def get_influence_user(uid_list):
                 out_user_list.append(uid)
                 
             iter_count += GROUP_ITER_COUNT
-    print 'in user list:', len(in_user_list)
-    print 'out user list:', len(out_user_list)
     #get influence his and importance his
     p, t = np.histogram(in_user_dict['influence'], bins=HIS_BINS_COUNT, normed=False)
     in_user_dict['influence'] = [p.tolist(), [int(item) for item in t.tolist()]]
@@ -965,9 +959,11 @@ def get_attr_trend(uid_list):
     result = {}
     now_ts = time.time()
     date = ts2datetime(now_ts - DAY)
-    timestamp = datetime2ts(date)
-    #test
-    timestamp = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        timestamp = datetime2ts(date)
+    else:
+        timestamp = datetime2ts(RUN_TEST_TIME)
     time_result = dict()
     segment_result = dict()
     user_segment_result = dict() # user_segment_result = {uid1:{time_segment1:count1, time_segment2:count2}, uid2:...}
@@ -1060,13 +1056,15 @@ def get_attr_evaluate_trend(uid_list):
                 ts = datetime2ts(date)
                 
                 #normal activeness key
-                #testtest
-                evaluate_max = get_evaluate_max_trend(index_key)
-                activeness_index = user_dict[index_key]
-                normal_activeness_index = math.log((activeness_index / evaluate_max) * 9 + 1, 10) * 100
-                
+                #run_type
+                if RUN_TYPE == 0:
+                    evaluate_max = get_evaluate_max_trend(index_key)
+                    activeness_index = user_dict[index_key]
+                    normal_activeness_index = math.log((activeness_index / evaluate_max) * 9 + 1, 10) * 100
+                else:
+                    normal_activeness_index = user_dict[index_key]
+
                 if ts in activeness_dict:
-                    #activeness_dict[ts][uid] = user_dict[index_key]
                     activeness_dict[ts][uid] = normal_activeness_index
                 else:
                     #activeness_dict[ts] = {uid: user_dict[index_key]}
@@ -1078,16 +1076,16 @@ def get_attr_evaluate_trend(uid_list):
                 ts = datetimestr2ts(date)
                 
                 #normal influence key
-                #testtest
-                evaluate_max = get_evaluate_max_trend(index_key)
-                influence_index = user_dict[index_key]
-                normal_influence_index = math.log((influence_index / evaluate_max) * 9 + 1, 10) * 100
-                
+                #run_type
+                if RUN_TYPE == 0:
+                    evaluate_max = get_evaluate_max_trend(index_key)
+                    influence_index = user_dict[index_key]
+                    normal_influence_index = math.log((influence_index / evaluate_max) * 9 + 1, 10) * 100
+                else:
+                    normal_influence_index = user_dict[index_key]
                 if ts in influence_dict:
-                    #influence_dict[ts][uid] = user_dict[index_key]
                     influence_dict[ts][uid] = normal_influence_index
                 else:
-                    #influence_dict[ts] = {uid: user_dict[index_key]}
                     influence_dict[ts] = {uid: normal_influence_index}
 
     #get activeness trend--ave_value/min_value/max_value
@@ -1190,9 +1188,11 @@ def get_attr_sentiment_trend(uid_list):
     week_sentiment_trend = {}
     #step1:get now date ts
     now_ts = int(time.time())
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = datetime2ts(RUN_TEST_TIME)
     #step2:iter to search flow text es
     for i in range(7, 0, -1):
         iter_date_ts = now_date_ts - i * DAY
@@ -1712,8 +1712,7 @@ def ip2geo(ip_dict):
 
 #use to compute group task for multi-process
 #version: 16-02-27
-'''
-def compute_group_task():
+def compute_group_task_v2():
     results = dict()
     while True:
         task = r.rpop(group_analysis_queue_name)
@@ -1740,6 +1739,7 @@ def compute_group_task():
                     uname = item['fields']['uname'][0]
                 uid2uname[uid] = uname
             #step1: get attr from es_user_portrait--basic/activity_geo/online_pattern/evaluate_index_his/preference/psycho_ratio
+            uid_list = uid2uname.keys() #identify the uid is in user_portrait
             attr_in_portrait, tag_vector_result = get_attr_portrait(uid_list)
             results['task_name'] = task_name
             results['uid_list'] = uid_list
@@ -1771,9 +1771,9 @@ def compute_group_task():
             results['status'] = 1
             #step9: save results
             save_group_results(results)
+        break
 
-    return results
-'''
+
 
 #test compute group task
 #input: NULL
@@ -1799,6 +1799,7 @@ def compute_group_task():
             uname = item['fields']['uname'][0]
             uid2uname[uid] = uname
     #step1: get attr from es_user_portrait--basic/activity_geo/online_pattern/evaluate_index_his/preference/psycho_ratio
+    uid_list = uid2uname.keys()
     attr_in_portrait, tag_vector_result = get_attr_portrait(uid_list)
     results['task_name'] = task_name
     results['uid_list'] = uid_list
@@ -1829,41 +1830,35 @@ def compute_group_task():
     #step8: update compute status to completed
     results['status'] = 1
     #step9: save results
-    save_group_results(results)
-
+    #save_group_results(results)
+    print 'results:', results
     return results
 
 
 if __name__=='__main__':
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/group/cron_group.py&start&' + log_time_date
+
+    compute_group_task_v2()
+
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/group/cron_group.py&end&' + log_time_date
+    
+    
     #test
+    '''
     input_data = {}
     input_data['task_name'] = u'媒体'
     
     input_data['uid_list'] = ['2803301701', '1292808363', '2656274875', '2062994093', '1663937380', \
                               '2651176564', '1999472465', '1855514017', '2127460165', '1887790981', '1639498782', \
                               '1402977920', '1414148492', '3114175427', '2105426467']
-    '''
-    input_data['uid_list'] = ['1182391231', '1759168351', '1670071920', '1689618340', '1494850741', \
-                              '1582488432', '1708942053', '1647678107']
-    input_data['task_name'] = u'商业人士'
-    '''
     input_data['submit_date'] = datetime2ts('2013-09-08')
     input_data['state'] = u'关注的媒体'
     input_data['submit_user'] = 'admin'
     input_data['task_type'] = 'analysis'
-    #input_data['state'] = u'关注的媒体'
     TASK = json.dumps(input_data)
     result = compute_group_task()
-    #result = get_attr_sentiment_trend(input_data['uid_list'])
-    #result = get_influence_user(input_data['uid_list'])
-    print 'result:', result
-    #result = get_attr_portrait(input_data['uid_list'])
-    #print 'character result:', result
-    #get_attr_trend(input_data['uid_list'])
-    #get_attr_bci(input_data['uid_list'])
-    #test retweet and beretweeted
-    uid_list = ['1514608170', '2729648295', '3288875501', '1660612723', '1785934112',\
-                '2397686502', '1748065927', '2699434042', '1886419032', '1830325932']
-    #get_attr_social(uid_list)
-    #get_attr_geo_track(uid_list)
-
+    '''
