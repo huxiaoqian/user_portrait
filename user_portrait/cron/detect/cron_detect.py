@@ -18,19 +18,17 @@ from global_utils import es_group_result, group_index_name, group_index_type
 from global_config import R_BEGIN_TIME
 from parameter import DETECT_QUERY_ATTRIBUTE_MULTI, MAX_DETECT_COUNT, DAY,\
                       DETECT_COUNT_EXPAND, IDENTIFY_ATTRIBUTE_LIST, DETECT_ITER_COUNT, MAX_VALUE
+from parameter import RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime, datetime2ts, ts2date
 
 
 r_beigin_ts = datetime2ts(R_BEGIN_TIME)
-#test
-portrait_index_name = 'user_portrait_1222'
-portrait_index_type = 'user'
 
 #use to identify the task is exist
 #input: task_name
 #output: status True/False
 def identify_task_exist(task_name):
-    status = False
+    status = True
     try:
         task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
     except:
@@ -68,8 +66,9 @@ def get_db_num(timestamp):
     date = ts2datetime(timestamp)
     date_ts = datetime2ts(date)
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) % 2 + 1
-    #test
-    db_number = 1
+    #run_type
+    if RUN_TYPE == 0:
+        db_number = 1
     return db_number
 
 
@@ -120,14 +119,12 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
                                                      body={'ids':iter_search_user_list}, _source=True)['docs']
                 except:
                     retweet_result = []
-                print 'test retweet_result:', len(retweet_result)
                 #mget be_retweet
                 try:
                     be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_type, \
                                                         body={'ids':iter_search_user_list} ,_source=True)['docs']
                 except:
                     be_retweet_result = []
-                print 'test be_retweet_result:', len(be_retweet_result)
             #step2: mget comment and be_comment
             if comment_mark == 1:
                 comment_index_name = comment_index_name_pre + str(db_number)
@@ -138,14 +135,12 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
                                                      body={'ids':iter_search_user_list}, _source=True)['docs']
                 except:
                     comment_result = []
-                print 'test comment_result:', len(comment_result)
                 #mget be_comment
                 try:
                     be_comment_result = es_comment.mget(index=be_comment_index_name, doc_type=be_comment_index_type, \
                                                     body={'ids':iter_search_user_list}, _source=True)['docs']
                 except:
                     be_comment_result = []
-                print 'test be_comment_result:', len(be_comment_result)
             #step3: union retweet/be_retweet/comment/be_comment result
             union_count = 0
             
@@ -182,7 +177,6 @@ def get_structure_user(seed_uid_list, structure_dict, filter_dict):
         iter_hop_user_list = hop_union_result.keys()
         #get all union result
         all_union_result = union_dict(all_union_result, hop_union_result)
-    print 'all_union_result:', len(all_union_result)
     #step5: identify the who is in user_portrait
     sort_all_union_result = sorted(all_union_result.items(), key=lambda x:x[1], reverse=True)
     iter_count = 0
@@ -301,23 +295,17 @@ def filter_event(all_union_user, event_condition_list):
         iter_user_event_condition_list = [{'terms':{'uid': iter_user_list}}]
         iter_user_event_condition_list.extend(new_event_condition_list)
         #iter date to search different flow_text es
-        print 'iter user event condition list:', iter_user_event_condition_list
         for range_item in new_range_dict_list:
-            print 'before append before iter_user_event_condition_list:', len(iter_user_event_condition_list)
             iter_date_event_condition_list = [item for item in iter_user_event_condition_list]
-            print 'append before iter_date_condition_list:', len(iter_date_event_condition_list)
             iter_date_event_condition_list.append(range_item)
             range_from_ts = range_item['range']['timestamp']['gte']
             range_from_date = ts2datetime(range_from_ts)
             flow_index_name = flow_text_index_name_pre + range_from_date
-            print 'flow_index_name:', flow_index_name
-            print 'iter_date_event_condition_list:', iter_date_event_condition_list
-            #try:
-            flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
+            try:
+                flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
                     body={'query':{'bool':{'must':iter_date_event_condition_list}}, 'size':100}, _source=False, fields=['uid'])['hits']['hits']
-            #except:
-            #    flow_text_exist = []
-            print 'flow_text_exist:', len(flow_text_exist)
+            except:
+                flow_text_exist = []
             #get hit user set
             for flow_text_item in flow_text_exist:
                 uid = flow_text_item['fields']['uid'][0]
@@ -371,7 +359,6 @@ def single_detect(input_dict):
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
     if task_exist_mark == False:
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
 
     
@@ -381,6 +368,10 @@ def single_detect(input_dict):
     structure_dict = query_condition_dict['structure']
     #step1: get seed user portrait result
     user_portrait = get_single_user_portrait(seed_user_dict)
+    #step1.1: deal condition---seed user is not in user_portrait
+    if user_portrait == {}:
+        return []
+
     seed_uid = user_portrait['uid']
     #step2: search attribute user set
     #step2.1: get attribute query dict
@@ -418,8 +409,6 @@ def single_detect(input_dict):
         else:
             filter_value_from = filter_dict[filter_item]['gte']
             filter_value_to = filter_dict[filter_item]['lt']
-            #get new filter
-            #new_filter_value_from, new_filter_value_to = modify_evaluate_index(filter_value_from, filter_value_to, filter_item)
             attribute_query_list.append({'range':{filter_item: {'gte':filter_value_from, 'lt':filter_value_to}}})
 
     attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
@@ -428,7 +417,6 @@ def single_detect(input_dict):
     #step2.3: change process proportion
     process_mark = change_process_proportion(task_name, 25)
     if process_mark == 'task is not exist':
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     elif process_mark == False:
         return process_mark
@@ -439,7 +427,6 @@ def single_detect(input_dict):
     #step3.2: change process proportion
     process_mark = change_process_proportion(task_name, 50)
     if process_mark == 'task is not exist':
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     elif process_mark == False:
         return process_mark
@@ -458,7 +445,6 @@ def single_detect(input_dict):
     #step5.2: change process proportion
     process_mark = change_process_proportion(task_name, 75)
     if process_mark == 'task is not exist':
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     elif process_mark == False:
         return process_mark
@@ -567,12 +553,10 @@ def multi_detect(input_dict):
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
     if task_exist_mark == False:
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     query_condition_dict = input_dict['query_condition']
     filter_dict = query_condition_dict['filter']
     structure_dict = query_condition_dict['structure']
-    print 'multi structure_dict:', structure_dict
     #step1.1: get seed users attribute
     attribute_list = query_condition_dict['attribute']
     seed_user_list = task_information_dict['uid_list']
@@ -580,7 +564,6 @@ def multi_detect(input_dict):
     #step1.2: change process proportion
     process_mark = change_process_proportion(task_name, 20)
     if process_mark == 'task is not exist':
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     elif process_mark == False:
         return process_mark
@@ -598,23 +581,19 @@ def multi_detect(input_dict):
     #step2.2: search user_portriait condition
     attribute_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type ,\
             body={'query':{'bool':{'should':attribute_query_condition}}, 'size':count})['hits']['hits']
-    print 'test attribute_user_result:', len(attribute_user_result)
     #step2.3: change process proportion
     process_mark = change_process_proportion(task_name, 40)
     if process_mark == 'task is not exist':
-        print 'task %s have been delete' % task_name
-        return 'task id not exist'
+        return 'task is not exist'
     elif process_mark == False:
         return process_mark
 
     #step3: search structure user set
     #step 3.1: structure user
     structure_user_result = get_structure_user(seed_user_list, structure_dict, filter_dict)
-    print 'structure_user_result:', len(structure_user_result)
     #step3.2: change process proportion
     process_mark = change_process_proportion(task_name, 60)
     if process_mark == 'task is not exist':
-        print 'task %s have been exist' % task_name
         return 'task is not exist'
     elif process_mark == False:
         return process_mark
@@ -623,7 +602,6 @@ def multi_detect(input_dict):
     attribute_weight = query_condition_dict['attribute_weight']
     structure_weight = query_condition_dict['structure_weight']
     all_union_user = union_attribute_structure(attribute_user_result, structure_user_result, attribute_weight, structure_weight)
-    print 'multi all_union_user:', len(all_union_user)
     #step5: filter user by event
     event_condition_list = query_condition_dict['text']
     #test
@@ -633,18 +611,15 @@ def multi_detect(input_dict):
         filter_user_list = filter_event(all_union_user, event_condition_list)
     else:
         filter_user_list = [item[0] for item in all_union_user]
-    print 'multi filter user list:', len(filter_user_list)
     #step5.2: change process proportion
     process_mark = change_process_proportion(task_name, 80)
     if process_mark == 'task is not exist':
-        print 'task  %s have been delete' % task_name
         return 'task is not exist'
     elif process_mark == False:
         return process_mark
     #step6: filter by count
     count = filter_dict['count']
     result = filter_user_list[:count]
-    print 'multi result:', len(result)
     results = seed_user_list
     results.extend(result)
 
@@ -822,7 +797,6 @@ def attribute_pattern_detect(input_dict):
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
     if task_exist_mark == False:
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     query_condition_dict = input_dict['query_condition']
     filter_dict = query_condition_dict['filter']
@@ -844,27 +818,21 @@ def attribute_pattern_detect(input_dict):
                     body={'query':{'bool':{'should': attribute_list}}, 'size':count}, _source=False)['hits']['hits']
         except:
             user_portrait_result = []
-        print 'pattern user_portrait_result:', len(user_portrait_result)
         #step1.2:change process proportion
         process_mark = change_process_proportion(task_name, 30)
         if process_mark == 'task is not exist':
-            print 'task %s have been delete' % task_name
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
-        #test
-        pattern_list = []
         if len(pattern_list) != 0:
             #step2: filter user by pattern condition
             filter_user_result = attribute_filter_pattern(user_portrait_result, pattern_list)
-            #step2.2:change process proportion
         else:
             #step2: get user_list from user_portrait_result
             filter_user_result = [item['_id'] for item in user_portrait_result]
         #change process mrak
         process_mark = change_process_proportion(task_name, 60)
         if process_mark == 'task is not exist':
-            print 'task %s have been delete' % task_name
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
@@ -875,7 +843,6 @@ def attribute_pattern_detect(input_dict):
         #step2.2: change process proportion
         process_mark = change_process_proportion(task_name, 60)
         if process_mark == 'task is not exist':
-            print 'task %s have been delete' % task_name
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
@@ -898,7 +865,6 @@ def event_detect(input_dict):
     task_name = task_information_dict['task_name']
     task_exist_mark = identify_task_exist(task_name)
     if task_exist_mark == False:
-        print 'task %s have been delete' % task_name
         return 'task is not exist'
     query_condition_dict = input_dict['query_condition']
     filter_dict = query_condition_dict['filter']
@@ -919,11 +885,9 @@ def event_detect(input_dict):
                     body={'query':{'bool': {'should':attribute_list}}, 'sort':[{'influence': {'order': 'desc'}}],'size':count})['hits']['hits']
         except:
             user_portrait_result = []
-        print 'event user_portrait_result:', len(user_portrait_result)
         #change process proportion
         process_mark = change_process_proportion(task_name, 30)
         if process_mark == 'task is not exist':
-            print 'task %s have been delete' % task_name
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
@@ -931,7 +895,6 @@ def event_detect(input_dict):
         if len(event_list) != 0:
             #type1: have attribute condition and filter by flow_text
             #step2.1: filter by event--text
-            print 'before filter event'
             filter_user_list = attribute_filter_pattern(user_portrait_result, event_list)
         else:
             #step2.2: get uid list from user_portrait_result
@@ -939,7 +902,6 @@ def event_detect(input_dict):
         #change process proportion
         process_mark = change_process_proportion(task_name, 60)
         if process_mark == 'task is not exist':
-            print 'task %s have been delete' % task_name
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
@@ -949,7 +911,6 @@ def event_detect(input_dict):
         #change process proportion
         process_mark = change_process_proportion(task_name, 60)
         if process_mark == 'task is not exist':
-            print 'task %s have been delete' % task_name
             return 'task is not exist'
         elif process_mark == False:
             return process_mark
@@ -957,7 +918,6 @@ def event_detect(input_dict):
     #step3: filter user list by filter count
     count = filter_dict['count']
     results = filter_user_list[:count]
-    print 'result:', results
     return results
 
 #use to save detect results to es
@@ -986,7 +946,6 @@ def change_process_proportion(task_name, proportion):
         task_exist_result = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
     except:
         task_exist_result = {}
-        print 'task is not exist'
         return 'task is not exist'
     if task_exist_result != {}:
         task_exist_result['detect_process'] = proportion
@@ -1055,37 +1014,45 @@ def compute_group_detect():
                 detect_results =  attribute_pattern_detect(detect_task_information)
             elif detect_task_type == 'event':
                 detect_results = event_detect(detect_task_information)
-            #step3:save detect results to es (status=1 and process=100 and add uid_list)
-            mark = save_detect_results(detect_results, task_name)
-            #step4:add task_information_dict to redis queue when detect process fail
-            if mark == False:
-                status = add_task2queue(detect_task_information)
-            else:
-                end_ts = time.time()
-                print 'success detect task:' + task_name
-                print 'time cost %s sec' % (end_ts - start_ts)
+            #step3:identify the return---'task is not exist'/'false'/normal_results
+            if detect_results != 'task is not exist':
+                #step4:save detect results to es (status=1 and process=100 and add uid_list)
+                mark = save_detect_results(detect_results, task_name)
+                #step5:add task_information_dict to redis queue when detect process fail
+                if mark == False:
+                    status = add_task2queue(detect_task_information)
 
 
 if __name__=='__main__':
-    #compute_group_detect()
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/detect/cron_detect.py&start&' + log_time_date
+
+    compute_group_detect()
+    
+    log_time_ts = time.time()
+    log_time_date = ts2datetime(log_time_ts)
+    print 'cron/detect/cron_detect.py&end&' + log_time_date
+
     #test
+    '''
     importance_from = 0
     importance_to = 100
     new_importance_from, new_importance_to = modify_evaluate_index(importance_from, importance_to, 'importance')
     influence_from = 0
     influence_to = 100
     new_influence_from, new_influence_to = modify_evaluate_index(influence_from, influence_to, 'influence')
-    single_input_dict = {'task_information':{'task_name': 'test', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
+    single_input_dict = {'task_information':{'task_name': 'single', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'0', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5, \
             'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to}, 'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
-    #results = single_detect(single_input_dict)
+    results = single_detect(single_input_dict)
     multi_input_dict = {'task_information':{'task_name': 'test2', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'multi', \
             'uid_list':['2172653252','2698626560','1981307823','1268043470']},\
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'1', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5 ,\
             'text':[{'wildcard':{'text':'*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}], \
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
-    results = multi_detect(multi_input_dict)
+    #results = multi_detect(multi_input_dict)
     attribute_pattern_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'attribute'},\
             'query_condition':{'attribute':[{'wildcard':{'domain':'*'+'媒体'+'*'}}, {'wildcard':{'topic': '*'+'民生类_社会保障'+'*'}}],\
             'pattern':[{'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}, {'terms':{'message_type':1}}], \
@@ -1103,5 +1070,6 @@ if __name__=='__main__':
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
     #results = event_detect(event_dict)
-    #print 'results:', results
-    save_mark = save_detect_results(results, 'test2')
+    print 'results:', results
+    save_mark = save_detect_results(results, 'single')
+    '''

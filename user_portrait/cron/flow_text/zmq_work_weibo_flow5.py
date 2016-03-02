@@ -16,7 +16,6 @@ import redis
 from elasticsearch import Elasticsearch
 from datetime import datetime
 from triple_sentiment_classifier import triple_classifier
-from flow_psy import flow_psychology_classfiy
 
 reload(sys)
 sys.path.append('../../')
@@ -29,10 +28,10 @@ from global_utils import profile_index_name, profile_index_type,\
                          flow_text_index_name_pre, flow_text_index_type
 from global_utils import black_words, uname2uid_redis
 from global_config import UNAME2UID_HASH as uname2uid_hash
+from parameter import RUN_TYPE, RUN_TEST_TIME
 from flow_text_mappings import get_mappings
 
 
-#weibo_user = redis.StrictRedis(host="219.224.135.91", port="7381")
 
 #ip to city 
 #input: ip
@@ -59,34 +58,22 @@ def uname2uid(uname):
         uid = uname2uid_redis.hget(uname2uid_hash, uname)
     except:
         uid = None
-    '''
-    try:
-        search_result = es_profile.search(index=profile_index_name, doc_type=profile_index_type, body={'query':{'match':{'nick_name':uname}}})['hits']['hits']
-        #print 'search_result:', search_result
-        search_result = search_result[0]
-        nick_name = search_result['_source']['nick_name']
-        if str(nick_name) == str(uname):
-            uid = search_result['_source']['uid']
-        else:
-            uid = ''
-    except:
-        uid = ''
-    '''
     return uid
 
+#abandon
 #get uname from uid by es_user_profile
 #input: uid
 #output：uname
+'''
 def uid2uname(uid):
     try:
         search_result = es_profile.search(index=profile_index_name, doc_type=profile_index_type, body={'query':{'match':{'uid': uid}}})['hits']['hits']
-        #print 'search_result:', search_result
         search_result = search_result[0]
         uname = search_result['_source']['nick_name']
     except:
         uname = ''
     return uname
-
+'''
 #for retweet message: get directed retweet uname and uid
 #input: text, root_uid
 #output: directed retweet uid and uname
@@ -103,7 +90,6 @@ def get_directed_retweet(text, root_uid):
             directed_uname = ''
     else:
         directed_uid = root_uid
-        #directed_uname = uid2uname(directed_uid)
         directed_uname = ''
 
     return directed_uid, directed_uname
@@ -125,7 +111,6 @@ def get_directed_comment(text, root_uid):
             directed_uname = ''
     else:
         directed_uid = root_uid
-        #directed_uname = uid2uname(directed_uid)
         directed_uname = ''
 
     return directed_uid, directed_uname
@@ -140,7 +125,7 @@ def get_weibo_keywords(keywords_list):
     keywords_string = ''
     filter_keywords_set = set()
     for word in keywords_list:
-        if word not in black_words:
+        if set(word) & black_words:
             try:
                 keywords_dict[word] += 1
             except:
@@ -159,7 +144,7 @@ def expand_index_action(item):
     index_body['uid'] = str(item['uid'])
     index_body['text'] = item['text']
     index_body['mid'] = str(item['mid'])
-    index_body['sentiment'] = item['sentiment']
+    index_body['sentiment'] = str(item['sentiment'])
     index_body['timestamp'] = int(item['timestamp'])
     index_body['message_type'] = item['message_type']
     index_body['keywords_dict'] = item['keywords_dict']
@@ -216,7 +201,6 @@ if __name__ == "__main__":
     while 1:
 
         item = receiver.recv_json()
-        #test
         if not item:
             continue 
         
@@ -225,11 +209,9 @@ if __name__ == "__main__":
             text = item['text']
             
             #add sentiment field to weibo
-            #sentiment, keywords_list = triple_classifier(item)
-            #item['sentiment'] = str(sentiment) # happy=1 angry=2 sad=3
-            keywords_list  = triple_classifier(item)
-            sentiment = flow_psychology_classfiy(item['text'])
-            item['sentiment'] = sentiment
+            sentiment, keywords_list = triple_classifier(item)
+            sentiment, keywords_list  = triple_classifier(item)
+            item['sentiment'] = str(sentiment)
             #add key words to weibo
             keywords_dict, keywords_string = get_weibo_keywords(keywords_list)
             item['keywords_dict'] = json.dumps(keywords_dict) # use to compute
@@ -254,17 +236,15 @@ if __name__ == "__main__":
             count += 1
         
         if count % 1000 == 0 and count != 0:
-            print 'start bulk_action %s' % count
             index_name = index_name_pre + now_index_name_date
             es.bulk(bulk_action, index=index_name, doc_type=index_type, timeout=60)
             bulk_action = []
             count = 0
             class_te = time.time()
-            print 'classifier speed: %s sec/per 1000' % (class_te - class_ts)
             class_ts = class_te
 
-        
-        if read_count % 10000 == 0:
+        #run_type
+        if read_count % 10000 == 0 and RUN_TYPE == 0:
             te = time.time()
             print '[%s] cal speed: %s sec/per %s' % (datetime.now().strftime('%Y-%m-%d %H:%M:%S'), te - ts, 10000) 
             if read_count % 100000 == 0:

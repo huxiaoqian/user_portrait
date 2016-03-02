@@ -152,7 +152,7 @@ var global_pre_page = 1;
 var global_choose_uids = new Array();
 var global_data = new Array();
 
-console.log(url_search_result);
+//console.log(url_search_result);
 var draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
 draw_conditions(draw_table_search_result);
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
@@ -164,13 +164,13 @@ function deleteurl(that, parameter){
         if ((prefix != 'psycho') && (prefix != 'activity')){
             var pindex = pname.charAt(pname.length-1);
             pname = pname.substring(0, pname.length-2);
-            console.log(pname);
-            console.log(pindex);
+            //console.log(pname);
+            //console.log(pindex);
             for (var i = 0;i < pars.length;i++){
                 if (pname == pars[i]){
                     var term_list = values[i].split(',');
                     term_list.splice(pindex, 1);
-                    console.log(term_list);
+                    //console.log(term_list);
                     values[i] = term_list.join(',');
                 }
             }
@@ -181,20 +181,24 @@ function deleteurl(that, parameter){
             var pindex = pname.charAt(pname.length-1);//返回最后一个字符
             if (!isNaN(pindex)){
                 pname = pname.substring(0, pname.length-2);
+                //console.log(pname);
+                //console.log(pindex);
+                for (var i = 0;i < pars.length;i++){
+                    if (pname == pars[i]){
+                        var term_list = values[i].split(',');
+                        term_list.splice(pindex, 1);
+                        //console.log(term_list);
+                        values[i] = term_list.join(',');
+                    }
+                }
             }else{
-                pname = pname.substring(0, pname.length);//提取字符串中介于两个指定下标之间的字符
-            }
-            
-            console.log(pname);
-            console.log(pindex);
-            for (var i = 0;i < pars.length;i++){
-                if (pname == pars[i]){
-                    var term_list = values[i].split(',');
-                    term_list.splice(pindex, 1);
-                    console.log(term_list);
-                    values[i] = term_list.join(',');
+                for (var i = 0;i < pars.length;i++){
+                    if (pname == pars[i]){
+                        values[i] = '';
+                    }
                 }
             }
+            
         }
         else if(prefix == 'activity'){
             for (var i = 0;i < pars.length;i++){
@@ -262,21 +266,11 @@ function process_par(name, value){
     }
     else if(name=='domain'){
         result[0] = '领域';
-        result[1] = '';
-        var term_list = value.split(',');
-        for (var i = 0;i < term_list.length;i++){
-            result[1] += (term_list[i] + ',');
-        }
-        result[1] = result[1].substring(0, result[1].length-1);
+        result[1] = value;
     }
     else if(name=='topic'){
         result[0] = '话题';
-        result[1] = '';
-        var term_list = value.split(',');
-        for (var i = 0;i < term_list.length;i++){
-            result[1] += (term_list[i] + ',');
-        }
-        result[1] = result[1].substring(0, result[1].length-1);
+        result[1] = value;
     }
     else if(name=='tag'){
         result[0] = '标签';
@@ -295,11 +289,11 @@ function process_par(name, value){
 }
 function draw_conditions(that){
     if (stype == 1){
-        console.log('=1');
+        //console.log('=1');
         return;
     }
     else{
-        console.log('=2');
+        //console.log('=2');
         $("#search_result").css("margin-top", "40px");
         $('#conditions').empty();
         var html = '';
@@ -329,7 +323,7 @@ function draw_conditions(that){
         }
         $('#conditions').html(html);
         $('.mouse>a').click(function(){
-            console.log($(this).parent().attr("id"))
+            //console.log($(this).parent().attr("id"))
             deleteurl(that, $(this).parent().attr("id"));
         });
         return;
@@ -337,7 +331,7 @@ function draw_conditions(that){
 }
 
 function get_custom_value(data){
-    console.log(data);
+    //console.log(data);
     if (data == 'no attribute'){
         data = [];
     }
@@ -389,7 +383,7 @@ function custom_button(){
         custom_uids.push(temp_list[i]);
       }
   }
-  console.log(custom_uids);
+  //console.log(custom_uids);
   var len = custom_uids.length;
   if(len<1){
     alert("请至少选择1个用户！");
@@ -413,7 +407,7 @@ function compare_button(){
         compare_uids.push(temp_list[i]);
       }
   }
-  console.log(compare_uids);
+  //console.log(compare_uids);
   var len = compare_uids.length;
   if(len>3 || len<2){
     alert("请选择2至3个用户！");
@@ -437,7 +431,7 @@ function group_button(){
         group_uids.push(temp_list[i]);
       }
   }
-  console.log(group_uids);
+  //console.log(group_uids);
   var len = group_uids.length;
   if (len < 1){
       alert("请选择至少1个用户!");
@@ -461,7 +455,7 @@ function delete_button(){
         delete_uids.push(temp_list[i]);
       }
   }
-  console.log(delete_uids);
+  //console.log(delete_uids);
   var len = delete_uids.length;
   if (len < 1){
       alert("请选择至少1个用户!");
@@ -592,10 +586,10 @@ function custom_confirm_button(){
   var attribute_value = $('[name=attribute_value]').val();
   var custom_url = '/tag/add_group_tag/?uid_list='+ custom_confirm_uids.join(',');
   custom_url += '&attribute_name=' + attribute_name + '&attribute_value=' + attribute_value;
-  console.log(custom_url);
+  //console.log(custom_url);
   base_call_ajax_request(custom_url, callback);
   function callback(data){
-       console.log(data);
+       //console.log(data);
   }
 }
 function compare_confirm_button(){
@@ -608,7 +602,7 @@ function compare_confirm_button(){
       return;
   }
   var compare_url = '/index/contrast/?uid_list='+ compare_confirm_uids.join(',');
-  console.log(compare_url);
+  //console.log(compare_url);
   window.open(compare_url);
 }
 
@@ -621,12 +615,13 @@ function group_confirm_button(){
       alert('至少需要选择1名用户!');
       return;
   }
-  console.log(group_confirm_uids);
-  var group_ajax_url = '/group/submit_task/';
-  var group_url = '/index/group_result/';
+  //console.log(group_confirm_uids);/group/submit_task/
+  var group_ajax_url = '/group/submit_task/'; ///detect/add_detect2analysis/';
+  var group_url = '/index/group/#';
+ // var group_url = '/index/group_result/';
   var group_name = $('input[name="group_name"]').val();
   var remark = $('input[name="remark"]').val();
-  console.log(group_name, remark);
+  //console.log(group_name, remark);
   if (group_name.length == 0){
       alert('群体名称不能为空');
       return;
@@ -642,7 +637,7 @@ function group_confirm_button(){
     alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
     return;
   }
-  var job = {"task_name":group_name, "uid_list":group_confirm_uids, "state":remark};
+  var job = {"task_name":group_name, "uid_list":group_confirm_uids,"state":remark};//"state":remark
   $.ajax({
       type:'POST',
       url: group_ajax_url,
@@ -673,7 +668,7 @@ function delete_confirm_button(){
       alert('至少需要选择1名用户!');
       return;
   }
-  console.log(delete_confirm_uids);
+  //console.log(delete_confirm_uids);
   var delete_uid_list = '';
   for(var i in delete_confirm_uids){
       delete_uid_list += delete_confirm_uids[i];
@@ -682,7 +677,7 @@ function delete_confirm_button(){
   }
   if(confirm("确认要删除吗?")){
       var delete_url = '/recommentation/search_delete/?date=' + now + '&uid_list=' + delete_uid_list;
-      console.log(delete_url);
+      //console.log(delete_url);
       $.ajax({
           type:'get',
           url: delete_url,
@@ -690,7 +685,7 @@ function delete_confirm_button(){
           success: callback
       });
       function callback(data){
-           console.log(data);
+           //console.log(data);
            if (data == '1'){
                for (var i = 0; i < delete_confirm_uids.length; i++){
                    global_data[delete_confirm_uids[i]] = '';

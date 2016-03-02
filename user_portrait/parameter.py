@@ -68,7 +68,16 @@ psy_description_dict = {
         '3':u'心理状态平稳正常'
         }
 
-# recommend out threshould
+#recommend in
+RECOMMEND_IN_SENSITIVE_TOP = 2000
+RECOMMEND_IN_BLACK_USER1 = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/recommentation_in/blacklist_2.csv'
+RECOMMEND_IN_BLACK_USER2 = '/home/ubuntu8/huxiaoqian/user_portrait_151220/user_portrait/user_portrait/cron/recommentation_in/blacklist_0808.txt'
+RECOMMEND_IN_ACTIVITY_THRESHOLD = 50
+RECOMMEND_IN_IP_THRESHOLD = 7
+RECOMMEND_IN_RETWEET_THRESHOLD = 20
+RECOMMEND_IN_MENTION_THRESHOLD = 15
+
+#recommend out threshould
 RECOMMEND_OUT_THRESHOULD = 30
 
 
@@ -228,7 +237,7 @@ CURRENT_WARNING_DICT = {
 
 #group detect: query information---single/multi
 DETECT_QUERY_ATTRIBUTE = ['location', 'domain', 'topic_string', 'keywords_string', 'hashtag', \
-                          'activity_geo', 'tendency', 'tag', 'remark']
+                          'activity_geo', 'tag', 'remark']
 DETECT_QUERY_ATTRIBUTE_MULTI = ['topic_string', 'keywords_string', 'hashtag', 'activity_geo']
 DETECT_QUERY_STRUCTURE = ['retweet', 'comment', 'hop']
 DETECT_QUERY_FILTER = ['count', 'influence', 'importance']

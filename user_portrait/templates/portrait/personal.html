@@ -136,13 +136,13 @@ $(function(){
                             </tr>
                             <tr style='font-size:14px;'>
                                 <td style="text-align:center;vertical-align:middle">
-                                    <span class=" red" id="APnum">100</span>(No.<span id="APrank"></span>/<span id="APsum"></span>)
+                                    <span class=" red" id="APnum"></span>(No.<span id="APrank"></span>/<span id="APsum"></span>)
                                 </td>
                                 <td style="text-align:center;vertical-align:middle">
-                                    <span class=" red" id="IPnum">100</span>(No.<span id="IPrank"></span>/<span id="IPsum"></span>)
+                                    <span class=" red" id="IPnum"></span>(No.<span id="IPrank"></span>/<span id="IPsum"></span>)
                                 </td>
                                 <td style="text-align:center;vertical-align:middle">
-                                    <span class=" red" id="FPnum">100</span>(No.<span id="FPrank"></span>/<span id="FPsum"></span>)
+                                    <span class=" red" id="FPnum"></span>(No.<span id="FPrank"></span>/<span id="FPsum"></span>)
                                 </td>
                             </tr>
                             <tr>
@@ -166,8 +166,10 @@ $(function(){
                     <h3 style="padding:5px;">业务备注信息</h3>
                     <ul style="padding:0px;">
                         <div id="ptag" class="fleft" style="font-size:14px;width:240px;margin-top:20px;">
+                            <!--
                             <div class="tagClo fleft" ><span style="color:red;">test1</span>:<span class="tagbg"><span>tag1<span><a id="delIcon"></a></span></div>
                             <div class="tagClo fleft" ><span style="color:red;">test1</span>:<span class="tagbg"><span>tag1<span><a id="delIcon"></a></span></div>
+                            -->         
                         </div>
                         <div id="addM" style="font-size:14px;border-bottom:solid 1px lightgrey;border-top:solid 1px lightgrey;width:240px;padding-top:20px;padding-bottom:20px;padding-right:25px;" class="fleft">
                             <div >
@@ -185,7 +187,7 @@ $(function(){
                             <span style=""><button class="btn btn-primary btn-sm" style="width:80px;height:30px;margin-top:30px;margin-left:30px;float:right;" id="add_person_tag_button" title="确定选择" onclick="add_person_tag()">添加</button></span>
                         </div>
                         <div class="PersonPre" style="margin-top:0px;padding:10px;"><span class="lightw">备注：</span>
-                            <span style="font-family: '宋体';"id="extraDetail">此账号信息由微博系统自动发出。</span>
+                            <span style="font-family: '宋体';"id="extraDetail"></span>
                         </div>
                     </ul>
                 </li>
@@ -300,7 +302,11 @@ Personal.prototype = {   //群组搜索
             
         var userlocation = document.getElementById('userLocation');
         if(personalData.location){
-            userlocation.innerHTML = personalData.location;
+            if(personalData.location == 'unknown'){
+                userlocation.innerHTML = "无此数据";
+            }else{
+                userlocation.innerHTML = personalData.location;
+            }
         }else{
             userlocation.innerHTML = "无此数据";
         }

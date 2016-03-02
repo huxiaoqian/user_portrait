@@ -45,9 +45,13 @@ function attention(data,UserID,UserName,texts){
     nodeContent.push(nod);
     for (i=0;i<out_data.length;i++){
             nod = {};
-            //console.log(data[i][1][2]);
             nod['category'] = 2;
-            nod['name'] = out_data[i][0];
+            if(out_data[i][0]=='unknown'){
+              var nod_name_out = '未知';
+            }else{
+              var nod_name_out = out_data[i][0]
+            }
+            nod['name'] = nod_name_out;
             nod['label'] = out_data[i][1];
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
@@ -55,9 +59,13 @@ function attention(data,UserID,UserName,texts){
     }
     for (i=0;i<in_data.length;i++){
             nod = {};
-            //console.log(data[i][1][2]);
             nod['category'] = 1;
-            nod['name'] = in_data[i][0]
+            if(out_data[i][0]=='unknown'){
+              var nod_name_in = '未知';
+            }else{
+              var nod_name_in = out_data[i][0]
+            }
+            nod['name'] = nod_name_in;
             nod['label'] = in_data[i][1];
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
@@ -292,6 +300,9 @@ function draw_out_list(data){
 
 
 function draw_in_list(data){
+    if(personalData.uname == 'unknown'){
+      var uname = '未知';
+    };
     $('#in_list').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -300,7 +311,7 @@ function draw_in_list(data){
     var user_url = 'http://weibo.com/u/'+ uid;
     html += '<tr id=' + uid +'>';
     html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ uid +'</td>';
-    html += '<td style="text-align:center" style="width:150px;">'+ personalData.uname +'</td>';
+    html += '<td style="text-align:center" style="width:150px;">'+ uname +'</td>';
     html += '<td style="text-align:center" style="width:70px;">'+ personalData.influence.toFixed(2) +'</td>';
     html += '<td style="text-align:center" style="width:70px;">'+ personalData.importance.toFixed(2) +'</td>';
     html += '<td style="text-align:center" style="width:70px;">-</td>';
@@ -313,7 +324,10 @@ function draw_in_list(data){
       var user_url = 'http://weibo.com/u/'+ item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
-      html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
+      if(item[1] == 'unknown'){
+        var user_name = '未知';
+      }
+      html += '<td style="text-align:center" style="width:150px;">'+ user_name +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[2].toFixed(2) +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[3].toFixed(2) +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[4] +'</td>';
@@ -338,7 +352,7 @@ function out_list_button(){
       cur_uids.push($(this).attr('value'));
   });
   var compute_type = $('input[name="compute-type"]:checked').val();
-  var recommend_date = getDate();
+  var recommend_date = new Date().format('yyyy-MM-dd');
   if (cur_uids.length == 0){
     alert("请选择至少一个用户！");
   }
@@ -369,8 +383,9 @@ function in_list_button(){
       group_confirm_uids.push($(this).attr('value'));
   })
   var group_ajax_url = '/group/submit_task/';
+  //var group_ajax_url = '/detect/add_detect2analysis/';
   //var group_url = '/index/group_result/';
-  var group_url = '/index/group/';
+  var group_url = '/index/group/#';
   var group_name = $('input[name="so_group_name"]').val();
   var remark = $('input[name="so_states"]').val();
   if (group_confirm_uids.length == 0){
@@ -413,24 +428,7 @@ function in_list_button(){
   }
 }
 
-function getDate() {
-    var date = new Date();
-    var seperator = "-";
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
-    }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    var currentdate = year + seperator + month + seperator + strDate
-    return currentdate;
-}
-
 function confirm_ok(data){
-  //console.log(data);
   if(data)
     alert('操作成功！');
 }

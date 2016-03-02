@@ -7,35 +7,11 @@ function call_sync_ajax_request(url, callback){
       success:callback
     });
 }
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
 
 function Draw_sensi_related_event(data){
 	$('#sensi_related_weibo_event').empty();
     $('#sensi_weibo #pageGro').css('display', 'none');
-    /*
-    $('#sensi_weibo #pageGro .pageUp').css('display', 'none');
-    $('#sensi_weibo #pageGro .pageList').css('display', 'none'); 
-    $('#sensi_weibo #pageGro .pageDown').css('display', 'none'); 
-    */
+
 	var html = '';
     //html += '<div></div>';
     html += '<div>';
@@ -43,7 +19,7 @@ function Draw_sensi_related_event(data){
         html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+        html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
@@ -51,6 +27,7 @@ function Draw_sensi_related_event(data){
         for(var j=0;j<x; j++){
             html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
+        html+='</div>';
         }
 
         html+= '</div>';
@@ -73,7 +50,7 @@ function Draw_num_related_event(data){
         html += '<span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+        html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
@@ -81,6 +58,7 @@ function Draw_num_related_event(data){
         for(var j=0;j<x; j++){
             html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
+        html+='</div>';
     }
     html+= '</div>';
     
@@ -99,10 +77,10 @@ function Draw_mood_related_event(data){
     //html += '<div></div>';
     html += '<div>';
     if (data.length == 0){
-        html += '<span>暂无感知事件</span>';
+        html += '<div><span>暂无感知事件</span>';
     }
     for (var i = 0; i < data.length; i++){
-        html += '<b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
+        html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
         var x=8;
         if(data[i].length<x){
         	x=data[i].length;
@@ -110,6 +88,7 @@ function Draw_mood_related_event(data){
         for(var j=0;j<x; j++){
             html += '<span style="background-color:gray;" class="group_block">' + data[i][j] + '</span>';
       	}
+        html+='</div>';
     }
     html+= '</div>';
     $('#mood_related_weibo_event').html(html);
@@ -151,6 +130,7 @@ function sensing_sensors_table (head, data, div_name) {
 	$('#sensor_table').DataTable({
 	   "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
 	   "sPaginationType": "bootstrap",
+        "aaSorting": [[ 4, "desc" ]],
 	   "oLanguage": {
 	       "sLengthMenu": "_MENU_ 每页"
 	   }
@@ -295,9 +275,8 @@ function Draw_sensi_weibo (data){
 
 function Draw_group_weibo(data, div_name, sub_div_name){
     var page_num = 5;
-    //console.log(data);
+    $('#' + sub_div_name).css('height', 'auto');
     if (data.length < page_num) {
-    	//console.log('data_length', data.length);
         $('#'+ div_name + ' #pageGro').css('display', 'none');
         /*
     	$('#'+ div_name + ' #pageGro .pageUp').css('display', 'none');
@@ -313,6 +292,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     	}
       }
       else {
+        $('#' + sub_div_name).css('height', '315px');
         $('#'+ div_name + ' #pageGro').css('display', 'block');
           /*
         $('#'+ div_name + ' #pageGro .pageUp').css('display', 'block');
@@ -349,9 +329,6 @@ function Draw_group_weibo(data, div_name, sub_div_name){
       end_row = start_row + page_num;
       if (end_row > data.length)
           end_row = data.length;
-      	//console.log('start', start_row);
-      	//console.log('end', end_row);
-      	//console.log('data',data);
         page_group_weibo(start_row,end_row,data, div_name, sub_div_name);
     });
 
@@ -367,7 +344,6 @@ function Draw_group_weibo(data, div_name, sub_div_name){
             }
         }
       var page = parseInt($("#"+div_name+" #pageGro li.on").html())  
-      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -390,7 +366,6 @@ function Draw_group_weibo(data, div_name, sub_div_name){
             }
         }
       var page = parseInt($("#"+div_name+" #pageGro li.on").html()) 
-      //console.log(page);
       start_row = (page-1)* page_num;
       end_row = start_row + page_num;
       if (end_row > data.length){
@@ -400,11 +375,6 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     });
 }
 function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
-	//console.log(start_row);
-    //console.log(end_row);
-    //console.log(data);
-    //console.log(div_name);
-    //console.log(sub_div_name);
     var highlight_words = []; //高亮词数组
     weibo_num = end_row - start_row;
     $('#'+ sub_div_name).empty();
@@ -438,7 +408,6 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         if (sensor_words.length == 0){
             sensor_words = '无';
         }
-        //console.log(attitude);
         if (attitude == 0){
         	var attitude_s = '中性';
         };
@@ -1115,7 +1084,6 @@ function deal_point_col(data, index){
 			data_list.push(data_dict);
 		}
 	}
-	//console.log(index,'------', data_list);
 	return data_list;
 
 }
@@ -1125,12 +1093,10 @@ function deal_point(data){
 	for(var i=0;i<data.length; i++){
 		var data_dict = {};
 		data_dict.name = data[i][0];
-		//data_dict.value = data[i][1];
 		data_dict.xAxis=data[i][0];
 		data_dict.yAxis= data[i][1];
 		data_list.push(data_dict);
 	}
-	// console.log('11', data_list);
 	return data_list;
 
 }
@@ -1167,7 +1133,6 @@ function show_warning_time_all(div_name, data){
 
 		$('#' + div_name +' .' + contentID).each(function(){
 			var content = $(this).text() //document.getElementById(contentID).innerHTML; 
-		    //console.log(content);
 		    for(var i = 0; i < keywords[count_key].length; i ++) 
 		    { 
 		        var strKey = keywords[count_key][i].toString(); 
@@ -1178,7 +1143,6 @@ function show_warning_time_all(div_name, data){
 		            content = formatKeyword(content, key); 
 		        } 
 		    } 
-		    //console.log('after', content);
 		    $(this).empty();
 		    $(this).append(content);
 		    count_key += 1;
@@ -1250,8 +1214,8 @@ function social_sensing_all(data){
 	sensi_line_data[7] = col_line;
 	draw_sensi_line_charts(sensi_line_data, 'sensi_line_charts', sensi_legend);
 
-    var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
-    var data1=[['人民日报2222',1,2,'2222这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
+    //var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
+    //var data1=[['人民日报2222',1,2,'2222这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
 	  
 
 	//参与人表格

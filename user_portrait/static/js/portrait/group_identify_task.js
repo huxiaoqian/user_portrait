@@ -1,23 +1,3 @@
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
 
 var current_date = new Date().format('yyyy/MM/dd hh:mm');
 var max_date = '+1970/01/30';
@@ -267,13 +247,14 @@ function draw_control_table(data){
 	var item =data;
 	var item_name = '';
 	var html='';
-    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;height:300px;">';
-    html += '<tr><th style="text-align:center">头像</th><th style="text-align:center">昵称</th>';
+    html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;max-height:300px;">';
+    html += '<tr><th style="text-align:center;width:50px">头像</th><th style="text-align:center">昵称</th>';
     html += '<th style="text-align:center;width:75px;">领域</th><th style="text-align:center">话题</th>';
     html += '<th style="text-align:center;width:60px;">重要度</th>';
     html += '<th style="text-align:center;width:60px;">影响力</th>';
     html += '<th style="text-align:center;width:60px;">活跃度</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
-    for (var i=0;i<data.length;i++) {
+    html += '<div style="overflow-y:auto;max-height:300px;">'
+	for (var i=0;i<data.length;i++) {
     	if(item[i][1]=='unknown'){
     		item_name = '未知';
     	}else{
@@ -291,6 +272,7 @@ function draw_control_table(data){
     	// }
         html += '<tr><td name="'+item[i][0]+'" style="text-align:center"><img style="height:25px;" class="img-circle shadow-5"  title="'+item[i][0]+'"  src="' + item_img + '" ></td><td style="text-align:center">' + item_name + '</td><td style="text-align:center">' + item[i][3]+ '</td><td style="text-align:center">' + item[i][4] + '</td><td style="text-align:center">' + item[i][6] + '</td><td style="text-align:center">' + item[i][7] + '</td><td style="text-align:center">' + item[i][8] + '</td><td><input name="control_list_option" class="search_result_option" type="checkbox" value="' + '1' + '" /></td></tr>';
   	}
+    html += '</div>'
     html += '</table>'; 
   //   html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
   //   html += '<tr><th style="text-align:center">用户ID</th><th style="text-align:center">昵称</th><th style="text-align:center">活跃度</th><th style="text-align:center">重要度</th><th style="text-align:center">影响力</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';

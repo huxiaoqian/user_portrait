@@ -1,24 +1,3 @@
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
-
 function Search_weibo(){
   this.ajax_method = 'GET';
   that = this;
@@ -77,9 +56,9 @@ Search_weibo.prototype = {
         }
         var keywords_data = data;
         var keywords = new Array();
-        //console.log(keywords_data)
+
         for(i in keywords_data){
-            //console.log(keywords_data[i])
+
             keywords.push({'name':keywords_data[i][0], 'value':keywords_data[i][1]*1000, 'itemStyle':createRandomItemStyle()});
             
         }
@@ -272,7 +251,7 @@ var url_profile = '/manage/compare_user_profile/'+ uid_list;
 var url_portrait = '/manage/compare_user_portrait/' + uid_list;
 var user_tag = '/tag/show_user_tag/'+ uid_list;
 // var url_activity = '/manage/compare_user_activity/?uid_list=1642591402,2948738352';
-// var url_profile = '/manage/compare_user_profile/?uid_list=1642591402,2948738352';
+//  = '/manage/compare_user_profile/?uid_list=1642591402,2948738352';
 // var url_portrait = '/manage/compare_user_portrait/?uid_list=1642591402,2948738352';
 Search_weibo.call_sync_ajax_request(url_profile, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var url_photo = Search_weibo.Return_data();
@@ -282,7 +261,7 @@ Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Sear
 var portrait = Search_weibo.Return_data();
 Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var tag_data = Search_weibo.Return_data();
-console.log(tag_data);
+
 function Compare(){
     var html = '';
     var num = 0;
@@ -315,7 +294,9 @@ function Compare(){
     j = 0;
     html += '<tr class="list-1"><td class="cate_title" style="width:90px;text-align:right">昵称</td>';
     for(var k in portrait){
-
+        if(portrait[k]['uname'] == 'unknown'){
+            portrait[k]['uname'] = '未知';
+        }
         j += 1;
         html += '<td class="center" name="line'+ j +'">'+ portrait[k]['uname'] +'</td>';
     }
@@ -323,6 +304,9 @@ function Compare(){
     j = 0;
     html += '<tr class="list-1"><td class="cate_title" style="width:90px;text-align:right">注册地</td>';
     for(var k in portrait){
+        if(portrait[k]['location'] = 'unknown'){
+            portrait[k]['location'] = '未知';
+        }
         j += 1;
         html += '<td class="center" name="line'+ j +'">'+ portrait[k]['location'] +'</td>';
     }
@@ -474,7 +458,7 @@ var SENTIMENT_DICT_NEW = {'0':'中性', '1':'积极', '2':'生气', '3':'焦虑'
 function Draw_think_emotion(psycho_status,div){
     var first_data = psycho_status['first'];
     var first = new Array();
-    console.log(first_data)
+
     for(var key in first_data){
         if(key == 7){
             first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2),selected:true});
@@ -775,7 +759,6 @@ for(var key in portrait){
     if(portrait[key]['keywords'].length == 0){
         $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
     }else{
-        //console.log(portrait[key]['keywords'])
         Search_weibo.Draw_cloud_keywords(portrait[key]['keywords'], div);
     }
 
@@ -784,7 +767,7 @@ for(var key in portrait){
 
     div = 'emotion'+ mark;
     var psycho_status = portrait[key]['psycho_status']
-    //console.log(psycho_status)
+
 
     Draw_think_emotion(psycho_status,div);
     /*
@@ -792,7 +775,7 @@ for(var key in portrait){
     Draw_think_topic(div);
     */
     div = 'hashtag'+ mark;
-    //console.log(portrait[key]['hashtag']);
+
     if(portrait[key]['hashtag']){
         $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
     }else{
@@ -822,7 +805,7 @@ for(var key in y_data){
  $('.btn-round').click(function(){
     
     var cell = $('#table_compare').find('th').prevAll().length;
-    //console.log(cell);
+
     $('#table_compare').css('table-layout', 'fixed');
     $('[name='+ $(this).attr("name") +']').remove();
     $('#table_compare').css('table-layout', 'auto');

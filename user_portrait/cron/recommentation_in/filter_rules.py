@@ -9,12 +9,13 @@ from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import R_DICT, es_retweet, retweet_index_name_pre, retweet_index_type
 from time_utils import datetime2ts, ts2datetime
 from parameter import DAY
+from parameter import RUN_TYPE, RUN_TEST_TIME
+from parameter import RECOMMEND_IN_ACTIVITY_THRESHOLD as activity_threshold
+from parameter import RECOMMEND_IN_IP_THRESHOLD as  ip_threshold
+from parameter import RECOMMEND_IN_RETWEET_THRESHOLD as  retweet_threshold
+from parameter import RECOMMEND_IN_MENTION_THRESHOLD as mention_threshold
 from cron.detect.cron_detect import get_db_num
 
-activity_threshold = 50
-ip_threshold = 7
-retweet_threshold = 20
-mention_threshold = 15
 
 csvfile = open('/home/ubuntu8/huxiaoqian/user_portrait/user_portrait/cron/recommentation_in/filter_uid_list.csv', 'wb')
 writer = csv.writer(csvfile)
@@ -23,12 +24,13 @@ writer = csv.writer(csvfile)
 
 def filter_activity(user_set):
     results = []
-    now_date = ts2datetime(time.time())
-    # test
-    now_date = '2013-09-08'
+    #run_type
+    if RUN_TYPE == 1:
+        now_date = ts2datetime(time.time())
+    else:
+        now_date = RUN_TEST_TIME
     ts = datetime2ts(now_date) - DAY
     date = ts2datetime(ts)
-    #print 'date:', date
     timestamp = datetime2ts(date)
     for user in user_set:
         over_count = 0
@@ -46,14 +48,15 @@ def filter_activity(user_set):
         else:
             writer.writerow([user, 'activity'])
             
-    print 'after filter activity:', len(results)    
     return results
 
 def filter_ip(user_set):
     results = []
-    now_date = ts2datetime(time.time())
-    # test
-    now_date = '2013-09-08'
+    #run_type
+    if RUN_TYPE == 1:
+        now_date = ts2datetime(time.time())
+    else:
+        now_date = RUN_TEST_TIME
     ts = datetime2ts(now_date) - DAY
     for user in user_set:
         ip_set = set()
@@ -70,7 +73,6 @@ def filter_ip(user_set):
             results.append(user)
         else:
             writer.writerow([user, 'ip'])
-    print 'after filter ip:', len(results)
     return results
 
 def filter_retweet_count(user_set):
@@ -89,8 +91,6 @@ def filter_retweet_count(user_set):
                     body = {'ids':iter_search_user_list}, _source=True)['docs']
         except:
             retweet_result = []
-        # if retweet_result:
-        #     print 'retweet_result:', retweet_result
         for retweet_item in retweet_result:
             if retweet_item['found']:
                 retweet_set = set()
@@ -107,14 +107,15 @@ def filter_retweet_count(user_set):
                 results.append(user)
 
         iter_search_count += FILTER_ITER_COUNT
-    print 'after filter retweet:', len(results)
     return results
 
 def filter_mention(user_set):
     results = []
-    now_date = ts2datetime(time.time())
-    # test
-    now_date = '2013-09-08'
+    #run_type
+    if RUN_TYPE == 1:
+        now_date = ts2datetime(time.time())
+    else:
+        now_date = RUN_TEST_TIME
     timestamp = datetime2ts(now_date) - DAY
     date = ts2datetime(timestamp)
     for user in user_set:
@@ -131,5 +132,4 @@ def filter_mention(user_set):
             results.append(user)
         else:
             writer.writerow([user, 'mention'])
-    print 'after filter mention:', len(results)
     return results

@@ -13,10 +13,8 @@ Tag.prototype = {   //获取数据，重新画表
   },
 
 Draw_tag_table:function(data){
-	//console.log(data);
     $('#Tagtable').empty();
     var item = data;
-    console.log(item);
     var html = '';
 	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
 	html += '<thead><tr style="text-align:center;">';
@@ -105,7 +103,6 @@ function get_data(){
         temp += input_name;
         temp += input_value;;
     });
-	//console.log(temp);
 	temp = temp.substring(0, temp.length-1);
 	return temp;
 }
@@ -128,7 +125,6 @@ Tag_add.prototype = {   //获取数据，重新画表
   },
 
 NewTag:function(data){
-	//console.log(data);
   location.reload();
   }
 }
@@ -159,16 +155,13 @@ function get_input_data(){
 	input_name = "attribute_value=";
 	var value = '';
     var value_list = new Array();
-	//console.log(tagnames);
 	for(i=4;i<tagnames.length;i++){
         var this_value = document.getElementsByName("attribute_value")[i].value;
-		console.log(this_value);
 		if(this_value){
 			value_list.push(this_value);
 		}
 	}
 	value = value_list.join(',');
-    console.log(value);
 	input_value = value+'&';
 	temp += input_name;
     temp += input_value;
@@ -177,29 +170,11 @@ function get_input_data(){
 	temp += input_name;
     temp += input_value;
 	input_name = "date=";
-	input_value =currentDate()+'&';
+	input_value = new Date().format('yyyy-MM-dd') + '&';
 	temp += input_name;
     temp += input_value;
 	temp = temp.substring(0, temp.length-1);
-	console.log(temp);
 	return temp;
-}
-function currentDate(){
-	var myDate = new Date();
-	var yy = myDate.getFullYear();
-	var mm = myDate.getMonth() + 1;
-	if(mm<10){
-		mm = '0'+mm.toString();
-		
-	}
-	var dd = myDate.getDate();
-	if(dd<10){
-		dd = '0'+dd.toString();
-	}
-	
-	var date = yy.toString()+ '-' + mm.toString() + '-' + dd.toString();
-	console.log(date);
-	return date;
 }
 var TagAdd = new Tag_add();
 tagAddFun(TagAdd);
@@ -226,11 +201,11 @@ function deleteGroup(that){
 	$('a[id^="delTag"]').click(function(e){
 		var url = that.url;
 		var temp = $(this).parent().prev().prev().prev().prev().html();
-		console.log(temp);
 		url = url + 'attribute_name=' + temp;
+		if(confirm("确认要删除吗？")){
+			that.call_sync_ajax_request(url,that.ajax_method,that.del);
+		}
 		//window.location.href = url;
-		that.call_sync_ajax_request(url,that.ajax_method,that.del);
-		console.log(url);
 	});
 }
 
@@ -252,7 +227,6 @@ TagChange.prototype = {   //获取数据，重新画表
   },
 
 ChangeTag:function(data){
-	//console.log(data);
    location.reload();
   }
 }
@@ -269,7 +243,6 @@ function input_data(){
 	var temp='';
     var input_value;
     var input_name;
-	//console.log(tagnames);
 	input_name = "attribute_name=";
 	input_value = $('#attributeName').html()+'&';
 	temp += input_name;
@@ -281,7 +254,6 @@ function input_data(){
 	var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]+$";	
 	for(i=0;i<tagnames;i++){
 		value += $(".tagName").eq(i).html()+',';
-		//console.log(value);
 	}
 	value = value.substring(0,value.length-1);
 	input_value = value+'&';
@@ -293,29 +265,11 @@ function input_data(){
 	temp += input_name;
     temp += input_value;
 	input_name = "date=";
-	input_value =cDate()+'&';
+	input_value =new Date().format('yyyy-MM-dd') + '&';
 	temp += input_name;
     temp += input_value;
 	temp = temp.substring(0, temp.length-1);
-	console.log(temp);
 	return temp;
-}
-function cDate(){
-	var myDate = new Date();
-	var yy = myDate.getFullYear();
-	var mm = myDate.getMonth() + 1;
-	if(mm<10){
-		mm = '0'+mm.toString();
-		
-	}
-	var dd = myDate.getDate();
-	if(dd<10){
-		dd = '0'+dd.toString();
-	}
-	
-	var date = yy.toString()+ '-' + mm.toString() + '-' + dd.toString();
-	//console.log(date);
-	return date;
 }
 var TagChange = new TagChange();
 //Tag.call_sync_ajax_request(url, Tag.ajax_method, Tag.AddTag);

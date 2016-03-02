@@ -17,10 +17,14 @@ from user_portrait.search_user_profile import es_get_source
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import SOCIAL_DEFAULT_COUNT, SENTIMENT_TREND_DEFAULT_TYPE
 from user_portrait.parameter import DEFAULT_SENTIMENT, DAY
+from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME
+from user_portrait.time_utils import ts2datetime, datetime2ts
 from personal_influence import get_user_influence, influenced_detail, influenced_people, influenced_user_detail, statistics_influence_people, tag_vector, comment_on_influence, detail_weibo_influence, influence_summary
 from description import conclusion_on_influence
+
+
 # use to test 13-09-08
-test_time = 1378569600
+test_time = datetime2ts(RUN_TEST_TIME)
 
 # custom_attribute
 attribute_index_name = 'custom_attribute'
@@ -97,26 +101,14 @@ def ajax_portrait_search():
         query.append({'bool':{'should':query_list}})
     else:
         fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
-        #select_item = ['gender', 'verified', 'psycho_feature', 'psycho_status']
-
-        #range_item = ['fansnum', 'statusnum', 'friendsnum', 'importance', 'activeness', 'influence']
-        #multi_item = ['topic_string', 'domain']
         multi_item = ['character_sentiment','character_text','domain','topic_string']
         for item in fuzz_item:
             item_data = request.args.get(item, '')
             if item_data:
                 if item=='keywords':
                     item = 'keywords_string'
-                #print 'item_data:', item_data, type(item_data)
                 query.append({'wildcard':{item:'*'+item_data+'*'}})
                 condition_num += 1
-        '''
-        for item in select_item:
-            item_data = request.args.get(item, '')
-            if item_data:
-                query.append({'match':{item: item_data}})
-                condition_num += 1
-        '''
         # custom_attribute
         tag_items = request.args.get('tag', '')
         if tag_items != '':
@@ -141,11 +133,8 @@ def ajax_portrait_search():
                 query.append({'bool':{'should':nest_body_list}})
         
         
-    #size = request.args.get('size', 1000)
     size = 1000
     sort = '_score'
-    #sort = request.args.get('sort', 'influence')
-    #print 'condition_num, query:', condition_num, query
     result = search_portrait(condition_num, query, sort, size)
     return json.dumps(result)
 
@@ -158,9 +147,11 @@ def ajax_location():
     uid = request.args.get('uid', '')
     uid = str(uid)
     time_type = request.args.get('time_type', '') # type = day; week; month
-    now_ts = time.time()
-    # test
-    now_ts = test_time - DAY
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time - DAY
     results = search_location(now_ts, uid, time_type)
     
     return json.dumps(results)
@@ -173,9 +164,11 @@ def ajax_location():
 @mod.route('/ip/')
 def ajax_ip():
     uid = request.args.get('uid', '')
-    now_ts = time.time()
-    # test
-    now_ts = test_time - DAY
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time - DAY
     result = search_ip(now_ts, uid)
     if not result:
         result = {}
@@ -192,9 +185,11 @@ def ajax_mention():
     uid = str(uid)
     top_count = request.args.get('top_count', SOCIAL_DEFAULT_COUNT)
     top_count = int(top_count)
-    now_ts = time.time()
-    # test
-    now_ts = test_time
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time
     results = search_mention(now_ts, uid, top_count)
 
     return json.dumps(results)
@@ -206,9 +201,11 @@ def ajax_mention():
 def ajax_activity_day():
     results = {}
     uid = str(request.args.get('uid', ''))
-    now_ts = time.time()
-    # test
-    now_ts = test_time
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time
     results = search_activity(now_ts, uid)
     if not results:
         results = {}
@@ -331,9 +328,11 @@ def ajax_sentiment_trend():
     uid = request.args.get('uid', '')
     uid = str(uid)
     time_type = request.args.get('time_type', SENTIMENT_TREND_DEFAULT_TYPE)
-    now_ts = time.time()
-    #test
-    now_ts = test_time - DAY
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time - DAY
     results = search_sentiment_trend(uid, time_type, now_ts)
     if not results:
         results = {}
@@ -410,9 +409,11 @@ def ajax_geo_track():
 def ajax_online_pattern():
     uid = request.args.get('uid', '')
     uid = str(uid)
-    now_ts = time.time()
-    #test
-    now_ts = test_time
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = test_time
     results = get_online_pattern(now_ts, uid)
     if not results:
         results = {}

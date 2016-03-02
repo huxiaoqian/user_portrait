@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import sys
 import json
+import math
 import time
 from elasticsearch.helpers import scan
 reload(sys)
@@ -11,7 +12,7 @@ from global_utils import ES_DAILY_RANK as es_cluster
 from global_utils import es_user_profile
 from global_utils import R_RECOMMENTATION as r_recomment
 from time_utils import ts2datetime, datetime2ts
-from parameter import DAY
+from parameter import DAY, RUN_TYPE, RUN_TEST_TIME
 
 basic_field = ['user_count', 'gender_ratio', 'location_top', 'verified_ratio']
 behavior_field = ['total_status', 'keywords_top', 'activity_geo', 'hashtag_top',\
@@ -128,7 +129,6 @@ def get_user_count():
                 }
             }
     count = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['count']
-    #print 'all user count:', count
     return count
 
 
@@ -427,7 +427,7 @@ def get_scan_results_v2():
     result_dict['location_top'] = json.dumps(location_top)
     
     # activity geo
-    '''
+    
     query_body = {
         "query":{
             "match_all":{}
@@ -447,7 +447,7 @@ def get_scan_results_v2():
     else:
         activity_geo_top = {}
     result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
-    '''
+    
     # keywords
     query_body = {
         "query":{
@@ -535,7 +535,6 @@ def get_scan_results_v2():
     result_dict['topic_top_user'] = json.dumps(get_topic_top_user(topic_top))
     
     # online pattern top
-    '''
     query_body = {
         "query":{
             "match_all":{}
@@ -555,13 +554,8 @@ def get_scan_results_v2():
     else:
         online_pattern_top = {}
     result_dict['online_pattern_top'] = json.dumps(online_pattern_top)
-    '''
+    
     # activity_count
-    now_ts = time.time()
-    now_date = ts2datetime(now_ts - DAY)
-    index_time = ''.join(now_date.split('-'))
-    #test
-    index_time = '2013-09-07'
     no_activity_count = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, \
             body={'query':{'filtered':{'filter':{'term':{'influence': 0}}}}})['count']
     all_count = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type ,\
@@ -573,13 +567,17 @@ def get_scan_results_v2():
 # origin retweeted number top 5 user and mid
 def get_retweeted_top():
     top_results = []
-    k = 100000
+    k = 10000
     count = 0
-    now_ts = time.time()
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
+
     date = ts2datetime(now_ts-DAY)
     index_time = ''.join(date.split('-'))
-    # test
-    index_time = '20130907'
+    
     index_type = 'bci'
     query_body = {
         'query':{
@@ -592,18 +590,15 @@ def get_retweeted_top():
         result = es_cluster.search(index='bci_'+index_time, doc_type=index_type, body=query_body)['hits']['hits']
     except:
         return None
-    #print 'result:', len(result)
     for item in result:
-        if count==100:
+        if count == 100:
             break
         uid = item['_id']
         try:
             exist_result = es_user_portrait.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid)
-            #print 'exist_result:', exist_result
             try:
                 source = exist_result['_source']
                 count += 1
-                #print 'count:', count
                 uname = source['uname']
                 top_mid = item['_source']['origin_weibo_top_retweeted_id']
                 top_retweeted_number = item['_source']['origin_weibo_retweeted_top_number']
@@ -612,19 +607,20 @@ def get_retweeted_top():
                 continue
         except:
             continue
-    #print 'retweeted top user:', top_results
     return {'top_retweeted_user':json.dumps(top_results)}
 
 # origin comment number top100 user and mid
 def get_comment_top():
     top_results = []
-    k = 100000
+    k = 10000
     count = 0
-    now_ts = time.time()
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
     date = ts2datetime(now_ts - DAY)
     index_time = ''.join(date.split('-'))
-    #test
-    index_time = '20130907'
     index_type = 'bci'
     query_body = {
             'query':{
@@ -635,7 +631,6 @@ def get_comment_top():
             }
     try:
         result = es_cluster.search(index='bci_'+index_time, doc_type=index_type, body=query_body)['hits']['hits']
-        #print 'result:', result
     except:
         return None
     for item in result:
@@ -655,7 +650,6 @@ def get_comment_top():
                 continue
         except:
             continue
-    #print 'top_results:', top_results
     return {'top_comment_user':json.dumps(top_results)}
 
 # get activeness top 100
@@ -665,17 +659,21 @@ def get_activeness_top():
     try:
         es_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
     except Exception, e:
-        raise e
+        es_result = None
     if es_result:
+        max_eval = get_evaluate_max()
         for user_dict in es_result:
             item = user_dict['_source']
             activeness = item['activeness']
+            activeness = math.log(activeness/max_eval['activeness'] * 9 + 1 ,10)
+            activeness = activeness * 100
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, activeness])
     else:
         result = None
-    #print 'result:', result
+    result = sorted(result,key=lambda result:result[2],reverse=True)
+    #print "activeness result",result
     return {'top_activeness': json.dumps(result)}
 
 # get importance top 100
@@ -685,18 +683,45 @@ def get_importance_top():
     try:
         es_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
     except Exception, e:
-        raise e
+        es_result = None
     if es_result:
+        max_eval = get_evaluate_max()
         for user_dict in es_result:
             item = user_dict['_source']
             importance = item['importance']
+            importance = math.log(importance/max_eval['importance'] * 9 + 1 ,10)
+            importance = importance * 100
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, importance])
     else:
         result = None
-    #print 'result:', result
+    result = sorted(result,key=lambda result:result[2],reverse=True)
     return {'top_importance': json.dumps(result)}
+
+
+def get_evaluate_max():
+    max_result = {}
+    index_name = 'user_portrait_1222'
+    index_type = 'user'
+    evaluate_index = ['activeness', 'importance', 'influence']
+    for evaluate in evaluate_index:
+        query_body = {
+            'query':{
+                'match_all':{}
+                },
+            'size':1,
+            'sort':[{evaluate: {'order': 'desc'}}]
+            }
+        try:
+            result = es_user_portrait.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+        except Exception, e:
+            raise e
+        max_evaluate = result[0]['_source'][evaluate]
+        max_result[evaluate] = max_evaluate
+    #print 'result:', max_result
+    return max_result
+
 
 # get influence top 100
 def get_influence_top():
@@ -705,20 +730,27 @@ def get_influence_top():
     try:
         es_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
     except Exception, e:
-        raise e
+        es_result = None
     if es_result:
+        max_eval = get_evaluate_max()
+        print "max_eval:",max_eval
         for user_dict in es_result:
             item = user_dict['_source']
             influence = item['influence']
+            influence = math.log(influence/max_eval['influence'] * 9 + 1 ,10)
+            influence = influence * 100
+            print "influence:",influence
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, influence])
     else:
         result = None
-    #print 'result:', result
+    result = sorted(result,key=lambda result:result[2],reverse=True)
     return {'top_influence': json.dumps(result)}
 
+# abandon in version: 16-02-28
 # get inlfuence vary top
+'''
 def get_influence_vary_top():
     result = []
     query_body = {
@@ -733,14 +765,11 @@ def get_influence_vary_top():
     except Exception, e:
         raise e
     uid_list = [user_dict['_id'] for user_dict in es_result]
-    #print 'uid_list:', uid_list
     portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list}, _source=True)['docs']
-    #print 'portrait_result:', portrait_result
     count = 0
     for i in range(len(portrait_result)):
         if count >=100:
             break
-        #print 'portrait_result:', portrait_result
         if portrait_result[i]['found']:
             uid = portrait_result[i]['_source']['uid']
             uname = portrait_result[i]['_source']['uname']
@@ -749,8 +778,8 @@ def get_influence_vary_top():
             count += 1
         else:
             next
-    #print 'result:', result
     return {'top_influence_vary': json.dumps(result)}
+'''
 
 # get influence top count
 def get_influence_top_count(top_threshold, user_count):
@@ -772,7 +801,6 @@ def get_influence_top_count(top_threshold, user_count):
                 }
             }
     result = es_user_portrait.count(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['count']
-    #print 'result:', result
     return {'top_influence_ratio':float(result)/user_count}
 
 
@@ -780,26 +808,27 @@ def get_influence_top_count(top_threshold, user_count):
 # operate information: recomment in count , out count, compute count
 def get_operate_information():
     result = dict()
-    now_ts = time.time()
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = time.time()
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
+
     date = ts2datetime(now_ts - DAY)
-    #test
-    date = '2013-09-07'
     delete_date = ''.join(date.split('-'))
-    #test
-    #delete_date = '20150727'
     result['in_count'] = len(r_recomment.hkeys('recomment_'+str(date)))
     out_count_list = r_recomment.hget('recommend_delete_list', delete_date)
-    #print 'out_count_list:', out_count_list
     if out_count_list:
         result['out_count'] = len(json.loads(out_count_list))
     else:
         result['out_count'] = 0
     compute_list = r_recomment.hkeys('compute')
-    '''
+    
     if compute_list:
         result['compute'] = len(compute_list)
-    '''
-    #print 'operate compute:', result
+    else:
+        result['compute'] = 0
+    
     return result
 
 
@@ -812,9 +841,8 @@ def save_result(results):
 def compute_overview():
     results = {}
     results['user_count'] = get_user_count()
-    scan_result = get_scan_results_v2()
-    print 'scan_result:', scan_result
-    
+    #scan_result = get_scan_results_v2()
+    scan_result = get_scan_results()
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
     results = dict(results, **retweeted_top)
@@ -826,29 +854,23 @@ def compute_overview():
     results = dict(results, **importance_top)
     influence_top = get_influence_top()
     results = dict(results, **influence_top)
-    #abandon
-    '''
-    influence_vary_top = get_influence_vary_top()
-    results = dict(results, **influence_vary_top)
-    '''
     top_threshold = 900 # it can be changed
     top_influence_ratio = get_influence_top_count(top_threshold, results['user_count'])
     results = dict(results, **top_influence_ratio)
     operate_result = get_operate_information()
     results = dict(results, **operate_result)
-    # print 'results:', results
     save_result(results)
     
-    return results
 
 
 if __name__=='__main__':
+    log_ts = time.time()
+    log_date = ts2datetime(log_ts)
+    print 'cron/overview/cron_overview.py&start&' + log_date
+
     compute_overview()
-    #get_retweeted_top()
-    #get_operate_information()
-    #get_comment_top()
-    #get_activeness_top()
-    #get_importance_top()
-    #get_influence_top()
-    #get_influence_vary_top()
-    #get_influence_top_count(900, 3795)
+
+    log_ts = time.time()
+    log_date = ts2datetime(log_ts)
+    print 'cron/overview/cron_overview.py&end&' + log_date
+

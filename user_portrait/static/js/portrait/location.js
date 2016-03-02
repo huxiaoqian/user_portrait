@@ -351,7 +351,7 @@ function draw_daily_ip_table(ip_data){
         if (i == 5) break;
         daily_map_data.push(['top'+(i+1),location_geo[i][2]]);
         var ip_city = location_geo[i][2].split('\t').pop();
-        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + ip_city + ',' + location_geo[i][1] + ')</th>';
+        html += '<th style="text-align:center">' + location_geo[i][0] + '<br>(' + ip_city + ',' + location_geo[i][1] + ')</th>';
     }
     while (i < 5){
         html += '<th style="text-align:center">-</th>';
@@ -367,7 +367,7 @@ function draw_daily_ip_table(ip_data){
         if (i == 5) break;
         weekly_map_data.push(['top'+(i+1),location_geo[i][2]]);
         var ip_city = location_geo[i][2].split('\t').pop();
-        html += '<th style="text-align:center">' + location_geo[i][0] + '(' + ip_city + ',' + location_geo[i][1] + ')</th>';
+        html += '<th style="text-align:center">' + location_geo[i][0] + '<br>(' + ip_city + ',' + location_geo[i][1] + ')</th>';
     }
     while (i < 5){
         html += '<th style="text-align:center">-</th>';
