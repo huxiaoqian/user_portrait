@@ -478,11 +478,9 @@ def get_group_user_track(uid):
                 id=uid, _source=False, fields=['activity_geo_dict'])
     except:
         portrait_result = {}
-    #print 'portrait_result:', portrait_result
     if portrait_result == {}:
         return 'uid is not in user_portrait'
     activity_geo_dict = json.loads(portrait_result['fields']['activity_geo_dict'][0])
-    #print 'activity_geo_dict:', activity_geo_dict, type(activity_geo_dict)
     now_date_ts = datetime2ts(ts2datetime(int(time.time())))
     start_ts = now_date_ts - DAY * len(activity_geo_dict)
     #step2: iter date to get month track
@@ -578,7 +576,6 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
     #iter date to search flow_text
     iter_result = []
     for range_item in new_range_dict_list:
-        print 'range_item:', range_item
         range_from_ts = range_item['range']['timestamp']['gte']
         range_from_date = ts2datetime(range_from_ts)
         flow_text_index_name = flow_text_index_name_pre + range_from_date

@@ -619,7 +619,7 @@ def get_attr_social(uid_list, uid2uname):
     sort_in_record = sorted(all_in_record, key=lambda x:x[2], reverse=True)
     result['social_in_record'] = json.dumps(sort_in_record)
     #step12: sort interaction out group by influence
-    sort_out_record = sorted(all_out_record, key=lambda x:x[3])[:GROUP_SOCIAL_OUT_COUNT]
+    sort_out_record = sorted(all_out_record, key=lambda x:x[3], reverse=True)[:GROUP_SOCIAL_OUT_COUNT]
     #get social out user uname
     sort_out_record_out_user = [item[1] for item in sort_out_record]
     try:
@@ -1840,7 +1840,7 @@ if __name__=='__main__':
     log_time_date = ts2datetime(log_time_ts)
     print 'cron/group/cron_group.py&start&' + log_time_date
 
-    compute_group_task_v2()
+    #compute_group_task_v2()
 
     log_time_ts = time.time()
     log_time_date = ts2datetime(log_time_ts)
@@ -1848,7 +1848,7 @@ if __name__=='__main__':
     
     
     #test
-    '''
+    
     input_data = {}
     input_data['task_name'] = u'媒体'
     
@@ -1863,4 +1863,4 @@ if __name__=='__main__':
     result = compute_group_task()
     #result = get_attr_portrait(input_data['uid_list'])
     #print 'result geo vary:', result[0]['activity_geo_vary']
-    '''
+    
