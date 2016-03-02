@@ -261,7 +261,11 @@ def get_scan_results():
                 #test
                 index_time = '20130907'
                 # gender ratio count
-                count = sum(gender_result.values())
+                #count = sum(gender_result.values())
+                all_count = es_user_portrait.count(index=portrait_index_name,doc_type=portrait_index_type,\
+                    body={'query':{'match_all':{}}})['count']
+                count = all_count
+                print "count:",count
                 gender_ratio = {'1':float(gender_result['1']) / count, '2':float(gender_result['2']) / count}
                 #print 'gender ratio:', gender_ratio
                 activity_result = es_user_portrait.mget(index='bci_'+index_time, doc_type='bci', body={'ids':portrait_uid_list})['docs']
@@ -446,6 +450,8 @@ def get_scan_results_v2():
             activity_geo_top.append([item['key'],item['doc_count']])
     else:
         activity_geo_top = {}
+    activity_geo_top = sorted(activity_geo_top,key=lambda activity_geo_top:activity_geo_top[1],reverse=True)
+    print "activity_geo_top:",activity_geo_top
     result_dict['activity_geo_top'] = json.dumps(activity_geo_top)
     
     # keywords
@@ -488,6 +494,8 @@ def get_scan_results_v2():
             hashtag_top.append([item['key'],item['doc_count']])
     else:
         hashtag_top = {}
+    hashtag_top = sorted(hashtag_top,key=lambda hashtag_top:hashtag_top[1],reverse=True)
+
     result_dict['hashtag_top'] = json.dumps(hashtag_top)
 
     # topic top
@@ -607,6 +615,8 @@ def get_retweeted_top():
                 continue
         except:
             continue
+    top_results = sorted(top_results,key=lambda top_results:top_results[3],reverse=True)
+    
     return {'top_retweeted_user':json.dumps(top_results)}
 
 # origin comment number top100 user and mid
@@ -650,6 +660,7 @@ def get_comment_top():
                 continue
         except:
             continue
+    top_results = sorted(top_results,key=lambda top_results:top_results[3],reverse=True)
     return {'top_comment_user':json.dumps(top_results)}
 
 # get activeness top 100
@@ -733,13 +744,12 @@ def get_influence_top():
         es_result = None
     if es_result:
         max_eval = get_evaluate_max()
-        print "max_eval:",max_eval
+        
         for user_dict in es_result:
             item = user_dict['_source']
             influence = item['influence']
             influence = math.log(influence/max_eval['influence'] * 9 + 1 ,10)
             influence = influence * 100
-            print "influence:",influence
             uname = item['uname']
             uid = item['uid']
             result.append([uid, uname, influence])

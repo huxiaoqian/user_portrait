@@ -5,6 +5,7 @@
 
 Search_weibo.prototype = {
   call_sync_ajax_request:function(url, method, callback){
+    //console.log(url);
     $.ajax({
       url: url,
       type: method,
@@ -15,6 +16,9 @@ Search_weibo.prototype = {
   },
 
   Draw_usernumber: function(data){
+    //console.log(data);
+    //compute = data['compute'];
+    //console.log(compute);
     in_count = data['in_count'];
     out_count = data['out_count'];
     $('#user_num').empty();
@@ -37,7 +41,7 @@ Search_weibo.prototype = {
     draw_domain_portrait(data);
     draw_statistics_infor(data);
     //Draw_think_emotion();
-    Draw_think_domain(data);
+    Draw_think_domain();
     Draw_think_topic(data);
     draw_more_onlinepattern(data);
     draw_more_hastag(data);
@@ -61,8 +65,8 @@ var Search_weibo = new Search_weibo();
 
 
 $(document).ready(function(){
-    var test_date = choose_time_for_mode();
-    var weibo_url = "/overview/show/?date=" + test_date.format('yyyy-MM-dd');
+	var downloadurl = window.location.host;
+    weibo_url =  'http://' + downloadurl + "/overview/show/?date=2013-09-07";
     Search_weibo.call_sync_ajax_request(weibo_url, Search_weibo.ajax_method, Search_weibo.Draw_usernumber);
 })
 
@@ -191,13 +195,9 @@ function Draw_think_topic(data){
         // 为echarts对象加载数据 
         myChart.setOption(option); 
 }
-function Draw_think_domain(data){
+function Draw_think_domain(){
     var myChart = echarts.init(document.getElementById('user_domain')); 
-    var domains = data['domain_top'];
-    var datas = [];
-    for(var i = 0;i<domains.length;i++){
-        datas.push({'value':domains[i][1],'name':domains[i][0]});
-    }
+        
     var option = {
     title : {
         text: '',
@@ -221,7 +221,21 @@ function Draw_think_domain(data){
             type:'pie',
             radius : '55%',
             center: ['50%', '60%'],
-            data:datas
+            data:[
+                {value:235, name:'高校微博'},
+                {value:110, name:'境内机构'},
+                {value:134, name:'境外机构'},
+                {value:335, name:'媒体'},
+                {value:248, name:'律师'},
+                {value:148, name:'草根'},
+                {value:210, name:'民间组织'},
+                {value:134, name:'政府机构人士'},
+                {value:335, name:'媒体人士'},
+                {value:248, name:'活跃人士'},
+                {value:198, name:'其他'},
+                {value:148, name:'商业人士'},
+                {value:48, name:'境外媒体'}
+            ]
         }
     ]
 };
@@ -365,10 +379,10 @@ function draw_onlinepattern(data){
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['online_pattern_top'][s]['0'] +  '</th><th style="text-align:center">' + data['online_pattern_top'][s]['1'] +  '</th></tr>';
     };
-    // html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iPhone 6 Plus</th><th style="text-align:center">128625</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">iPhone 6</th><th style="text-align:center">48230</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">iPhone客户端</th><th style="text-align:center">21368</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">360安全浏览器</th><th style="text-align:center">13629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iPhone 6 Plus</th><th style="text-align:center">128625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">iPhone 6</th><th style="text-align:center">48230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">iPhone客户端</th><th style="text-align:center">21368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">360安全浏览器</th><th style="text-align:center">13629</th></tr>';
     html += '</table>'; 
     $('#online_pattern').append(html);                  
 }
@@ -384,25 +398,25 @@ function draw_more_onlinepattern(data){
        var m = i + 1;
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + data['online_pattern_top'][s]['0'] +  '</th><th style="text-align:center">' + data['online_pattern_top'][s]['1'] +  '</th></tr>';
     };
-    // html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iPhone 6 Plus</th><th style="text-align:center">88625</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">iPhone 6</th><th style="text-align:center">78230</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">iPhone客户端</th><th style="text-align:center">51368</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">360安全浏览器</th><th style="text-align:center">50629</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 6 + '</th><th style="text-align:center">皮皮时光机</th><th style="text-align:center">48625</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 7 + '</th><th style="text-align:center">vivo_X5Max</th><th style="text-align:center">48230</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 8 + '</th><th style="text-align:center">iPhone 5s</th><th style="text-align:center">11368</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 9 + '</th><th style="text-align:center">Android客户端</th><th style="text-align:center">9629</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 10 + '</th><th style="text-align:center">红米Note</th><th style="text-align:center">8625</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 11 + '</th><th style="text-align:center">搜狗高速浏览器</th><th style="text-align:center">8230</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 12 + '</th><th style="text-align:center">小米手机2S</th><th style="text-align:center">7368</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 13 + '</th><th style="text-align:center">三星 GALAXY S6</th><th style="text-align:center">6629</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 14 + '</th><th style="text-align:center">iPad客户端</th><th style="text-align:center">6625</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 15 + '</th><th style="text-align:center">iPad mini</th><th style="text-align:center">5230</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 16 + '</th><th style="text-align:center">三星GALAXY S5</th><th style="text-align:center">4368</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 17 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">3629</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 18 + '</th><th style="text-align:center">微博手机版</th><th style="text-align:center">3230</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 19 + '</th><th style="text-align:center">魅族 MX4</th><th style="text-align:center">2368</th></tr>';
-    // html += '<tr><th style="text-align:center">' + 20 + '</th><th style="text-align:center">三星GALAXY S4</th><th style="text-align:center">1629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iPhone 6 Plus</th><th style="text-align:center">88625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 3 + '</th><th style="text-align:center">iPhone 6</th><th style="text-align:center">78230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 4 + '</th><th style="text-align:center">iPhone客户端</th><th style="text-align:center">51368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 5 + '</th><th style="text-align:center">360安全浏览器</th><th style="text-align:center">50629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 6 + '</th><th style="text-align:center">皮皮时光机</th><th style="text-align:center">48625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 7 + '</th><th style="text-align:center">vivo_X5Max</th><th style="text-align:center">48230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 8 + '</th><th style="text-align:center">iPhone 5s</th><th style="text-align:center">11368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 9 + '</th><th style="text-align:center">Android客户端</th><th style="text-align:center">9629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 10 + '</th><th style="text-align:center">红米Note</th><th style="text-align:center">8625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 11 + '</th><th style="text-align:center">搜狗高速浏览器</th><th style="text-align:center">8230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 12 + '</th><th style="text-align:center">小米手机2S</th><th style="text-align:center">7368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 13 + '</th><th style="text-align:center">三星 GALAXY S6</th><th style="text-align:center">6629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 14 + '</th><th style="text-align:center">iPad客户端</th><th style="text-align:center">6625</th></tr>';
+    html += '<tr><th style="text-align:center">' + 15 + '</th><th style="text-align:center">iPad mini</th><th style="text-align:center">5230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 16 + '</th><th style="text-align:center">三星GALAXY S5</th><th style="text-align:center">4368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 17 + '</th><th style="text-align:center">SAMSUNG</th><th style="text-align:center">3629</th></tr>';
+    html += '<tr><th style="text-align:center">' + 18 + '</th><th style="text-align:center">微博手机版</th><th style="text-align:center">3230</th></tr>';
+    html += '<tr><th style="text-align:center">' + 19 + '</th><th style="text-align:center">魅族 MX4</th><th style="text-align:center">2368</th></tr>';
+    html += '<tr><th style="text-align:center">' + 20 + '</th><th style="text-align:center">三星GALAXY S4</th><th style="text-align:center">1629</th></tr>';
     html += '</table>'; 
     $('#more_online_pattern').append(html);                  
 }
@@ -681,6 +695,8 @@ function draw_more_retweeted_user(data){
 function draw_sex(data){
   value_male = data['gender_ratio']['1'].toFixed(2);
   value_female = data['gender_ratio']['2'].toFixed(2);
+  value_unknown = 1 - value_female - value_male;
+  value_unknown = value_unknown.toFixed(2);
   var myChart = echarts.init(document.getElementById('sex')); 
   var option = {
       tooltip : {
@@ -690,7 +706,7 @@ function draw_sex(data){
       legend: {
           orient : 'vertical',
           x : 'left',
-          data:['男','女']
+          data:['已知男','已知女','未知']
       },
       toolbox: {
           show : true,
@@ -725,8 +741,9 @@ function draw_sex(data){
                   }
               },
               data:[
-                  {value:value_male, name:'男'},
-                  {value:value_female, name:'女'}
+                  {value:value_male, name:'已知男'},
+                  {value:value_female, name:'已知女'},
+                  {value:value_unknown, name:'未知'}
               ]
           }
       ]
