@@ -411,15 +411,7 @@ min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 $('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 $('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-<<<<<<< HEAD
-$('#attribute_pattern #num-range').change(function(){
-    var num = $('#attribute_pattern #num-range').val();
-    $('#attribute_pattern #show_num').empty();
-    $('#attribute_pattern #show_num').append(num);    
-});
-=======
 attr_bind_click();
->>>>>>> 71b6754d3f977720ab8b4193fe29f40d45a3623c
 
 function attr_bind_click(){
     $('#attribute_pattern #time_checkbox').click(function(){
@@ -431,6 +423,11 @@ function attr_bind_click(){
             $('#attribute_pattern #weibo_from').attr('disabled',true);
             $('#attribute_pattern #weibo_to').attr('disabled',true);
         }
+    });
+    $('#attribute_pattern #num-range').change(function(){
+        var num = $('#attribute_pattern #num-range').val();
+        $('#attribute_pattern #show_num').empty();
+        $('#attribute_pattern #show_num').append(num);    
     });
 }
 function attribute_pattern_check(){             // check validation 
