@@ -2,6 +2,10 @@ function getFullDate(tm){
     var tt = new Date(parseInt(tm)*1000).format("yyyy-MM-dd hh:mm:ss");
     return tt;
 }
+function getYearDate(tm){
+    var tt = new Date(parseInt(tm)*1000).format("yyyy-MM-dd");
+    return tt;
+}
 function getDate(tm){
     var tt = new Date(parseInt(tm)*1000).format("MM-dd hh:mm");
     return tt;
@@ -107,7 +111,7 @@ function week_chart(trend_data){
         for(i=0;i<trend.length;i++){
             var time = getDate(pre_time+trend[i][0]);
             var count = trend[i][1];
-            var date_zh =getDate_zh(pre_time+trend[i][0]);
+            var date_zh =getYearDate(pre_time+trend[i][0]);
             data_time.push(time);
             data_count.push(count);
             date_zhang.push(date_zh);
@@ -123,7 +127,7 @@ function week_chart(trend_data){
         for(i=0;i<trend.length;i++){
             var time = getDate(trend[i][0]);
             var count = trend[i][1];
-            var date_zh =getDate_zh(trend[i][0])
+            var date_zh =getYearDate(trend[i][0])
             data_time.push(time);
             data_count.push(count);
             date_zhang.push(date_zh);
@@ -232,7 +236,7 @@ function point2weibo(xnum, ts){
             delta += (a<10?"0"+a+":":a+":");
             delta += "00";
         }
-        $('#date_zh').html(getDate_zh(pre_time+ts[0]));
+        $('#date_zh').html(getYearDate(pre_time+ts[0]));
     }
     else{
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts[0];
@@ -246,7 +250,7 @@ function point2weibo(xnum, ts){
             case 4: delta = "16:00-20:00";break;
             case 5: delta = "20:00-24:00";break;
         }
-        $('#date_zh').html(getDate_zh(ts[0]));
+        $('#date_zh').html(getYearDate(ts[0]));
     }
     $('#time_zh').html(delta);
 }

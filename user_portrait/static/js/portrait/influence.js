@@ -425,7 +425,7 @@ function Draw_get_top_weibo(data,div_name){
   var html = '';
   $('#'+div_name).empty();
     if(data[0][3]==''){
-        html += "<div style='width:100%;height:100px;'>用户在昨天未发布任何微博</div>";
+        html += "<div style='margin-left:10px;width:100%;height:100px;'>用户在昨天未发布任何微博</div>";
     }else{
       html += '<div id="weibo_list" class="weibo_list weibo_list_height scrolls tang-scrollpanel" style="margin:0;">';
       html += '<div id="content_control_height" class="tang-scrollpanel-wrapper" style="margin:0;">';
