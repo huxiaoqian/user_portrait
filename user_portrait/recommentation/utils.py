@@ -16,7 +16,7 @@ from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import es_user_portrait as es
-from user_portrait.global_utils import es_user_profile
+from user_portrait.global_utils import es_user_profile, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.time_utils import ts2datetime, datetime2ts
@@ -186,6 +186,7 @@ def show_out_uid(fields):
     if not out_list:
         return out_list # no one is recommended to out
 
+    out_list = list(set(out_list))
     return_list = []
     detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
@@ -251,23 +252,32 @@ def search_history_delete(date):
 def show_all_out():
     delete_dict = r_out.hgetall('decide_delete_list')
     delete_keys_list = delete_dict.keys()
+    recommend_out_list = []
+    for iter_key in delete_keys_list:
+        try:
+            temp = json.loads(r_out.hget('decide_delete_list', iter_key))
+        except:
+            temp = []
+        recommend_out_list.extend(temp)
+    recommend_out_list = list(set(recommend_out_list))
+    #print recommend_out_list
 
     return_list = []
     fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
-    for iter_key in delete_keys_list:
-        temp_list = []
-        temp = json.loads(r_out.hget('decide_delete_list', iter_key))
-        if temp and temp != []:
-            detail = es.mget(index="user_portrait", doc_type="user", body={"ids":temp}, _source=True)['docs']
-            for i in range(len(temp)):
-                detail_info = []
+    if recommend_out_list:
+        detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":recommend_out_list}, _source=True)['docs']
+        for i in range(len(detail)):
+            detail_info = []
+            if detail[i]['found']:
                 for item in fields:
                     if item == "topic_string":
                         detail_info.append(','.join(detail[i]['_source'][item].split('&')))
                     else:
                         detail_info.append(detail[i]['_source'][item])
+            else:
+                detail_info = [detail[i]['_id'],[],[],[],[],[],[]]
 
-                return_list.append(detail_info)
+            return_list.append(detail_info)
 
     return json.dumps(return_list)
 

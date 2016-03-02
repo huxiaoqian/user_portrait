@@ -11,6 +11,7 @@ import time
 reload(sys)
 sys.path.append('./../../')
 from global_config import redis_path, es_path
+from time_utils import ts2datetime
 
 def check_redis(p_name):
     cmd = 'ps -ef|grep %s|grep -v "grep"' % p_name
@@ -37,9 +38,22 @@ def check_elasticsearch(p_name):
 
 if __name__ == '__main__':
 
-
+    current_path = os.getcwd()
+    now_ts = time.time()
+    file_path_redis = os.path.join(current_path, 'redis')
+    file_path_elasticsearch = os.path.join(current_path, 'elasticsearch')
+    print_log_redis = "&".join([file_path_redis, "start", ts2datetime(now_ts)])
+    print_log_elasticsearch = "&".join([file_path_elasticsearch, "start", ts2datetime(now_ts)])
+    print print_log_redis
+    print print_log_elasticsearch
     # test redis running
     check_redis("redis")
 
     # test elasticsearch running
     check_elasticsearch("elasticsearch")
+
+    now_ts = time.time()
+    print_log_redis = "&".join([file_path_redis, "end", ts2datetime(now_ts)])
+    print_log_elasticsearch = "&".join([file_path_elasticsearch, "start", ts2datetime(now_ts)]
+    print print_log_redis
+    print print_log_elasticsearch

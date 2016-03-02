@@ -12,20 +12,24 @@ def check(p_name):
         val = p.stdout.read()
         #print val
         if p_name in val:
-            print "running"
+            print "%s %s running" % (time.ctime(),p_name)
     else:
-        print "collapse"
-        #os.system("python ./%s &" % p_name)
+        os.system("python ./%s &" % p_name)
+        print "%s %s restart" % (time.ctime(), p_name)
 
 
 if __name__ == '__main__':
     # 查询zmq_vent_weibo.py是否在执行
     current_path = os.getcwd()
-    file_path = os.path.join(current_path, 'zmq_vent_weibo.py')
+    file_path = os.path.join(current_path, 'zmq_work_weibo.py')
     ts = time.time()
-    print_log = "&".join([file_path, "start", now_ts])
+    print_log = "&".join([file_path, "start", ts])
     print print_log #打印开始信息
 
-    d_name = 'zmq_vent_weibo.py'
+    d_name = 'zmq_work_weibo.py'
     check(item)
+
+    ts = time.time()
+    print_log = "&".join([file_path, "end", ts])
+    print print_log
 

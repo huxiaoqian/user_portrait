@@ -158,11 +158,18 @@ def compute(user_set, bulk_action):
 
 if __name__ == "__main__":
 
+    # 打印起始信息
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, 'redis_to_es.py')
+    now_ts = time.time()
+    print_log = "&".join([file_path, "start", now_ts])
+    print print_log
+
     es_index = time.strftime("%Y%m%d", time.localtime(time.time()-86400))
-    es_index = "20130905"
+    #es_index = "20130905"
     es_index = pre_influence_index + es_index
     bool = es.indices.exists(index=es_index)
-    print bool
+    #print bool
     if not bool:
         mappings(es, es_index)
 
@@ -181,14 +188,19 @@ if __name__ == "__main__":
             count += 10000
 
             ts = time.time()
-            print "%s : %s" %(count, ts - tb)
+            #print "%s : %s" %(count, ts - tb)
             tb = ts
         elif bulk_action:
             count += len(temp)
             es.bulk(bulk_action, index=es_index, doc_type='bci', timeout=30)
-            print "total_count : %s "  %count
+            #print "total_count : %s "  %count
             break
 
         else:
             print "total_count : %s "  %count
             break
+
+    # 打印终止信息
+    now_ts = time.time()
+    print_log = "&".join([file_path, "end", now_ts])
+    print print_log

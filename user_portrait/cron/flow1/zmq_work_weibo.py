@@ -120,11 +120,7 @@ if __name__ == "__main__":
             continue 
 
         if int(item['sp_type']) == 1:
-            try:
-                cal_propage_work(item)
-            except Exception, r:
-                now_ts = str(ts2date(time.time()))
-                f.write(now_ts + ": " + str(Exception) + "  " + r)
+            cal_propage_work(item)
 
 
             count += 1

@@ -10,12 +10,11 @@ def check(p_name):
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     if p.wait() == 0:
         val = p.stdout.read()
-        print val
         if p_name in val:
-            print "ok - %s python process is running" % p_name
+            print "%s %s running" % (time.ctime(), p_name)
     else:
-        print "no process is running!"
-        #os.system("python ./%s &" % p_name)
+        os.system("python ./%s &" % p_name)
+        print "%s %s restart" % (time.ctime(), p_name)
 
 
 if __name__ == '__main__':
