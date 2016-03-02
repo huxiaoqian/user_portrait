@@ -99,3 +99,7 @@ XAPIAN_ZMQ_POLL_TIMEOUT = 100000
 WEIBO_API_HOST = ''
 WEIBO_API_PORT = ''
 
+
+# redis/elasticsearch path
+redis_path = '/home/redis-3.0.1'
+es_path = '/home/elasticsearch-1.6.0'

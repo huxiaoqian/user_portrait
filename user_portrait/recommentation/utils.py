@@ -7,6 +7,7 @@ import IP
 import sys
 import time
 import datetime
+import math
 import json
 import redis
 import math
@@ -16,7 +17,7 @@ from user_portrait.global_utils import R_RECOMMENTATION as r
 from user_portrait.global_utils import R_RECOMMENTATION_OUT as r_out
 from user_portrait.global_utils import R_CLUSTER_FLOW2 as r_cluster
 from user_portrait.global_utils import es_user_portrait as es
-from user_portrait.global_utils import es_user_profile
+from user_portrait.global_utils import es_user_profile, portrait_index_name, portrait_index_type
 from user_portrait.global_utils import ES_CLUSTER_FLOW1 as es_cluster
 from user_portrait.filter_uid import all_delete_uid
 from user_portrait.time_utils import ts2datetime, datetime2ts
@@ -177,6 +178,25 @@ def identify_compute(data):
 
     return True
 
+########################################
+########################################
+def get_top_influence(key):
+    query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort":{key:{"order":"desc"}},
+        "size": 1
+    }
+
+    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["hits"]["hits"]
+    if search_result:
+        result = search_result[0]['_source'][key]
+
+    return result
+
+
+
 def show_out_uid(fields):
     out_list = []
     recommend_dict = r_out.hgetall("recommend_delete_list")
@@ -186,6 +206,10 @@ def show_out_uid(fields):
     if not out_list:
         return out_list # no one is recommended to out
 
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
+    out_list = list(set(out_list))
     return_list = []
     detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":out_list}, _source=True)['docs']
             # extract the return dict with the field '_source'
@@ -197,6 +221,12 @@ def show_out_uid(fields):
         for item in fields:
             if item == "topic":
                 detail_info.append(','.join(detail[i]['_source']['topic_string'].split("&")))
+            elif item == "influence":
+                detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_influence)*100))
+            elif item == "importance":
+                detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_importance)*100))
+            elif item == "activeness":
+                detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_activeness)*100))
             else:
                 detail_info.append(detail[i]['_source'][item])
         return_list.append(detail_info)
@@ -230,6 +260,9 @@ def search_history_delete(date):
     return_list = []
     now_date = date
 
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
     fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
     temp = r_out.hget("decide_delete_list", now_date)
     if temp:
@@ -241,6 +274,12 @@ def search_history_delete(date):
                 for item in fields:
                     if item == "topic_string":
                         detail_info.append(','.join(detail[i]['_source'][item].split("&")))
+                    elif item == "influence":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_influence)*100))
+                    elif item == "importance":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_importance)*100))
+                    elif item == "activeness":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_activeness)*100))
                     else:
                         detail_info.append(detail[i]['_source'][item])
                 return_list.append(detail_info)
@@ -248,26 +287,45 @@ def search_history_delete(date):
     return json.dumps(return_list)
 
 
+
 def show_all_out():
     delete_dict = r_out.hgetall('decide_delete_list')
     delete_keys_list = delete_dict.keys()
+    recommend_out_list = []
+    for iter_key in delete_keys_list:
+        try:
+            temp = json.loads(r_out.hget('decide_delete_list', iter_key))
+        except:
+            temp = []
+        recommend_out_list.extend(temp)
+    recommend_out_list = list(set(recommend_out_list))
+    #print recommend_out_list
 
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
     return_list = []
     fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
-    for iter_key in delete_keys_list:
-        temp_list = []
-        temp = json.loads(r_out.hget('decide_delete_list', iter_key))
-        if temp and temp != []:
-            detail = es.mget(index="user_portrait", doc_type="user", body={"ids":temp}, _source=True)['docs']
-            for i in range(len(temp)):
-                detail_info = []
+    if recommend_out_list:
+        detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":recommend_out_list}, _source=True)['docs']
+        for i in range(len(detail)):
+            detail_info = []
+            if detail[i]['found']:
                 for item in fields:
                     if item == "topic_string":
                         detail_info.append(','.join(detail[i]['_source'][item].split('&')))
+                    elif item == "influence":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_influence)*100))
+                    elif item == "importance":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_importance)*100))
+                    elif item == "activeness":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_activeness)*100))
                     else:
                         detail_info.append(detail[i]['_source'][item])
+            else:
+                detail_info = [detail[i]['_id'],[],[],[],[],[],[]]
 
-                return_list.append(detail_info)
+            return_list.append(detail_info)
 
     return json.dumps(return_list)
 

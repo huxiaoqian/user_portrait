@@ -4,6 +4,7 @@
     将user_portrait中，未复制到copy_user_portrait的用户复制过来，以作后用
 """
 
+import os
 import sys
 import time
 from elasticsearch import Elasticsearch
@@ -61,7 +62,13 @@ def co_search(es, user_list, bulk_action, count_n, tb):
 
 if __name__ == "__main__":
 
+    # 1. print start info
     tb = time.time()
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, 'copy_portrait.py')
+    now_ts = ts2datetime(tb)
+    print_log = "&".join([file_path, "start", now_ts])
+    print print_log #打印开始信息
 
     index_exist = es.indices.exists(index=index_destination)
     if not index_exist:
@@ -93,6 +100,10 @@ if __name__ == "__main__":
     if bulk_action:
         es.bulk(bulk_action, index=index_destination, doc_type=index_destination_doctype, timeout=30)
 
-    print count
-    print count_n
+    print count, count_n #数字相等才匹配
+
+    # 2. 打印终止信息
+    now_ts = ts2datetime(time.time())
+    print_log = "&".join([file_path, "end", now_ts])
+    print print_log
 

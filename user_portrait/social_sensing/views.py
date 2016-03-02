@@ -2,6 +2,7 @@
 
 import os
 import time
+import math
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from user_portrait.time_utils import datetime2ts, ts2datetime
@@ -281,10 +282,28 @@ def ajax_get_group_list():
 
     return json.dumps(results)
 
+def get_top_influence(key):
+    query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort":{key:{"order":"desc"}},
+        "size": 1
+    }
+
+    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
+    if search_result:
+        result = search_result[0]['_source'][key]
+
+    return result
+
 @mod.route('/get_group_detail/')
 def ajax_get_group_detail():
     task_name = request.args.get('task_name','') # task_name
     portrait_detail = []
+    top_activeness = get_top_influence("activeness")
+    top_influence = get_top_influence("influence")
+    top_importance = get_top_influence("importance")
     search_result = es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name).get('_source', {})
     if search_result:
         try:
@@ -299,6 +318,12 @@ def ajax_get_group_detail():
                     if iter_item == "topic_string":
                         temp.append(item["fields"][iter_item][0].split('&'))
                         temp.append(item["fields"][iter_item][0].split('&'))
+                    elif iter_item == "activeness":
+                        temp.append(math.ceil(item["fields"][iter_item][0]/float(top_activeness)*100))
+                    elif iter_item == "importance":
+                        temp.append(math.ceil(item["fields"][iter_item][0]/float(top_importance)*100))
+                    elif iter_item == "influence":
+                        temp.append(math.ceil(item["fields"][iter_item][0]/float(top_influence)*100))
                     else:
                         temp.append(item["fields"][iter_item][0])
                 portrait_detail.append(temp)
