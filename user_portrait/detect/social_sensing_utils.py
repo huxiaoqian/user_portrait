@@ -86,8 +86,6 @@ def show_important_users(task_name):
                 for iter_item in SOCIAL_SENSOR_INFO:
                     if iter_item == "topic_string":
                         temp.append(item["fields"][iter_item][0].split('&'))
-#                    elif iter_item == "influence":
-#                        temp.append(math.ceil(item["fields"][iter_item][0]/top_influence))
                     else:
                         temp.append(item["fields"][iter_item][0])
                 portrait_detail.append(temp)
@@ -126,6 +124,5 @@ def show_important_users(task_name):
 
 
     return_results['group_list'] = user_detail_info
-    print return_results
     return return_results
 
