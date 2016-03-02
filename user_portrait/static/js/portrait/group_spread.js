@@ -1,137 +1,137 @@
 //test
-function Draw_top_location2(data1, data2, data3){
-    var y_axi_1 = data1[0];
-    var x_axi_1 = data1[1];
-    var xdata_1 = [];
+// function Draw_top_location2(data1, data2, data3){
+//     var y_axi_1 = data1[0];
+//     var x_axi_1 = data1[1];
+//     var xdata_1 = [];
 
-    for (var i = 0; i< x_axi_1.length-1; i++){
-        xdata_1.push(data1[1][i] + '-' + data1[1][i+1])
-    };
+//     for (var i = 0; i< x_axi_1.length-1; i++){
+//         xdata_1.push(data1[1][i] + '-' + data1[1][i+1])
+//     };
 
-    var y_axi_2 = data2[0];
-    var x_axi_2 = data2[1];
-    var xdata_2 = [];
+//     var y_axi_2 = data2[0];
+//     var x_axi_2 = data2[1];
+//     var xdata_2 = [];
 
-    for (var i = 0; i< data2[1].length-1; i++){
-        xdata_2.push(data2[1][i] + '-' + data2[1][i+1])
-    };
+//     for (var i = 0; i< data2[1].length-1; i++){
+//         xdata_2.push(data2[1][i] + '-' + data2[1][i+1])
+//     };
 
-    var y_axi_3 = data3[0];
-    var x_axi_3 = data3[1];
-    var xdata_3 = [];
+//     var y_axi_3 = data3[0];
+//     var x_axi_3 = data3[1];
+//     var xdata_3 = [];
 
-    for (var i = 0; i< data3[1].length-1; i++){
-        xdata_3.push(data3[1][i] + '-' + data3[1][i+1])
-    };
-  // console.log(bar_data_y);
+//     for (var i = 0; i< data3[1].length-1; i++){
+//         xdata_3.push(data3[1][i] + '-' + data3[1][i+1])
+//     };
+//   // console.log(bar_data_y);
   
-    //console.log(timeline_data);
-    var myChart = echarts.init(document.getElementById('whole_out_user')); 
+//     //console.log(timeline_data);
+//     var myChart = echarts.init(document.getElementById('whole_out_user')); 
 
-    var option = {
-        timeline:{
-            data:['用户粉丝数','dd','dd'],
-            autoPlay : true,
-            playInterval : 2000
-        },
-        tooltip : {'trigger':'axis',
-                    formatter:  function (params) {
-                    //console.log(params)
-                    var res = 'Function formatter : <br/>' + params[0].name;
-                    for (var i = 0, l = params.length; i < l; i++) {
-                        res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
-                    }
+//     var option = {
+//         timeline:{
+//             data:['用户粉丝数','dd','dd'],
+//             autoPlay : true,
+//             playInterval : 2000
+//         },
+//         tooltip : {'trigger':'axis',
+//                     formatter:  function (params) {
+//                     //console.log(params)
+//                     var res = 'Function formatter : <br/>' + params[0].name;
+//                     for (var i = 0, l = params.length; i < l; i++) {
+//                         res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+//                     }
 
-                    return res; 
-            }},
-        toolbox : {
-            'show':false, 
-            orient : 'vertical',
-            x: 'right', 
-            y: 'center',
-            'feature':{
-                'mark':{'show':true},
-                'dataView':{'show':true,'readOnly':false},
-                'magicType':{'show':true,'type':['line','bar','stack','tiled']},
-                'restore':{'show':true},
-                'saveAsImage':{'show':true}
-            }
-        },
-        options : [
-            {
-                title : {'text':'粉丝数分布'},
-                tooltip : {'trigger':'axis',
-                    formatter: "{b}<br/>{a}:{c}"},
-                calculable : true,
-                grid : {'y':80,'y2':100},
-                xAxis :  [{
-                    'type':'category',
-                    'axisLabel':{'interval':0},
-                    'data':xdata_1
-                }],
-                yAxis : [{
-                    'type':'value',
-                    'name':'次数',
-                    //'max':53500
-                    }
-                ],
-                series : [
-                    {
-                        title : {'text':'数值'},
-                        'type':'bar',
-                        'data': y_axi_1
-                    }
-                ]
-            },
-            {
-                title : {'text':'朋友数分布'},
-                tooltip : {'trigger':'axis'},
-                calculable:  true,
-                grid :  {'y':80,'y2':100},
-                xAxis : [{
-                    'type':'category',
-                    'axisLabel':{'interval':0},
-                    'data':xdata_2
-                }],
-                yAxis : [{
-                    'type':'value',
-                    'name':'次数',
-                    //'max':53500
-                    }
-                ],
-                series : [{
-                    title : {'text':'数值'},
-                    'type':'bar',
-                    'data': y_axi_2}
-                ]
-            },
-            {
-                title : {'text':'微博数分布'},
-                tooltip : {'trigger':'axis'},
-                calculable :  true,
-                grid : {'y':80,'y2':100},
-                xAxis : [{
-                    'type':'category',
-                    'axisLabel':{'interval':0},
-                    'data':xdata_3
-                }],
-                yAxis : [{
-                    'type':'value',
-                    'name':'次数',
-                    //'max':53500
-                    }
-                ],
-                series : [{
-                    title : {'text':'数值'},
-                    'type':'bar',
-                    'data': y_axi_3
-                }]
-            }
-        ]
-    };
-    myChart.setOption(option);
+//                     return res; 
+//             }},
+//         toolbox : {
+//             'show':false, 
+//             orient : 'vertical',
+//             x: 'right', 
+//             y: 'center',
+//             'feature':{
+//                 'mark':{'show':true},
+//                 'dataView':{'show':true,'readOnly':false},
+//                 'magicType':{'show':true,'type':['line','bar','stack','tiled']},
+//                 'restore':{'show':true},
+//                 'saveAsImage':{'show':true}
+//             }
+//         },
+//         options : [
+//             {
+//                 title : {'text':'粉丝数分布'},
+//                 tooltip : {'trigger':'axis',
+//                     formatter: "{b}<br/>{a}:{c}"},
+//                 calculable : true,
+//                 grid : {'y':80,'y2':100},
+//                 xAxis :  [{
+//                     'type':'category',
+//                     'axisLabel':{'interval':0},
+//                     'data':xdata_1
+//                 }],
+//                 yAxis : [{
+//                     'type':'value',
+//                     'name':'次数',
+//                     //'max':53500
+//                     }
+//                 ],
+//                 series : [
+//                     {
+//                         title : {'text':'数值'},
+//                         'type':'bar',
+//                         'data': y_axi_1
+//                     }
+//                 ]
+//             },
+//             {
+//                 title : {'text':'朋友数分布'},
+//                 tooltip : {'trigger':'axis'},
+//                 calculable:  true,
+//                 grid :  {'y':80,'y2':100},
+//                 xAxis : [{
+//                     'type':'category',
+//                     'axisLabel':{'interval':0},
+//                     'data':xdata_2
+//                 }],
+//                 yAxis : [{
+//                     'type':'value',
+//                     'name':'次数',
+//                     //'max':53500
+//                     }
+//                 ],
+//                 series : [{
+//                     title : {'text':'数值'},
+//                     'type':'bar',
+//                     'data': y_axi_2}
+//                 ]
+//             },
+//             {
+//                 title : {'text':'微博数分布'},
+//                 tooltip : {'trigger':'axis'},
+//                 calculable :  true,
+//                 grid : {'y':80,'y2':100},
+//                 xAxis : [{
+//                     'type':'category',
+//                     'axisLabel':{'interval':0},
+//                     'data':xdata_3
+//                 }],
+//                 yAxis : [{
+//                     'type':'value',
+//                     'name':'次数',
+//                     //'max':53500
+//                     }
+//                 ],
+//                 series : [{
+//                     title : {'text':'数值'},
+//                     'type':'bar',
+//                     'data': y_axi_3
+//                 }]
+//             }
+//         ]
+//     };
+//     myChart.setOption(option);
                     
-}
+// }
 
 //影响力分布
 function draw_influ_distribution(data,radar_div, title){
