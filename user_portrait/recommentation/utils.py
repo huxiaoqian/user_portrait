@@ -7,6 +7,7 @@ import IP
 import sys
 import time
 import datetime
+import math
 import json
 import redis
 import math
@@ -177,6 +178,25 @@ def identify_compute(data):
 
     return True
 
+########################################
+########################################
+def get_top_influence(key):
+    query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort":{key:{"order":"desc"}},
+        "size": 1
+    }
+
+    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)["hits"]["hits"]
+    if search_result:
+        result = search_result[0]['_source'][key]
+
+    return result
+
+
+
 def show_out_uid(fields):
     out_list = []
     recommend_dict = r_out.hgetall("recommend_delete_list")
@@ -186,6 +206,9 @@ def show_out_uid(fields):
     if not out_list:
         return out_list # no one is recommended to out
 
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
     out_list = list(set(out_list))
     return_list = []
     detail = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":out_list}, _source=True)['docs']
@@ -198,6 +221,12 @@ def show_out_uid(fields):
         for item in fields:
             if item == "topic":
                 detail_info.append(','.join(detail[i]['_source']['topic_string'].split("&")))
+            elif item == "influence":
+                detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_influence)*100))
+            elif item == "importance":
+                detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_importance)*100))
+            elif item == "activeness":
+                detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_activeness)*100))
             else:
                 detail_info.append(detail[i]['_source'][item])
         return_list.append(detail_info)
@@ -231,6 +260,9 @@ def search_history_delete(date):
     return_list = []
     now_date = date
 
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
     fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
     temp = r_out.hget("decide_delete_list", now_date)
     if temp:
@@ -242,11 +274,18 @@ def search_history_delete(date):
                 for item in fields:
                     if item == "topic_string":
                         detail_info.append(','.join(detail[i]['_source'][item].split("&")))
+                    elif item == "influence":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_influence)*100))
+                    elif item == "importance":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_importance)*100))
+                    elif item == "activeness":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_activeness)*100))
                     else:
                         detail_info.append(detail[i]['_source'][item])
                 return_list.append(detail_info)
 
     return json.dumps(return_list)
+
 
 
 def show_all_out():
@@ -262,6 +301,9 @@ def show_all_out():
     recommend_out_list = list(set(recommend_out_list))
     #print recommend_out_list
 
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
     return_list = []
     fields = ['uid','uname','domain','topic_string','influence','importance','activeness']
     if recommend_out_list:
@@ -272,6 +314,12 @@ def show_all_out():
                 for item in fields:
                     if item == "topic_string":
                         detail_info.append(','.join(detail[i]['_source'][item].split('&')))
+                    elif item == "influence":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_influence)*100))
+                    elif item == "importance":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_importance)*100))
+                    elif item == "activeness":
+                        detail_info.append(math.ceil(detail[i]["_source"][item]/float(top_activeness)*100))
                     else:
                         detail_info.append(detail[i]['_source'][item])
             else:
