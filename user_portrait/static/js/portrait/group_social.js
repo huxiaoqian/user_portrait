@@ -313,7 +313,7 @@ function draw_relation_out_net(data,name,symbols){
             content['name'] = data[name][s]['5'];
         };
         content['id'] = data[name][s]['1'];
-        content['value'] = data[name][s]['3'];
+        content['value'] = data[name][s]['3']/10;
         content['draggable'] = true;
         total_content.push(content);
         content = {};
@@ -389,7 +389,8 @@ function draw_relation_out_net(data,name,symbols){
                     label: {
                         show: true,
                         textStyle: {
-                            color: '#333'
+                            color: '#333',
+                            fontSize:12
                         },
                 labelLine : {
                     show : true,
