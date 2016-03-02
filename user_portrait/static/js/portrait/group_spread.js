@@ -385,8 +385,8 @@ Show_influ.prototype = {
     //console.log(domains);
     Draw_topic2(topics,'influence_topic', 'influ_topic_WordList','showmore_topic_influ');
     Draw_topic2(domains,'influence_domain', 'influ_domain_WordList','showmore_domain_influ');
-    draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力');
-    draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度');
+    draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力排名');
+    draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度排名');
     var influ_out = data['influence_out_user'];
     //Draw_top_location2(influ_out['out_fansnum_his'], influ_out['out_friendsnum_his'], influ_out['out_statusnum_his']);
     draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');

@@ -73,7 +73,17 @@ function Draw_activity(data){
                         call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
                         var html0 = '';
                         $('#line_select_time').empty();  
-                        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div>";
+                        var time_index = event.point.x;
+                        if(time_index != 0){
+                            var time_split = data_x_[time_index].split('-');
+                            var time_split_end = time_split[1];
+                            var time_split_from = data_x_[time_index-1];
+                            var split_from =   time_split_from[0] 
+                            html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+time_split_from+'--'+time_split[1]+'-'+time_split[2]+"</div>";
+                        }else{
+                            html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div>";
+                        }
+                        //data_x_[event.point.x]
                         console.log(html0);
                         console.log(event.point.x);
                         $('#line_select_time').append(html0);
@@ -360,8 +370,10 @@ function moving_geo(data){
     var end_city = [];
     for(var i=0;i < dealt_data[0].length;i++){
         var city_split = dealt_data[0][i].split('&');
-        from_city.push(city_split[0])
-        end_city.push(city_split[1]);
+        var from_last_city = city_split[0].split('\t');
+        var end_last_city = city_split[1].split('\t');
+        from_city.push(from_last_city[from_last_city.length-1])
+        end_city.push(end_last_city[end_last_city.length-1]);
     }
     var html = '';
     if (dealt_data[0].length == 0){
@@ -375,15 +387,15 @@ function moving_geo(data){
             Draw_more_moving_geo(from_city, end_city, dealt_data);
             html += '<table class="table table-striped" style="width:100%;font-size:14px;margin-bottom:0px;">';
             html += '<tr><th style="text-align:center">起始地</th>';
-            html += '<th style="text-align:right"></th>';
+            html += '<th style="text-align:right;width:30px;"></th>';
             html += '<th style="text-align:left">目的地</th>';
-            html += '<th style="text-align:center">人数</th>';
+            html += '<th style="text-align:center">人次</th>';
             html += '</tr>';
             for (var i = 0; i < 5; i++) {
                 html += '<tr>';
                 html += '<td style="text-align:center;vertical-align: middle;">' + from_city[i] + '</td>';
-                html += '<td style="text-align:center;"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
-                html += '<td style="text-align:left;vertical-align: middle;">' + end_city[i] + '</td>';
+                html += '<td style="text-align:center;"><img src="/../../static/img/arrow_geo.png" style="width:25px;"></td>';
+                html += '<td style="text-align:center;vertical-align: middle;">' + end_city[i] + '</td>';
                 html += '<td style="text-align:center;vertical-align: middle;">' + dealt_data[1][i] + '</td>';
             html += '</tr>'; 
             };
@@ -401,7 +413,7 @@ function Draw_more_moving_geo(from_city, end_city, dealt_data){
     html += '<tr><th style="text-align:center">起始地</th>';
     html += '<th style="text-align:right"></th>';
     html += '<th style="text-align:left">目的地</th>';
-    html += '<th style="text-align:center">人数</th>';
+    html += '<th style="text-align:center">人次</th>';
     html += '</tr>';
     for (var i = 0; i < dealt_data[0].length; i++) {
         html += '<tr>';
@@ -636,6 +648,7 @@ function group_activity(data){
 
 function show_activity(data) {
 	var time_data = [23,3,4,55,22,6]
+    // console.log(runtype);
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
 
