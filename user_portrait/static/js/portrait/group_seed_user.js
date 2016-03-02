@@ -140,6 +140,11 @@ last_date = last_date.format('yyyy/MM/dd hh:mm');
 var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
 var seed_user_flag = false;
 seed_user_init();
+$('#seed_user #num-range').change(function(){
+    var num = $('#seed_user #'+seed_user_option+' #num-range').val();
+    $('#seed_user #show_num').empty();
+    $('#seed_user #show_num').append(num);    
+})
 $('#seed_user [name="mode_choose"]').change(function(){
     seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
     if (seed_user_option == 'single_user'){

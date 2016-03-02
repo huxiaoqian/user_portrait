@@ -142,8 +142,11 @@ function del(data){
 		//console.log(data);
 		if(data==true){
 			alert('操作成功！');
-			location.reload();
+			redraw_result();
+			//location.reload();
 			//window.location.href=window.location.href;
+		}else{
+			alert('删除失败，请重试！')
 		}
 }
 
