@@ -181,7 +181,7 @@ function draw_relation_net(data,name,symbols){
         }else{
             content['name'] = data[name][s]['4'];
         }
-        console.log('name!2!',content['name']);
+        //console.log('name!2!',content['name']);
         content['id'] = data[name][s]['1'];
         content['value'] = 7;
         content['draggable'] = true;
@@ -324,7 +324,7 @@ function draw_relation_out_net(data,name,symbols){
         }else{
             content['name'] = data[name][s]['5'];
         };
-        console.log(content['name']);
+        //console.log(content['name']);
         //content['name'] = data[name][s]['5'];
         content['id'] = data[name][s]['1'];
         content['value'] = data[name][s]['3'];
