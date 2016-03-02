@@ -12,8 +12,8 @@ Attention.prototype = {   //获取数据，重新画表
     });
   },
 Draw_attention:function(data){
-    var texts = '';
-	 var items = data;
+  var texts = '';
+	var items = data;
 	if(items==null){
 		var say = document.getElementById('test1');
 		say.innerHTML = '该用户暂无此数据';
@@ -36,6 +36,7 @@ bind_social_mode_choose();
 function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
+    console.log(in_data);
     var personal_url = '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
@@ -43,13 +44,13 @@ function attention(data,UserID,UserName,texts){
     nod['name'] = UserName;
     nod['value'] = 10;
     nodeContent.push(nod);
-    for (i=0;i<out_data.length;i++){
+    for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
             if(out_data[i][0]=='unknown'){
               var nod_name_out = '未知';
             }else{
-              var nod_name_out = out_data[i][0]
+              var nod_name_out = out_data[i][0];
             }
             nod['name'] = nod_name_out;
             nod['label'] = out_data[i][1];
@@ -57,13 +58,13 @@ function attention(data,UserID,UserName,texts){
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
     }
-    for (i=0;i<in_data.length;i++){
+    for (var i=0;i<in_data.length;i++){
             nod = {};
             nod['category'] = 1;
             if(out_data[i][0]=='unknown'){
               var nod_name_in = '未知';
             }else{
-              var nod_name_in = out_data[i][0]
+              var nod_name_in = in_data[i][0];
             }
             nod['name'] = nod_name_in;
             nod['label'] = in_data[i][1];
@@ -284,7 +285,7 @@ function draw_out_list(data){
       var item = data[i];
       //item = replace_space(item);
       //global_data[item[0]] = item; // make global data
-      user_url = 'http://weibo.com/u/'+ item[0];
+      var user_url = 'http://weibo.com/u/'+ item[0];
       html += '<tr id=' + item[0] +'>';
       html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
       html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
@@ -300,9 +301,13 @@ function draw_out_list(data){
 
 
 function draw_in_list(data){
+  //console.log(personalData.uname);
+  //console.log(uname);
     if(personalData.uname == 'unknown'){
       var uname = '未知';
-    };
+    }else if(personalData.uname == 'undefined'){
+      var uname = '未知';
+    }else{var uname = personalData.uname};
     $('#in_list').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -326,7 +331,10 @@ function draw_in_list(data){
       html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
       if(item[1] == 'unknown'){
         var user_name = '未知';
-      }
+      }else if(item[1]  == 'undefined'){
+      var user_name  = '未知';
+     }else{ var user_name =item[1]};
+     //console.log(item[1]);
       html += '<td style="text-align:center" style="width:150px;">'+ user_name +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[2].toFixed(2) +'</td>';
       html += '<td style="text-align:center" style="width:70px;">'+ item[3].toFixed(2) +'</td>';
@@ -441,42 +449,43 @@ function bind_social_mode_choose(){
         $("#test0").empty();
         $("#field").empty();
         $("#topic").empty();
+        console.log(uid);
       if (select_graph == 1){
           var test_html='转发情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
-        url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
+        var url = '/attribute/attention/?uid='+uid+'&top_count='+select_num  ;
         Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
       }
       else if(select_graph == 2){
         var test_html='被转发情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
-        url = '/attribute/follower/?uid='+uid+'&top_count='+select_num ;
+        var url = '/attribute/follower/?uid='+uid+'&top_count='+select_num ;
         Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
       }
       else if(select_graph == 3){
         var test_html='提及情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
-        url = '/attribute/mention/?uid='+uid+'&top_count='+select_num  ;
+        var url = '/attribute/mention/?uid='+uid+'&top_count='+select_num  ;
         Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
       }
       else if(select_graph == 4){
         var test_html='评论情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
-         url = '/attribute/comment/?uid='+uid+'&top_count='+select_num  ;
+        var url = '/attribute/comment/?uid='+uid+'&top_count='+select_num  ;
         Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
         //Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_picture);
       }
       else if(select_graph == 5){
         var test_html='被评论情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
-        url = '/attribute/be_comment/?uid='+uid+'&top_count='+select_num  ;
+        var url = '/attribute/be_comment/?uid='+uid+'&top_count='+select_num  ;
         Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
         //Comment.call_sync_ajax_request(url, Comment.ajax_method, Comment.Draw_picture);
       }
       else if(select_graph == 6){
         var test_html='互动情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
-        url = '/attribute/bidirect_interaction/?uid='+uid+'&top_count='+select_num  ;
+        var url = '/attribute/bidirect_interaction/?uid='+uid+'&top_count='+select_num  ;
         Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
       }      
     });
