@@ -23,8 +23,11 @@ Draw_resultTable: function(data){
     var item = data;
 	var html = '';
 	html += '<a id="turnback" onclick="redraw_result();" style="float:right;margin-right:40px;margin-top:12px;">查看全部任务</a><a data-toggle="modal" id="searchTable" href="#task_search" style="margin-bottom:10px;margin-top:12px;float: right;margin-right: 20px;"">表单搜索</a>';
-	html += '<table class="table table-bordered table-striped table-condensed datatable" >';
-	html += '<thead><tr style="text-align:center;">	<th>群组名称</th><th>时间</th><th>群组人数</th><th>备注</th><th>计算状态</th><th>操作</th></tr></thead>';
+	html += '<table id="group_analysis_body" class="table table-bordered table-striped table-condensed datatable" >';
+	html += '<thead><tr style="text-align:center;">	';
+    html += '<th style="width:160px;">群组名称</th>';
+    html += '<th style="width:170px;">时间</th><th>群组人数</th>';
+    html += '<th style="width:200px;">备注</th><th>计算状态</th><th>操作</th></tr></thead>';
 	html += '<tbody>';
 	for (i=0;i<item.length;i++){
 		html += '<tr>';
@@ -55,6 +58,15 @@ Draw_resultTable: function(data){
 			Group_identify_task.call_sync_ajax_request(url,Group_identify_task.ajax_method,del);
 		}
 	});	
+    $('#group_analysis_body').dataTable({
+       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+       "sPaginationType": "bootstrap",
+       "aaSorting": [[ 1, "desc" ]],
+        "aoColumnDefs":[ {"bSortable": false, "aTargets":[5]}],
+       "oLanguage": {
+           "sLengthMenu": "_MENU_ 每页"
+       }
+    });
 	},
 
 Draw_dis_Table:function(data){
