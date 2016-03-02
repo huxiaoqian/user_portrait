@@ -332,7 +332,7 @@ function Draw_group_trend(data){
         var url_content = '/group/group_sentiment_weibo/?task_name='+name+'&sentiment=0&start_ts='+times_init;
         g_psy.call_sync_ajax_request(url_content,g_psy.ajax_method,group_draw_content);
         $('#group_select_time').empty();  
-        html0 += "<div style='float:left'>当前选择时间段：</div><div style='color:brown;'>"+items['sentiment_trend']['time_list'][0]+"</div><br><div style='float:left' >当前选择情绪：</div><div style='color:brown;'>中性</div>";
+        html0 += "<div style='float:left'>当前选择日期：</div><div style='color:brown;'>"+items['sentiment_trend']['time_list'][0]+"</div><br><div style='float:left' >当前选择情绪：</div><div style='color:brown;'>中性</div>";
         $('#group_select_time').append(html0);
     }   
 }
