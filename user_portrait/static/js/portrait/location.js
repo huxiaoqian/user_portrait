@@ -1,22 +1,6 @@
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
+function getFullDate(tm){
+    var tt = new Date(parseInt(tm)*1000).format("yyyy-MM-dd hh:mm:ss");
+    return tt;
 }
 function getDate(tm){
     var tt = new Date(parseInt(tm)*1000).format("MM-dd hh:mm");
@@ -52,8 +36,7 @@ function bind_time_option(){
     });
 }
 var global_time_type = 'day';
-var pre_time = new Date();
-pre_time.setFullYear(2013,8,7);
+var pre_time = choose_time_for_mode();
 pre_time.setHours(0,0,0);
 pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
@@ -108,24 +91,6 @@ function  active_chart(data){
    //active type
    global_tag_vector.push(tag_vector[1]);
 
-   /*
-	var item = data.activity_time; //activity_time
-    for (i=0;i<item.length;i++){
-       var date = item[i][0]/(15*60*16);
-       switch(date)
-       {
-            case 0: x = "00:00-04:00";break;
-            case 1: x = "04:00-08:00";break;
-            case 2: x = "08:00-12:00";break;
-            case 3: x = "12:00-16:00";break;
-            case 4: x = "16:00-20:00";break;
-            case 5: x = "20:00-24:00";break;
-       }
-       var str ="time"+(i+1);
-       time = document.getElementById(str);
-       time.innerHTML = x;
-    }
-    */
     var this_desc= '';
     this_desc += "<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>"; //description
     this_desc += "<span>" + data.description[2] + "</span><span style='color:red;'>" + data.description[3] + "</span>。"; //description
@@ -153,6 +118,11 @@ function week_chart(trend_data){
             date_zhang.push(date_zh);
         }
         $('#time_zh').html('00:00-00:30');
+        $('#date_zh').html(date_zhang[0]);
+        var dateStr = getFullDate(pre_time);
+        var ts = get_unix_time(dateStr);
+        var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
+        activity_call_ajax_request(url, draw_content); // draw_weibo
     }
     else{
         for(i=0;i<trend.length;i++){
@@ -164,14 +134,12 @@ function week_chart(trend_data){
             date_zhang.push(date_zh);
         }
         $('#time_zh').html('00:00-04:00');
+        $('#date_zh').html(date_zhang[0]);
+        var dateStr = getFullDate(trend[0][0]);
+        var ts = get_unix_time(dateStr);
+        var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
+        activity_call_ajax_request(url, draw_content); // draw_weibo
     }
-    $('#date_zh').html(date_zhang[0]);
-    var date = $('#date_zh').html();
-    var time = '00:00:00';
-    var dateStr = '2013-'+date+' '+time;
-    var ts = get_unix_time(dateStr);
-    var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
-    activity_call_ajax_request(url, draw_content); // draw_weibo
 	//Draw_trend:
 	 $('#Activezh').highcharts({
         chart: {
