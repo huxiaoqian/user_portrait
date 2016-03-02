@@ -363,7 +363,7 @@ Show_influ.prototype = {
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
     var influ_trend = data['influence_trend'];
-    draw_influ_distribution(influ_his,'influ_distribution', '影响力');
+    draw_influ_distribution(influ_his,'influ_distribution', '影响力排名');
     show_influ_users('influ_active_users',influ_trend['main_max']);
     show_influ_users('influ_unactive_users',influ_trend['main_min']);
     //console.log(influ_trend['main_max']);
@@ -660,7 +660,9 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
 }
 
 //日期选择
-var date = new Date();
+
+var date = choose_time_for_mode();
+console.log(date);
 date.setHours(0,0,0,0);
 var max_date = date.format('yyyyMMdd hh:mm');
 var current_date = date.format('yyyy/MM/dd hh:mm');
@@ -668,11 +670,13 @@ var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24*30;
 var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
-
-$('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-$('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-// $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
-// $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
+if(global_test_mode==0){
+    $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
+    $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
+}else{
+    $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+    $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+}
 //获取微博成员信息
 function Draw_group_weibo_user(uids,unames){
     
@@ -694,8 +698,13 @@ function Draw_group_weibo_user(uids,unames){
 
 //显示群组成员微博
 function submit_date_user(){
-    var timestamp_from=1377964800;
-    var timestamp_to=1378051200;
+    var timestamp_from = $('#group_influ_weibo #weibo_from').val();
+    var timestamp_to = $('#group_influ_weibo #weibo_to').val();
+    timestamp_from = new Date(timestamp_from);
+    timestamp_from = Math.floor(timestamp_from.getTime()/1000);
+    timestamp_to = new Date(timestamp_to);
+    timestamp_to = Math.floor(timestamp_to.getTime()/1000);
+    console.log('timestamp_to', timestamp_to);
     var select_uid = document.getElementById('select_group_weibo_user').value;
     var submit_date_user_url = '/group/influence_content/?uid=' + select_uid + '&timestamp_from=' + timestamp_from + '&timestamp_to=' + timestamp_to;
     //console.log(submit_date_user_url);
@@ -828,7 +837,7 @@ function Draw_topic2(data, radar_div, motal_div, show_more){
   myChart2.setOption(option);
 }
 
-var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
+// var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
 
 //影响力走势
 //draw_influ_distribution();
