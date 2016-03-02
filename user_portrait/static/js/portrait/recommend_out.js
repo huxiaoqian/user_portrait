@@ -40,8 +40,8 @@ Search_weibo_recommend.prototype = {
       html += '<tr>';
       html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
-      html += '<td class="center">媒体</td>';
-      html += '<td class="center">艺术,教育</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center">'+ item[i][5] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
