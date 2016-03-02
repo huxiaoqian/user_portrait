@@ -1201,7 +1201,7 @@ def get_attr_sentiment_trend(uid_list):
         
         try:
             flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type ,\
-                body={'query':{'terms':{'uid': uid_list}}}, _source=False, fields=['sentiment'])['hits']['hits']
+                    body={'query':{'terms':{'uid': uid_list}}, 'size': MAX_VALUE}, _source=False, fields=['sentiment'])['hits']['hits']
         except:
             flow_text_result = []
         ts_sentiment_dict[iter_date_ts] = {'0':0, '1':0, '2':0, '3':0}
@@ -1840,7 +1840,7 @@ if __name__=='__main__':
     log_time_date = ts2datetime(log_time_ts)
     print 'cron/group/cron_group.py&start&' + log_time_date
 
-    #compute_group_task_v2()
+    compute_group_task_v2()
 
     log_time_ts = time.time()
     log_time_date = ts2datetime(log_time_ts)
@@ -1848,7 +1848,7 @@ if __name__=='__main__':
     
     
     #test
-    
+    '''
     input_data = {}
     input_data['task_name'] = u'媒体'
     
@@ -1861,6 +1861,6 @@ if __name__=='__main__':
     input_data['task_type'] = 'analysis'
     TASK = json.dumps(input_data)
     result = compute_group_task()
-    #result = get_attr_portrait(input_data['uid_list'])
-    #print 'result geo vary:', result[0]['activity_geo_vary']
-    
+    #result = get_attr_sentiment_trend(input_data['uid_list'])
+    #print 'result sentiment_trend', result
+    '''

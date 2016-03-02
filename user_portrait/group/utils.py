@@ -14,6 +14,7 @@ from user_portrait.global_utils import es_user_portrait, portrait_index_name, po
 from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
 from user_portrait.parameter import MAX_VALUE, DAY, FOUR_HOUR, SENTIMENT_SECOND
 from user_portrait.global_utils import group_analysis_queue_name
+from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME
 
 index_name = 'group_result'
 index_type = 'group'
@@ -369,8 +370,6 @@ def get_group_results(task_name, module):
 # get importance max & activeness max & influence max
 def get_evaluate_max():
     max_result = {}
-    index_name = 'user_portrait'
-    index_type = 'user'
     evaluate_index = ['importance', 'influence']
     for evaluate in evaluate_index:
         query_body = {
@@ -381,7 +380,7 @@ def get_evaluate_max():
             'sort': [{evaluate: {'order': 'desc'}}]
             }
         try:
-            result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+            result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
         except Exception, e:
             raise e
         max_evaluate = result[0]['_source'][evaluate]
