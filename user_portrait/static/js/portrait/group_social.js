@@ -301,11 +301,12 @@ function draw_relation_net(data,name,symbols){
 }
 function draw_relation_out_net(data,name,symbols){
     var total_content = [];
+    //var total_out_content = [];
     var source_content = []
     for (var i=0;i<data[name].length;i++){
         var s=i.toString();
         var content = {};
-        content['category'] = 1;
+        content['category'] = 0;
         if(data[name][s]['4']=='unknown'){
             content['name'] = '未知';
         }else{
@@ -313,7 +314,8 @@ function draw_relation_out_net(data,name,symbols){
         };
         //content['name'] = data[name][s]['4'];
         content['id'] = data[name][s]['0'];
-        content['value'] = data[name][s]['3'];
+        
+        //content['value'] = data[name][s]['3'];
         content['draggable'] = true;
         //content['symbolSize'] = [60, 30];
         total_content.push(content);
@@ -361,7 +363,7 @@ function draw_relation_out_net(data,name,symbols){
     },
     legend: {
         x: 'left',
-        data:['']
+        data:['群组内部用户','群组外部用户']
     },
     series : [
         {
@@ -371,7 +373,9 @@ function draw_relation_out_net(data,name,symbols){
             ribbonType: false,
             categories : [
                 {
-                    name:'微博用户'
+                    name:'群组内部用户'
+                },{
+                    name:'群组外部用户'
                 }
             ],
             itemStyle: {
