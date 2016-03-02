@@ -6,6 +6,7 @@
 import sys
 import time
 import json
+import os
 from aggregation_weibo import specific_keywords_burst_dection
 from social_sensing import social_sensing_task
 reload(sys)
@@ -13,15 +14,23 @@ sys.path.append("./../")
 from global_utils import es_user_profile as es_profile
 from global_utils import R_SOCIAL_SENSING as r
 from global_utils import es_user_portrait as es
-from time_utils import ts2datetime, datetime2ts
+from time_utils import ts2datetime, datetime2ts, ts2date
 from parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from parameter import INDEX_MANAGE_SOCIAL_SENSING as index_name
 from parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from parameter import SOCIAL_SENSOR_TIME_INTERVAL as time_interval
 
 def create_task_list(ts):
-# 1. search from manage_sensing_task
-# 2. push to redis list-----task_work
+    # 1. search from manage_sensing_task
+    # 2. push to redis list-----task_work
+
+    # print start info
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, 'task_list.py')
+    now_ts = time.time()
+    print_log = "&".join([file_path, "start", now_ts])
+    print print_log
+
     query_body = {
         "query":{
             "filtered":{
@@ -52,13 +61,17 @@ def create_task_list(ts):
             task.append(item['warning_status']) # last step status
             task.append(item['task_type']) # task type
             task.append(ts)
-            r.lpush('task_name', json.dumps(task))
+            #r.lpush('task_name', json.dumps(task))
             count += 1
-    print "total task number: ", count
+
+    print count
+    now_ts = time.time()
+    print_log = "&".join([file_path, "end", now_ts])
+    print print_log
 
 
 if __name__ == "__main__":
-    #ts = time.time()
+    """
     ts2 = datetime2ts("2013-09-08")
     ts1 = datetime2ts("2013-09-01")
     #ts1 = 1378054800
@@ -67,8 +80,13 @@ if __name__ == "__main__":
         if ts <= ts2:
             print ts
             create_task_list(ts)
-            social_sensing_task()
+            #social_sensing_task()
             ts += time_interval
         else:
             break
 
+    """
+
+    ts = time.time()
+    create_task_list(ts)
+    social_sensing_task(ts)

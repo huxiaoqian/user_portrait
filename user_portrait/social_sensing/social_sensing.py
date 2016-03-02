@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import os
 import sys
 import time
 import json
@@ -15,13 +16,25 @@ from parameter import INDEX_MANAGE_SOCIAL_SENSING as index_name
 from parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 
 
-def social_sensing_task():
+def social_sensing_task(ts):
+    # 1. print start info
+    count = 0
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, 'social_sensing.py')
+    now_ts = ts
+    print_log = "&".join([file_path, "start", now_ts])
+    print print_log #打印开始信息
+
     while 1:
         temp = r.rpop("task_name")
         if not temp:
+            print count
+            now_ts = time.time()
+            print_log = "&".join([file_path, "end", now_ts])
+            print print_log # 打印终止信息
             break  # finish all task in task_list
         task_detail = json.loads(temp)
-        print "task_detail: ", task_detail
+        count += 1
         if int(task_detail[6]) == 2:
             specific_keywords_burst_dection(task_detail)
         elif int(task_detail[6]) == 3:

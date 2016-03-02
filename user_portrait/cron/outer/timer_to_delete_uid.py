@@ -5,6 +5,7 @@ preset time to delete the users (uid) recommended and stored in redis
 
 """
 
+import os
 import sys
 import redis
 import time
@@ -58,4 +59,14 @@ def main():
         es.bulk(copy_bulk_action, index=copy_portrait_index_name, doc_type=copy_portrait_index_type, timeout=30)
 
 if __name__ == "__main__":
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, 'timer_to_delete_uid.py')
+    now_ts = ts2datetime(ts)
+    print_log = "&".join([file_path, "start", now_ts])
+    print print_log #打印开始信息
+
     main()
+
+    now_ts = ts2datetime(ts)
+    print_log = "&".join([file_path, "end", now_ts])
+    print print_log # 打印终止信息

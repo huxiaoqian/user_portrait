@@ -6,6 +6,7 @@ based on user activity, recommend to delete the user in portrait database
 recommend_delete_list:只保留一天记录，因为前一天未出库，又没有操作的用户在第二天还是会被推荐出来
 """
 
+import os
 import sys
 import time
 import json
@@ -68,4 +69,14 @@ def main():
     return 1
 
 if __name__ == "__main__":
+    current_path = os.getcwd()
+    file_path = os.path.join(current_path, 'recommend_to_delete.py')
+    now_ts = ts2datetime(ts)
+    print_log = "&".join([file_path, "start", now_ts])
+    print print_log #打印开始信息
+
     main()
+
+    now_ts = ts2datetime(ts)
+    print_log = "&".join([file_path, "end", now_ts])
+    print print_log # 打印终止信息

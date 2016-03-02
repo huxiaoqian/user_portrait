@@ -2,6 +2,7 @@
 
 import sys
 import time
+import math
 import json
 import numpy as np
 from elasticsearch import Elasticsearch
@@ -17,7 +18,24 @@ from user_portrait.parameter import INDEX_MANAGE_SOCIAL_SENSING as index_manage_
 from user_portrait.parameter import DOC_TYPE_MANAGE_SOCIAL_SENSING as task_doc_type
 from user_portrait.parameter import IMPORTANT_USER_THRESHOULD, SOCIAL_SENSOR_INFO
 from user_portrait.social_sensing.full_text_serach import count_hot_uid
-portrait_index_name = "user_portrait_1222"
+#portrait_index_name = "user_portrait_1222"
+
+def get_top_influence():
+    query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort":{"influence":{"order":"desc"}},
+        "size": 1
+    }
+
+    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
+    if search_result:
+        result = search_result[0]['_source']['influence']
+    else:
+        result = 2000
+
+    return result
 
 # 展示所有已经完成的任务，返回任务名
 def show_social_sensing_task():
@@ -44,6 +62,7 @@ def show_social_sensing_task():
 
 def show_important_users(task_name):
     return_results = dict() # 返回字典
+    top_influence = get_top_influence()
     task_detail = es.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)["_source"]
     portrait_detail = []
     important_user_set = set() # 重要人物列表
@@ -105,6 +124,5 @@ def show_important_users(task_name):
 
 
     return_results['group_list'] = user_detail_info
-
     return return_results
 

@@ -18,7 +18,22 @@ from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.parameter import SOCIAL_SENSOR_INFO, signal_count_varition, signal_sentiment_varition, CURRENT_WARNING_DICT, IMPORTANT_USER_THRESHOULD, signal_sensitive_variation
 from user_portrait.time_utils import ts2date_min
 
-portrait_index_name = "user_portrait_1222"
+#portrait_index_name = "user_portrait_1222"
+
+def get_top_influence(key):
+    query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort":{key:{"order":"desc"}},
+        "size": 1
+    }
+
+    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
+    if search_result:
+        result = search_result[0]['_source'][key]
+
+    return result
 
 # 特别适用于doc_type=2的事件
 def get_task_detail_2(task_name, keywords, ts):
@@ -170,6 +185,9 @@ def get_task_detail_2(task_name, keywords, ts):
 
 
     # 获取重要用户的个人信息
+    top_influence = get_top_influence("influence")
+    top_activeness = get_top_influence("activeness")
+    top_importance = get_top_influence("importance")
     important_uid_list = list(important_user_set)
     user_detail_info = [] #
     if important_uid_list:
@@ -186,9 +204,9 @@ def get_task_detail_2(task_name, keywords, ts):
                 temp.append(item['fields']['topic_string'][0].split('&'))
                 hot_count = count_hot_uid(item['fields']['uid'][0], start_time, stop_time, keywords_list)
                 temp.append(hot_count)
-                temp.append(item['fields']['importance'][0])
-                temp.append(item['fields']['influence'][0])
-                temp.append(item['fields']['activeness'][0])
+                temp.append(math.ceil(item['fields']['importance'][0]/float(top_importance)*100))
+                temp.append(math.ceil(item['fields']['influence'][0]/float(top_influence)*100))
+                temp.append(math.ceil(item['fields']['activeness'][0]/float(top_activeness)*100))
                 user_detail_info.append(temp)
                 #print temp
     # 排序

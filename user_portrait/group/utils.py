@@ -380,7 +380,7 @@ def get_evaluate_max():
             'sort': [{evaluate: {'order': 'desc'}}]
             }
         try:
-            result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
+            result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
         except Exception, e:
             raise e
         max_evaluate = result[0]['_source'][evaluate]
@@ -395,7 +395,7 @@ def get_group_list(task_name):
     except:
         return results
     uid_list = es_results['uid_list']
-    user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
+    user_portrait_attribute = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
     evaluate_max = get_evaluate_max()
     for item in user_portrait_attribute:
         uid = item['_id']
@@ -410,7 +410,7 @@ def get_group_list(task_name):
             normal_influence = math.log(influence / evaluate_max['influence'] * 9 + 1, 10) * 100
             results.append([uid, uname, gender, location, normal_importance, normal_influence])
         except:
-            results.append([uid])
+            results.append([uid, '', '', '', '', ''])
     return results
 
 #use to get group member uid_uname
@@ -445,24 +445,10 @@ def get_group_member_name(task_name):
 
 # delete group results from es_user_portrait 'group_analysis'
 def delete_group_results(task_name):
-    '''
-    query_body = {
-        'query':{
-            'term':{
-                'task_name': task_name
-                }
-            }
-        }
-    '''
-    #result = es.delete_by_query(index=index_name, doc_type=index_type, body=query_body)
-    result = es.delete(index=index_name, doc_type=index_type, id=task_name)
-    #print 'result:', result
-    '''
-    if result['_indices']['twitter']['_shards']['failed'] == 0:
-        return True
-    else:
+    try:
+        result = es.delete(index=index_name, doc_type=index_type, id=task_name)
+    except:
         return False
-    '''
     return True
 
 
