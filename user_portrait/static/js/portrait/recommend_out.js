@@ -43,8 +43,8 @@ Search_weibo_recommend.prototype = {
       html += '<tr>';
       html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
-      html += '<td class="center">媒体</td>';
-      html += '<td class="center">艺术,教育</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center">'+ item[i][5] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
@@ -292,7 +292,7 @@ var tomorrow = new Date(2013,8,8);
 var now = tomorrow.getFullYear()+"-"+((tomorrow.getMonth()+1)<10?"0":"")+(tomorrow.getMonth()+1)+"-"+((tomorrow.getDate())<10?"0":"")+(tomorrow.getDate());
 
 var url_recommend = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
-//console.log(url_recommend);
+console.log(url_recommend);
 draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
 draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Re_Draw_table);
 
