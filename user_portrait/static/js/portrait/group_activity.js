@@ -73,7 +73,7 @@ function Draw_activity(data){
                         call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
                         var html0 = '';
                         $('#line_select_time').empty();  
-                        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div><br>";
+                        html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div>";
                         console.log(html0);
                         console.log(event.point.x);
                         $('#line_select_time').append(html0);
@@ -222,13 +222,13 @@ function show_online_time(data){
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:100%;font-size:14px">';
     html += '<tr>';
-    html += '<th style="text-align:center">上网时段</th>';
+    html += '<th style="text-align:center">主要活跃时间</th>';
     for(var i=0; i < time_split.length;i++){
         html += '<th style="text-align:center">'+time_split[i]+'</th>';
     }
     html += '</tr>';
     html += '<tr>';
-    html += '<th style="text-align:center">微博数</th>';
+    html += '<th style="text-align:center">人数</th>';
     for (var i = 0; i < online_time_data.length; i++) {
        html += '<th style="text-align:center">' + online_time_data[i] + '</th>';
     };
