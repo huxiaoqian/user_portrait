@@ -40,8 +40,8 @@ Search_weibo_recommend.prototype = {
       html += '<tr>';
       html += '<td class="center"><a href='+ user_url+ ' target="_blank">'+ item[i][0] +'</td>';
       html += '<td class="center">'+ item[i][1] +'</td>';
-      html += '<td class="center">媒体</td>';
-      html += '<td class="center">艺术,教育</td>';
+      html += '<td class="center">'+ item[i][2] +'</td>';
+      html += '<td class="center">'+ item[i][3] +'</td>';
       html += '<td class="center">'+ item[i][6] +'</td>';
       html += '<td class="center">'+ item[i][5] +'</td>';
       html += '<td class="center">'+ item[i][4] +'</td>';
@@ -161,7 +161,7 @@ function bindOption(){
       }
       var recommend_confirm_url = '/recommentation/identify_out/?date=' + now + '&data=' + uids_trans;
       draw_table_recommend.call_sync_ajax_request(recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
-      var url_recommend_new = '/recommentation/show_out/?date=' + $('#recommend_date_select').val() + '&fields=uid,uname,domain,topic,influence,importance,activeness';
+      var url_recommend_new = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
       draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
       draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
       
@@ -195,7 +195,7 @@ function bindOption(){
       }
       var no_recommend_confirm_url = '/recommentation/cancel_recommend_out/?date=' + now + '&uid_list=' + uids_trans;
       draw_table_recommend.call_sync_ajax_request(no_recommend_confirm_url, draw_table_recommend.ajax_method, confirm_ok);
-      var url_recommend_new = '/recommentation/show_out/?date=' + $('#recommend_date_select').val() + '&fields=uid,uname,domain,topic,influence,importance,activeness';
+      var url_recommend_new = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
       draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
       draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
       
@@ -241,19 +241,19 @@ function bindOption(){
         url_history_new = '/recommentation/history_delete/?date=' + $("#history_date_select").val();
       draw_table_history_new = new Search_weibo_history(url_history_new, '#history');
       draw_table_history_new.call_sync_ajax_request(url_history_new, draw_table_history_new.ajax_method, draw_table_history_new.Re_Draw_table);  
-      var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val() + '&fields=uid,uname,domain,topic,influence,importance,activeness';
+      var url_recommend_new = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
       draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
       draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
   });
   
-  
+  /*
   $('#recommend_date_button').click(function(){
-    var url_recommend_new = '/recommentation/show_out/?date=' + $("#recommend_date_select").val() + '&fields=uid,uname,domain,topic,influence,importance,activeness';
+    var url_recommend_new = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
     //console.log(url_recommend_new);
     draw_table_recommend_new = new Search_weibo_recommend(url_recommend_new, '#recommend');
     draw_table_recommend_new.call_sync_ajax_request(url_recommend_new, draw_table_recommend_new.ajax_method, draw_table_recommend_new.Re_Draw_table);
   });
-  
+  */
 
   $('#history_date_button').click(function(){
     var date_history = $("#history_date_select").val();
@@ -277,7 +277,7 @@ var history_choose_uids = new Array();
 var now_date = choose_time_for_mode();
 var now = now_date.format('yyyy-MM-dd');
 
-var url_recommend = '/recommentation/show_out/?date=' + now + '&fields=uid,uname,domain,topic,influence,importance,activeness';
+var url_recommend = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
 draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
 draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Re_Draw_table);
 
@@ -286,6 +286,7 @@ draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Re_Draw_table);
 
 function date_initial(){
+  /* 
   var recommend_date = [];
   for(var i=0;i<7;i++){
     var today = new Date(now_date-24*60*60*1000*(6-i));
@@ -301,7 +302,7 @@ function date_initial(){
   recommend_date_html += '<option value="' + recommend_date[5] + '">' + recommend_date[5] + '</option>';
   recommend_date_html += '<option value="' + recommend_date[6] + '" selected="selected">' + recommend_date[6] + '</option>';
   $("#recommend_date_select").append(recommend_date_html);
-  
+  */
 
   var history_date = [];
   for(var i=0;i<7;i++){

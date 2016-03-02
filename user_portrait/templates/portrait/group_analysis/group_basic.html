@@ -55,8 +55,8 @@ function draw_basic(data){
 	draw_sex(data);
 	draw_verify(data);
 	Draw_totalnumber(data);
-	//draw_tag(data);
-	draw_tag({'user_tag':{'好':13,'中':21,'坏':9}});
+	draw_tag(data);
+	//draw_tag({'user_tag':{'好':13,'中':21,'坏':9}});
 }
 g_basic = new g_basic();
 function draw_sex(data){
@@ -229,7 +229,7 @@ function draw_tag(data){
 		items.push(new toarray(k,item[k]));
 	}
 	items.sort(function(a,b){return a.num-b.num});
-	console.log(items);
+	//console.log(items);
 	for (var i=0;i< items.length;i++){
 		tagname.push(items[i].names);
 		tagvalue.push(items[i].num);

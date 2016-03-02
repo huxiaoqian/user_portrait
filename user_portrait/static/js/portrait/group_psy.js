@@ -216,7 +216,7 @@ function draw_group_kind(data){
 	myChart1.setOption(option);    
 }
 function group_draw_content(data){
-	console.log('asdfadf');
+	//console.log('asdfadf');
     var html_c = '';
     $('#group_weibo_text_1').empty();
     //$('#group_select_time').empty();
@@ -297,8 +297,9 @@ function group_emotions(data){
                 var sentiment = param.seriesIndex;
                 var date = new Date(time_name[param.dataIndex]);
                 var starts_ts = date.getTime().toString().substr(0,10);
-                var start_ts = parseInt(starts_ts)-28800;                 
-                var ajax_url = '/group/group_sentiment_weibo/?task_name='+name+'&sentiment=0&start_ts='+start_ts;
+                var start_ts = parseInt(starts_ts)-28800;    
+                console.log(start_ts);             
+                var ajax_url = '/group/group_sentiment_weibo/?task_name='+name+'&sentiment='+sentiment+'&start_ts='+start_ts;
                 // ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({
                       url: ajax_url,

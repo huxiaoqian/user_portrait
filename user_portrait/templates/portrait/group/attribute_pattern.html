@@ -296,19 +296,21 @@
               </div>
             </div>
             <div class='col-md-12' style="margin:0px 0px 10px 15px;">
-	            <span class="input-group-addon" style="width:50px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;">时间范围</span>
-	            <input id="weibo_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px;margin-left:20px;'>&nbsp;-&nbsp;
-	            <input id="weibo_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px'>
+                <input id='time_checkbox' type='checkbox' class='inline-checkbox' style='float:left;' value='option1'>
+	            <span class="input-group-addon" style="margin-left:10px;width:50px;border:1px solid white;float:left;background-color:white;display:inline-block;padding-left:0px;line-height: 8px;">时间范围</span>
+	            <input id="weibo_from" type='text' class="form-control" style='width:145px; display:inline-block;height:25px;margin-left:20px;' disabled>&nbsp;-&nbsp;
+	            <input id="weibo_to" type='text' class="form-control" style='width:145px; display:inline-block;height:25px' disabled>
 	          </div>
             <div id="extension" class="col-md-12" style="padding-top:5px;padding-left:0px;">
               <label class='control-label'>扩展规则</label>
               <div class='controls'>
                 <div class='col-md-12' style='padding:0px;margin-left: -5px;'>
                   <div class='col-lg-4' >
-                      <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
-                      <span><input style='width:50%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
-                          0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
-                      </span>
+                    <span class="input-group-addon" style="width:65px;border:1px solid white;float:left;background-color:white;display:inline-block">人数</span>
+                    <span style="float: left;"><input style='width:85%;' type='range' id='num-range' min='0' max='200' step='20' value='100' class='inline-checkbox'>
+                        0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200
+                    </span>
+                    <span id="show_num" style="border-radius: 4px;margin-left: -6px;padding: 5px;border: 1px solid #ccc;">100</span>
                   </div>
                   <div class='col-lg-4' >
                     <span class="input-group-addon" style="width:75px;border:1px solid white;float:left;background-color:white;display:inline-block">影响力</span>
@@ -407,10 +409,30 @@ var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
 var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
-
 $('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
 $('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+<<<<<<< HEAD
+$('#attribute_pattern #num-range').change(function(){
+    var num = $('#attribute_pattern #num-range').val();
+    $('#attribute_pattern #show_num').empty();
+    $('#attribute_pattern #show_num').append(num);    
+});
+=======
+attr_bind_click();
+>>>>>>> 71b6754d3f977720ab8b4193fe29f40d45a3623c
 
+function attr_bind_click(){
+    $('#attribute_pattern #time_checkbox').click(function(){
+        if($(this).is(':checked')){
+            $('#attribute_pattern #weibo_from').attr('disabled',false);
+            $('#attribute_pattern #weibo_to').attr('disabled',false);
+        }
+        else{
+            $('#attribute_pattern #weibo_from').attr('disabled',true);
+            $('#attribute_pattern #weibo_to').attr('disabled',true);
+        }
+    });
+}
 function attribute_pattern_check(){             // check validation 
   //group_information check starts  
   var dt = new Date();
@@ -445,17 +467,19 @@ function attribute_pattern_check(){             // check validation
     alert('重要度输入值应在0到100之间，请重新输入！');
     return false;
   }
-  if(num_range_count ==0 ){
-    alert('扩展规则中人数不能为0，请重新输入！');
-    return false;
-  }
-  if(time_from > time_to){
-    alert('起止时间错误，请重新选择！');
-    return false;
-  }
-  if(max_date_limit_stamp < time_to ){
-    alert('终止时间最晚不超过今日零点，请重新选择！');
-    return false;
+  if($('#attribute_pattern #time_checkbox').is(':checked')){
+      if(num_range_count ==0 ){
+        alert('扩展规则中人数不能为0，请重新输入！');
+        return false;
+      }
+      if(time_from > time_to){
+        alert('起止时间错误，请重新选择！');
+        return false;
+      }
+      if(max_date_limit_stamp < time_to ){
+        alert('终止时间最晚不超过今日零点，请重新选择！');
+        return false;
+      }
   }
 
   if (group_name.length == 0){
@@ -577,15 +601,16 @@ function attribute_pattern_check(){             // check validation
         sentiment_url += 'sentiment=' + sentiment_string.join(',');
         url_all.push(sentiment_url);
       }
-
-      var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
-      var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
-      var timestamp_from_url = '';
-      timestamp_from_url = 'timestamp_from=' + time_from;
-      url_all.push(timestamp_from_url);
-      var timestamp_to_url = '';
-      timestamp_to_url = 'timestamp_to=' + time_to;
-      url_all.push(timestamp_to_url);
+      if ($('#attribute_pattern #time_checkbox').is(':checked')){
+          var time_from = Date.parse($('#attribute_pattern #weibo_from').val())/1000;
+          var time_to = Date.parse($('#attribute_pattern #weibo_to').val())/1000;
+          var timestamp_from_url = '';
+          timestamp_from_url = 'timestamp_from=' + time_from;
+          url_all.push(timestamp_from_url);
+          var timestamp_to_url = '';
+          timestamp_to_url = 'timestamp_to=' + time_to;
+          url_all.push(timestamp_to_url);
+      }
 
       var task_name_url = ''
       var task_name_id = 'task_name'
