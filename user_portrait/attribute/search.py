@@ -1147,7 +1147,10 @@ def get_ip_description(week_result, all_week_top, all_day_top):
 
     #conclusion.append(home_ip_string)
     conclusion.append(home_ip_list)
-    conclusion.append( u',工作IP为')
+    if(conclusion[-1] != []):
+        conclusion.append( u',工作IP为')
+    else:
+        conclusion.append( u'工作IP为')
     
     job_ip_string = ''
     job_ip_list = []
@@ -1175,7 +1178,10 @@ def get_ip_description(week_result, all_week_top, all_day_top):
         print 'description_conclusion:',conclusion
         return conclusion, home_ip, job_ip
     else:
-        conclusion.append(u',异常使用的IP为')
+        if(conclusion[-1] != []):
+            conclusion.append(u',异常使用的IP为')
+        else:
+            conclusion.append(u'异常使用的IP为')
     abnormal_dict = dict()
     for abnormal_ip in list(abnormal_set):
         abnormal_dict[abnormal_ip] = all_day_top[abnormal_ip]
