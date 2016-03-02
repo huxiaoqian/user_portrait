@@ -223,7 +223,12 @@ Draw_pie_all0:function(data){
   Influence_tag_vector:function(data){
     var tag_vector = []
     tag_vector.push('影响力类型');
-    tag_vector.push(data);
+    if (data == ''){
+        tag_vector.push('无');
+    }
+    else{
+        tag_vector.push(data);
+    }
     global_tag_vector.push(tag_vector); 
   },
 
