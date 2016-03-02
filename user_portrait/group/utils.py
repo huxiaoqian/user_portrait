@@ -14,9 +14,10 @@ from user_portrait.global_utils import es_user_portrait, portrait_index_name, po
 from user_portrait.time_utils import ts2datetime, datetime2ts, ts2date
 from user_portrait.parameter import MAX_VALUE, DAY, FOUR_HOUR, SENTIMENT_SECOND
 from user_portrait.global_utils import group_analysis_queue_name
+from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME
 
-index_name = 'group_result'
-index_type = 'group'
+index_name = group_index_name
+index_type = group_index_type
 
 '''
 #submit new task and identify the task name unique
@@ -369,8 +370,6 @@ def get_group_results(task_name, module):
 # get importance max & activeness max & influence max
 def get_evaluate_max():
     max_result = {}
-    index_name = 'user_portrait'
-    index_type = 'user'
     evaluate_index = ['importance', 'influence']
     for evaluate in evaluate_index:
         query_body = {
@@ -381,7 +380,7 @@ def get_evaluate_max():
             'sort': [{evaluate: {'order': 'desc'}}]
             }
         try:
-            result = es.search(index=index_name, doc_type=index_type, body=query_body)['hits']['hits']
+            result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
         except Exception, e:
             raise e
         max_evaluate = result[0]['_source'][evaluate]
@@ -608,9 +607,11 @@ def get_social_inter_content(uid1, uid2, type_mark):
     #get two type relation about uid1 and uid2
     #search weibo list
     now_ts = int(time.time())
-    now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 1:
+        now_date_ts = datetime2ts(ts2datetime(now_ts))
+    else:
+        now_date_ts = datetime2ts(RUN_TEST_TIME)
     #uid2uname
     uid2uname = {}
     try:
