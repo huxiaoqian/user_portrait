@@ -7,6 +7,16 @@ function bind_button_click(){
             $('#seed_user #'+seed_user_option+' [name="hop_choose"]').attr('disabled', true);
         }
     });
+    $('#seed_user #'+seed_user_option+' #time_checkbox').click(function(){
+        if($(this).is(':checked')){
+            $('#seed_user #'+seed_user_option+' #events_from').attr('disabled',false);
+            $('#seed_user #'+seed_user_option+' #events_to').attr('disabled',false);
+        }
+        else{
+            $('#seed_user #'+seed_user_option+' #events_from').attr('disabled', true);
+            $('#seed_user #'+seed_user_option+' #events_to').attr('disabled', true);
+        }
+    });
     $('#seed_user #'+seed_user_option+' #seed_user_commit').click(function(){
         var valid = seed_user_check();
         if (valid){
@@ -130,6 +140,11 @@ last_date = last_date.format('yyyy/MM/dd hh:mm');
 var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
 var seed_user_flag = false;
 seed_user_init();
+$('#seed_user #num-range').change(function(){
+    var num = $('#seed_user #'+seed_user_option+' #num-range').val();
+    $('#seed_user #show_num').empty();
+    $('#seed_user #show_num').append(num);    
+})
 $('#seed_user [name="mode_choose"]').change(function(){
     seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
     if (seed_user_option == 'single_user'){
@@ -183,15 +198,17 @@ function seed_user_check(){             // check validation
             alert('重要度左侧输入值应小于右侧输入值！');
             return false;
         }
-        var events_from = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-        var events_to = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
-        if (events_from > events_to){
-            alert('时间输入不合法！');
+        if ($('#seed_user #'+seed_user_option+' #time_checkbox').is(':checked')){
+            var events_from = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+            var events_to = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+            if (events_from > events_to){
+                alert('时间输入不合法！');
+                return false;
+            }
+            if ((events_from > current_ts) || (events_to > current_ts)){
+                alert('选择时间不能超过今日零时！');
             return false;
-        }
-        if ((events_from > current_ts) || (events_to > current_ts)){
-            alert('选择时间不能超过今日零时！');
-            return false;
+            }
         }
         if ($('#seed_user #'+seed_user_option+' #num-range').val() == 0){
             alert('人数不能为0！');
@@ -224,46 +241,54 @@ function seed_user_check(){             // check validation
   return true;
 }
 function seed_single_user_callback(data){
-    console.log(data);
     if (data == true){
       //redraw_result();
       alert('提交成功！');
       //window.location.reload(); 
     } 
     if (data == 'seed user invalid') alert('人物库中不存在该用户！');
-    if (data == 'task name invalid') alert('请输入合法的任务名称！');
+    if (data == 'task name invalid') alert('任务名称已存在！');
     if (data == 'no query condition') alert('请选择搜索条件！');
 }
 function seed_multi_user_callback(data){
-    var status_string = data[0];
-    var out_list = data[1];
-    if (status_string == true){
-        $('#group_out_list').empty();
-        var html = '';
-        html += '<table class="table table-bordered table-striped table-condensed datatable"><thead>';
-        html += '<tr style="text-align:center;"><th>用户ID</th><th>昵称</th><th>粉丝数</th>';
-        html += '<th>好友数</th><th>微博数</th><th>';
-        html += '<input id="out_modal_all" type="checkbox" onclick="out_modal_all();"/></th></tr></thead>';
-        html += '<tbody>';
-        for (i=0;i<out_list.length;i++){
-            html += '<tr><td class="center"><a target="_blank" href="http://weibo/com/u/' + out_list[i][0] + '">'+out_list[i][0]+'</a></td>';
-            html += '<td class="center">'+out_list[i][1]+'</td>';
-            html += '<td class="center">'+out_list[i][2]+'</td>';
-            html += '<td class="center">'+out_list[i][4]+'</td>';
-            html += '<td class="center">'+out_list[i][3]+'</td>';
-            html += '<td><input name="group_recommend_in" type="checkbox" value="' + out_list[i][0] + '" /></td>';
-            html += '</tr>';
+    //console.log(data);
+    if (typeof(data) == 'string'){
+        if (data == 'no seed user') {
+            alert('用户列表为空！');
         }
-        html += '</tbody>';
-        html += '</table>';
-        $('#group_out_list').append(html);
-        group_bind_recommend();
-        $('#out_list_modal').modal();
+        else if (data == 'task name invalid') {
+            alert('任务名称已存在！');
+        }
+        else if (data == 'no query condition') {
+            alert('请选择搜索条件！');
+        }
     }
-    else{
-        if (status_string == 'no seed user') alert('用户列表为空！');
-        if (status_string == 'task name invalid') alert('请输入合法的任务名称！');
-        if (status_string == 'no query condition') alert('请选择搜索条件！');
+    else if(typeof(data) == 'object'){
+        var out_list = data[1];
+        if (out_list.length > 0){
+            $('#group_out_list').empty();
+            var html = '';
+            html += '<table class="table table-bordered table-striped table-condensed datatable"><thead>';
+            html += '<tr style="text-align:center;"><th>用户ID</th><th>昵称</th><th>粉丝数</th>';
+            html += '<th>好友数</th><th>微博数</th><th>';
+            html += '<input id="out_modal_all" type="checkbox" onclick="out_modal_all();"/></th></tr></thead>';
+            html += '<tbody>';
+            for (i=0;i<out_list.length;i++){
+                html += '<tr><td class="center"><a target="_blank" href="http://weibo/com/u/' + out_list[i][0] + '">'+out_list[i][0]+'</a></td>';
+                html += '<td class="center">'+out_list[i][1]+'</td>';
+                html += '<td class="center">'+out_list[i][2]+'</td>';
+                html += '<td class="center">'+out_list[i][4]+'</td>';
+                html += '<td class="center">'+out_list[i][3]+'</td>';
+                html += '<td><input name="group_recommend_in" type="checkbox" value="' + out_list[i][0] + '" /></td>';
+                html += '</tr>';
+            }
+            html += '</tbody>';
+            html += '</table>';
+            $('#group_out_list').append(html);
+            group_bind_recommend();
+            $('#out_list_modal').modal();
+        }
+        alert('任务提交成功！');
     }
 }
 function out_modal_all(){
@@ -285,7 +310,6 @@ function group_bind_recommend(){
           var sure = confirm('立即计算会消耗系统较多资源，您确定要立即计算吗？');
           if(sure==true){
               var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids.join(',') + '&status=' + compute_time;
-              //console.log(recommend_confirm_url);
               $.ajax({
                     type:'GET',
                     url:recommend_confirm_url,
@@ -298,17 +322,18 @@ function group_bind_recommend(){
         }
         else{
             compute_time = '2';
-            alert('您选择了预约计算，系统将在今日24:00自动启动计算！');
-            var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids.join(',') + '&status=' + compute_time;
-            //console.log(recommend_confirm_url);
-            $.ajax({
-                    type:'GET',
-                    url:recommend_confirm_url,
-                    dataType:'json',
-                    success:function(){
-                        $('#out_list_modal').modal('hide');
-                    }
-            });
+            var sure = confirm('您选择了预约计算，系统将在今日24:00自动启动计算！');
+            if (sure == true){
+                var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids.join(',') + '&status=' + compute_time;
+                $.ajax({
+                        type:'GET',
+                        url:recommend_confirm_url,
+                        dataType:'json',
+                        success:function(){
+                            $('#out_list_modal').modal('hide');
+                        }
+                });
+            }
         }
       }
   });
@@ -353,8 +378,10 @@ function seed_single_user_data(){
     });
     //events
     url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
-    url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-    url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    if ($('#seed_user #'+seed_user_option+' #time_checkbox').is(':checked')){
+        url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+        url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    }
     //extension
     url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
     url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
@@ -413,8 +440,10 @@ function seed_multi_user_data(){
         });
         //events
         upload_job['text'] = $('#seed_user #'+seed_user_option+' #events_keywords').val();
-        upload_job['timestamp_from'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-        upload_job['timestamp_to'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        if ($('#seed_user #'+seed_user_option+' #time_checkbox').is(':checked')){
+            upload_job['timestamp_from'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+            upload_job['timestamp_to'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        }
         //extension
         upload_job['count'] = $('#seed_user #'+seed_user_option+' #num-range').val();
         upload_job['influence_from'] = $('#seed_user #'+seed_user_option+' #influ_from').val();
@@ -448,7 +477,7 @@ function handleFileSelect(upload_job){
         reader.onload = function (oFREvent) {
             var a = oFREvent.target.result;
             upload_job['upload_data'] = a;
-            console.log(upload_job);
+            //console.log(upload_job);
             $.ajax({   
                 type:"POST",  
                 url:"/detect/multi_person/",

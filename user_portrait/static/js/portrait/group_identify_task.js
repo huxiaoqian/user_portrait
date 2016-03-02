@@ -142,8 +142,11 @@ function del(data){
 		//console.log(data);
 		if(data==true){
 			alert('操作成功！');
-			location.reload();
+			redraw_result();
+			//location.reload();
 			//window.location.href=window.location.href;
+		}else{
+			alert('删除失败，请重试！')
 		}
 }
 
@@ -308,7 +311,7 @@ function draw_table(data,div){
     for (var i=0;i<data.length;i++) {
         var uname = data[i][1];
         if (uname == 'unknown'){
-            uname == '未知';
+            uname = '未知';
         }
         html += '<tr><th style="text-align:center">' + data[i][0] + '</th>';
         html += '<th style="text-align:center">' + uname + '</th>';
