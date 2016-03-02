@@ -475,7 +475,7 @@ function draw_top_influence(data){
        }else{
           top_influence = data['top_influence'][s]['1'];
       };
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_influence'][s]['0'] + '">' + top_influence + '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_influence'][s]['0'] + '">' + top_influence + '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
   }
     html += '</table>'; 
     $('#top_influence').append(html);                  
@@ -495,7 +495,7 @@ function draw_top_activeness(data){
        }else{
           top_activeness = data['top_activeness'][s]['1'];
       };
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_activeness'][s]['0'] + '">' + top_activeness + '</a></th><th style="text-align:center">' + data['top_activeness'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_activeness'][s]['0'] + '">' + top_activeness + '</a></th><th style="text-align:center">' + data['top_activeness'][s]['2'].toFixed(2) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#top_activeness').append(html);                  
@@ -513,7 +513,7 @@ function draw_more_top_activeness(data){
        }else{
           top_activeness = data['top_activeness'][s]['1'];
       };
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_activeness'][s]['0'] + '">' + top_activeness + '</a></th><th style="text-align:center">' + data['top_activeness'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_activeness'][s]['0'] + '">' + top_activeness + '</a></th><th style="text-align:center">' + data['top_activeness'][s]['2'].toFixed(2) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_activeness').append(html);                  
@@ -532,7 +532,7 @@ function draw_top_influence_vary(data){
        }else{
           top_influence_vary = data['top_influence_vary'][s]['1'];
       };
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_influence_vary'][s]['0'] + '">' + top_influence_vary + '</a></th><th style="text-align:center">' + data['top_influence_vary'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_influence_vary'][s]['0'] + '">' + top_influence_vary + '</a></th><th style="text-align:center">' + data['top_influence_vary'][s]['2'].toFixed(2) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#top_influence_vary').append(html);                  
@@ -605,7 +605,7 @@ function draw_more_top_influence(data){
        if(data['top_influence'][s]['1']=='unknown'){
             data['top_influence'][s]['1'] = '未知';
        }
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_influence').append(html);                  
@@ -625,7 +625,7 @@ function draw_importance(data){
        }else{
           importance = data['top_importance'][s]['1'];
               };
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_importance'][s]['0'] + '">' + importance + '</a></th><th style="text-align:center">' + data['top_importance'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_importance'][s]['0'] + '">' + importance + '</a></th><th style="text-align:center">' + data['top_importance'][s]['2'].toFixed(2) +  '</th></tr>';
   }
     html += '</table>'; 
     $('#importance').append(html);                  
@@ -644,7 +644,7 @@ function draw_more_importance(data){
        }else{
           more_importance = data['top_importance'][s]['1'];
        }
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_importance'][s]['0'] + '">' + more_importance + '</a></th><th style="text-align:center">' + data['top_importance'][s]['2'].toFixed(1) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['top_importance'][s]['0'] + '">' + more_importance + '</a></th><th style="text-align:center">' + data['top_importance'][s]['2'].toFixed(2) +  '</th></tr>';
     }
   
     html += '</table>'; 
