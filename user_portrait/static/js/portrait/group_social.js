@@ -164,7 +164,11 @@ function draw_relation_net(data,name,symbols){
         var s=i.toString();
         var content = {};
         content['category'] = 1;
-        content['name'] = data[name][s]['3'];
+        if(data[name][s]['3']=='unknown'){
+            content['name'] = '未知';
+        }else{
+            content['name'] = data[name][s]['3'];
+        };
         content['id'] = data[name][s]['0'];
         content['value'] = 7;
         content['draggable'] = true;
@@ -172,7 +176,12 @@ function draw_relation_net(data,name,symbols){
         total_content.push(content);
         content = {};
         content['category'] = 1;
-        content['name'] = data[name][s]['4'];
+        if(data[name][s]['4']=='unknown'){
+            content['name'] = '未知';
+        }else{
+            content['name'] = data[name][s]['4'];
+        }
+        console.log('name!2!',content['name']);
         content['id'] = data[name][s]['1'];
         content['value'] = 7;
         content['draggable'] = true;
@@ -297,7 +306,12 @@ function draw_relation_out_net(data,name,symbols){
         var s=i.toString();
         var content = {};
         content['category'] = 1;
-        content['name'] = data[name][s]['4'];
+        if(data[name][s]['4']=='unknown'){
+            content['name'] = '未知';
+        }else{
+            content['name'] = data[name][s]['4'];
+        };
+        //content['name'] = data[name][s]['4'];
         content['id'] = data[name][s]['0'];
         content['value'] = data[name][s]['3'];
         content['draggable'] = true;
@@ -305,7 +319,13 @@ function draw_relation_out_net(data,name,symbols){
         total_content.push(content);
         content = {};
         content['category'] = 1;
-        content['name'] = data[name][s]['5'];
+        if(data[name][s]['5']=='unknown'){
+            content['name'] = '未知';
+        }else{
+            content['name'] = data[name][s]['5'];
+        };
+        console.log(content['name']);
+        //content['name'] = data[name][s]['5'];
         content['id'] = data[name][s]['1'];
         content['value'] = data[name][s]['3'];
         content['draggable'] = true;
@@ -439,7 +459,10 @@ function draw_in_table(data){
     if (uname2 =='unknown'){
         uname2 = '未知';
     }
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + uname1 +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:25px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + uname2 +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_weibo">' + data['social_in_record'][s]['2'] +'</a></td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['1'] + '">' + data['social_in_record'][s]['1'] +'</a></td><td style="text-align:center">' + uname1 +'</td><td style="text-align:center"><img src="/static/img/arrow_geo.png" style="width:25px;"></td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_in_record'][s]['0'] + '">' + data['social_in_record'][s]['0'] +'</a></td><td style="text-align:center">' + uname2 +'</td>';
+    html += '<td style="text-align:center">';
+    // html += '<a href=javascript:void(0)  id="group_change_weibo">' +;
+    html += data['social_in_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
     $('#group_in_table').append(html);
@@ -459,7 +482,9 @@ function draw_out_table(data){
     var s = '';
     var html = '';
     html = '<table id="group_out_table_body" class="table table-bordered table-striped table-condensed datatable" >';
-    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">影响力</td><td style="text-align:center">转发量</td></tr>';
+    html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td>';
+    // html +='<td style="text-align:center">影响力</td>';
+    html += '<td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_out_record'].length;i++){
         s =i.toString();
             var uname1 = data['social_out_record'][s]['4'];
@@ -470,7 +495,11 @@ function draw_out_table(data){
             if (uname2 =='unknown'){
                 uname2 = '未知';
             }
-    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + uname1 +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + uname2 +'</td><td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td><td style="text-align:center"><a href=javascript:void(0)  id="group_change_out_weibo">' + data['social_out_record'][s]['2'] +'</a></td></tr>';
+    html += '<tr><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['0'] + '">' + data['social_out_record'][s]['0'] +'</a></td><td style="text-align:center">' + uname1 +'</td><td style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + data['social_out_record'][s]['1'] + '">' + data['social_out_record'][s]['1'] +'</a></td><td style="text-align:center">' + uname2 +'</td>';
+    // html+= '<td style="text-align:center">' + data['social_out_record'][s]['3'] +'</td>';
+    html += '<td style="text-align:center">';
+    // html +='<a href=javascript:void(0)  id="group_change_out_weibo">';
+    html += data['social_out_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
     $('#group_out_table').append(html);
@@ -641,20 +670,20 @@ function show_conclusion(data){
 }
 
 function social_click(){
-    $('a[id^="group_change_weibo"]').click(function(){
-    var uid1 = $(this).parent().prev().prev().text();
-    var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
-    var url = '/group/social_inter_content/?uid1='+uid1+'&uid2='+uid2;
-    console.log(url);
-    g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo1);
+   //  $('a[id^="group_change_weibo"]').click(function(){
+   //  var uid1 = $(this).parent().prev().prev().text();
+   //  var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
+   //  var url = '/group/social_inter_content/?uid1='+uid1+'&uid2='+uid2;
+   //  console.log(url);
+   //  g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo1);
 
-   });
-    $('a[id^="group_change_out_weibo"]').click(function(){
-    var uid1 = $(this).parent().prev().prev().prev().text();
-    var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
-    var url = '/group/social_out_content/?uid1='+uid1+'&uid2='+uid2;
-    g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo2);
-    });
+   // });
+    // $('a[id^="group_change_out_weibo"]').click(function(){
+    // var uid1 = $(this).parent().prev().prev().prev().text();
+    // var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
+    // var url = '/group/social_out_content/?uid1='+uid1+'&uid2='+uid2;
+    // g_social.call_sync_ajax_request(url, g_social.ajax_method, draw_group_weibo2);
+    // });
     /*
     var init_in_uid1 = $('#group_in_table tr:eq(1) td:eq(3)').text();
     var init_in_uid2 = $('#group_in_table tr:eq(1) td:eq(0)').text();
