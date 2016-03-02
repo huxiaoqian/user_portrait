@@ -10,8 +10,10 @@ function bind_button_click(){
     $('#seed_user #'+seed_user_option+' #time_checkbox').click(function(){
         if($(this).is(':checked')){
             $('#seed_user #'+seed_user_option+' #events_from').attr('disabled',false);
+            $('#seed_user #'+seed_user_option+' #events_to').attr('disabled',false);
         }
         else{
+            $('#seed_user #'+seed_user_option+' #events_from').attr('disabled', true);
             $('#seed_user #'+seed_user_option+' #events_to').attr('disabled', true);
         }
     });
