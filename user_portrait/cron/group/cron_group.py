@@ -123,7 +123,11 @@ def get_attr_portrait(uid_list):
     sentiment_dict_list = []
     tag_dict = {}
     #get now date to iter activity geo
-    now_ts = int(time.time())
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = int(time.time())
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     #split uid_list to bulk action
     iter_count = 0
@@ -793,7 +797,7 @@ def get_influence_user(uid_list):
                             body={'ids':iter_user_list}, _source=False, fields=['uid', 'domain', 'topic_string', 'influence', 'importance'])['docs']
         except:
             in_portrait_result = []
-        #step3:get uid_list out user_portrait
+        step3:get uid_list out user_portrait
         for item in in_portrait_result:
             uid = item['_id']
             if item['found']==True:
@@ -1716,6 +1720,8 @@ def compute_group_task_v2():
     results = dict()
     while True:
         task = r.rpop(group_analysis_queue_name)
+        #test
+        #r.lpush(group_analysis_queue_name, task)
         if not task:
             break
         else:
@@ -1771,7 +1777,6 @@ def compute_group_task_v2():
             results['status'] = 1
             #step9: save results
             save_group_results(results)
-        break
 
 
 

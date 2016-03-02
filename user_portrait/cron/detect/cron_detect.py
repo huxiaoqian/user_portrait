@@ -970,7 +970,10 @@ def add_task2queue(input_dict):
 #output: task_information_dict (from redis queue---gruop_detect_task)
 def get_detect_information():
     task_information_dict = {}
-    task_information_string = r_group.rpop(group_detect_queue_name)
+    try:
+        task_information_string = r_group.rpop(group_detect_queue_name)
+    except:
+        task_information_string = ''
     if task_information_string:
         task_information_dict = json.loads(task_information_string)
     else:
@@ -1018,6 +1021,8 @@ def compute_group_detect():
                 #step5:add task_information_dict to redis queue when detect process fail
                 if mark == False:
                     status = add_task2queue(detect_task_information)
+        else:
+            break
 
 
 if __name__=='__main__':
@@ -1025,7 +1030,7 @@ if __name__=='__main__':
     log_time_date = ts2datetime(log_time_ts)
     print 'cron/detect/cron_detect.py&start&' + log_time_date
 
-    #compute_group_detect()
+    compute_group_detect()
     
     log_time_ts = time.time()
     log_time_date = ts2datetime(log_time_ts)
