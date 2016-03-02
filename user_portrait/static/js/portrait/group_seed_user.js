@@ -7,6 +7,16 @@ function bind_button_click(){
             $('#seed_user #'+seed_user_option+' [name="hop_choose"]').attr('disabled', true);
         }
     });
+    $('#seed_user #'+seed_user_option+' #time_checkbox').click(function(){
+        if($(this).is(':checked')){
+            $('#seed_user #'+seed_user_option+' #events_from').attr('disabled',false);
+            $('#seed_user #'+seed_user_option+' #events_to').attr('disabled',false);
+        }
+        else{
+            $('#seed_user #'+seed_user_option+' #events_from').attr('disabled', true);
+            $('#seed_user #'+seed_user_option+' #events_to').attr('disabled', true);
+        }
+    });
     $('#seed_user #'+seed_user_option+' #seed_user_commit').click(function(){
         var valid = seed_user_check();
         if (valid){
@@ -183,15 +193,17 @@ function seed_user_check(){             // check validation
             alert('重要度左侧输入值应小于右侧输入值！');
             return false;
         }
-        var events_from = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-        var events_to = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
-        if (events_from > events_to){
-            alert('时间输入不合法！');
+        if ($('#seed_user #'+seed_user_option+' #time_checkbox').is(':checked')){
+            var events_from = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+            var events_to = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+            if (events_from > events_to){
+                alert('时间输入不合法！');
+                return false;
+            }
+            if ((events_from > current_ts) || (events_to > current_ts)){
+                alert('选择时间不能超过今日零时！');
             return false;
-        }
-        if ((events_from > current_ts) || (events_to > current_ts)){
-            alert('选择时间不能超过今日零时！');
-            return false;
+            }
         }
         if ($('#seed_user #'+seed_user_option+' #num-range').val() == 0){
             alert('人数不能为0！');
@@ -361,8 +373,10 @@ function seed_single_user_data(){
     });
     //events
     url += '&text=' + $('#seed_user #'+seed_user_option+' #events_keywords').val();
-    url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-    url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    if ($('#seed_user #'+seed_user_option+' #time_checkbox').is(':checked')){
+        url += '&timestamp_from=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+        url += '&timestamp_to=' + seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+    }
     //extension
     url += '&count=' + $('#seed_user #'+seed_user_option+' #num-range').val();
     url += '&influence_from=' + $('#seed_user #'+seed_user_option+' #influ_from').val();
@@ -421,8 +435,10 @@ function seed_multi_user_data(){
         });
         //events
         upload_job['text'] = $('#seed_user #'+seed_user_option+' #events_keywords').val();
-        upload_job['timestamp_from'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
-        upload_job['timestamp_to'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        if ($('#seed_user #'+seed_user_option+' #time_checkbox').is(':checked')){
+            upload_job['timestamp_from'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_from').val());
+            upload_job['timestamp_to'] = seed_user_timepicker($('#seed_user #'+seed_user_option+' #events_to').val());
+        }
         //extension
         upload_job['count'] = $('#seed_user #'+seed_user_option+' #num-range').val();
         upload_job['influence_from'] = $('#seed_user #'+seed_user_option+' #influ_from').val();
