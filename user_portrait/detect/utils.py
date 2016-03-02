@@ -454,7 +454,7 @@ def detect2analysis(input_data):
     if task_exist_result == {}:
         return 'task name is not exsit'
     #step2: update task uid list
-    task_exist_result['uid_list'] = json.dumps(uid_list)
+    task_exist_result['uid_list'] = uid_list
     #step3: update task_type in es
     task_exist_result['status'] = 0 # mark the compute status
     task_exist_result['count'] = len(uid_list)
