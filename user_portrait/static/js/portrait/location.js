@@ -286,16 +286,20 @@ function draw_daily_ip_table(ip_data){
     }
     //var div_name = ['daily_ip','weekly_ip'];
     var this_desc = '';
-    if (ip_data.description[1] == []){
+    console.log(ip_data.description);
+    if (ip_data.description[1].length != 0){
         this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description
     }
-    if (ip_data.description[3] == []){
+    if (ip_data.description[3]){
         this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3][0] + '(' + ip_data.description[3][1].split('\t').pop() + ')' + "</span>"; //description
     }
     if (ip_data.description[5]){
         this_desc += "<span>" + ip_data.description[4] + "</span><span style='color:red;'>" + ip_data.description[5][0] + '(' + ip_data.description[5][1].split('\t').pop() + ')' + "</span>"; //description
     }
     $('#ip_desc').html(this_desc + '。');
+    if(this_desc == ''){
+        $('#ip_conclusion').css('display', 'none');
+    }
     var location_geo;
     // ip table
     $('#total_IP_rank').empty();
