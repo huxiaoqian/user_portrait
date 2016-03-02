@@ -208,15 +208,15 @@ def get_attr_portrait(uid_list):
                     try:
                         last_user_date_main_item = user_date_main_list[-1]
                     except:
-                        lasr_user_date_main_item = ''
-                    if main_date_city != main_date_city:
+                        last_user_date_main_item = ''
+                    if main_date_city != last_user_date_main_item:
                         user_date_main_list.append(main_date_city)
 
                 iter_ts += DAY
             #attr8: activity_geo_dict---location vary
             if len(user_date_main_list) > 1:
                 for i in range(1, len(user_date_main_list)):
-                    vary_item = '&'.join(user_date_main_list[i-1:i])
+                    vary_item = '&'.join(user_date_main_list[i-1:i+1])
                     try:
                         activity_geo_vary[vary_item] += 1
                     except:
@@ -619,7 +619,7 @@ def get_attr_social(uid_list, uid2uname):
     sort_in_record = sorted(all_in_record, key=lambda x:x[2], reverse=True)
     result['social_in_record'] = json.dumps(sort_in_record)
     #step12: sort interaction out group by influence
-    sort_out_record = sorted(all_out_record, key=lambda x:x[3])[:GROUP_SOCIAL_OUT_COUNT]
+    sort_out_record = sorted(all_out_record, key=lambda x:x[3], reverse=True)[:GROUP_SOCIAL_OUT_COUNT]
     #get social out user uname
     sort_out_record_out_user = [item[1] for item in sort_out_record]
     try:
@@ -1201,7 +1201,7 @@ def get_attr_sentiment_trend(uid_list):
         
         try:
             flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type ,\
-                body={'query':{'terms':{'uid': uid_list}}}, _source=False, fields=['sentiment'])['hits']['hits']
+                    body={'query':{'terms':{'uid': uid_list}}, 'size': MAX_VALUE}, _source=False, fields=['sentiment'])['hits']['hits']
         except:
             flow_text_result = []
         ts_sentiment_dict[iter_date_ts] = {'0':0, '1':0, '2':0, '3':0}
@@ -1830,8 +1830,8 @@ def compute_group_task():
     #step8: update compute status to completed
     results['status'] = 1
     #step9: save results
-    #save_group_results(results)
-    print 'results:', results
+    save_group_results(results)
+    #print 'results:', results
     return results
 
 
@@ -1861,4 +1861,6 @@ if __name__=='__main__':
     input_data['task_type'] = 'analysis'
     TASK = json.dumps(input_data)
     result = compute_group_task()
+    #result = get_attr_sentiment_trend(input_data['uid_list'])
+    #print 'result sentiment_trend', result
     '''
