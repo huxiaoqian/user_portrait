@@ -706,7 +706,7 @@ function draw_sex(data){
       legend: {
           orient : 'vertical',
           x : 'left',
-          data:['已知男','已知女','未知']
+          data:['男(已知)','女(已知)','未知']
       },
       toolbox: {
           show : true,
@@ -741,8 +741,8 @@ function draw_sex(data){
                   }
               },
               data:[
-                  {value:value_male, name:'已知男'},
-                  {value:value_female, name:'已知女'},
+                  {value:value_male, name:'男(已知)'},
+                  {value:value_female, name:'女(已知)'},
                   {value:value_unknown, name:'未知'}
               ]
           }
