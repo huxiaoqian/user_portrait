@@ -178,7 +178,7 @@ function draw_group_kind(data){
             },
             selectedMode: 'single',
             radius : [0, 60],
-            center:['30%','50%'],
+            center:['25%','50%'],
             // for funnel
             x: '20%',
             width: '40%',
