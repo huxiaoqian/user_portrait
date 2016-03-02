@@ -399,30 +399,31 @@ Show_influ.prototype = {
         Draw_topic2(domains,'influence_domain', 'influ_domain_WordList','showmore_domain_influ');
     }
     if(influ_in['influence'][1][1] == 0 & influ_in['influence'][1][5] == 1){
-        $('#group_influ_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+        $('#group_influ_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
     }else{
         console.log('influ_in["influence"]',influ_in['influence']);
         draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力排名');
     }
     if(influ_in['importance'][1][1] == 0 & influ_in['importance'][1][5] == 1){
-        $('#group_impor_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+        $('#group_impor_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
     }else{
         draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度排名');
     }
     var influ_out = data['influence_out_user'];
     //Draw_top_location2(influ_out['out_fansnum_his'], influ_out['out_friendsnum_his'], influ_out['out_statusnum_his']);
+
     if(influ_out['out_fansnum_his'][1][1] == 0 & influ_out['out_fansnum_his'][1][5] == 1){
-        $('#group_fans_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+        $('#group_fans_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
     }else{
         draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
     };
     if(influ_out['out_friendsnum_his'][1][1] == 0 & influ_out['out_friendsnum_his'][1][5] == 1){
-        $('#group_friends_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+        $('#group_friends_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
     }else{
         draw_friends_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
     };
     if(influ_out['out_statusnum_his'][1][1] == 0 & influ_out['out_statusnum_his'][1][5] == 1){
-        $('#group_weiboshu_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+        $('#group_weiboshu_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
     }else{
     draw_status_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
     };
