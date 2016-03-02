@@ -738,14 +738,11 @@ def pattern_filter_attribute(pattern_list, filter_dict):
         range_from_date = ts2datetime(range_from_ts)
         
         flow_index_name = flow_text_index_name_pre + range_from_date
-        print 'flow index name:', flow_index_name
-        print 'iter_date_pattern_condition_list:', iter_date_pattern_condition_list
-        #try:
-        flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type,\
+        try:
+            flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type,\
                     body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size': MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
-        #except:
-        #    flow_text_exist = []
-        print 'flow text exist:', len(flow_text_exist)
+        except:
+            flow_text_exist = []
         #pattern user set
         pattern_user_set = set([flow_text_item['fields']['uid'][0] for flow_text_item in flow_text_exist])
         pattern_user_list = list(pattern_user_set)
@@ -1028,7 +1025,7 @@ if __name__=='__main__':
     log_time_date = ts2datetime(log_time_ts)
     print 'cron/detect/cron_detect.py&start&' + log_time_date
 
-    compute_group_detect()
+    #compute_group_detect()
     
     log_time_ts = time.time()
     log_time_date = ts2datetime(log_time_ts)
@@ -1045,7 +1042,7 @@ if __name__=='__main__':
     single_input_dict = {'task_information':{'task_name': 'single', 'task_type':'detect', 'submit_date': 1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'single'}, \
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'0', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5, \
             'seed_user':{'uid': '2213131450'}, 'text':[], 'filter':{'count': 100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to}, 'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
-    results = single_detect(single_input_dict)
+    #results = single_detect(single_input_dict)
     multi_input_dict = {'task_information':{'task_name': 'test2', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'multi', \
             'uid_list':['2172653252','2698626560','1981307823','1268043470']},\
             'query_condition':{'attribute':['domain', 'topic_string'], 'structure':{'comment':'1', 'retweet':'1', 'hop':'1'}, 'attribute_weight':0.5, 'structure_weight':0.5 ,\
@@ -1059,17 +1056,17 @@ if __name__=='__main__':
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
     #results = attribute_pattern_detect(attribute_pattern_dict)
-    event_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type': 'event'},\
+    event_dict = {'task_information':{'task_name':'poiu', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type': 'event'},\
             'query_condition':{'attribute':[{'wildcard':{'domain':'*'+'媒体'+'*'}}, {'wildcard':{'topic': '*'+'民生类_社会保障'+'*'}}],\
             'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
             'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
             'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
 
-    event_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'event'},\
-            'query_condition':{'attribute':[], 'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
-            'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
-            'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
-    #results = event_detect(event_dict)
+    #event_dict = {'task_information':{'task_name':'test', 'task_type':'detect', 'submit_date':1453002410, 'submit_user':'admin', 'detect_process':0, 'state':'test', 'detect_type':'event'},\
+    #        'query_condition':{'attribute':[], 'event':[{'wildcard':{'text': '*'+'1'+'*'}}, {'range':{'timestamp':{'gte':1377964800, 'lt':1378483200}}}],\
+    #        'filter':{'count':100, 'importance':{'gte':new_importance_from, 'lt':new_importance_to},\
+    #        'influence':{'gte':new_influence_from, 'lt':new_influence_to}}}}
+    results = event_detect(event_dict)
     print 'results:', results
-    save_mark = save_detect_results(results, 'single')
+    save_mark = save_detect_results(results, 'poiu')
     '''

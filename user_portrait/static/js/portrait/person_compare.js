@@ -1,24 +1,3 @@
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
-
 function Search_weibo(){
   this.ajax_method = 'GET';
   that = this;
@@ -266,7 +245,6 @@ Search_weibo.prototype = {
 }
 
 uid_list = window.location.search;
-console.log(uid_list);
 Search_weibo = new Search_weibo();
 var url_activity = '/manage/compare_user_activity/' + uid_list;
 var url_profile = '/manage/compare_user_profile/'+ uid_list;
@@ -277,7 +255,6 @@ var user_tag = '/tag/show_user_tag/'+ uid_list;
 // var url_portrait = '/manage/compare_user_portrait/?uid_list=1642591402,2948738352';
 Search_weibo.call_sync_ajax_request(url_profile, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var url_photo = Search_weibo.Return_data();
-console.log(url_photo);
 Search_weibo.call_sync_ajax_request(url_activity, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
 var activity = Search_weibo.Return_data();
 Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
@@ -782,7 +759,6 @@ for(var key in portrait){
     if(portrait[key]['keywords'].length == 0){
         $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
     }else{
-        //console.log(portrait[key]['keywords'])
         Search_weibo.Draw_cloud_keywords(portrait[key]['keywords'], div);
     }
 

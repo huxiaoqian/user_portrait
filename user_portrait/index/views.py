@@ -35,10 +35,12 @@ def group_analysis():
     name = request.args.get('name', 'test_task')
 
     return render_template('portrait/group_analysis.html', name=name)
+'''
 @mod.route('/group_result/')
 def group_result():
     
         return render_template('portrait/group_result.html')
+'''
 @mod.route('/contrast/')
 def contrast():
     

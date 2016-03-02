@@ -17,10 +17,7 @@ from user_portrait.global_utils import retweet_index_name_pre, retweet_index_typ
                                        be_comment_index_name_pre, be_comment_index_type
 from user_portrait.parameter import DETECT_ITER_COUNT, MAX_VALUE, MAX_PROCESS
 from user_portrait.time_utils import ts2datetime, datetime2ts
-
-#test
-portrait_index_name = 'user_portrait_1222'
-portrait_index_type = 'user'
+from user_portrait.parameter import DAY
 
 #use to save detect single task
 #input: input_dict
@@ -32,7 +29,7 @@ def save_detect_single_task(input_dict):
     query = []
     query_list = []
     for user_item in seed_user:
-        query_list.append({'wildcard':{user_item: '*'+seed_user[user_item]+'*'}})
+        query_list.append({'term':{user_item: seed_user[user_item]}})
     query.append({'bool':{'should': query_list}})
     try:
         seed_user_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type, \
@@ -155,6 +152,7 @@ def save_detect_multi_task(input_dict, extend_mark):
         uid_list = input_dict['task_information']['uid_list']
         input_dict['task_information']['uid_list'] = json.dumps(uid_list)
         input_dict['task_information']['status'] = 0
+        print 'uid_list:', len(uid_list), uid_list, type(uid_list)
         input_dict['task_information']['count'] = len(uid_list)
         print 'step3 save'
         es_status = save_compute2es(input_dict)
@@ -210,7 +208,6 @@ def save_detect_event_task(input_dict):
         task_exist_result = {}
     if task_exist_result != {}:
         return 'task name invalid'
-    #print 'input_dict:', input_dict
     
     #step2:save to es
     es_status = save_detect2es(input_dict)
@@ -274,7 +271,11 @@ def save_compute2es(input_dict):
     status = True
     add_dict = dict(add_dict, **input_dict['task_information'])
     task_name = input_dict['task_information']['task_name']
-    count = len(input_dict['task_information']['uid_list'])
+    uid_list = input_dict['task_information']['uid_list']
+    if isinstance(uid_list, list):
+        count = len(input_dict['task_information']['uid_list'])
+    else:
+        count = len(json.loads(input_dict['task_information']['uid_list']))
     add_dict['count'] = count
     if 'query_condition' not in input_dict:
         input_dict['query_condition'] = {}
@@ -325,10 +326,10 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
             query.append({'wildcard':{'task_name': '*'+item+'*'}})
             condition_num += 1
     if submit_date:
-        submit_date_ts = ts2datetime(ts)
+        submit_date_ts = datetime2ts(submit_date)
         submit_date_from = submit_date_ts
         submit_date_to = submit_date_ts + DAY
-        query.append({'range':{'timestamp':{'from':submit_date_from, 'to':submit_date_to}}})
+        query.append({'range':{'submit_date':{'gte':submit_date_from, 'lt':submit_date_to}}})
         condition_num += 1
     if state:
         state_list = state.split(' ')
@@ -339,11 +340,13 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
         query.append({'range':{'detect_process':{'from': int(process), 'to': MAX_PROCESS}}})
         condition_num += 1
     if detect_type:
+        
         detect_type_list = detect_type.split(',')
         nest_body_list = []
         for type_item in detect_type_list:
             nest_body_list.append({'wildcard':{'detect_type': '*'+type_item+'*'}})
         query.append({'bool':{'should': nest_body_list}})
+        
         condition_num += 1
     if submit_user:
         query.append({'wildcard':{'submit_user': '*'+submit_user+'*'}})
@@ -369,8 +372,8 @@ def search_detect_task(task_name, submit_date, state, process, detect_type, subm
 
 def get_evaluate_max():
     max_result = {}
-    index_name = 'user_portrait_1222'
-    index_type = 'user'
+    index_name = portrait_index_name
+    index_type = portrait_index_type
     evaluate_index = ['activeness', 'importance', 'influence']
     for evaluate in evaluate_index:
         query_body = {
@@ -386,7 +389,6 @@ def get_evaluate_max():
             raise e
         max_evaluate = result[0]['_source'][evaluate]
         max_result[evaluate] = max_evaluate
-    #print 'result:', max_result
     return max_result
 
 
@@ -420,11 +422,6 @@ def show_detect_result(task_name):
                 source = item['_source']
                 uname = source['uname']
                 evaluate_max = get_evaluate_max()
-                '''
-                activeness = source['activeness']
-                importance = source['importance']
-                influence = source['influence']
-                '''
                 activeness = math.log(source['activeness']/evaluate_max['activeness'] * 9 + 1 ,10)*100
                 importance = math.log(source['importance']/evaluate_max['importance'] * 9 + 1 ,10)*100
                 influence = math.log(source['influence']/evaluate_max['influence'] * 9 + 1 ,10)*100

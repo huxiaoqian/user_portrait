@@ -159,6 +159,7 @@ def ajax_multi_person():
     extend_mark = input_data['extend'] # extend_mark = 0/1
     if extend_mark == '0':
         task_information_dict['task_type'] = 'analysis'
+        task_information_dict['status'] = 0
         input_dict['task_information'] = task_information_dict
         print 'no extend save'
         results = save_detect_multi_task(input_dict, extend_mark)
