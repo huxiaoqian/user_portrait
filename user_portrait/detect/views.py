@@ -148,7 +148,6 @@ def ajax_multi_person():
         if len(uid)==10:
             uid_list.append(uid)
     task_information_dict['uid_list'] = uid_list
-    print 'uid_list:', len(uid_list), uid_list, len(uid_list)
     if len(uid_list)==0:
         return 'no seed user'
     #task information
