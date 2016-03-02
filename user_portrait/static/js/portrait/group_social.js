@@ -306,6 +306,18 @@ function draw_relation_out_net(data,name,symbols){
     for (var i=0;i<data[name].length;i++){
         var s=i.toString();
         var content = {};
+        content['category'] = 1;
+        if(data[name][s]['5']=='unknown'){
+            content['name'] = '未知';
+        }else{
+            content['name'] = data[name][s]['5'];
+        };
+        content['id'] = data[name][s]['1'];
+        content['value'] = data[name][s]['3'];
+        content['draggable'] = true;
+        total_content.push(content);
+        content = {};
+
         content['category'] = 0;
         if(data[name][s]['4']=='unknown'){
             content['name'] = '未知';
@@ -313,23 +325,8 @@ function draw_relation_out_net(data,name,symbols){
             content['name'] = data[name][s]['4'];
         };
         //content['name'] = data[name][s]['4'];
-        content['id'] = data[name][s]['0'];
-        
+        content['id'] = data[name][s]['0'];       
         //content['value'] = data[name][s]['3'];
-        content['draggable'] = true;
-        //content['symbolSize'] = [60, 30];
-        total_content.push(content);
-        content = {};
-        content['category'] = 1;
-        if(data[name][s]['5']=='unknown'){
-            content['name'] = '未知';
-        }else{
-            content['name'] = data[name][s]['5'];
-        };
-        //console.log(content['name']);
-        //content['name'] = data[name][s]['5'];
-        content['id'] = data[name][s]['1'];
-        content['value'] = data[name][s]['3'];
         content['draggable'] = true;
         //content['symbolSize'] = [60, 30];
         total_content.push(content);
@@ -337,11 +334,19 @@ function draw_relation_out_net(data,name,symbols){
         var relation = {};
         relation['source'] = data[name][s]['4'];
         relation['target'] = data[name][s]['5'];
-        relation['weight'] = data[name][s]['2'];
+        relation['weight'] = data[name][s]['2']*10;
         //relation['name'] = data[name][s]['4'];
 
         var width = data[name][s]['2'];
-        var normal = {'width':width};
+        var normal = {
+              label : {
+                show : true
+              },
+              labelLine : {
+                show : true,
+                length : 5
+              }
+            };
         var itemStyle= {'normal':normal};
         relation['itemStyle'] = itemStyle;
 
@@ -374,7 +379,8 @@ function draw_relation_out_net(data,name,symbols){
             categories : [
                 {
                     name:'群组内部用户'
-                },{
+                },
+                {
                     name:'群组外部用户'
                 }
             ],
@@ -384,7 +390,11 @@ function draw_relation_out_net(data,name,symbols){
                         show: true,
                         textStyle: {
                             color: '#333'
-                        }
+                        },
+                labelLine : {
+                    show : true,
+                    length : 1000
+                  }
                     },
                     nodeStyle : {
                         brushType : 'both',
