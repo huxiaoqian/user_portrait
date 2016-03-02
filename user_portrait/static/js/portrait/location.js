@@ -42,7 +42,6 @@ pre_time=Math.floor(pre_time.getTime()/1000);
 bind_time_option();
 
 function geo_track(data){
-	//console.log(data);
     var geo_data = data.week_geo_track;
 	var date = [];
 	var citys = [];
@@ -50,13 +49,10 @@ function geo_track(data){
 		date.push(getDate_zh(key));
         citys.push(geo_data[key][0])
 	}
-	//console.log(citys);
-	//console.log(date);
 	for(i=0;i<date.length;i++){
 		document.getElementById('d'+(i+1)).innerHTML = date[i];
     }
     for(i=0;i<citys.length;i++){
-        //console.log(citys[i]);
 		if(citys[i]){
 			document.getElementById('city'+(i+1)).innerHTML = citys[i][0];
 		}else{
@@ -72,7 +68,6 @@ activity_call_ajax_request(url, geo_track);
 
 function  active_chart(data){
     global_active_data = data;
-    //console.log(data);
     var tag_vector = data.tag_vector;
     //active time
     var name = tag_vector[0][0];
@@ -256,7 +251,6 @@ function point2weibo(xnum, ts){
     $('#time_zh').html(delta);
 }
 function draw_content(data){
-    //console.log(data);
     var html = '';
     $('#weibo_text').empty();
     if(data==''){
@@ -282,17 +276,20 @@ function draw_daily_ip_table(ip_data){
     var tag_vector = ip_data.tag_vector;
     for (var n = 0; n < tag_vector.length; n++){
         var tag_name = tag_vector[n][0];
-        var tag_value = tag_vector[n][1] + '(' + tag_vector[n][2].split('\t').pop() + ')';
-        //console.log(tag_vector[n]);          //notice!!! tag_vector[n]:[name, value]
+        if (tag_vector[n][1]){
+            var tag_value = tag_vector[n][1] + '(' + tag_vector[n][2].split('\t').pop() + ')';
+        }
+        else{
+            var tag_value = '暂无数据';
+        }
         global_tag_vector.push([tag_name, tag_value]);
     }
     //var div_name = ['daily_ip','weekly_ip'];
-    //console.log(ip_data);
     var this_desc = '';
-    if (ip_data.description[1]){
+    if (ip_data.description[1] == []){
         this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description
     }
-    if (ip_data.description[3]){
+    if (ip_data.description[3] == []){
         this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3][0] + '(' + ip_data.description[3][1].split('\t').pop() + ')' + "</span>"; //description
     }
     if (ip_data.description[5]){
@@ -407,7 +404,6 @@ var url = '/attribute/ip/?uid=' + uid;
 activity_call_ajax_request(url, draw_daily_ip_table);
 
 function draw_online_pattern(data){
-    //console.log(data);
     if ('sort_result' in data){
         var online_data = data.sort_result;
         $('#online_pattern').empty();
