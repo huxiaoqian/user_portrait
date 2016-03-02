@@ -272,15 +272,22 @@ function Compare(){
     html += '<thead id="head_id">';
     html += '<tr style="background: #fafafa;"><th style="width:100px;font-size:20px;vertical-align:middle; text-align:center;"></th>';
     var i =0;
-    var person_url = "http://"+window.location.host+"/index/personal/?uid=";
+    var photos = '';
+   // var person_url = "http://"+window.location.host+"/index/personal/?uid=";
     for(var k in url_photo){
+        var person_url = "http://"+window.location.host+"/index/personal/?uid=";
         person_url = person_url + k;
         i += 1;
+        if(url_photo[k]=='unkown'){
+            photos = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
+        }else{
+            photos = url_photo[k];
+        }
         html += '<th name="line'+ i +'" id='+k +' value='+i+'>';
         html += '<div class="panel-heading text-center">';
         html += '<div class="col-md-12">';
         html += '<a href="'+ person_url +'" target="_blank">';
-        html += '<img src='+url_photo[k]+' alt="" class="img-circle">';
+        html += '<img src='+photos+' alt="" class="img-circle">';
         html += '</a>';
         html += '</div>';
         html += '<div style="float:right;margin-top:-66px">';

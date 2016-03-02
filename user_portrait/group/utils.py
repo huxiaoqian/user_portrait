@@ -100,7 +100,10 @@ def search_task(task_name, submit_date, state, status):
             query.append({'wildcard':{'task_name': '*' + item + '*'}})
             condition_num += 1
     if submit_date:
-        query.append({'match':{'submit_date': submit_date}})
+        submit_date_ts = datetime2ts(submit_date)
+        submit_date_start = submit_date_ts
+        submit_date_end = submit_date_ts + DAY
+        query.append({'range':{'submit_date': {'gte': submit_date_start, 'lt': submit_date_end}}})
         condition_num += 1
     if state:
         state_list = state.split(' ')
@@ -149,7 +152,6 @@ def search_task(task_name, submit_date, state, status):
         return None
     print 'step yes'
     result = []
-    #print 'len task_dict_list:', len(task_dict_list)
     for task_dict in task_dict_list:
         try:
             state = task_dict['_source']['state']
@@ -232,8 +234,8 @@ def search_group_results(task_name, module):
     return result
 
 
-
-
+#abandon
+'''
 #show group results
 def get_group_results(task_name, module):
     result = []
@@ -362,7 +364,7 @@ def get_group_results(task_name, module):
         result = [importance_dis, activeness_his, influence_his, user_influence_result]
     #print result
     return result
-
+'''
 
 # get importance max & activeness max & influence max
 def get_evaluate_max():
@@ -393,8 +395,6 @@ def get_group_list(task_name):
         es_results = es_group_result.get(index=group_index_name, doc_type=group_index_type, id=task_name)['_source']
     except:
         return results
-    print 'es_results:', es_results
-    #print 'es_result:', es_results['uid_list'], type(es_results['uid_list'])
     uid_list = es_results['uid_list']
     user_portrait_attribute = es.mget(index='user_portrait', doc_type='user', body={'ids':uid_list})['docs']
     evaluate_max = get_evaluate_max()
@@ -420,13 +420,12 @@ def get_group_list(task_name):
 #output: uid_uname dict
 def get_group_member_name(task_name):
     results = {}
-    #try:
-    group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
+    try:
+        group_result = es_group_result.get(index=group_index_name, doc_type=group_index_type,\
                 id=task_name)['_source']
-    #except:
-    #    return results
+    except:
+        return results
     uid_list = group_result['uid_list']
-    print 'uid_list:', uid_list
     try:
         user_portrait_result = es_user_portrait.mget(index=portrait_index_name, doc_type=portrait_index_type ,\
                 body={'ids':uid_list})['docs']
@@ -479,11 +478,9 @@ def get_group_user_track(uid):
                 id=uid, _source=False, fields=['activity_geo_dict'])
     except:
         portrait_result = {}
-    #print 'portrait_result:', portrait_result
     if portrait_result == {}:
         return 'uid is not in user_portrait'
     activity_geo_dict = json.loads(portrait_result['fields']['activity_geo_dict'][0])
-    #print 'activity_geo_dict:', activity_geo_dict, type(activity_geo_dict)
     now_date_ts = datetime2ts(ts2datetime(int(time.time())))
     start_ts = now_date_ts - DAY * len(activity_geo_dict)
     #step2: iter date to get month track
@@ -579,7 +576,6 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
     #iter date to search flow_text
     iter_result = []
     for range_item in new_range_dict_list:
-        print 'range_item:', range_item
         range_from_ts = range_item['range']['timestamp']['gte']
         range_from_date = ts2datetime(range_from_ts)
         flow_text_index_name = flow_text_index_name_pre + range_from_date

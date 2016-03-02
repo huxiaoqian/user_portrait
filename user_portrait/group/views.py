@@ -6,7 +6,7 @@ import json
 from werkzeug import secure_filename
 from flask import Blueprint, url_for, render_template, request,\
                   abort, flash, session, redirect, send_from_directory
-from utils import submit_task, search_task, get_group_results, get_group_list,\
+from utils import submit_task, search_task, get_group_list,\
        delete_group_results, get_social_inter_content, search_group_sentiment_weibo,\
        get_group_user_track, search_group_results, get_influence_content
 from utils import get_group_member_name, get_activity_weibo
@@ -35,8 +35,6 @@ def upload_file():
         uid = line[:10]
         if len(uid)==10:
             uid_list.append(uid)
-            #print 'uid:', uid
-    #print 'len uid list:', len(uid_list)
     input_data['uid_list'] = uid_list
     status = submit_task(input_data)
     return json.dumps(status)
@@ -77,7 +75,6 @@ def ajax_show_group_result_basic():
     results = {}
     task_name = request.args.get('task_name', '')
     module = request.args.get('module', 'basic')
-    #results = get_group_results(task_name, module)
     results = search_group_results(task_name, module)
     return json.dumps(results)
 

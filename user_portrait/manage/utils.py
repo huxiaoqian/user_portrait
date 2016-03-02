@@ -290,7 +290,7 @@ def compare_user_profile(uid_list):
         try:
             item = result['_source']
         except:
-            next
+            item = {}
         try:
             photo_url = item['photo_url']
         except:
