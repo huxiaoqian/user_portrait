@@ -113,8 +113,14 @@ function seed_user_init(){
         var html = $('#seed_user #seed_user_ext').html();
         $('#seed_user #'+seed_user_option).html(html);
         //$('#seed_user #events_from').datetimepicker();
-        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,minDate:min_date,maxDate:max_date,step:10});
-        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+        if (global_test_mode == 0){
+            $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,step:10});
+            $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,step:10});
+        }
+        else{
+            $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,minDate:min_date,maxDate:max_date,step:10});
+            $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
+        }
         if (seed_user_option == 'multi_user'){
             $('#seed_user #multi_user #attribute').css('display','none');
             $('#seed_user #multi_user #structure').css('display','none');
@@ -129,7 +135,7 @@ function seed_user_init(){
 var seed_user_files = undefined;
 var max_date = '+1970/01/01';
 var min_date = '-1970/01/30';
-var current_date = new Date();
+var current_date = choose_time_for_mode();
 var last_date = new Date();
 current_date.setHours(0,0,0);
 var current_ts = current_date.getTime();
