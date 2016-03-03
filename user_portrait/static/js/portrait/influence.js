@@ -483,8 +483,6 @@ function Draw_get_top_weibo(data,div_name){
       $('#'+div_name).append(html);
   }
 
-function choose_dayorweek(url){
-}
 
 function click_action(){
   $(".closeList2").off("click").click(function(){
@@ -532,7 +530,8 @@ function click_action(){
 
 var Influence = new Influence();
 var influence_date = choose_time_for_mode();
-var date_str = influence_date.format('yyyy-MM-dd');
+var pre_influence_date = new Date(influence_date - 24*60*60*1000);
+var date_str = pre_influence_date.format('yyyy-MM-dd');
 var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
 var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
 Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);

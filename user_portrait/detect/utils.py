@@ -511,10 +511,9 @@ def submit_sensing(input_dict):
     input_dict['task_information']['detect_type'] = 'sensing'
     input_dict['task_information']['task_type'] = input_dict['task_information']['task_type']
     es_status = save_compute2es(input_dict)
-    print 'es_status:', es_status
     #step3: save to compute redis
-    redis_status = save_compute2redis(input_dict)
-    print 'redis status:', redis_status
+    add_dict2redis = input_dict['task_information']
+    redis_status = save_compute2redis(add_dict2redis)
     #identify the operation status
     if es_status == True and redis_status ==True:
         status = True

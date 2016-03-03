@@ -35,7 +35,7 @@ function Draw_group_think(data){
 			neg += g_think[key];
 		}
 	}
-	console.log(all_think+'  '+neg);
+	//console.log(all_think+'  '+neg);
 	for(var key in g_think){
 		var nod = {};
 		if(key =='0' || key == '1'){
@@ -298,7 +298,7 @@ function group_emotions(data){
                 var date = new Date(time_name[param.dataIndex]);
                 var starts_ts = date.getTime().toString().substr(0,10);
                 var start_ts = parseInt(starts_ts)-28800;    
-                console.log(start_ts);             
+                //console.log(start_ts);             
                 var ajax_url = '/group/group_sentiment_weibo/?task_name='+name+'&sentiment='+sentiment+'&start_ts='+start_ts;
                 // ajax_url = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+start_ts+'&time_type='+index+'&sentiment='+sentiment;
                 $.ajax({

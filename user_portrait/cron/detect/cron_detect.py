@@ -916,7 +916,7 @@ def event_detect(input_dict):
             return process_mark
 
     #step3: filter user list by filter count
-    count = filter_dict['count']
+    count = int(filter_dict['count'])
     print '920 filter user list:', filter_user_list
     if len(filter_user_list) == 0:
         results = filter_user_list
