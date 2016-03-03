@@ -398,19 +398,21 @@
 
 
 //日期选择
-var date = new Date();
+var date = choose_time_for_mode();
+var min_date_ms = new Date()
 date.setHours(0,0,0,0);
-var max_date = date.format('yyyyMMdd');
 var current_date = date.format('yyyy/MM/dd hh:mm');
 var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
-//var min_date_time = Math.floor(new Date().getTime()/1000) - 60*60*24*30;
-//var max_date_time = Math.floor(date.getTime()/1000) - 0;
-//console.log('max_max_date', max_date_time)
-var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
-$('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-$('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+if (global_test_mode == 0){
+    $('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10});
+    $('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10});
+}
+else{
+    $('#attribute_pattern #weibo_from').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+    $('#attribute_pattern #weibo_to').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+}    
 attr_bind_click();
 
 function attr_bind_click(){
@@ -436,7 +438,7 @@ function attribute_pattern_check(){             // check validation
   dt.setHours(0,0,0,0);
   //console.log('max_date_limit',max_date_limit);
   var max_date_limit_stamp = Date.parse(dt)/1000;
-  console.log('max_date', max_date_limit_stamp);
+  //console.log('max_date', max_date_limit_stamp);
   var group_name = $('#attribute_pattern #first_name').val();
   var remark = $('#attribute_pattern #first_remarks').val();
   var location = $('#attribute_pattern #location').val();

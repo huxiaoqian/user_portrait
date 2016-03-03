@@ -84,7 +84,7 @@ def submit_task(input_data):
         input_data['detect_process'] = ''
         add_es_dict = {'task_information': input_data, 'query_condition':''}
         es_group_result.index(index=group_index_name, doc_type=group_index_type, id=task_name, body=input_data)
-        r.lpush(group_analysis_queue_name, json.dumps(add_es_dict))
+        r.lpush(group_analysis_queue_name, json.dumps(input_data))
     
     return status
 

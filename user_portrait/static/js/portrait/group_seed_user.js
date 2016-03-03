@@ -109,33 +109,37 @@ function bind_button_click(){
     }
 }
 function seed_user_init(){
-    if (!seed_user_flag){
-        var html = $('#seed_user #seed_user_ext').html();
-        $('#seed_user #'+seed_user_option).html(html);
-        //$('#seed_user #events_from').datetimepicker();
-        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:last_date,minDate:min_date,maxDate:max_date,step:10});
-        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:current_date,minDate:min_date,maxDate:max_date,step:10});
-        if (seed_user_option == 'multi_user'){
-            $('#seed_user #multi_user #attribute').css('display','none');
-            $('#seed_user #multi_user #structure').css('display','none');
-            $('#seed_user #multi_user #events').css('display','none');
-            $('#seed_user #multi_user #extension').css('display','none');
-            $('#seed_user #multi_user').css('height','213px');
-        }
-        bind_button_click();
-    }    
+    var html = $('#seed_user #seed_user_ext').html();
+    $('#seed_user #'+seed_user_option).html(html);
+    //$('#seed_user #events_from').datetimepicker();
+    if (global_test_mode == 0){
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:seed_last_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:seed_current_date,step:10});
+    }
+    else{
+        $('#seed_user #'+seed_user_option+' #events_from').datetimepicker({value:seed_last_date,minDate:min_date,maxDate:max_date,step:10});
+        $('#seed_user #'+seed_user_option+' #events_to').datetimepicker({value:seed_current_date,minDate:min_date,maxDate:max_date,step:10});
+    }
+    if (seed_user_option == 'multi_user'){
+        $('#seed_user #multi_user #attribute').css('display','none');
+        $('#seed_user #multi_user #structure').css('display','none');
+        $('#seed_user #multi_user #events').css('display','none');
+        $('#seed_user #multi_user #extension').css('display','none');
+        $('#seed_user #multi_user').css('height','213px');
+    }
+    bind_button_click();
 }
 
 var seed_user_files = undefined;
 var max_date = '+1970/01/01';
 var min_date = '-1970/01/30';
-var current_date = new Date();
-var last_date = new Date();
-current_date.setHours(0,0,0);
-var current_ts = current_date.getTime();
-last_date.setTime(current_ts - 24*60*60*1000);
-current_date = current_date.format('yyyy/MM/dd hh:mm');
-last_date = last_date.format('yyyy/MM/dd hh:mm');
+var seed_current_date = choose_time_for_mode();
+var seed_last_date = new Date();
+seed_current_date.setHours(0,0,0);
+var current_ts = seed_current_date.getTime();
+seed_last_date.setTime(current_ts - 24*60*60*1000);
+seed_current_date = seed_current_date.format('yyyy/MM/dd hh:mm');
+seed_last_date = seed_last_date.format('yyyy/MM/dd hh:mm');
 
 var seed_user_option = $('#seed_user [name="mode_choose"]:checked').val();
 var seed_user_flag = false;
@@ -155,8 +159,10 @@ $('#seed_user [name="mode_choose"]').change(function(){
         $('#seed_user #single_user_ext').css('display','none');
         $('#seed_user #multi_user_ext').css('display','block');
     }
-    seed_user_init();
-    if (!seed_user_flag) seed_user_flag = true; // no more html init
+    if (!seed_user_flag){
+        seed_user_init();
+        seed_user_flag = true; // no more html init
+    }
 });
 
 function seed_user_check(){             // check validation 
@@ -251,7 +257,6 @@ function seed_single_user_callback(data){
     if (data == 'no query condition') alert('请选择搜索条件！');
 }
 function seed_multi_user_callback(data){
-    //console.log(data);
     if (typeof(data) == 'string'){
         if (data == 'no seed user') {
             alert('用户列表为空！');

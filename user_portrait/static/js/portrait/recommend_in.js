@@ -81,9 +81,12 @@ Search_weibo_recommend.prototype = {
         }
 
         $('#place').empty();
-        if(data['activity_geo'].length==0)
+        if(data['activity_geo'].length==0){
+          $('#in_detail').css('height','70px');
           $('#place').append('<h4 style="text-align:center">活跃地点</h4><div style="text-align:center">暂无数据！</div>');
+        }
         else{
+          $('#in_detail').css('height','300px');
           var place_html = '';
           place_html += '<h4 style="text-align:center">活跃地点</h4>';
           place_html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -105,9 +108,12 @@ Search_weibo_recommend.prototype = {
         }
 
         $('#hashtag').empty();
-        if(data['hashtag'].length==0)
+        if(data['hashtag'].length==0){
+          $('#in_detail').css('height','70px');
           $('#hashtag').append('<h4 style="text-align:center">HashTag</h4><div style="text-align:center">暂无数据！</div>');
+        }
         else{
+          $('#in_detail').css('height','300px');
           var hashtag_html = '';
           hashtag_html += '<h4 style="text-align:center">HashTag</h4>';
           hashtag_html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
@@ -327,7 +333,7 @@ draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_m
 function date_initial(){
   var recommend_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(now_date-24*60*60*1000*(6-i));
+    var today = new Date(now_date-24*60*60*1000*(7-i));
     recommend_date[i] = today.format('yyyy-MM-dd');
   }
   $("#recommend_date_select").empty();
@@ -343,7 +349,7 @@ function date_initial(){
 
   var history_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(now_date-24*60*60*1000*(6-i));
+    var today = new Date(now_date-24*60*60*1000*(7-i));
     history_date[i] = today.format('yyyy-MM-dd');
   }
   $("#history_date_select").empty();

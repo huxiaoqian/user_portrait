@@ -363,7 +363,7 @@ Show_influ.prototype = {
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
     var influ_trend = data['influence_trend'];
-    console.log('influ_his',influ_his);
+    //console.log('influ_his',influ_his);
     if(influ_his[1][1] == 0 & influ_his[1][5] == 1){
         $('#influ_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
     }else{
@@ -387,7 +387,7 @@ Show_influ.prototype = {
         dd.push(key,influ_in['domain'][key])
         domains.push(dd);
     }
-    console.log(domains);
+    //console.log(domains);
     if(topics.length == 0){
         $('#influence_topic').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
     }else{
@@ -401,7 +401,7 @@ Show_influ.prototype = {
     if(influ_in['influence'][1][1] == 0 & influ_in['influence'][1][5] == 1){
         $('#group_influ_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
     }else{
-        console.log('influ_in["influence"]',influ_in['influence']);
+        //console.log('influ_in["influence"]',influ_in['influence']);
         draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力排名');
     }
     if(influ_in['importance'][1][1] == 0 & influ_in['importance'][1][5] == 1){
@@ -445,6 +445,9 @@ function show_influ_users(div_name,data){
        var s = i.toString();
        var m = i + 1;
        var uname = data[i][0].split('&')[1]
+       if(uname == 'unknown'){
+          uname = '未知';
+       }
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + uname + '</th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     /*
@@ -500,6 +503,12 @@ function group_influ(data){
         var max_user_name = [];
         var min_user_name = [];
         for(var i=0; i<max_data.length;i++){
+            if(max_data[i][2]=='unknown'){
+                max_data[i][2] = '未知';
+            }
+            if(min_data[i][2]=='unknown'){
+                min_data[i][2] = '未知';
+            }
             max_user_name.push(max_data[i][2]);
             min_user_name.push(min_data[i][2]);
 
@@ -697,7 +706,6 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
 //日期选择
 
 var date = choose_time_for_mode();
-console.log(date);
 date.setHours(0,0,0,0);
 var max_date = date.format('yyyyMMdd hh:mm');
 var current_date = date.format('yyyy/MM/dd hh:mm');
@@ -739,7 +747,6 @@ function submit_date_user(){
     timestamp_from = Math.floor(timestamp_from.getTime()/1000);
     timestamp_to = new Date(timestamp_to);
     timestamp_to = Math.floor(timestamp_to.getTime()/1000);
-    console.log('timestamp_to', timestamp_to);
     var select_uid = document.getElementById('select_group_weibo_user').value;
     var submit_date_user_url = '/group/influence_content/?uid=' + select_uid + '&timestamp_from=' + timestamp_from + '&timestamp_to=' + timestamp_to;
     //console.log(submit_date_user_url);

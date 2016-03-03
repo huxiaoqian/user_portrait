@@ -150,13 +150,14 @@ def save_detect_multi_task(input_dict, extend_mark):
         redis_status = save_detect2redis(input_dict) # detect redis queue
     elif extend_mark=='0':
         uid_list = input_dict['task_information']['uid_list']
-        input_dict['task_information']['uid_list'] = json.dumps(uid_list)
+        input_dict['task_information']['uid_list'] = uid_list
         input_dict['task_information']['status'] = 0
         print 'uid_list:', len(uid_list), uid_list, type(uid_list)
         input_dict['task_information']['count'] = len(uid_list)
         print 'step3 save'
         es_status = save_compute2es(input_dict)
-        redis_status = save_compute2redis(input_dict) # compute redis queue
+        add_redis_dict = input_dict['task_information']
+        redis_status = save_compute2redis(add_redis_dict) # compute redis queue
     #identify the operation status
     if es_status==True and redis_status==True:
         status = True
@@ -510,10 +511,9 @@ def submit_sensing(input_dict):
     input_dict['task_information']['detect_type'] = 'sensing'
     input_dict['task_information']['task_type'] = input_dict['task_information']['task_type']
     es_status = save_compute2es(input_dict)
-    print 'es_status:', es_status
     #step3: save to compute redis
-    redis_status = save_compute2redis(input_dict)
-    print 'redis status:', redis_status
+    add_dict2redis = input_dict['task_information']
+    redis_status = save_compute2redis(add_dict2redis)
     #identify the operation status
     if es_status == True and redis_status ==True:
         status = True

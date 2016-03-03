@@ -207,8 +207,14 @@ def ajax_multi_person():
                     nest_body_list.append({'wildcard':{text_item: '*'+item_value+'*'}})
                 text_query_list.append({'bool':{'should':nest_body_list}})
         for text_item in DETECT_TEXT_RANGE_ITEM:
-            item_value_from = input_data[text_item+'_from']
-            item_value_to = input_data[text_item+'_to']
+            try:
+                item_value_from = input_data[text_item+'_from']
+            except:
+                item_value_from = ''
+            try:
+                item_value_to = input_data[text_item+'_to']
+            except:
+                iter_value_to = ''
             if item_value_from != '' and item_value_to != '':
                 if int(item_value_from) > int(item_value_to):
                     return 'invalid input for range'
@@ -416,6 +422,7 @@ def ajax_event_detect():
     for filter_item in DETECT_QUERY_FILTER:
         if filter_item == 'count':
             filter_item_value = request.args.get(filter_item, DETECT_DEFAULT_COUNT)
+            filter_item_value = int(filter_item_value)
         else:
             filter_item_from = request.args.get(filter_item+'_from', DETECT_FILTER_VALUE_FROM)
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
