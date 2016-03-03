@@ -26,7 +26,7 @@ def ajax_recommentation_in():
         now_ts = time.time()
     else:
         now_ts = test_time
-    if now_ts - 3600*24*7 > input_ts:
+    if now_ts - 3600*24*7 >= input_ts:
         return None
     else:
         results = recommentation_in(input_ts)
