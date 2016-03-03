@@ -763,7 +763,7 @@ def pattern_filter_attribute(pattern_list, filter_dict):
             nest_body_list = []
             for iter_user in iter_user_list:
                 nest_body_list.append({'term': iter_user})
-            iter_portrait_condition_list.append({'bool':{'should': nest_body_list}})
+            inter_portrait_condition_list.append({'bool':{'should': nest_body_list}})
             #search user in user_portrait
             try:
                 in_portrait_result = es_user_portrait.search(index=portrait_index_name, doc_type=portrait_index_type,\
