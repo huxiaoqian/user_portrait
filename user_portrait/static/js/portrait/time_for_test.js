@@ -24,7 +24,7 @@ Date.prototype.format = function(format){
 function choose_time_for_mode(){
     var system_time;
     if (global_test_mode == 0){
-        system_time = new Date(2013,8,7); // 2013-09-07
+        system_time = new Date(2013,8,8); // 2013-09-08
     }
     else{
         system_time = new Date();

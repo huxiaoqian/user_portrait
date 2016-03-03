@@ -42,7 +42,7 @@ function bind_time_option(){
 var global_time_type = 'day';
 var pre_time = choose_time_for_mode();
 pre_time.setHours(0,0,0);
-pre_time=Math.floor(pre_time.getTime()/1000);
+pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
 bind_time_option();
 
 function geo_track(data){
