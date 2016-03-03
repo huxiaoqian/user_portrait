@@ -676,14 +676,11 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
             range_from_ts = range_item['range']['timestamp']['gte']
             range_from_date = ts2datetime(range_from_ts)
             flow_index_name = flow_text_index_name_pre + range_from_date
-            print 'flow_index_name:', flow_index_name
-            print 'iter_date_pattern_condition_list:', iter_date_pattern_condition_list
             try:
                 flow_text_exist = es_flow_text.search(index=flow_index_name, doc_type=flow_text_index_type, \
                         body={'query':{'bool':{'must': iter_date_pattern_condition_list}}, 'size':MAX_VALUE}, _source=False, fields=['uid'])['hits']['hits']
             except:
                 flow_text_exist = []
-            print 'folw_text_exist:', len(flow_text_exist)
             #get hit user set
             for flow_text_item in flow_text_exist:
                 uid = flow_text_item['fields']['uid'][0]
@@ -692,13 +689,11 @@ def attribute_filter_pattern(user_portrait_result, pattern_list):
         iter_count += DETECT_ITER_COUNT
     #identify the hit user list ranked by score
     rank_hit_user = []
-    print 'end hit_user_set:', len(hit_user_set)
     for user_item in user_portrait_result:
         uid = user_item['_id']
         uid_set = set(uid)
         if uid in hit_user_set:
             rank_hit_user.append(uid)
-    print 'rank_hit_user:', len(rank_hit_user)
     return rank_hit_user
 
 
@@ -839,7 +834,7 @@ def attribute_pattern_detect(input_dict):
     else:
         #type2: no attribute condition, just use pattern condition
         #step1: search pattern list and filter by in-user_portrait and filter_dict
-        filter_user_result = pattern_filter_portrait(pattern_list, filter_dict)
+        filter_user_result = pattern_filter_attribute(pattern_list, filter_dict)
         #step2.2: change process proportion
         process_mark = change_process_proportion(task_name, 60)
         if process_mark == 'task is not exist':
@@ -917,7 +912,6 @@ def event_detect(input_dict):
 
     #step3: filter user list by filter count
     count = int(filter_dict['count'])
-    print '920 filter user list:', filter_user_list
     if len(filter_user_list) == 0:
         results = filter_user_list
     else:

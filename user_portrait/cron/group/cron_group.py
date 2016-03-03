@@ -95,7 +95,7 @@ def get_index_rank(index_value, index_name):
     if index_rank['_shards']['successful'] != 0:
        result = index_rank['count']
     else:
-        print 'es index rank error'
+        #print 'es index rank error'
         results = 0
     return result
 
@@ -477,10 +477,8 @@ def get_attr_portrait(uid_list):
                     hashtag_ratio[hashtag] += hashtag_dict[hashtag]
                 except:
                     hashtag_ratio[hashtag] = hashtag_dict[hashtag]
-    #print 'importance_list:', importance_list
     p, t = np.histogram(importance_list, bins=5, normed=False)
     importance_his = [p.tolist(), t.tolist()]
-    #print 'importance_his:', importance_his
     p, t = np.histogram(activeness_list, bins=5, normed=False)
     activeness_his = [p.tolist(), t.tolist()]
     p, t = np.histogram(influence_list, bins=5, normed=False)
@@ -882,7 +880,6 @@ def get_attr_social(uid_list):
         for db_num in r_dict:
             r_db = r_dict[db_num]
             ruid_results = r_db.hgetall('retweet_'+str(uid))
-            #print 'len ruid_result:', len(ruid_results)
             if ruid_results:
                 for ruid in ruid_results:
                     try:
@@ -890,7 +887,6 @@ def get_attr_social(uid_list):
                     except:
                         in_stat_results[ruid] = ruid_results[ruid]
             br_uid_results = r_db.hgetall('be_retweet_'+str(uid))
-            #print 'len br_uid_results:', len(br_uid_results)
             if br_uid_results:
                 for br_uid in br_uid_results:
                     try:
@@ -929,7 +925,6 @@ def get_attr_social(uid_list):
         subtract_set = be_retweeted_user_set - set(uid_list)
         be_retweeted_out += len(subtract_set)
         be_retweeted_count_out_list = [int(out_stat_results[br_uid]) for br_uid in subtract_set]
-        #print 'be_retweeted_count_out_list:', be_retweeted_count_out_list
         be_retweeted_count_out += sum(be_retweeted_count_out_list)
 
     result['density'] = float(union_edge_count) / (len(uid_list) * (len(uid_list)-1))
@@ -948,9 +943,6 @@ def get_attr_social(uid_list):
     else:
         sort_out_beretweet_relation = []
     result['out_beretweet_relation'] = json.dumps(sort_out_beretweet_relation)
-    #print 'be_retweeted_out, be_retweeted_count_out:', be_retweeted_out, be_retweeted_count_out
-    #print 'result:', result
-    #print 'out_beretweet_relation:', sort_out_beretweet_relation
     return result
 '''
 
@@ -1573,7 +1565,6 @@ def get_attr_bci(uid_list):
     result['origin_max_comment_user'] = origin_max_comment_user
     result['retweet_max_retweeted_user'] = retweet_max_retweeted_user
     result['retweet_max_comment_user'] = retweet_max_comment_user
-    #print 'result:', result
     return result,influence_dict
 '''
 
@@ -1594,11 +1585,8 @@ def get_attr_influence(uid_list, bci_dict):
 
 def get_attr_activeness(activity_trend, total_number, activity_geo):
     result = dict()
-    #print 'activity_trend:', activity_trend
     sort_activity_trend = sorted(activity_trend, key=lambda x:x[0], reverse=False)
-    #print 'sort_activity_trend:', sort_activity_trend
     activity_list = [item[1] for item in sort_activity_trend]
-    #print 'activity_list:', activity_list
     signal = np.array(activity_list)
     fftResult = np.abs(np.fft.fft(signal)) ** 2
     n = signal.size
@@ -1611,11 +1599,9 @@ def get_attr_activeness(activity_trend, total_number, activity_geo):
             max_val = val
             max_freq = freq[i]
         i = i + 1
-    #print 'max_freq:', max_freq
     result['activeness'] = activeness_weight_dict['activity_time'] * math.log(max_freq + 1) +\
              activeness_weight_dict['activity_geo'] * math.log(len(activity_geo) + 1) +\
              activeness_weight_dict['statusnum'] * math.log(total_number + 1)
-    #print 'result:', result
     return result
 
 
@@ -1623,8 +1609,6 @@ def get_attr_importance(domain_dict, topic_dict, count, be_retweeted_count, be_r
     result = dict()
     sort_domain = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
     sort_topic = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
-    #print 'sort_domain:', sort_domain
-    #print 'sort_topic:', sort_topic
     domain_list = sort_domain[:5]
     topic_list = sort_topic[:5]
     domain_result = 0
@@ -1639,14 +1623,12 @@ def get_attr_importance(domain_dict, topic_dict, count, be_retweeted_count, be_r
             topic_result = topic_weight_dict[topic] * topic_dict[topic]
         except:
             pass
-    #print 'topic_result, domain_result:', topic_result, domain_result
     result['importance'] = importance_weight_dict['count'] * math.log(count + 1) + \
                            importance_weight_dict['topic'] * math.log(topic_result + 1) + \
                            importance_weight_dict['domain'] * math.log(domain_result + 1) +\
                            importance_weight_dict['be_retweeted_out'] * math.log(be_retweeted_count + 1) +\
                            importance_weight_dict['be_retweeted_count_out'] * math.log(be_retweeted_weibo_count + 1)
 
-    #print 'result:', result
     return result
 
 def get_attr_tightness(density, retweet_weibo_count, retweet_user_count):
@@ -1654,7 +1636,6 @@ def get_attr_tightness(density, retweet_weibo_count, retweet_user_count):
     result['tightness'] = tightness_weight_dict['density'] * math.log(density + 1) +\
                           tightness_weight_dict['retweet_weibo_count'] * math.log(retweet_weibo_count + 1) +\
                           tightness_weight_dict['retweet_user_count'] * math.log(retweet_user_count + 1)
-    #print 'tightness:', result
     return result
 
 #abandon in version: 16-01-24
@@ -1668,14 +1649,11 @@ def get_attr_geo_track(uid_list):
     ts = datetime2ts(now_date)
     for i in range(7, 0, -1):
         timestamp = ts - i*24*3600
-        #print 'timestamp:', ts2datetime(timestamp)
         ip_dict = dict()
         results = r_cluster.hmget('ip_'+str(timestamp), uid_list)
-        #print 'results:',results
         for item in results:
             if item:
                 item_dict = json.loads(item)
-                #print 'item_dict:', item_dict
                 for ip_item in item_dict:
                     try:
                         ip_dict[ip_item] += item_dict[ip_item]
@@ -1685,7 +1663,6 @@ def get_attr_geo_track(uid_list):
         sort_geo_dict = sorted(geo_dict.items(), key=lambda x:x[1], reverse=True)
         date_key = ts2datetime(timestamp)
         date_results.append([date_key, sort_geo_dict[:2]])
-    #print 'results:', date_results
     return {'geo_track': json.dumps(date_results)}
 '''
 
@@ -1727,7 +1704,6 @@ def compute_group_task_v2():
         else:
             results = dict()
             task = json.loads(task)
-            print 'task:', task, type(task)
             task_name = task['task_name']
             uid_list = task['uid_list']
             submit_date = task['submit_date']  #submit_date = timestamp
@@ -1746,7 +1722,6 @@ def compute_group_task_v2():
                     uname = item['fields']['uname'][0]
                 uid2uname[uid] = uname
             #step1: get attr from es_user_portrait--basic/activity_geo/online_pattern/evaluate_index_his/preference/psycho_ratio
-            print '1749 get attr portrait'
             uid_list = uid2uname.keys() #identify the uid is in user_portrait
             attr_in_portrait, tag_vector_result = get_attr_portrait(uid_list)
             results['task_name'] = task_name
@@ -1756,35 +1731,28 @@ def compute_group_task_v2():
             results['submit_user'] = task['submit_user']
             results = dict(results, **attr_in_portrait)
             #step2: get attr from social es----es_retweet&es_comment
-            print '1758 get attr social'
             attr_in_social = get_attr_social(uid_list, uid2uname)
             results = dict(results, **attr_in_social)
             #step3: get attr activity trend and activity_time----redis for activity time
-            print '1762 get attr trend'
             attr_weibo_trend = get_attr_trend(uid_list) # {'activity_trend':[], 'activity_time':{}}
             results = dict(results, **attr_weibo_trend)
             #step4: get evaluate index trend----copy_user_portrait
-            print '1766 get attr evaluate trend'
             evaluate_index_trend_dict = get_attr_evaluate_trend(uid_list) # {'importance_trend':[], 'influence_trend❯
             results = dict(results, **evaluate_index_trend_dict)
             #step5: get sentiment trend----flow_text_es
-            print '1771 get attr sentiment trend'
             sentiment_trend, sentiment_tag_vector = get_attr_sentiment_trend(uid_list)
             results = dict(results, **sentiment_trend)
             tag_vector_result = dict(tag_vector_result, **sentiment_tag_vector)
             #step6: get influence user
-            print '1776 get attr influence user'
             influence_user_result = get_influence_user(uid_list)
             results = dict(results, **influence_user_result)
             #step7: get user sentiment words
-            print '1779 get attr sentiment word'
             user_sentiment_words = get_attr_sentiment_word(uid_list)
             results = dict(results, **user_sentiment_words)
             results['tag_vector'] = json.dumps(tag_vector_result)
             #step8: update compute status to completed
             results['status'] = 1
             #step9: save results
-            print '1787 save'
             save_group_results(results)
             #test
             break
