@@ -259,7 +259,8 @@ def get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, text_type)
                         ],
                         "should":[
                             {"terms": {"root_mid": mid_list}},
-                            {"terms": {"mid": mid_list}}
+                            {"terms": {"mid": mid_list}},
+                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -343,7 +344,8 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
                         ],
                         "should":[
                             {"terms": {"root_mid": mid_list}},
-                            {"terms": {"mid": mid_list}}
+                            {"terms": {"mid": mid_list}},
+                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -355,8 +357,8 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
 
 
 
-    if social_sensors and int(sentiment_type) == 1:
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"terms":{"uid": social_sensors}})
+    #if social_sensors and int(sentiment_type) == 1:
+    #    query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"terms":{"uid": social_sensors}})
 
     if int(sentiment_type) == 1 or int(sentiment_type) == 0:
         query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term":{"sentiment":sentiment_type}})
