@@ -9,8 +9,6 @@ import time
 import datetime
 from global_utils_ch import abs_path
 from config import load_scws
-from test_ch_sentiment import classify_sentiment
-from test_ch_topic import classify_topic
 
 def input_data(name):#测试输入
 

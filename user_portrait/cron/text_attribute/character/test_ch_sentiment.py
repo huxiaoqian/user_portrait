@@ -66,11 +66,13 @@ def classify_without_sentiment(uid_weibo,uid_list,start_date,end_date):
     '''
 
     uid_sentiment = dict()
-    com_result = dict()
+    new_uid = []
     min_ts = int(time.mktime(time.strptime(start_date,'%Y-%m-%d')))
     max_ts = int(time.mktime(time.strptime(end_date,'%Y-%m-%d')))
     time_index,time_list = sta_time_list(min_ts,max_ts)
     for uid,text,ts in uid_weibo:
+        if uid not in new_uid:
+            new_uid.append(uid)
         sentiment = triple_classifier({'text':text})
         date_str = time.strftime('%Y-%m-%d',time.localtime(float(ts)))
         if uid_sentiment.has_key(uid):
@@ -95,11 +97,18 @@ def classify_without_sentiment(uid_weibo,uid_list,start_date,end_date):
     s_result = sentiment_classify(uid_sentiment,min_ts,max_ts)
 
     com_result = dict()
-    for uid in uid_list:
-        if s_result.has_key(uid):
-            com_result[uid] = SEN_DICT[s_result[uid]]
-        else:
-            com_result[uid] = SEN_DICT[0]
+    if len(uid_list):
+        for uid in uid_list:
+            if s_result.has_key(uid):
+                com_result[uid] = SEN_DICT[s_result[uid]]
+            else:
+                com_result[uid] = SEN_DICT[0]
+    else:
+        for uid in new_uid:
+            if s_result.has_key(uid):
+                com_result[uid] = SEN_DICT[s_result[uid]]
+            else:
+                com_result[uid] = SEN_DICT[0]
 
     return com_result
 
@@ -110,10 +119,13 @@ def classify_with_sentiment(uid_weibo,uid_list,start_date,end_date):
       输出数据：字典对象 {uid1:str1,uid2:str2,...}
     '''
     uid_sentiment = dict()
+    new_uid = []
     min_ts = int(time.mktime(time.strptime(start_date,'%Y-%m-%d')))
     max_ts = int(time.mktime(time.strptime(end_date,'%Y-%m-%d')))
     time_index,time_list = sta_time_list(min_ts,max_ts)
     for uid,text,s,ts in uid_weibo:
+        if uid not in new_uid:
+            new_uid.append(uid)
         sentiment = s
         date_str = time.strftime('%Y-%m-%d',time.localtime(float(ts)))
         if uid_sentiment.has_key(uid):
@@ -138,11 +150,18 @@ def classify_with_sentiment(uid_weibo,uid_list,start_date,end_date):
     s_result = sentiment_classify(uid_sentiment,min_ts,max_ts)
 
     com_result = dict()
-    for uid in uid_list:
-        if s_result.has_key(uid):
-            com_result[uid] = SEN_DICT[s_result[uid]]
-        else:
-            com_result[uid] = SEN_DICT[0]
+    if len(uid_list):
+        for uid in uid_list:
+            if s_result.has_key(uid):
+                com_result[uid] = SEN_DICT[s_result[uid]]
+            else:
+                com_result[uid] = SEN_DICT[0]
+    else:
+        for uid in new_uid:
+            if s_result.has_key(uid):
+                com_result[uid] = SEN_DICT[s_result[uid]]
+            else:
+                com_result[uid] = SEN_DICT[0]
 
     return com_result
 
@@ -154,7 +173,17 @@ def classify_sentiment(uid_list,uid_weibo,start_date,end_date,flag):
         示例1（需要计算情感）：[uid1,uid2,uid3,...],[[uid1,text1,ts1],[uid2,text2,ts2],...],'2013-09-01','2013-09-07',1
         示例0（不需要计算情感）：[uid1,uid2,uid3,...],[[uid1,text1,s1,ts1],[uid2,text2,s2,ts2],...],'2013-09-01','2013-09-07',0
     '''
-
+    if not len(uid_weibo) and len(uid_list):
+        com_result = dict()
+        for uid in uid_list:
+            com_result[uid] = SEN_DICT[0]
+        return com_result
+    elif not len(uid_weibo) and not len(uid_list):
+        com_result = dict()
+        return com_result
+    else:
+        pass
+    
     if flag == 1:#需要重新计算情绪
         com_result = classify_without_sentiment(uid_weibo,uid_list,start_date,end_date)
     else:#不需要重新计算情绪
@@ -222,14 +251,16 @@ if __name__ == '__main__':
 
     uid_list,uid_weibo = input_data2('test_0126')
     start = time.time()
+    uid_weibo = dict()
     result_dict = classify_sentiment(uid_list,uid_weibo,'2013-09-01','2013-09-07',1)
     end = time.time()
     print 'it takes %s seconds...' % (end-start)
+    print result_dict
 
-    with open('/home/ubuntu8/yuanshi/character/result0122/test_0226_data_new.csv', 'wb') as f:
-        writer = csv.writer(f)
-        for k,v in result_dict.iteritems():
-            writer.writerow((k,v))
+##    with open('/home/ubuntu8/yuanshi/character/result0122/test_0226_data_new.csv', 'wb') as f:
+##        writer = csv.writer(f)
+##        for k,v in result_dict.iteritems():
+##            writer.writerow((k,v))
 ##    with open('/home/ubuntu8/yuanshi/character/result0122/count_0226_data.csv', 'wb') as f:
 ##        writer = csv.writer(f)
 ##        for k,v in uid_test.iteritems():

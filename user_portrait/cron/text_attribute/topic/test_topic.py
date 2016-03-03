@@ -26,14 +26,6 @@ class TopkHeap(object):
     def TopK(self):
         return [x for x in reversed([heapq.heappop(self.data) for x in xrange(len(self.data))])]
 
-def start_p():
-
-    domain_p = dict()
-    for name in name_list:
-        domain_p[name] = 0
-
-    return domain_p
-
 def com_p(word_list,domain_dict,domain_count,len_dict,total):
 
     p = 0
@@ -49,8 +41,7 @@ def load_weibo(uid_weibo):
     result_data = dict()
     p_data = dict()
     for k,v in uid_weibo.iteritems():
-        start = time.time()
-        domain_p = start_p()
+        domain_p = TOPIC_DICT
         for d_k in domain_p.keys():
             domain_p[d_k] = com_p(v,DOMAIN_DICT[d_k],DOMAIN_COUNT[d_k],LEN_DICT[d_k],TOTAL)#计算文档属于每一个类的概率
             end_time = time.time()
@@ -94,7 +85,22 @@ def topic_classfiy(uid_list,uid_weibo):#话题分类主函数
     用户关注较多的话题（最多有3个）：
     {uid1:['art','social','media']...}
     '''
-
+    if not len(uid_weibo) and len(uid_list):
+        result_data = dict()
+        uid_topic = dict()
+        for uid in uid_list:
+            result_data[uid] = TOPIC_DICT
+            uid_topic[uid] = ['life']
+        return result_data,uid_topic
+    elif len(uid_weibo) and not len(uid_list):
+        uid_list = uid_weibo.keys()
+    elif not len(uid_weibo) and not len(uid_list):
+        result_data = dict()
+        uid_topic = dict()
+        return result_data,uid_topic
+    else:
+        pass        
+        
     result_data,uid_topic = load_weibo(uid_weibo)#话题分类主函数
 
     for uid in uid_list:
@@ -107,9 +113,10 @@ def topic_classfiy(uid_list,uid_weibo):#话题分类主函数
 
 if __name__ == '__main__':
 
-    uid_weibo = input_data()
-    result_data,uid_topic = topic_classfiy(uid_weibo)
-    #print result_data
+    uid_list,uid_weibo = input_data()
+    uid_weibo = dict()
+    result_data,uid_topic = topic_classfiy(uid_list,uid_weibo)
+    print result_data
     print uid_topic
 
 

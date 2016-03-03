@@ -97,6 +97,19 @@ def classify_topic(uid_list,uid_weibo):
         输入：用户id列表，用户微博分词列表
         输入样例：[uid1,uid2,uid3,...],{uid1:{'w1':f1,'w2':f2...}...}
     '''
+    if not len(uid_weibo) and len(uid_list):
+        com_result = dict()
+        for uid in uid_list:
+            com_result[uid] = EVENT_DICT[0]
+        return com_result
+    elif len(uid_weibo) and not len(uid_list):
+        uid_list = uid_weibo.keys()
+    elif not len(uid_weibo) and not len(uid_list):
+        com_result = dict()
+        return com_result
+    else:
+        pass
+
     com_result = classify(uid_weibo,uid_list)
         
     return com_result    
@@ -144,13 +157,15 @@ if __name__ == '__main__':
 
     uid_list,uid_weibo = input_data('test_0126')
     start = time.time()
+    uid_list = dict()
     result_dict = classify_topic(uid_list,uid_weibo)
     end = time.time()
     print 'it takes %s seconds...' % (end-start)
-    with open('/home/ubuntu8/yuanshi/character/result0122/test_0226_content_new.csv', 'wb') as f:
-        writer = csv.writer(f)
-        for k,v in result_dict.iteritems():
-            writer.writerow((k,v))
+    print result_dict
+##    with open('/home/ubuntu8/yuanshi/character/result0122/test_0226_content_new.csv', 'wb') as f:
+##        writer = csv.writer(f)
+##        for k,v in result_dict.iteritems():
+##            writer.writerow((k,v))
 ##    get_event(uid_weibo,'sta_in_event')
 ##    get_sentiment(uid_weibo,'sta_in_sentiment')
 ##    uid_weibo = input_data2('notin')
