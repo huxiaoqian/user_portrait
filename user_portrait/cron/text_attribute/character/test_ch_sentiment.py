@@ -21,8 +21,12 @@ def sentiment_classify(uid_sentiment,start_date,end_date):
         depressed = 0
         for item in v:
             n = item[2]
-            i_r = item[0]/float(n)
-            d_r = item[1]/float(n)
+            try:
+                i_r = item[0]/float(n)
+                d_r = item[1]/float(n)
+            except:
+                i_r = 0
+                d_r = 0
             if abs(i_r-d_r) > ZERO_STA and (i_r+d_r) >= TOTAL_STA:
                 if i_r > d_r:
                     impulse = impulse + 1
