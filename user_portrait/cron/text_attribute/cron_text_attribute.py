@@ -332,49 +332,49 @@ def get_fansnum_max():
 #version: write in 2016-02-28
 def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts):
     status = False
-    print 'start cron_text_attribute'
+    #print 'start cron_text_attribute'
     uid_list = user_keywords_dict.keys()
     
     #get user flow information: hashtag, activity_geo, keywords
-    print 'get flow result'
+    #print 'get flow result'
     flow_result = get_flow_information_v2(uid_list, user_keywords_dict)
-    print 'flow result len:', len(flow_result)
+    #print 'flow result len:', len(flow_result)
     
     #get user profile information
-    print 'get register result'
+    #print 'get register result'
     register_result = get_profile_information(uid_list)
-    print 'register result len:', len(register_result)
+    #print 'register result len:', len(register_result)
     
     #get user topic and domain by bulk action
-    print 'get topic and domain'
+    #print 'get topic and domain'
     topic_results_dict, topic_results_label = topic_classfiy(uid_list, user_keywords_dict)
     domain_results = domain_classfiy(uid_list, user_keywords_dict)
     domain_results_dict = domain_results[0]
     domain_results_label = domain_results[1]
-    print 'topic result len:', len(topic_results_dict)
-    print 'domain result len:', len(domain_results_dict)
+    #print 'topic result len:', len(topic_results_dict)
+    #print 'domain result len:', len(domain_results_dict)
     
     #get user character attribute
-    print 'get character result'
+    #print 'get character result'
     #type_mark = 0/1 for identify the task input status---just sentiment or text
     character_start_time = ts2datetime(character_start_ts)
     character_end_time = ts2datetime(character_start_ts + DAY * CHARACTER_TIME_GAP - DAY)
-    print 'character_start_time:', character_start_time
-    print 'character_end_time:', character_end_time
+    #print 'character_start_time:', character_start_time
+    #print 'character_end_time:', character_end_time
     character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
     character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
-    print 'character result len:', len(character_sentiment_result_dict), len(character_text_result_dict)
+    #print 'character result len:', len(character_sentiment_result_dict), len(character_text_result_dict)
     
     #get user fansnum max
     fansnum_max = get_fansnum_max()
     #get user activeness by bulk_action
-    print 'get activeness results'
+    #print 'get activeness results'
     activeness_results = get_activity_time(uid_list)
-    print 'activeness result len:', len(activeness_results)
+    #print 'activeness result len:', len(activeness_results)
     #get user inlfuence by bulk action
-    print 'get influence'
+    #print 'get influence'
     influence_results = get_influence(uid_list)
-    print 'influence results len:', len(influence_results)
+    #print 'influence results len:', len(influence_results)
     
     # compute text attribute
     bulk_action = []

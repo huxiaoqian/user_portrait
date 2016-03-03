@@ -40,7 +40,6 @@ def scan_compute_redis():
             mapping_dict = {}
             
     if iter_user_list != [] and mapping_dict != {}:
-        print 'mapping_dict:', mapping_dict
         r.hmset('compute', mapping_dict)
         #acquire bulk user weibo date
         if WEIBO_API_INPUT_TYPE == 0:
