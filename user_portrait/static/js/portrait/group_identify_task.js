@@ -123,7 +123,7 @@ Draw_dis_Table:function(data){
 }
 var Group_identify_task = new Group_identify_task();
 function redraw_result(){
-    console.log('iiiii');
+    //console.log('iiiii');
 	url = '/group/show_task/';
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 	//deleteGroup();
@@ -298,7 +298,7 @@ function draw_control_table(data){
 
 
 function draw_table(data,div){
-	console.log(data);
+	//console.log(data);
 	// console.log(div);
 	$(div).empty();
 	//var datas = data['topic'];
