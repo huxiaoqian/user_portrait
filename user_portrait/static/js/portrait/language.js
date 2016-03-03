@@ -90,11 +90,17 @@ function Draw_keyword(data, div_name, more_div, more){
   	var myChart = echarts.init(document.getElementById(div_name)); 
   	var option = {
       tooltip: {
-          show: true
+          show: true,
+          formatter:  function (params,ticket,callback){
+            var res  = '';
+            var value_after = params.value/100;
+            res += params.name+' : '+value_after;
+            return res;
+          }
       },
       series: [{
           type: 'wordCloud',
-          size: ['130%', '130%'],
+          size: ['100%', '100%'],
           textRotation : [0, 45, 90, -45],
           textPadding: 0,
           autoSize: {
@@ -239,7 +245,7 @@ var option = {
             name:'树图',
             type:'tree',
             orient: 'horizontal',  // vertical horizontal
-            rootLocation: {x: 30, y: 'center'}, // 根节点位置  {x: 'center',y: 10}
+            rootLocation: {x: 50, y: 'center'}, // 根节点位置  {x: 'center',y: 10}
             nodePadding: 50,
             symbol: 'circle',
             symbolSize: 60,
@@ -254,6 +260,7 @@ var option = {
                             font_family: "Microsoft YaHei UI"
                         }
                     },
+
                     lineStyle: {
                         color: '#000',
                         width: 1,
@@ -272,7 +279,7 @@ var option = {
                     name: data4,
                     //value: 2,
                     // symbolSize: [90, 70],
-                    // symbol: 'image://http://www.iconpng.com/png/ecommerce-business/iphone.png',
+                    symbol: 'circle',
                     itemStyle: {
                         normal: {
                            color: '#95C6E2',
@@ -293,14 +300,14 @@ var option = {
                                   label: {
                                       show: true,
                                       position: 'right'
-                                  },
+                                  }
                                   
                               },
                               emphasis: {
                                   label: {
-                                      show: false
+                                      show: true
                                   },
-                                  borderWidth: 0
+                              borderWidth: 10
                               }
                           }
                         },
@@ -315,8 +322,7 @@ var option = {
                                   label: {
                                       show: true,
                                       position: 'right'
-                                  },
-                                  
+                                  }                                  
                               },
                               emphasis: {
                                   label: {
@@ -337,8 +343,7 @@ var option = {
                                   label: {
                                       show: true,
                                       position: 'right'
-                                  },
-                                  
+                                  }                                 
                               },
                               emphasis: {
                                   label: {
