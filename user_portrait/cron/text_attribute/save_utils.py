@@ -5,12 +5,14 @@ import time
 reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
-from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from time_utils import datetime2ts, ts2datetime
+from global_utils import portrait_index_name, portrait_index_type
 
-index_type = 'user'
-index_name = 'user_portrait'
+#test
+portrait_index_type = 'user'
+portrait_index_name = 'user_portrait_0303'
 
+'''
 def attr_hash(uid):
     hashtag_results = {}
     now_ts = time.time()
@@ -30,10 +32,14 @@ def attr_hash(uid):
                 except:
                     hashtag_results[hashtag] = count
     return hashtag_results
-            
+'''            
 
 def save_user_results(bulk_action):
     print 'save utils bulk action len:', len(bulk_action)
-    es.bulk(bulk_action, index='user_portrait_1222', doc_type=index_type, timeout=60)
+    #test
+    print 'bulk_action:', bulk_action
+    portrait_index_name = 'user_portrait_0303'
+    portrait_index_type = 'user'
+    es.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type, timeout=60)
     return True    
 

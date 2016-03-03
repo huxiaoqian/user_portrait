@@ -73,10 +73,6 @@ index_info = {
                     "type": "string",
                     "analyzer": "my_analyzer"
                 },
-                "topic_string":{
-                    "type": "string",
-                    "analyzer": "my_analyzer"
-                },
 
                 "importance": {
                     "type": "long"

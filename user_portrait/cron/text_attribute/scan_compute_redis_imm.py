@@ -18,7 +18,7 @@ def scan_compute_redis():
         user_list = json.loads(results[uid])
         in_date = user_list[0]
         status = user_list[1]
-        if status == '2':     #imme
+        if status == '1':     #imme
             iter_user_list.append(uid)
             mapping_dict[uid] = json.dumps([in_date, '3']) # mark status:3 computing
         if len(iter_user_list) % 100 == 0 and len(iter_user_list) != 0:
@@ -40,7 +40,8 @@ def scan_compute_redis():
             mapping_dict = {}
             
     if iter_user_list != [] and mapping_dict != {}:
-        r.mset('compute', mapping_dict)
+        print 'mapping_dict:', mapping_dict
+        r.hmset('compute', mapping_dict)
         #acquire bulk user weibo date
         if WEIBO_API_INPUT_TYPE == 0:
             user_keywords_dict, user_weibo_dict, online_pattern_dict, character_start_ts = read_flow_text_sentiment(iter_user_list)
@@ -59,7 +60,7 @@ def change_status_computed(mapping_dict):
     status = 4
     new_mapping_dict = {}
     for uid in mapping_dict:
-        user_list = mapping_dict[uid]
+        user_list = json.loads(mapping_dict[uid])
         user_list[1] = '4'
         new_mapping_dict[uid] = json.dumps(user_list)
     r.hmset(hash_name, new_mapping_dict)
@@ -70,10 +71,10 @@ def change_status_compute_fail(mapping_dict):
     status = 1
     new_mapping_dict = {}
     for uid in mapping_dict:
-        user_list = mapping_dict[uid]
+        user_list = json.loads(mapping_dict[uid])
         user_list[1] = '1'
         new_mapping_dict[uid] = json.dumps(user_list)
-    r.mset(hashname, new_mapping_dict)
+    r.hmset(hashname, new_mapping_dict)
 
 
 if __name__=='__main__':

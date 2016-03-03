@@ -170,7 +170,7 @@ function draw_group_kind(data){
                     color: function(params) {
                         // build a color map as your need.
                         var colorList = [
-                         '#FFB980','#87CEFA','#B6A2DE','#FFB980','#F3A43B','#B6A2DE','#9BCA63','#FE8463'
+                         '#FFB980','#87CEFA','#B6A2DE','#3DD03D','#F3A43B','#B6A2DE','#9BCA63','#FE8463'
                         ];
                         return colorList[params.dataIndex]
                     } 
@@ -195,7 +195,7 @@ function draw_group_kind(data){
                     color: function(params) {
                         // build a color map as your need.
                         var colorList = [
-                         '#FFB980','#87CEFA','#B6A2DE','#FFB980','#F3A43B','#B6A2DE','#9BCA63','#FE8463'
+                         '#FFB980','#87CEFA','#B6A2DE','#3DD03D','#F3A43B','#B6A2DE','#9BCA63','#FE8463'
                         ];
                         return colorList[params.dataIndex]
                     } 
