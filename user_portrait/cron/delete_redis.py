@@ -1,14 +1,16 @@
 # -*- coding:utf-8 -*-
 # 删除7天前的过期的redis数据：ip/activity/@;hashtag/sensitive_words;
 
+import sys
+import os
 import redis
 import time
 reload(sys)
-sys.path.append("../../")
+sys.path.append("../")
 from time_utils import ts2datetime, datetime2ts
 from global_utils import R_CLUSTER_FLOW2 as r_cluster
 from global_utils import R_RECOMMENTATION as r
-from global_utils import EXPIRE_TIME
+from parameter import EXPIRE_TIME
 
 def main():
     now_ts = time.time()
@@ -35,10 +37,20 @@ def main():
 
 if __name__ == "__main__":
     now_ts = time.time()
+    current_path = os.getcwd()
+    file_path_redis = os.path.join(current_path, 'delete_redis.py')
+    print_log = "&".join([file_path_redis, "start", ts2datetime(now_ts)])
+    print print_log
+
     now_datetime = datetime2ts(ts2datetime(now_ts))
     new_ip_number = r_cluster.hlen('new_ip_'+str(now_datetime))
     new_hashtag_number = r_cluster.hlen('hashtag_'+str(now_datetime))
 
-    if new_ip_number and new_hashtag_number: # flow2/flow4写入新数据,可以清楚8天前数据
-        main()
-    
+    #if new_ip_number and new_hashtag_number: # flow2/flow4写入新数据,可以清楚8天前数据
+    #    main()
+
+    now_ts = time.time()
+    print_log = "&".join([file_path_redis, "end", ts2datetime(now_ts)])
+    print print_log
+
+

@@ -310,23 +310,24 @@ def ajax_get_group_detail():
             uid_list = json.loads(search_result['uid_list'])
         except:
             uid_list = search_result['uid_list']
-        search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":uid_list}, fields=SOCIAL_SENSOR_INFO)['docs']
-        for item in search_results:
-            temp = []
-            if item['found']:
-                for iter_item in SOCIAL_SENSOR_INFO:
-                    if iter_item == "topic_string":
-                        temp.append(item["fields"][iter_item][0].split('&'))
-                        temp.append(item["fields"][iter_item][0].split('&'))
-                    elif iter_item == "activeness":
-                        temp.append(math.ceil(item["fields"][iter_item][0]/float(top_activeness)*100))
-                    elif iter_item == "importance":
-                        temp.append(math.ceil(item["fields"][iter_item][0]/float(top_importance)*100))
-                    elif iter_item == "influence":
-                        temp.append(math.ceil(item["fields"][iter_item][0]/float(top_influence)*100))
-                    else:
-                        temp.append(item["fields"][iter_item][0])
-                portrait_detail.append(temp)
+        if uid_list:
+            search_results = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={"ids":uid_list}, fields=SOCIAL_SENSOR_INFO)['docs']
+            for item in search_results:
+                temp = []
+                if item['found']:
+                    for iter_item in SOCIAL_SENSOR_INFO:
+                        if iter_item == "topic_string":
+                            temp.append(item["fields"][iter_item][0].split('&'))
+                            temp.append(item["fields"][iter_item][0].split('&'))
+                        elif iter_item == "activeness":
+                            temp.append(math.ceil(item["fields"][iter_item][0]/float(top_activeness)*100))
+                        elif iter_item == "importance":
+                            temp.append(math.ceil(item["fields"][iter_item][0]/float(top_importance)*100))
+                        elif iter_item == "influence":
+                            temp.append(math.ceil(item["fields"][iter_item][0]/float(top_influence)*100))
+                        else:
+                            temp.append(item["fields"][iter_item][0])
+                    portrait_detail.append(temp)
 
     return json.dumps(portrait_detail)
 

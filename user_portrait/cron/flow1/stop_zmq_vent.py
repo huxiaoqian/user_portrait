@@ -37,6 +37,7 @@ if __name__ == "__main__":
         controller.send("PAUSE")
         # repeat to send to ensure 
 
+    ts = ts2datetime(time.time())
+    print "stop_zmq&start*ts"
     #delete_files()
-  
 
