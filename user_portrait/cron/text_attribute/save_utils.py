@@ -40,6 +40,8 @@ def save_user_results(bulk_action):
     print 'bulk_action:', bulk_action
     portrait_index_name = 'user_portrait_0303'
     portrait_index_type = 'user'
-    es.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type, timeout=60)
+    es.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type, timeout=600)
     return True    
 
+if __name__=='__main__':
+    save_user_results([])
