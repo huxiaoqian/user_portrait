@@ -422,6 +422,7 @@ def ajax_event_detect():
     for filter_item in DETECT_QUERY_FILTER:
         if filter_item == 'count':
             filter_item_value = request.args.get(filter_item, DETECT_DEFAULT_COUNT)
+            filter_item_value = int(filter_item_value)
         else:
             filter_item_from = request.args.get(filter_item+'_from', DETECT_FILTER_VALUE_FROM)
             filter_item_to = request.args.get(filter_item+'_to', DETECT_FILTER_VALUE_TO)
