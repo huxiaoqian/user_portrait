@@ -13,7 +13,7 @@ from datetime import datetime
 from flow_information import get_flow_information, get_flow_information_v2
 from evaluate_index import get_importance, get_activity_time, get_activeness, get_influence
 from user_profile import get_profile_information
-from save_utils import attr_hash, save_user_results
+from save_utils import save_user_results
 from config import topic_en2ch_dict, domain_en2ch_dict
 from domain_topic_input import get_user_weibo_string, get_user_keywords_dict
 from character_input import character_input # use to prepare input for attribute---character
@@ -357,8 +357,10 @@ def test_cron_text_attribute_v2(user_keywords_dict, user_weibo_dict, online_patt
     #get user character attribute
     print 'get character result'
     #type_mark = 0/1 for identify the task input status---just sentiment or text
-    character_end_time = ts2datetime(character_start_ts)
-    character_start_time = ts2datetime(character_start_ts - DAY * CHARACTER_TIME_GAP)
+    character_start_time = ts2datetime(character_start_ts)
+    character_end_time = ts2datetime(character_start_ts + DAY * CHARACTER_TIME_GAP - DAY)
+    print 'character_start_time:', character_start_time
+    print 'character_end_time:', character_end_time
     character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
     character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
     print 'character result len:', len(character_sentiment_result_dict), len(character_text_result_dict)
