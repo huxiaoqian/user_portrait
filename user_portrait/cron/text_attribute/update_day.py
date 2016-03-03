@@ -10,7 +10,7 @@ import time
 import math
 import numpy as np
 from evaluate_index import get_evaluate_index
-from flow_information import update_flow_information
+from flow_information import update_flow_information, ip2city
 from save_utils import save_user_results
 from evaluate_index import get_activity_time, get_influence
 from config import activeness_weight_dict
@@ -75,12 +75,13 @@ def update_day_geo(uid_list, user_info_list):
         now_date_ts = datetime2ts(ts2datetime(now_ts))
     else:
         now_date_ts = test_ts
-    ip_results = r_cluster.hmget('new_ip__'+str(now_date_ts - DAY), uid_list)
+    ip_results = r_cluster.hmget('new_ip_'+str(now_date_ts - DAY), uid_list)
     count = 0
     for uid in uid_list:
         if uid not in results:
             results[uid] = {'activity_geo':{}, 'activity_geo_dict':[]}
         uid_ip_results = ip_results[count]
+        count += 1
         if uid_ip_results:
             uid_ip_dict = json.loads(uid_ip_results)
         else:
@@ -89,6 +90,7 @@ def update_day_geo(uid_list, user_info_list):
         for ip in uid_ip_dict:
             ip_count = len(uid_ip_dict[ip].split('&'))
             geo = ip2city(ip)
+            geo = geo.decode('utf-8')
             try:
                 day_results[geo] += ip_count
             except:
@@ -104,9 +106,9 @@ def update_day_geo(uid_list, user_info_list):
             geo_list = activity_geo_item.keys()
             week_geo_list.extend(geo_list)
         week_geo_list = list(set(week_geo_list))
-        week_geo_string = '&'.join(['&'.join(item.split('\t')) for item in week_geo_list])
+        week_geo_string = '&'.join(['&'.join((item.encode('utf-8')).split('\t')) for item in week_geo_list])
         try:
-            week_geo_aggs_string = '&'.join([item.split('\t')[-1] for item in week_geo_list])
+            week_geo_aggs_string = '&'.join([(item.encode('utf-8')).split('\t')[-1] for item in week_geo_list])
         except:
             week_geo_aggs_string = ''
 
@@ -155,12 +157,11 @@ def save_bulk_action(uid_list, hashtag_results, geo_results, activeness_results,
         user_results = {}
         user_results = dict(user_results, **hashtag_results[uid])
         user_results = dict(user_results, **geo_results[uid])
-        user_results = dict(user_results, **activeness_results)
-        user_results = dict(user_results, **influence_results)
+        user_results = dict(user_results, **activeness_results[uid])
+        user_results = dict(user_results, **influence_results[uid])
         action = {'update':{'_id': uid}}
         bulk_action.extend([action, {'doc': user_results}])
 
-    #print 'bulk_action:', bulk_action
     es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
 
 
@@ -197,7 +198,7 @@ def update_attribute_day():
             user_info_list = {}
             end_ts = time.time()
             #log_should_delete
-            print '%s sec count 1000' % (end_ts - start_ts)
+            #print '%s sec count 1000' % (end_ts - start_ts)
             #log_should_delete
             start_ts = end_ts
     
