@@ -51,7 +51,7 @@ function Draw_num_related_event(data){
     }
     for (var i = 0; i < data.length; i++){
         html += '<div><b>感知事件'+(i+1)+'</b>&nbsp;&nbsp;&nbsp;&nbsp;';
-        var x=8;
+        var x=8; //最多显示8个词
         if(data[i].length<x){
         	x=data[i].length;
         }
@@ -394,6 +394,20 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var geo = weibo[6];
         var attitude = weibo[4];
         var sensor_words = weibo[7];
+        var weibo_type = weibo[8];
+        var weibo_type_s = '';
+        if(weibo_type = 1){
+            weibo_type_s = '原创';
+
+        }
+        if(weibo_type = 2){
+            weibo_type_s = '评论';
+
+        }
+        if(weibo_type = 2){
+            weibo_type_s = '转发';
+
+        }
         highlight_words.push(sensor_words);
 
         var profile_image_url = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
@@ -423,7 +437,7 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail">';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、情绪: '+ attitude_s + '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s +'、【'+weibo_type_s+'】- 情绪: '+ attitude_s + '&nbsp;-&nbsp;昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;';
         html += '发布内容:&nbsp;&nbsp;<span class="weibo_text">' + text + '</span></p>';
         html += '</div>';
         html += '<div class="weibo_info"style="width:100%">';
