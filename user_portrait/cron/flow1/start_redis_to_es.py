@@ -49,4 +49,5 @@ if __name__ == "__main__":
                 ts = time.time()
  #               print '%s : %s' %(count, ts - tb)
                 tb = ts
-
+    ts = ts2datetime(time.time())
+    print "send_uid&start&ts"
