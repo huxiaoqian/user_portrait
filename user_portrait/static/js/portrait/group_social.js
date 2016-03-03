@@ -472,8 +472,11 @@ function draw_relation_out_net(data,name,symbols){
 }
 function draw_in_table(data){
     $('#group_in_table').empty();
-    var s = '';
     var html = '';
+    if(data[0]==undefined){
+        html = '暂无数据';
+    }else{
+    var s = '';
     html = '<table id="group_in_table_body" class="table table-striped table-bordered bootstrap-datatable datatable responsive" >';
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center"></td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">转发量</td></tr>';
     for (var i=0;i<data['social_in_record'].length;i++){
@@ -492,6 +495,7 @@ function draw_in_table(data){
     html += data['social_in_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
+}
     $('#group_in_table').append(html);
     /*
     $('#group_in_table_body').dataTable({
@@ -508,6 +512,9 @@ function draw_out_table(data){
     $('#group_out_table').empty();
     var s = '';
     var html = '';
+    if(data[0]==undefined){
+        html = '暂无数据';
+    }else{    
     html = '<table id="group_out_table_body" class="table table-bordered table-striped table-condensed datatable" >';
     html += '<tr><td style="text-align:center">UID</td><td style="text-align:center">昵称</td><td style="text-align:center">UID</td><td style="text-align:center">昵称</td>';
     // html +='<td style="text-align:center">影响力</td>';
@@ -529,6 +536,7 @@ function draw_out_table(data){
     html += data['social_out_record'][s]['2'] +'</td></tr>';
     };
     html += '</table>';
+}
     $('#group_out_table').append(html);
     /*
     $('#group_out_table_body').dataTable({
