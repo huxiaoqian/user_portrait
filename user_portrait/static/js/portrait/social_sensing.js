@@ -388,7 +388,8 @@ function draw_history(data){
 	}else{
 		$('span[id^="so_remark0"]').html('无');
 	}
-	if(data['sensitive_words']){
+	if(data['sensitive_words'].length>0){
+
 		$('span[id^="so_sen_keys"]').empty();
 		var s_html ='';
 		for (var j =0;j<data['sensitive_words'].length;j++){
@@ -399,7 +400,7 @@ function draw_history(data){
 		$('span[id^="so_sen_keys"]').html('无');
 	}
 
-	if(data['keywords']){
+	if(data['keywords'].length>0){
 		$('span[id^="so_nor_keys"]').empty();
 		var s_html ='';
 		for (var j =0;j<data['keywords'].length;j++){
