@@ -445,6 +445,9 @@ function show_influ_users(div_name,data){
        var s = i.toString();
        var m = i + 1;
        var uname = data[i][0].split('&')[1]
+       if(uname == 'unknown'){
+          uname = '未知';
+       }
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + uname + '</th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     /*
@@ -500,6 +503,12 @@ function group_influ(data){
         var max_user_name = [];
         var min_user_name = [];
         for(var i=0; i<max_data.length;i++){
+            if(max_data[i][2]=='unknown'){
+                max_data[i][2] = '未知';
+            }
+            if(min_data[i][2]=='unknown'){
+                min_data[i][2] = '未知';
+            }
             max_user_name.push(max_data[i][2]);
             min_user_name.push(min_data[i][2]);
 
