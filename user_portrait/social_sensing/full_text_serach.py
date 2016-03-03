@@ -79,7 +79,7 @@ def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, message
         for i in range(len(uid_list)):
             item = search_results[i]['_source']
             temp = []
-            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords
+            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords, message_type
             temp.append(item['uid'])
             if portrait_result[i]['found']:
                 temp.append(portrait_result[i]["fields"]["nick_name"][0])
@@ -95,6 +95,7 @@ def get_sensitive_weibo_detail(ts, social_sensors, sensitive_words_list, message
             keywords_set = set(item['keywords_string'].split('&'))
             common_keywords = set(sensitive_words_list) & keywords_set
             temp.append(list(common_keywords))
+            temp.append(item['message_type'])
             results.append(temp)
 
     return results
@@ -152,7 +153,7 @@ def get_origin_weibo_detail(ts, social_sensors, keywords_list, size=100, message
         for i in range(len(uid_list)):
             item = search_results[i]['_source']
             temp = []
-            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords
+            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords, message_type
             temp.append(item['uid'])
             if portrait_result[i]['found']:
                 temp.append(portrait_result[i]["fields"]["nick_name"][0])
@@ -168,8 +169,9 @@ def get_origin_weibo_detail(ts, social_sensors, keywords_list, size=100, message
             keywords_set = set(item['keywords_string'].split('&'))
             common_keywords = set(keywords_list) & keywords_set
             temp.append(list(common_keywords))
+            temp.append(item['message_type'])
             results.append(temp)
-
+    print results
     return results
 
 
@@ -257,7 +259,8 @@ def get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, text_type)
                         ],
                         "should":[
                             {"terms": {"root_mid": mid_list}},
-                            {"terms": {"mid": mid_list}}
+                            {"terms": {"mid": mid_list}},
+                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -282,7 +285,7 @@ def get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, text_type)
         search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body)["hits"]["hits"]
     else:
         search_results = []
-    print search_results
+    #print search_results
     # 2. 获取微博相关信息
     results = []
     uid_list = []
@@ -295,7 +298,7 @@ def get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, text_type)
         for i in range(len(uid_list)):
             item = search_results[i]['_source']
             temp = []
-            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords
+            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords, message_type
             temp.append(item['uid'])
             if portrait_result[i]['found']:
                 temp.append(portrait_result[i]["fields"]["nick_name"][0])
@@ -304,13 +307,14 @@ def get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, text_type)
                 temp.append("unknown")
                 temp.append("")
             temp.append(item["text"])
-            print item['text']
+            #print item['text']
             temp.append(item["sentiment"])
             temp.append(ts2date(item['timestamp']))
             temp.append(item['geo'])
             keywords_set = set(item['keywords_string'].split('&'))
             common_keywords = set(keywords_list) & keywords_set
             temp.append(list(common_keywords))
+            temp.append(item["message_type"])
             results.append(temp)
 
     return results
@@ -340,7 +344,8 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
                         ],
                         "should":[
                             {"terms": {"root_mid": mid_list}},
-                            {"terms": {"mid": mid_list}}
+                            {"terms": {"mid": mid_list}},
+                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -352,8 +357,8 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
 
 
 
-    if social_sensors and int(sentiment_type) == 1:
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"terms":{"uid": social_sensors}})
+    #if social_sensors and int(sentiment_type) == 1:
+    #    query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"terms":{"uid": social_sensors}})
 
     if int(sentiment_type) == 1 or int(sentiment_type) == 0:
         query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term":{"sentiment":sentiment_type}})
@@ -387,7 +392,7 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
         for i in range(len(uid_list)):
             item = search_results[i]['_source']
             temp = []
-            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords
+            # uid, nick_name, photo_url, text, sentiment, timestamp, geo, common_keywords, message_type
             temp.append(item['uid'])
             if portrait_result[i]['found']:
                 temp.append(portrait_result[i]["fields"]["nick_name"][0])
@@ -402,6 +407,7 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
             keywords_set = set(item['keywords_string'].split('&'))
             common_keywords = set(keywords_list) & keywords_set
             temp.append(list(common_keywords))
+            temp.append(item['message_type'])
             results.append(temp)
 
     return results
@@ -460,7 +466,7 @@ def query_hot_mid(ts, keywords_list, text_type,size=100):
             temp.append(item['doc_count'])
             hot_mid_list.append(temp)
 
-    print hot_mid_list
+    #print hot_mid_list
 
     return hot_mid_list
 
