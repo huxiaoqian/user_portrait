@@ -733,6 +733,9 @@ function Draw_group_weibo_user(uids,unames){
     for (var i = 0; i < unames.length; i++) {
         // timestamp = timestamp-24*3600*1000;
         // date = new Date(parseInt(timestamp)).format("yyyy-MM-dd");
+        if(unames[i] == 'unknown'){
+            unames[i] = '未知('+uids[i]+')';
+        }
         html += '<option value="' + uids[i] + '">' + unames[i] + '</option>';
     }
     html += '</select>';
