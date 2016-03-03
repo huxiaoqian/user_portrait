@@ -276,12 +276,14 @@ var history_choose_uids = new Array();
 
 var now_date = choose_time_for_mode();
 var now = now_date.format('yyyy-MM-dd');
+var last_date = new Date(now_date-24*60*60*1000);
+var last = last_date.format('yyyy-MM-dd');
 
 var url_recommend = '/recommentation/show_out/?fields=uid,uname,domain,topic,influence,importance,activeness';
 draw_table_recommend = new Search_weibo_recommend(url_recommend, '#recommend');
 draw_table_recommend.call_sync_ajax_request(url_recommend, draw_table_recommend.ajax_method, draw_table_recommend.Re_Draw_table);
 
-var url_history = '/recommentation/history_delete/?date=' + now;
+var url_history = '/recommentation/history_delete/?date=' + last;
 draw_table_history = new Search_weibo_history(url_history, '#history');
 draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_method, draw_table_history.Re_Draw_table);
 
@@ -289,7 +291,7 @@ function date_initial(){
   /* 
   var recommend_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(now_date-24*60*60*1000*(7-i));
+    var today = new Date(last_date-24*60*60*1000*(6-i));
     recommend_date[i] = today.format('yyyy-MM-dd');
   }
   $("#recommend_date_select").empty();
@@ -306,7 +308,7 @@ function date_initial(){
 
   var history_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(now_date-24*60*60*1000*(7-i));
+    var today = new Date(last_date-24*60*60*1000*(6-i));
     history_date[i] = today.format('yyyy-MM-dd');
   }
   $("#history_date_select").empty();
