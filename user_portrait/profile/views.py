@@ -88,36 +88,6 @@ class HomeView(views.MethodView):
             result = data
         return result
 
-
-class KeywordView(views.MethodView):
-    """关键词搜索热度展示页"""
-
-    template = 'keyword.html'
-
-    def get(self):
-        keywords = list(redis.smembers('keywords'))
-        return render_template(self.template, keywords=json.dumps(keywords))
-
-class SearchView(views.MethodView):
-    """多维度复杂检索页"""
-
-    template = ''
-
-    def get(self):
-        form = SearchForm()
-        return render_template(self.template, form=form)
-
-    def post(self):
-        form = SearchForm()
-        if not form.validate_on_submit():
-            return render_template(self.template, form=form)
-        # TODO es search
-        try:
-            source = es.search(size=100)
-        except Exception as e:
-            raise e
-        return render_template(self.template, source=source, data=data)
-
 class IndividualView(views.MethodView):
     """
     单个用户的个人信息页面
@@ -140,31 +110,6 @@ class IndividualView(views.MethodView):
                                followers=followers, friends=friends,
                                id=id)
 
-class UserFollowersView(views.MethodView):
-    """
-    单个用户与粉丝的关联延伸
-    """
-
-    template = 'individual_followers.html'
-
-    def get(self, id):
-        return render_template(self.template, id=id)
-
-
-class UserFriendsView(views.MethodView):
-    """
-    单个用户与好友的关联延伸
-    """
-
-    template = 'individual_friends.html'
-
-    def get(self, id):
-        return render_template(self.template, id=id)
-
-class Testviews(views.MethodView):
-
-    def get(self):
-        return  render_template('test.html')
 class UserView(views.MethodView):
     """user detail information"""
     def get(self):
@@ -336,11 +281,6 @@ class DownloadView(views.MethodView):
         return result
 
 mod.add_url_rule('/', view_func=HomeView.as_view('homepage'))
-mod.add_url_rule('/keywords/', view_func=KeywordView.as_view('keyword'))
-mod.add_url_rule('/search/', view_func=SearchView.as_view('index'))
 mod.add_url_rule('/<id>/', view_func=IndividualView.as_view('detail'))
-mod.add_url_rule('/<id>/followers/', view_func=UserFollowersView.as_view('followers'))
-mod.add_url_rule('/<id>/friends/', view_func=UserFriendsView.as_view('friends'))
-mod.add_url_rule('/test/', view_func=Testviews.as_view('test'))
 mod.add_url_rule('/user/', view_func=UserView.as_view('user'))
 mod.add_url_rule('/download/', view_func=DownloadView.as_view('download'))
