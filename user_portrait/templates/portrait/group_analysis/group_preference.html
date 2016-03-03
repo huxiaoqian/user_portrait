@@ -9,7 +9,7 @@
             <div><span class="showmore" id="showmore_keyWords" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_keyWords" ><u>查看详情</u></span>关键词</div>
         </div>
         <div class="panel-body">
-          <div id="Language" style="width:300px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
+          <div id="Language" style="width:330px;height:300px;margin:30px 40px;margin:-10px 50px 0px 20px;">
           </div>
       </div>
   </div>
@@ -21,7 +21,7 @@
             <div><span class="showmore" id="showmore_hashtagWords" style="float:right;cursor:pointer" type="button"data-toggle="modal" data-target="#more_hashtagWords" ><u>查看详情</u></span>事件标签</div>
         </div>
         <div class="panel-body">
-          <div id="hashtag_words" style="width:300px;height:280px;margin:30px 40px;margin:-10px 50px 0px 20px;">
+          <div id="hashtag_words" style="width:330px;height:300px;margin:30px 40px;margin:-10px 50px 0px 20px;">
           </div>
       </div>
   </div>
@@ -194,11 +194,17 @@ function Draw_keyword(data, div_name, more_div, hide_more){
     var myChart = echarts.init(document.getElementById(div_name)); 
     var option = {
       tooltip: {
-          show: true
+          show: true,
+          formatter:  function (params,ticket,callback){
+            var res  = '';
+            var value_after = params.value/100;
+            res += params.name+' : '+value_after;
+            return res;
+          }
       },
       series: [{
           type: 'wordCloud',
-          size: ['130%', '130%'],
+          size: ['100%', '100%'],
           textRotation : [0, 45, 90, -45],
           textPadding: 0,
           autoSize: {
