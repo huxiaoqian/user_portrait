@@ -123,7 +123,7 @@ Draw_dis_Table:function(data){
 }
 var Group_identify_task = new Group_identify_task();
 function redraw_result(){
-    //console.log('iiiii');
+    console.log('iiiii');
 	url = '/group/show_task/';
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 	//deleteGroup();
@@ -254,6 +254,12 @@ Group_identify_task.call_sync_ajax_request(con_nor_word_url,Group_identify_task.
 
 
 function draw_control_table(data){
+	if(data[0] == undefined){
+		$('#group_control_confirm').empty();
+		var html = '无满足条件用户';
+		$('#group_control_confirm').append(html);
+
+	}else{
 	$('#group_control_confirm').empty();
 	var html='';
 	var item =data;
@@ -262,9 +268,9 @@ function draw_control_table(data){
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="overflow-y:auto;max-height:300px;">';
     html += '<tr><th style="text-align:center;width:50px">头像</th><th style="text-align:center">昵称</th>';
     html += '<th style="text-align:center;width:75px;">领域</th><th style="text-align:center">话题</th>';
-    html += '<th style="text-align:center;width:62px;">重要度</th>';
-    html += '<th style="text-align:center;width:62px;">影响力</th>';
-    html += '<th style="text-align:center;width:62px;">活跃度</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
+    html += '<th style="text-align:center;width:60px;">重要度</th>';
+    html += '<th style="text-align:center;width:60px;">影响力</th>';
+    html += '<th style="text-align:center;width:60px;">活跃度</th><th><input name="control_choose_all" id="control_choose_all" type="checkbox" value="" onclick="control_choose_all()" /></th></tr>';//<th><input name="so_user_choose_all" id="so_user_choose_all" type="checkbox" value="" onclick="so_user_choose_all()" /></th>
     html += '<div style="overflow-y:auto;max-height:300px;">'
 	for (var i=0;i<data.length;i++) {
     	if(item[i][1]=='unknown'){
@@ -294,12 +300,18 @@ function draw_control_table(data){
   //   html += '</table>'; 
 	$('#group_control_confirm').append(html);
 }
+}
 
 
 
 function draw_table(data,div){
-	//console.log(data);
+	 console.log(data[0]);
 	// console.log(div);
+	if(data[0] ==undefined){
+	$(div).empty();
+	var html = '无满足条件用户';
+	$(div).append(html);
+	}else{
 	$(div).empty();
 	//var datas = data['topic'];
     html = '';
@@ -308,7 +320,7 @@ function draw_table(data,div){
     for (var i=0;i<data.length;i++) {
         var uname = data[i][1];
         if (uname == 'unknown'){
-            uname = '未知';
+            uname == '未知';
         }
         html += '<tr><th style="text-align:center">' + data[i][0] + '</th>';
         html += '<th style="text-align:center">' + uname + '</th>';
@@ -316,7 +328,8 @@ function draw_table(data,div){
     	//i = i + 1;
  	}
     html += '</table>'; 
-    $(div).append(html);    
+    $(div).append(html);  
+    }  
 }
 
 function analyze_choose_all(){
