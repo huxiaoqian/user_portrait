@@ -254,6 +254,12 @@ Group_identify_task.call_sync_ajax_request(con_nor_word_url,Group_identify_task.
 
 
 function draw_control_table(data){
+	if(data[0] == 'undefined'){
+		$('#group_control_confirm').empty();
+		var html = '无满足条件用户';
+		$('#group_control_confirm').append(html);
+
+	}else{
 	$('#group_control_confirm').empty();
 	var html='';
 	var item =data;
@@ -294,12 +300,18 @@ function draw_control_table(data){
   //   html += '</table>'; 
 	$('#group_control_confirm').append(html);
 }
+}
 
 
 
 function draw_table(data,div){
-	// console.log(data);
+	 console.log(data[0]);
 	// console.log(div);
+	if(data[0] ==undefined){
+	$(div).empty();
+	var html = '无满足条件用户';
+	$(div).append(html);
+	}else{
 	$(div).empty();
 	//var datas = data['topic'];
     html = '';
@@ -316,7 +328,8 @@ function draw_table(data,div){
     	//i = i + 1;
  	}
     html += '</table>'; 
-    $(div).append(html);    
+    $(div).append(html);  
+    }  
 }
 
 function analyze_choose_all(){
