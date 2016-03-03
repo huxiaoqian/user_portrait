@@ -97,8 +97,8 @@ def tfidf(inputs):
         tfidf_dict[k] =  float(tfidf_dict[k])/float(len(inputs))
 
     sorted_tfidf = sorted(tfidf_dict.iteritems(), key = lambda asd:asd[1],reverse = True)
-    #result_tfidf = [(k,v)for k,v in sorted_tfidf]
-    result_tfidf = sorted_tfidf
+    result_tfidf = [(k,v)for k,v in sorted_tfidf]
+    #result_tfidf = sorted_tfidf
 
     topk = int(math.ceil(float(len(result_tfidf))*0.2))#取前20%的tfidf词
     return result_tfidf[:topk],input_word_dict

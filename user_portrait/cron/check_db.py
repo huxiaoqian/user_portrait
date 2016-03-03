@@ -9,7 +9,7 @@ import sys
 import os
 import time
 reload(sys)
-sys.path.append('./../../')
+sys.path.append('./../')
 from global_config import redis_path, es_path
 from time_utils import ts2datetime
 
@@ -47,13 +47,13 @@ if __name__ == '__main__':
     print print_log_redis
     print print_log_elasticsearch
     # test redis running
-    check_redis("redis")
+    #check_redis("redis")
 
     # test elasticsearch running
-    check_elasticsearch("elasticsearch")
+    #check_elasticsearch("elasticsearch")
 
     now_ts = time.time()
     print_log_redis = "&".join([file_path_redis, "end", ts2datetime(now_ts)])
-    print_log_elasticsearch = "&".join([file_path_elasticsearch, "start", ts2datetime(now_ts)]
+    print_log_elasticsearch = "&".join([file_path_elasticsearch, "end", ts2datetime(now_ts)])
     print print_log_redis
     print print_log_elasticsearch
