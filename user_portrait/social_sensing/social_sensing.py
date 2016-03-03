@@ -21,7 +21,7 @@ def social_sensing_task(ts):
     count = 0
     current_path = os.getcwd()
     file_path = os.path.join(current_path, 'social_sensing.py')
-    now_ts = ts
+    now_ts = str(ts)
     print_log = "&".join([file_path, "start", now_ts])
     print print_log #打印开始信息
 
@@ -29,12 +29,13 @@ def social_sensing_task(ts):
         temp = r.rpop("task_name")
         if not temp:
             print count
-            now_ts = time.time()
+            now_ts = str(int(time.time()))
             print_log = "&".join([file_path, "end", now_ts])
             print print_log # 打印终止信息
             break  # finish all task in task_list
         task_detail = json.loads(temp)
         count += 1
+
         if int(task_detail[6]) == 2:
             specific_keywords_burst_dection(task_detail)
         elif int(task_detail[6]) == 3:

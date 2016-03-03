@@ -248,6 +248,10 @@ def sensors_keywords_detection(task_detail):
         if len(text_list) == 1:
             top_word = freq_word(text_list)
             topic_list = top_word.keys()
+        elif len(text_list) == 0:
+            topic_list = []
+            burst_reason = "" #没有相关微博，归零
+            print "***********************************"
         else:
             feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
             word_label, evaluation_results = kmeans(word, inputs) #聚类

@@ -27,7 +27,7 @@ def create_task_list(ts):
     # print start info
     current_path = os.getcwd()
     file_path = os.path.join(current_path, 'task_list.py')
-    now_ts = time.time()
+    now_ts = str(int(time.time()))
     print_log = "&".join([file_path, "start", now_ts])
     print print_log
 
@@ -61,26 +61,26 @@ def create_task_list(ts):
             task.append(item['warning_status']) # last step status
             task.append(item['task_type']) # task type
             task.append(ts)
-            #r.lpush('task_name', json.dumps(task))
+            r.lpush('task_name', json.dumps(task))
             count += 1
 
     print count
-    now_ts = time.time()
+    now_ts = str(int(time.time()))
     print_log = "&".join([file_path, "end", now_ts])
     print print_log
 
 
 if __name__ == "__main__":
-    """
+
     ts2 = datetime2ts("2013-09-08")
     ts1 = datetime2ts("2013-09-01")
-    #ts1 = 1378054800
+    ts1 = 1378481400
     ts = ts1 + time_interval
     while 1:
         if ts <= ts2:
             print ts
             create_task_list(ts)
-            #social_sensing_task()
+            social_sensing_task(ts)
             ts += time_interval
         else:
             break
@@ -90,3 +90,4 @@ if __name__ == "__main__":
     ts = time.time()
     create_task_list(ts)
     social_sensing_task(ts)
+    """

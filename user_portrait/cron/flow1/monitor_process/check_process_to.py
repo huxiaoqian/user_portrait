@@ -22,14 +22,14 @@ if __name__ == '__main__':
     # 查询zmq_vent_weibo.py是否在执行
     current_path = os.getcwd()
     file_path = os.path.join(current_path, 'redis_to_es.py')
-    ts = time.time()
+    ts = str(int(time.time()))
     print_log = "&".join([file_path, "start", ts])
     print print_log #打印开始信息
 
     d_name = 'zmq_vent_weibo.py'
-    check(item)
+    #check(item)
 
-    ts = time.time()
+    ts = str(int(time.time()))
     print_log = "&".join([file_path, "end", ts])
     print print_log
 
