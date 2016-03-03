@@ -49,8 +49,8 @@ def deal_bulk_action(user_info_list, fansnum_max):
         results['keywords'] = json.dumps(keywords_top50)
         results['keywords_string'] = keywords_top50_string
         #add online_pattern
-        user_online_pattern = json.dumps(online_pattern_dict[uid])
-        results['online_pattern'] = user_online_pattern
+        user_online_pattern = online_pattern_dict[uid]
+        results['online_pattern'] = json.dumps(user_online_pattern)
         try:
             results['online_pattern_aggs'] = '&'.join(user_online_pattern.keys())
         except:
