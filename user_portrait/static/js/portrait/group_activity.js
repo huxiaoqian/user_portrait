@@ -234,7 +234,7 @@ function show_online_time(data){
     html += '<tr>';
     html += '<th style="text-align:center">主要活跃时间</th>';
     for(var i=0; i < time_split.length;i++){
-        html += '<th style="text-align:center">'+time_split[i]+'</th>';
+        html += '<th style="text-align:center">'+time_split[i]+'</th>'
     }
     html += '</tr>';
     html += '<tr>';
@@ -263,15 +263,36 @@ function Draw_top_location(data){
 		var bar_data_x_single = [];
 		var bar_data_y_single = [];
 		for(var key in bar_data[i]){
-			bar_data_x_single.push(key);
+            var city = key.split('\t')
+            //console.log(city.pop());
+			//bar_data_x_single.push(key);
+			bar_data_x_single.push(city.pop());
 			bar_data_y_single.push(bar_data[i][key]);
 		}
 		bar_data_x.push(bar_data_x_single);
 		bar_data_y.push(bar_data_y_single);
 	}
-	// console.log(bar_data_y);
 	
-		//console.log(timeline_data);
+	var bar_data_2 = []
+	for(var j=0;j<bar_data_x.length;j++){
+        var bar_data_x_2 = []
+        if(bar_data_x[j].length>45){
+            bar_data_x[j].length = 45;
+		}
+		for(var i = 0;i<bar_data_x[j].length;i++){
+            if(i%2 != 0){
+                bar_data_x_2.push('\n'+bar_data_x[j][i]);
+		    }else{
+                bar_data_x_2.push(bar_data_x[j][i]);
+            }
+	    }
+        bar_data_2.push(bar_data_x_2);
+	}
+	//console.log(bar_data_x);
+	//console.log(bar_data_2);
+	bar_data_x = bar_data_2;
+	
+		console.log(timeline_data.length);
     var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
     var option = {
         timeline:{
@@ -301,7 +322,6 @@ function Draw_top_location(data){
         	var option_data = [];
         	for(var i=0;i<timeline_data.length;i++){
         		var option_single_data = {};
-
         		option_single_data.title={'text': '' };
         		option_single_data.tooltip ={'trigger':'axis'};
         		option_single_data.calculable = true;
@@ -322,6 +342,7 @@ function Draw_top_location(data){
                     {
                         'name':'活跃次数',
                         'type':'bar',
+                        'barwidth':10,
                         'data': bar_data_y[i]
                     },
 
@@ -496,7 +517,7 @@ function draw_active_distribution(data){
     yAxis : [
         {
             type : 'category',
-            name : '活跃度',
+            name : '活跃度排名分布',
             data : xdata
         }
     ],
@@ -527,6 +548,9 @@ function show_active_users(data, div_name){
         var name = name_list[1];
         var s = i.toString();
         var m = i + 1;
+        if(name=='unknown'){
+            name = '未知';
+		}
         html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
@@ -585,6 +609,12 @@ function group_activity(data){
         var max_user_name = [];
         var min_user_name = [];
         for(var i=0; i<max_list.length;i++){
+            if(max_list[i][2]=='unknown'){
+                max_list[i][2] = '未知';
+            }
+            if(min_list[i][2]=='unknown'){
+                min_list[i][2] = '未知';
+            }
             max_user_name.push(max_list[i][2]);
             min_user_name.push(min_list[i][2]);
 

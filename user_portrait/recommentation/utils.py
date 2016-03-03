@@ -411,14 +411,15 @@ def get_user_geo(uid):
         ts = datetime2ts(RUN_TEST_TIME)
     for i in range(1, 8):
         ts = ts - 3600*24
-        results = r_cluster.hget('ip_'+str(ts), uid)
+        results = r_cluster.hget('new_ip_'+str(ts), uid)
         if results:
             ip_dict = json.loads(results)
             for ip in ip_dict:
+                ip_count = len(ip_dict[ip].split('&'))
                 try:
-                    user_ip_result[ip] += ip_dict[ip]
+                    user_ip_result[ip] += ip_count
                 except:
-                    user_ip_result[ip] = ip_dict[ip]
+                    user_ip_result[ip] = ip_count
     user_geo_dict = ip2geo(user_ip_result)
     user_geo_result = sorted(user_geo_dict.items(), key=lambda x:x[1], reverse=True)
 
