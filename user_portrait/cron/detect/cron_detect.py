@@ -452,7 +452,10 @@ def single_detect(input_dict):
     #step6: filter by count
     count = filter_dict['count']
     result = filter_user_list[:count]
-    results = [seed_uid]
+    if seed_uid not in result:
+        results = [seed_uid]
+    else:
+        results = []
     results.extend(result)
     return results
 
@@ -914,7 +917,11 @@ def event_detect(input_dict):
 
     #step3: filter user list by filter count
     count = filter_dict['count']
-    results = filter_user_list[:count]
+    print '920 filter user list:', filter_user_list
+    if len(filter_user_list) == 0:
+        results = filter_user_list
+    else:
+        results = filter_user_list[:count]
     return results
 
 #use to save detect results to es
@@ -1009,7 +1016,7 @@ def compute_group_detect():
             if detect_task_type == 'single':
                 detect_results = single_detect(detect_task_information)
             elif detect_task_type == 'multi':
-                detect_results == multi_detect(detect_task_information)
+                detect_results = multi_detect(detect_task_information)
             elif detect_task_type == 'attribute':
                 detect_results =  attribute_pattern_detect(detect_task_information)
             elif detect_task_type == 'event':
