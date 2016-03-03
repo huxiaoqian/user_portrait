@@ -180,12 +180,13 @@ function draw_relation_net(data,name,symbols){
         content2['category'] = 1;
         if(data[name][s]['4']=='unknown'){
             content2['name'] = '未知'+'\n('+data[name][s]['1']+')';
+            content2['label'] = '未知';
         }else{
             content2['name'] = data[name][s]['4']+'\n('+data[name][s]['1']+')';
-        }
+            content2['label'] = data[name][s]['4'];
+        };
         //console.log('name!2!',content['name']);
         content2['id'] = data[name][s]['1'];
-        content2['label'] = data[name][s]['4'];
         content2['value'] = 7;
         content2['draggable'] = true;
         content2['symbolSize'] = [60, 30];
