@@ -42,7 +42,6 @@ def freq_word(items):
     output:
         top_word:词和词频构成的字典，如:{词:词频, 词:词频}
     """
-
     word_list = []
     text = items["text"]
     #print type(text)

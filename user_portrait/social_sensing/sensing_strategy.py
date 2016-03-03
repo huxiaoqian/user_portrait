@@ -200,6 +200,7 @@ def sensors_keywords_detection(task_detail):
     # 7. 感知到的事, all_mid_list
     if burst_reason: # 有事情发生
         text_list = []
+        mid_set = set()
         if signal_sensitive_variation in burst_reason:
             query_sensitive_body = {
                 "query":{
@@ -232,7 +233,9 @@ def sensors_keywords_detection(task_detail):
                     temp_dict = dict()
                     temp_dict["mid"] = iter_mid
                     temp_dict["text"] = iter_text
-                    text_list.append(temp_dict) # 整理后的文本，mid，text
+                    if iter_mid not in mid_set:
+                        text_list.append(temp_dict) # 整理后的文本，mid，text
+                        mid_set.add(iter_mid)
             burst_reason.replace(signal_sensitive_variation, "")
 
 
@@ -246,10 +249,12 @@ def sensors_keywords_detection(task_detail):
                         temp_dict = dict()
                         temp_dict["mid"] = iter_mid
                         temp_dict["text"] = iter_text
-                        text_list.append(temp_dict)
+                        if iter_mid not in mid_set:
+                            text_list.append(temp_dict)
+                            mid_set.add(iter_mid)
 
         if len(text_list) == 1:
-            top_word = freq_word(text_list)
+            top_word = freq_word(text_list[0])
             topic_list = top_word.keys()
         elif len(text_list) == 0:
             topic_list = []
