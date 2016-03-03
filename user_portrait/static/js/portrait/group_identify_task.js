@@ -123,7 +123,6 @@ Draw_dis_Table:function(data){
 }
 var Group_identify_task = new Group_identify_task();
 function redraw_result(){
-    console.log('iiiii');
 	url = '/group/show_task/';
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 	//deleteGroup();
@@ -305,7 +304,6 @@ function draw_control_table(data){
 
 
 function draw_table(data,div){
-	 console.log(data[0]);
 	// console.log(div);
 	if(data[0] ==undefined){
 	$(div).empty();
@@ -320,7 +318,7 @@ function draw_table(data,div){
     for (var i=0;i<data.length;i++) {
         var uname = data[i][1];
         if (uname == 'unknown'){
-            uname == '未知';
+            uname = '未知';
         }
         html += '<tr><th style="text-align:center">' + data[i][0] + '</th>';
         html += '<th style="text-align:center">' + uname + '</th>';
