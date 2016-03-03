@@ -333,7 +333,7 @@ draw_table_history.call_sync_ajax_request(url_history, draw_table_history.ajax_m
 function date_initial(){
   var recommend_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(now_date-24*60*60*1000*(6-i));
+    var today = new Date(now_date-24*60*60*1000*(7-i));
     recommend_date[i] = today.format('yyyy-MM-dd');
   }
   $("#recommend_date_select").empty();
@@ -349,7 +349,7 @@ function date_initial(){
 
   var history_date = [];
   for(var i=0;i<7;i++){
-    var today = new Date(now_date-24*60*60*1000*(6-i));
+    var today = new Date(now_date-24*60*60*1000*(7-i));
     history_date[i] = today.format('yyyy-MM-dd');
   }
   $("#history_date_select").empty();
