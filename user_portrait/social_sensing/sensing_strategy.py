@@ -257,7 +257,7 @@ def sensors_keywords_detection(task_detail):
             print "***********************************"
         else:
             feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
-            word_label, evaluation_results = kmeans(word, inputs) #聚类
+            word_label, evaluation_results = kmeans(feature_words, text_list) #聚类
             inputs = text_classify(text_list, word_label, feature_words)
             clustering_topic = cluster_evaluation(inputs)
             sorted_dict = sorted(clustering_topic.items(), key=lambda x:x[1], reverse=True)[0:5]
