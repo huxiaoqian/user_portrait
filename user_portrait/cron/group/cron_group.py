@@ -123,7 +123,11 @@ def get_attr_portrait(uid_list):
     sentiment_dict_list = []
     tag_dict = {}
     #get now date to iter activity geo
-    now_ts = int(time.time())
+    #run_type
+    if RUN_TYPE == 1:
+        now_ts = int(time.time())
+    else:
+        now_ts = datetime2ts(RUN_TEST_TIME)
     now_date_ts = datetime2ts(ts2datetime(now_ts))
     #split uid_list to bulk action
     iter_count = 0
@@ -297,7 +301,7 @@ def get_attr_portrait(uid_list):
         results['importance_description'] = GROUP_AVE_IMPORTANCE_RANK_DESCRIPTION['0']
         results['importance_star'] = 1
     elif ave_importance_rank > GROUP_AVE_IMPORTANCE_RANK_THRESHOLD[1] * all_user_count:
-        results['importance_description'] = GROUP_AVE_IMPORTANCE_RANK_DERCRIPTION['2']
+        results['importance_description'] = GROUP_AVE_IMPORTANCE_RANK_DESCRIPTION['2']
         results['importance_star'] = 5
     else:
         results['importance_description'] = GROUP_AVE_IMPORTANCE_RANK_DESCRIPTION['1']
@@ -1716,11 +1720,14 @@ def compute_group_task_v2():
     results = dict()
     while True:
         task = r.rpop(group_analysis_queue_name)
+        #test
+        r.lpush(group_analysis_queue_name, task)
         if not task:
             break
         else:
             results = dict()
             task = json.loads(task)
+            print 'task:', task, type(task)
             task_name = task['task_name']
             uid_list = task['uid_list']
             submit_date = task['submit_date']  #submit_date = timestamp
@@ -1739,6 +1746,7 @@ def compute_group_task_v2():
                     uname = item['fields']['uname'][0]
                 uid2uname[uid] = uname
             #step1: get attr from es_user_portrait--basic/activity_geo/online_pattern/evaluate_index_his/preference/psycho_ratio
+            print '1749 get attr portrait'
             uid_list = uid2uname.keys() #identify the uid is in user_portrait
             attr_in_portrait, tag_vector_result = get_attr_portrait(uid_list)
             results['task_name'] = task_name
@@ -1748,30 +1756,38 @@ def compute_group_task_v2():
             results['submit_user'] = task['submit_user']
             results = dict(results, **attr_in_portrait)
             #step2: get attr from social es----es_retweet&es_comment
+            print '1758 get attr social'
             attr_in_social = get_attr_social(uid_list, uid2uname)
             results = dict(results, **attr_in_social)
             #step3: get attr activity trend and activity_time----redis for activity time
+            print '1762 get attr trend'
             attr_weibo_trend = get_attr_trend(uid_list) # {'activity_trend':[], 'activity_time':{}}
             results = dict(results, **attr_weibo_trend)
             #step4: get evaluate index trend----copy_user_portrait
+            print '1766 get attr evaluate trend'
             evaluate_index_trend_dict = get_attr_evaluate_trend(uid_list) # {'importance_trend':[], 'influence_trend❯
             results = dict(results, **evaluate_index_trend_dict)
             #step5: get sentiment trend----flow_text_es
+            print '1771 get attr sentiment trend'
             sentiment_trend, sentiment_tag_vector = get_attr_sentiment_trend(uid_list)
             results = dict(results, **sentiment_trend)
             tag_vector_result = dict(tag_vector_result, **sentiment_tag_vector)
             #step6: get influence user
+            print '1776 get attr influence user'
             influence_user_result = get_influence_user(uid_list)
             results = dict(results, **influence_user_result)
             #step7: get user sentiment words
+            print '1779 get attr sentiment word'
             user_sentiment_words = get_attr_sentiment_word(uid_list)
             results = dict(results, **user_sentiment_words)
             results['tag_vector'] = json.dumps(tag_vector_result)
             #step8: update compute status to completed
             results['status'] = 1
             #step9: save results
+            print '1787 save'
             save_group_results(results)
-        break
+            #test
+            break
 
 
 

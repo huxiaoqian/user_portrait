@@ -103,7 +103,7 @@ def get_influence(uid_list):
     if RUN_TYPE = 1:
         now_date = ts2datetime(now_ts - DAY)
     else:
-        now_date = RUN_TEST_TIME
+        now_date = ts2datetime(datetime2ts(RUN_TEST_TIME) - DAY)
 
     index_time = 'bci_' + ''.join(now_date.split('-'))
     index_type = 'bci'

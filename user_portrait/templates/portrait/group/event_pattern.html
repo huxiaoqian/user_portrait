@@ -247,18 +247,21 @@
 
 
 //日期选择
-var date = new Date();
+var date = choose_time_for_mode();
+var min_date_ms = new Date()
 date.setHours(0,0,0,0);
-var max_date = date.format('yyyyMMdd');
 var current_date = date.format('yyyy/MM/dd hh:mm');
 var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24;
-//var max_date_time = Math.floor(date.getTime()/1000) - 0;
-var min_date_ms = new Date()
 min_date_ms.setTime(from_date_time*1000);
 var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
-
-$('#event_pattern #time_start').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-$('#event_pattern #time_end').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+if (global_test_mode == 0){
+    $('#event_pattern #time_start').datetimepicker({value:from_date,step:10});
+    $('#event_pattern #time_end').datetimepicker({value:current_date,step:10});
+}
+else{
+    $('#event_pattern #time_start').datetimepicker({value:from_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+    $('#event_pattern #time_end').datetimepicker({value:current_date,step:10,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+}    
 $('#event_pattern #num-range').change(function(){
     var num = $('#event_pattern #num-range').val();
     $('#event_pattern #show_num').empty();

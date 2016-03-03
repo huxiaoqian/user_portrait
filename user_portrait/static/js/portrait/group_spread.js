@@ -363,7 +363,12 @@ Show_influ.prototype = {
     var influ_in_user = data['influence_in_user'];
     var influ_out_user = data['influence_out_user'];
     var influ_trend = data['influence_trend'];
-    draw_influ_distribution(influ_his,'influ_distribution', '影响力排名');
+    console.log('influ_his',influ_his);
+    if(influ_his[1][1] == 0 & influ_his[1][5] == 1){
+        $('#influ_distribution').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+    }else{
+        draw_influ_distribution(influ_his,'influ_distribution', '影响力排名');
+    }
     show_influ_users('influ_active_users',influ_trend['main_max']);
     show_influ_users('influ_unactive_users',influ_trend['main_min']);
     //console.log(influ_trend['main_max']);
@@ -382,16 +387,46 @@ Show_influ.prototype = {
         dd.push(key,influ_in['domain'][key])
         domains.push(dd);
     }
-    //console.log(domains);
-    Draw_topic2(topics,'influence_topic', 'influ_topic_WordList','showmore_topic_influ');
-    Draw_topic2(domains,'influence_domain', 'influ_domain_WordList','showmore_domain_influ');
-    draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力排名');
-    draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度排名');
+    console.log(domains);
+    if(topics.length == 0){
+        $('#influence_topic').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+    }else{
+        Draw_topic2(topics,'influence_topic', 'influ_topic_WordList','showmore_topic_influ');
+    };
+    if(domains.length == 0){
+        $('#influence_domain').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
+    }else{
+        Draw_topic2(domains,'influence_domain', 'influ_domain_WordList','showmore_domain_influ');
+    }
+    if(influ_in['influence'][1][1] == 0 & influ_in['influence'][1][5] == 1){
+        $('#group_influ_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
+    }else{
+        console.log('influ_in["influence"]',influ_in['influence']);
+        draw_influ_distribution(influ_in['influence'],'group_influ_distribution', '影响力排名');
+    }
+    if(influ_in['importance'][1][1] == 0 & influ_in['importance'][1][5] == 1){
+        $('#group_impor_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
+    }else{
+        draw_influ_distribution(influ_in['importance'],'group_impor_distribution', '重要度排名');
+    }
     var influ_out = data['influence_out_user'];
     //Draw_top_location2(influ_out['out_fansnum_his'], influ_out['out_friendsnum_his'], influ_out['out_statusnum_his']);
-    draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
-    draw_friends_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
+
+    if(influ_out['out_fansnum_his'][1][1] == 0 & influ_out['out_fansnum_his'][1][5] == 1){
+        $('#group_fans_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
+    }else{
+        draw_fans_distribution(influ_out['out_fansnum_his'],'group_fans_distribution', '粉丝数');
+    };
+    if(influ_out['out_friendsnum_his'][1][1] == 0 & influ_out['out_friendsnum_his'][1][5] == 1){
+        $('#group_friends_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
+    }else{
+        draw_friends_distribution(influ_out['out_friendsnum_his'],'group_friends_distribution', '朋友数');
+    };
+    if(influ_out['out_statusnum_his'][1][1] == 0 & influ_out['out_statusnum_his'][1][5] == 1){
+        $('#group_weiboshu_distribution').append('<div style="padding-top: 30%;margin-left:30%;">暂无数据</div>');
+    }else{
     draw_status_distribution(influ_out['out_statusnum_his'],'group_weiboshu_distribution', '微博数');
+    };
   }
 }
 
@@ -410,6 +445,9 @@ function show_influ_users(div_name,data){
        var s = i.toString();
        var m = i + 1;
        var uname = data[i][0].split('&')[1]
+       if(uname == 'unknown'){
+          uname = '未知';
+       }
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + uname + '</th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     /*
@@ -465,6 +503,12 @@ function group_influ(data){
         var max_user_name = [];
         var min_user_name = [];
         for(var i=0; i<max_data.length;i++){
+            if(max_data[i][2]=='unknown'){
+                max_data[i][2] = '未知';
+            }
+            if(min_data[i][2]=='unknown'){
+                min_data[i][2] = '未知';
+            }
             max_user_name.push(max_data[i][2]);
             min_user_name.push(min_data[i][2]);
 

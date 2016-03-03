@@ -150,13 +150,14 @@ def save_detect_multi_task(input_dict, extend_mark):
         redis_status = save_detect2redis(input_dict) # detect redis queue
     elif extend_mark=='0':
         uid_list = input_dict['task_information']['uid_list']
-        input_dict['task_information']['uid_list'] = json.dumps(uid_list)
+        input_dict['task_information']['uid_list'] = uid_list
         input_dict['task_information']['status'] = 0
         print 'uid_list:', len(uid_list), uid_list, type(uid_list)
         input_dict['task_information']['count'] = len(uid_list)
         print 'step3 save'
         es_status = save_compute2es(input_dict)
-        redis_status = save_compute2redis(input_dict) # compute redis queue
+        add_redis_dict = input_dict['task_information']
+        redis_status = save_compute2redis(add_redis_dict) # compute redis queue
     #identify the operation status
     if es_status==True and redis_status==True:
         status = True
@@ -454,7 +455,7 @@ def detect2analysis(input_data):
     if task_exist_result == {}:
         return 'task name is not exsit'
     #step2: update task uid list
-    task_exist_result['uid_list'] = json.dumps(uid_list)
+    task_exist_result['uid_list'] = uid_list
     #step3: update task_type in es
     task_exist_result['status'] = 0 # mark the compute status
     task_exist_result['count'] = len(uid_list)
