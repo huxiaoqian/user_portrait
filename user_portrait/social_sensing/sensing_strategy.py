@@ -61,7 +61,10 @@ def sensors_keywords_detection(task_detail):
     sentiment_count = {"0": 0, "1": 0, "2": 0, "3": 0}
     datetime = ts2datetime(ts)
     datetime_1 = ts2datetime(ts-time_interval)
-    index_name = flow_text_index_name_pre + datetime
+    if datetime == datetime_1:
+        index_name = flow_text_index_name_pre + datetime
+    else:
+        index_name = flow_text_index_name_pre + datetime_1
     exist_es = es_text.indices.exists(index_name)
     if exist_es:
         search_results = aggregation_sentiment_related_weibo(ts, all_mid_list, time_interval, keywords_list, 1)

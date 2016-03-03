@@ -12,7 +12,6 @@ from parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 from user_portrait.global_utils import es_user_portrait as es
 from user_portrait.parameter import DETAIL_SOCIAL_SENSING as index_sensing_task
 
-
 def delete_es(task_name):
     s_re = scan(es, query={"query":{"match_all":{}},"size":1000}, index=index_sensing_task, doc_type=task_name)
     bulk_action = []
@@ -48,3 +47,4 @@ if __name__ == "__main__":
     delete_es("律师群体言论".decode('utf-8'))
     delete_es("洪水灾情".decode('utf-8'))
     delete_es("民主言论".decode('utf-8'))
+    delete_es("媒体感知社会事件".decode('utf-8'))

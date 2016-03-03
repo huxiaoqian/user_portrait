@@ -192,7 +192,7 @@ def ajax_show_task():
                 for iter_item in history_status[:-1]:
                     if int(iter_item[-1]) != 0:
                         temp_list.append(iter_item)
-                        sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+                sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
                 item['history_status'] = sorted_list
             else:
                 item['history_status'] = history_status

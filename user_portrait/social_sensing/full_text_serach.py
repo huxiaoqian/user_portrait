@@ -171,7 +171,7 @@ def get_origin_weibo_detail(ts, social_sensors, keywords_list, size=100, message
             temp.append(list(common_keywords))
             temp.append(item['message_type'])
             results.append(temp)
-    print results
+    #print results
     return results
 
 
@@ -363,7 +363,7 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
     if int(sentiment_type) == 1 or int(sentiment_type) == 0:
         query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term":{"sentiment":sentiment_type}})
     else:
-        query_body["query"]["filtered"]["filter"]["bool"]["should"] = [{"terms":{"sentiment": ["2", "3"]}}]
+        query_body["query"]["filtered"]["filter"]["bool"]["must"] = [{"terms":{"sentiment": ["2", "3"]}}]
 
     # 判断当前ts和ts-time_interval是否属于同一天，确定查询哪个es
     datetime = ts2datetime(ts)
