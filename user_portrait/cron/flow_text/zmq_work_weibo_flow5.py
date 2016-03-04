@@ -163,6 +163,7 @@ def expand_index_action(item):
         index_body['directed_uname'] = directed_uname
         index_body['root_mid'] = str(item['root_mid'])
         index_body['root_uid'] = str(item['root_uid'])
+        index_body['mid'] = item['mid'][2:]
 
     ip = item['send_ip']
     index_body['ip'] = ip
