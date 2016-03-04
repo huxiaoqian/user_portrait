@@ -288,10 +288,10 @@ def search_follower(uid, top_count):
                     uname = source['uname']
                     influence = source['influence']
                     #normal
-                    influence = math.log(influence / evaluate_max_dict['influence'])
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
                     #normal
-                    importance = math.log(importance /evaluate_max_dict['importance'])
+                    importance = math.log(importance /evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -576,12 +576,18 @@ def search_bidirect_interaction(uid, top_count):
         retweet_result = es_retweet.get(index=retweet_index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
-    retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
+    if retweet_result:
+        retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
+    else:
+        retweet_uid_dict = {}
     retweet_uid_list = retweet_uid_dict.keys()
-    try:
-        be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
-    except Exception, e:
-        raise e
+    if retweet_uid_list:
+        try:
+            be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
+        except Exception, e:
+            raise e
+    else:
+        be_retweet_result = []
     for be_retweet_item in be_retweet_result:
         be_retweet_uid = be_retweet_item['_id']
         if be_retweet_item['found']==True and be_retweet_uid != uid:
@@ -812,6 +818,22 @@ def search_mention(now_ts, uid, top_count):
             break
         else:
             count += 20
+    
+    in_portrait_result['topic'] = {}
+    for topic_item in in_portrait_topic_list:
+        try:
+            in_portrait_result['topic'][topic_item] += 1
+        except:
+            in_portrait_result['topic'][topic_item] = 1
+    #sort topic and domain stat result
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['topic'] = sort_topic_dict
+    in_portrait_result['domain'] = sort_domain_dict
+
+    #use to get user information from user profile
     out_query_list = [{'match':{'uname':item}} for item in out_list]
     if len(out_query_list) != 0:
         query = [{'bool':{'should': out_query_list}}]
@@ -1556,7 +1578,7 @@ def ip2city(ip):
         if len(city_list)==4:
             city = '\t'.join(city_list[:3])
     except Exception,e:
-        return None
+        return u'未知'
     return city
 
 # show user geo track

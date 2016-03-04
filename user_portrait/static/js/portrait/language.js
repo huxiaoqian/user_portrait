@@ -408,7 +408,6 @@ function show_results(data){
   }
   }
 
-//var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
 call_sync_ajax_request(prefrence_url, ajax_method, show_results);
 
