@@ -2,8 +2,6 @@
 {% block title %}对比分析 {% endblock %}
 {% block main %}
 <script type="text/javascript" src='/static/js/esl.js'></script>
-<script type="text/javascript" src='/static/js/echarts-all.js'></script>
-<script type="text/javascript" src='/static/js/echarts.js'></script>
 <style>
     .cate_title {
         background: #fafafa;
@@ -32,7 +30,7 @@
     .round_box_close{padding:2px 5px; font-size:12px; color:#ffffff; text-decoration:none; border:1px solid #cccccc; -moz-border-radius:4px; -webkit-border-radius:4px; background:#000000; opacity:0.8; filter:alpha(opacity=80); position:absolute; right:-5px; top:-5px;}
     .round_box_close:hover{opacity:0.95; filter:alpha(opacity=95);}
 </style>
-<div class="row">
+<div class="row" id='compare_loading' style='height:1000px;'>
     <div class="box col-md-12" style='width:110%'>
         <div class="box-inner">
             <div class="box-content">
