@@ -12,7 +12,8 @@ function draw_influ_distribution(data,radar_div, title){
 
     var option = {
     tooltip : {
-        trigger: 'axis'
+        trigger: 'axis',
+        formatter: "{a}<br/>{b} : {c}"
     },
     toolbox: {
         show : false,
