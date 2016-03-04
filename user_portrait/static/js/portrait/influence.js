@@ -133,28 +133,80 @@ Draw_pie_all0:function(data){
     $('#influence_conclusion_c').empty();
     var html='';
     if(data[0][0] != ''){
-      html += '该用户<span style="color:red">'+data[0][0]+'</span>。';
+      html += '该用户<span style="color:red">'+data[0][0]+'。</span>';
     }
+    var conclu_s1 = [];
+    // conclu_s.push()
     if(data[0][1] != ''){
+      conclu_s1.push(data[0][1]);
       //html += data[0][1]+'，'+data[0][2]+'，';
-      html += '<span >'+data[0][1]+'，</span>';
+      //html += '<span >'+data[0][1]+'，</span>';
     }
     if(data[0][2] != ''){
+      conclu_s1.push(data[0][2]);
       //html += data[0][1]+'，'+data[0][2]+'，';
-      html += '<span>'+data[0][2]+'，</span>';
+      //html += '<span>'+data[0][2]+'，</span>';
     }
     if(data[1][0] != ''){
-      html += '属于<span style="color:red">'+data[1][0]+'</span>。';
+      var data1_0 = '属于<span style="color:red">'+data[1][0]+'</span>';
+      conclu_s1.push(data1_0);
+      //html += '属于<span style="color:red">'+data[1][0]+'。</span>';
     }
+    var conclu_s2 = [];
     if(data[0][3]!= ''){
-      html += data[0][3]+'，'+data[0][4]+'，'+'<span style="color:red">'+data[1][1]+'</span>。';
+      conclu_s2.push(data[0][3]);
+      //html += '<span>'+data[0][3]+'，</span>';
     }
+    if(data[0][4] != ''){
+      conclu_s2.push(data[0][4]);
+      //html += '<span>'+data[0][4]+'，</span>';
+    }
+    if(data[1][1] != ''){
+      var data1_1 = '<span style="color:red">'+data[1][1]+'</span>';
+      conclu_s2.push(data1_1);
+      //html += '属于<span style="color:red">'+data[1][1]+'。</span>';
+    }
+    var conclu_s3 = [];
     if(data[0][5]!= ''){
-      html += data[0][5]+'，'+data[0][6]+'，'+'<span style="color:red">'+data[1][2]+'</span>。';
+      conclu_s3.push(data[0][5]);
+      //html += '<span>'+data[0][5]+'，</span>';
     }
+    if(data[0][6]!= ''){
+      conclu_s3.push(data[0][6]);
+      //html += '<span>'+data[0][6]+'，</span>';
+    }
+    if(data[1][2] != ''){
+      var data1_2 = '<span style="color:red">'+data[1][2]+'</span>';
+      conclu_s3.push(data1_2);
+      //html += '属于<span style="color:red">'+data[1][2]+'。</span>';
+    }
+    var conclu_s4 = [];
     if(data[0][7]!= ''){
-      html += data[0][7]+'，'+data[0][8]+'，'+'<span style="color:red">'+data[1][3]+'</span>。';
+      conclu_s4.push(data[0][7]);
+      //html += '<span>'+data[0][7]+'，</span>';
     }
+    if(data[0][8]!= ''){
+      conclu_s4.push(data[0][8]);
+      //html += '<span>'+data[0][8]+'，</span>';
+    }
+    if(data[1][3] != ''){
+      var data1_3 = '属于<span style="color:red">'+data[1][2]+'</span>';
+      conclu_s4.push(data1_3);
+      //html += '属于<span style="color:red">'+data[1][3]+'。</span>';
+    }
+    if (conclu_s1.length != 0){
+      html+= conclu_s1.join('，')+'。';
+    };
+    if (conclu_s2.length != 0){
+      html+= conclu_s2.join('，')+'。';
+    };
+    if (conclu_s3.length != 0){
+      html+= conclu_s3.join('，')+'。';
+    };
+    if (conclu_s4.length != 0){
+      //console.log(conclu_s4);
+      html+= conclu_s4.join('，')+'。';
+    };
     $('#influence_conclusion_c').append(html);  
   },
   
