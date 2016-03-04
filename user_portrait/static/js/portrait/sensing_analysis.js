@@ -396,15 +396,15 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var sensor_words = weibo[7];
         var weibo_type = weibo[8];
         var weibo_type_s = '';
-        if(weibo_type = 1){
+        if(weibo_type == 1){
             weibo_type_s = '原创';
 
         }
-        if(weibo_type = 2){
+        if(weibo_type == 2){
             weibo_type_s = '评论';
 
         }
-        if(weibo_type = 2){
+        if(weibo_type == 3){
             weibo_type_s = '转发';
 
         }
@@ -497,8 +497,10 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 	        show : true,
 	        formatter:  function (params) {
 	            var res = params[0].name;
+                console.log(res);
 	            for (var i = 0, l = params.length-1; i < l; i++) {
 	                res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+                    console.log(params[i].seriesName);
 	            }
 	           	return res;
         	}
@@ -694,9 +696,11 @@ function draw_mood_line_charts(data, div_name, legend_data){
             subtextStyle:{
                     fontSize: 12,
                     color: '#555555'
-            },            x: 'right',
+            },      
+            x: 'right',
             y: 37
-        },	    tooltip : {
+        },	    
+        tooltip : {
 	        trigger: 'axis',
 	        show : true,
 	        formatter:  function (params) {
@@ -741,7 +745,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	    ],
 	    series : [
 	        {
-	            name: legend_data[0],
+	            name: '消极',
 	            type: 'line',
 	            showAllSymbol : true,
 	            symbolSize:1,
@@ -764,7 +768,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	            data: line1
 	        },
 	        {
-	            name: legend_data[1],
+	            name: '中性',
 	            type: 'line',
 	            showAllSymbol : true,
 	            symbolSize:1,
@@ -772,7 +776,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	            data: line2
 	        },
 	        {
-	            name: legend_data[2],
+	            name: '积极',
 	            type: 'line',
 	            showAllSymbol : true,
 	            symbolSize:1,
@@ -812,16 +816,17 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			    	}else if(param.seriesIndex==0){
 			    		index_type = 5;
 			   		}else if(param.seriesIndex == 1){
-			   			index_type = 3;
-			   		}else if(param.seriesIndex == 2){
 			   			index_type = 4;
+			   		}else if(param.seriesIndex == 2){
+			   			index_type = 3;
 			   		};
+                    console.log(param.seriesIndex);
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
 	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name='+task_name+'&ts=' + mood_click_time;
-                    //console.log(mood_line_url);
+                    console.log(mood_line_url);
                     call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
                     call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
-                    console.log(mood_line_url);
+                    //console.log(mood_line_url);
                     if($('input[name="mood_select"]:checked').val()=='1'){ 
                         $('#mood_related_weibo_event').css('display', 'block');
                         $('#mood_related_weibo_all').css('display', 'none');
@@ -1178,7 +1183,7 @@ function show_warning_time_all(div_name, data){
 
 var num_legend = ['总数','原创', '被转发', '被评论', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
 var sensi_legend = ['总数','原创', '转发', '评论', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
-var mood_legend = ['消极','积极', '中性', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
+var mood_legend = ['消极','中性', '积极', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
 function social_sensing_all(data){
 
 	//异常点信息
@@ -1237,11 +1242,8 @@ function social_sensing_all(data){
 	sensi_line_data[5] = deal_point(data.variation_distribution[2]);
 	sensi_line_data[6] = deal_point_col(data.variation_distribution[3], 3);
 	sensi_line_data[7] = col_line;
+    // console.log(sensi_line_data[1]);
 	draw_sensi_line_charts(sensi_line_data, 'sensi_line_charts', sensi_legend);
-
-    //var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
-    //var data1=[['人民日报2222',1,2,'2222这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
-	  
 
 	//参与人表格
 	var participate_head=['用户ID','昵称','领域','话题','热度','重要度','影响力','活跃度']
