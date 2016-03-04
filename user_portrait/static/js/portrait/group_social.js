@@ -682,11 +682,12 @@ function show_conclusion(data){
   $("#social_conclusion").append(html);
 }
 
-function social_click(){
-    $('#weiboTab li a').click(function (e) {
-      e.preventDefault()
-      $(this).tab('show')
-    })
+// function social_click(){
+//     $('#weiboTab li a').click(function (e) {
+//       e.preventDefault()
+//       $(this).tab('show')
+//     })
+// }
    //  $('a[id^="group_change_weibo"]').click(function(){
    //  var uid1 = $(this).parent().prev().prev().text();
    //  var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
@@ -711,7 +712,7 @@ function social_click(){
     console.log('/group/social_out_content/?uid1='+init_out_uid1+'&uid2='+init_out_uid2);
     g_social.call_sync_ajax_request('/group/social_out_content/?uid1='+init_out_uid1+'&uid2='+init_out_uid2, g_social.ajax_method, draw_group_weibo2);
     */
-}
+
 
 function draw_social(data){
 	Draw_group(data);
