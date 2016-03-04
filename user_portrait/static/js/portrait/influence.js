@@ -3,13 +3,7 @@ function Influence(){
 }
 Influence.prototype = {   //获取数据，重新画表
   call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
+      person_call_ajax_request(url, callback);
   },
   Draw_influence:function(data){
 
@@ -23,14 +17,7 @@ Influence.prototype = {   //获取数据，重新画表
 	for(i=0;i<item_y.length;i++){
 		dataFixed.push(parseFloat(item_y[i].toFixed(2)));
 	}
-	// var line_chart_dates = [];
-	// var line_chart_tomorrow = new Date();
- //    for(var i=0;i<7;i++){
- //      var today = new Date(line_chart_tomorrow-24*60*60*1000*(7-i));
- //      line_chart_dates[i] = today.getFullYear()+"-"+((today.getMonth()+1)<10?"0":"")+(today.getMonth()+1)+"-"+((today.getDate())<10?"0":"")+(today.getDate());
- //    }
     var myChart = echarts.init(document.getElementById('influence_chart')); 
-    //console.log(dataFixed);
     var option = {
 
       tooltip : {
@@ -305,7 +292,7 @@ Draw_pie_all0:function(data){
     $('#'+div_name_in).empty();
 
     var html = '';
-    console.log(data);
+    //console.log(data);
     //html += '<hr style="margin-top:-10px;">';
     html += '<h4>已入库用户('+data[2]+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
     if (data[2] == 0){
@@ -490,7 +477,7 @@ function Draw_get_top_weibo(data,div_name){
 
 
 function click_action(){
-  $(".closeList2").off("click").click(function(){
+      $(".closeList2").off("click").click(function(){
         $("#float-wrap").addClass("hidden");
         $("#re_influence").addClass("hidden");
         $("#cmt_influence").addClass("hidden");
@@ -503,7 +490,7 @@ function click_action(){
         $("#re_influence").removeClass("hidden");
         var mid = $(this).prev(".hidden").text();
         var influenced_users_url_re = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0&mid='+mid;
-        console.log(influenced_users_url_re);
+        //console.log(influenced_users_url_re);
         Influence.call_sync_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
         return false;
       });
@@ -513,14 +500,14 @@ function click_action(){
         var mid = $(this).prev().prev(".hidden").text();
         var influenced_users_url_cmt = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1&mid='+mid;
         Influence.call_sync_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
-        console.log(influenced_users_url_cmt);  
+        //console.log(influenced_users_url_cmt);  
         return false;
       });
       $("#retweet_distribution").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
         $("#retweet_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
-        console.log(all_influenced_users_url_style0);
+        //console.log(all_influenced_users_url_style0);
         Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
         return false;
       });
@@ -528,63 +515,58 @@ function click_action(){
         $("#float-wrap").removeClass("hidden");
         $("#comment_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid +'&date='+date_str+'&style=1';
-        console.log(all_influenced_users_url_style1);
+        //console.log(all_influenced_users_url_style1);
         Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
+    $('input[name="choose_module"]').click(function(){             
+      var index = $('input[name="choose_module"]:checked').val();
+      //console.log(index);
+      if(index == 1){
+        var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
+        Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+      }
+      else{
+        var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=30';
+        Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
+      }
+    });
 
+}
+function influence_load(){
+    var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
+    var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
+    Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+
+    var basic_influence_url = '/attribute/current_influence_comment/?uid='+parent.personalData.uid+'&date='+date_str;
+    Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
+
+    var user_influence_detail_url = '/attribute/user_influence_detail/?uid='+parent.personalData.uid+'&date='+date_str;
+    Influence.call_sync_ajax_request(user_influence_detail_url, Influence.ajax_method, Influence.Draw_user_influence_detail);
+    var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
+    Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_all_influenced_users_style0);
+    var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1';
+    Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_all_influenced_users_style1);
+
+    var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
+    Influence.call_sync_ajax_request(get_top_weibo_url_style0, Influence.ajax_method, Influence.Draw_get_top_weibo1);
+    var get_top_weibo_url_style1 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1';
+    Influence.call_sync_ajax_request(get_top_weibo_url_style1, Influence.ajax_method, Influence.Draw_get_top_weibo2);
+    var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=2';
+    Influence.call_sync_ajax_request(get_top_weibo_url_style2, Influence.ajax_method, Influence.Draw_get_top_weibo3);
+    var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=3';
+    Influence.call_sync_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
+    var summary_influence_url = '/attribute/summary_influence/?uid='+parent.personalData.uid+'&date='+date_str;
+    Influence.call_sync_ajax_request(summary_influence_url, Influence.ajax_method, Influence.Draw_conclusion);
+    click_action();
 }
 
 var Influence = new Influence();
 var influence_date = choose_time_for_mode();
 var pre_influence_date = new Date(influence_date - 24*60*60*1000);
 var date_str = pre_influence_date.format('yyyy-MM-dd');
-var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
-var div_name2=['re_user_domain', 're_user_geo','re_user_topic', 'cmt_user_domain', 'cmt_user_geo', 'cmt_user_topic']
-Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
 
-
-$('input[name="choose_module"]').click(function(){             
-  var index = $('input[name="choose_module"]:checked').val();
-  //console.log(index);
-  if(index == 1){
-    var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
-    Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
-  }
-  else{
-    var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=30';
-    Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
-  }
-})
-
-var basic_influence_url = '/attribute/current_influence_comment/?uid='+parent.personalData.uid+'&date='+date_str;
-Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
-
-var user_influence_detail_url = '/attribute/user_influence_detail/?uid='+parent.personalData.uid+'&date='+date_str;
-console.log(user_influence_detail_url);
-Influence.call_sync_ajax_request(user_influence_detail_url, Influence.ajax_method, Influence.Draw_user_influence_detail);
-
-
-var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
-Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_all_influenced_users_style0);
-var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1';
-Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_all_influenced_users_style1);
-
-var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
-
-Influence.call_sync_ajax_request(get_top_weibo_url_style0, Influence.ajax_method, Influence.Draw_get_top_weibo1);
-var get_top_weibo_url_style1 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1';
-console.log(get_top_weibo_url_style1);
-Influence.call_sync_ajax_request(get_top_weibo_url_style1, Influence.ajax_method, Influence.Draw_get_top_weibo2);
-var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=2';
-Influence.call_sync_ajax_request(get_top_weibo_url_style2, Influence.ajax_method, Influence.Draw_get_top_weibo3);
-var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=3';
-Influence.call_sync_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
 // var influence_tag_url = '/attribute/current_tag_vector/?uid='+parent.personalData.uid+'&date='+date_str;
-// console.log(influence_tag_url);
 // Influence.call_sync_ajax_request(influence_tag_url, Influence.ajax_method, Influence.Influence_tag_vector);
-click_action();
-var summary_influence_url = '/attribute/summary_influence/?uid='+parent.personalData.uid+'&date='+date_str;
-Influence.call_sync_ajax_request(summary_influence_url, Influence.ajax_method, Influence.Draw_conclusion);
 
 
