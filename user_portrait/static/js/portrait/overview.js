@@ -811,34 +811,49 @@ function draw_vertify(data){
 }
 function draw_keyword(data){
     var keyword = [];
-    for (key in data['hashtag_top']){
+    // for (key in data['hashtag_top']){
+    //   var word = {};
+    //   word['name'] = data['hashtag_top'][key][0];
+    //   console.log(word['name']);
+    //   word['value'] = data['hashtag_top'][key][1]*10;
+    //   console.log(word['value']);
+    //   word['itemStyle'] = createRandomItemStyle();
+    //   keyword.push(word);
+    // }
+    //最大是20
+    console.log(data['hashtag_top'].length);
+    for (var i=0;i<20;i++){
       var word = {};
-      word['name'] = data['hashtag_top'][key]['0'];
-      word['value'] = data['hashtag_top'][key]['1']*10;
+      word['name'] = data['hashtag_top'][i][0];
+      word['value'] =data['hashtag_top'][i][1]*10;
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }
+    console.log(keyword);
     var myChart = echarts.init(document.getElementById('keywordcloud'));
     var option = {
-    title: {
-        text: '',
-    },
-    tooltip: {
-        show: true
-    },
-    series: [{
-        name: '关键词',
-        type: 'wordCloud',
-        size: ['80%', '80%'],
-        textRotation : [0, 45, 90, -45],
-        textPadding: 0,
-        autoSize: {
-            enable: true,
-            minSize: 15
+        tooltip: {
+            show: true,
+            formatter:  function (params){
+              var res  = '';
+              var value_after = params.value/10;
+              res += params.name+' : '+value_after;
+              return res;
+            }
         },
-        data:keyword
-    }]
-};
+        series: [{
+            //name: '关键词',
+            type: 'wordCloud',
+            size: ['100%', '100%'],
+            textRotation : [0, 45, 90, -45],
+            textPadding: 0,
+            autoSize: {
+                enable: true,
+                //minSize: 14
+            },
+            data:keyword
+        }]
+    };
                     
       myChart.setOption(option); 
                     
