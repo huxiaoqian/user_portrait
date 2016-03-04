@@ -818,6 +818,22 @@ def search_mention(now_ts, uid, top_count):
             break
         else:
             count += 20
+    
+    in_portrait_result['topic'] = {}
+    for topic_item in in_portrait_topic_list:
+        try:
+            in_portrait_result['topic'][topic_item] += 1
+        except:
+            in_portrait_result['topic'][topic_item] = 1
+    #sort topic and domain stat result
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['topic'] = sort_topic_dict
+    in_portrait_result['domain'] = sort_domain_dict
+
+    #use to get user information from user profile
     out_query_list = [{'match':{'uname':item}} for item in out_list]
     if len(out_query_list) != 0:
         query = [{'bool':{'should': out_query_list}}]
