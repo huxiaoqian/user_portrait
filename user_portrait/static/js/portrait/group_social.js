@@ -473,7 +473,7 @@ function draw_relation_out_net(data,name,symbols){
 function draw_in_table(data){
     $('#group_in_table').empty();
     var html = '';
-    if(data[0]==undefined){
+    if(data['social_in_record'][0]==undefined){
         html = '暂无数据';
     }else{
     var s = '';
@@ -512,7 +512,7 @@ function draw_out_table(data){
     $('#group_out_table').empty();
     var s = '';
     var html = '';
-    if(data[0]==undefined){
+    if(data['social_out_record'][0]==undefined){
         html = '暂无数据';
     }else{    
     html = '<table id="group_out_table_body" class="table table-bordered table-striped table-condensed datatable" >';

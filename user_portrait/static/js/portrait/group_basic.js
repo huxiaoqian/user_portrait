@@ -191,7 +191,6 @@ function draw_tag(data){
 		items.push(new toarray(k,item[k]));
 	}
 	items.sort(function(a,b){return a.num-b.num});
-	//console.log(items);
 	for (var i=0;i< items.length;i++){
 		tagname.push(items[i].names);
 		tagvalue.push(items[i].num);
