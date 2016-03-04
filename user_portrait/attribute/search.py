@@ -1578,7 +1578,7 @@ def ip2city(ip):
         if len(city_list)==4:
             city = '\t'.join(city_list[:3])
     except Exception,e:
-        return None
+        return u'未知'
     return city
 
 # show user geo track
