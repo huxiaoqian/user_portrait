@@ -98,6 +98,7 @@ function sensing_sensors_table (head, data, div_name) {
 	var html = '';
     $('#'+div_name).empty();
     if (data.length==0) {
+        $('#sensor_modal').css('margin-top', '10%');
     	html = '传感人群为全库用户';
     }else{
 	    if(data.length>7){
@@ -218,7 +219,7 @@ function pageUp(pageNum, pageCount, div_name){
 }
 
 //下一页
-function pageDown(pageNum,pageCount, div_name){
+function pageDown(pageNum, pageCount, div_name){
 	switch(pageNum){
 		case 1:
 			page_icon(1,5,1, div_name);
@@ -274,6 +275,7 @@ function Draw_sensi_weibo (data){
 }
 
 function Draw_group_weibo(data, div_name, sub_div_name){
+    console.log(data.length);
     var page_num = 5;
     $('#' + sub_div_name).css('height', 'auto');
     if (data.length < page_num) {
@@ -332,12 +334,15 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         page_group_weibo(start_row,end_row,data, div_name, sub_div_name);
     });
 
-    $("#"+div_name+" #pageGro .pageUp").click(function(){
+    $("#"+div_name+" #pageGro .pageUp").live("click", function(){
         if(pageCount > 5){
+            console.log(pageCount);
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
+            console.log(pageNum);
             pageUp(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
+            console.log(index);
             if(index > 0){
                 $("#"+div_name+" #pageGro li").removeClass("on");
                 $("#"+div_name+" #pageGro ul li").eq(index-1).addClass("on");
@@ -353,10 +358,12 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     });
     
 
-    $("#" + div_name + " #pageGro .pageDown").click(function(){
+    $("#" + div_name + " #pageGro .pageDown").live("click", function(){
         if(pageCount > 5){
+            console.log(data[0][5]);
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
-
+            console.log(pageNum);
+            //console.log(pageCount);
             pageDown(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
@@ -396,15 +403,15 @@ function page_group_weibo(start_row, end_row, data, div_name, sub_div_name){
         var sensor_words = weibo[7];
         var weibo_type = weibo[8];
         var weibo_type_s = '';
-        if(weibo_type = 1){
+        if(weibo_type == 1){
             weibo_type_s = '原创';
 
         }
-        if(weibo_type = 2){
+        if(weibo_type == 2){
             weibo_type_s = '评论';
 
         }
-        if(weibo_type = 2){
+        if(weibo_type == 3){
             weibo_type_s = '转发';
 
         }
@@ -497,8 +504,10 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 	        show : true,
 	        formatter:  function (params) {
 	            var res = params[0].name;
+                console.log(res);
 	            for (var i = 0, l = params.length-1; i < l; i++) {
 	                res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
+                    // console.log(params[i].seriesName);
 	            }
 	           	return res;
         	}
@@ -694,9 +703,11 @@ function draw_mood_line_charts(data, div_name, legend_data){
             subtextStyle:{
                     fontSize: 12,
                     color: '#555555'
-            },            x: 'right',
+            },      
+            x: 'right',
             y: 37
-        },	    tooltip : {
+        },	    
+        tooltip : {
 	        trigger: 'axis',
 	        show : true,
 	        formatter:  function (params) {
@@ -741,7 +752,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	    ],
 	    series : [
 	        {
-	            name: legend_data[0],
+	            name: '消极',
 	            type: 'line',
 	            showAllSymbol : true,
 	            symbolSize:1,
@@ -764,7 +775,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	            data: line1
 	        },
 	        {
-	            name: legend_data[1],
+	            name: '中性',
 	            type: 'line',
 	            showAllSymbol : true,
 	            symbolSize:1,
@@ -772,7 +783,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 	            data: line2
 	        },
 	        {
-	            name: legend_data[2],
+	            name: '积极',
 	            type: 'line',
 	            showAllSymbol : true,
 	            symbolSize:1,
@@ -812,16 +823,17 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			    	}else if(param.seriesIndex==0){
 			    		index_type = 5;
 			   		}else if(param.seriesIndex == 1){
-			   			index_type = 3;
-			   		}else if(param.seriesIndex == 2){
 			   			index_type = 4;
+			   		}else if(param.seriesIndex == 2){
+			   			index_type = 3;
 			   		};
+                    console.log(param.seriesIndex);
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
 	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name='+task_name+'&ts=' + mood_click_time;
-                    //console.log(mood_line_url);
+                    console.log(mood_line_url);
                     call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
                     call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
-                    console.log(mood_line_url);
+                    //console.log(mood_line_url);
                     if($('input[name="mood_select"]:checked').val()=='1'){ 
                         $('#mood_related_weibo_event').css('display', 'block');
                         $('#mood_related_weibo_all').css('display', 'none');
@@ -1018,7 +1030,7 @@ function draw_num_line_charts(data, div_name, legend_data){
 			    num_click_time = timestamp2;
 			    num_index = param.seriesIndex
 			    var index_type;
-                console.log(param.seriesIndex);
+                //console.log(param.seriesIndex);
 			    if (param.seriesIndex == 4){
 			    	index_type = 0
 			    };
@@ -1035,7 +1047,7 @@ function draw_num_line_charts(data, div_name, legend_data){
                     index_type = 2
                 };
                 var num_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + num_click_time + '&text_type=' + index_type;
-                console.log(num_line_url);
+                //console.log(num_line_url);
                 var num_line_event_url = '/social_sensing/get_clustering_topic/?task_name='+ task_name +'&ts=' + num_click_time;
                 call_sync_ajax_request(num_line_event_url, Draw_num_related_event);
                 call_sync_ajax_request(num_line_url, Draw_num_weibo);
@@ -1178,7 +1190,7 @@ function show_warning_time_all(div_name, data){
 
 var num_legend = ['总数','原创', '被转发', '被评论', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
 var sensi_legend = ['总数','原创', '转发', '评论', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
-var mood_legend = ['消极','积极', '中性', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
+var mood_legend = ['消极','中性', '积极', {name:'重合点', icon :'image://../../static/img/arrow.png'}];
 function social_sensing_all(data){
 
 	//异常点信息
@@ -1195,10 +1207,11 @@ function social_sensing_all(data){
 	$('#total_abnormal_num').empty();
 	$('#total_abnormal_num').append(total_abnormal_num);
 
-	show_warning_time('modal_warning_weibo_content', data.variation_distribution[0]);
-	show_warning_time('modal_warning_mood_content', data.variation_distribution[1]);
-	show_warning_time('modal_warning_sensing_content', data.variation_distribution[2]);
-	show_warning_time('modal_warning_total_content', data.variation_distribution[3]);
+    //异常点模态框
+	// show_warning_time('modal_warning_weibo_content', data.variation_distribution[0]);
+	// show_warning_time('modal_warning_mood_content', data.variation_distribution[1]);
+	// show_warning_time('modal_warning_sensing_content', data.variation_distribution[2]);
+	// show_warning_time('modal_warning_total_content', data.variation_distribution[3]);
 	var col_line = [];
 	for(var i=0; i<data.time_series.length; i++){
 		col_line[i] = 0;
@@ -1237,11 +1250,8 @@ function social_sensing_all(data){
 	sensi_line_data[5] = deal_point(data.variation_distribution[2]);
 	sensi_line_data[6] = deal_point_col(data.variation_distribution[3], 3);
 	sensi_line_data[7] = col_line;
+    // console.log(sensi_line_data[1]);
 	draw_sensi_line_charts(sensi_line_data, 'sensi_line_charts', sensi_legend);
-
-    //var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
-    //var data1=[['人民日报2222',1,2,'2222这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
-	  
 
 	//参与人表格
 	var participate_head=['用户ID','昵称','领域','话题','热度','重要度','影响力','活跃度']
@@ -1258,18 +1268,30 @@ function social_sensing_all(data){
 	//备注信息
 	var remark_info = data.warning_conclusion;
 	//warning_conclusion = data.warning_conclusion.split('：');
+    if(data.warning_conclusion == ''){
+        remark_info = '无备注信息'
+    };
 	$('#remark_info').empty();
 	$('#remark_info').append(remark_info);
 
     //事件传感关键词
-    var keywords_list = ''
-    keywords_list = data.keywords.join('&nbsp;&nbsp;');
+    var keywords_list = '';
+    if(data.keywords.length == 0){
+        keywords_list = '无传感词';
+    }else{
+        keywords_list = data.keywords.join('&nbsp;&nbsp;');
+    };
     $('#sensor_sensing_keywords').empty();
     $('#sensor_sensing_keywords').append(keywords_list);   //事件关键词
 
     //敏感关键词
-    var sensi_keywords_list = ''
-    sensi_keywords_list = data.sensitive_words.join('&nbsp;&nbsp;');
+    var sensi_keywords_list = '';
+    //console.log(data.sensitive_words);
+    if(data.sensitive_words.length == 0){
+        sensi_keywords_list = '无敏感词';
+    }else{
+        sensi_keywords_list = data.sensitive_words.join('&nbsp;&nbsp;');
+    };
     $('#sensing_keywords').empty();
     $('#sensing_keywords').append(sensi_keywords_list);
 
@@ -1291,4 +1313,5 @@ var sensi_index;
 $('#sensing_task_name').append(task_name);
 var sensing_url = '';
 sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
+//console.log(sensing_url);
 call_sync_ajax_request(sensing_url, social_sensing_all);
