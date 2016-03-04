@@ -5,7 +5,7 @@ import time
 import json
 from flask import Blueprint, url_for, render_template, request, abort, flash, session, redirect
 from utils import compare_user_portrait, compare_user_activity, compare_user_profile
-from utils import compare_user_portrait_new
+from utils import compare_user_portrait_new, compare_user_portrait_v3
 from user_portrait.time_utils import datetime2ts
 from imagine import imagine
 
@@ -54,6 +54,21 @@ def ajax_user_profile():
         return json.dumps(results)
     else:
         return None
+
+
+@mod.route('/all_user_portrait/')
+def ajax_all_user_portrait():
+    results = {}
+    uid_string = request.args.get('uid_list', '')
+    uid_list = uid_string.split(',')
+    if uid_list:
+        results['user_portrait'] = compare_user_portrait_v3(uid_list)
+    if results:
+        return json.dumps(results)
+    else:
+        return None
+        
+
 
 
 @mod.route('/imagine/')
