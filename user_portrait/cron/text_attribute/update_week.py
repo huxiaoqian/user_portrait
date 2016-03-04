@@ -17,9 +17,11 @@ from topic.test_topic import topic_classfiy
 reload(sys)
 sys.path.append('../../')
 from global_utils import es_user_portrait as es
+from global_utils import es_user_portrait
 from global_utils import update_week_redis, UPDATE_WEEK_REDIS_KEY
 from parameter import WEIBO_API_INPUT_TYPE, WEEK, RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime
+
 
 def deal_bulk_action(user_info_list, fansnum_max):
     start_ts = time.time()
@@ -49,8 +51,8 @@ def deal_bulk_action(user_info_list, fansnum_max):
         results['keywords'] = json.dumps(keywords_top50)
         results['keywords_string'] = keywords_top50_string
         #add online_pattern
-        user_online_pattern = json.dumps(online_pattern_dict[uid])
-        results['online_pattern'] = user_online_pattern
+        user_online_pattern = online_pattern_dict[uid]
+        results['online_pattern'] = json.dumps(user_online_pattern)
         try:
             results['online_pattern_aggs'] = '&'.join(user_online_pattern.keys())
         except:
@@ -65,7 +67,7 @@ def deal_bulk_action(user_info_list, fansnum_max):
     es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
     end_ts = time.time()
     #log_should_delete
-    print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
+    #print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
     #log_should_delete
     start_ts = end_ts
 

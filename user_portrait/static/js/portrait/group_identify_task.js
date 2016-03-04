@@ -123,7 +123,6 @@ Draw_dis_Table:function(data){
 }
 var Group_identify_task = new Group_identify_task();
 function redraw_result(){
-    console.log('iiiii');
 	url = '/group/show_task/';
 	Group_identify_task.call_sync_ajax_request(url, Group_identify_task.ajax_method, Group_identify_task.Draw_resultTable);
 	//deleteGroup();
@@ -305,7 +304,6 @@ function draw_control_table(data){
 
 
 function draw_table(data,div){
-	 console.log(data[0]);
 	// console.log(div);
 	if(data[0] ==undefined){
 	$(div).empty();
@@ -320,7 +318,7 @@ function draw_table(data,div){
     for (var i=0;i<data.length;i++) {
         var uname = data[i][1];
         if (uname == 'unknown'){
-            uname == '未知';
+            uname = '未知';
         }
         html += '<tr><th style="text-align:center">' + data[i][0] + '</th>';
         html += '<th style="text-align:center">' + uname + '</th>';
@@ -361,20 +359,25 @@ function group_analyze_confirm_button(){
   	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
   	});
   	//console.log(group_confirm_uids);
-  	var group_ajax_url = '/detect/add_detect2analysis/';
-  	var group_url = '/index/group_result/';
-  	var group_name = $('#group_name0').text();
-  	//console.log(group_name);
-  	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
-  	//console.log(job);
-  	$.ajax({
-  	    type:'POST',
-  	    url: group_ajax_url,
-  	    contentType:"application/json",
-  	    data: JSON.stringify(job),
-  	    dataType: "json",
-  	    success: callback
-  	});
+    if (group_confirm_uids.length > 0){
+        var group_ajax_url = '/detect/add_detect2analysis/';
+        var group_url = '/index/group_result/';
+        var group_name = $('#group_name0').text();
+        //console.log(group_name);
+        var job = {"task_name":group_name, "uid_list":group_confirm_uids};
+        //console.log(job);
+        $.ajax({
+            type:'POST',
+            url: group_ajax_url,
+            contentType:"application/json",
+            data: JSON.stringify(job),
+            dataType: "json",
+            success: callback
+        });
+    }
+    else{
+        alert('任务提交需至少包含一名用户！');
+    }
 }
 
 function callback(data){
@@ -414,12 +417,23 @@ function group_control_check(){             // check validation
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
     }
+    if($('input[name="con_nor_keywords"]').val()==''){
+    	var a = [];
+    	$('[name="con_more_option_0"]:checked').each(function(){
+		  	a.push($(this).val());
+		});
+		if(a[0]==undefined){
+			alert('至少需要输入或勾选普通传感词！');
+			return false;
+		}
+    }
     //other form check starts
   return true;
 
 }
 function group_control_data(){
 	var flag = group_control_check();
+		console.log(flag);
 	var a = new Array();
     a['task_name'] = $('input[name="con_group_name"]').val();
     a['remark'] = $('input[name="con_remark"]').val();
@@ -431,7 +445,8 @@ function group_control_data(){
 	var url0 = [];
 	var url1 = '';
 	var url_create = '/social_sensing/create_task/?';
-	if(flag = true){
+	if(flag == true){
+		console.log('true');
 	   a['keywords'] = $('input[name="con_nor_keywords"]').val();
 	    if(a['keywords'].length){
 		 	a['keywords'] = a['keywords'].split(/\s+/g);

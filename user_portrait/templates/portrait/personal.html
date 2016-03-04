@@ -244,19 +244,19 @@ Personal.prototype = {   //群组搜索
         if(personalData.influence){
             influencePower.innerHTML = personalData.influence.toFixed(2);
         }else{
-            influencePower.innerHTML = "无此数据";
+            influencePower.innerHTML = "0";
         }
         var importantPower = document.getElementById('IPnum');
         if(personalData.importance){
             importantPower.innerHTML = personalData.importance.toFixed(2);
         }else{
-            importantPower.innertHTML = "无此数据";
+            importantPower.innertHTML = "0";
         }
         var activePower = document.getElementById('APnum');
         if(personalData.activeness){
             activePower.innerHTML = personalData.activeness.toFixed(2);
         }else{
-            activePower.innerHTML = "无此数据";
+            activePower.innerHTML = "0";
         }
         var nickName = document.getElementById('nickname');
         if(personalData.uname){
@@ -279,19 +279,19 @@ Personal.prototype = {   //群组搜索
         if(personalData.importance_rank){
             I_rank.innerHTML = personalData.importance_rank;
         }else{
-            I_rank.innerHTML = "无此数据";
+            I_rank.innerHTML = personalData.all_count;
         }
         var A_rank = document.getElementById('APrank');
         if(personalData.activeness_rank){
             A_rank.innerHTML = personalData.activeness_rank;
         }else{
-            A_rank.innerHTML = "无此数据";
+            A_rank.innerHTML = personalData.all_count;
         }
         var F_rank = document.getElementById('FPrank');
         if(personalData.influence_rank){
             F_rank.innerHTML = personalData.influence_rank;
         }else{
-            F_rank.innerHTML = "无此数据";
+            F_rank.innerHTML = personalData.all_count;
         }
         var uid_div = document.getElementById('userId');
         if(personalData.uid){
@@ -390,37 +390,37 @@ function bind_status_option(){
             if(personalData.influence){
                 influencePower.innerHTML = personalData.influence.toFixed(2);
             }else{
-                influencePower.innerHTML = "无此数据";
+                influencePower.innerHTML = "0";
             }
             var importantPower = document.getElementById('IPnum');
             if(personalData.importance){
                 importantPower.innerHTML = personalData.importance.toFixed(2);
             }else{
-                importantPower.innertHTML = "无此数据";
+                importantPower.innertHTML = "0";
             }
             var activePower = document.getElementById('APnum');
             if(personalData.activeness){
                 activePower.innerHTML = personalData.activeness.toFixed(2);
             }else{
-                activePower.innerHTML = "无此数据";
+                activePower.innerHTML = "0";
             }
             var I_rank = document.getElementById('IPrank');
             if(personalData.importance_rank){
                 I_rank.innerHTML = personalData.importance_rank;
             }else{
-                I_rank.innerHTML = "无此数据";
+                I_rank.innerHTML = personalData.all_count;
             }
             var A_rank = document.getElementById('APrank');
             if(personalData.activeness_rank){
                 A_rank.innerHTML = personalData.activeness_rank;
             }else{
-                A_rank.innerHTML = "无此数据";
+                A_rank.innerHTML = personalData.all_count;
             }
             var F_rank = document.getElementById('FPrank');
             if(personalData.influence_rank){
                 F_rank.innerHTML = personalData.influence_rank;
             }else{
-                F_rank.innerHTML = "无此数据";
+                F_rank.innerHTML = personalData.all_count;
             }
         }
         else{

@@ -71,7 +71,7 @@ def read_flow_text(uid_list):
     weibo_list = []#微博列表
     now_ts = time.time()
     #run_type
-    if RUN_TYPE = 1:
+    if RUN_TYPE == 1:
         now_date_ts = datetime2ts(ts2datetime(now_ts))
     else:
         now_date_ts = datetime2ts(RUN_TEST_TIME)
@@ -81,7 +81,7 @@ def read_flow_text(uid_list):
         iter_date_ts = start_date_ts + DAY * i
         flow_text_index_date = ts2datetime(iter_date_ts)
         flow_text_index_name = flow_text_index_name_pre + flow_text_index_date
-        print flow_text_index_name
+        #print flow_text_index_name
         try:
             flow_text_exist = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type,\
                     body={'query':{'filtered':{'filter':{'terms':{'uid': uid_list}}}}, 'size': MAX_VALUE}, _source=False,  fields=['text','uid','keywords_dict','timestamp'])['hits']['hits']

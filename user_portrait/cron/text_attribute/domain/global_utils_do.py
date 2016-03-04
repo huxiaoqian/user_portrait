@@ -217,3 +217,15 @@ def cut(s, text, f=None, cx=False):
     else:
         return [tk[0] for tk in tks]
 ##加载分词工具结束
+
+##标准化领域字典
+def start_p():
+
+    domain_p = dict()
+    for name in txt_labels:
+        domain_p[name] = 0
+
+    return domain_p
+
+DOMAIN_P = start_p()
+##标准化结束

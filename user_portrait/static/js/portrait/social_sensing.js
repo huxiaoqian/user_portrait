@@ -388,7 +388,8 @@ function draw_history(data){
 	}else{
 		$('span[id^="so_remark0"]').html('无');
 	}
-	if(data['sensitive_words']){
+	if(data['sensitive_words'].length>0){
+
 		$('span[id^="so_sen_keys"]').empty();
 		var s_html ='';
 		for (var j =0;j<data['sensitive_words'].length;j++){
@@ -399,7 +400,7 @@ function draw_history(data){
 		$('span[id^="so_sen_keys"]').html('无');
 	}
 
-	if(data['keywords']){
+	if(data['keywords'].length>0){
 		$('span[id^="so_nor_keys"]').empty();
 		var s_html ='';
 		for (var j =0;j<data['keywords'].length;j++){
@@ -477,6 +478,16 @@ function so_user_check(){             // check validation
     if ((remark.length > 0) && (!remark.match(reg))){
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
+    }
+    if($('input[name="so_keywords_nor"]').val()==''){
+    	var a = [];
+    	$('[name="so_more_option_0"]:checked').each(function(){
+		  	a.push($(this).val());
+		});
+		if(a[0]==undefined){
+			alert('至少需要输入或勾选普通传感词！');
+			return false;
+		}
     }
     //other form check starts
   return true;

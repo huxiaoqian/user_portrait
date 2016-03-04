@@ -114,7 +114,7 @@ if __name__ == "__main__":
         
         if item['sp_type'] == '1':
             try:
-                if item and (item['message_type']==1 or item['message_type']==3):
+                if item:
                     cal_text_work(item)
                     cal_text_sensitive(item)
             except:
