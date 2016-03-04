@@ -479,6 +479,16 @@ function so_user_check(){             // check validation
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
     }
+    if($('input[name="so_keywords_nor"]').val()==''){
+    	var a = [];
+    	$('[name="so_more_option_0"]:checked').each(function(){
+		  	a.push($(this).val());
+		});
+		if(a[0]==undefined){
+			alert('至少需要输入或勾选普通传感词！');
+			return false;
+		}
+    }
     //other form check starts
   return true;
 

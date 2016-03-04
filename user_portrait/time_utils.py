@@ -3,6 +3,7 @@
 import time
 from global_config import R_BEGIN_TIME
 from parameter import DAY
+from parameter import RUN_TYPE, RUN_TEST_TIME
 
 def unix2hadoop_date(ts):
     return time.strftime('%Y_%m_%d', time.localtime(ts))
@@ -42,12 +43,11 @@ def get_db_num(timestamp):
     date_ts = datetime2ts(date)
     r_beigin_ts = datetime2ts(R_BEGIN_TIME)
     db_number = ((date_ts - r_beigin_ts) / (DAY*7)) % 2 + 1
-    #test
-    db_number = 1
+    #run_type
+    if RUN_TYPE == 0:
+        db_number = 1
     return db_number
 
 if __name__=='__main__':
-    timestamp = datetime2ts('2013-09-08')
-    #result = ts2date(1377993600)
-    result = get_db_num(timestamp)
-    print 'result:', result
+    date = ts2datetime(1456934400)
+    print 'date:', date
