@@ -305,7 +305,7 @@ Draw_pie_all0:function(data){
     $('#'+div_name_in).empty();
 
     var html = '';
-    console.log(data[2]);
+    console.log(data);
     //html += '<hr style="margin-top:-10px;">';
     html += '<h4>已入库用户('+data[2]+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
     if (data[2] == 0){
@@ -392,8 +392,8 @@ Draw_pie_all0:function(data){
         {
           name:'',
           type:'pie',
-          radius : '35%',
-          center: ['50%', '45%'],
+          radius : '30%',
+          center: ['48%', '45%'],
           itemStyle : {
             normal : {
               label : {
@@ -520,6 +520,7 @@ function click_action(){
         $("#float-wrap").removeClass("hidden");
         $("#retweet_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
+        console.log(all_influenced_users_url_style0);
         Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
         return false;
       });
@@ -527,6 +528,7 @@ function click_action(){
         $("#float-wrap").removeClass("hidden");
         $("#comment_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid +'&date='+date_str+'&style=1';
+        console.log(all_influenced_users_url_style1);
         Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
