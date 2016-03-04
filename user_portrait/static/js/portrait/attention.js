@@ -61,7 +61,7 @@ function attention(data,UserID,UserName,texts){
               rename = out_data[i][1];
             }
             nod['name'] = rename +'('+nod_name_out+')';
-            nod['label'] = out_data[i][1];
+            nod['label'] = rename;
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
@@ -85,8 +85,8 @@ function attention(data,UserID,UserName,texts){
               rename = in_data[i][1];
             }
             nod['name'] = rename +'('+nod_name_out+')';
-            nod['name'] = in_data[i][1] +'('+nod_name_in+')';
-            nod['label'] = in_data[i][1];
+            //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
+            nod['label'] = rename;
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
             nodeContent.push(nod);
