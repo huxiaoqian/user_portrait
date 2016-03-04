@@ -91,8 +91,9 @@ def get_mappings(index_name):
                     }
                 }
             }
-    es.indices.create(index=index_name, body=index_info, ignore=400)
-    #es.index(index=index_name, doc_type='text', id='test', body={'uid':'test'})
+    exist_indice = es.indices.exists(index=index_name)
+    if not exist_indice:
+        es.indices.create(index=index_name, body=index_info, ignore=400)
 
 if __name__=='__main__':
     index_name = 'flow_text_2013-09-07'

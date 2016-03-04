@@ -43,8 +43,9 @@ def get_psycho_status(uid_list):
     #time for es_flow_text
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 0:
+        now_date_ts = datetime2ts(RUN_TEST_TIME)
     start_date_ts = now_date_ts - DAY * WEEK
     for i in range(0, WEEK):
         iter_date_ts = start_date_ts + DAY * i
@@ -161,11 +162,9 @@ def compare_user_portrait_new(uid_list):
 # need json.lodas to read the dict attribute
 def compare_user_portrait(uid_list):
     user_portrait_result = {}
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     user_result = es.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
-    #user_portrait_result = [item['_source'] for item in user_result]
-    #print 'user_result:', user_portrait_result
     for item in user_result:
         uid = item['_id']
         user_portrait_result[uid] = {}

@@ -1205,7 +1205,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     week_ip_set = set(all_week_top.keys())
     abnormal_set = day_ip_set - week_ip_set
     if len(abnormal_set)==0:
-        print 'description_conclusion:',conclusion
+        #print 'description_conclusion:',conclusion
         return conclusion, home_ip, job_ip
     else:
         if(conclusion[-1] != []):
