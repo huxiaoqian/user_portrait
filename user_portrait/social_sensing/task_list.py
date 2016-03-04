@@ -73,8 +73,8 @@ def create_task_list(ts):
 if __name__ == "__main__":
 
     ts2 = datetime2ts("2013-09-08")
-    #ts1 = datetime2ts("2013-09-01")
-    ts1 = 1377984600
+    ts1 = datetime2ts("2013-09-01")
+    #ts1 = 1377984600
     ts = ts1 + time_interval
     while 1:
         if ts <= ts2:

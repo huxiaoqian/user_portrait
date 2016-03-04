@@ -133,8 +133,8 @@ def ajax_revise_task():
     finish = request.args.get("finish", "10")
     stop_time = request.args.get('stop_time', '') # timestamp
 
-    now_ts = datetime2ts("2013-09-06")
-    #now_ts = time.time()
+    #now_ts = datetime2ts("2013-09-06")
+    now_ts = time.time()
     if stop_time and stop_time < now_ts:
         return json.dumps([])
 
@@ -238,6 +238,7 @@ def ajax_get_task_detail_info():
             portrait_detail = sorted(portrait_detail, key=lambda x:x[5], reverse=True)
     task_detail['social_sensors_portrait'] = portrait_detail
 
+    print task_detail
     return json.dumps(task_detail)
 
 

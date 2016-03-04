@@ -75,6 +75,7 @@ def tfidf(inputs):
     tfidf_dict = {} #词在各个文本中的tfidf之和
     count_dict = {} #词出现的文本数
     count = 0 #记录每类下词频总数
+    count_n = 0
     input_word_dict = {} #每条记录每个词的tfidf,{"_id":{词：tfidf，词：tfidf}}
     for iter_input in inputs:
         word_count = freq_word(iter_input)
@@ -83,6 +84,15 @@ def tfidf(inputs):
         for k,v in word_count.iteritems():
             tf = v
             document_count = sum([1 for input_item in inputs if k in input_item['text'].encode("utf-8")])
+            """
+            temp_list = []
+            for input_item in inputs:
+                if k in input_item['text'].encode("utf-8"):
+                    temp_list.append(1)
+            document_count = sum(temp_list)
+            count_n += 1
+            print total_document_count, count_n
+            """
             idf = math.log(float(total_document_count)/(float(document_count+1)))
             tfidf = tf*idf
             word_tfidf_row[k] = tfidf

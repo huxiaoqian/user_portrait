@@ -47,7 +47,7 @@ def sensors_keywords_detection(task_detail):
     all_mid_list.extend(current_mid_list)
     all_mid_list.extend(forward_origin_weibo_list)
     all_mid_list = list(set(all_mid_list))
-    print all_mid_list
+    print len(all_mid_list)
     # 3. 查询当前的原创微博和之前12个小时的原创微博在当前时间内的转发和评论数, 聚合按照message_type
     statistics_count = query_related_weibo(ts, all_mid_list, time_interval, keywords_list, 1, social_sensors)
     current_total_count = statistics_count['total_count']
@@ -197,6 +197,8 @@ def sensors_keywords_detection(task_detail):
     if int(stop_time) <= ts: # 检查任务是否已经完成
         finish = finish_signal
 
+    tmp_burst_reason = burst_reason
+    topic_list = []
     # 7. 感知到的事, all_mid_list
     if burst_reason: # 有事情发生
         text_list = []
@@ -258,7 +260,7 @@ def sensors_keywords_detection(task_detail):
             topic_list = top_word.keys()
         elif len(text_list) == 0:
             topic_list = []
-            burst_reason = "" #没有相关微博，归零
+            tmp_burst_reason = "" #没有相关微博，归零
             print "***********************************"
         else:
             feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
@@ -270,8 +272,11 @@ def sensors_keywords_detection(task_detail):
             if sorted_dict:
                 for item in sorted_dict:
                     topic_list.append(word_label[item[0]])
-            print topic_list
+        print "topic_list:", topic_list
 
+    if not topic_list:
+        tmp_burst_reason = signal_nothing_variation
+        warning_status = signal_nothing
 
     results = dict()
     results['sensitive_origin_weibo_number'] = sensitive_origin_weibo_number
@@ -284,9 +289,9 @@ def sensors_keywords_detection(task_detail):
     results['weibo_total_number'] = current_total_count
     results['sentiment_distribution'] = json.dumps(sentiment_count)
     results['important_users'] = json.dumps(important_users)
-    results['burst_reason'] = burst_reason
+    results['burst_reason'] = tmp_burst_reason
     results['timestamp'] = ts
-    if burst_reason:
+    if tmp_burst_reason:
         results["clustering_topic"] = json.dumps(topic_list)
 
     # es存储当前时段的信息
@@ -296,7 +301,7 @@ def sensors_keywords_detection(task_detail):
     # 更新manage social sensing的es信息
     temporal_result = es_user_portrait.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)['_source']
     temporal_result['warning_status'] = warning_status
-    temporal_result['burst_reason'] = burst_reason
+    temporal_result['burst_reason'] = tmp_burst_reason
     temporal_result['finish'] = finish
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
