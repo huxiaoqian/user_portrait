@@ -810,6 +810,7 @@ function draw_vertify(data){
     };
 }
 function draw_keyword(data){
+  //console.log(data.hashtag_top);
     var keyword = [];
     // for (key in data['hashtag_top']){
     //   var word = {};
@@ -821,7 +822,7 @@ function draw_keyword(data){
     //   keyword.push(word);
     // }
     //最大是20
-    var word_num = Math.min(20, data.length);
+    var word_num = Math.min(20, data.hashtag_top.length);
     //console.log(data['hashtag_top'].length);
     for (var i=0;i<word_num;i++){
       var word = {};
@@ -830,7 +831,7 @@ function draw_keyword(data){
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }
-    console.log(keyword);
+    // console.log(keyword);
     var myChart = echarts.init(document.getElementById('keywordcloud'));
     var option = {
         tooltip: {
