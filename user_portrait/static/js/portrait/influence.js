@@ -135,6 +135,7 @@ Draw_pie_all0:function(data){
   },
 
   Draw_basic_influence:function(data){
+    console.log(data);
     $('#influence_conclusion_c').empty();
     var html='';
     if(data[0][0] != ''){
@@ -142,7 +143,11 @@ Draw_pie_all0:function(data){
     }
     if(data[0][1] != ''){
       //html += data[0][1]+'，'+data[0][2]+'，';
-      html += '<span style="color:red">'+data[0][1]+'</span>';
+      html += '<span >'+data[0][1]+'，</span>';
+    }
+    if(data[0][2] != ''){
+      //html += data[0][1]+'，'+data[0][2]+'，';
+      html += '<span>'+data[0][2]+'，</span>';
     }
     if(data[1][0] != ''){
       html += '属于<span style="color:red">'+data[1][0]+'</span>。';
