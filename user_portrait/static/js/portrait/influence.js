@@ -15,10 +15,10 @@ Influence.prototype = {   //获取数据，重新画表
 
 	var item_x = data.time_line;
     var item_y = data.influence;
-	var conclusion = data.description;
+	// var conclusion = data.description;
 
-	document.getElementById('saysth').innerHTML = conclusion[0];
-	document.getElementById('sayimportant').innerHTML = conclusion[1];
+	// document.getElementById('saysth').innerHTML = conclusion[0];
+	// document.getElementById('sayimportant').innerHTML = conclusion[1];
 	var dataFixed = [];
 	for(i=0;i<item_y.length;i++){
 		dataFixed.push(parseFloat(item_y[i].toFixed(2)));
@@ -574,13 +574,15 @@ var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid='+parent.personalD
 
 Influence.call_sync_ajax_request(get_top_weibo_url_style0, Influence.ajax_method, Influence.Draw_get_top_weibo1);
 var get_top_weibo_url_style1 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1';
+console.log(get_top_weibo_url_style1);
 Influence.call_sync_ajax_request(get_top_weibo_url_style1, Influence.ajax_method, Influence.Draw_get_top_weibo2);
 var get_top_weibo_url_style2 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=2';
 Influence.call_sync_ajax_request(get_top_weibo_url_style2, Influence.ajax_method, Influence.Draw_get_top_weibo3);
 var get_top_weibo_url_style3 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=3';
 Influence.call_sync_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
-var influence_tag_url = '/attribute/current_tag_vector/?uid='+parent.personalData.uid+'&date='+date_str;
-Influence.call_sync_ajax_request(influence_tag_url, Influence.ajax_method, Influence.Influence_tag_vector);
+// var influence_tag_url = '/attribute/current_tag_vector/?uid='+parent.personalData.uid+'&date='+date_str;
+// console.log(influence_tag_url);
+// Influence.call_sync_ajax_request(influence_tag_url, Influence.ajax_method, Influence.Influence_tag_vector);
 click_action();
 var summary_influence_url = '/attribute/summary_influence/?uid='+parent.personalData.uid+'&date='+date_str;
 Influence.call_sync_ajax_request(summary_influence_url, Influence.ajax_method, Influence.Draw_conclusion);
