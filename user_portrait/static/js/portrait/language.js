@@ -78,7 +78,6 @@ function Draw_keyword(data, div_name, more_div, more){
       $('#'+ more_div).append(html);
 
       var word_num = Math.min(20, data.length);
-     // console.log(data);
   	for (var i=0;i<word_num;i++){
   		var word = {};
   		word['name'] = data[i][0];
