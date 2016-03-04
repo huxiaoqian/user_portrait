@@ -417,12 +417,23 @@ function group_control_check(){             // check validation
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
     }
+    if($('input[name="con_nor_keywords"]').val()==''){
+    	var a = [];
+    	$('[name="con_more_option_0"]:checked').each(function(){
+		  	a.push($(this).val());
+		});
+		if(a[0]==undefined){
+			alert('至少需要输入或勾选普通传感词！');
+			return false;
+		}
+    }
     //other form check starts
   return true;
 
 }
 function group_control_data(){
 	var flag = group_control_check();
+		console.log(flag);
 	var a = new Array();
     a['task_name'] = $('input[name="con_group_name"]').val();
     a['remark'] = $('input[name="con_remark"]').val();
@@ -434,7 +445,8 @@ function group_control_data(){
 	var url0 = [];
 	var url1 = '';
 	var url_create = '/social_sensing/create_task/?';
-	if(flag = true){
+	if(flag == true){
+		console.log('true');
 	   a['keywords'] = $('input[name="con_nor_keywords"]').val();
 	    if(a['keywords'].length){
 		 	a['keywords'] = a['keywords'].split(/\s+/g);
