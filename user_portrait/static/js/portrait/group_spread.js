@@ -487,7 +487,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
         page_group_influ_weibo(start_row,end_row,data, sub_div_name);
     });
 
-    $("#"+div_name+" #pageGro .pageUp").click(function(){
+    $("#"+div_name+" #pageGro .pageUp").off('click').click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
             pageUp(pageNum,pageCount);
@@ -509,7 +509,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
     });
     
 
-    $("#" + div_name + " #pageGro .pageDown").click(function(){
+    $("#" + div_name + " #pageGro .pageDown").off('click').click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
 

@@ -345,7 +345,7 @@ function Draw_group_weibo(data, div_name, sub_div_name){
         page_group_weibo(start_row,end_row,data, div_name, sub_div_name);
     });
 
-    $("#"+div_name+" #pageGro .pageUp").live("click", function(){
+    $("#"+div_name+" #pageGro .pageUp").off('click').click(function(){
         if(pageCount > 5){
             //console.log(pageCount);
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
@@ -369,11 +369,11 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     });
     
 
-    $("#" + div_name + " #pageGro .pageDown").bind("click", function(){
+    $("#" + div_name + " #pageGro .pageDown").off('click').click(function(){
         if(pageCount > 5){
             //console.log(data[0][5]);
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
-            console.log(pageNum);
+            //console.log(pageNum);
             //console.log(pageCount);
             pageDown(pageNum,pageCount, div_name);
         }else{
