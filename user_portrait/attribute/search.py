@@ -288,10 +288,10 @@ def search_follower(uid, top_count):
                     uname = source['uname']
                     influence = source['influence']
                     #normal
-                    influence = math.log(influence / evaluate_max_dict['influence'])
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
                     #normal
-                    importance = math.log(importance /evaluate_max_dict['importance'])
+                    importance = math.log(importance /evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -576,12 +576,18 @@ def search_bidirect_interaction(uid, top_count):
         retweet_result = es_retweet.get(index=retweet_index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
-    retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
+    if retweet_result:
+        retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
+    else:
+        retweet_uid_dict = {}
     retweet_uid_list = retweet_uid_dict.keys()
-    try:
-        be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
-    except Exception, e:
-        raise e
+    if retweet_uid_list:
+        try:
+            be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
+        except Exception, e:
+            raise e
+    else:
+        be_retweet_result = []
     for be_retweet_item in be_retweet_result:
         be_retweet_uid = be_retweet_item['_id']
         if be_retweet_item['found']==True and be_retweet_uid != uid:
