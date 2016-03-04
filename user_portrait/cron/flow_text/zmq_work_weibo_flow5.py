@@ -191,10 +191,9 @@ if __name__ == "__main__":
     ts = tb
     bulk_action = []
     now_date = ts2datetime(tb)
-    index_name_pre = 'new_test_' + flow_text_index_name_pre
+    index_name_pre = flow_text_index_name_pre
     index_type = flow_text_index_type
-    start_date = '2013-09-07'
-    now_index_name_date = start_date
+    now_index_name_date = ts2datetime(datetime2ts(start_date) - DAY)
     action = []
     xdata = []
     class_ts = time.time()
@@ -209,7 +208,6 @@ if __name__ == "__main__":
             text = item['text']
             
             #add sentiment field to weibo
-            sentiment, keywords_list = triple_classifier(item)
             sentiment, keywords_list  = triple_classifier(item)
             item['sentiment'] = str(sentiment)
             #add key words to weibo
