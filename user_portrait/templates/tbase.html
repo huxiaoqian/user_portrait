@@ -29,6 +29,7 @@
 		    <link href='/static/css/jquery.iphone.toggle.css' rel='stylesheet'>
 		    <link href='/static/css/uploadify.css' rel='stylesheet'>
 		    <link href='/static/css/animate.min.css' rel='stylesheet'>
+			<link href='/static/css/showLoading.css' rel="stylesheet" >
 			<link href='/static/bootstrap/css/bootstrap.css' rel="stylesheet" >
             <style>
                 #main .page-header {font-weight:bold;}
@@ -52,6 +53,7 @@
             <!--<script src="/static/js/jquery-page.min.js"></script>-->
 			<!-- data table plugin -->
 			<script src='/static/js/jquery.dataTables.min.js'></script>
+			<script src='/static/js/jquery.showLoading.min.js'></script>
 			<script src='/static/js/portrait/time_for_test.js'></script>
 	    {% endblock %}
 	    <!-- end js -->
@@ -224,7 +226,7 @@
 		<!-- end serarch -->
 		
 		<!-- start main -->
-		<div id="main" style="margin-left:200px;margin-top:45px;width:1000px;">
+		<div id="main" class="loading_mask" style="margin-left:200px;margin-top:45px;width:1000px;">
 			{% block main %}
 
 			{% endblock %}

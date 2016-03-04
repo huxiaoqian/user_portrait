@@ -18,15 +18,6 @@ function getDate_ms(tm){
     var tt = new Date(parseInt(tm)*1000).format("hh:mm");
     return tt;
 }
-function activity_call_ajax_request(url, callback){
-    $.ajax({
-      url: url,
-      type: 'GET',
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-}
 function bind_time_option(){
     $('input[name=weibotrends]').change(function(){
         var selected_type = $(this).val();
@@ -81,8 +72,7 @@ function  active_chart(data){
    }
    global_tag_vector.push([name, value]);
    //active type
-   
-   //global_tag_vector.push(tag_vector[1]);
+   global_tag_vector.push(tag_vector[1]);
 
     var this_desc= '';
     this_desc += "<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>"; //description
@@ -115,7 +105,7 @@ function week_chart(trend_data){
         var dateStr = getFullDate(pre_time);
         var ts = get_unix_time(dateStr);
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
-        activity_call_ajax_request(url, draw_content); // draw_weibo
+        person_call_ajax_request(url, draw_content); // draw_weibo
     }
     else{
         for(i=0;i<trend.length;i++){
@@ -131,7 +121,7 @@ function week_chart(trend_data){
         var dateStr = getFullDate(trend[0][0]);
         var ts = get_unix_time(dateStr);
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
-        activity_call_ajax_request(url, draw_content); // draw_weibo
+        person_call_ajax_request(url, draw_content); // draw_weibo
     }
 	//Draw_trend:
 	 $('#Activezh').highcharts({
@@ -215,7 +205,7 @@ function point2weibo(xnum, ts){
     var delta = '';
     if (global_time_type == 'day'){
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+(pre_time+ts[0]);
-        activity_call_ajax_request(url, draw_content); //draw weibo
+        person_call_ajax_request(url, draw_content); //draw weibo
 
         var a = Math.floor(xnum / 2);
         var b = xnum % 2;
@@ -234,7 +224,7 @@ function point2weibo(xnum, ts){
     }
     else{
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts[0];
-        activity_call_ajax_request(url, draw_content); //draw weibo
+        person_call_ajax_request(url, draw_content); //draw weibo
         switch(xnum % 6)
         {
             case 0: delta = "00:00-04:00";break;
@@ -418,7 +408,7 @@ function draw_online_pattern(data){
 
 function draw_activeness_chart(data){
     $('#activeness_desc').html("<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>。");
-    global_tag_vector.push(['活跃类型', data.tag_vector]);
+    //global_tag_vector.push(['活跃类型', data.tag_vector]);
     var data_time = [];
     var data_count = [];
     var timeline = data.time_line;
@@ -497,9 +487,11 @@ function get_unix_time(dateStr){
 function activity_load(){
     bind_time_option();
     var url = '/attribute/location/?uid='+ uid + '&time_type=week';
-    activity_call_ajax_request(url, geo_track);
+    person_call_ajax_request(url, geo_track);
     var url = '/attribute/online_pattern/?uid='+uid;
-    activity_call_ajax_request(url,draw_online_pattern);
+    person_call_ajax_request(url,draw_online_pattern);
+    var url = '/attribute/activeness_trend/?uid=' + uid;
+    person_call_ajax_request(url, draw_activeness_chart);
 }
 
 var global_time_type = 'day';
@@ -509,14 +501,12 @@ pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
 
 var url = '/attribute/activity/?uid=' + uid;
 var global_active_data;
-activity_call_ajax_request(url, active_chart);
+person_call_ajax_request(url, active_chart);
 
 var daily_map_data = new Array();
 var weekly_map_data = new Array();
 var span_daily_map_data = new Array();
 var span_weekly_map_data = new Array();
 var url = '/attribute/ip/?uid=' + uid;
-activity_call_ajax_request(url, draw_daily_ip_table);
-var url = '/attribute/activeness_trend/?uid=' + uid;
-activity_call_ajax_request(url, draw_activeness_chart);
+person_call_ajax_request(url, draw_daily_ip_table);
 

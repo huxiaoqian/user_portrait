@@ -3,13 +3,7 @@
 }
 Attention.prototype = {   //获取数据，重新画表
   call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
+      person_call_ajax_request(url, callback);
   },
 Draw_attention:function(data){
   var texts = '';
@@ -28,15 +22,11 @@ Draw_attention:function(data){
 	 }	
   }
 }
-var Attention = new Attention();
-url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
-Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-bind_social_mode_choose();
 
 function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
-    console.log(in_data);
+    //console.log(in_data);
     var personal_url = '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
@@ -453,7 +443,7 @@ function bind_social_mode_choose(){
         $("#test0").empty();
         $("#field").empty();
         $("#topic").empty();
-        console.log(uid);
+        //console.log(uid);
       if (select_graph == 1){
           var test_html='转发情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
@@ -494,4 +484,10 @@ function bind_social_mode_choose(){
       }      
     });
 }
+function social_load(){
+    var url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
+    Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+    bind_social_mode_choose();
+}
+var Attention = new Attention();
 

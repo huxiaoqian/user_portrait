@@ -483,11 +483,32 @@ function bind_remark_edit(Personal){
     });
 }
 bind_remark_edit(Personal);
+var global_detail_flag = false;
 function detail_load(){
     $('#detail').css('display', 'block');
-    activity_load();
+    if (!global_detail_flag){
+        activity_load();
+        influence_load();
+        social_load();
+        thought_load();
+        global_detail_flag = true;
+    }
 }
-
+function person_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        type:"GET",
+        dataType:'json',
+        async:true,
+        beforeSend:function(){
+            $('.loading_mask').showLoading();
+        },
+        complete:function(){
+            $('.loading_mask').hideLoading();
+        },
+        success:callback,
+    });
+}
 	
 </script>
 
