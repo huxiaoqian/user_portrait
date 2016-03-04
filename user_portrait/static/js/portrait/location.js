@@ -271,7 +271,7 @@ function draw_daily_ip_table(ip_data){
     if (ip_data.description[1].length != 0){
         this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description
     }
-    if (ip_data.description[3]){
+    if (ip_data.description[3].length != 0){
         this_desc += "<span>" + ip_data.description[2] + "</span><span style='color:red;'>" + ip_data.description[3][0] + '(' + ip_data.description[3][1].split('\t').pop() + ')' + "</span>"; //description
     }
     if (ip_data.description[5]){
