@@ -376,6 +376,7 @@ function out_list_button(){
         var a = confirm('您选择了预约计算，系统将在今日24:00自动启动计算！');
         if (a == true){
             var compute_url = '/recommentation/identify_in/?date='+recommend_date+'&uid_list='+cur_uids+'&status='+compute_type;
+            //console.log(compute_url);
             Attention.call_sync_ajax_request(compute_url, Attention.ajax_method, confirm_ok);
         }
       }
