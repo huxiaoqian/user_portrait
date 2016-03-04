@@ -5,6 +5,15 @@ Influence.prototype = {   //获取数据，重新画表
   call_sync_ajax_request:function(url, method, callback){
       person_call_ajax_request(url, callback);
   },
+  call_ajax_request:function (url, callback){
+    $.ajax({
+      url: url,
+      type: 'get',
+      dataType: 'json',
+      async: false,
+      success:callback
+    });
+},
   Draw_influence:function(data){
 
 	var item_x = data.time_line;
@@ -135,7 +144,7 @@ Draw_pie_all0:function(data){
   },
 
   Draw_basic_influence:function(data){
-    console.log(data);
+    //console.log(data);
     $('#influence_conclusion_c').empty();
     var html='';
     if(data[0][0] != ''){
@@ -496,7 +505,7 @@ function click_action(){
         var mid = $(this).prev(".hidden").text();
         var influenced_users_url_re = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0&mid='+mid;
         //console.log(influenced_users_url_re);
-        Influence.call_sync_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
+        Influence.call_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
         return false;
       });
       $(".comment_count").off("click").click(function(){       
@@ -504,8 +513,8 @@ function click_action(){
         $("#cmt_influence").removeClass("hidden"); 
         var mid = $(this).prev().prev(".hidden").text();
         var influenced_users_url_cmt = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1&mid='+mid;
-        Influence.call_sync_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
-        //console.log(influenced_users_url_cmt);  
+        console.log(influenced_users_url_cmt);  
+        Influence.call_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
         return false;
       });
       $("#retweet_distribution").off("click").click(function(){
@@ -513,7 +522,7 @@ function click_action(){
         $("#retweet_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
         //console.log(all_influenced_users_url_style0);
-        Influence.call_sync_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
+        Influence.call_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
         return false;
       });
       $("#comment_distribution").off("click").click(function(){
@@ -521,19 +530,19 @@ function click_action(){
         $("#comment_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid +'&date='+date_str+'&style=1';
         //console.log(all_influenced_users_url_style1);
-        Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
+        Influence.call_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
     $('input[name="choose_module"]').click(function(){             
       var index = $('input[name="choose_module"]:checked').val();
-      //console.log(index);
+      console.log(index);
       if(index == 1){
         var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
-        Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+        Influence.call_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
       }
       else{
         var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=30';
-        Influence.call_sync_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
+        Influence.call_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
       }
     });
 
@@ -564,12 +573,24 @@ function influence_load(){
     var summary_influence_url = '/attribute/summary_influence/?uid='+parent.personalData.uid+'&date='+date_str;
     Influence.call_sync_ajax_request(summary_influence_url, Influence.ajax_method, Influence.Draw_conclusion);
     click_action();
+
 }
 
+// function call_ajax_request(url, callback){
+//     $.ajax({
+//       url: url,
+//       type: 'get',
+//       dataType: 'json',
+//       async: false,
+//       success:callback
+//     });
+// }
 var Influence = new Influence();
 var influence_date = choose_time_for_mode();
 var pre_influence_date = new Date(influence_date - 24*60*60*1000);
 var date_str = pre_influence_date.format('yyyy-MM-dd');
+
+
 
 // var influence_tag_url = '/attribute/current_tag_vector/?uid='+parent.personalData.uid+'&date='+date_str;
 // Influence.call_sync_ajax_request(influence_tag_url, Influence.ajax_method, Influence.Influence_tag_vector);
