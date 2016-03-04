@@ -1,27 +1,41 @@
-function bind_modal_click(){
-    $(".closeList").off("click").click(function(){
-        $("#float-wrap").addClass("hidden");
-        $("#more_topic").addClass("hidden");
-        $("#more_keyWords").addClass("hidden");
-        $("#more_hashtagWords").addClass("hidden");
-        return false;
-      });
-    $("#showmore_keyWords").off("click").click(function(){
-        $("#float-wrap").removeClass("hidden");
-        $("#more_keyWords").removeClass("hidden");
-        return false;
-      });
-    $("#showmore_hashtagWords").off("click").click(function(){
-            $("#float-wrap").removeClass("hidden");
-            $("#more_hashtagWords").removeClass("hidden");
-            return false;
-        });
-    $("#showmore_topic").off("click").click(function(){
-            $("#float-wrap").removeClass("hidden");
-            $("#more_topic").removeClass("hidden");
-            return false;
+ajax_method = 'GET';
+function call_sync_ajax_request(url, method, callback){
+    $.ajax({
+      url: url,
+      type: method,
+      dataType: 'json',
+      async: false,
+      success:callback
     });
-}
+  }
+
+
+// $(function() {
+//     $( '#dl-menu' ).dlmenu();
+//   });
+$(".closeList").off("click").click(function(){
+    $("#float-wrap").addClass("hidden");
+    $("#more_topic").addClass("hidden");
+    $("#more_keyWords").addClass("hidden");
+    $("#more_hashtagWords").addClass("hidden");
+    return false;
+  });
+$("#showmore_keyWords").off("click").click(function(){
+    $("#float-wrap").removeClass("hidden");
+    $("#more_keyWords").removeClass("hidden");
+    return false;
+  });
+
+$("#showmore_hashtagWords").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#more_hashtagWords").removeClass("hidden");
+        return false;
+    });
+$("#showmore_topic").off("click").click(function(){
+        $("#float-wrap").removeClass("hidden");
+        $("#more_topic").removeClass("hidden");
+        return false;
+    });
 function show_conclusion(data){
   var html = '';
   html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;"></span>';
@@ -64,8 +78,7 @@ function Draw_keyword(data, div_name, more_div, more){
       $('#'+ more_div).append(html);
 
       var word_num = Math.min(20, data.length);
-
-  	for (i=0;i<word_num;i++){
+  	for (var i=0;i<word_num;i++){
   		var word = {};
   		word['name'] = data[i][0];
   		word['value'] =data[i][1]*100;
@@ -77,7 +90,7 @@ function Draw_keyword(data, div_name, more_div, more){
   	var option = {
       tooltip: {
           show: true,
-          formatter:  function (params,ticket,callback){
+          formatter:  function (params){
             var res  = '';
             var value_after = params.value/100;
             res += params.name+' : '+value_after;
@@ -96,7 +109,7 @@ function Draw_keyword(data, div_name, more_div, more){
           data: keyword
       }]
     };
-        myChart.setOption(option);	
+    myChart.setOption(option);	
   }
 }
 
@@ -376,17 +389,9 @@ function show_results(data){
     }
     global_tag_vector.push(tag_vector[i]);
   }
-}
-function preference_call_ajax_request(url, callback){
-    $.ajax({
-        url:url,
-        type:'GET',
-        async:false,
-        dataType:'json',
-        success:callback,
-    });
-}
+  }
+
+//var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
-preference_call_ajax_request(prefrence_url, show_results);
-bind_modal_click();
+call_sync_ajax_request(prefrence_url, ajax_method, show_results);
 

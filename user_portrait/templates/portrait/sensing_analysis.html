@@ -35,7 +35,7 @@
           <script type="text/javascript" src="/static/js/portrait/identify_table.js"></script>
     {% endblock head_js %}
     {% block main %}
-    	<div id="sensing_analysis">
+    	<div id="sensing_analysis" style="height:1000px;">
     		<h4 class="page-header">社会感知</h4>
     		<div id="task_detail" style="font-size:14px;line-height: 30px;">         
       		<span><b>任务名称：</b><span id="sensing_task_name"></span>&nbsp;
@@ -62,7 +62,8 @@
             <!-- <span id="sensing_abnormal_num" style="cursor:pointer;color: #337ab7;" href="#sensi_distribution" type="button" data-toggle="modal" data-target="#modal_warning_sensing"></span> -->
             <a href="#sensi_distribution"><span id="sensing_abnormal_num" style="cursor:pointer;color: #337ab7;"></span></a>
             个异常点，重合异常点有
-            <span id="total_abnormal_num" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#modal_warning_total"></span>个。
+<!--             <span id="total_abnormal_num" style="cursor:pointer;color: #337ab7;" type="button" data-toggle="modal" data-target="#modal_warning_total"></span>个。-->
+            <span id="total_abnormal_num" style="color: #337ab7;"></span>个。
           </div>
         </div>
     		<div id="sensing_graph" style="margin-top:20px;">
@@ -231,7 +232,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal_warning_total" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- <div class="modal fade" id="modal_warning_total" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-content" style="width: 550px;margin: 0 auto;margin-top: 2%;">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -239,7 +240,7 @@
       </div>
       <div id="modal_warning_total_content" class="modal-body" style="max-height:500px; margin:5px 0;padding-left:70px;"></div>
     </div>
-</div>
+</div> -->
 
 
 

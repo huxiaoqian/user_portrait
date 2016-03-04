@@ -532,7 +532,7 @@ function draw_hastag(data){
     for (var i = 0; i < row; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#hashtag').append(html);                  
@@ -546,7 +546,7 @@ function draw_more_hastag(data){
     for (var i = 0; i < data['hashtag_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_hashtag').append(html);                  
@@ -561,7 +561,7 @@ function draw_top_geo(data){
     for (var i = 0; i < row; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#top_geo').append(html);                  
@@ -575,7 +575,7 @@ function draw_more_top_geo(data){
     for (var i = 0; i < data['activity_geo_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_geo').append(html);                  
@@ -592,7 +592,7 @@ function draw_more_top_influence(data){
        if(data['top_influence'][s]['1']=='unknown'){
             data['top_influence'][s]['1'] = '未知';
        }
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  '" target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_influence').append(html);                  
@@ -811,34 +811,50 @@ function draw_vertify(data){
 }
 function draw_keyword(data){
     var keyword = [];
-    for (key in data['hashtag_top']){
+    // for (key in data['hashtag_top']){
+    //   var word = {};
+    //   word['name'] = data['hashtag_top'][key][0];
+    //   console.log(word['name']);
+    //   word['value'] = data['hashtag_top'][key][1]*10;
+    //   console.log(word['value']);
+    //   word['itemStyle'] = createRandomItemStyle();
+    //   keyword.push(word);
+    // }
+    //最大是20
+    var word_num = Math.min(20, data.length);
+    //console.log(data['hashtag_top'].length);
+    for (var i=0;i<word_num;i++){
       var word = {};
-      word['name'] = data['hashtag_top'][key]['0'];
-      word['value'] = data['hashtag_top'][key]['1']*10;
+      word['name'] = data['hashtag_top'][i][0];
+      word['value'] =data['hashtag_top'][i][1]*10;
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }
+    console.log(keyword);
     var myChart = echarts.init(document.getElementById('keywordcloud'));
     var option = {
-    title: {
-        text: '',
-    },
-    tooltip: {
-        show: true
-    },
-    series: [{
-        name: '关键词',
-        type: 'wordCloud',
-        size: ['80%', '80%'],
-        textRotation : [0, 45, 90, -45],
-        textPadding: 0,
-        autoSize: {
-            enable: true,
-            minSize: 15
+        tooltip: {
+            show: true,
+            formatter:  function (params){
+              var res  = '';
+              var value_after = params.value/10;
+              res += params.name+' : '+value_after;
+              return res;
+            }
         },
-        data:keyword
-    }]
-};
+        series: [{
+            //name: '关键词',
+            type: 'wordCloud',
+            size: ['100%', '100%'],
+            textRotation : [0, 45, 90, -45],
+            textPadding: 0,
+            autoSize: {
+                enable: true,
+                //minSize: 14
+            },
+            data:keyword
+        }]
+    };
                     
       myChart.setOption(option); 
                     
