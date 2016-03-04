@@ -46,6 +46,7 @@ function attention(data,UserID,UserName,texts){
     nod['value'] = 10;
     nodeContent.push(nod);
     var linkline =[];
+    var rename = '';
     for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
@@ -54,13 +55,18 @@ function attention(data,UserID,UserName,texts){
             }else{
               var nod_name_out = out_data[i][0];
             }
-            nod['name'] = out_data[i][1] +'('+nod_name_out+')';
+            if(out_data[i][1]=='unknown'){
+              rename = '未知';
+            }else{
+              rename = out_data[i][1];
+            }
+            nod['name'] = rename +'('+nod_name_out+')';
             nod['label'] = out_data[i][1];
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
             var line ={};
-            line['source'] = out_data[i][1] +'('+nod_name_out+')';
+            line['source'] = nod['name'];
             line['target'] = UserName+'('+UserID+')';
             line['weight'] = 1;
             linkline.push(line);
@@ -68,18 +74,24 @@ function attention(data,UserID,UserName,texts){
     for (var i=0;i<in_data.length;i++){
             nod = {};
             nod['category'] = 1;
-            if(out_data[i][0]=='None'){
+            if(in_data[i][0]=='None'){
               var nod_name_in = '';
             }else{
               var nod_name_in = in_data[i][0];
             }
+            if(in_data[i][1]=='unknown'){
+              rename = '未知';
+            }else{
+              rename = in_data[i][1];
+            }
+            nod['name'] = rename +'('+nod_name_out+')';
             nod['name'] = in_data[i][1] +'('+nod_name_in+')';
             nod['label'] = in_data[i][1];
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
             nodeContent.push(nod);
             var line ={};
-            line['source'] = in_data[i][1] +'('+nod_name_in+')';
+            line['source'] = nod['name'];
             line['target'] = UserName+'('+UserID+')';
             line['weight'] = 1;
             linkline.push(line);
