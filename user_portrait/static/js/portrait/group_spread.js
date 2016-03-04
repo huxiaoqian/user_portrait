@@ -468,7 +468,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
         page_icon(1,pageCount,0, div_name);
     }
     
-    $("#"+div_name+" #pageGro li").bind("click", function(){
+    $("#"+div_name+" #pageGro li").live("click", function(){
         if(pageCount > 5){
             var pageNum = parseInt($(this).html());
             pageGroup(pageNum,pageCount);
@@ -488,7 +488,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
         page_group_influ_weibo(start_row,end_row,data, sub_div_name);
     });
 
-    $("#"+div_name+" #pageGro .pageUp").click(function(){
+    $("#"+div_name+" #pageGro .pageUp").off('click').click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
             pageUp(pageNum,pageCount);
@@ -510,7 +510,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
     });
     
 
-    $("#" + div_name + " #pageGro .pageDown").click(function(){
+    $("#" + div_name + " #pageGro .pageDown").off('click').click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
 
@@ -781,6 +781,7 @@ function spread_load(){
             $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
             $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
         }
+        bind_spread_click();
         show_more_influ_active_users('show_rank_influ_users');
         show_more_influ_active_users('show_rank_uninflu_users');
         //$('#group_influence_conclusion').append('结论结论结论结论');

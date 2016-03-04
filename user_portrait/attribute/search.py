@@ -105,6 +105,7 @@ def edit_remark(uid, remark):
 #         'out_portrait_list':[[uid, uname, fansnum]]}
 def search_attention(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
@@ -137,7 +138,11 @@ def search_attention(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -249,6 +254,7 @@ def search_attention(uid):
 #input: uid, top_count
 def search_follower(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
@@ -281,7 +287,11 @@ def search_follower(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'])
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance /evaluate_max_dict['importance'])
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -346,6 +356,7 @@ def search_follower(uid, top_count):
 #output: in_portrait_list, in_portrait_result, out_portrait_list
 def search_comment(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
@@ -378,7 +389,11 @@ def search_comment(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -444,6 +459,7 @@ def search_comment(uid, top_count):
 #output: in_portrait_list, in_portrait_result, out_portrait_list
 def search_be_comment(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
@@ -477,7 +493,11 @@ def search_be_comment(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -600,6 +620,7 @@ def search_bidirect_interaction(uid, top_count):
     in_portrait_result['domain'] = {}
     out_portrait_list = []
     count = 0
+    evaluate_max_dict = get_evaluate_max()
     while True:
         uid_list = [item for item in all_interaction_uid_list[count: count+20]]
         try:
@@ -613,7 +634,11 @@ def search_bidirect_interaction(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -726,6 +751,7 @@ def search_follower(uid):
 #{'at_'+Date:{str(uid):'{at_uid:count}'}}
 #return results:{at_uid:[uname,count]}
 def search_mention(now_ts, uid, top_count):
+    evaluate_max_dict = get_evaluate_max()
     date = ts2datetime(now_ts)
     ts = datetime2ts(date)
     stat_results = dict()
@@ -768,7 +794,11 @@ def search_mention(now_ts, uid, top_count):
                 uname = user_dict['uname']
                 domain = user_dict['domain']
                 influence = user_dict['influence']
+                #normal
+                influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                 importance = user_dict['importance']
+                #normal
+                importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                 try:
                     in_portrait_result['domain'][domain] += 1
                 except:
@@ -1201,7 +1231,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     conclusion.append(abnormal_ip_list)
 
     #print 'conclusion:', conclusion, home_ip, job_ip
-    print 'description_conclusion:', conclusion
+    #print 'description_conclusion:', conclusion
     return conclusion, home_ip, job_ip
 
 #abandon in version:15-12-08
