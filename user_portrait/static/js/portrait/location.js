@@ -39,11 +39,6 @@ function bind_time_option(){
         }
     });
 }
-var global_time_type = 'day';
-var pre_time = choose_time_for_mode();
-pre_time.setHours(0,0,0);
-pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
-bind_time_option();
 
 function geo_track(data){
     var geo_data = data.week_geo_track;
@@ -67,8 +62,6 @@ function geo_track(data){
 	}
 }
 
-var url = '/attribute/location/?uid='+ uid + '&time_type=week';
-activity_call_ajax_request(url, geo_track);
 
 function  active_chart(data){
     global_active_data = data;
@@ -268,13 +261,6 @@ function draw_content(data){
     $('#weibo_text').append(html);
 }
 
-var url = '/attribute/activity/?uid=' + uid;
-var global_active_data;
-activity_call_ajax_request(url, active_chart);
-var daily_map_data = new Array();
-var weekly_map_data = new Array();
-var span_daily_map_data = new Array();
-var span_weekly_map_data = new Array();
 
 function draw_daily_ip_table(ip_data){
     var tag_vector = ip_data.tag_vector;
@@ -290,7 +276,7 @@ function draw_daily_ip_table(ip_data){
     }
     //var div_name = ['daily_ip','weekly_ip'];
     var this_desc = '';
-    console.log(ip_data.description);
+    //console.log(ip_data.description);
     if (ip_data.description[1].length != 0){
         this_desc += "<span>" + ip_data.description[0] + "</span><span style='color:red;'>" + ip_data.description[1][0] + '(' + ip_data.description[1][1].split('\t').pop() +')' + "</span>"; //description
     }
@@ -408,8 +394,6 @@ function draw_daily_ip_table(ip_data){
     $('#span_ip').append(html);                  
 
 }
-var url = '/attribute/ip/?uid=' + uid;
-activity_call_ajax_request(url, draw_daily_ip_table);
 
 function draw_online_pattern(data){
     if ('sort_result' in data){
@@ -430,8 +414,6 @@ function draw_online_pattern(data){
         $('#online_pattern').append(html);                  
     }
 }
-var url = '/attribute/online_pattern/?uid='+uid;
-activity_call_ajax_request(url,draw_online_pattern);
 
 function draw_activeness_chart(data){
     $('#activeness_desc').html("<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>。");
@@ -503,8 +485,6 @@ function draw_activeness_chart(data){
         }]
     });
 }
-var url = '/attribute/activeness_trend/?uid=' + uid;
-activity_call_ajax_request(url, draw_activeness_chart);
 
 function get_unix_time(dateStr){
     var newstr = dateStr.replace(/-/g,'/'); 
@@ -512,4 +492,30 @@ function get_unix_time(dateStr){
     var time_str = date.getTime().toString();
     return time_str.substr(0, 10);
 }
+
+function activity_load(){
+    bind_time_option();
+    var url = '/attribute/location/?uid='+ uid + '&time_type=week';
+    activity_call_ajax_request(url, geo_track);
+    var url = '/attribute/online_pattern/?uid='+uid;
+    activity_call_ajax_request(url,draw_online_pattern);
+}
+
+var global_time_type = 'day';
+var pre_time = choose_time_for_mode();
+pre_time.setHours(0,0,0);
+pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
+
+var url = '/attribute/activity/?uid=' + uid;
+var global_active_data;
+activity_call_ajax_request(url, active_chart);
+
+var daily_map_data = new Array();
+var weekly_map_data = new Array();
+var span_daily_map_data = new Array();
+var span_weekly_map_data = new Array();
+var url = '/attribute/ip/?uid=' + uid;
+activity_call_ajax_request(url, draw_daily_ip_table);
+var url = '/attribute/activeness_trend/?uid=' + uid;
+activity_call_ajax_request(url, draw_activeness_chart);
 
