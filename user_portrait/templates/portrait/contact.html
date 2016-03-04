@@ -172,7 +172,7 @@
 <div id="wrapper" style="padding-left:0px; overflow:visible">
         <div id='pager' style='text-align:right'></div>
         <div id='tabs' style='width:1000px'>
-            <div id='txt'>
+             <div id='txt'>
                 <div class="main col-sm-9 col-md-10">
                     <div class="col-sm-12">
                         <div class="panel panel-default" style="width:1000px;margin-left:-30px" id='table'>
@@ -183,8 +183,8 @@
                         <button class="btn btn-primary btn-sm" style="width:80px;height:40px;margin-right:5px" name="group_button" id="group_button" onclick="group_button();">群体分析</button>
                     </div>
                 </div>
-                
             </div>
+
             <div id='photo'>
                 <div class="main col-sm-9 col-md-10">
                     <div class="col-sm-12">
@@ -192,7 +192,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
 </div>
 
@@ -411,18 +411,25 @@
     }
         
     var topic = document.getElementById('userTopic');
-    if(personalData.topic){
-        topicdict = personalData.topic;
-        var str = '';
-        for(i=0;i<topicdict.length;i++){
-            if (i == (topicdict.length -1)){
-                str += topicdict[i][0];
-            }else{
-                str = str + topicdict[i][0] +',';
-            }
-            
-        }
-        topic.innerHTML = str;
+    if(personalData.topic_string){
+        topicdict = personalData.topic_string;
+        //var str = '';
+        // console.log(topicdict);
+        // for(var k in topicdict){
+        //     console.log(k,topicdict[k]);
+        //     str += k+':'+topicdict[k];
+        // }
+        // for(i=0;i<topicdict.length;i++){
+        //     if (i == (topicdict.length -1)){
+        //         str += topicdict[i][0];
+        //     }else{
+        //        str = str + topicdict[i][0] +',';
+        //     }
+        //topicdict.replace('&/g',' ');
+        // }
+        console.log(topicdict);
+        console.log(topicdict.replace('/&/g',' sdf'));
+        topic.innerHTML ='';
     }else{
         topic.innerHTML = "无此数据";
     }

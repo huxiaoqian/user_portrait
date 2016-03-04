@@ -479,6 +479,18 @@ function so_user_check(){             // check validation
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
     }
+    var reg1 = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d\s]+$";
+    var input_nor = $('input[name="so_keywords_nor"]').val();
+    var input_sen = $('input[name="so_keywords_sen"]').val();
+    console.log(input_nor);
+    if ((input_nor.length > 0) && (!input_nor.match(reg1))){
+        alert('关键词只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
+    if ((input_sen.length > 0) && (!input_sen.match(reg1))){
+        alert('关键词只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
     if($('input[name="so_keywords_nor"]').val()==''){
     	var a = [];
     	$('[name="so_more_option_0"]:checked').each(function(){
