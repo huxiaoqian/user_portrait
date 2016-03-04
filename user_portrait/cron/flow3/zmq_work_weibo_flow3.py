@@ -20,9 +20,8 @@ from parameter import RUN_TYPE, RUN_TEST_TIME
 
 #uname2uid from redis
 def uname2uid(uname):
-    try:
-        uid = uname2uid_redis.hget(uname2uid_hash, uname)
-    except:
+    uid = uname2uid_redis.hget(uname2uid_hash, uname)
+    if not uid:
         uid = ''
     return uid
 

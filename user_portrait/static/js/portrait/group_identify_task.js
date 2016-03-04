@@ -417,6 +417,7 @@ function group_control_check(){             // check validation
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
     }
+    console.log($('input[name="con_nor_keywords"]').val());
     if($('input[name="con_nor_keywords"]').val()==''){
     	var a = [];
     	$('[name="con_more_option_0"]:checked').each(function(){
