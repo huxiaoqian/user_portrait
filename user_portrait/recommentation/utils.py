@@ -110,7 +110,7 @@ def recommentation_in(input_ts):
 
 # identify uid to in user_portrait
 def identify_in(data):
-    in_status = 1
+    #in_status = 1
     compute_status = 0
     in_hash_name = 'recomment_'
     compute_hash_name = 'compute'
@@ -120,7 +120,7 @@ def identify_in(data):
         uid = item[1]
         status = item[2]
         value_string = []
-        r.hset(in_hash_key, uid, in_status)
+        r.hset(in_hash_key, uid, status)
         if status == '1':
             in_date = date
             compute_status = '1'
