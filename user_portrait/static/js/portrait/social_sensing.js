@@ -484,6 +484,7 @@ function so_user_check(){             // check validation
     	$('[name="so_more_option_0"]:checked').each(function(){
 		  	a.push($(this).val());
 		});
+		console.log(a);
 		if(a[0]==undefined){
 			alert('至少需要输入或勾选普通传感词！');
 			return false;
@@ -501,13 +502,13 @@ function so_group_data(){
 	    a['remark'] = $('#so_remarks').val();
 		a['stop_time'] = Date.parse($('input[name="so_end_time"]').val())/1000;
 		a['keywords'] = '';
-		a['keywords0'] = '';
+		a['sensitive_words'] = '';
 		a['create_at'] =  Date.parse(new Date())/1000;
 		var so_user_option = $('input[name="so_mode_choose"]:checked').val();
 		var url0 = [];
 		var url1 = '';
 		var url_create = '/social_sensing/create_task/?';
-	    a['keywords'] = $('#so_keywords').val();
+	    a['keywords'] = $('#so_keywords_sen').val();
 	 	a['keywords'] = a['keywords'].split(/\s+/g);
 	    a['sensitive_words'] = $('#so_keywords_nor').val();
 	 	a['sensitive_words'] = a['sensitive_words'].split(/\s+/g);
@@ -526,7 +527,6 @@ function so_group_data(){
 		  	     a['social_sensors'].push($(this).parent().prev().prev().prev().prev().prev().prev().attr('name'));
 		  	});
 		}
-		console.log(a['social_sensors']);
 		for(var k in a){
 			if(a[k]){
 				url0.push(k +'='+a[k]);
