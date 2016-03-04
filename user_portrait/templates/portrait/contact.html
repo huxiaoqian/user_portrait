@@ -21,17 +21,10 @@
 {{ super() }}
 <script type="text/javascript" src="/static/js/lanrenzhijia.js"></script>
 <script type="text/javascript" src='/static/js/esl.js'></script>
-<script type="text/javascript" src='/static/js/echarts-all.js'></script>
-<script type="text/javascript" src='/static/js/echarts.js'></script>
 {% endblock %}
 
 {% block main %}
 
-<style>
-    .caroufredsel_wrapper{
-        left: -16px;
-    }
-</style>
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
     <div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
     <div class="nickname" id="nickname"></div>
@@ -171,7 +164,7 @@
 </div>
 <div id="wrapper" style="padding-left:0px; overflow:visible">
         <div id='pager' style='text-align:right'></div>
-        <div id='tabs' style='width:1000px'>
+        <div id='tabs' style='width:1000px;'>
             <div id='txt'>
                 <div class="main col-sm-9 col-md-10">
                     <div class="col-sm-12">
@@ -262,6 +255,7 @@
             circular: false,
             items: 1,
             width: '100%',
+            height:'700px',
             auto: false,
             pagination: {
                 container: '#pager',
@@ -278,6 +272,7 @@
         });
         var html = '<span  type="button" id="compare_button" title="选择2至3个用户对比" style="font-size:16px;cursor: pointer" onclick="diy_button();"><u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u></span>';
         $('#pager').append(html);
+        console.log('hhh');
         $('.caroufredsel_wrapper').css('height', '700px');
         $('#txt').css('height', '700px');
         $('#photo').css('height', '700px');
