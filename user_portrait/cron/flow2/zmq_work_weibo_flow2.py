@@ -50,7 +50,8 @@ def cal_propage_work(item):
     at_uname_list = extract_uname(text)
     try:
         at_uname = at_uname_list[0]
-        save_at(uid, at_uname, timestamp)
+        if at_uname != '':
+            save_at(uid, at_uname, timestamp)
     except:
         pass
     
