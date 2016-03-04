@@ -64,8 +64,8 @@ function Draw_keyword(data, div_name, more_div, more){
       $('#'+ more_div).append(html);
 
       var word_num = Math.min(20, data.length);
-
-  	for (i=0;i<word_num;i++){
+      console.log(data);
+  	for (var i=0;i<word_num;i++){
   		var word = {};
   		word['name'] = data[i][0];
   		word['value'] =data[i][1]*100;
@@ -96,7 +96,7 @@ function Draw_keyword(data, div_name, more_div, more){
           data: keyword
       }]
     };
-        myChart.setOption(option);	
+    myChart.setOption(option);	
   }
 }
 
