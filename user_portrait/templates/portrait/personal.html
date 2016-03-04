@@ -20,19 +20,6 @@ $(function(){
 		var id = $(this).attr("id");
 		var x=$(this).parent().index();
 		$(this).children("p").css({"color":"#008dd9"}).parent().parent().siblings().children().children("p").css({"color":"#333333"});
-        /*
-        var src1=id+"_hover.gif"
-		$(".soft_con_icon ul li a").each(function(index, element) {
-         	var other_id = $(this).attr("id");
-			if(id == other_id){
-			   $(this).children("img").attr("src","/static/personal/images/"+src1);
-			}else{
-			   var src2 = other_id+".gif";
-			   $(this).children("img").attr("src","/static/personal/images/"+src2);
-			}
-            });
-         */
-        //console.log(x+'clicked');
 		if(x==0){
 		   $("#xzgl").css({"display":"block"}).siblings().css({"display":"none"});
 		   $(".soft_con1").css({"background":" url(/static/personal/images/line_select_001.gif)"});
@@ -69,7 +56,7 @@ $(function(){
                 <div style="height:70px; margin-bottom: 8px;">
                   <div style="width:640px; float:left;">
                       <span class="nickname" id="nickname"></span>
-                    <a style="font-size:15px;margin-left:15px;" href='#detail' onclick="$('#detail').css('display','block');">查看详细属性</a>
+                    <a style="font-size:15px;margin-left:15px;cursor:pointer;" onclick="detail_load();">查看详细属性</a>
                     <div class="PersonPre" style="margin-bottom:5px;">
                         <!--<span class="lightw">个人描述：</span>-->
                         <span class="" style="font-family: "宋体";" id="portraitDetail"></span>
@@ -496,7 +483,33 @@ function bind_remark_edit(Personal){
     });
 }
 bind_remark_edit(Personal);
-
+var global_detail_flag = false;
+function detail_load(){
+    $('#detail').css('display', 'block');
+    if (!global_detail_flag){
+        activity_load();
+        influence_load();
+        social_load();
+        thought_load();
+        global_detail_flag = true;
+    }
+    window.location.href = '#detail';
+}
+function person_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        type:"GET",
+        dataType:'json',
+        async:true,
+        beforeSend:function(){
+            $('.loading_mask').showLoading();
+        },
+        complete:function(){
+            $('.loading_mask').hideLoading();
+        },
+        success:callback,
+    });
+}
 	
 </script>
 

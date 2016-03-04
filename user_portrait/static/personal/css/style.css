@@ -7,11 +7,11 @@ ia{cursor:pointer;text-decoration:none;outline:none;hidefocus}
 img{border:0;}
 a#basic_info:hover{cursor:hand;}
 /* soft_function */
-.soft_function{width:1000px;height:636px;margin:0 auto}
+.soft_function{width:1000px;/*height:636px;*/margin:0 auto}
 .soft_con_icon{width:1000px;height:190px;display:block;padding-top:10px}
 .soft_con_icon ul li{float:left;display:block;list-style:none;height:180px;width:150px; margin:0 25px;}
 .soft_con_icon ul li a p{color:#333333;font-size:20px;font-family:"微软雅黑";text-align:center}
-.soft_con{height:296px;width:1000px}
+.soft_con{/*height:296px;*/width:1000px}
 .soft_con1{height:20px;width:1000px;background:url(images/line_select_001.gif)}
 .soft_con2{height:auto;width:998px;border-left:1px solid #d4d4d4;border-right:1px solid #d4d4d4;background:#fcfcfc}
 .soft_con2 div{float:left;margin:8px 0px;}

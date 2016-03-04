@@ -34,8 +34,7 @@ def get_mappings(index_name):
                             'index': 'not_analyzed'
                             },
                         'directed_uid':{
-                            'type':'string',
-                            'index': 'not_analyzed'
+                            'type':'long',
                             },
                         'directed_uname':{
                             'type': 'string',

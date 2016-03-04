@@ -177,7 +177,15 @@
     }
 );
 }
-
+function map_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        type:'GET',
+        dataType:'json',
+        async:false,
+        success:callback,
+    });
+}
 function location_all(){
     var location_geo;
     // location table
@@ -195,7 +203,7 @@ function location_all(){
 
     var url = '/attribute/location/?uid='+uid+'&time_type=day';
     var daily_location_map_data = new Array();
-    activity_call_ajax_request(url, location_day);
+    map_call_ajax_request(url, location_day);
     function location_day(data){
         //day
         //console.log(data);
@@ -217,7 +225,7 @@ function location_all(){
     }
     var url = '/attribute/location/?uid='+uid+'&time_type=week';
     var weekly_location_map_data = new Array();
-    activity_call_ajax_request(url, location_week);
+    map_call_ajax_request(url, location_week);
     function location_week(data){
         //week
         location_geo = data.week_top;
@@ -234,7 +242,7 @@ function location_all(){
     }
     var url = '/attribute/location/?uid='+uid+'&time_type=month';
     var monthly_location_map_data = new Array();
-    activity_call_ajax_request(url, location_month);
+    map_call_ajax_request(url, location_month);
     function location_month(data){
         //console.log(data);
         $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>。"); //description
