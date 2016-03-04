@@ -1,23 +1,3 @@
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
 function g_social(){
   this.ajax_method = 'GET';
 }
@@ -745,7 +725,8 @@ function draw_social(data){
 	//draw_more_in_table(data);
 	//draw_more_out_table(data);
 }
-
+function social_load(){
+}
 
 var social_url = '/group/show_group_result/?task_name='+name+'&module=social';
 var g_social = new g_social();

@@ -81,10 +81,7 @@
   {{ super() }}
 	<script type="text/javascript" src="/static/js/highstock.js" charset="utf-8"></script>  
 	<script type="text/javascript" src="/static/js/exporting.js" charset="utf-8"></script>
-	<script type="text/javascript" src="/static/js/emoticon.js" charset="utf-8"></script>
     <script type="text/javascript" src='/static/js/esl.js'></script>
-	<script type="text/javascript" src='/static/js/echarts-all.js'></script>
-	<script type="text/javascript" src='/static/js/echarts.js'></script>
     <script type="text/javascript" src="/static/js/jquery.datetimepicker.js"></script>
    	<script type="text/javascript" src="/static/js/portrait/group_table.js"></script>
 
@@ -119,7 +116,7 @@
 			  <div class="panel panel-default">
 			    <div class="panel-heading panel-color" role="tab" id="headingTwo">
 			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+			        <a class="collapsed" role="button" onclick="activity_load();" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
 			          活动特征
 			        </a>
 			      </h4>
@@ -136,7 +133,7 @@
 			  <div class="panel panel-default">
 			    <div class="panel-heading panel-color" role="tab" id="headingThree">
 			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+			        <a class="collapsed" role="button" onclick="preference_load();" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
 			          偏好特征
 			        </a>
 			      </h4>
@@ -151,7 +148,7 @@
 			  <div class="panel panel-default">
 			    <div class="panel-heading panel-color" role="tab" id="headingFour">
 			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+			        <a class="collapsed" role="button" onclick="spread_load();" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
 			          传播特征
 			        </a>
 			      </h4>
@@ -166,7 +163,7 @@
 			  <div class="panel panel-default">
 			    <div class="panel-heading panel-color" role="tab" id="headingSix">
 			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+			        <a class="collapsed" role="button" onclick="social_load();" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
 			          社交特征
 			        </a>
 			      </h4>
@@ -182,7 +179,7 @@
 			  <div class="panel panel-default">
 			    <div class="panel-heading panel-color" role="tab" id="headingSeven">
 			      <h4 class="panel-title">
-			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+			        <a class="collapsed" role="button" onclick="psy_load();" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
 			          思想特征
 			        </a>
 			      </h4>
@@ -320,12 +317,12 @@ function pageDown(pageNum,pageCount){
     </script>
     <script type="text/javascript" src="/static/js/portrait/group_analysis.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aBrX8X2tEjcqiKwL78DLmanZ"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_basic.js"></script>
     <script type="text/javascript" src="/static/js/portrait/group_activity.js"></script>
+	<script type="text/javascript" src="/static/js/portrait/group_preference.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_spread.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_social.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_psy.js"></script>
-	<script type="text/javascript" src="/static/js/portrait/group_basic.js"></script>
-	<script type="text/javascript" src="/static/js/portrait/group_preference.js"></script>
     <!--
 	<script type="text/javascript" src="/static/js/portrait/group_basic.js"></script>
 	<script type="text/javascript" src="/static/js/portrait/group_preference.js"></script>
