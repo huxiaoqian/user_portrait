@@ -532,7 +532,7 @@ function draw_hastag(data){
     for (var i = 0; i < row; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#hashtag').append(html);                  
@@ -546,7 +546,7 @@ function draw_more_hastag(data){
     for (var i = 0; i < data['hashtag_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=' + data['hashtag_top'][s]['0'] +  '&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['hashtag_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['hashtag_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_hashtag').append(html);                  
@@ -561,7 +561,7 @@ function draw_top_geo(data){
     for (var i = 0; i < row; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#top_geo').append(html);                  
@@ -575,7 +575,7 @@ function draw_more_top_geo(data){
     for (var i = 0; i < data['activity_geo_top'].length; i++) {
        var s = i.toString();
        var m = i + 1;
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain&topic" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=' + data['activity_geo_top'][s]['0'] +  '&hashtag=&adkeyword=&psycho_status=&domain=&topic=" target="_blank">' + data['activity_geo_top'][s]['0'] +  '</a></th><th style="text-align:center">' + data['activity_geo_top'][s]['1'] +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_geo').append(html);                  
@@ -592,7 +592,7 @@ function draw_more_top_influence(data){
        if(data['top_influence'][s]['1']=='unknown'){
             data['top_influence'][s]['1'] = '未知';
        }
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  'target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  '" target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
     };
     html += '</table>'; 
     $('#more_top_influence').append(html);                  
