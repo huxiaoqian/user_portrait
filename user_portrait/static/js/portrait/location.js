@@ -88,7 +88,8 @@ function  active_chart(data){
    }
    global_tag_vector.push([name, value]);
    //active type
-   global_tag_vector.push(tag_vector[1]);
+   
+   //global_tag_vector.push(tag_vector[1]);
 
     var this_desc= '';
     this_desc += "<span>" + data.description[0] + "</span><span style='color:red;'>" + data.description[1] + "</span>"; //description
