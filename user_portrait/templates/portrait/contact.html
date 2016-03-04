@@ -13,6 +13,9 @@
     .addIcon{background-image:url(../../static/img/add.png);width:32px;display:inline-block;height:32px;cursor:pointer;padding-top:10px;}
     .tagCols{width:550px;margin:auto 0;  text-align: center;margin-bottom: 10px;height:50px;line-height: 45px;}
     .tagCols span{font-size:20px;}
+    #basicInfo .li_1 {margin-left:60px;}
+    #basicInfo .pt_title {width:80px;}
+    #basicInfo .pt_detail {padding-left:55px;}
 </style>
 
 {% endblock css %}
@@ -21,22 +24,15 @@
 {{ super() }}
 <script type="text/javascript" src="/static/js/lanrenzhijia.js"></script>
 <script type="text/javascript" src='/static/js/esl.js'></script>
-<script type="text/javascript" src='/static/js/echarts-all.js'></script>
-<script type="text/javascript" src='/static/js/echarts.js'></script>
 {% endblock %}
 
 {% block main %}
 
-<style>
-    .caroufredsel_wrapper{
-        left: -16px;
-    }
-</style>
 <div id="personal_head" style="font-family:"Microsoft YaHei UI"; font-size:16px;" >
     <div class="PortraitImg" ><img id="portraitImg" src="" alt="" class="img-circle"></div>
     <div class="nickname" id="nickname"></div>
     <div style="text-align:center;height:30px;">
-        <a id="basic_info" target='_blank' style="cursor:hand;">ta的注册信息</a>&nbsp;&nbsp;
+        <a id="basic_info" target='_blank' style="cursor:pointer;">ta的注册信息</a>&nbsp;&nbsp;
         <a id="homepage" target='_blank' style="cursor:hand;">ta的微博主页</a>&nbsp;&nbsp;
       </div>
     <div class="power">
@@ -44,10 +40,10 @@
         <span class="importantPower lightw">重要度：</span><span class=" red" id="IPnum">100</span>（No.<span id="IPrank"></span>/<span id="IPsum"></span>）
         <span class="influencePower lightw">影响力：</span><span class=" red" id="FPnum">100</span>（No.<span id="FPrank"></span>/<span id="FPsum"></span>）
     </div>
-    <div class="PersonPre"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
+    <div class="PersonPre" style="text-align:center;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
 </div>
 <div id="float-wrap" class="hidden"></div>
-<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 70%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
+<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 65%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
     <h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本注册信息<a href="javascript:void(0)" class="Basicclose" id="close"></a></h3>
     <div class="m-wrap" style="margin-top:30px;">
         <ul class="clearfix">
@@ -170,8 +166,11 @@
  
 </div>
 <div id="wrapper" style="padding-left:0px; overflow:visible">
+        <span  type="button" id="compare_button" title="选择2至3个用户对比" style="float:right;font-size:16px;cursor: pointer" onclick="diy_button();">
+            <u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u>
+        </span>
         <div id='pager' style='text-align:right'></div>
-        <div id='tabs' style='width:1000px'>
+        <div id='tabs' style='width:1000px;'>
             <div id='txt'>
                 <div class="main col-sm-9 col-md-10">
                     <div class="col-sm-12">
@@ -262,6 +261,7 @@
             circular: false,
             items: 1,
             width: '100%',
+            height:'700px',
             auto: false,
             pagination: {
                 container: '#pager',
@@ -276,8 +276,6 @@
                 }
             }
         });
-        var html = '<span  type="button" id="compare_button" title="选择2至3个用户对比" style="font-size:16px;cursor: pointer" onclick="diy_button();"><u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u></span>';
-        $('#pager').append(html);
         $('.caroufredsel_wrapper').css('height', '700px');
         $('#txt').css('height', '700px');
         $('#photo').css('height', '700px');
@@ -411,14 +409,14 @@
     }
         
     var topic = document.getElementById('userTopic');
-    if(personalData.topic){
-        topicdict = personalData.topic;
+    if(personalData.topic_string){
+        topicdict = personalData.topic_string.split('&');
         var str = '';
         for(i=0;i<topicdict.length;i++){
             if (i == (topicdict.length -1)){
-                str += topicdict[i][0];
+                str += topicdict[i];
             }else{
-                str = str + topicdict[i][0] +',';
+                str = str + topicdict[i] +',';
             }
             
         }
