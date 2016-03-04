@@ -288,7 +288,7 @@ function draw_out_list(data){
       //item = replace_space(item);
       //global_data[item[0]] = item; // make global data\
       var list_id = '';
-      console.log(item[0]);
+      //console.log(item[0]);
       if(item[0]!='None'){
         list_id = item[0];
       }else{list_id='';}
