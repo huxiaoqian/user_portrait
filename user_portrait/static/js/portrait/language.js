@@ -77,7 +77,7 @@ function Draw_keyword(data, div_name, more_div, more){
       html += '</table>'; 
       $('#'+ more_div).append(html);
 
-      var word_num = Math.min(20, data.length);
+    var word_num = Math.min(20, data.length);
   	for (var i=0;i<word_num;i++){
   		var word = {};
   		word['name'] = data[i][0];
@@ -117,101 +117,118 @@ function get_radar_data (data) {
   var topic = data;
   var topic_name = [];
   var topic_value = [];
+
   for(var i=0; i<topic.length;i++){
-    topic_value.push(topic[i][1])
-    topic_name.push(topic[i][0])
+    if(topic[i][1].toFixed(3) != 0){
+      topic_value.push(topic[i][1].toFixed(3));
+      topic_name.push(topic[i][0]);
+    }
+
   };
-  var topic_value2 = [];
-  var topic_name2 = [];
-  for(var i=0; i<8;i++){ //取前8个最大值
-    a=topic_value.indexOf(Math.max.apply(Math, topic_value));
-    topic_value2.push(topic_value[a].toFixed(3));
-    topic_name2.push(topic_name[a]);
-    topic_value[a]=0;
-  }
+  // var topic_value2 = [];
+  // var topic_name2 = [];
+  // for(var i=0; i<8;i++){ //取前8个最大值
+  //   a=topic_value.indexOf(Math.max.apply(Math, topic_value));
+  //   topic_value2.push(topic_value[a].toFixed(3));
+  //   topic_name2.push(topic_name[a]);
+  //   topic_value[a]=0;
+  // }
   var topic_name3 = [];
-  for(var i=0;i<8;i++){ //设置最大值的话题的阈值
+  var max_topic = 7;
+  if(topic_value.length <7){
+    max_topic = topic_value.length;
+  }
+  //Math.min.apply(7, topic_value.length);
+  for(var i=0;i<max_topic;i++){ //设置最大值的话题的阈值
     var name_dict = {};
-    var index = topic_name2[i];
+    var index = topic_name[i];
     name_dict["text"] = index;
-    name_dict["max"] = Math.max.apply(Math, topic_value2).toFixed(3)+0.2;
+    name_dict["max"] = Math.max.apply(Math, topic_value).toFixed(3)+0.2;
     topic_name3.push(name_dict);
   }
   var topic_result = [];
   topic_result.push(topic_name3);
-  topic_result.push(topic_value2);
+  topic_result.push(topic_value);
   return topic_result;
 }
 function Draw_topic(data){
-  var topic = [];
-  var html = '';
-  $('#topic_WordList').empty();
-  if(data.length == 0){
-     //console.log(div_name);
-      html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
-      //$('#'+ more_div).append(html);
-      $('#more_topic').append(html);
-      $('#showmore_topic').empty();
+  if(data[0][1].toFixed(3) == 0){
+      $('#user_topic').append('<h4 style="text-align:center;margin-top:50%;">暂无数据</h4>');
+      $('#showmore_topic').css('display', 'none');      
   }else{
-      html = '';
-      html += '<table class="table table-striped table-bordered" style="width:450px;">';
-      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
-      for (var i = 0; i < data.length; i++) {
-         var s = i.toString();
-         var m = i + 1;
-         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
+      var topic = [];
+      var html = '';
+      $('#topic_WordList').empty();
+      if(data.length == 0){
+         //console.log(div_name);
+          html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+          //$('#'+ more_div).append(html);
+          $('#more_topic').append(html);
+          $('#showmore_topic').empty();
+      }else{
+          html = '';
+          html += '<table class="table table-striped table-bordered" style="width:450px;">';
+          html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
+          for (var i = 0; i < data.length; i++) {
+             var s = i.toString();
+             var m = i + 1;
+             html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
+          };
+          html += '</table>'; 
+          $('#topic_WordList').append(html);
       };
-      html += '</table>'; 
-      $('#topic_WordList').append(html);
-    };
-  var topic_result = [];
-  topic_result = get_radar_data(data);
-  var topic_name = topic_result[0];
-  var topic_value = topic_result[1];
-  var myChart2 = echarts.init(document.getElementById('user_topic'));
-  var option = {
-    // title : {
-    //   text: '用户话题分布',
-    //   subtext: ''
-    // },
-      tooltip : {
-        trigger: 'axis'
-      },
-      toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-      },
-      calculable : true,
-      polar : [
-       {
-        indicator :topic_name,
-        radius : 90
-       }
-      ],
-      series : [
-       {
-        name: '话题分布情况',
-        type: 'radar',
-        itemStyle: {
-         normal: {
-          areaStyle: {
-            type: 'default'
-          }
-         }
-        },
-       data : [
-        {
-         value : topic_value,
-         name : '用户话题分布'}
-       ]
-      }]
-  };
-  myChart2.setOption(option);
+      var topic_result = [];
+      topic_result = get_radar_data(data);
+      var topic_name = topic_result[0];
+      console.log(topic_name);
+      var topic_value = topic_result[1];
+      console.log(topic_value)
+      var myChart2 = echarts.init(document.getElementById('user_topic'));
+      var option = {
+        // title : {
+        //   text: '用户话题分布',
+        //   subtext: ''
+        // },
+          tooltip : {
+            trigger: 'axis'
+          },
+          toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+          },
+          calculable : true,
+          polar : [
+           {
+            indicator :topic_name,
+            radius : 90
+           }
+          ],
+          series : [
+           {
+            name: '话题分布情况',
+            type: 'radar',
+            itemStyle: {
+             normal: {
+              areaStyle: {
+                type: 'default'
+              }
+             }
+            },
+           data : [
+            {
+             value : topic_value,
+             name : '用户话题分布'}
+           ]
+          }]
+      };
+      myChart2.setOption(option);
+  }
+
 }
 
 function show_domain(data){

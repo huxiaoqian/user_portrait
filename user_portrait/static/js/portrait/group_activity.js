@@ -70,28 +70,6 @@ function Draw_activity(data){
                 events:{
                     click:function(event){
                         point2weibo(event.point.x, data[event.point.x][0]);
-
-                        // var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + data[event.point.x][0];
-                        // call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
-                        //  var html0 = '';
-                        // $('#line_select_time').empty();  
-                        // var time_index = event.point.x;
-                        // if(time_index != 0){
-                        //     var time_split = data_x_[time_index].split('-');
-                        //     var time_split_end = time_split[1];
-                        //     var time_split_from = data_x_[time_index-1];
-                        //     var split_from =   time_split_from[0] 
-                        //     html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+time_split_from+'--'+time_split[1]+'-'+time_split[2]+"</div>";
-                        // }else{
-                        //     html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div>";
-                        // }
-                        // //data_x_[event.point.x]
-                        // console.log(html0);
-                        // console.log(event.point.x);
-                        // $('#line_select_time').append(html0);
-                        
-                        //console.log(activity_weibo_url);
-                        // draw_content(data_x_[event.point.x]);
                     }
                 }
             }
@@ -721,6 +699,7 @@ function group_activity(data){
 function show_activity(data) {
 	var time_data = [23,3,4,55,22,6]
     // console.log(runtype);
+    point2weibo(0, data.activity_trend[0][0])
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
 
