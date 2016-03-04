@@ -263,23 +263,23 @@ function location_all(){
         // month_process(data.month_track, true);
         bind_map();
         function bind_map(){
-            $('#month_track').click(function(){
+            $('#month_track').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(data.month_track, true);
             });
-            $('#total_daily_ip_map').click(function(){
+            $('#total_daily_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(daily_map_data, false);
             });
-            $('#total_weekly_ip_map').click(function(){
+            $('#total_weekly_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(weekly_map_data, false);
             });
-            $('#span_daily_ip_map').click(function(){
+            $('#span_daily_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(span_daily_map_data, true);
             });
-            $('#span_weekly_ip_map').click(function(){
+            $('#span_weekly_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(span_weekly_map_data, true);
             });
@@ -289,13 +289,13 @@ function location_all(){
     $('#total_location_rank').append(html);
     bind_location_map();
     function bind_location_map(){
-        $('#daily_location_map').click(function(){
+        $('#daily_location_map').live('click',function(){
             month_process(daily_location_map_data, false);
         });
-        $('#weekly_location_map').click(function(){
+        $('#weekly_location_map').live('click',function(){
             month_process(weekly_location_map_data, false);
         });
-        $('#monthly_location_map').click(function(){
+        $('#monthly_location_map').live('click',function(){
             month_process(monthly_location_map_data, false);
         });
     }
