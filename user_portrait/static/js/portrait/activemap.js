@@ -74,7 +74,7 @@
                     marker.setTitle(geoname+addedlist[geoname]);
                     marker.setOffset(new BMap.Size(2,10));
                     map.addOverlay(marker);
-                    newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
+                    newgeo[geoname] = [fixpoint.lng.toFixed(2),fixpoint.lat.toFixed(2)];
                 }
                 else{
                     //alert("no such point!");
