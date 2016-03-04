@@ -94,6 +94,10 @@ function attention(data,UserID,UserName,texts){
                 x:'left',
                 y:'top'
             },
+              tooltip : {
+                  trigger: 'item',
+                  formatter: ' {b}'
+              },
             legend: {
                 x: 'right',
                 data:['用户','未入库','已入库']
@@ -101,7 +105,7 @@ function attention(data,UserID,UserName,texts){
             series : [
                 {
                     type:'force',
-                    name : "人物关系",
+                    //name : "人物关系",
                     ribbonType: false,
                     categories : [
                         {

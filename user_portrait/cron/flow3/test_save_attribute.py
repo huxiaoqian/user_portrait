@@ -15,7 +15,7 @@ from time_utils import ts2datetime, datetime2ts
 from global_config import R_BEGIN_TIME
 from global_utils import retweet_redis_dict, comment_redis_dict
 from global_utils import R_DICT
-from parameter import RUN_TYPE, RUN_TEST_TIMe
+from parameter import RUN_TYPE, RUN_TEST_TIME
 
 r_begin_ts = datetime2ts(R_BEGIN_TIME)
 
