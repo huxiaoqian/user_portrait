@@ -36,56 +36,53 @@ bind_social_mode_choose();
 function attention(data,UserID,UserName,texts){
     out_data = data['out_portrait_list'];
     in_data = data['in_portrait_list'];
-    console.log(in_data);
+    //console.log(out_data);
     var personal_url = '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
     nod['category'] = 0;
-    nod['name'] = UserName;
+    nod['name'] = UserName+'('+UserID+')';
+    nod['label'] = UserName;
     nod['value'] = 10;
     nodeContent.push(nod);
+    var linkline =[];
     for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
-            if(out_data[i][0]=='unknown'){
-              var nod_name_out = '未知';
+            if(out_data[i][0]=='None'){
+              var nod_name_out = '';
             }else{
               var nod_name_out = out_data[i][0];
             }
-            nod['name'] = nod_name_out;
+            nod['name'] = out_data[i][1] +'('+nod_name_out+')';
             nod['label'] = out_data[i][1];
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
+            var line ={};
+            line['source'] = out_data[i][1] +'('+nod_name_out+')';
+            line['target'] = UserName+'('+UserID+')';
+            line['weight'] = 1;
+            linkline.push(line);
     }
     for (var i=0;i<in_data.length;i++){
             nod = {};
             nod['category'] = 1;
-            if(out_data[i][0]=='unknown'){
-              var nod_name_in = '未知';
+            if(out_data[i][0]=='None'){
+              var nod_name_in = '';
             }else{
               var nod_name_in = in_data[i][0];
             }
-            nod['name'] = nod_name_in;
+            nod['name'] = in_data[i][1] +'('+nod_name_in+')';
             nod['label'] = in_data[i][1];
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
             nodeContent.push(nod);
-    }
-    var linkline =[];
-    for (i=0;i<out_data.length;i++){
-        var line ={};
-        line['source'] = out_data[i][0];
-        line['target'] = UserName;
-        line['weight'] = 1;
-        linkline.push(line);
-    }
-    for (i=0;i<in_data.length;i++){
-        var line ={};
-        line['source'] = in_data[i][0];
-        line['target'] = UserName;
-        line['weight'] = 1;
-        linkline.push(line);
+            var line ={};
+            line['source'] = in_data[i][1] +'('+nod_name_in+')';
+            line['target'] = UserName+'('+UserID+')';
+            line['weight'] = 1;
+            linkline.push(line);
     }
 	var myChart3 = echarts.init(document.getElementById('test1'));
 	var option = {
@@ -288,10 +285,15 @@ function draw_out_list(data){
     for(var i = 0; i<data.length;i++){
       var item = data[i];
       //item = replace_space(item);
-      //global_data[item[0]] = item; // make global data
-      var user_url = 'http://weibo.com/u/'+ item[0];
-      html += '<tr id=' + item[0] +'>';
-      html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
+      //global_data[item[0]] = item; // make global data\
+      var list_id = '';
+      console.log(item[0]);
+      if(item[0]!='None'){
+        list_id = item[0];
+      }else{list_id='';}
+      var user_url = 'http://weibo.com/u/'+ list_id;
+      html += '<tr id=' + list_id +'>';
+      html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ list_id +'</td>';
       html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
       html += '<td style="text-align:center" style="width:100px;">'+ item[2] +'</td>';
       html += '<td style="text-align:center" style="width:100px;">'+ item[3] +'</td>';
@@ -453,7 +455,7 @@ function bind_social_mode_choose(){
         $("#test0").empty();
         $("#field").empty();
         $("#topic").empty();
-        console.log(uid);
+        //console.log(uid);
       if (select_graph == 1){
           var test_html='转发情况 <hr style="margin-top:10px;margin-right:20px;" /> ';
         $("#test0").append(test_html);
