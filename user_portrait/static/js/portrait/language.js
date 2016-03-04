@@ -1,41 +1,27 @@
-ajax_method = 'GET';
-function call_sync_ajax_request(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
-  }
-
-
-$(function() {
-    $( '#dl-menu' ).dlmenu();
-  });
-$(".closeList").off("click").click(function(){
-    $("#float-wrap").addClass("hidden");
-    $("#more_topic").addClass("hidden");
-    $("#more_keyWords").addClass("hidden");
-    $("#more_hashtagWords").addClass("hidden");
-    return false;
-  });
-$("#showmore_keyWords").off("click").click(function(){
-    $("#float-wrap").removeClass("hidden");
-    $("#more_keyWords").removeClass("hidden");
-    return false;
-  });
-
-$("#showmore_hashtagWords").off("click").click(function(){
-        $("#float-wrap").removeClass("hidden");
-        $("#more_hashtagWords").removeClass("hidden");
+function bind_modal_click(){
+    $(".closeList").off("click").click(function(){
+        $("#float-wrap").addClass("hidden");
+        $("#more_topic").addClass("hidden");
+        $("#more_keyWords").addClass("hidden");
+        $("#more_hashtagWords").addClass("hidden");
         return false;
-    });
-$("#showmore_topic").off("click").click(function(){
+      });
+    $("#showmore_keyWords").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");
-        $("#more_topic").removeClass("hidden");
+        $("#more_keyWords").removeClass("hidden");
         return false;
+      });
+    $("#showmore_hashtagWords").off("click").click(function(){
+            $("#float-wrap").removeClass("hidden");
+            $("#more_hashtagWords").removeClass("hidden");
+            return false;
+        });
+    $("#showmore_topic").off("click").click(function(){
+            $("#float-wrap").removeClass("hidden");
+            $("#more_topic").removeClass("hidden");
+            return false;
     });
+}
 function show_conclusion(data){
   var html = '';
   html += '<span class="fleft" style="margin-right:10px;width:32px;height:32px;background-image:url(/static/img/warning.png);margin-top:5px;display:black;"></span>';
@@ -390,9 +376,17 @@ function show_results(data){
     }
     global_tag_vector.push(tag_vector[i]);
   }
-  }
-
-//var url = http://219.224.135.93:9040/index/personal/?uid=2074370833
+}
+function preference_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        type:'GET',
+        async:false,
+        dataType:'json',
+        success:callback,
+    });
+}
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
-call_sync_ajax_request(prefrence_url, ajax_method, show_results);
+preference_call_ajax_request(prefrence_url, show_results);
+bind_modal_click();
 

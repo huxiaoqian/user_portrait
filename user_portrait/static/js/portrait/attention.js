@@ -3,13 +3,7 @@
 }
 Attention.prototype = {   //获取数据，重新画表
   call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
+      person_call_ajax_request(url, callback);
   },
 Draw_attention:function(data){
   var texts = '';
@@ -28,15 +22,10 @@ Draw_attention:function(data){
 	 }	
   }
 }
-var Attention = new Attention();
-url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
-Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-bind_social_mode_choose();
 
 function attention(data,UserID,UserName,texts){
-    out_data = data['out_portrait_list'];
-    in_data = data['in_portrait_list'];
-    //console.log(out_data);
+    var out_data = data['out_portrait_list'];
+    var in_data = data['in_portrait_list'];
     var personal_url = '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
@@ -46,6 +35,7 @@ function attention(data,UserID,UserName,texts){
     nod['value'] = 10;
     nodeContent.push(nod);
     var linkline =[];
+    var rename = '';
     for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
@@ -54,13 +44,18 @@ function attention(data,UserID,UserName,texts){
             }else{
               var nod_name_out = out_data[i][0];
             }
-            nod['name'] = out_data[i][1] +'('+nod_name_out+')';
-            nod['label'] = out_data[i][1];
+            if(out_data[i][1]=='unknown'){
+              rename = '未知';
+            }else{
+              rename = out_data[i][1];
+            }
+            nod['name'] = rename +'('+nod_name_out+')';
+            nod['label'] = rename;
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
             var line ={};
-            line['source'] = out_data[i][1] +'('+nod_name_out+')';
+            line['source'] = nod['name'];
             line['target'] = UserName+'('+UserID+')';
             line['weight'] = 1;
             linkline.push(line);
@@ -68,18 +63,24 @@ function attention(data,UserID,UserName,texts){
     for (var i=0;i<in_data.length;i++){
             nod = {};
             nod['category'] = 1;
-            if(out_data[i][0]=='None'){
+            if(in_data[i][0]=='None'){
               var nod_name_in = '';
             }else{
               var nod_name_in = in_data[i][0];
             }
-            nod['name'] = in_data[i][1] +'('+nod_name_in+')';
-            nod['label'] = in_data[i][1];
+            if(in_data[i][1]=='unknown'){
+              rename = '未知';
+            }else{
+              rename = in_data[i][1];
+            }
+            nod['name'] = rename +'('+nod_name_out+')';
+            //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
+            nod['label'] = rename;
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
             nodeContent.push(nod);
             var line ={};
-            line['source'] = in_data[i][1] +'('+nod_name_in+')';
+            line['source'] = nod['name'];
             line['target'] = UserName+'('+UserID+')';
             line['weight'] = 1;
             linkline.push(line);
@@ -496,4 +497,10 @@ function bind_social_mode_choose(){
       }      
     });
 }
+function social_load(){
+    var url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
+    Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+    bind_social_mode_choose();
+}
+var Attention = new Attention();
 
