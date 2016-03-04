@@ -439,11 +439,14 @@ function Draw_get_top_weibo(data,div_name){
         var repost_tree_link = 'http://219.224.135.60:8080/show_graph/' + mid;
         if (geo==''){
            geo = '未知';
+        }else{
+          var geo_s = geo.split('&');
+          geo_s = geo_s.join(' ');
         }
         var user_link = 'http://weibo.com/u/' + uid;
         html += '<li class="item">';
         html += '<div class="weibo_detail" style="width:1000px">';
-        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
+        html += '<p style="text-align:left;margin-bottom:0;">' +s + '、昵称:<a class="undlin" target="_blank" href="' + user_link  + '">' + name + '</a>(' + geo_s + ')&nbsp;&nbsp;发布内容：&nbsp;&nbsp;' + text + '</p>';
         html += '<div class="weibo_info"style="width:100%">';
         html += '<div class="weibo_pz">';
         html += '<div id="topweibo_mid" class="hidden">'+mid+'</div>';
