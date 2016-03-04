@@ -8,6 +8,7 @@ reload(sys)
 sys.path.append('../../')
 from global_utils import R_RECOMMENTATION as r
 from parameter import WEIBO_API_INPUT_TYPE
+from time_utils import ts2datetime, datetime2ts
 
 def scan_compute_redis():
     hash_name = 'compute'

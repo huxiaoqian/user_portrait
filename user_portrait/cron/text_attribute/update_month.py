@@ -19,9 +19,11 @@ from character.test_ch_topic import classify_topic
 
 sys.path.append('../../')
 from global_utils import update_month_redis, UPDATE_MONTH_REDIS_KEY
+from global_utils import es_user_portrait, portrait_index_name, portrait_index_type
 from parameter import CHARACTER_TIME_GAP, DAY, WEIBO_API_INPUT_TYPE
 from parameter import RUN_TYPE, RUN_TEST_TIME
 from time_utils import ts2datetime, datetime2ts
+
 
 def deal_bulk_action(user_info_list, fansnum_max):
     start_ts = time.time()
@@ -37,8 +39,8 @@ def deal_bulk_action(user_info_list, fansnum_max):
     domain_results_dict = domain_results[0]
     domain_results_label = domain_results[1]
     #get user character
-    character_end_time = ts2datetime(character_start_ts)
-    character_start_time = ts2datetime(character_start_ts - DAY * CHARACTER_TIME_GAP)
+    character_start_time = ts2datetime(character_start_ts)
+    character_end_time = ts2datetime(character_start_ts + DAY * CHARACTER_TIME_GAP - DAY)
     character_sentiment_result_dict = classify_sentiment(uid_list, user_weibo_dict, character_start_time, character_end_time, WEIBO_API_INPUT_TYPE)
     character_text_result_dict = classify_topic(uid_list, user_keywords_dict)
     bulk_action = []
@@ -68,7 +70,7 @@ def deal_bulk_action(user_info_list, fansnum_max):
     es_user_portrait.bulk(bulk_action, index=portrait_index_name, doc_type=portrait_index_type)
     end_ts = time.time()
     #log_should_delete
-    print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
+    #print '%s sec count %s' % (end_ts - start_ts, len(uid_list))
     #log_should_delete
 
 

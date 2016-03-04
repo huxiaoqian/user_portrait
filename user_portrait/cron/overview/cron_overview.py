@@ -20,35 +20,15 @@ behavior_field = ['total_status', 'keywords_top', 'activity_geo', 'hashtag_top',
 user_field = ['domain_top', 'domain_top_user']
 compute_field = ['recomment_in_count', 'recomment_out', 'compute_count']
 
-# index_name = 'user_portrait'
-# index_type = 'user'
-portrait_index_name = 'user_portrait_1222'
 
 #there have to add domain user top rank
 def get_domain_top_user(domain_top):
     result = {}
     domain_user = {}
-    #test user list
-    """
-    test_user_list = [['2803301701', '1639498782', '2656274875', '1402977920', '3114175427'], \
-                      ['3575186384', '1316683401', '1894603174', '1641542052', '1068248497'], \
-                      ['1729736051', '1396715380', '2377610962', '1828183230', '2718018210'], \
-                      ['1250748474', '3270699555', '1417037145', '1193111400', '1403915120'], \
-                      ['1671342103', '1255849511', '1647497355', '1989660417', '1189729754'], \
-                      ['1182391231', '1670071920', '1689618340', '1494850741', '1708942053'],\
-                      ['3400918220', '2685504141', '2056115850', '1768001547', '3317008062'],\
-                      ['2001627641', '1773489534', '2458194884', '1822155333', '1799201635'],\
-                      ['1709157165', '2074370833', '2167425990', '3204839810', '3690518992'],\
-                      ['1664065962', '3299094722', '1942531237', '2799434700', '1784404677'],\
-                      ['1218353337', '1761179351', '3482911112', '1220291284', '2504433601'],\
-                      ['3682473195', '1627673351', '1779065471', '3316144700', '1896701827']]
-    """
     count = 0
     k = 5
     for item in domain_top:
         domain = item[0]
-        #test
-        #user_list = test_user_list[count]
         result[domain] = []
         query_body = {
             'query':{
@@ -77,27 +57,10 @@ def get_domain_top_user(domain_top):
 def get_topic_top_user(topic_top):
     result = {}
     topic_user = {}
-    #test user list
-    """
-    test_user_list = [['1499104401', '1265965213', '3270699555', '2073915493', '1686474312'],\
-                      ['2803301701', '2105426467', '1665372775', '3716504593', '2892376557'],\
-                      ['1457530250', '1698513182', '2793591492', '2218894100', '1737961042'],\
-                      ['1656818110', '1660127070', '1890124610', '1182391230', '1243861100'],\
-                      ['1680430844', '2998045524', '2202896360', '1639498782', '3494698730'],\
-                      ['2587093162', '1677675054', '1871767009', '1193111400', '1672418622'],\
-                      ['1730726640', '1752502540', '1868725480', '1262486750', '1235733080'],\
-                      ['1250041100', '2275231150', '1268642530', '1658606270', '1857599860'],\
-                      ['1929496477', '2167425990', '1164667670', '2417139911', '1708853044'],\
-                      ['1993292930', '1645823930', '1890926610', '1641561810', '2023833990'],\
-                      ['2005471590', '1233628160', '2074684140', '1396715380', '1236762250'],\
-                      ['1423592890', '2612799560', '1926127090', '2684951180', '1760607220']]
-    """
     count = 0
     k = 5
     for item in topic_top:
         topic = item[0]
-        #test
-        #user_list = test_user_list[count]
         result[topic] = []
         query_body = {
             'query':{
@@ -162,7 +125,6 @@ def get_scan_results():
                 scan_re = s_re.next()['_source']
                 # gender ratio count
                 portrait_uid_list.append(scan_re['uid'])
-                #print 'portrait_uid_list:', len(portrait_uid_list)
                 try:
                     gender_result[str(scan_re['gender'])] += 1
                 except:
@@ -335,25 +297,15 @@ def get_scan_results():
                 if domain_result:
                     sort_domain = sorted(domain_result.items(), key=lambda x:x[1], reverse=True)
                     domain_top = sort_domain[:20]
-                    #test:
-                    #domain_top = [('education',50), ('art', 40), ('lawyer', 30), ('student', 20), ('media', 10), ('oversea',1)]
                 else:
                     domain_top = {}
-                #print 'domain top:', domain_top
                 result_dict['domain_top'] = json.dumps(domain_top)
-                #test need to add domain top user
-                #domain_top = [[u'媒体',1],[u'法律人士',1], [u'政府机构人士',1], [u'活跃人士',1], [u'媒体人士',1], [u'商业人士',1],\
-                #              [u'高校微博', 1], [u'境内机构', 1], [u'境外机构', 1], [u'民间组织',1], [u'草根',1], [u'其他', 1]]
                 result_dict['domain_top_user'] = json.dumps(get_domain_top_user(domain_top))
-                #test need to add topic user
-                #topic_top = [[u'军事', 1], [u'政治',1], [u'体育',1], [u'计算机',1], [u'民生',1], [u'生活',1],\
-                #              [u'娱乐',1], [u'健康',1], [u'交通',1], [u'经济',1], [u'教育',1], [u'自然',1]]
                 result_dict['topic_top_user'] = json.dumps(get_topic_top_user(topic_top))
                 return result_dict 
             except Exception, r:
                 print Exception, r
                 return result_dict
-        #print 'portrait_uid_list:', len(portrait_uid_list)
         activity_result = es.mget(index='20130907', doc_type='bci', body={'ids':portrait_uid_list})['docs']
         for activity_item in activity_result:
             if activity_item['found']:
@@ -575,7 +527,7 @@ def get_scan_results_v2():
 # origin retweeted number top 5 user and mid
 def get_retweeted_top():
     top_results = []
-    k = 10000
+    k = 100000
     count = 0
     #run_type
     if RUN_TYPE == 1:
@@ -851,8 +803,9 @@ def save_result(results):
 def compute_overview():
     results = {}
     results['user_count'] = get_user_count()
-    #scan_result = get_scan_results_v2()
-    scan_result = get_scan_results()
+    scan_result = get_scan_results_v2()
+    #test
+    #scan_result = get_scan_results()
     results = dict(results, **scan_result)
     retweeted_top = get_retweeted_top()
     results = dict(results, **retweeted_top)
@@ -870,7 +823,6 @@ def compute_overview():
     operate_result = get_operate_information()
     results = dict(results, **operate_result)
     save_result(results)
-    
 
 
 if __name__=='__main__':

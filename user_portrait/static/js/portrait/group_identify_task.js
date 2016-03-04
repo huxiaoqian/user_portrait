@@ -359,20 +359,25 @@ function group_analyze_confirm_button(){
   	    group_confirm_uids.push($(this).parent().prev().prev().prev().prev().prev().text());
   	});
   	//console.log(group_confirm_uids);
-  	var group_ajax_url = '/detect/add_detect2analysis/';
-  	var group_url = '/index/group_result/';
-  	var group_name = $('#group_name0').text();
-  	//console.log(group_name);
-  	var job = {"task_name":group_name, "uid_list":group_confirm_uids};
-  	//console.log(job);
-  	$.ajax({
-  	    type:'POST',
-  	    url: group_ajax_url,
-  	    contentType:"application/json",
-  	    data: JSON.stringify(job),
-  	    dataType: "json",
-  	    success: callback
-  	});
+    if (group_confirm_uids.length > 0){
+        var group_ajax_url = '/detect/add_detect2analysis/';
+        var group_url = '/index/group_result/';
+        var group_name = $('#group_name0').text();
+        //console.log(group_name);
+        var job = {"task_name":group_name, "uid_list":group_confirm_uids};
+        //console.log(job);
+        $.ajax({
+            type:'POST',
+            url: group_ajax_url,
+            contentType:"application/json",
+            data: JSON.stringify(job),
+            dataType: "json",
+            success: callback
+        });
+    }
+    else{
+        alert('任务提交需至少包含一名用户！');
+    }
 }
 
 function callback(data){
