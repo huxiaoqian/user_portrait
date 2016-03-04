@@ -821,8 +821,9 @@ function draw_keyword(data){
     //   keyword.push(word);
     // }
     //最大是20
-    console.log(data['hashtag_top'].length);
-    for (var i=0;i<20;i++){
+    var word_num = Math.min(20, data.length);
+    //console.log(data['hashtag_top'].length);
+    for (var i=0;i<word_num;i++){
       var word = {};
       word['name'] = data['hashtag_top'][i][0];
       word['value'] =data['hashtag_top'][i][1]*10;
