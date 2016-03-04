@@ -85,6 +85,22 @@ def domain_classfiy(uid_list,uid_weibo):#领域分类主函数
     re_label：推荐标签字典
     {uid1:label,uid2:label2...}
     '''
+    if not len(uid_weibo) and len(uid_list):
+        domain = dict()
+        r_domain = dict()
+        for uid in uid_list:
+            domain[uid] = ['other']
+            r_domain[uid] = ['other']
+        return domain,r_domain
+    elif len(uid_weibo) and not len(uid_list):
+        uid_list = uid_weibo.keys()
+    elif not len(uid_weibo) and not len(uid_list):
+        domain = dict()
+        r_domain = dict()
+        return domain,r_domain
+    else:
+        pass
+    
     users = get_user(uid_list)
     frineds = get_friends(uid_list)
 
@@ -117,7 +133,7 @@ def domain_classfiy(uid_list,uid_weibo):#领域分类主函数
             field2 = user_domain_classifier_v2(r)
         result_label.append(field2)
 
-        if uid_weibo.has_key(k):
+        if uid_weibo.has_key(k) and len(uid_weibo[k]):
             field_dict,result = domain_classfiy_by_text({k: uid_weibo[k]})#根据用户文本进行分类
             field3 = field_dict[k]
         else:
@@ -136,9 +152,11 @@ def domain_classfiy(uid_list,uid_weibo):#领域分类主函数
     return domain,r_domain
 
 if __name__ == '__main__':
-    uid_weibo = input_data()
-    domain,r_domain = domain_classfiy(uid_weibo)
+    uid_list,uid_weibo = input_data()
+    uid_weibo = dict()
+    domain,r_domain = domain_classfiy(uid_list,uid_weibo)
     print domain
+    #print r_domain
 
 
     
