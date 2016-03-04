@@ -163,6 +163,9 @@
  
 </div>
 <div id="wrapper" style="padding-left:0px; overflow:visible">
+        <span  type="button" id="compare_button" title="选择2至3个用户对比" style="float:right;font-size:16px;cursor: pointer" onclick="diy_button();">
+            <u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u>
+        </span>
         <div id='pager' style='text-align:right'></div>
         <div id='tabs' style='width:1000px;'>
             <div id='txt'>
@@ -270,9 +273,6 @@
                 }
             }
         });
-        var html = '<span  type="button" id="compare_button" title="选择2至3个用户对比" style="font-size:16px;cursor: pointer" onclick="diy_button();"><u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u></span>';
-        $('#pager').append(html);
-        console.log('hhh');
         $('.caroufredsel_wrapper').css('height', '700px');
         $('#txt').css('height', '700px');
         $('#photo').css('height', '700px');
