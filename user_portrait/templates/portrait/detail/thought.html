@@ -111,9 +111,11 @@ Thought.prototype = {   //获取数据，重新画表
             emotions(items);
             var time_init = new Date(items['time_list'][0]);
             var times_init = time_init.getTime().toString().substr(0,10);
-            //console.log(times_init);    
+            //console .log(times_init);    
             var html0 = '';
+            var index = $('input[name="time-type"]:checked').val();
             var url_content = '/attribute/sentiment_weibo/?uid='+uid+'&start_ts='+times_init+'&time_type='+index+'&sentiment=0';
+            //console.log(url_content);
             call_ajax_request(url_content,th_draw_content);
             $('#select_time').empty();  
             html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+items['time_list'][0]+"</div><br><div>当前选择情绪：</div><div style='color:brown;'>中性</div>";
@@ -143,9 +145,13 @@ function th_draw_content(data){
     var html = '';
     $('#thought_weibo_text').empty();
     $('#select_time').empty();
-    if(data==''){
+    //console.log(data);
+   // console.log(data.length);
+    if(data.length==0){
+        console.log('??');
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
+        console.log('!!');
         for(i=0;i<data.length;i++){
             //console.log(data[i].text);
             html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i]['text']+"</span></div>";

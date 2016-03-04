@@ -818,6 +818,7 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			   		};
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
 	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name='+task_name+'&ts=' + mood_click_time;
+                    //console.log(mood_line_url);
                     call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
                     call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
                     console.log(mood_line_url);
