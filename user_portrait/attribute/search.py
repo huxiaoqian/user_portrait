@@ -2053,7 +2053,7 @@ def search_attribute_portrait(uid):
         else:
             print 'es_activess_rank error'
             results['activeness_rank'] = 0
-    if results['influence']:
+    if results['influence'] or results['influence'] == 0:
         query_body = {
                 'query':{
                     'range':{
