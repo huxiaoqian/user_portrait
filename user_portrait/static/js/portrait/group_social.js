@@ -113,10 +113,6 @@ function g_page_group_weibo1(start_row,end_row,data,div_name,sub_div_name){
     $("#"+div_name+" #group_weibo_text").append(html);
     //$("#"+sub_div_name).empty();
 }
-$('#weiboTab li a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-})
 
 function Draw_group(data){
     $('#in_group').empty();
@@ -687,6 +683,10 @@ function show_conclusion(data){
 }
 
 function social_click(){
+    $('#weiboTab li a').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
    //  $('a[id^="group_change_weibo"]').click(function(){
    //  var uid1 = $(this).parent().prev().prev().text();
    //  var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
@@ -726,10 +726,14 @@ function draw_social(data){
 	//draw_more_out_table(data);
 }
 function social_load(){
+    if (!global_social_flag){
+        var social_url = '/group/show_group_result/?task_name='+name+'&module=social';
+        g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
+        //var group_weibo_url = '/group/social_out_content/?uid1=3270561561&uid2=2656274875';
+        //g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo1);
+        global_social_flag = true;
+    }
 }
 
-var social_url = '/group/show_group_result/?task_name='+name+'&module=social';
 var g_social = new g_social();
-var group_weibo_url = '/group/social_out_content/?uid1=3270561561&uid2=2656274875';
-g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
-//g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo1);
+var global_social_flag = false;
