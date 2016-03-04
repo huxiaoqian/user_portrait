@@ -1,4 +1,3 @@
-
 function g_basic(){
   this.ajax_method = 'GET';
 }
@@ -20,7 +19,6 @@ function draw_basic(data){
 	draw_tag(data);
 	//draw_tag({'user_tag':{'好':13,'中':21,'坏':9}});
 }
-g_basic = new g_basic();
 function draw_sex(data){
 	var mychart1 =  echarts.init(document.getElementById('group_sex')); 
 	var option = {
@@ -235,5 +233,7 @@ function draw_tag(data){
 }
 //var basic_name=document.getElementById('').text();
 //var basic_name=$("#stickynote").text();
+var g_basic = new g_basic();
 var basic_url='/group/show_group_result/?task_name='+name;
 g_basic.call_sync_ajax_request(basic_url,g_basic.ajax_method,draw_basic);
+

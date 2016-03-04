@@ -219,8 +219,13 @@ function Draw_topic(data, radar_div, motal_div){
 function show_results(data){
   show_conclusion(conclusion);
 }
-
+function preference_load(){
+    if (!global_preference_flag){
+        var prefrence_url = '/group/show_group_result/?task_name='+ name +'&module=preference';
+        Show_pref.call_sync_ajax_request(prefrence_url, Show_pref.ajax_method, Show_pref.Draw_table);
+        global_preference_flag = true;
+    }
+}
 var Show_pref = new Show_pref();
-var prefrence_url = '/group/show_group_result/?task_name='+ name +'&module=preference';
-Show_pref.call_sync_ajax_request(prefrence_url, Show_pref.ajax_method, Show_pref.Draw_table);
+var global_preference_flag = false;
 

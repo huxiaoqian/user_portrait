@@ -1,4 +1,4 @@
-ajax_method = 'GET';
+var ajax_method = 'GET';
 function call_sync_ajax_request(url, method, callback){
     $.ajax({
       url: url,
@@ -35,7 +35,6 @@ function Draw_activity(data){
                 fontSize: '14px'
             }
         },
-        
     	lang: {
             printChart: "打印",
             downloadJPEG: "下载JPEG 图片",
@@ -84,8 +83,6 @@ function Draw_activity(data){
                             html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div>";
                         }
                         //data_x_[event.point.x]
-                        console.log(html0);
-                        console.log(event.point.x);
                         $('#line_select_time').append(html0);
                         
                         //console.log(activity_weibo_url);
@@ -292,7 +289,6 @@ function Draw_top_location(data){
 	//console.log(bar_data_2);
 	bar_data_x = bar_data_2;
 	
-		console.log(timeline_data.length);
     var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
     var option = {
         timeline:{
@@ -706,6 +702,9 @@ function show_activity_track(data){
     var html = '';
     html += '<select id="select_track_weibo_user" style="max-width:150px;">';
     for (var i = 0; i < data.length; i++) {
+        if (data[i][1] == 'unknown'){
+            data[i][1] = '未知';
+        }
         html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
     }
     html += '</select>';
@@ -746,8 +745,8 @@ function track_init(){
         var map = BMapExt.getMap();
         var container = BMapExt.getEchartsContainer();
         var startPoint = {
-            x: 85.114129,
-            y: 50.550339
+            x: 105.114129,
+            y: 35.550339
         };
 
         var point = new BMap.Point(startPoint.x, startPoint.y);
@@ -931,11 +930,14 @@ function month_process(data){
     }
 );
 }
-
-
-var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
-call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
-var group_user_url =  "/group/show_group_list/?task_name=" + name;
-call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
-// var activity_data = []
-
+var global_activity_flag = false;
+function activity_load(){
+    if (!global_activity_flag){
+        var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
+        call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
+        var group_user_url =  "/group/show_group_list/?task_name=" + name;
+        call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
+        global_activity_flag = true;
+    }
+}
+//activity_load();
