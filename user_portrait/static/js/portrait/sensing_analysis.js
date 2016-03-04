@@ -1,3 +1,14 @@
+function ajax_with_loading(url, callback){
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      beforeSend:function(){$('#sensing_analysis').showLoading();},
+      async: true,
+      success:callback,
+      complete:function(){$('#sensing_analysis').hideLoading();}
+    });
+}
 function call_sync_ajax_request(url, callback){
     $.ajax({
       url: url,
@@ -275,7 +286,7 @@ function Draw_sensi_weibo (data){
 }
 
 function Draw_group_weibo(data, div_name, sub_div_name){
-    console.log(data.length);
+    //console.log(data.length);
     var page_num = 5;
     $('#' + sub_div_name).css('height', 'auto');
     if (data.length < page_num) {
@@ -336,13 +347,13 @@ function Draw_group_weibo(data, div_name, sub_div_name){
 
     $("#"+div_name+" #pageGro .pageUp").live("click", function(){
         if(pageCount > 5){
-            console.log(pageCount);
+            //console.log(pageCount);
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
-            console.log(pageNum);
+            //console.log(pageNum);
             pageUp(pageNum,pageCount, div_name);
         }else{
             var index = $("#"+div_name+" #pageGro ul li.on").index();
-            console.log(index);
+            //console.log(index);
             if(index > 0){
                 $("#"+div_name+" #pageGro li").removeClass("on");
                 $("#"+div_name+" #pageGro ul li").eq(index-1).addClass("on");
@@ -358,9 +369,9 @@ function Draw_group_weibo(data, div_name, sub_div_name){
     });
     
 
-    $("#" + div_name + " #pageGro .pageDown").live("click", function(){
+    $("#" + div_name + " #pageGro .pageDown").bind("click", function(){
         if(pageCount > 5){
-            console.log(data[0][5]);
+            //console.log(data[0][5]);
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
             console.log(pageNum);
             //console.log(pageCount);
@@ -504,7 +515,7 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 	        show : true,
 	        formatter:  function (params) {
 	            var res = params[0].name;
-                console.log(res);
+                //console.log(res);
 	            for (var i = 0, l = params.length-1; i < l; i++) {
 	                res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
                     // console.log(params[i].seriesName);
@@ -635,7 +646,7 @@ function draw_sensi_line_charts(data, div_name, legend_data){
 				    //var data=[['人民日报',1,2,'条结论这里是一条结论这里里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京',param.name],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0]]
 				    var sensi_line_url = '/social_sensing/get_text_detail/?task_name=' + task_name + '&ts=' + sensi_click_time + '&text_type=' + sensi_index;
                     var sensi_line_event_url = '/social_sensing/get_clustering_topic/?task_name='+ task_name +'&ts=' + sensi_click_time;
-                    console.log(sensi_line_url);
+                    //console.log(sensi_line_url);
                     call_sync_ajax_request(sensi_line_event_url, Draw_sensi_related_event);
                     call_sync_ajax_request(sensi_line_url, Draw_sensi_weibo);
 
@@ -827,10 +838,10 @@ function draw_mood_line_charts(data, div_name, legend_data){
 			   		}else if(param.seriesIndex == 2){
 			   			index_type = 3;
 			   		};
-                    console.log(param.seriesIndex);
+                    //console.log(param.seriesIndex);
 				    var mood_line_url = '/social_sensing/get_text_detail/?task_name='+ task_name + '&ts=' + mood_click_time +'&text_type=' + index_type; 
 	   			    var mood_line_event_url = '/social_sensing/get_clustering_topic/?task_name='+task_name+'&ts=' + mood_click_time;
-                    console.log(mood_line_url);
+                    //console.log(mood_line_url);
                     call_sync_ajax_request(mood_line_event_url, Draw_mood_related_event);
                     call_sync_ajax_request(mood_line_url, Draw_mood_weibo);
                     //console.log(mood_line_url);
@@ -1314,4 +1325,4 @@ $('#sensing_task_name').append(task_name);
 var sensing_url = '';
 sensing_url += '/social_sensing/get_warning_detail/?task_name='+task_name+'&keywords='+keywords+'&ts='+ts;
 //console.log(sensing_url);
-call_sync_ajax_request(sensing_url, social_sensing_all);
+ajax_with_loading(sensing_url, social_sensing_all);
