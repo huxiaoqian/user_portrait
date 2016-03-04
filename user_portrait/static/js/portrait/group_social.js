@@ -165,12 +165,13 @@ function draw_relation_net(data,name,symbols){
         var content1 = {};
         content1['category'] = 1;
         if(data[name][s]['3']=='unknown'){
-            content1['name'] = '未知\n'+'('+data[name][s]['0']+')';
+            //content1['name'] = '未知\n'+'('+data[name][s]['0']+')';
             content1['label'] = '未知';
         }else{
-            content1['name'] = data[name][s]['3']+'\n('+data[name][s]['0']+')';
+            //content1['name'] = data[name][s]['3']+'\n('+data[name][s]['0']+')';
             content1['label'] = data[name][s]['3'];
         };
+        content1['name'] = data[name][s]['0'];
         content1['id'] = data[name][s]['0'];
         content1['value'] = 7;
         content1['draggable'] = true;
@@ -179,13 +180,14 @@ function draw_relation_net(data,name,symbols){
         var content2 = {};
         content2['category'] = 1;
         if(data[name][s]['4']=='unknown'){
-            content2['name'] = '未知'+'\n('+data[name][s]['1']+')';
+            //content2['name'] = '未知'+'\n('+data[name][s]['1']+')';
             content2['label'] = '未知';
         }else{
-            content2['name'] = data[name][s]['4']+'\n('+data[name][s]['1']+')';
+            //content2['name'] = data[name][s]['4']+'\n('+data[name][s]['1']+')';
             content2['label'] = data[name][s]['4'];
         };
         //console.log('name!2!',content['name']);
+        content2['name'] = data[name][s]['1'];
         content2['id'] = data[name][s]['1'];
         content2['value'] = 7;
         content2['draggable'] = true;
@@ -211,7 +213,7 @@ function draw_relation_net(data,name,symbols){
     var option = {
     tooltip : {
         trigger: 'item',
-        formatter: '{a} : {b}'
+        formatter: '{b}'
     },
     toolbox: {
         show : true,
@@ -314,12 +316,13 @@ function draw_relation_out_net(data,name,symbols){
         var content1 = {};
         content1['category'] = 1;
         if(data[name][s]['5']=='unknown'){
-            content1['name'] = '未知\n'+'('+data[name][s]['1']+')';
+            //content1['name'] = '未知\n'+'('+data[name][s]['1']+')';
             content1['label'] = '未知';
         }else{
-            content1['name'] = data[name][s]['5']+'\n('+data[name][s]['1']+')';
+            //content1['name'] = data[name][s]['5']+'\n('+data[name][s]['1']+')';
             content1['label'] = data[name][s]['5'];
         };
+        content1['name'] = data[name][s]['1'];
         content1['id'] = data[name][s]['1'];
         content1['value'] = data[name][s]['3']/10;
         content1['draggable'] = true;
@@ -328,13 +331,13 @@ function draw_relation_out_net(data,name,symbols){
 
         content2['category'] = 0;
         if(data[name][s]['4']=='unknown'){
-            content2['name'] = '未知\n'+'('+data[name][s]['0']+')';
+         //   content2['name'] = '未知\n'+'('+data[name][s]['0']+')';
             content2['label'] = '未知';
         }else{
-            content2['name'] = data[name][s]['4']+'\n('+data[name][s]['0']+')';
+        //    content2['name'] = data[name][s]['4']+'\n('+data[name][s]['0']+')';
             content2['label'] = data[name][s]['4'];  
         };
-        //content['name'] = data[name][s]['4'];
+        content2['name'] = data[name][s]['0'];
         content2['id'] = data[name][s]['0'];     
         //content['value'] = data[name][s]['3'];
         content2['draggable'] = true;
@@ -368,7 +371,7 @@ function draw_relation_out_net(data,name,symbols){
     var option = {
     tooltip : {
         trigger: 'item',
-        formatter: '{a} : {b}'
+        formatter: '{b}'
     },
     toolbox: {
         show : true,
@@ -473,7 +476,7 @@ function draw_relation_out_net(data,name,symbols){
 function draw_in_table(data){
     $('#group_in_table').empty();
     var html = '';
-    if(data[0]==undefined){
+    if(data['social_in_record'][0]==undefined){
         html = '暂无数据';
     }else{
     var s = '';
@@ -512,7 +515,7 @@ function draw_out_table(data){
     $('#group_out_table').empty();
     var s = '';
     var html = '';
-    if(data[0]==undefined){
+    if(data['social_out_record'][0]==undefined){
         html = '暂无数据';
     }else{    
     html = '<table id="group_out_table_body" class="table table-bordered table-striped table-condensed datatable" >';
