@@ -94,6 +94,7 @@ function week_chart(trend_data){
     if (global_time_type == 'day'){
         for(i=0;i<trend.length;i++){
             var time = getDate(pre_time+trend[i][0]);
+            //console.log(pre_time);
             var count = trend[i][1];
             var date_zh =getYearDate(pre_time+trend[i][0]);
             data_time.push(time);
@@ -102,9 +103,11 @@ function week_chart(trend_data){
         }
         $('#time_zh').html('00:00-00:30');
         $('#date_zh').html(date_zhang[0]);
-        var dateStr = getFullDate(pre_time);
+        var dateStr = getFullDate(pre_time+trend[0][0]);
         var ts = get_unix_time(dateStr);
+        //console.log('ts',ts);
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
+        //console.log(url);
         person_call_ajax_request(url, draw_content); // draw_weibo
     }
     else{
@@ -121,6 +124,7 @@ function week_chart(trend_data){
         var dateStr = getFullDate(trend[0][0]);
         var ts = get_unix_time(dateStr);
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
+        //console.log(url);
         person_call_ajax_request(url, draw_content); // draw_weibo
     }
 	//Draw_trend:
@@ -202,9 +206,11 @@ function week_chart(trend_data){
 }
 //微博文本默认数据
 function point2weibo(xnum, ts){
+    //console.log(xnum);
     var delta = '';
     if (global_time_type == 'day'){
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+(pre_time+ts[0]);
+        //console.log(url);
         person_call_ajax_request(url, draw_content); //draw weibo
 
         var a = Math.floor(xnum / 2);
