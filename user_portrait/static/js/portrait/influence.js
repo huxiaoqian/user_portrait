@@ -150,7 +150,9 @@ Draw_pie_all0:function(data){
   Draw_basic_influence:function(data){
     $('#influence_conclusion_c').empty();
     var html='';
-    html += '该用户<span style="color:red">'+data[0][0]+'</span>。';
+    if(data[0][0] != ''){
+      html += '该用户<span style="color:red">'+data[0][0]+'</span>。';
+    }
     if(data[0][1] != ''){
       //html += data[0][1]+'，'+data[0][2]+'，';
       html += '<span style="color:red">'+data[0][1]+'</span>';
@@ -224,7 +226,7 @@ Draw_pie_all0:function(data){
     var tag_vector = []
     tag_vector.push('影响力类型');
     if (data == ''){
-        tag_vector.push('无');
+        tag_vector.push('暂无数据');
     }
     else{
         tag_vector.push(data);
@@ -437,6 +439,9 @@ function Draw_get_top_weibo(data,div_name){
         var mid = weibo[0];
         var uid = weibo[9];
         var name = weibo[10];
+        if(name == 'unknown'){
+          name = '未知';
+        };
         var date = weibo[5];
         var text = weibo[3];
         var geo = weibo[4];
@@ -554,6 +559,7 @@ var basic_influence_url = '/attribute/current_influence_comment/?uid='+parent.pe
 Influence.call_sync_ajax_request(basic_influence_url, Influence.ajax_method, Influence.Draw_basic_influence);
 
 var user_influence_detail_url = '/attribute/user_influence_detail/?uid='+parent.personalData.uid+'&date='+date_str;
+console.log(user_influence_detail_url);
 Influence.call_sync_ajax_request(user_influence_detail_url, Influence.ajax_method, Influence.Draw_user_influence_detail);
 
 
@@ -563,6 +569,7 @@ var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+pa
 Influence.call_sync_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_all_influenced_users_style1);
 
 var get_top_weibo_url_style0 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
+
 Influence.call_sync_ajax_request(get_top_weibo_url_style0, Influence.ajax_method, Influence.Draw_get_top_weibo1);
 var get_top_weibo_url_style1 = '/attribute/get_top_weibo/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1';
 Influence.call_sync_ajax_request(get_top_weibo_url_style1, Influence.ajax_method, Influence.Draw_get_top_weibo2);
