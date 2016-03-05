@@ -23,6 +23,7 @@ Search_weibo.prototype = {
       user_lable_html = '';
       user_lable_html += '<table id="" class="table table-striped table-bordered bootstrap-datatable datatype responsive">';
       user_lable_html += '<thead><tr><th class="center" style="text-align:center">用户ID</th>';
+      //user_lable_html += '<th class="center" style="text-align:center">昵称</th>';
       user_lable_html += '<th class="center" style="text-align:center">用户标签</th>';
       user_lable_html += '<th class="center" style="text-align:center">全选<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()"></th>';
       user_lable_html += '</tr></thead>';
@@ -30,6 +31,7 @@ Search_weibo.prototype = {
       for (key in data){
        user_lable_html += '<tr>';
        user_lable_html += '<th class="center" style="text-align:center"><a target="_blank" href="/index/personal/?uid=' + key + '">' + key +'</a></th>'; 
+       //user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
        user_lable_html += '<th class="center" style="text-align:center">' + data[key] + '</th>';
        user_lable_html += '<th class="center" style="text-align:center"><input name="in_status" class="in_status" type="checkbox" value="' + key + '"/></th>';
        user_lable_html += '</tr>';   
@@ -298,10 +300,11 @@ function Show_tag(data){
       for(var i = 0; i < data.length; i++){
         html += '<div class="col-lg-3" >';
         html += '<input type="checkbox" class="inline-checkbox" value="option1">';
-        html += '<span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="'+ data[i] +'">'+ data[i] +'</span>';
+        html += '<span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="'+ data[i] +'">'+ data[i] +' *</span>';
         html += '<input type="text" class="form-control" style="width:40%; display:inline;height:25px;margin-left:7px" disabled>';
         html += '</div>';
       }
+      html +='<div style="font-size:12px;line-height:28px">注：带*表明此属性为自定义属性</div>'
       $('#tag').append(html);
     }
 }
@@ -334,13 +337,13 @@ function add_group_tag(){
 
 $('.label-success').click(function(){
     var url = get_choose_data(uid);
-    console.log(url);
+    //console.log(url);
     if(url == ''){
         return false;
     }
     else{
-    //Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_table);
-    //Search_weibo.Draw_picture(Search_weibo.data);
+    Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_table);
+    Search_weibo.Draw_picture(Search_weibo.data);
     
     ////Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_picture);
     }
@@ -514,6 +517,14 @@ function draw_table_compare_confirm(uids, div){
     }
     html += '</tbody>';
     html += '</table>';
+    $('#compare_cofirm_table').DataTable({
+       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
+       "sPaginationType": "bootstrap",
+        //"aaSorting": [[ 4, "desc" ]],
+       "oLanguage": {
+           "sLengthMenu": "_MENU_ 每页"
+       }
+    });
     $(div).append(html);
 }
 
