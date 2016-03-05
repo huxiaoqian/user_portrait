@@ -88,7 +88,7 @@
         <div class="box-header" style="background-color:rgba(195,220,224,0.4)">
             <h2 style='margin-left:5px'>条件选择</h2>
         </div>
-        <div class="box-content" style="height:230px">
+        <div class="box-content" style="height:200px">
             <div class="col-md-12">
                 <label class='control-label'>关联维度（权重从1到10）：</label>
                 <div class='controls'>
@@ -111,17 +111,20 @@
                         </div>
                         <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
-                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="psycho_status_string">心理状态</span>
-                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
-                        </div>
-                    </div>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="activity_geo">地理特征</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
+                        </div>                    </div>
                     <div class='col-md-12' >
                         <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
-                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="activity_geo">地理特征</span>
-                             <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="character_sentiment">性格（情绪）</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
                         </div>
-                        <div class='col-lg-3' >
+                        <div class='col-lg-3'>
+                            <input type='checkbox' class='inline-checkbox' value='option1'>
+                            <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="character_text">性格（语言）</span>
+                             <input type='text' class="form-control" style='width:40%; display:inline-block;height:25px' disabled>
+                        </div>                        <div class='col-lg-3' >
                             <input type='checkbox' class='inline-checkbox' value='option1'>
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="hashtag">hashtag</span>
                              <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
@@ -296,7 +299,7 @@
         },
         personData:function(data){
             personalData = data ;
-           console.log(data);
+           //console.log(data);
             
         }
     }
