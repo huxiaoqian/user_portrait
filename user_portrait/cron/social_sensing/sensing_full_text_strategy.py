@@ -6,7 +6,7 @@ import json
 import numpy as np
 from elasticsearch import Elasticsearch
 from  mappings_social_sensing import mappings_sensing_task
-from aggregation_weibo import get_forward_numerical_info, query_mid_list, query_related_weibo, aggregation_sentiment_related_weibo
+from aggregation_full_text_weibo import get_forward_numerical_info, query_mid_list, query_related_weibo, aggregation_sentiment_related_weibo
 from clustering import kmeans, tfidf, text_classify, cluster_evaluation, freq_word
 reload(sys)
 sys.path.append("./../")
@@ -134,7 +134,7 @@ def sensors_keywords_detection(task_detail):
                                         "lt": ts
                                     }}
                                 },
-                                {"terms": {"keywords_string": sensitive_words}},
+                                #{"terms": {"keywords_string": sensitive_words}},
                                 {"terms": {"uid": social_sensors}}
                             ]
                         }
@@ -147,6 +147,14 @@ def sensors_keywords_detection(task_detail):
                 }
             }
         }
+
+        if sensitive_words:
+            query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+            temp_list = []
+            for word in sensitive_words:
+                small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+                temp_list.append(small_sentence)
+            query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
 
         sensitive_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_sensitive_body)['aggregations']['all_list']["buckets"]
         if sensitive_results:
@@ -215,8 +223,8 @@ def sensors_keywords_detection(task_detail):
                                             "gte": ts - time_interval,
                                             "lt": ts
                                         }}
-                                    },
-                                    {"terms": {"keywords_string": sensitive_words}}
+                                    }
+                                    #{"terms": {"keywords_string": sensitive_words}}
                                 ]
                             }
                         }
@@ -224,6 +232,14 @@ def sensors_keywords_detection(task_detail):
                 },
                 "size": 10000
             }
+            if sensitive_words:
+                query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+                temp_list = []
+                for word in sensitive_words:
+                    small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+                    temp_list.append(small_sentence)
+                query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+
             if social_sensors:
                 query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
 
@@ -257,7 +273,7 @@ def sensors_keywords_detection(task_detail):
 
         if len(text_list) == 1:
             top_word = freq_word(text_list[0])
-            topic_list = [top_word.keys()]
+            topic_list = top_word.keys()
         elif len(text_list) == 0:
             topic_list = []
             tmp_burst_reason = "" #没有相关微博，归零
@@ -292,7 +308,7 @@ def sensors_keywords_detection(task_detail):
     results['burst_reason'] = tmp_burst_reason
     results['timestamp'] = ts
     if tmp_burst_reason:
-        results["clustering_topic"] = json.dumps(topic_list[:5])
+        results["clustering_topic"] = json.dumps(topic_list)
 
     # es存储当前时段的信息
     doctype = task_name
