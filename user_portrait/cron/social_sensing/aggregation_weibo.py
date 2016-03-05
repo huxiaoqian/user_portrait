@@ -622,6 +622,7 @@ def specific_keywords_burst_dection(task_detail):
     burst_reason = signal_nothing_variation
     warning_status = signal_nothing
     finish = unfinish_signal # "0"
+    process_status = "1"
 
     if sensitive_total_weibo_number > WARNING_SENSITIVE_COUNT: # 敏感微博的数量异常
         print "======================"
@@ -651,7 +652,8 @@ def specific_keywords_burst_dection(task_detail):
                 warning_status = signal_track
 
     if int(stop_time) <= ts: # 检查任务是否已经完成
-        finish = finish_signal 
+        finish = finish_signal
+        process_status = "0"
 
     # 7. 感知到的事, all_mid_list
     tmp_burst_reason = burst_reason
@@ -763,6 +765,7 @@ def specific_keywords_burst_dection(task_detail):
     temporal_result['warning_status'] = warning_status
     temporal_result['burst_reason'] = tmp_burst_reason
     temporal_result['finish'] = finish
+    temporal_result['processing_status'] = process_status
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)

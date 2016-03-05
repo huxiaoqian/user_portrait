@@ -46,6 +46,11 @@ def aggregation_sentiment(ts1, ts2, keyword_list, aggregation_word, size=10):
                             }}
                         ]
                     }
+                },
+                "query":{
+                    "bool":{
+                        "should":[]
+                    }
                 }
             }
         },
@@ -57,12 +62,11 @@ def aggregation_sentiment(ts1, ts2, keyword_list, aggregation_word, size=10):
     }
 
     if keyword_list:
-        query_body['query']['filtered']['filter']['bool']['should'] = []
         temp_list = []
         for word in keyword_list:
             small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
             temp_list.append(small_sentence)
-        query_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+        query_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
 
     return query_body
 
@@ -77,7 +81,7 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
     query_body = {
         "query": {
             "filtered": {
-                "filter": {
+                "filter":{
                     "bool": {
                         "must": [
                             {"range": {
@@ -86,9 +90,12 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
                                     "lt": ts
                                 }
                             }}
-                            #{"terms": {"keywords_string": keywords_list}}
-                            #{"term": {"message_type": 1}} # origin weibo
                         ]
+                    }
+                },
+                "query":{
+                    "bool":{
+                        "should":[]
                     }
                 }
             }
@@ -97,18 +104,19 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
         "size": 10000
     }
 
-    if social_sensors:
-        query_body['query']['filtered']['filter']['bool']['must'].append({"terms": {"uid": social_sensors}})
-    if query_type == 1:
-        query_body['query']['filtered']['filter']['bool']['must'].append({"term": {"message_type": 1}})
 
     if keywords_list:
-        query_body['query']['filtered']['filter']['bool']['should'] = []
         temp_list = []
         for word in keywords_list:
             small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
             temp_list.append(small_sentence)
-        query_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+        query_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
+
+    if social_sensors:
+        query_body['query']['filtered']['filter']['bool']['must'].append({"terms": {"uid": social_sensors}})
+
+    if query_type == 1:
+        query_body['query']['filtered']['filter']['bool']['must'].append({"term": {"message_type": 1}})
 
     datetime = ts2datetime(ts)
     # test
@@ -157,13 +165,13 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
                                     "gte": ts - time_segment,
                                     "lt": ts
                                 }
-                            }}]
-                        #"should": [
-                        #    {"terms":{
-                        #        "keywords_string": keywords_list
-                        #        }
-                        #    }
-                        #]
+                            }}
+                        ]
+                    }
+                },
+                "query":{
+                    "bool":{
+                        "should":[]
                     }
                 }
             }
@@ -176,12 +184,11 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
     }
 
     if keywords_list:
-        query_body['query']['filtered']['filter']['bool']['should'] = []
         temp_list = []
         for word in keywords_list:
             small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
             temp_list.append(small_sentence)
-        query_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+        query_all_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
 
     datetime = ts2datetime(ts)
     # test
@@ -190,6 +197,7 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
     index_name = flow_text_index_name_pre + datetime
     exist_es = es_text.indices.exists(index_name)
     if origin_mid_list and exist_es:
+        query_all_body["query"]["filtered"]["filter"]["bool"]["should"] = []
         query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
         query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
         results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_count']['buckets']
@@ -201,6 +209,7 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
         index_name_1 = flow_text_index_name_pre + datetime_1
         exist_es_1 = es_text.indices.exists(index_name_1)
         if datetime_1 != datetime and exist_es_1:
+            query_all_body["query"]["filtered"]["filter"]["bool"]["should"] = []
             query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
             query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
             results_1 = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_count']['buckets']
@@ -225,6 +234,11 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_
                                 }
                             }}
                         ]
+                    }
+                },
+                "query":{
+                    "bool":{
+                        "should":[]
                     }
                 }
             }
@@ -301,6 +315,11 @@ def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywo
                                 }
                             }}
                         ]
+                    }
+                },
+                "query":{
+                    "bool":{
+                        "should":[]
                     }
                 }
             }
@@ -541,12 +560,13 @@ def specific_keywords_burst_dection(task_detail):
         }
 
         if sensitive_words:
-            query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+            full_text_dict = {"bool":{"should":[]}}
+            query_sensitive_body["query"]["filtered"]["query"] = full_text_dict
             temp_list = []
             for word in sensitive_words:
                 small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
                 temp_list.append(small_sentence)
-            query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+            query_sensitive_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
         if social_sensors:
             query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
 
@@ -570,6 +590,7 @@ def specific_keywords_burst_dection(task_detail):
     burst_reason = signal_nothing_variation
     warning_status = signal_nothing
     finish = unfinish_signal # "0"
+    process_status = "1"
 
     if sensitive_total_weibo_number > WARNING_SENSITIVE_COUNT: # 敏感微博的数量异常
         print "======================"
@@ -600,6 +621,7 @@ def specific_keywords_burst_dection(task_detail):
 
     if int(stop_time) <= ts: # 检查任务是否已经完成
         finish = finish_signal 
+        process_status = processing_status
 
     # 7. 感知到的事, all_mid_list
     tmp_burst_reason = burst_reason
@@ -630,12 +652,13 @@ def specific_keywords_burst_dection(task_detail):
                 "size": 10000
             }
             if sensitive_words:
-                query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+                full_text_dict = {"bool":{"should":[]}}
+                query_sensitive_body["query"]["filtered"]["query"] = full_text_dict
                 temp_list = []
                 for word in sensitive_words:
                     small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
                     temp_list.append(small_sentence)
-                query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+                query_sensitive_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
 
             if social_sensors:
                 query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
@@ -718,6 +741,7 @@ def specific_keywords_burst_dection(task_detail):
     temporal_result['warning_status'] = warning_status
     temporal_result['burst_reason'] = tmp_burst_reason
     temporal_result['finish'] = finish
+    temporal_result['processing_status'] = process_status
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)

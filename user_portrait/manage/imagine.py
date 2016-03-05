@@ -48,19 +48,20 @@ def imagine(uid, query_fields_dict,index_name=portrait_index_name, doctype=portr
     """
     uid: search users relate to uid
     query_fields_dict: defined search field weight
-    fields: domain, topic, keywords, psycho_status, psycho_feature, activity_geo, hashtag
+    fields: domain, topic_string, keywords, activity_geo, hashtag, character_sentiment, character_text
     for example: "domain": 2
     domain, psycho_feature
     """
     personal_info = es.get(index=portrait_index_name, doc_type=portrait_index_type, id=uid, _source=True)['_source']
 
-    keys_list = query_fields_dict.keys()
+    keys_list = query_fields_dict.keys() #需要进行关联的键
     keys_list.remove('field')
     keys_list.remove('size')
 
     search_dict = {}
     iter_list = []
 
+    # 对搜索的键值进行过滤，去掉无用的键
     for iter_key in keys_list:
         if personal_info[iter_key] == '' or not personal_info[iter_key]:
             query_fields_dict.pop(iter_key)
@@ -107,7 +108,7 @@ def imagine(uid, query_fields_dict,index_name=portrait_index_name, doctype=portr
 
     query_fields_dict.pop('field')
     number = es.count(index=index_name, doc_type=doctype, body=query_body)['count']
-    query_body['size'] = 100 # default number
+    query_body['size'] = 150 # default number
     query_number = query_fields_dict['size'] #  required number
     query_fields_dict.pop('size')
 
@@ -127,6 +128,13 @@ def imagine(uid, query_fields_dict,index_name=portrait_index_name, doctype=portr
     evaluate_index_list = ['activeness', 'importance', 'influence']
     return_list = []
     count = 0
+
+    if result:
+        if result[0]['_id'] != uid:
+            top_score = result[0]['_score']
+        else:
+            top_score = result[1]['_score']
+
     #get evaluate max to normal
     evaluate_max_dict = get_evaluate_max()
     for item in result:
@@ -141,7 +149,7 @@ def imagine(uid, query_fields_dict,index_name=portrait_index_name, doctype=portr
             else:
                 normal_value = item['_source'][field]
             info.append(normal_value)
-        info.append(item['_score'])
+        info.append(item['_score']/top_score*100)
         return_list.append(info)
         count += 1
 

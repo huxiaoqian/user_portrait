@@ -5,7 +5,7 @@ import json
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 reload(sys)
-sys.path.append("./../")
+sys.path.append("../../")
 from global_utils import es_user_portrait as es
 
 def mappings_sensing_task(task_name):
