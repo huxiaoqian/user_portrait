@@ -265,19 +265,19 @@ def ajax_get_task_detail_info():
                             influence = math.log(item["_source"][iter_item]/top_influence*9+1, 10)*100
                             if not influence:
                                 influence = 0
-                            temp.append("%.2f" %influence)
+                            temp.append(influence)
                         elif iter_item == "importance":
                             top_importance = get_top_influence("importance")
                             importance = math.log(item["_source"][iter_item]/top_importance*9+1, 10)*100
                             if not importance:
                                 importance = 0
-                            temp.append("%.2f" %importance)
-                        elif iter_item == "importance":
+                            temp.append(importance)
+                        elif iter_item == "activeness":
                             top_activeness = get_top_influence("activeness")
                             activeness = math.log(item["_source"][iter_item]/top_activeness*9+1, 10)*100
                             if not activeness:
                                 activeness = 0
-                            temp.append("%.2f" %activeness)
+                            temp.append(activeness)
                         else:
                             temp.append(item["_source"][iter_item])
                     portrait_detail.append(temp)
@@ -338,7 +338,6 @@ def ajax_get_group_detail():
     top_activeness = get_top_influence("activeness")
     top_influence = get_top_influence("influence")
     top_importance = get_top_influence("importance")
-    print top_influence
     search_result = es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name).get('_source', {})
     if search_result:
         try:
@@ -355,11 +354,14 @@ def ajax_get_group_detail():
                             temp.append(item["fields"][iter_item][0].split('&'))
                             temp.append(item["fields"][iter_item][0].split('&'))
                         elif iter_item == "activeness":
-                            temp.append(math.log(item["fields"][iter_item][0]/float(top_activeness)*9+1, 10))
+                            activeness = math.log(item["fields"][iter_item][0]/float(top_activeness)*9+1, 10)*100
+                            temp.append("%.2f" % activeness)
                         elif iter_item == "importance":
-                            temp.append(math.log(item["fields"][iter_item][0]/float(top_importance)*9+1, 10))
+                            importance = math.log(item["fields"][iter_item][0]/float(top_importance)*9+1, 10)*100
+                            temp.append("%.2f" % importance)
                         elif iter_item == "influence":
-                            temp.append(math.log(item["fields"][iter_item][0]/float(top_influence)*9+1,10))
+                            influence = math.log(item["fields"][iter_item][0]/float(top_influence)*9+1,10)*100
+                            temp.append("%.2f" % influence)
                         else:
                             temp.append(item["fields"][iter_item][0])
                     portrait_detail.append(temp)
