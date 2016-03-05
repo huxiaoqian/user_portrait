@@ -532,7 +532,10 @@ def get_activity_weibo(task_name, start_ts):
         weibo['timestamp'] = ts2date(source['timestamp'])
         weibo['ip'] = source['ip']
         weibo['text'] = source['text']
-        weibo['geo'] = '\t'.join(source['geo'])
+        if source['geo']:
+            weibo['geo'] = '\t'.join(source['geo'])
+        else:
+            weibo['geo'] = ''
         results.append(weibo)
 
     return results
@@ -580,7 +583,10 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
         weibo['timestamp'] = ts2date(source['timestamp'])
         weibo['ip'] = source['ip']
         weibo['text'] = source['text']
-        weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        if source['geo']:
+            weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        else:
+            weibo['geo'] = ''
         weibo_list.append(weibo)
         
     return weibo_list
