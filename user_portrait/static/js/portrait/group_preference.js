@@ -136,7 +136,7 @@ function get_radar_data_pre (data) {
     topic_value.push(topic[1][i].toFixed(2)*10)
     topic_name.push(topic[0][i]);
   };
-  console.log(topic_name);
+  //console.log(topic_name);
   // var topic_value2 = [];
   // var topic_name2 = [];
   // for(var i=0; i<8;i++){ //取前8个最大值
@@ -163,7 +163,7 @@ function get_radar_data_pre (data) {
   return topic_result;
 }
 function Draw_topic(data, radar_div, motal_div){
-  console.log(data);
+  //console.log(data);
   var topic = [];
   var html = '';
   if(data[0][1] == 0){
