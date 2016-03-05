@@ -28,6 +28,23 @@ mod = Blueprint('social_sensing', __name__, url_prefix='/social_sensing')
 # other parameters: create_at, warning_status,
 # warning_status: 0-no, 1-burst, 2-tracking, 3-ever_brusing, now no
 # task_type：任务类型：{"0": no keywords and no sensors, "1": no keywords and some sensors, "2": "some keywords and no sensors", "3": "some keywords and some sensors"}
+
+def get_top_influence(key):
+    query_body = {
+        "query":{
+            "match_all": {}
+        },
+        "sort":{key:{"order":"desc"}},
+        "size": 1
+    }
+
+    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
+    if search_result:
+        result = search_result[0]['_source'][key]
+
+    return result
+
+
 @mod.route('/create_task/')
 def ajax_create_task():
     # task_name forbid illegal enter
@@ -243,6 +260,24 @@ def ajax_get_task_detail_info():
                     for iter_item in SOCIAL_SENSOR_INFO:
                         if iter_item == "topic_string":
                             temp.append(item["_source"][iter_item].split('&'))
+                        elif iter_item == "influence":
+                            top_influence = get_top_influence("influence")
+                            influence = math.log(item["_source"][iter_item]/top_influence*9+1, 10)*100
+                            if not influence:
+                                influence = 0
+                            temp.append("%.2f" %influence)
+                        elif iter_item == "importance":
+                            top_importance = get_top_influence("importance")
+                            importance = math.log(item["_source"][iter_item]/top_importance*9+1, 10)*100
+                            if not importance:
+                                importance = 0
+                            temp.append("%.2f" %importance)
+                        elif iter_item == "importance":
+                            top_activeness = get_top_influence("activeness")
+                            activeness = math.log(item["_source"][iter_item]/top_activeness*9+1, 10)*100
+                            if not activeness:
+                                activeness = 0
+                            temp.append("%.2f" %activeness)
                         else:
                             temp.append(item["_source"][iter_item])
                     portrait_detail.append(temp)
@@ -250,7 +285,7 @@ def ajax_get_task_detail_info():
             portrait_detail = sorted(portrait_detail, key=lambda x:x[5], reverse=True)
     task_detail['social_sensors_portrait'] = portrait_detail
 
-    print task_detail
+    #print task_detail
     return json.dumps(task_detail)
 
 
@@ -295,20 +330,6 @@ def ajax_get_group_list():
 
     return json.dumps(results)
 
-def get_top_influence(key):
-    query_body = {
-        "query":{
-            "match_all": {}
-        },
-        "sort":{key:{"order":"desc"}},
-        "size": 1
-    }
-
-    search_result = es.search(index=portrait_index_name, doc_type=portrait_index_type, body=query_body)['hits']['hits']
-    if search_result:
-        result = search_result[0]['_source'][key]
-
-    return result
 
 @mod.route('/get_group_detail/')
 def ajax_get_group_detail():
@@ -317,6 +338,7 @@ def ajax_get_group_detail():
     top_activeness = get_top_influence("activeness")
     top_influence = get_top_influence("influence")
     top_importance = get_top_influence("importance")
+    print top_influence
     search_result = es.get(index=index_group_manage, doc_type=doc_type_group, id=task_name).get('_source', {})
     if search_result:
         try:
@@ -333,11 +355,11 @@ def ajax_get_group_detail():
                             temp.append(item["fields"][iter_item][0].split('&'))
                             temp.append(item["fields"][iter_item][0].split('&'))
                         elif iter_item == "activeness":
-                            temp.append(math.ceil(item["fields"][iter_item][0]/float(top_activeness)*100))
+                            temp.append(math.log(item["fields"][iter_item][0]/float(top_activeness)*9+1, 10))
                         elif iter_item == "importance":
-                            temp.append(math.ceil(item["fields"][iter_item][0]/float(top_importance)*100))
+                            temp.append(math.log(item["fields"][iter_item][0]/float(top_importance)*9+1, 10))
                         elif iter_item == "influence":
-                            temp.append(math.ceil(item["fields"][iter_item][0]/float(top_influence)*100))
+                            temp.append(math.log(item["fields"][iter_item][0]/float(top_influence)*9+1,10))
                         else:
                             temp.append(item["fields"][iter_item][0])
                     portrait_detail.append(temp)
