@@ -280,23 +280,24 @@ function Draw_top_location(data){
 		bar_data.push(data[key]);
         //console.log(data[key]);
         //console.log(key_time);
-        // var data_xx = []
+        // var data_xx = [];
         // for(var j in data[key]){
         //     data_xx.push(j);
         // }
-        //console.log(data_xx.length)
+        //console.log(data_xx.length);
     }
     //console.log(timeline_data);
     //console.log(data.key.length)
 	for(var i=0;i<bar_data.length;i++){
 		var bar_data_x_single = [];
 		var bar_data_y_single = [];
-		for(var key in bar_data[i]){
-            var city = key.split('\t')
+		// for(var key in bar_data[i]){
+        for(var j=0; j<bar_data[i].length;j++){
+            //var city = key.split('\t')
             //console.log(city.pop());
 			//bar_data_x_single.push(key);
-			bar_data_x_single.push(key);
-			bar_data_y_single.push(bar_data[i][key]);
+			bar_data_x_single.push(bar_data[i][j][0]);
+			bar_data_y_single.push(bar_data[i][j][1]);
 		}
 		bar_data_x.push(bar_data_x_single);
 		bar_data_y.push(bar_data_y_single);
