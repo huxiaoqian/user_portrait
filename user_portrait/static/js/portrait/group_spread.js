@@ -44,6 +44,7 @@ function draw_influ_distribution(data,radar_div, title){
     yAxis : [
         {
             type : 'category',
+            //scale: true,
             name : title,
             data : xdata
         }
@@ -318,7 +319,7 @@ function show_influ_users(div_name,data){
        var inid =  data[i][0].split('&')[0]
        var uname = data[i][0].split('&')[1];
        if(uname == 'unknown'){
-          uname = '未知';
+          uname = '未知('+inid+')';
        }
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid='+inid+'">' + uname + '</a></th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
@@ -376,10 +377,10 @@ function group_influ(data){
         var min_user_name = [];
         for(var i=0; i<max_data.length;i++){
             if(max_data[i][2]=='unknown'){
-                max_data[i][2] = '未知';
+                max_data[i][2] = '未知('+max_data[i][0]+')';
             }
             if(min_data[i][2]=='unknown'){
-                min_data[i][2] = '未知';
+                min_data[i][2] = '未知('+min_data[i][0]+')';
             }
             max_user_name.push(max_data[i][2]);
             min_user_name.push(min_data[i][2]);
@@ -416,6 +417,7 @@ function group_influ(data){
     yAxis : [
         {
             type : 'value',
+            scale: true,
             name : '影响力'
         }
     ],

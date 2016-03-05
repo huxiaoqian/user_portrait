@@ -29,6 +29,7 @@ Search_weibo.prototype = {
         var url_photo = data.photo_url;
         var portrait = data.portrait;
         var tag_data = data.tag;
+        //console.log(portrait);
         Compare(url_photo, portrait, tag_data);
         compare_extra(portrait);
         bind_close_click(portrait);
@@ -51,20 +52,52 @@ Search_weibo.prototype = {
                 }
             };
         }
-        var keywords_data = data;
-        var keywords = new Array();
-        for(i in keywords_data){
-            keywords.push({'name':keywords_data[i][0], 'value':keywords_data[i][1]*1000, 'itemStyle':createRandomItemStyle()});
-            if(keywords.length == 20){
-                break;
-            }
+        // var keywords_data = data;
+        //console.log(data);
+
+        var key_value = [];
+        var key_name = [];
+        for(var i=0;i<data.length;i++){
+          key_value.push(data[i][1]+Math.random());
+          key_name.push(data[i][0]);
+        };
+
+        var word_num = Math.min(50, data.length);
+        var key_value2 = [];
+        var key_name2 = [];
+        for(var i=0; i<word_num; i++){ //最多取前50个最大值
+          a=key_value.indexOf(Math.max.apply(Math, key_value));
+          key_value2.push(key_value[a]);
+          key_name2.push(key_name[a]);
+          key_value[a]=0;
         }
+        var keyword = [];
+        for (var i=0;i<word_num;i++){
+            var word = {};
+            word['name'] = key_name2[i];
+            word['value'] = key_value2[i]*1000;
+            word['itemStyle'] = createRandomItemStyle();
+            keyword.push(word);
+        }        
+        // var keywords = new Array();
+        // for(i in keywords_data){
+        //     keywords.push({'name':keywords_data[i][0], 'value':keywords_data[i][1]*1000, 'itemStyle':createRandomItemStyle()});
+        //     if(keywords.length == 20){
+        //         break;
+        //     }
+        // }
         var option = {
             title: {
                 text: '',
             },
             tooltip: {
-                show: true
+              show: true,
+              formatter:  function (params){
+                var res  = '';
+                var value_after = parseInt(params.value/100);
+                res += params.name+' : '+value_after;
+                return res;
+              }
             },
             series: [{
                 name: '',
@@ -76,7 +109,7 @@ Search_weibo.prototype = {
                     enable: true,
                     minSize: 14,
                 },
-                data: keywords,
+                data: keyword,
             }]
         };
         var myChart = echarts.init(document.getElementById(div));
@@ -123,8 +156,9 @@ function Compare(url_photo, portrait, tag_data){
     j = 0;
     html += '<tr class="list-1"><td class="cate_title" style="width:90px;text-align:right">昵称</td>';
     for(var k in portrait){
+
         if(portrait[k]['uname'] == 'unknown'){
-            portrait[k]['uname'] = '未知';
+            portrait[k]['uname'] = '未知('+k+')';
         }
         j += 1;
         html += '<td class="center" name="line'+ j +'">'+ portrait[k]['uname'] +'</td>';
@@ -237,28 +271,34 @@ function Compare(url_photo, portrait, tag_data){
     $('#picturebig').append(html2);
 }
 function Draw_think_emotion(psycho_status,div){
+    //console.log(psycho_status);
     var first_data = psycho_status['first'];
     var first = new Array();
 
     for(var key in first_data){
-        console.log(first_data[k]);
-        console.log(first_data[k]==0);
-        if(first_data[k]==0){
-            continue;
+        if(first_data[key] != 0){
+            if(key == 7){
+                first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2),selected:true});
+            }else{
+                first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2)});
+            } 
         }
-        if(key == 7){
-            first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2),selected:true});
-        }else{
-            first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2)});
-        } 
     }
     var second = new Array();
     var second_data = psycho_status['second'];
-    second.push({'name':SENTIMENT_DICT_NEW[0],'value':first_data[0].toFixed(2)});
-    second.push({'name':SENTIMENT_DICT_NEW[1],'value':first_data[1].toFixed(2)});
-    for(var key in second_data){
-        second.push({'name':SENTIMENT_DICT_NEW[key],'value':second_data[key].toFixed(2)});
+    if(first_data[0] != 0){
+        second.push({'name':SENTIMENT_DICT_NEW[0],'value':first_data[0].toFixed(2)});
     }
+    if(first_data[1] != 0){
+        second.push({'name':SENTIMENT_DICT_NEW[1],'value':first_data[1].toFixed(2)});
+    }
+    for(var key in second_data){
+        //console.log(second_data[key]);
+        if(second_data[key] != 0){
+            second.push({'name':SENTIMENT_DICT_NEW[key],'value':second_data[key].toFixed(2)});
+        }
+    };
+
     var myChart = echarts.init(document.getElementById(div)); 
     var option = {
     tooltip : {
