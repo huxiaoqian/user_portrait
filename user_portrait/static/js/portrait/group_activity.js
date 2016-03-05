@@ -119,7 +119,7 @@ function draw_content(data){
     //console.log(data);
     var html = '';
     $('#line_content').empty();
-    if(data==[]){
+    if(data.length==0){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
@@ -701,7 +701,8 @@ function show_activity(data) {
 	var time_data = [23,3,4,55,22,6]
     // console.log(runtype);
     //默认显示第一天微博；
-    point2weibo(0, data.activity_trend[0][0])
+    point2weibo(0, data.activity_trend[0][0]);
+
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
 
@@ -961,10 +962,12 @@ function month_process(data){
 );
 }
 
+function  activity_load(){
+    var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
+    call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
+    var group_user_url =  "/group/show_group_list/?task_name=" + name;
+    call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
+}
 
-var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
-call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
-var group_user_url =  "/group/show_group_list/?task_name=" + name;
-call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
 // var activity_data = []
 
