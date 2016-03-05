@@ -1707,7 +1707,6 @@ def get_evaluate_max():
             raise e
         max_evaluate = result[0]['_source'][evaluate]
         max_result[evaluate] = max_evaluate
-    #print 'result:', max_result
     return max_result
 
 # use to merge dict
