@@ -94,7 +94,7 @@ function Draw_activity(data){
 
 //微博文本默认数据
 function point2weibo(xnum, ts){
-    console.log(ts);
+    //console.log(ts);
     var delta = '';
     var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + ts;
     call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
@@ -312,7 +312,7 @@ function Draw_top_location(data){
 	//console.log(bar_data_2);
 	bar_data_x = bar_data_2;
 	
-		console.log(timeline_data.length);
+		//console.log(timeline_data.length);
     var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
     var option = {
         timeline:{
@@ -699,6 +699,7 @@ function group_activity(data){
 function show_activity(data) {
 	var time_data = [23,3,4,55,22,6]
     // console.log(runtype);
+    //默认显示第一天微博；
     point2weibo(0, data.activity_trend[0][0])
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
@@ -727,6 +728,9 @@ function show_activity_track(data){
     var html = '';
     html += '<select id="select_track_weibo_user" style="max-width:150px;">';
     for (var i = 0; i < data.length; i++) {
+        if(data[i][1]=='unknown'){
+            data[i][1] = '未知';
+		}
         html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
     }
     html += '</select>';
