@@ -43,9 +43,9 @@
     <div class="PersonPre" style="text-align:center;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
 </div>
 <div id="float-wrap" class="hidden"></div>
-<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 65%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 450px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
+<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 69%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 450px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
     <h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本注册信息<a href="javascript:void(0)" class="Basicclose" id="close"></a></h3>
-    <div class="m-wrap" style="margin-top:30px;">
+    <div class="m-wrap" style="overflow-y: scroll;height: 375px;">
         <ul class="clearfix">
             <li class="li_1">
                 <span class="pt_title">用户ID</span>
@@ -88,7 +88,7 @@
         <div class="box-header" style="background-color:rgba(195,220,224,0.4)">
             <h2 style='margin-left:5px'>条件选择</h2>
         </div>
-        <div class="box-content" style="height:200px">
+        <div class="box-content" style="height:230px">
             <div class="col-md-12">
                 <label class='control-label'>关联维度（权重从1到10）：</label>
                 <div class='controls'>
@@ -419,7 +419,8 @@
             if (i == (topicdict.length -1)){
                 str += topicdict[i];
             }else{
-                str = str + topicdict[i] +',';
+                str = str + topicdict[i] +'<br>';
+                // str = str + topicdict[i] +'<br>';
             }
         }
         topic.innerHTML = str;
