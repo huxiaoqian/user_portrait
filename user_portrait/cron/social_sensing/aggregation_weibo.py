@@ -716,7 +716,7 @@ def specific_keywords_burst_dection(task_detail):
 
         if len(text_list) == 1:
             top_word = freq_word(text_list[0])
-            topic_list = top_word.keys()
+            topic_list = [top_word.keys()]
         elif len(text_list) == 0:
             topic_list = []
             tmp_burst_reason = "" #没有相关微博，归零
@@ -753,7 +753,7 @@ def specific_keywords_burst_dection(task_detail):
     results['burst_reason'] = tmp_burst_reason
     results['timestamp'] = ts
     if tmp_burst_reason:
-        results['clustering_topic'] = json.dumps(topic_list)
+        results['clustering_topic'] = json.dumps(topic_list[:5])
     # es存储当前时段的信息
     doctype = task_name
     es_user_portrait.index(index=index_sensing_task, doc_type=doctype, id=ts, body=results)
