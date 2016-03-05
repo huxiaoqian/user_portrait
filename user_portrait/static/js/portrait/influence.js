@@ -5,6 +5,15 @@ Influence.prototype = {   //获取数据，重新画表
   call_async_ajax_request:function(url, method, callback){
       person_call_ajax_request(url, callback);
   },
+  call_ajax_request:function(url, method, callback){
+      $.ajax({
+          url:url,
+          type:"GET",
+          dataType:'json',
+          async:false,
+          success:callback,
+      });
+  },
   Draw_influence:function(data){
     //console.log(data);
 	var item_x = data.time_line;
@@ -133,7 +142,7 @@ Draw_pie_all0:function(data){
     $('#influence_conclusion_c').empty();
     var html='';
     if(data[0][0] != ''){
-      html += '该用户<span style="color:red">'+data[0][0]+'。</span>';
+      html += '该用户<span style="color:red">'+data[0][0]+'</span>。';
     }
     var conclu_s1 = [];
     // conclu_s.push()
@@ -348,10 +357,12 @@ Draw_pie_all0:function(data){
     html += '<h4>已入库用户('+data[2]+')</h4><p style="text-align:left;padding: 0px 10px;width:800px;">';
     if (data[2] == 0){
       //$('#'+del_div).append('<h4>test</h4>');
-      $('#'+del_div).remove();
+      $('#'+del_div).css('display', 'none');
+      //$('#'+del_div).remove();
       $('#'+del_div_attr).css("height", "auto");
       $('#'+del_div_attr).css("overflow-y", "auto");
     }else{
+      $('#'+del_div).css('display', 'block');
       for (i=0;i<data[0].length;i++){
        var img_src = ''
        if (data[0][i][0] == 'unknown'){
@@ -544,7 +555,7 @@ function click_action(){
         $("#cmt_influence").removeClass("hidden"); 
         var mid = $(this).prev().prev(".hidden").text();
         var influenced_users_url_cmt = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=1&mid='+mid;
-        Influence.call_async_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
+        Influence.call_ajax_request(influenced_users_url_cmt, Influence.ajax_method, Influence.Single_users_influence_cmt);
         return false;
       });
       $(".retweet_count").live("click",function(){
@@ -553,7 +564,7 @@ function click_action(){
         var mid = $(this).prev(".hidden").text();
         var influenced_users_url_re = '/attribute/influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0&mid='+mid;
         //console.log(influenced_users_url_re);
-        Influence.call_async_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
+        Influence.call_ajax_request(influenced_users_url_re, Influence.ajax_method, Influence.Single_users_influence_re);
         return false;
       });
       $("#retweet_distribution").live("click",function(){
@@ -561,7 +572,7 @@ function click_action(){
         $("#retweet_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style0 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid+'&date='+date_str+'&style=0';
         //console.log(all_influenced_users_url_style0);
-        Influence.call_async_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
+        Influence.call_ajax_request(all_influenced_users_url_style0, Influence.ajax_method, Influence.Draw_pie_all0);
         return false;
       });
       $("#comment_distribution").live("click",function(){
@@ -569,7 +580,7 @@ function click_action(){
         $("#comment_distribution_content").removeClass("hidden");
         var all_influenced_users_url_style1 = '/attribute/all_influenced_users/?uid='+parent.personalData.uid +'&date='+date_str+'&style=1';
         //console.log(all_influenced_users_url_style1);
-        Influence.call_async_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
+        Influence.call_ajax_request(all_influenced_users_url_style1, Influence.ajax_method, Influence.Draw_pie_all1);
         return false;
       });
     $('input[name="choose_module"]').live('click', function(){             
@@ -577,11 +588,11 @@ function click_action(){
       //console.log(index);
       if(index == 1){
         var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=7';
-        Influence.call_async_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
+        Influence.call_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);
       }
       else{
         var influence_url = '/attribute/influence_trend/?uid='+uid + '&time_segment=30';
-        Influence.call_async_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
+        Influence.call_ajax_request(influence_url, Influence.ajax_method, Influence.Draw_influence);    
       }
     });
 

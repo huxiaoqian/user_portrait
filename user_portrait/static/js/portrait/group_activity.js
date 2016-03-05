@@ -94,7 +94,7 @@ function Draw_activity(data){
 
 //微博文本默认数据
 function point2weibo(xnum, ts){
-    console.log(ts);
+    //console.log(ts);
     var delta = '';
     var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + ts;
     call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
@@ -312,7 +312,7 @@ function Draw_top_location(data){
 	//console.log(bar_data_2);
 	bar_data_x = bar_data_2;
 	
-		console.log(timeline_data.length);
+		//console.log(timeline_data.length);
     var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
     var option = {
         timeline:{

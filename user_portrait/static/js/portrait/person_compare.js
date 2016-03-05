@@ -13,8 +13,27 @@ Search_weibo.prototype = {
           success:callback,
         });
     },
+    call_async_ajax_request:function(url, method, callback){
+        $.ajax({
+          url: url,
+          type: method,
+          dataType: 'json',
+          async: true,
+          beforeSend:function(){$('#compare_loading').showLoading();},
+          complete:function(){$('#compare_loading').hideLoading();},
+          success:callback,
+        });
+    },
+    Total_callback:function(all_data){
+        var data = all_data.user_portrait;
+        var url_photo = data.photo_url;
+        var portrait = data.portrait;
+        var tag_data = data.tag;
+        Compare(url_photo, portrait, tag_data);
+        compare_extra(portrait);
+    },
     Get_Callback_data:function(data){
-        that.call_data = data
+        that.call_data = data;
     },
     Return_data: function(){
         return that.call_data;
@@ -65,7 +84,7 @@ Search_weibo.prototype = {
 }
 
 
-function Compare(){
+function Compare(url_photo, portrait, tag_data){
     var html = '';
     var num = 0;
     var j = 0;
@@ -80,10 +99,10 @@ function Compare(){
         var person_url = "http://"+window.location.host+"/index/personal/?uid=";
         person_url = person_url + k;
         i += 1;
-        if(url_photo[k]=='unkown'){
+        if(url_photo[k]['photo_url']=='unkown'){
             photos = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
         }else{
-            photos = url_photo[k];
+            photos = url_photo[k]['photo_url'];
         }
         html += '<th name="line'+ i +'" id='+k +' value='+i+'>';
         html += '<div class="panel-heading text-center">';
@@ -295,7 +314,7 @@ function Draw_think_emotion(psycho_status,div){
 }
 myChart.setOption(option);  
 }
-function compare_extra(){
+function compare_extra(portrait){
     var mark = 1;
     var div ;
     for(var key in portrait){
@@ -322,18 +341,7 @@ var uid_list = window.location.search;
 Search_weibo = new Search_weibo();
 //心理状态
 var SENTIMENT_DICT_NEW = {'0':'中性', '1':'积极', '2':'生气', '3':'焦虑', '4':'悲伤', '5':'厌恶', '6':'其他', '7':'消极'};
-$('#compare_loading').showLoading();
-var url_profile = '/manage/compare_user_profile/'+ uid_list;
-Search_weibo.call_sync_ajax_request(url_profile, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
-var url_photo = Search_weibo.Return_data();
-
-var url_portrait = '/manage/compare_user_portrait/' + uid_list;
-Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
-var portrait = Search_weibo.Return_data();
-
-var user_tag = '/tag/show_user_tag/'+ uid_list;
-Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
-var tag_data = Search_weibo.Return_data();
-Compare();
-compare_extra();
-$('#compare_loading').hideLoading();
+//$('#compare_loading').showLoading();
+var url_total = '/manage/all_user_portrait/' + uid_list;
+Search_weibo.call_async_ajax_request(url_total, Search_weibo.ajax_method, Search_weibo.Total_callback);
+//$('#compare_loading').hideLoading();
