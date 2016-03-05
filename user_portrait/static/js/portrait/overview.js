@@ -248,7 +248,7 @@ function draw_domain_portrait(data){
           var domain_top_username;
           var domain_top_user_portrait;
            if (data['domain_top_user'][key][s]['1'] == 'unknown'){
-              domain_top_username = '未知';
+              domain_top_username = '未知('+data['domain_top_user'][key][s]['0'];
            }else{
               domain_top_username = data['domain_top_user'][key][s]['1'];
            };
@@ -257,7 +257,7 @@ function draw_domain_portrait(data){
            }else{
               domain_top_user_portrait = data['domain_top_user'][key][s]['2'];
                   };
-          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0'] +'" title="' + domain_top_username +'">';
+          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0']+')' +'" title="' + domain_top_username +'">';
           html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + domain_top_user_portrait + '" alt="' + domain_top_username +'"></div></a></li>';         
        }
        html += '</ul></div></div>';
@@ -281,7 +281,7 @@ function draw_more_domain_portrait(data){
           var domain_top_username;
           var domain_top_user_portrait;
            if (data['domain_top_user'][key][s]['1'] == 'unknown'){
-              domain_top_username = '未知';
+              domain_top_username = '未知('+data['domain_top_user'][key][s]['0']+')';
            }else{
               domain_top_username = data['domain_top_user'][key][s]['1'];
            };
@@ -290,7 +290,7 @@ function draw_more_domain_portrait(data){
            }else{
               domain_top_user_portrait = data['domain_top_user'][key][s]['2'];
            };
-          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0'] +'" title="' + domain_top_username +'">';
+          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0']+')' +'" title="' + domain_top_username +'">';
           html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + domain_top_user_portrait + '" alt="' + domain_top_username +'"></div></a></li>';         
        }
        html += '</ul></div></div>';
@@ -315,7 +315,7 @@ function draw_topic_portrait(data){
       var topic_top_username;
       var topic_top_user_portrait;
        if (data['topic_top_user'][key][s]['1'] == 'unknown'){
-          topic_top_username = '未知';
+          topic_top_username = '未知('+data['topic_top_user'][key][s]['0']+')';
        }else{
           topic_top_username = data['topic_top_user'][key][s]['1'];
         };
@@ -324,7 +324,7 @@ function draw_topic_portrait(data){
        }else{
           topic_top_user_portrait = data['topic_top_user'][key][s]['2'];
         };
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0'] +'" title="' + topic_top_username +'">';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0']+')' +'" title="' + topic_top_username +'">';
       html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + topic_top_user_portrait + '" alt="' + topic_top_username +'"></div></a></li>';         
    }
    html += '</ul></div></div>';
@@ -346,7 +346,7 @@ function draw_more_topic_portrait(data){
       var topic_top_username;
       var topic_top_user_portrait;
        if (data['topic_top_user'][key][s]['1'] == 'unknown'){
-          topic_top_username = '未知';
+          topic_top_username = '未知('+data['topic_top_user'][key][s]['0']+')';
        }else{
           topic_top_username = data['topic_top_user'][key][s]['1'];
               };
@@ -355,7 +355,7 @@ function draw_more_topic_portrait(data){
        }else{
           topic_top_user_portrait = data['topic_top_user'][key][s]['2'];
               };
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0'] +'" title="' + topic_top_username +'">';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0']+')' +'" title="' + topic_top_username +'">';
       html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + topic_top_user_portrait + '" alt="' + topic_top_username +'"></div></a></li>';         
    }
    html += '</ul></div></div>';
@@ -410,7 +410,7 @@ function draw_top_comment_user(data){
        var m = i + 1;
        var top_comment_user;
        if (data['top_comment_user'][s]['1'] == 'unknown'){
-          top_comment_user = '未知';
+          top_comment_user = '未知('+data['top_comment_user'][s]['0']+')';
        }else{
           top_comment_user = data['top_comment_user'][s]['1'];
               };
@@ -431,7 +431,7 @@ function draw_more_top_comment_user(data){
        var m = i + 1;
        var more_top_comment_user;
        if (data['top_comment_user'][s]['1'] == 'unknown'){
-          more_top_comment_user = '未知';
+          more_top_comment_user = '未知('+data['top_comment_user'][s]['0']+')';
        }else{
           more_top_comment_user = data['top_comment_user'][s]['1'];
               };
@@ -453,7 +453,7 @@ function draw_top_influence(data){
        var m = i + 1;
        var top_influence;
        if (data['top_influence'][s]['1'] == 'unknown'){
-          top_influence = '未知';
+          top_influence = '未知('+data['top_influence'][s]['0']+')';
        }else{
           top_influence = data['top_influence'][s]['1'];
       };
@@ -475,7 +475,7 @@ function draw_top_activeness(data){
        var m = i + 1;
        var top_activeness;
        if (data['top_activeness'][s]['1'] == 'unknown'){
-          top_activeness = '未知';
+          top_activeness = '未知('+data['top_activeness'][s]['0']+')';
        }else{
           top_activeness = data['top_activeness'][s]['1'];
       };
@@ -494,7 +494,7 @@ function draw_more_top_activeness(data){
        var m = i + 1;
        var top_activeness;
        if (data['top_activeness'][s]['1'] == 'unknown'){
-          top_activeness = '未知';
+          top_activeness = '未知('+data['top_activeness'][s]['0']+')';
        }else{
           top_activeness = data['top_activeness'][s]['1'];
       };
@@ -513,7 +513,7 @@ function draw_top_influence_vary(data){
        var s = i.toString();
        var m = i + 1;
        if (data['top_influence_vary'][s]['1'] == 'unknown'){
-          top_influence_vary = '未知';
+          top_influence_vary = '未知('+data['top_influence_vary'][s]['0']+')';
        }else{
           top_influence_vary = data['top_influence_vary'][s]['1'];
       };
@@ -556,7 +556,7 @@ function draw_top_geo(data){
     $('#top_geo').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">活跃地</th><th style="text-align:center">微博数</th></tr>';
+    html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">活跃地</th><th style="text-align:center">人次</th></tr>';
     var row = Math.min(5,data['activity_geo_top'].length);
     for (var i = 0; i < row; i++) {
        var s = i.toString();
@@ -590,7 +590,7 @@ function draw_more_top_influence(data){
        var s = i.toString();
        var m = i + 1;
        if(data['top_influence'][s]['1']=='unknown'){
-            data['top_influence'][s]['1'] = '未知';
+            data['top_influence'][s]['1'] = '未知('+data['top_influence'][s]['0']+')';
        }
        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/personal/?uid=' + data['top_influence'][s]['0'] +  '" target="_blank">' + data['top_influence'][s]['1'] +  '</a></th><th style="text-align:center">' + data['top_influence'][s]['2'].toFixed(2) +  '</th></tr>';
     };
@@ -610,7 +610,7 @@ function draw_importance(data){
        var m = i + 1;
        var importance;
        if (data['top_importance'][s]['1'] == 'unknown'){
-          importance = '未知';
+          importance = '未知('+data['top_influence'][s]['0']+')';
        }else{
           importance = data['top_importance'][s]['1'];
               };
@@ -630,7 +630,7 @@ function draw_more_importance(data){
        var m = i + 1;
        var more_importance;
        if (data['top_importance'][s]['1'] == 'unknown'){
-          more_importance = '未知';
+          more_importance = '未知('+data['top_importance'][s]['0']+')';
        }else{
           more_importance = data['top_importance'][s]['1'];
        }
@@ -653,7 +653,7 @@ function draw_retweeted_user(data){
        var m = i + 1;
        var top_retweeted;
        if (data['top_retweeted_user'][s]['1'] == 'unknown'){
-          top_retweeted = '未知';
+          top_retweeted = '未知('+data['top_retweeted_user'][s]['0']+')';
        }else{
           top_retweeted = data['top_retweeted_user'][s]['1'];
        };
@@ -673,7 +673,7 @@ function draw_more_retweeted_user(data){
        var m = i + 1;
        var top_retweeted;
        if (data['top_retweeted_user'][s]['1'] == 'unknown'){
-          top_retweeted = '未知';
+          top_retweeted = '未知('+data['top_retweeted_user'][s]['0']+')';
        }else{
           top_retweeted = data['top_retweeted_user'][s]['1'];
        };
