@@ -303,6 +303,7 @@ function draw_daily_ip_table(ip_data){
     // daily
     location_geo = ip_data.all_day_top;
     html += '<tr><th style="text-align:center">当日</th>';
+    //console.log(location_geo);
     for (var i = 0; i < location_geo.length; i++) {
         if (i == 5) break;
         daily_map_data.push(['top'+(i+1),location_geo[i][2]]);
