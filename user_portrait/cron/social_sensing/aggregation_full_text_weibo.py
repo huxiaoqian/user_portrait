@@ -28,31 +28,6 @@ from parameter import IMPORTANT_USER_NUMBER, IMPORTANT_USER_THRESHOULD, signal_b
                       unfinish_signal, finish_signal, signal_sensitive_variation, WARNING_SENSITIVE_COUNT
 
 
-# aggragate weibo keywords of timestamp ts1 and ts2
-def aggregation_range(ts1, ts2): 
-    query_body = {
-        "query":{
-            "filtered":{
-                "filter":{
-                    "range":{
-                        "timestamp":{
-                            "gte": ts1,
-                            "lt": ts2
-                        }
-                    }
-                }
-            }
-        },
-        "aggs":{
-            "all_interests":{
-                "terms": {"field": "keywords_string",
-                          "size": 100
-                }
-            }
-        }
-    }
-
-    return query_body
 
 # aggregate sentiment with a specified keyword or keywords----list
 # 在给定关键词时，聚合某段时间内相关微博的关键词、情绪
@@ -68,11 +43,8 @@ def aggregation_sentiment(ts1, ts2, keyword_list, aggregation_word, size=10):
                                     "gte": ts1,
                                     "lt": ts2
                                 }
-                            }},
-                            {"terms":{
-                                "keywords_string": keyword_list
-                            }
-                        }]
+                            }}
+                        ]
                     }
                 }
             }
@@ -84,63 +56,15 @@ def aggregation_sentiment(ts1, ts2, keyword_list, aggregation_word, size=10):
         }
     }
 
-    return query_body
-
-
-#聚合一段时间内特定社会传感器的微博的关键词/情绪
-def aggregation_sensor_keywords(ts1, ts2, uid_list, aggregation_word, size=10):
-    query_body = {
-        "query":{
-            "filtered":{
-                "filter":{
-                    "bool":{
-                        "must":[{
-                            "range":{
-                                "timestamp":{
-                                    "gte": ts1,
-                                    "lt": ts2
-                                }
-                            }}
-                        ],
-                        "should":[
-                        ]
-                    }
-                }
-            }
-        },
-        "aggs":{
-            "all_keywords":{
-                "terms":{ "field": aggregation_word, "size": size}
-            }
-        }
-    }
-
-    if len(uid_list) == 0:
-        pass
-    elif len(uid_list) == 1:
-        query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term": {"uid": uid_list[0]}})
-    else:
-        for iter_uid in uid_list:
-            query_body["query"]["filtered"]["filter"]["bool"]["should"].append({"term": {"uid": iter_uid}})
+    if keyword_list:
+        query_body['query']['filtered']['filter']['bool']['should'] = []
+        temp_list = []
+        for word in keyword_list:
+            small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+            temp_list.append(small_sentence)
+        query_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
 
     return query_body
-
-
-def temporal_keywords(ts1, ts2):
-    keywords_set = set()
-    date = ts2datetime(time.time())
-    date = "2013-09-07"
-    index_date = flow_text_index_name_pre + date
-    #search_results = es_text.search(index=index_date, doc_type=flow_text_index_type, body=aggregation_range(ts1, ts2))['aggregations']['all_interests']['buckets']
-    search_results = es_text.search(index=index_date, doc_type=flow_text_index_type, body=aggregation_sentiment(ts1, ts2, ["舟曲", "泥石流"], "keywords_string", 20))['aggregations']['all_sentiment']['buckets']
-
-    # print keywords
-    for item in search_results:
-        print item["key"].encode("utf-8", "ignore"), item["doc_count"], "\n"
-        #keywords_set.add(item["key"].encode("utf-8", "ignore"))
-
-    return keywords_set
-
 
 
 
@@ -161,8 +85,8 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
                                     "gte": ts - time_segment,
                                     "lt": ts
                                 }
-                            }},
-                            {"terms": {"keywords_string": keywords_list}}
+                            }}
+                            #{"terms": {"keywords_string": keywords_list}}
                             #{"term": {"message_type": 1}} # origin weibo
                         ]
                     }
@@ -177,6 +101,14 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
         query_body['query']['filtered']['filter']['bool']['must'].append({"terms": {"uid": social_sensors}})
     if query_type == 1:
         query_body['query']['filtered']['filter']['bool']['must'].append({"term": {"message_type": 1}})
+
+    if keywords_list:
+        query_body['query']['filtered']['filter']['bool']['should'] = []
+        temp_list = []
+        for word in keywords_list:
+            small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+            temp_list.append(small_sentence)
+        query_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
 
     datetime = ts2datetime(ts)
     # test
@@ -225,13 +157,13 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
                                     "gte": ts - time_segment,
                                     "lt": ts
                                 }
-                            }}],
-                        "should": [
-                            {"terms":{
-                                "keywords_string": keywords_list
-                                }
-                            }
-                        ]
+                            }}]
+                        #"should": [
+                        #    {"terms":{
+                        #        "keywords_string": keywords_list
+                        #        }
+                        #    }
+                        #]
                     }
                 }
             }
@@ -242,6 +174,14 @@ def query_hot_weibo(ts, origin_mid_list, time_segment, keywords_list, aggregatio
             }
         }
     }
+
+    if keywords_list:
+        query_body['query']['filtered']['filter']['bool']['should'] = []
+        temp_list = []
+        for word in keywords_list:
+            small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+            temp_list.append(small_sentence)
+        query_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
 
     datetime = ts2datetime(ts)
     # test
@@ -586,8 +526,8 @@ def specific_keywords_burst_dection(task_detail):
                                         "gte": ts - time_interval,
                                         "lt": ts
                                     }}
-                                },
-                                {"terms": {"keywords_string": sensitive_words}}
+                                }
+                                #{"terms": {"keywords_string": sensitive_words}}
                             ]
                         }
                     }
@@ -599,6 +539,14 @@ def specific_keywords_burst_dection(task_detail):
                 }
             }
         }
+
+        if sensitive_words:
+            query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+            temp_list = []
+            for word in sensitive_words:
+                small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+                temp_list.append(small_sentence)
+            query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
         if social_sensors:
             query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
 
@@ -672,8 +620,8 @@ def specific_keywords_burst_dection(task_detail):
                                             "gte": ts - time_interval,
                                             "lt": ts
                                         }}
-                                    },
-                                    {"terms": {"keywords_string": sensitive_words}}
+                                    }
+                                   # {"terms": {"keywords_string": sensitive_words}}
                                 ]
                             }
                         }
@@ -681,6 +629,13 @@ def specific_keywords_burst_dection(task_detail):
                 },
                 "size": 10000
             }
+            if sensitive_words:
+                query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+                temp_list = []
+                for word in sensitive_words:
+                    small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
+                    temp_list.append(small_sentence)
+                query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
 
             if social_sensors:
                 query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})

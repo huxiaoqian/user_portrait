@@ -59,6 +59,25 @@ def get_task_detail_2(task_name, keywords, ts):
                 for iter_item in SOCIAL_SENSOR_INFO:
                     if iter_item == "topic_string":
                         temp.append(item["fields"][iter_item][0].split('&'))
+                    elif iter_item == "influence":
+                        top_influence = get_top_influence("influence")
+                        influence = math.log(item["fields"][iter_item][0]/top_influence*9+1, 10)*100
+                        if not influence:
+                            influence = 0
+                        temp.append("%.2f" %influence)
+                    elif iter_item == "importance":
+                        top_importance = get_top_influence("importance")
+                        importance = math.log(item["fields"][iter_item][0]/top_importance*9+1, 10)*100
+                        print importance
+                        if not importance:
+                            importance = 0
+                        temp.append("%.2f" %importance)
+                    elif iter_item == "activeness":
+                        top_activeness = get_top_influence("activeness")
+                        activeness = math.log(item["fields"][iter_item][0]/top_activeness*9+1, 10)*100
+                        if not importance:
+                            activeness = 0
+                        temp.append("%.2f" %activeness)
                     else:
                         temp.append(item["fields"][iter_item][0])
                 portrait_detail.append(temp)
@@ -204,9 +223,9 @@ def get_task_detail_2(task_name, keywords, ts):
                 temp.append(item['fields']['topic_string'][0].split('&'))
                 hot_count = count_hot_uid(item['fields']['uid'][0], start_time, stop_time, keywords_list)
                 temp.append(hot_count)
-                temp.append(math.ceil(item['fields']['importance'][0]/float(top_importance)*100))
-                temp.append(math.ceil(item['fields']['influence'][0]/float(top_influence)*100))
-                temp.append(math.ceil(item['fields']['activeness'][0]/float(top_activeness)*100))
+                temp.append(math.log(item['fields']['importance'][0]/float(top_importance)*9+1, 10))
+                temp.append(math.log(item['fields']['influence'][0]/float(top_influence)*9+1, 10))
+                temp.append(math.log(item['fields']['activeness'][0]/float(top_activeness)*9+1, 10))
                 user_detail_info.append(temp)
                 #print temp
     # 排序

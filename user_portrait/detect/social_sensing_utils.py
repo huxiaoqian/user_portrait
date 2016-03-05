@@ -20,12 +20,12 @@ from user_portrait.parameter import IMPORTANT_USER_THRESHOULD, SOCIAL_SENSOR_INF
 from user_portrait.social_sensing.full_text_serach import count_hot_uid
 #portrait_index_name = "user_portrait_1222"
 
-def get_top_influence():
+def get_top_influence(key="influence"):
     query_body = {
         "query":{
             "match_all": {}
         },
-        "sort":{"influence":{"order":"desc"}},
+        "sort":{key:{"order":"desc"}},
         "size": 1
     }
 
@@ -101,6 +101,9 @@ def show_important_users(task_name):
             temp_user_list = json.loads(item['important_users'])
             important_user_set = important_user_set | set(temp_user_list)
 
+    top_importance = get_top_influence('importance')
+    top_activeness = get_top_influence('activeness')
+    top_influence = get_top_influence('influence')
     important_uid_list = list(important_user_set)
     user_detail_info = [] #
     if important_uid_list:
@@ -117,9 +120,10 @@ def show_important_users(task_name):
                 temp.append(item['fields']['topic_string'][0].split('&'))
                 hot_count = count_hot_uid(item['fields']['uid'][0], start_time, stop_time, keywords_list)
                 temp.append(hot_count)
-                temp.append(item['fields']['importance'][0])
-                temp.append(item['fields']['influence'][0])
-                temp.append(item['fields']['activeness'][0])
+                importance = math.log(item['fields']['importance'][0]/top_importance*9+1, 10)*100
+                temp.append("%.2f" %importance)
+                temp.append(math.log(item['fields']['influence'][0]/top_influence*9+1, 10)*100)
+                temp.append(math.log(item['fields']['activeness'][0]/top_activeness*9+1, 10)*100)
                 user_detail_info.append(temp)
 
 
