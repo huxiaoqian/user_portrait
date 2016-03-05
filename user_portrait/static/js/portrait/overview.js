@@ -248,7 +248,7 @@ function draw_domain_portrait(data){
           var domain_top_username;
           var domain_top_user_portrait;
            if (data['domain_top_user'][key][s]['1'] == 'unknown'){
-              domain_top_username = '未知('+data['domain_top_user'][key][s]['0'];
+              domain_top_username = '未知('+data['domain_top_user'][key][s]['0']+')';
            }else{
               domain_top_username = data['domain_top_user'][key][s]['1'];
            };
@@ -257,7 +257,7 @@ function draw_domain_portrait(data){
            }else{
               domain_top_user_portrait = data['domain_top_user'][key][s]['2'];
                   };
-          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0']+')' +'" title="' + domain_top_username +'">';
+          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0'] +'" title="' + domain_top_username +'">';
           html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + domain_top_user_portrait + '" alt="' + domain_top_username +'"></div></a></li>';         
        }
        html += '</ul></div></div>';
@@ -290,7 +290,7 @@ function draw_more_domain_portrait(data){
            }else{
               domain_top_user_portrait = data['domain_top_user'][key][s]['2'];
            };
-          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0']+')' +'" title="' + domain_top_username +'">';
+          html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['domain_top_user'][key][s]['0'] +'" title="' + domain_top_username +'">';
           html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + domain_top_user_portrait + '" alt="' + domain_top_username +'"></div></a></li>';         
        }
        html += '</ul></div></div>';
@@ -324,7 +324,7 @@ function draw_topic_portrait(data){
        }else{
           topic_top_user_portrait = data['topic_top_user'][key][s]['2'];
         };
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0']+')' +'" title="' + topic_top_username +'">';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0'] +'" title="' + topic_top_username +'">';
       html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + topic_top_user_portrait + '" alt="' + topic_top_username +'"></div></a></li>';         
    }
    html += '</ul></div></div>';
@@ -355,7 +355,7 @@ function draw_more_topic_portrait(data){
        }else{
           topic_top_user_portrait = data['topic_top_user'][key][s]['2'];
               };
-      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0']+')' +'" title="' + topic_top_username +'">';
+      html += '<li ng-repeat="result in t.result" target="_blank" style="margin-bottom: 10px" class="index-small-photo-wrap no-padding ng-scope"><a target="_blank" href="/index/personal/?uid=' + data['topic_top_user'][key][s]['0'] +'" title="' + topic_top_username +'">';
       html += '<div class="small-photo shadow-5"><span class="helper"></span><img src="' + topic_top_user_portrait + '" alt="' + topic_top_username +'"></div></a></li>';         
    }
    html += '</ul></div></div>';
