@@ -41,7 +41,7 @@ Draw_resultTable: function(data){
 		}else{
 			html += '<td>正在计算</td>';
 		}
-		html +='<td><a href="javascript:void(0)" id="commit_control">提交监控</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="analyze_del">删除</a></td>';
+		html +='<td><a href="javascript:void(0)" style="background:white" id="commit_control">提交监控</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="analyze_del">删除</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
@@ -204,9 +204,9 @@ function submit_control(that){
 			$('#group_control').modal();
 		 }
 	});	
-	// $('a[id^="group_commit_control"]').onMouseover(function(e){
+	// $('a[id^="commit_control"]').onMouseover=function(e){
 	// 	this.style.background='yellow';
-	// });
+	// };
 }
 
 have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
