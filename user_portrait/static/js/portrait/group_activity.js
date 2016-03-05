@@ -565,13 +565,14 @@ function show_active_users(data, div_name){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < show_count; i++) {
         var name_list = data[i][0].split('&');
+        var user_id = name_list[0];
         var name = name_list[1];
         var s = i.toString();
         var m = i + 1;
         if(name=='unknown'){
             name = '未知';
 		}
-        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
+        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid='+user_id+'">'+ name + '</a></th><th style="text-align:center">'+data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
     $('#'+div_name).append(html);

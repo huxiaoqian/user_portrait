@@ -306,11 +306,12 @@ function show_influ_users(div_name,data){
     for (var i = 0; i < data.length; i++) {
        var s = i.toString();
        var m = i + 1;
-       var uname = data[i][0].split('&')[1]
+       var inid =  data[i][0].split('&')[0]
+       var uname = data[i][0].split('&')[1];
        if(uname == 'unknown'){
           uname = '未知';
        }
-       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + uname + '</th><th style="text-align:center">' + data[i][1] + '</th></tr>';
+       html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid='+inid+'">' + uname + '</a></th><th style="text-align:center">' + data[i][1] + '</th></tr>';
     };
     /*
     html += '<tr><th style="text-align:center">' + 2 + '</th><th style="text-align:center">iphone</th><th style="text-align:center">237</th></tr>';
@@ -782,8 +783,8 @@ function spread_load(){
             $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
         }
         bind_spread_click();
-        show_more_influ_active_users('show_rank_influ_users');
-        show_more_influ_active_users('show_rank_uninflu_users');
+        // show_more_influ_active_users('show_rank_influ_users');
+        // show_more_influ_active_users('show_rank_uninflu_users');
         //$('#group_influence_conclusion').append('结论结论结论结论');
         
         var weibo_user_url = '/group/group_member/?task_name=' + name;
