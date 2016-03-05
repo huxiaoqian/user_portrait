@@ -208,7 +208,7 @@ function Draw_topic(data){
       var topic_name = topic_result[0];
       //console.log(topic_name);
       var topic_value = topic_result[1];
-      console.log(topic_value)
+     // console.log(topic_value)
       var myChart2 = echarts.init(document.getElementById('user_topic'));
       var option = {
         // title : {

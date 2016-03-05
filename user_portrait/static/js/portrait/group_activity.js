@@ -565,13 +565,14 @@ function show_active_users(data, div_name){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < show_count; i++) {
         var name_list = data[i][0].split('&');
+        var user_id = name_list[0];
         var name = name_list[1];
         var s = i.toString();
         var m = i + 1;
         if(name=='unknown'){
             name = '未知';
 		}
-        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
+        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid='+user_id+'">'+ name + '</a></th><th style="text-align:center">'+data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
     $('#'+div_name).append(html);
@@ -729,6 +730,9 @@ function show_activity_track(data){
     var html = '';
     html += '<select id="select_track_weibo_user" style="max-width:150px;">';
     for (var i = 0; i < data.length; i++) {
+        if(data[i][1]=='unknown'){
+            data[i][1] = '未知';
+		}
         html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
     }
     html += '</select>';
@@ -823,10 +827,13 @@ function month_process(data){
         for (var i = 0; i < data.length; i++){
             var time_geo = data[i];
             if (time_geo[1] != ''){
-                timelist.push(time_geo[0]);
-                var city_city = time_geo[1].split('\t').pop();
-                geolist.push(city_city);
-                addedlist[city_city] = '';
+                var unit_geo_list = time_geo[1].split('\t');
+                if (unit_geo_list[0] == '中国'){
+                    timelist.push(time_geo[0]);
+                    var city_city = unit_geo_list.pop();
+                    geolist.push(city_city);
+                    addedlist[city_city] = '';
+                }
             }
         }
         // marker

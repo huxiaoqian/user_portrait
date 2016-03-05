@@ -214,6 +214,11 @@ function draw_topic(data){
     $('#topic').empty();
     var datas = data['topic'];
     html = '';
+    console.log(datas);
+    console.log(datas.length);
+    if(datas.length==0){
+      html = '无入库用户';
+    }else{
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
@@ -223,8 +228,9 @@ function draw_topic(data){
        if(i >=6 ){
         break;
        }
-  }
+    }
     html += '</table>'; 
+  }
     $('#topic').append(html);                  
 }
 
@@ -232,21 +238,29 @@ function draw_more_topic(data){
     $('#topic0').empty();
     var datas = data['topic'];
     html = '';
+    if(datas.length==0){
+      html = '无入库用户';
+    }else{
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">话题</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
     for (var key in datas) {
        html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + datas[key][0] + '</th><th style="text-align:center">' + datas[key][1] +  '</th></tr>';
     i = i + 1;
-  }
+    }
     html += '</table>'; 
+    }
     $('#topic0').append(html);                  
 }
 
 function draw_field(data){
     $('#field').empty();
-    var datas = data['domain'];
     html = '';
+    var datas = data['domain'];
+    //console.log(datas.length);
+    if(datas.length==0){
+      html = '无入库用户';
+    }else{
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
@@ -256,7 +270,8 @@ function draw_field(data){
        if(i >=6 ){
         break;
        }
-  }
+     }
+    }
     html += '</table>'; 
     $('#field').append(html);                  
 }
@@ -265,14 +280,18 @@ function draw_more_field(data){
     $('#field0').empty();
     var datas = data['domain'];
     html = '';
+    if(datas.length==0){
+      html = '无入库用户';
+    }else{
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">领域</th><th style="text-align:center">次数</th></tr>';
     var i = 1;
     for (var key in datas) {
        html += '<tr><th style="text-align:center">' + i + '</th><th style="text-align:center">' + datas[key][0] + '</th><th style="text-align:center">' + datas[key][1] +  '</th></tr>';
     i = i + 1;
-  }
+     }
     html += '</table>'; 
+    }
     $('#field0').append(html);                  
 }
 
@@ -281,6 +300,7 @@ function draw_out_list(data){
     $('#out_list').empty();
     var select_graph = $('input[name="graph-type"]:checked').attr("title");
     html = '';
+    if(data.length==0){html+='无未入库用户';}else{
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
     html += '<thead><tr><th style="width:90px;text-align:center;">用户ID</th><th style="width:150px;text-align:center;">昵称</th><th style="text-align:center;">'+select_graph+'数</th><th style="text-align:center;">粉丝数</th><th style="text-align:center;">' + '<input name="out_choose_all" id="out_choose_all" type="checkbox" value="" onclick="out_choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
@@ -289,22 +309,30 @@ function draw_out_list(data){
       //item = replace_space(item);
       //global_data[item[0]] = item; // make global data\
       var list_id = '';
-      //console.log(item[0]);
-      if(item[0]==''||item[0]=='None'){
+      console.log(item[0]=='' );
+      console.log(item[0],item[1].length);
+      if(item[0]=='None'){
         continue;
-      }else{
-        var user_url = 'http://weibo.com/u/'+ item[0];
-        html += '<tr id=' + item[0] +'>';
-        html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
+      }else if(item[0]=='' && item[1].length>0){
+        var user_url = '<tr id="未知"><td style="text-align:center" style="width:150px;">未知</td>';
+      }
+      else{
+        list_id = item[0];
+        var user_url0 = 'http://weibo.com/u/'+ list_id;
+        var user_url = '<tr id=' + list_id +'>';
+        user_url+= '<td style="text-align:center" name="uids"><a href='+ user_url0+ '  target="_blank">'+ list_id +'</td>';
+      }
+        html += user_url;
         html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
         html += '<td style="text-align:center" style="width:100px;">'+ item[2] +'</td>';
         html += '<td style="text-align:center" style="width:100px;">'+ item[3] +'</td>';
         html += '<td style="text-align:center"><input name="out_list_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
         html += '</tr>';
-      }
+      //}
     }
     html += '</tbody>';
     html += '</table>';
+  }
     $('#out_list').append(html);
 }
 
@@ -366,14 +394,21 @@ function in_choose_all(){
 
 function out_list_button(){
   var cur_uids = []
+  var noneflag = true;
   $('input[name="out_list_option"]:checked').each(function(){
       cur_uids.push($(this).attr('value'));
+      if($(this).parent().prev().prev().prev().prev().text()=='未知'){
+        noneflag = false;
+      }
   });
   var compute_type = $('input[name="compute-type"]:checked').val();
  // var recommend_date = new Date().format('yyyy-MM-dd');
   var recommend_date0 = choose_time_for_mode();    // choose_time_for_mode().format('yyyy-MM-dd');
   recommend_date0.setDate(recommend_date0.getDate()-1);
   var recommend_date = recommend_date0.format('yyyy-MM-dd');
+  if(noneflag==false){
+    alert('ID未知用户不能推荐入库！');
+  }else{
   if (cur_uids.length == 0){
     alert("请选择至少一个用户！");
   }
@@ -398,6 +433,7 @@ function out_list_button(){
           }    
       }
   }
+}
 }
 
 function in_list_button(){

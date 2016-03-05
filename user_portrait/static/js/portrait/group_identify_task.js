@@ -41,7 +41,7 @@ Draw_resultTable: function(data){
 		}else{
 			html += '<td>正在计算</td>';
 		}
-		html +='<td><a href="javascript:void(0)" id="commit_control">提交监控</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="analyze_del">删除</a></td>';
+		html +='<td><a href="javascript:void(0)" style="background:white" id="commit_control">提交监控</a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="analyze_del">删除</a></td>';
 		html += '</tr>';
 	}
 	html += '</tbody>';
@@ -204,6 +204,9 @@ function submit_control(that){
 			$('#group_control').modal();
 		 }
 	});	
+	// $('a[id^="commit_control"]').onMouseover=function(e){
+	// 	this.style.background='yellow';
+	// };
 }
 
 have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
@@ -417,7 +420,18 @@ function group_control_check(){             // check validation
         alert('备注只能包含英文、汉字、数字和下划线,请重新输入!');
         return false;
     }
-    console.log($('input[name="con_nor_keywords"]').val());
+    //console.log($('input[name="con_nor_keywords"]').val());
+    var reg1 = "^[a-zA-Z0-9_\\s\u4e00-\u9fa5\uf900-\ufa2d]+$";
+    var input_nor = $('input[name="con_nor_keywords"]').val();
+    var input_sen = $('input[name="con_keywords"]').val();
+    if ((input_nor.length > 0) && (!input_nor.match(reg1))){
+        alert('关键词只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
+    if ((input_sen.length > 0) && (!input_sen.match(reg1))){
+        alert('关键词只能包含英文、汉字、数字和下划线,请重新输入!');
+        return false;
+    }
     if($('input[name="con_nor_keywords"]').val()==''){
     	var a = [];
     	$('[name="con_more_option_0"]:checked').each(function(){

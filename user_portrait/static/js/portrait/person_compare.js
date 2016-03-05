@@ -13,8 +13,28 @@ Search_weibo.prototype = {
           success:callback,
         });
     },
+    call_async_ajax_request:function(url, method, callback){
+        $.ajax({
+          url: url,
+          type: method,
+          dataType: 'json',
+          async: true,
+          beforeSend:function(){$('#compare_loading').showLoading();},
+          complete:function(){$('#compare_loading').hideLoading();},
+          success:callback,
+        });
+    },
+    Total_callback:function(all_data){
+        var data = all_data.user_portrait;
+        var url_photo = data.photo_url;
+        var portrait = data.portrait;
+        var tag_data = data.tag;
+        Compare(url_photo, portrait, tag_data);
+        compare_extra(portrait);
+        bind_close_click(portrait);
+    },
     Get_Callback_data:function(data){
-        that.call_data = data
+        that.call_data = data;
     },
     Return_data: function(){
         return that.call_data;
@@ -65,7 +85,7 @@ Search_weibo.prototype = {
 }
 
 
-function Compare(){
+function Compare(url_photo, portrait, tag_data){
     var html = '';
     var num = 0;
     var j = 0;
@@ -80,10 +100,10 @@ function Compare(){
         var person_url = "http://"+window.location.host+"/index/personal/?uid=";
         person_url = person_url + k;
         i += 1;
-        if(url_photo[k]=='unkown'){
+        if(url_photo[k]['photo_url']=='unkown'){
             photos = 'http://tp2.sinaimg.cn/1878376757/50/0/1';
         }else{
-            photos = url_photo[k];
+            photos = url_photo[k]['photo_url'];
         }
         html += '<th name="line'+ i +'" id='+k +' value='+i+'>';
         html += '<div class="panel-heading text-center">';
@@ -295,12 +315,13 @@ function Draw_think_emotion(psycho_status,div){
 }
 myChart.setOption(option);  
 }
-function compare_extra(){
+function compare_extra(portrait){
     var mark = 1;
     var div ;
     for(var key in portrait){
         div = 'line'+ mark;
         if(portrait[key]['keywords'].length == 0){
+            $('#'+div).empty();
             $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
         }else{
             Search_weibo.Draw_cloud_keywords(portrait[key]['keywords'], div);
@@ -308,9 +329,10 @@ function compare_extra(){
         div = 'emotion'+ mark;
         var psycho_status = portrait[key]['psycho_status']
         Draw_think_emotion(psycho_status,div);
-        div = 'hashtag'+ mark;
 
+        div = 'hashtag'+ mark;
         if(portrait[key]['hashtag']){
+            $('#'+div).empty();
             $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
         }else{
             Search_weibo.Draw_cloud_keywords(portrait[key]['hashtag'], div);
@@ -318,22 +340,49 @@ function compare_extra(){
         mark = mark + 1;
     }
 }
+function bind_close_click(portrait){
+     $('.btn-round').live('click', function(){
+        var cell = $('#table_compare').find('th').prevAll().length;
+        $('#table_compare').css('table-layout', 'fixed');
+        $('[name='+ $(this).attr("name") +']').remove();
+        $('#table_compare').css('table-layout', 'auto');
+        $("td[name^='list-']").attr('colspan',cell);
+        $('#table_compare').css('table-layout', 'fixed');
+        if(cell == 1){
+            $('#table_compare').css('table-layout', 'fixed');
+        }
+        var length = $("#head_id").find('th').length;
+        for(var i = 1; i < length; i++){
+            var obj = $("#head_id").find('th').eq(i);
+            var uid = obj.attr('id');
+            var value = obj.attr("value");
+            var cloud_div = 'line'+value;
+            var topic_div = 'topic'+ value;
+            var emotion_div = 'emotion' + value;
+            var hashtag_div = 'hashtag'+ value ;
+            if(portrait[uid]['keywords'].length == 0){
+                $('#'+cloud_div).empty();
+                $('#'+cloud_div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
+            }else{
+                Search_weibo.Draw_cloud_keywords(portrait[uid]['keywords'], cloud_div);
+            }
+            if(portrait[uid]['hashtag']){
+                $('#'+hashtag_div).empty();
+                $('#'+hashtag_div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
+            }else{
+                Search_weibo.Draw_cloud_keywords(portrait[uid]['hashtag'], hashtag_div);
+            }
+            var psycho_status = portrait[uid]['psycho_status']
+            Draw_think_emotion(psycho_status,emotion_div);
+        }
+
+     });
+}
 var uid_list = window.location.search;
 Search_weibo = new Search_weibo();
 //心理状态
 var SENTIMENT_DICT_NEW = {'0':'中性', '1':'积极', '2':'生气', '3':'焦虑', '4':'悲伤', '5':'厌恶', '6':'其他', '7':'消极'};
-$('#compare_loading').showLoading();
-var url_profile = '/manage/compare_user_profile/'+ uid_list;
-Search_weibo.call_sync_ajax_request(url_profile, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
-var url_photo = Search_weibo.Return_data();
-
-var url_portrait = '/manage/compare_user_portrait/' + uid_list;
-Search_weibo.call_sync_ajax_request(url_portrait, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
-var portrait = Search_weibo.Return_data();
-
-var user_tag = '/tag/show_user_tag/'+ uid_list;
-Search_weibo.call_sync_ajax_request(user_tag, Search_weibo.ajax_method, Search_weibo.Get_Callback_data);
-var tag_data = Search_weibo.Return_data();
-Compare();
-compare_extra();
-$('#compare_loading').hideLoading();
+//$('#compare_loading').showLoading();
+var url_total = '/manage/all_user_portrait/' + uid_list;
+Search_weibo.call_async_ajax_request(url_total, Search_weibo.ajax_method, Search_weibo.Total_callback);
+//$('#compare_loading').hideLoading();

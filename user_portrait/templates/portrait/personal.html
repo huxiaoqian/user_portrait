@@ -495,7 +495,8 @@ function detail_load(){
     }
     window.location.href = '#detail';
 }
-function person_call_ajax_request(url, callback){
+
+function tag_call_ajax_request(url, callback){
     $.ajax({
         url:url,
         type:"GET",
@@ -506,6 +507,22 @@ function person_call_ajax_request(url, callback){
         },
         complete:function(){
             $('.loading_mask').hideLoading();
+        },
+        success:callback,
+    });
+}
+
+function person_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        type:"GET",
+        dataType:'json',
+        async:true,
+        beforeSend:function(){
+            $('.soft_con_icon').showLoading();
+        },
+        complete:function(){
+            $('.soft_con_icon').hideLoading();
         },
         success:callback,
     });
