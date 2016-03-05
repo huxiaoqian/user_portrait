@@ -580,7 +580,7 @@ function show_active_users(data, div_name){
         var s = i.toString();
         var m = i + 1;
         if(name=='unknown'){
-            name = '未知';
+            name = '未知('+user_id+')';
 		}
         html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid='+user_id+'">'+ name + '</a></th><th style="text-align:center">'+data[i][1] + '</th></tr>';
     };
@@ -637,19 +637,19 @@ function group_activity(data){
     tooltip : {
         trigger: 'axis',
         formatter: function (params) {
-        var max_user_name = [];
-        var min_user_name = [];
-        for(var i=0; i<max_list.length;i++){
-            if(max_list[i][2]=='unknown'){
-                max_list[i][2] = '未知';
-            }
-            if(min_list[i][2]=='unknown'){
-                min_list[i][2] = '未知';
-            }
-            max_user_name.push(max_list[i][2]);
-            min_user_name.push(min_list[i][2]);
+            var max_user_name = [];
+            var min_user_name = [];
+            for(var i=0; i<max_list.length;i++){
+                if(max_list[i][2]=='unknown'){
+                    max_list[i][2] = '未知('+max_list[i][0]+')';
+                }
+                if(min_list[i][2]=='unknown'){
+                    min_list[i][2] = '未知('+min_list[i][0]+')';
+                }
+                max_user_name.push(max_list[i][2]);
+                min_user_name.push(min_list[i][2]);
 
-        };
+            };
             var res = '' + params[0].name;
             var index = params[0].dataIndex;
             res +=  ': <br/>最高值用户: ' + max_user_name[index];
@@ -675,12 +675,14 @@ function group_activity(data){
         {
             type : 'category',
             boundaryGap : false,
+            
             data : xAxis_data
         }
     ],
     yAxis : [
         {
             type : 'value',
+            scale: true,
             name : '活跃度'
 
         }
@@ -741,7 +743,7 @@ function show_activity_track(data){
     html += '<select id="select_track_weibo_user" style="max-width:150px;">';
     for (var i = 0; i < data.length; i++) {
         if(data[i][1]=='unknown'){
-            data[i][1] = '未知';
+            data[i][1] = '未知('+ data[i][0] +')';
 		}
         html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
     }
