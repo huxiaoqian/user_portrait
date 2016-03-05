@@ -1419,7 +1419,10 @@ def get_activity_weibo(uid, time_type, start_ts):
         weibo['timestamp'] = ts2date(source['timestamp'])
         weibo['ip'] = source['ip']
         weibo['text'] = source['text']
-        weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        if source['geo']:
+            weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        else:
+            weibo['geo'] = ''
         weibo['ip'] = source['ip']
         weibo_list.append(weibo)
     return weibo_list
