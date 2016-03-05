@@ -70,7 +70,7 @@ searchResult:function(data){
 	for(i=0;i<item.length;i++){
 		html += '<tr>'
 		html += '<td name="attribute_name">'+item[i].attribute_name+'</td>';
-		html += '<td name="attribute_value"><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" title="点击编辑">'+item[i].attribute_value+'</a></td>';
+		html += '<td name="attribute_value"><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" id="currentEdit" title="点击编辑">'+item[i].attribute_value+'</a></td>';
 		html += '<td name="creater">'+item[i].user+'</td>';
 		html += '<td name="time">'+item[i].date+'</td>'
 		html += '<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" id="delTag">删除</a></td>';
@@ -88,6 +88,7 @@ function searchbtnFun(that){
 		$("#float-wrap").addClass("hidden");
         $("#SearchTab").addClass("hidden");
 		url += get_data();
+		console.log(url);
 		that.call_sync_ajax_request(url,that.ajax_method,that.searchResult);
 	});
 }
