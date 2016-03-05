@@ -532,7 +532,10 @@ def get_activity_weibo(task_name, start_ts):
         weibo['timestamp'] = ts2date(source['timestamp'])
         weibo['ip'] = source['ip']
         weibo['text'] = source['text']
-        weibo['geo'] = '\t'.join(source['geo'])
+        if source['geo']:
+            weibo['geo'] = '\t'.join(source['geo'])
+        else:
+            weibo['geo'] = ''
         results.append(weibo)
 
     return results
