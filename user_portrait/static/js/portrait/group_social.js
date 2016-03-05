@@ -1,23 +1,3 @@
-Date.prototype.format = function(format) {
-    var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(), //day
-        "h+" : this.getHours(), //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-        "S" : this.getMilliseconds() //millisecond
-    }
-    if(/(y+)/.test(format)){
-        format=format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(format)){
-            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
-        }
-    }
-    return format;
-}
 function g_social(){
   this.ajax_method = 'GET';
 }
@@ -133,10 +113,6 @@ function g_page_group_weibo1(start_row,end_row,data,div_name,sub_div_name){
     $("#"+div_name+" #group_weibo_text").append(html);
     //$("#"+sub_div_name).empty();
 }
-$('#weiboTab li a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-})
 
 function Draw_group(data){
     $('#in_group').empty();
@@ -165,13 +141,13 @@ function draw_relation_net(data,name,symbols){
         var content1 = {};
         content1['category'] = 1;
         if(data[name][s]['3']=='unknown'){
-            //content1['name'] = '未知\n'+'('+data[name][s]['0']+')';
+            content1['name'] = '未知\n'+'('+data[name][s]['0']+')';
             content1['label'] = '未知';
         }else{
-            //content1['name'] = data[name][s]['3']+'\n('+data[name][s]['0']+')';
+            content1['name'] = data[name][s]['3']+'\n('+data[name][s]['0']+')';
             content1['label'] = data[name][s]['3'];
         };
-        content1['name'] = data[name][s]['0'];
+        //content1['name'] = data[name][s]['0'];
         content1['id'] = data[name][s]['0'];
         content1['value'] = 7;
         content1['draggable'] = true;
@@ -180,14 +156,13 @@ function draw_relation_net(data,name,symbols){
         var content2 = {};
         content2['category'] = 1;
         if(data[name][s]['4']=='unknown'){
-            //content2['name'] = '未知'+'\n('+data[name][s]['1']+')';
+            content2['name'] = '未知'+'('+data[name][s]['1']+')';
             content2['label'] = '未知';
         }else{
-            //content2['name'] = data[name][s]['4']+'\n('+data[name][s]['1']+')';
+            content2['name'] = data[name][s]['4']+'('+data[name][s]['1']+')';
             content2['label'] = data[name][s]['4'];
         };
-        //console.log('name!2!',content['name']);
-        content2['name'] = data[name][s]['1'];
+        //content2['name'] = data[name][s]['1'];
         content2['id'] = data[name][s]['1'];
         content2['value'] = 7;
         content2['draggable'] = true;
@@ -195,8 +170,8 @@ function draw_relation_net(data,name,symbols){
         total_content.push(content2);
 
         var relation = {};
-        //relation['source'] = data[name][s]['4']+'\n('+data[name][s]['1']+')';
-        //relation['target'] = data[name][s]['3']+'\n('+data[name][s]['0']+')';
+        //relation['source'] = data[name][s]['4']+'('+data[name][s]['1']+')';
+        //relation['target'] = data[name][s]['3']+'('+data[name][s]['0']+')';
         relation['source'] = content2['name'];
         relation['target'] = content1['name'];
         relation['weight'] = data[name][s]['2'];
@@ -316,13 +291,13 @@ function draw_relation_out_net(data,name,symbols){
         var content1 = {};
         content1['category'] = 1;
         if(data[name][s]['5']=='unknown'){
-            //content1['name'] = '未知\n'+'('+data[name][s]['1']+')';
+            content1['name'] = '未知'+'('+data[name][s]['1']+')';
             content1['label'] = '未知';
         }else{
-            //content1['name'] = data[name][s]['5']+'\n('+data[name][s]['1']+')';
+            content1['name'] = data[name][s]['5']+'('+data[name][s]['1']+')';
             content1['label'] = data[name][s]['5'];
         };
-        content1['name'] = data[name][s]['1'];
+        //content1['name'] = data[name][s]['1'];
         content1['id'] = data[name][s]['1'];
         content1['value'] = data[name][s]['3']/10;
         content1['draggable'] = true;
@@ -331,13 +306,13 @@ function draw_relation_out_net(data,name,symbols){
 
         content2['category'] = 0;
         if(data[name][s]['4']=='unknown'){
-         //   content2['name'] = '未知\n'+'('+data[name][s]['0']+')';
+            content2['name'] = '未知'+'('+data[name][s]['0']+')';
             content2['label'] = '未知';
         }else{
-        //    content2['name'] = data[name][s]['4']+'\n('+data[name][s]['0']+')';
+            content2['name'] = data[name][s]['4']+'('+data[name][s]['0']+')';
             content2['label'] = data[name][s]['4'];  
         };
-        content2['name'] = data[name][s]['0'];
+        //content2['name'] = data[name][s]['0'];
         content2['id'] = data[name][s]['0'];     
         //content['value'] = data[name][s]['3'];
         content2['draggable'] = true;
@@ -707,7 +682,12 @@ function show_conclusion(data){
   $("#social_conclusion").append(html);
 }
 
-function social_click(){
+// function social_click(){
+//     $('#weiboTab li a').click(function (e) {
+//       e.preventDefault()
+//       $(this).tab('show')
+//     })
+// }
    //  $('a[id^="group_change_weibo"]').click(function(){
    //  var uid1 = $(this).parent().prev().prev().text();
    //  var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
@@ -732,7 +712,7 @@ function social_click(){
     console.log('/group/social_out_content/?uid1='+init_out_uid1+'&uid2='+init_out_uid2);
     g_social.call_sync_ajax_request('/group/social_out_content/?uid1='+init_out_uid1+'&uid2='+init_out_uid2, g_social.ajax_method, draw_group_weibo2);
     */
-}
+
 
 function draw_social(data){
 	Draw_group(data);
@@ -746,10 +726,15 @@ function draw_social(data){
 	//draw_more_in_table(data);
 	//draw_more_out_table(data);
 }
+function social_load(){
+    if (!global_social_flag){
+        var social_url = '/group/show_group_result/?task_name='+name+'&module=social';
+        g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
+        //var group_weibo_url = '/group/social_out_content/?uid1=3270561561&uid2=2656274875';
+        //g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo1);
+        global_social_flag = true;
+    }
+}
 
-
-var social_url = '/group/show_group_result/?task_name='+name+'&module=social';
 var g_social = new g_social();
-var group_weibo_url = '/group/social_out_content/?uid1=3270561561&uid2=2656274875';
-g_social.call_sync_ajax_request(social_url, g_social.ajax_method, draw_social);
-//g_social.call_sync_ajax_request(group_weibo_url, g_social.ajax_method, draw_group_weibo1);
+var global_social_flag = false;

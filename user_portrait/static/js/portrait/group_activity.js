@@ -69,27 +69,7 @@ function Draw_activity(data){
                 cursor:'pointer',
                 events:{
                     click:function(event){
-                        var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + data[event.point.x][0];
-                        call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
-                        var html0 = '';
-                        $('#line_select_time').empty();  
-                        var time_index = event.point.x;
-                        if(time_index != 0){
-                            var time_split = data_x_[time_index].split('-');
-                            var time_split_end = time_split[1];
-                            var time_split_from = data_x_[time_index-1];
-                            var split_from =   time_split_from[0] 
-                            html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+time_split_from+'--'+time_split[1]+'-'+time_split[2]+"</div>";
-                        }else{
-                            html0 += "<div>当前选择时间段：</div><div style='color:brown;'>"+data_x_[event.point.x]+"</div>";
-                        }
-                        //data_x_[event.point.x]
-                        console.log(html0);
-                        console.log(event.point.x);
-                        $('#line_select_time').append(html0);
-                        
-                        //console.log(activity_weibo_url);
-                        // draw_content(data_x_[event.point.x]);
+                        point2weibo(event.point.x, data[event.point.x][0]);
                     }
                 }
             }
@@ -110,6 +90,44 @@ function Draw_activity(data){
             data: data_y_
         }]
     });
+}
+
+//微博文本默认数据
+function point2weibo(xnum, ts){
+    //console.log(ts);
+    var delta = '';
+    var activity_weibo_url = '/group/activity_weibo/?task_name='+ name +'&start_ts=' + ts;
+    call_sync_ajax_request(activity_weibo_url, ajax_method, draw_content);
+        switch(xnum % 6)
+        {
+            case 0: delta = "00:00-04:00";break;
+            case 1: delta = "04:00-08:00";break;
+            case 2: delta = "08:00-12:00";break;
+            case 3: delta = "12:00-16:00";break;
+            case 4: delta = "16:00-20:00";break;
+            case 5: delta = "20:00-24:00";break;
+        }
+        $('#date_zh').html(getYearDate(ts));
+    
+    $('#time_zh').html(delta);
+}
+function getYearDate(tm){
+    var tt = new Date(parseInt(tm)*1000).format("yyyy-MM-dd");
+    return tt;
+}
+function draw_content(data){
+    //console.log(data);
+    var html = '';
+    $('#line_content').empty();
+    if(data==[]){
+        html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
+    }else{
+        for(i=0;i<data.length;i++){
+            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span style='font-size:12px;'>"+data[i].text+"</span><br><br></div>";
+        }
+
+    }
+    $('#line_content').append(html);
 }
 
 function Draw_activeness(data){
@@ -197,20 +215,22 @@ function Draw_activeness(data){
 });
 }
 
-function draw_content(data){
-    //console.log(data);
-    var html = '';
-    $('#line_content').empty();
-    if(data==[]){
-        html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
-    }else{
-        for(i=0;i<data.length;i++){
-            html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span style='font-size:12px;'>"+data[i].text+"</span><br></div>";
-        }
 
-    }
-    $('#line_content').append(html);
-}
+// function draw_content(data){
+//     var html = '';
+//     $('#weibo_text').empty();
+//     if(data==''){
+//         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
+//     }else{
+//         for(i=0;i<data.length;i++){
+//             html += "<div style='width:100%;'><img src='/static/img/pencil-icon.png' style='height:10px;width:10px;margin:0px;margin-right:10px;'><span>"+data[i].text+"</span><br></div>";
+//         }
+
+//     }
+//     $('#weibo_text').append(html);
+// }
+
+
 function show_online_time(data){
     $('#online_time_table').empty();
     var time_split =[];
@@ -292,7 +312,7 @@ function Draw_top_location(data){
 	//console.log(bar_data_2);
 	bar_data_x = bar_data_2;
 	
-		console.log(timeline_data.length);
+		//console.log(timeline_data.length);
     var myChart = echarts.init(document.getElementById('top_active_geo_line')); 
     var option = {
         timeline:{
@@ -433,14 +453,14 @@ function Draw_more_moving_geo(from_city, end_city, dealt_data){
     html += '<table class="table table-striped " font-size:14px">';
     html += '<tr><th style="text-align:center">起始地</th>';
     html += '<th style="text-align:right"></th>';
-    html += '<th style="text-align:left">目的地</th>';
+    html += '<th style="text-align:center">目的地</th>';
     html += '<th style="text-align:center">人次</th>';
     html += '</tr>';
     for (var i = 0; i < dealt_data[0].length; i++) {
         html += '<tr>';
         html += '<td style="text-align:center;vertical-align: middle;">' + from_city[i] + '</td>';
         html += '<td style="text-align:center;"><img src="/../../static/img/arrow_geo.png" style="width:30px;"></td>';
-        html += '<td style="text-align:left;vertical-align: middle;">' + end_city[i] + '</td>';
+        html += '<td style="text-align:center;vertical-align: middle;">' + end_city[i] + '</td>';
         html += '<td style="text-align:center;vertical-align: middle;">' + dealt_data[1][i] + '</td>';
     html += '</tr>'; 
     };
@@ -679,6 +699,8 @@ function group_activity(data){
 function show_activity(data) {
 	var time_data = [23,3,4,55,22,6]
     // console.log(runtype);
+    //默认显示第一天微博；
+    point2weibo(0, data.activity_trend[0][0])
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
 
@@ -833,7 +855,7 @@ function month_process(data){
                     marker.setTitle(geoname+addedlist[geoname]);
                     marker.setOffset(new BMap.Size(2,10));
                     map.addOverlay(marker);
-                    newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
+                    newgeo[geoname] = [fixpoint.lng.toFixed(2),fixpoint.lat.toFixed(2)];
                 }
                 else{
                     //alert("no such point!");

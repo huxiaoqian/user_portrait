@@ -55,13 +55,23 @@ def ajax_create_task():
         else:
             task_detail["social_sensors"] = json.dumps([])
         if keywords:
-            task_detail["keywords"] = json.dumps(keywords.split(","))
+            tmp_list = keywords.split(",")
+            keywords_list = []
+            for item in tmp_list:
+                keywords_list.append(item.replace(' ', ''))
+            task_detail["keywords"] = json.dumps(keywords_list)
         else:
             task_detail["keywords"] = json.dumps([])
         if sensitive_words:
-            task_detail["sensitive_words"] = json.dumps(sensitive_words.split(","))
+            tmp_list = sensitive_words.split(",")
+            sensitive_words_list = []
+            for item in tmp_list:
+                sensitive_words_list.append(item.replace(' ', ''))
+            task_detail["sensitive_words"] = json.dumps(sensitive_words_list)
         else:
             task_detail["sensitive_words"] = json.dumps([])
+        if not sensitive_words_list and keywords_list:
+            return json.dumps(['0'])
         now_ts = int(time.time())
         task_detail["create_at"] = create_time # now_ts
         task_detail["warning_status"] = '0'

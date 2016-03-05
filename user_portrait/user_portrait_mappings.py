@@ -75,13 +75,13 @@ index_info = {
                 },
 
                 "importance": {
-                    "type": "long"
+                    "type": "double"
                 },
                 "influence": {
-                    "type": "long"
+                    "type": "double"
                 },
                 "activeness": {
-                    "type": "long"
+                    "type": "double"
                 },
                 "online_pattern":{
                     "type": "string",

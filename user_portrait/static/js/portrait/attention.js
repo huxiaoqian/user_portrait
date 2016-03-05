@@ -3,13 +3,7 @@
 }
 Attention.prototype = {   //获取数据，重新画表
   call_sync_ajax_request:function(url, method, callback){
-    $.ajax({
-      url: url,
-      type: method,
-      dataType: 'json',
-      async: false,
-      success:callback
-    });
+      person_call_ajax_request(url, callback);
   },
 Draw_attention:function(data){
   var texts = '';
@@ -28,15 +22,10 @@ Draw_attention:function(data){
 	 }	
   }
 }
-var Attention = new Attention();
-url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
-Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
-bind_social_mode_choose();
 
 function attention(data,UserID,UserName,texts){
-    out_data = data['out_portrait_list'];
-    in_data = data['in_portrait_list'];
-    //console.log(out_data);
+    var out_data = data['out_portrait_list'];
+    var in_data = data['in_portrait_list'];
     var personal_url = '/index/personal/?uid=';
     var nod = {};
     nodeContent = []
@@ -46,6 +35,7 @@ function attention(data,UserID,UserName,texts){
     nod['value'] = 10;
     nodeContent.push(nod);
     var linkline =[];
+    var rename = '';
     for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
@@ -54,13 +44,18 @@ function attention(data,UserID,UserName,texts){
             }else{
               var nod_name_out = out_data[i][0];
             }
-            nod['name'] = out_data[i][1] +'('+nod_name_out+')';
-            nod['label'] = out_data[i][1];
+            if(out_data[i][1]=='unknown'){
+              rename = '未知';
+            }else{
+              rename = out_data[i][1];
+            }
+            nod['name'] = rename +'('+nod_name_out+')';
+            nod['label'] = rename;
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
             var line ={};
-            line['source'] = out_data[i][1] +'('+nod_name_out+')';
+            line['source'] = nod['name'];
             line['target'] = UserName+'('+UserID+')';
             line['weight'] = 1;
             linkline.push(line);
@@ -68,18 +63,24 @@ function attention(data,UserID,UserName,texts){
     for (var i=0;i<in_data.length;i++){
             nod = {};
             nod['category'] = 1;
-            if(out_data[i][0]=='None'){
+            if(in_data[i][0]=='None'){
               var nod_name_in = '';
             }else{
               var nod_name_in = in_data[i][0];
             }
-            nod['name'] = in_data[i][1] +'('+nod_name_in+')';
-            nod['label'] = in_data[i][1];
+            if(in_data[i][1]=='unknown'){
+              rename = '未知';
+            }else{
+              rename = in_data[i][1];
+            }
+            nod['name'] = rename +'('+nod_name_out+')';
+            //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
+            nod['label'] = rename;
             nod['value'] = 1;
             //nod['value'] = in_data[i][4];
             nodeContent.push(nod);
             var line ={};
-            line['source'] = in_data[i][1] +'('+nod_name_in+')';
+            line['source'] = nod['name'];
             line['target'] = UserName+'('+UserID+')';
             line['weight'] = 1;
             linkline.push(line);
@@ -278,27 +279,29 @@ function draw_more_field(data){
 
 function draw_out_list(data){
     $('#out_list').empty();
+    var select_graph = $('input[name="graph-type"]:checked').attr("title");
     html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th style="width:90px;text-align:center;">用户ID</th><th style="width:150px;text-align:center;">昵称</th><th style="text-align:center;">转发数</th><th style="text-align:center;">粉丝数</th><th style="text-align:center;">' + '<input name="out_choose_all" id="out_choose_all" type="checkbox" value="" onclick="out_choose_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th style="width:90px;text-align:center;">用户ID</th><th style="width:150px;text-align:center;">昵称</th><th style="text-align:center;">'+select_graph+'数</th><th style="text-align:center;">粉丝数</th><th style="text-align:center;">' + '<input name="out_choose_all" id="out_choose_all" type="checkbox" value="" onclick="out_choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
     for(var i = 0; i<data.length;i++){
       var item = data[i];
       //item = replace_space(item);
       //global_data[item[0]] = item; // make global data\
       var list_id = '';
-      console.log(item[0]);
-      if(item[0]!='None'){
-        list_id = item[0];
-      }else{list_id='';}
-      var user_url = 'http://weibo.com/u/'+ list_id;
-      html += '<tr id=' + list_id +'>';
-      html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ list_id +'</td>';
-      html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
-      html += '<td style="text-align:center" style="width:100px;">'+ item[2] +'</td>';
-      html += '<td style="text-align:center" style="width:100px;">'+ item[3] +'</td>';
-      html += '<td style="text-align:center"><input name="out_list_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
-      html += '</tr>';
+      //console.log(item[0]);
+      if(item[0]==''||item[0]=='None'){
+        continue;
+      }else{
+        var user_url = 'http://weibo.com/u/'+ item[0];
+        html += '<tr id=' + item[0] +'>';
+        html += '<td style="text-align:center" name="uids"><a href='+ user_url+ '  target="_blank">'+ item[0] +'</td>';
+        html += '<td style="text-align:center" style="width:150px;">'+ item[1] +'</td>';
+        html += '<td style="text-align:center" style="width:100px;">'+ item[2] +'</td>';
+        html += '<td style="text-align:center" style="width:100px;">'+ item[3] +'</td>';
+        html += '<td style="text-align:center"><input name="out_list_option" class="search_result_option" type="checkbox" value="' + item[0] + '" /></td>';
+        html += '</tr>';
+      }
     }
     html += '</tbody>';
     html += '</table>';
@@ -309,6 +312,7 @@ function draw_out_list(data){
 function draw_in_list(data){
   //console.log(personalData.uname);
   //console.log(uname);
+    var select_graph = $('input[name="graph-type"]:checked').attr("title");
     if(personalData.uname == 'unknown'){
       var uname = '未知';
     }else if(personalData.uname == 'undefined'){
@@ -317,7 +321,7 @@ function draw_in_list(data){
     $('#in_list').empty();
     var html = '';
     html += '<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th  style="width:90px;text-align:center;">用户ID</th><th style="width:150px;text-align:center;">昵称</th><th style="text-align:center;">影响力</th><th style="text-align:center;">重要度</th><th style="text-align:center;">转发数</th><th style="text-align:center;">' + '<input name="in_choose_all" id="in_choose_all" type="checkbox" value="" onclick="in_choose_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th  style="/*width:90px;*/text-align:center;">用户ID</th><th style="/*width:150px;*/text-align:center;">昵称</th><th style="text-align:center;">影响力</th><th style="text-align:center;">重要度</th><th style="text-align:center;">'+select_graph+'数</th><th style="text-align:center;">' + '<input name="in_choose_all" id="in_choose_all" type="checkbox" value="" onclick="in_choose_all()" />' + '</th></tr></thead>';
     html += '<tbody>';
     var user_url = 'http://weibo.com/u/'+ uid;
     html += '<tr id=' + uid +'>';
@@ -366,7 +370,10 @@ function out_list_button(){
       cur_uids.push($(this).attr('value'));
   });
   var compute_type = $('input[name="compute-type"]:checked').val();
-  var recommend_date = new Date().format('yyyy-MM-dd');
+ // var recommend_date = new Date().format('yyyy-MM-dd');
+  var recommend_date0 = choose_time_for_mode();    // choose_time_for_mode().format('yyyy-MM-dd');
+  recommend_date0.setDate(recommend_date0.getDate()-1);
+  var recommend_date = recommend_date0.format('yyyy-MM-dd');
   if (cur_uids.length == 0){
     alert("请选择至少一个用户！");
   }
@@ -375,7 +382,8 @@ function out_list_button(){
         var a = confirm('您选择了预约计算，系统将在今日24:00自动启动计算！');
         if (a == true){
             var compute_url = '/recommentation/identify_in/?date='+recommend_date+'&uid_list='+cur_uids+'&status='+compute_type;
-            Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
+            console.log(compute_url);
+            Attention.call_sync_ajax_request(compute_url, Attention.ajax_method, confirm_ok);
         }
       }
       else{
@@ -385,7 +393,8 @@ function out_list_button(){
             // var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
             // $('#out_list').append(waiting_html);
             var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids + '&status=' + compute_type;
-            Attention.call_sync_ajax_request(url, Attention.ajax_method, confirm_ok);
+            console.log(recommend_confirm_url);
+            Attention.call_sync_ajax_request(recommend_confirm_url, Attention.ajax_method, confirm_ok);
           }    
       }
   }
@@ -496,4 +505,10 @@ function bind_social_mode_choose(){
       }      
     });
 }
+function social_load(){
+    var url = '/attribute/attention/?uid='+uid+'&top_count='+select_num ;
+    Attention.call_sync_ajax_request(url, Attention.ajax_method, Attention.Draw_attention);
+    bind_social_mode_choose();
+}
+var Attention = new Attention();
 

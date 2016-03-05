@@ -12,9 +12,6 @@ g_psy.prototype = {   //获取数据，重新画表
     });
   }
 }
-var psy_url='/group/show_group_result/?task_name='+name+'&module=think';
-var g_psy = new g_psy();
-g_psy.call_sync_ajax_request(psy_url,g_psy.ajax_method,draw_think_all);
 function draw_think_all(data){
     draw_group_kind(data);
     Draw_group_think(data);
@@ -336,3 +333,12 @@ function Draw_group_trend(data){
         $('#group_select_time').append(html0);
     }   
 }
+function psy_load(){
+    if(!global_psy_flag){
+        var psy_url='/group/show_group_result/?task_name='+name+'&module=think';
+        g_psy.call_sync_ajax_request(psy_url,g_psy.ajax_method,draw_think_all);
+        global_psy_flag = true;
+    }
+}
+var g_psy = new g_psy();
+var global_psy_flag = false;

@@ -74,7 +74,7 @@
                     marker.setTitle(geoname+addedlist[geoname]);
                     marker.setOffset(new BMap.Size(2,10));
                     map.addOverlay(marker);
-                    newgeo[geoname] = [fixpoint.lng,fixpoint.lat];
+                    newgeo[geoname] = [fixpoint.lng.toFixed(2),fixpoint.lat.toFixed(2)];
                 }
                 else{
                     //alert("no such point!");
@@ -177,7 +177,15 @@
     }
 );
 }
-
+function map_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        type:'GET',
+        dataType:'json',
+        async:false,
+        success:callback,
+    });
+}
 function location_all(){
     var location_geo;
     // location table
@@ -195,7 +203,7 @@ function location_all(){
 
     var url = '/attribute/location/?uid='+uid+'&time_type=day';
     var daily_location_map_data = new Array();
-    activity_call_ajax_request(url, location_day);
+    map_call_ajax_request(url, location_day);
     function location_day(data){
         //day
         //console.log(data);
@@ -217,7 +225,7 @@ function location_all(){
     }
     var url = '/attribute/location/?uid='+uid+'&time_type=week';
     var weekly_location_map_data = new Array();
-    activity_call_ajax_request(url, location_week);
+    map_call_ajax_request(url, location_week);
     function location_week(data){
         //week
         location_geo = data.week_top;
@@ -234,7 +242,7 @@ function location_all(){
     }
     var url = '/attribute/location/?uid='+uid+'&time_type=month';
     var monthly_location_map_data = new Array();
-    activity_call_ajax_request(url, location_month);
+    map_call_ajax_request(url, location_month);
     function location_month(data){
         //console.log(data);
         $('#locate_desc').html("<span style='color:red;'>" + data.description[0] + "</span><span>" + data.description[1] + "</span>。"); //description
@@ -255,23 +263,23 @@ function location_all(){
         // month_process(data.month_track, true);
         bind_map();
         function bind_map(){
-            $('#month_track').click(function(){
+            $('#month_track').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(data.month_track, true);
             });
-            $('#total_daily_ip_map').click(function(){
+            $('#total_daily_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(daily_map_data, false);
             });
-            $('#total_weekly_ip_map').click(function(){
+            $('#total_weekly_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(weekly_map_data, false);
             });
-            $('#span_daily_ip_map').click(function(){
+            $('#span_daily_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(span_daily_map_data, true);
             });
-            $('#span_weekly_ip_map').click(function(){
+            $('#span_weekly_ip_map').live('click',function(){
                 $('#map').css('display', 'block');
                 month_process(span_weekly_map_data, true);
             });
@@ -281,13 +289,13 @@ function location_all(){
     $('#total_location_rank').append(html);
     bind_location_map();
     function bind_location_map(){
-        $('#daily_location_map').click(function(){
+        $('#daily_location_map').live('click',function(){
             month_process(daily_location_map_data, false);
         });
-        $('#weekly_location_map').click(function(){
+        $('#weekly_location_map').live('click',function(){
             month_process(weekly_location_map_data, false);
         });
-        $('#monthly_location_map').click(function(){
+        $('#monthly_location_map').live('click',function(){
             month_process(monthly_location_map_data, false);
         });
     }

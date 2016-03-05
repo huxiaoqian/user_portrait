@@ -11,6 +11,7 @@ from user_portrait.global_utils import es_flow_text, flow_text_index_name_pre, f
 from user_portrait.time_utils import ts2datetime, datetime2ts
 from user_portrait.parameter import DAY, WEEK, MAX_VALUE, SENTIMENT_FIRST, SENTIMENT_SECOND
 from user_portrait.parameter import RUN_TYPE, RUN_TEST_TIME
+from user_portrait.parameter import IDENTIFY_ATTRIBUTE_LIST as identify_attribute_list
 
 #use to get evaluate max
 def get_evaluate_max():
@@ -43,8 +44,9 @@ def get_psycho_status(uid_list):
     #time for es_flow_text
     now_ts = time.time()
     now_date_ts = datetime2ts(ts2datetime(now_ts))
-    #test
-    now_date_ts = datetime2ts('2013-09-08')
+    #run_type
+    if RUN_TYPE == 0:
+        now_date_ts = datetime2ts(RUN_TEST_TIME)
     start_date_ts = now_date_ts - DAY * WEEK
     for i in range(0, WEEK):
         iter_date_ts = start_date_ts + DAY * i
@@ -153,19 +155,105 @@ def compare_user_portrait_new(uid_list):
         user_result[uid]['hashtag'] = json.loads(source['hashtag_dict'])
         #attr: psycho status
         user_result[uid]['psycho_status'] = user_psycho_status_result[uid]
-    
+        
     return user_result
 
+# use to get user custom tag
+# return {uid:['attribute_name1:attribute_value1', 'attribute_name2:attribtue_value2']}
+def get_user_tag(uid_list):
+    result = {}
+    user_result = es.mget(index=portrait_index_name, doc_type=portrait_index_type, body={'ids':uid_list})['docs']
+    for user_item in user_result:
+        uid = user_item['_id']
+        result[uid] = []
+        try:
+            source = user_item['_source']
+        except:
+            source = {}
+        for key in source:
+            if key not in identify_attribute_list:
+                value = source[key]
+                tag_string = key+':'+value
+                result[uid].append(tag_string)
+
+    return result
+
+def compare_user_portrait_v3(uid_list):
+    try:
+        user_portrait_result = es.mget(index=portrait_index_name, doc_type=portrait_index_type,\
+                body={'ids':uid_list})['docs']
+    except:
+        user_portrait_result = []
+    if user_portrait_result == []:
+        return 'uid_list not exist'
+    #get max evaluate:
+    max_result = get_evaluate_max()
+    user_result = {}
+    photo_result = {}
+    tag_result = {}
+    #get user psycho status from flow_text
+    user_psycho_status_result = get_psycho_status(uid_list)
+    #iter to get user attr
+    for item in user_portrait_result:
+        if item['found'] != True:
+            return 'uid_list not exist'
+        uid = item['_id']
+        user_result[uid] = {}
+        source = item['_source']
+        #attr: uname
+        user_result[uid]['uname'] = source['uname']
+        #attr: location
+        user_result[uid]['location'] = source['location']
+        #attr: evaluate index
+        importance = source['importance']
+        normal_importance = math.log(importance/ max_result['importance'] * 9 + 1, 10)
+        user_result[uid]['importance'] = int(normal_importance * 100)
+        influence = source['influence']
+        normal_influence = math.log(influence / max_result['influence'] * 9 + 1, 10)
+        user_result[uid]['influence'] = int(normal_influence * 100)
+        activeness = source['activeness']
+        normal_activeness = math.log(activeness / max_result['activeness'] * 9 + 1, 10)
+        user_result[uid]['activeness'] = int(normal_activeness * 100)
+        #attr: domain
+        user_result[uid]['domain'] = source['domain']
+        #attr: topic
+        topic_string = source['topic_string']
+        user_result[uid]['topic'] = topic_string.split('&')
+        #attr: activity geo dict
+        activity_geo_dict_list = json.loads(source['activity_geo_dict'])
+        week_activity_geo_list = activity_geo_dict_list[-7:]
+        week_geo_result = {}
+        for day_geo_dict in week_activity_geo_list:
+            for geo_item in day_geo_dict:
+                try:
+                    week_geo_result[geo_item] += 1
+                except:
+                    week_geo_result[geo_item] = 1
+        sort_week_geo_result = sorted(week_geo_result.items(), key=lambda x:x[1], reverse=True)
+        user_result[uid]['activity_geo'] = [geo_item[0] for geo_item in sort_week_geo_result[:2]]
+        #attr: keywords
+        user_result[uid]['keywords'] = json.loads(source['keywords'])
+        #attr: hashtag
+        user_result[uid]['hashtag'] = json.loads(source['hashtag_dict'])
+        #attr: psycho status
+        user_result[uid]['psycho_status'] = user_psycho_status_result[uid]
+        #attr:photo_url
+        try:
+            photo_result[uid] = {'photo_url': item['photo_url']}
+        except:
+            photo_result[uid] = {'photo_url': 'unkown'}
+    #get user tag
+    tag_results = get_user_tag(uid_list)    
+    all_result = {'portrait':user_result, 'photo_url':photo_result, 'tag': tag_results}
+    return all_result
 
 # compare two or three user
 # need json.lodas to read the dict attribute
 def compare_user_portrait(uid_list):
     user_portrait_result = {}
-    index_name = 'user_portrait'
+    index_name = 'user_portrait_1222'
     index_type = 'user'
     user_result = es.mget(index=index_name, doc_type=index_type, body={'ids':uid_list})['docs']
-    #user_portrait_result = [item['_source'] for item in user_result]
-    #print 'user_result:', user_portrait_result
     for item in user_result:
         uid = item['_id']
         user_portrait_result[uid] = {}

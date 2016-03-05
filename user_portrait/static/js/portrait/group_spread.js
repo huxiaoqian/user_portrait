@@ -1,138 +1,3 @@
-//test
-// function Draw_top_location2(data1, data2, data3){
-//     var y_axi_1 = data1[0];
-//     var x_axi_1 = data1[1];
-//     var xdata_1 = [];
-
-//     for (var i = 0; i< x_axi_1.length-1; i++){
-//         xdata_1.push(data1[1][i] + '-' + data1[1][i+1])
-//     };
-
-//     var y_axi_2 = data2[0];
-//     var x_axi_2 = data2[1];
-//     var xdata_2 = [];
-
-//     for (var i = 0; i< data2[1].length-1; i++){
-//         xdata_2.push(data2[1][i] + '-' + data2[1][i+1])
-//     };
-
-//     var y_axi_3 = data3[0];
-//     var x_axi_3 = data3[1];
-//     var xdata_3 = [];
-
-//     for (var i = 0; i< data3[1].length-1; i++){
-//         xdata_3.push(data3[1][i] + '-' + data3[1][i+1])
-//     };
-//   // console.log(bar_data_y);
-  
-//     //console.log(timeline_data);
-//     var myChart = echarts.init(document.getElementById('whole_out_user')); 
-
-//     var option = {
-//         timeline:{
-//             data:['用户粉丝数','dd','dd'],
-//             autoPlay : true,
-//             playInterval : 2000
-//         },
-//         tooltip : {'trigger':'axis',
-//                     formatter:  function (params) {
-//                     //console.log(params)
-//                     var res = 'Function formatter : <br/>' + params[0].name;
-//                     for (var i = 0, l = params.length; i < l; i++) {
-//                         res += '<br/>' + params[i].seriesName + ' : ' + params[i].value;
-//                     }
-
-//                     return res; 
-//             }},
-//         toolbox : {
-//             'show':false, 
-//             orient : 'vertical',
-//             x: 'right', 
-//             y: 'center',
-//             'feature':{
-//                 'mark':{'show':true},
-//                 'dataView':{'show':true,'readOnly':false},
-//                 'magicType':{'show':true,'type':['line','bar','stack','tiled']},
-//                 'restore':{'show':true},
-//                 'saveAsImage':{'show':true}
-//             }
-//         },
-//         options : [
-//             {
-//                 title : {'text':'粉丝数分布'},
-//                 tooltip : {'trigger':'axis',
-//                     formatter: "{b}<br/>{a}:{c}"},
-//                 calculable : true,
-//                 grid : {'y':80,'y2':100},
-//                 xAxis :  [{
-//                     'type':'category',
-//                     'axisLabel':{'interval':0},
-//                     'data':xdata_1
-//                 }],
-//                 yAxis : [{
-//                     'type':'value',
-//                     'name':'次数',
-//                     //'max':53500
-//                     }
-//                 ],
-//                 series : [
-//                     {
-//                         title : {'text':'数值'},
-//                         'type':'bar',
-//                         'data': y_axi_1
-//                     }
-//                 ]
-//             },
-//             {
-//                 title : {'text':'朋友数分布'},
-//                 tooltip : {'trigger':'axis'},
-//                 calculable:  true,
-//                 grid :  {'y':80,'y2':100},
-//                 xAxis : [{
-//                     'type':'category',
-//                     'axisLabel':{'interval':0},
-//                     'data':xdata_2
-//                 }],
-//                 yAxis : [{
-//                     'type':'value',
-//                     'name':'次数',
-//                     //'max':53500
-//                     }
-//                 ],
-//                 series : [{
-//                     title : {'text':'数值'},
-//                     'type':'bar',
-//                     'data': y_axi_2}
-//                 ]
-//             },
-//             {
-//                 title : {'text':'微博数分布'},
-//                 tooltip : {'trigger':'axis'},
-//                 calculable :  true,
-//                 grid : {'y':80,'y2':100},
-//                 xAxis : [{
-//                     'type':'category',
-//                     'axisLabel':{'interval':0},
-//                     'data':xdata_3
-//                 }],
-//                 yAxis : [{
-//                     'type':'value',
-//                     'name':'次数',
-//                     //'max':53500
-//                     }
-//                 ],
-//                 series : [{
-//                     title : {'text':'数值'},
-//                     'type':'bar',
-//                     'data': y_axi_3
-//                 }]
-//             }
-//         ]
-//     };
-//     myChart.setOption(option);
-                    
-// }
-
 //影响力分布
 function draw_influ_distribution(data,radar_div, title){
     //console.log(data);
@@ -147,7 +12,8 @@ function draw_influ_distribution(data,radar_div, title){
 
     var option = {
     tooltip : {
-        trigger: 'axis'
+        trigger: 'axis',
+        formatter: "{a}<br/>{b} : {c}"
     },
     toolbox: {
         show : false,
@@ -430,10 +296,6 @@ Show_influ.prototype = {
   }
 }
 
-var Show_influ = new Show_influ();
-var group_influ_url = '/group/show_group_result/?task_name='+name+'&module=influence';
-//console.log('aaaaa');
-Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
 //影响用户
 function show_influ_users(div_name,data){
     $('#' + div_name).empty();
@@ -606,7 +468,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
         page_icon(1,pageCount,0, div_name);
     }
     
-    $("#"+div_name+" #pageGro li").bind("click", function(){
+    $("#"+div_name+" #pageGro li").live("click", function(){
         if(pageCount > 5){
             var pageNum = parseInt($(this).html());
             pageGroup(pageNum,pageCount);
@@ -626,7 +488,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
         page_group_influ_weibo(start_row,end_row,data, sub_div_name);
     });
 
-    $("#"+div_name+" #pageGro .pageUp").click(function(){
+    $("#"+div_name+" #pageGro .pageUp").off('click').click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
             pageUp(pageNum,pageCount);
@@ -648,7 +510,7 @@ function Draw_group_influ_weibo(data, div_name, sub_div_name){
     });
     
 
-    $("#" + div_name + " #pageGro .pageDown").click(function(){
+    $("#" + div_name + " #pageGro .pageDown").off('click').click(function(){
         if(pageCount > 5){
             var pageNum = parseInt($("#"+div_name+" #pageGro li.on").html());
 
@@ -703,23 +565,6 @@ function page_group_influ_weibo(start_row,end_row,data, sub_div_name){
     $('#'+sub_div_name).append(html);
 }
 
-//日期选择
-
-var date = choose_time_for_mode();
-date.setHours(0,0,0,0);
-var max_date = date.format('yyyyMMdd hh:mm');
-var current_date = date.format('yyyy/MM/dd hh:mm');
-var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24*30;
-var min_date_ms = new Date()
-min_date_ms.setTime(from_date_time*1000);
-var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
-if(global_test_mode==0){
-    $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
-    $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
-}else{
-    $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-    $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
-}
 //获取微博成员信息
 function Draw_group_weibo_user(uids,unames){
     
@@ -882,16 +727,12 @@ function Draw_topic2(data, radar_div, motal_div, show_more){
   myChart2.setOption(option);
 }
 
-// var data0=[['人民日报1111',1,2,'1111这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','param.name'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['人民日报',1,2,'这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论这里是一条结论','中国 北京 北京','2013-09-07 20:00'],['0',1,2,'3neirong',4,44,6,7,8,9,0],['0',1,2,'3neirong',4,5,6,7,8,9,0],['0',1,2,'333333333neirong',4,5,6,7,8,9,0]]
 
-//影响力走势
-//draw_influ_distribution();
-//group_influ();
-//show_influ_users('influ_active_users');
-//show_influ_users('influ_unactive_users');
-show_more_influ_active_users('show_rank_influ_users');
-show_more_influ_active_users('show_rank_uninflu_users');
-$('#group_influence_conclusion').append('结论结论结论结论');
+var Show_influ = new Show_influ();
+var group_influ_url = '/group/show_group_result/?task_name='+name+'&module=influence';
+Show_influ.call_sync_ajax_request(group_influ_url, Show_influ.ajax_method, Show_influ.Draw_table);
+//日期选择
+
 
 //影响力内容：用户微博
     //选择用户
@@ -919,11 +760,50 @@ Weibo_user.prototype = {
   }
       
 }
+function bind_spread_click(){
+    //波及用户
+    $(' input[name="user_select"]').click(function(){
+        if($('input[name="user_select"]:checked').val()=='1'){       
+            $('#influence_in_user').css('display', 'none');
+            $('#influence_out_user').css('display', 'block');
+        }else{
+            $('#influence_in_user').css('display', 'block');
+            $('#influence_out_user').css('display', 'none');
+        }
+    });
+}
+function spread_load(){
+    if (!global_spread_flag){
+        if(global_test_mode==0){
+            $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60});
+            $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60});
+        }else{
+            $('#group_influ_weibo #weibo_from').datetimepicker({value:from_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+            $('#group_influ_weibo #weibo_to').datetimepicker({value:current_date,step:60,minDate:'-1970/01/30',maxDate:'+1970/01/01'});
+        }
+        bind_spread_click();
+        show_more_influ_active_users('show_rank_influ_users');
+        show_more_influ_active_users('show_rank_uninflu_users');
+        //$('#group_influence_conclusion').append('结论结论结论结论');
+        
+        var weibo_user_url = '/group/group_member/?task_name=' + name;
+        Weibo_user.call_sync_ajax_request(weibo_user_url,Weibo_user.ajax_method,Weibo_user.Draw_user)
+        global_spread_flag = true;
+    }
+}
+
+var date = choose_time_for_mode();
+date.setHours(0,0,0,0);
+var max_date = date.format('yyyyMMdd hh:mm');
+var current_date = date.format('yyyy/MM/dd hh:mm');
+var from_date_time = Math.floor(date.getTime()/1000) - 60*60*24*30;
+var min_date_ms = new Date()
+min_date_ms.setTime(from_date_time*1000);
+var from_date = min_date_ms.format('yyyy/MM/dd hh:mm');
 var Weibo_user = new Weibo_user();
-var weibo_user_url = '/group/group_member/?task_name=' + name;
-Weibo_user.call_sync_ajax_request(weibo_user_url,Weibo_user.ajax_method,Weibo_user.Draw_user)
-//Draw_group_weibo_user();  
+var global_spread_flag = false;
     //选择时间
+/*
 var url_all = [];
 var time_from = Date.parse($('#group_influ_weibo #weibo_from').val())/1000;
 var time_to = Date.parse($('#group_influ_weibo #weibo_to').val())/1000;
@@ -933,25 +813,5 @@ url_all.push(timestamp_from_url);
 var timestamp_to_url = '';
 timestamp_to_url = 'timestamp_to=' + time_to;
 url_all.push(timestamp_to_url);
-//console.log(url_all);
-
-//提交条件
-//submit_date_user();
-//显示内容
-//Draw_group_influ_weibo(data0,'group_influ_weibo', 'group_influ_weibo_result');
-
-//var topic = [['sdgsd',21],['dsf',23],['sfv',12],['rhtb',13],['6ef',28],['sgsd',51],['d2sf',17],['tfv',22],['htb',1]];
-//Draw_topic(topic,'influence_topic', 'topic_WordList','showmore_topic_influ');
-//Draw_topic(topic,'influence_domain', 'domain_WordList','showmore_domain_influ');
-
-//波及用户
-$(' input[name="user_select"]').click(function(){
-    if($('input[name="user_select"]:checked').val()=='1'){       
-        $('#influence_in_user').css('display', 'none');
-        $('#influence_out_user').css('display', 'block');
-    }else{
-        $('#influence_in_user').css('display', 'block');
-        $('#influence_out_user').css('display', 'none');
-    }
-});
+*/
 

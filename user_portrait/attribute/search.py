@@ -105,6 +105,7 @@ def edit_remark(uid, remark):
 #         'out_portrait_list':[[uid, uname, fansnum]]}
 def search_attention(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = retweet_index_name_pre + str(db_number)
@@ -137,7 +138,11 @@ def search_attention(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -249,6 +254,7 @@ def search_attention(uid):
 #input: uid, top_count
 def search_follower(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_retweet_index_name_pre + str(db_number)
@@ -281,7 +287,11 @@ def search_follower(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance /evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -346,6 +356,7 @@ def search_follower(uid, top_count):
 #output: in_portrait_list, in_portrait_result, out_portrait_list
 def search_comment(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = comment_index_name_pre + str(db_number)
@@ -378,7 +389,11 @@ def search_comment(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -444,6 +459,7 @@ def search_comment(uid, top_count):
 #output: in_portrait_list, in_portrait_result, out_portrait_list
 def search_be_comment(uid, top_count):
     results = {}
+    evaluate_max_dict = get_evaluate_max()
     now_ts = time.time()
     db_number = get_db_num(now_ts)
     index_name = be_comment_index_name_pre + str(db_number)
@@ -477,7 +493,11 @@ def search_be_comment(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -556,12 +576,18 @@ def search_bidirect_interaction(uid, top_count):
         retweet_result = es_retweet.get(index=retweet_index_name, doc_type=retweet_index_type, id=uid)['_source']
     except:
         retweet_result = {}
-    retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
+    if retweet_result:
+        retweet_uid_dict = json.loads(retweet_result['uid_retweet'])
+    else:
+        retweet_uid_dict = {}
     retweet_uid_list = retweet_uid_dict.keys()
-    try:
-        be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
-    except Exception, e:
-        raise e
+    if retweet_uid_list:
+        try:
+            be_retweet_result = es_retweet.mget(index=be_retweet_index_name, doc_type=be_retweet_index_type, body={'ids':retweet_uid_list})['docs']
+        except Exception, e:
+            raise e
+    else:
+        be_retweet_result = []
     for be_retweet_item in be_retweet_result:
         be_retweet_uid = be_retweet_item['_id']
         if be_retweet_item['found']==True and be_retweet_uid != uid:
@@ -600,6 +626,7 @@ def search_bidirect_interaction(uid, top_count):
     in_portrait_result['domain'] = {}
     out_portrait_list = []
     count = 0
+    evaluate_max_dict = get_evaluate_max()
     while True:
         uid_list = [item for item in all_interaction_uid_list[count: count+20]]
         try:
@@ -613,7 +640,11 @@ def search_bidirect_interaction(uid, top_count):
                     source = item['_source']
                     uname = source['uname']
                     influence = source['influence']
+                    #normal
+                    influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                     importance = source['importance']
+                    #normal
+                    importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                     topic_list = source['topic_string'].split('&')
                     domain = source['domain']
                     try:
@@ -726,6 +757,7 @@ def search_follower(uid):
 #{'at_'+Date:{str(uid):'{at_uid:count}'}}
 #return results:{at_uid:[uname,count]}
 def search_mention(now_ts, uid, top_count):
+    evaluate_max_dict = get_evaluate_max()
     date = ts2datetime(now_ts)
     ts = datetime2ts(date)
     stat_results = dict()
@@ -768,7 +800,11 @@ def search_mention(now_ts, uid, top_count):
                 uname = user_dict['uname']
                 domain = user_dict['domain']
                 influence = user_dict['influence']
+                #normal
+                influence = math.log(influence / evaluate_max_dict['influence'] * 9 + 1, 10) * 100
                 importance = user_dict['importance']
+                #normal
+                importance = math.log(importance / evaluate_max_dict['importance'] * 9 + 1, 10) * 100
                 try:
                     in_portrait_result['domain'][domain] += 1
                 except:
@@ -782,6 +818,22 @@ def search_mention(now_ts, uid, top_count):
             break
         else:
             count += 20
+    
+    in_portrait_result['topic'] = {}
+    for topic_item in in_portrait_topic_list:
+        try:
+            in_portrait_result['topic'][topic_item] += 1
+        except:
+            in_portrait_result['topic'][topic_item] = 1
+    #sort topic and domain stat result
+    topic_dict = in_portrait_result['topic']
+    sort_topic_dict = sorted(topic_dict.items(), key=lambda x:x[1], reverse=True)
+    domain_dict = in_portrait_result['domain']
+    sort_domain_dict = sorted(domain_dict.items(), key=lambda x:x[1], reverse=True)
+    in_portrait_result['topic'] = sort_topic_dict
+    in_portrait_result['domain'] = sort_domain_dict
+
+    #use to get user information from user profile
     out_query_list = [{'match':{'uname':item}} for item in out_list]
     if len(out_query_list) != 0:
         query = [{'bool':{'should': out_query_list}}]
@@ -1175,7 +1227,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     week_ip_set = set(all_week_top.keys())
     abnormal_set = day_ip_set - week_ip_set
     if len(abnormal_set)==0:
-        print 'description_conclusion:',conclusion
+        #print 'description_conclusion:',conclusion
         return conclusion, home_ip, job_ip
     else:
         if(conclusion[-1] != []):
@@ -1201,7 +1253,7 @@ def get_ip_description(week_result, all_week_top, all_day_top):
     conclusion.append(abnormal_ip_list)
 
     #print 'conclusion:', conclusion, home_ip, job_ip
-    print 'description_conclusion:', conclusion
+    #print 'description_conclusion:', conclusion
     return conclusion, home_ip, job_ip
 
 #abandon in version:15-12-08
@@ -1526,7 +1578,7 @@ def ip2city(ip):
         if len(city_list)==4:
             city = '\t'.join(city_list[:3])
     except Exception,e:
-        return None
+        return u'未知'
     return city
 
 # show user geo track
@@ -1655,7 +1707,6 @@ def get_evaluate_max():
             raise e
         max_evaluate = result[0]['_source'][evaluate]
         max_result[evaluate] = max_evaluate
-    #print 'result:', max_result
     return max_result
 
 # use to merge dict

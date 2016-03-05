@@ -14,12 +14,9 @@ Search_weibo.prototype = {
           success:callback
         });
     },
-
-    
     Return_data: function(data){
         return data;
     },
-
     Draw_user_tag: function(data){
       //console.log(data);
       $('#user_lable').empty();
