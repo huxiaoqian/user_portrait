@@ -142,7 +142,7 @@ var global_choose_uids = new Array();
 var global_data = new Array();
 
 var url_search_result = '/attribute/portrait_search/?stype=1&&term=';
-console.log(url_search_result);
+//console.log(url_search_result);
 var draw_table_search_result = new Search_weibo_result(url_search_result, '#search_result');
 draw_table_search_result.call_sync_ajax_request(url_search_result, draw_table_search_result.ajax_method, draw_table_search_result.Draw_table);
 
@@ -160,7 +160,7 @@ function compare_button(){
         compare_uids.push(temp_list[i]);
       }
   }
-  console.log(compare_uids);
+  //console.log(compare_uids);
   var len = compare_uids.length;
   if(len>3 || len<2){
     alert("请选择2至3个用户！");
@@ -221,7 +221,7 @@ function compare_confirm_button(){
       return;
   }
   var compare_url = '/index/contrast/?uid_list='+ compare_confirm_uids.join(',');
-  console.log(compare_url);
+  //console.log(compare_url);
   window.open(compare_url);
 }
 
