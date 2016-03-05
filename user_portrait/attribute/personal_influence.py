@@ -24,13 +24,13 @@ from user_portrait.global_utils import portrait_index_type, flow_text_index_type
 uid_url = 'http://weibo.com/u/'
 
 
-user_portrait = "user_portrait_1222"
+#user_portrait = "user_portrait_1222"
 #es = Elasticsearch("219.224.135.93:9206", timeout=60)
-influence_date = ts2datetime(time.time())
-index_name = pre_index + influence_date.replace("-","")
-index_name = "bci_20130901" # test
-index_flow_text = pre_text_index + influence_date
-index_flow_text = "flow_text_2013-09-01"
+#influence_date = ts2datetime(time.time())
+#index_name = pre_index + influence_date.replace("-","")
+#index_name = "bci_20130901" # test
+#index_flow_text = pre_text_index + influence_date
+#index_flow_text = "flow_text_2013-09-01"
 
 
 
