@@ -251,7 +251,7 @@ def deal_geo_distribution(activity_geo_dict):
                     new_ts_dict[new_geo_item] += ts_dict[geo_item]
                 except:
                     new_ts_dict[new_geo_item] = ts_dict[geo_item]
-        sort_new_ts_dict = sorted(new_ts_dict.items(), key=lambda x:x[1], reverse=True)
+        sort_new_ts_dict = sorted(new_ts_dict.items(), key=lambda x:x[1], reverse=True)[:10]
         for i in range(0, 10):
             try:
                 item = sort_new_ts_dict[i]

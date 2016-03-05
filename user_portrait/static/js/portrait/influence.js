@@ -623,7 +623,7 @@ function influence_load(){
     Influence.call_async_ajax_request(get_top_weibo_url_style3, Influence.ajax_method, Influence.Draw_get_top_weibo4);
     var summary_influence_url = '/attribute/summary_influence/?uid='+parent.personalData.uid+'&date='+date_str;
     Influence.call_async_ajax_request(summary_influence_url, Influence.ajax_method, Influence.Draw_conclusion);
-}
+};
 
 var Influence = new Influence();
 var influence_date = choose_time_for_mode();

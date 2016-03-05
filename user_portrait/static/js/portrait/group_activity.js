@@ -278,16 +278,26 @@ function Draw_top_location(data){
 		var key_time = new Date(parseInt(key)*1000).format("yyyy-MM-dd");
 		timeline_data.push(key_time);
 		bar_data.push(data[key]);
-	}
+        //console.log(data[key]);
+        //console.log(key_time);
+        // var data_xx = [];
+        // for(var j in data[key]){
+        //     data_xx.push(j);
+        // }
+        //console.log(data_xx.length);
+    }
+    //console.log(timeline_data);
+    //console.log(data.key.length)
 	for(var i=0;i<bar_data.length;i++){
 		var bar_data_x_single = [];
 		var bar_data_y_single = [];
-		for(var key in bar_data[i]){
-            var city = key.split('\t')
+		// for(var key in bar_data[i]){
+        for(var j=0; j<bar_data[i].length;j++){
+            //var city = key.split('\t')
             //console.log(city.pop());
 			//bar_data_x_single.push(key);
-			bar_data_x_single.push(city.pop());
-			bar_data_y_single.push(bar_data[i][key]);
+			bar_data_x_single.push(bar_data[i][j][0]);
+			bar_data_y_single.push(bar_data[i][j][1]);
 		}
 		bar_data_x.push(bar_data_x_single);
 		bar_data_y.push(bar_data_y_single);
@@ -369,7 +379,7 @@ function Draw_top_location(data){
                 ];
                 option_data.push(option_single_data);
         	};
-        	// console.log(option_data);
+        	console.log(option_data);
         	return option_data;
         }
         )()
