@@ -119,7 +119,7 @@ function draw_content(data){
     //console.log(data);
     var html = '';
     $('#line_content').empty();
-    if(data==[]){
+    if(data.length==0){
         html += "<div style='width:100%;'><span style='margin-left:20px;'>该时段用户未发布任何微博</span></div>";
     }else{
         for(i=0;i<data.length;i++){
@@ -565,13 +565,14 @@ function show_active_users(data, div_name){
     html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">昵称</th><th style="text-align:center">微博数</th></tr>';
     for (var i = 0; i < show_count; i++) {
         var name_list = data[i][0].split('&');
+        var user_id = name_list[0];
         var name = name_list[1];
         var s = i.toString();
         var m = i + 1;
         if(name=='unknown'){
             name = '未知';
 		}
-        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center">' + name + '</th><th style="text-align:center">'+data[i][1] + '</th></tr>';
+        html += '<tr><th style="text-align:center">' + m + '</th><th style="text-align:center"><a target="_blank" href="/index/personal/?uid='+user_id+'">'+ name + '</a></th><th style="text-align:center">'+data[i][1] + '</th></tr>';
     };
     html += '</table>'; 
     $('#'+div_name).append(html);
@@ -700,7 +701,8 @@ function show_activity(data) {
 	var time_data = [23,3,4,55,22,6]
     // console.log(runtype);
     //默认显示第一天微博；
-    point2weibo(0, data.activity_trend[0][0])
+    point2weibo(0, data.activity_trend[0][0]);
+
 	//微博走势，点击后显示微博
 	Draw_activity(data.activity_trend);
 
@@ -728,6 +730,9 @@ function show_activity_track(data){
     var html = '';
     html += '<select id="select_track_weibo_user" style="max-width:150px;">';
     for (var i = 0; i < data.length; i++) {
+        if(data[i][1]=='unknown'){
+            data[i][1] = '未知';
+		}
         html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
     }
     html += '</select>';
@@ -822,10 +827,13 @@ function month_process(data){
         for (var i = 0; i < data.length; i++){
             var time_geo = data[i];
             if (time_geo[1] != ''){
-                timelist.push(time_geo[0]);
-                var city_city = time_geo[1].split('\t').pop();
-                geolist.push(city_city);
-                addedlist[city_city] = '';
+                var unit_geo_list = time_geo[1].split('\t');
+                if (unit_geo_list[0] == '中国'){
+                    timelist.push(time_geo[0]);
+                    var city_city = unit_geo_list.pop();
+                    geolist.push(city_city);
+                    addedlist[city_city] = '';
+                }
             }
         }
         // marker
@@ -954,10 +962,12 @@ function month_process(data){
 );
 }
 
+function  activity_load(){
+    var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
+    call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
+    var group_user_url =  "/group/show_group_list/?task_name=" + name;
+    call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
+}
 
-var group_activity_url = '/group/show_group_result/?module=activity&task_name=' + name;
-call_sync_ajax_request(group_activity_url,ajax_method, show_activity);
-var group_user_url =  "/group/show_group_list/?task_name=" + name;
-call_sync_ajax_request(group_user_url,ajax_method, show_activity_track);
 // var activity_data = []
 

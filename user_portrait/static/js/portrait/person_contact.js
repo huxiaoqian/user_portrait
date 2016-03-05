@@ -275,17 +275,17 @@ function recommend_all(){
 }
 
 function Show_tag(data){
-    var height = $('#box-height').height();
-    if(data.length <=4 && data.length > 0 ){
-        console.log('aaaaa');
-        $('#box-height').css('height',height+20);
-    }
-    else if(data.length >4 && data.length <=8){
-        $('#box-height').css('height',height+20*2);
-    }
-    else{
-        $('#box-height').css('height',height+20*3);
-    }
+    // var height = $('#box-height').height();
+    // if(data.length <=4 && data.length > 0 ){
+    //     console.log('aaaaa');
+    //     $('#box-height').css('height',height+20);
+    // }
+    // else if(data.length >4 && data.length <=8){
+    //     $('#box-height').css('height',height+20*2);
+    // }
+    // else{
+    //     $('#box-height').css('height',height+20*3);
+    // }
     html = '';
     if(data.length == 0){
       return false;

@@ -201,7 +201,9 @@ def search_group_results(task_name, module):
     elif module == 'activity':
         result['activity_trend'] = json.loads(source['activity_trend'])
         result['activity_time'] = json.loads(source['activity_time'])
-        result['activity_geo_disribution'] = json.loads(source['activity_geo_distribution'])
+        #result['activity_geo_disribution'] = json.loads(source['activity_geo_distribution'])
+        new_activity_geo_distribution = deal_geo_distribution(json.loads(source['activity_geo_distribution']))
+        result['activity_geo_disribution'] = new_activity_geo_distribution
         result['activiy_geo_vary'] = json.loads(source['activity_geo_vary'])
         result['activeness_trend'] = json.loads(source['activeness'])
         result['activeness_his'] = json.loads(source['activeness_his'])
@@ -233,6 +235,24 @@ def search_group_results(task_name, module):
         result['sentiment_pie'] = json.loads(source['sentiment_pie'])
         result['character'] = json.loads(source['character'])
     return result
+
+#activity_geo_dict: {ts:{geo1:count}, ts:{},...}
+def deal_geo_distribution(activity_geo_dict):
+    results = {}
+    for ts in activity_geo_dict:
+        results[ts] = {}
+        ts_dict = activity_geo_dict[ts]
+        for geo_item in ts_dict:
+            geo_item_list = geo_item.split('\t')
+            new_geo_item = geo_item_list[-1]
+            if new_geo_item:
+                try:
+                    results[ts][new_geo_item] += ts_dict[geo_item]
+                except:
+                    results[ts][new_geo_item] = ts_dict[geo_item]
+    
+    return results
+
 
 
 #abandon
@@ -532,7 +552,10 @@ def get_activity_weibo(task_name, start_ts):
         weibo['timestamp'] = ts2date(source['timestamp'])
         weibo['ip'] = source['ip']
         weibo['text'] = source['text']
-        weibo['geo'] = '\t'.join(source['geo'])
+        if source['geo']:
+            weibo['geo'] = '\t'.join(source['geo'])
+        else:
+            weibo['geo'] = ''
         results.append(weibo)
 
     return results
@@ -580,7 +603,10 @@ def get_influence_content(uid, timestamp_from, timestamp_to):
         weibo['timestamp'] = ts2date(source['timestamp'])
         weibo['ip'] = source['ip']
         weibo['text'] = source['text']
-        weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        if source['geo']:
+            weibo['geo'] = '\t'.join(source['geo'].split('&'))
+        else:
+            weibo['geo'] = ''
         weibo_list.append(weibo)
         
     return weibo_list

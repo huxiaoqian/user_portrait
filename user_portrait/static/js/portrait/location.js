@@ -30,7 +30,15 @@ function bind_time_option(){
         }
     });
 }
-
+function activity_call_ajax_request(url, callback){
+    $.ajax({
+        url:url,
+        method:'GET',
+        dataType:'json',
+        async:false,
+        success:callback,
+    });
+}
 function geo_track(data){
     var geo_data = data.week_geo_track;
 	var date = [];
@@ -108,7 +116,7 @@ function week_chart(trend_data){
         //console.log('ts',ts);
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
         //console.log(url);
-        person_call_ajax_request(url, draw_content); // draw_weibo
+        activity_call_ajax_request(url, draw_content); // draw_weibo
     }
     else{
         for(i=0;i<trend.length;i++){
@@ -125,7 +133,7 @@ function week_chart(trend_data){
         var ts = get_unix_time(dateStr);
         var url ="/attribute/activity_weibo/?uid="+uid+"&type="+global_time_type+"&start_ts="+ts;
         //console.log(url);
-        person_call_ajax_request(url, draw_content); // draw_weibo
+        activity_call_ajax_request(url, draw_content); // draw_weibo
     }
 	//Draw_trend:
 	 $('#Activezh').highcharts({
@@ -508,12 +516,12 @@ pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
 
 var url = '/attribute/activity/?uid=' + uid;
 var global_active_data;
-person_call_ajax_request(url, active_chart);
+tag_call_ajax_request(url, active_chart);
 
 var daily_map_data = new Array();
 var weekly_map_data = new Array();
 var span_daily_map_data = new Array();
 var span_weekly_map_data = new Array();
 var url = '/attribute/ip/?uid=' + uid;
-person_call_ajax_request(url, draw_daily_ip_table);
+tag_call_ajax_request(url, draw_daily_ip_table);
 

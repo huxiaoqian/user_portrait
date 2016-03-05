@@ -133,12 +133,11 @@ function get_radar_data (data) {
   var topic_name = [];
   var topic_value = [];
 
-  for(var i=0; i<topic.length;i++){
-    if(topic[i][1].toFixed(3) != 0){
-      topic_value.push(topic[i][1].toFixed(3));
-      topic_name.push(topic[i][0]);
+  for(var i=0; i<topic[0].length;i++){
+    if(topic[1][i].toFixed(3) != 0){
+      topic_value.push(topic[1][i].toFixed(3)*10);
+      topic_name.push(topic[0][i]);
     }
-
   };
   // var topic_value2 = [];
   // var topic_name2 = [];
@@ -149,8 +148,8 @@ function get_radar_data (data) {
   //   topic_value[a]=0;
   // }
   var topic_name3 = [];
-  var max_topic = 7;
-  if(topic_value.length <7){
+  var max_topic = 8;
+  if(topic_value.length <8){
     max_topic = topic_value.length;
   }
   //Math.min.apply(7, topic_value.length);
@@ -171,10 +170,19 @@ function Draw_topic(data){
       $('#user_topic').append('<h4 style="text-align:center;margin-top:50%;">暂无数据</h4>');
       $('#showmore_topic').css('display', 'none');      
   }else{
+      var topic_sta = [];
+      var topic_name_sta = [];
+      for(var i=0;i<data.length;i++){
+        if(data[i][1] != 0){
+          topic_sta.push(data[i][1]/data[0][1]);
+          topic_name_sta.push(data[i][0]);
+        }
+      };
+
       var topic = [];
       var html = '';
       $('#topic_WordList').empty();
-      if(data.length == 0){
+      if(topic_sta.length == 0){
          //console.log(div_name);
           html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
           //$('#'+ more_div).append(html);
@@ -183,21 +191,24 @@ function Draw_topic(data){
       }else{
           html = '';
           html += '<table class="table table-striped table-bordered" style="width:450px;">';
-          html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
-          for (var i = 0; i < data.length; i++) {
+          html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">概率</th></tr>';
+          for (var i = 0; i < topic_sta.length; i++) {
              var s = i.toString();
              var m = i + 1;
-             html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(3) + '</th></tr>';
+             html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + topic_name_sta[i] +  '&psycho_status=&domain&topic" target="_blank">' + topic_name_sta[i] +  '</a></th><th style="text-align:center">' + topic_sta[i].toFixed(3) + '</th></tr>';
           };
           html += '</table>'; 
           $('#topic_WordList').append(html);
       };
+      var topic_val = [];
+      topic_val.push(topic_name_sta);
+      topic_val.push(topic_sta);
       var topic_result = [];
-      topic_result = get_radar_data(data);
+      topic_result = get_radar_data(topic_val);
       var topic_name = topic_result[0];
-      console.log(topic_name);
+      //console.log(topic_name);
       var topic_value = topic_result[1];
-      console.log(topic_value)
+     // console.log(topic_value)
       var myChart2 = echarts.init(document.getElementById('user_topic'));
       var option = {
         // title : {
@@ -205,7 +216,15 @@ function Draw_topic(data){
         //   subtext: ''
         // },
           tooltip : {
-            trigger: 'axis'
+            show: true,
+            trigger: 'axis',
+            formatter:  function (params){
+              var res  = '';
+              var indicator = params.indicator;
+              //console.log(params);
+              res += params['0'][3]+' : '+(params['0'][2]/10).toFixed(3);
+              return res;
+              }
           },
           toolbox: {
             show : true,
@@ -237,7 +256,8 @@ function Draw_topic(data){
            data : [
             {
              value : topic_value,
-             name : '用户话题分布'}
+             //name : '用户话题分布'
+           }
            ]
           }]
       };
@@ -424,5 +444,6 @@ function show_results(data){
   }
 
 var prefrence_url = '/attribute/preference/?uid=' + parent.personalData.uid;
+//console.log(prefrence_url);
 call_sync_ajax_request(prefrence_url, ajax_method, show_results);
 

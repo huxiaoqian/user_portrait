@@ -43,7 +43,7 @@
     <div class="PersonPre" style="text-align:center;"><span class="lightw">个人描述：</span><span class="" style="font-family: "宋体";" id="portraitDetail">【请勿关注此账号】此账号信息由微博系统自动发出，并无人工管理。</sapn></div>
 </div>
 <div id="float-wrap" class="hidden"></div>
-<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 65%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 500px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
+<div id="basicInfo" class="hidden" style="position: fixed;margin-top: -200px;left: 65%;top: 50%;z-index: 1005;width: 420px;background: #FFF none repeat scroll 0% 0%;border: 1px solid #999;height: 450px;margin-left: -460px;font_family: "Microsoft YaHei UI";">
     <h3 class="title" style="padding-left:30px;padding-bottom:5px;border-bottom:solid 1px #999;">基本注册信息<a href="javascript:void(0)" class="Basicclose" id="close"></a></h3>
     <div class="m-wrap" style="margin-top:30px;">
         <ul class="clearfix">
@@ -75,10 +75,10 @@
                 <span class="pt_title">关注数</span>
                 <span class="pt_detail" id="userFriend" ></span>
             </li>
-            <li class="li_1">
+<!--             <li class="li_1">
                 <span class="pt_title">在线方式</span>
                 <span class="pt_detail" id="userOnline" ></span>
-            </li>
+            </li> -->
         </ul>
     </div>
 </div>
@@ -170,13 +170,8 @@
             <u style="background-color:rgba(69, 133, 195, 0.89);color:white;padding:2px">编辑自定义属性</u>
         </span>
         <div id='pager' style='text-align:right'></div>
-<<<<<<< HEAD
-        <div id='tabs' style='width:1000px'>
-             <div id='txt'>
-=======
         <div id='tabs' style='width:1000px;'>
             <div id='txt'>
->>>>>>> d836cb9535c44f202975ad5c5ce353186be0269f
                 <div class="main col-sm-9 col-md-10">
                     <div class="col-sm-12">
                         <div class="panel panel-default" style="width:1000px;margin-left:-30px" id='table'>
@@ -389,9 +384,12 @@
     }
         
     var userlocation = document.getElementById('userLocation');
-    if(personalData.location){
-        userlocation.innerHTML = personalData.location;
-    }else{
+    if(personalData.location.length>0 && personalData.location !='unknown' ){
+        userlocation.innerHTML = personalData.location;}
+    // }else if(personalData.location=='unknown'){
+    //     userlocation.innerHTML = "无此数据";    
+    // }
+    else{
         userlocation.innerHTML = "无此数据";
     }
     var gender = document.getElementById('userGender');
@@ -415,26 +413,6 @@
         
     var topic = document.getElementById('userTopic');
     if(personalData.topic_string){
-<<<<<<< HEAD
-        topicdict = personalData.topic_string;
-        //var str = '';
-        // console.log(topicdict);
-        // for(var k in topicdict){
-        //     console.log(k,topicdict[k]);
-        //     str += k+':'+topicdict[k];
-        // }
-        // for(i=0;i<topicdict.length;i++){
-        //     if (i == (topicdict.length -1)){
-        //         str += topicdict[i][0];
-        //     }else{
-        //        str = str + topicdict[i][0] +',';
-        //     }
-        //topicdict.replace('&/g',' ');
-        // }
-        console.log(topicdict);
-        console.log(topicdict.replace('/&/g',' sdf'));
-        topic.innerHTML ='';
-=======
         topicdict = personalData.topic_string.split('&');
         var str = '';
         for(i=0;i<topicdict.length;i++){
@@ -443,34 +421,32 @@
             }else{
                 str = str + topicdict[i] +',';
             }
-            
         }
         topic.innerHTML = str;
->>>>>>> d836cb9535c44f202975ad5c5ce353186be0269f
     }else{
         topic.innerHTML = "无此数据";
     }
         
     var fans = document.getElementById('userFans');
-    if(personalData.fansnum){
+    if(personalData.fansnum == 0 || personalData.fansnum.length>0){
         fans.innerHTML = personalData.fansnum;
     }else{
         fans.innerHTML = "无此数据";
     }
         
     var friends = document.getElementById('userFriend');
-    if( personalData.friendsnum){
+    if( personalData.friendsnum == 0 || personalData.friendsnum.length>0){
         friends.innerHTML = personalData.friendsnum;
     }else{
         friends.innerHTML = "无此数据";
     }
         
-    var pattern = document.getElementById('userOnline');
-    if(personalData.online_pattern[0][0]){
-        pattern.innerHTML = personalData.online_pattern[0][0];
-    }else{
-        pattern.innerHTML = "无此数据";
-    }
+    // var pattern = document.getElementById('userOnline');
+    // if(personalData.online_pattern[0][0]){
+    //     pattern.innerHTML = personalData.online_pattern[0][0];
+    // }else{
+    //     pattern.innerHTML = "无此数据";
+    // }
 
     $("#basic_info").off("click").click(function(){
         $("#float-wrap").removeClass("hidden");

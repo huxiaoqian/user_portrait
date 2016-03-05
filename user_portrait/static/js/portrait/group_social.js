@@ -682,12 +682,12 @@ function show_conclusion(data){
   $("#social_conclusion").append(html);
 }
 
-// function social_click(){
-//     $('#weiboTab li a').click(function (e) {
-//       e.preventDefault()
-//       $(this).tab('show')
-//     })
-// }
+function social_click(){
+    $('#weiboTab li a').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+}
    //  $('a[id^="group_change_weibo"]').click(function(){
    //  var uid1 = $(this).parent().prev().prev().text();
    //  var uid2 = $(this).parent().prev().prev().prev().prev().prev().text();
