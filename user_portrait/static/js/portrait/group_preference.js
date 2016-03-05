@@ -128,14 +128,15 @@ function Draw_keyword(data, div_name, more_div, hide_more){
   }
 }
 
-function get_radar_data (data) {
+function get_radar_data_pre (data) {
   var topic = data;
   var topic_name = [];
   var topic_value = [];
-  for(var i=0; i<topic.length;i++){
-    topic_value.push(topic[i][1])
-    topic_name.push(topic[i][0])
+  for(var i=0; i<topic[0].length;i++){
+    topic_value.push(topic[1][i].toFixed(2)*10)
+    topic_name.push(topic[0][i]);
   };
+  console.log(topic_name);
   // var topic_value2 = [];
   // var topic_name2 = [];
   // for(var i=0; i<8;i++){ //取前8个最大值
@@ -145,15 +146,15 @@ function get_radar_data (data) {
   //   topic_value[a]=0;
   // }
   var topic_name3 = [];
-  var max_topic = 8
-  if(topic.length<8){
-    max_topic = topic.length;
+  var max_topic = 8;
+  if(topic_value.length<8){
+    max_topic = topic_value.length;
   }
   for(var i=0;i<max_topic;i++){ //设置最大值的话题的阈值
     var name_dict = {};
     var index = topic_name[i];
     name_dict["text"] = index;
-    name_dict["max"] = Math.max.apply(Math, topic_value).toFixed(3)+10;
+    name_dict["max"] = Math.max.apply(Math, topic_value).toFixed(3);
     topic_name3.push(name_dict);
   }
   var topic_result = [];
@@ -162,40 +163,71 @@ function get_radar_data (data) {
   return topic_result;
 }
 function Draw_topic(data, radar_div, motal_div){
+  console.log(data);
   var topic = [];
   var html = '';
-  $('#'+ motal_div).empty();
-  if(data.length == 0){
+  if(data[0][1] == 0){
+      $('#'+ motal_div).empty();
       $('#'+ motal_div).empty();
       html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
-      //$('#'+ more_div).append(html);
       $('#'+ radar_div).append(html);
       $('#'+ motal_div).append(html);
-      //$('#'+ show_more).empty();
-  }else{
-      html = '';
-      html += '<table class="table table-striped table-bordered" style="width:450px;">';
-      html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">频率</th></tr>';
-      for (var i = 0; i < data.length; i++) {
-         var s = i.toString();
-         var m = i + 1;
-         html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + data[i][0] +  '&psycho_status=&domain&topic" target="_blank">' + data[i][0] +  '</a></th><th style="text-align:center">' + data[i][1].toFixed(2) + '</th></tr>';
+    }else{
+      var topic_sta = [];
+      var topic_name_sta = [];
+      for(var i=0;i<data.length;i++){
+        if(data[i][1] != 0){
+          topic_sta.push(data[i][1]/data[0][1]);
+          topic_name_sta.push(data[i][0]);
+        }
       };
-      html += '</table>'; 
-      $('#'+ motal_div).append(html);
-    };
-  var topic_result = [];
-  topic_result = get_radar_data(data);
-  var topic_name = topic_result[0];
-  var topic_value = topic_result[1];
-  var myChart2 = echarts.init(document.getElementById(radar_div));
-  var option = {
+
+      $('#'+ motal_div).empty();
+      if(topic_sta.length == 0){
+          $('#'+ motal_div).empty();
+          html = '<h3 style="font-size:20px;text-align:center;margin-top:50%;">暂无数据</h3>';
+          //$('#'+ more_div).append(html);
+          $('#'+ radar_div).append(html);
+          $('#'+ motal_div).append(html);
+          //$('#'+ show_more).empty();
+      }else{
+          html = '';
+          html += '<table class="table table-striped table-bordered" style="width:450px;">';
+          html += '<tr><th style="text-align:center">排名</th><th style="text-align:center">关键词</th><th style="text-align:center">概率</th></tr>';
+          for (var i = 0; i < topic_sta.length; i++) {
+             var s = i.toString();
+             var m = i + 1;
+             html += '<tr style=""><th style="text-align:center">' + m + '</th><th style="text-align:center"><a href="/index/search_result/?stype=2&uid=&uname=&location=&hashtag=&adkeyword=' + topic_name_sta[i] +  '&psycho_status=&domain&topic" target="_blank">' + topic_name_sta[i] +  '</a></th><th style="text-align:center">' + topic_sta[i].toFixed(2) + '</th></tr>';
+          };
+          html += '</table>'; 
+          $('#'+ motal_div).append(html);
+        };
+      var topic_val = [];
+      topic_val.push(topic_name_sta);
+      topic_val.push(topic_sta);
+      var topic_result = [];
+      //console.log(topic_val);
+      topic_result = get_radar_data_pre(topic_val);
+      //console.log(topic_result);
+      var topic_name = topic_result[0];
+      //console.log(topic_name);
+      var topic_value_final = topic_result[1];
+      var myChart2 = echarts.init(document.getElementById(radar_div));
+      var option = {
     // title : {
     //   text: '用户话题分布',
     //   subtext: ''
     // },
       tooltip : {
-        trigger: 'axis'
+        show: true,
+        trigger: 'axis',
+        formatter:  function (params){
+          var res  = '';
+          var indicator = params.indicator;
+          //console.log(params);
+          res += params['0'][3]+' : '+(params['0'][2]/10).toFixed(2);
+          return res;
+          }
       },
       toolbox: {
         show : true,
@@ -226,12 +258,14 @@ function Draw_topic(data, radar_div, motal_div){
         },
        data : [
         {
-         value : topic_value,
-         name : '用户话题分布'}
+         value : topic_value_final,
+         //name : '用户话题分布'
+       }
        ]
       }]
   };
   myChart2.setOption(option);
+  }
 }
 
 function show_results(data){

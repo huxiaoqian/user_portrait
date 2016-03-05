@@ -171,7 +171,7 @@ Draw_pie_all0:function(data){
       //html += '<span>'+data[0][4]+'，</span>';
     }
     if(data[1][1] != ''){
-      var data1_1 = '<span style="color:red">'+data[1][1]+'</span>';
+      var data1_1 = '属于<span style="color:red">'+data[1][1]+'</span>';
       conclu_s2.push(data1_1);
       //html += '属于<span style="color:red">'+data[1][1]+'。</span>';
     }
