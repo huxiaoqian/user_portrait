@@ -35,13 +35,14 @@ def social_sensing_task(ts):
             break  # finish all task in task_list
         task_detail = json.loads(temp)
         count += 1
-
+#        """
         if int(task_detail[6]) == 2:
             specific_keywords_burst_dection(task_detail)
         elif int(task_detail[6]) == 3:
             sensors_keywords_detection(task_detail)
         else:
             pass
+#        """
 
 if __name__ == "__main__":
     social_sensing_task()
