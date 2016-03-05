@@ -58,7 +58,8 @@ def ajax_create_task():
             tmp_list = keywords.split(",")
             keywords_list = []
             for item in tmp_list:
-                keywords_list.append(item.replace(' ', ''))
+                if item:
+                    keywords_list.append(item.replace(' ', ''))
             task_detail["keywords"] = json.dumps(keywords_list)
         else:
             task_detail["keywords"] = json.dumps([])
@@ -66,12 +67,13 @@ def ajax_create_task():
             tmp_list = sensitive_words.split(",")
             sensitive_words_list = []
             for item in tmp_list:
-                sensitive_words_list.append(item.replace(' ', ''))
+                if item:
+                    sensitive_words_list.append(item.replace(' ', ''))
             task_detail["sensitive_words"] = json.dumps(sensitive_words_list)
         else:
             task_detail["sensitive_words"] = json.dumps([])
         if not sensitive_words_list and keywords_list:
-            return json.dumps(['0'])
+            return json.dumps(['-1'])
         now_ts = int(time.time())
         task_detail["create_at"] = create_time # now_ts
         task_detail["warning_status"] = '0'
