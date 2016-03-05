@@ -241,6 +241,11 @@ function Draw_think_emotion(psycho_status,div){
     var first = new Array();
 
     for(var key in first_data){
+        console.log(first_data[k]);
+        console.log(first_data[k]==0);
+        if(first_data[k]==0){
+            continue;
+        }
         if(key == 7){
             first.push({'name':SENTIMENT_DICT_NEW[key],'value':first_data[key].toFixed(2),selected:true});
         }else{

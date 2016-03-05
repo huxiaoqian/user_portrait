@@ -26,10 +26,10 @@ Draw_tag_table:function(data){
 		html += '<td name="attribute_name">'+item[i].attribute_name+'</td>';
 		var item_value = item[i].attribute_value.split('&').join('/');
         if (!item_value){
-            html += '<td name="attribute_value"><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" style="color:darkred;font-size:10px;" title="添加标签名">添加</a></td>';
+            html += '<td name="attribute_value"><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" onclick="editclick()" style="color:darkred;font-size:10px;" title="添加标签名">添加</a></td>';
         }
         else{
-            html += '<td name="attribute_value"><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" title="点击编辑">'+item_value+'</a></td>';
+            html += '<td name="attribute_value"><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" onclick="editclick()" title="点击编辑">'+item_value+'</a></td>';
         }
         html += '<td name="creater">'+item[i].user+'</td>';
 		html += '<td name="time">'+item[i].date+'</td>'
@@ -70,7 +70,7 @@ searchResult:function(data){
 	for(i=0;i<item.length;i++){
 		html += '<tr>'
 		html += '<td name="attribute_name">'+item[i].attribute_name+'</td>';
-		html += '<td name="attribute_value"><a href="javascript:void(0)" data-toggle="modal" data-target="#editor" id="currentEdit" title="点击编辑">'+item[i].attribute_value+'</a></td>';
+		html += '<td name="attribute_value"><a href="" data-toggle="modal" data-target="#editor" id="currentEdit" onclick="editclick()"  title="点击编辑">'+item[i].attribute_value+'</a></td>';
 		html += '<td name="creater">'+item[i].user+'</td>';
 		html += '<td name="time">'+item[i].date+'</td>'
 		html += '<td name="operate" style="cursor:pointer;" ><a href="javascript:void(0)" id="delTag">删除</a></td>';
@@ -272,6 +272,38 @@ function input_data(){
 	temp = temp.substring(0, temp.length-1);
 	return temp;
 }
+
+function editclick(){
+	    add_flag = false;
+        var tagNames =  $(this).text();
+        console.log(tagNames);
+        if (tagNames.indexOf('/') > -1){
+            tagname = tagNames.split('/');
+        }
+  		$('#EDIT').empty();
+  		var html = '';
+  		html += '<div class="" style="margin-bottom:10px;"><span style="">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+  		html += '<span style="color:blue;" id="attributeName">'+$(this).parent().prev().html()+'</span ></div>';
+  		html += '<div class="" id=""><span style="margin-right:15px;">标签名</span>';
+  		for(i=0;i<tagname.length;i++){
+  			html += '<span class="tagbg" id="" name="attrName"><span class="tagName">'+tagname[i]+'</span><a  class="delCon" id="delIcon"></a></span>';
+  		}
+  		//html += '<input name="attribute_value" class="inputbox " type="text" value="" style="line-height:36px;">'
+  		html += '<span class="smallAdd"></span>'
+  		html += '</div>';
+  		$('#EDIT').append(html);
+  		$(".smallAdd").click(function(){
+              //console.log("sadsd");
+              if (!add_flag){
+                  add_flag = true;
+                  $(".smallAdd").before('<input name="newtag" id="newtag" class="input_tag_box" style="width:110px;" onkeydown="javascript:if (event.keyCode==13) addNew();"type="text" value="" style="line-height:36px;">');
+              }
+          });
+  		$('a[id^="delIcon"]').click(function(e){
+  			$(this).parent().remove();
+  		});
+}
+
 var TagChange = new TagChange();
 //Tag.call_sync_ajax_request(url, Tag.ajax_method, Tag.AddTag);
 tagChangeFun(TagChange);

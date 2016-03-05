@@ -372,7 +372,7 @@ Draw_pie_all0:function(data){
        };
        var user_name = '';
        if (data[0][i][1] == 'unknown'){
-        user_name = '未知';
+        user_name = '未知('+data[0][i][2]+')';
        }else{
          user_name = data[0][i][1];
        }
@@ -400,7 +400,7 @@ Draw_pie_all0:function(data){
         };
         var user_name = '';
         if (data[1][i][1] == 'unknown'){
-          user_name = '未知';
+          user_name = '未知('+data[1][i][2]+')';
         }else{
           user_name = data[1][i][1];
         }
@@ -489,7 +489,7 @@ function Draw_get_top_weibo(data,div_name){
         var uid = weibo[9];
         var name = weibo[10];
         if(name == 'unknown'){
-          name = '未知';
+          name = '未知('+weibo[9]+')';
         };
         var date = weibo[5];
         var text = weibo[3];
