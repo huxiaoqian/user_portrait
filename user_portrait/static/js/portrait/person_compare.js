@@ -31,6 +31,7 @@ Search_weibo.prototype = {
         var tag_data = data.tag;
         Compare(url_photo, portrait, tag_data);
         compare_extra(portrait);
+        bind_close_click(portrait);
     },
     Get_Callback_data:function(data){
         that.call_data = data;
@@ -320,6 +321,7 @@ function compare_extra(portrait){
     for(var key in portrait){
         div = 'line'+ mark;
         if(portrait[key]['keywords'].length == 0){
+            $('#'+div).empty();
             $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
         }else{
             Search_weibo.Draw_cloud_keywords(portrait[key]['keywords'], div);
@@ -327,15 +329,54 @@ function compare_extra(portrait){
         div = 'emotion'+ mark;
         var psycho_status = portrait[key]['psycho_status']
         Draw_think_emotion(psycho_status,div);
-        div = 'hashtag'+ mark;
 
+        div = 'hashtag'+ mark;
         if(portrait[key]['hashtag']){
+            $('#'+div).empty();
             $('#'+div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
         }else{
             Search_weibo.Draw_cloud_keywords(portrait[key]['hashtag'], div);
         }
         mark = mark + 1;
     }
+}
+function bind_close_click(portrait){
+     $('.btn-round').live('click', function(){
+        var cell = $('#table_compare').find('th').prevAll().length;
+        $('#table_compare').css('table-layout', 'fixed');
+        $('[name='+ $(this).attr("name") +']').remove();
+        $('#table_compare').css('table-layout', 'auto');
+        $("td[name^='list-']").attr('colspan',cell);
+        $('#table_compare').css('table-layout', 'fixed');
+        if(cell == 1){
+            $('#table_compare').css('table-layout', 'fixed');
+        }
+        var length = $("#head_id").find('th').length;
+        for(var i = 1; i < length; i++){
+            var obj = $("#head_id").find('th').eq(i);
+            var uid = obj.attr('id');
+            var value = obj.attr("value");
+            var cloud_div = 'line'+value;
+            var topic_div = 'topic'+ value;
+            var emotion_div = 'emotion' + value;
+            var hashtag_div = 'hashtag'+ value ;
+            if(portrait[uid]['keywords'].length == 0){
+                $('#'+cloud_div).empty();
+                $('#'+cloud_div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
+            }else{
+                Search_weibo.Draw_cloud_keywords(portrait[uid]['keywords'], cloud_div);
+            }
+            if(portrait[uid]['hashtag']){
+                $('#'+hashtag_div).empty();
+                $('#'+hashtag_div).append('<span style="display:block; padding-top:83px">该数据为空</span>');
+            }else{
+                Search_weibo.Draw_cloud_keywords(portrait[uid]['hashtag'], hashtag_div);
+            }
+            var psycho_status = portrait[uid]['psycho_status']
+            Draw_think_emotion(psycho_status,emotion_div);
+        }
+
+     });
 }
 var uid_list = window.location.search;
 Search_weibo = new Search_weibo();
