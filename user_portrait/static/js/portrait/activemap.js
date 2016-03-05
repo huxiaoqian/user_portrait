@@ -40,11 +40,14 @@
         var addedlist = new Array();
         for (var i = 0; i < data.length; i++){
             var time_geo = data[i];
-            if (time_geo[1] != ''){
-                timelist.push(time_geo[0]);
-                var city_city = time_geo[1].split('\t').pop();
-                geolist.push(city_city);
-                addedlist[city_city] = '';
+            if (time_geo[1] != '') {
+                var unit_geo_list = time_geo[1].split('\t');
+                if (unit_geo_list[0] == '中国'){
+                    timelist.push(time_geo[0]);
+                    var city_city = unit_geo_list.pop();
+                    geolist.push(city_city);
+                    addedlist[city_city] = '';
+                }
             }
         }
         // marker
@@ -92,6 +95,7 @@
             }
             else{
             }
+            //console.log(newgeo);
             //console.log(linklist);
             //linklist = [[{name:'北京'}, {name:'南宁',value:90}],[{name:'北京'}, {name:'南昌',value:90}],[{name:'北京'}, {name:'拉萨',value:90}]];
             //console.log(linklist);

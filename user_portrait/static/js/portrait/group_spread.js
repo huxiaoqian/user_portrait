@@ -5,11 +5,20 @@ function draw_influ_distribution(data,radar_div, title){
     var y_axi = data[0];
     var x_axi = data[1];
     var xdata = [];
-
+    var ydata = [];
+    var count_sum = 0;
+    for (var i =0; i < y_axi.length;i++){
+        count_sum += y_axi[i];
+        if(y_axi[i]!=0){
+            xdata.push(data[1][i] + '-' + data[1][i+1]);
+            ydata.push(data[0][i]);
+        }
+    }
+    /*
     for (i = 0; i< data[1].length-1; i++){
-        xdata.push(data[1][i] + '-' + data[1][i+1])
+        xdata.push(data[1][i] + '-' + data[1][i+1]);
     };
-
+    */
     var option = {
     tooltip : {
         trigger: 'axis',
@@ -43,7 +52,7 @@ function draw_influ_distribution(data,radar_div, title){
         {
             name:title,
             type:'bar',
-            data:data[0]
+            data:ydata
         }
     ]
     };

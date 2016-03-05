@@ -826,10 +826,13 @@ function month_process(data){
         for (var i = 0; i < data.length; i++){
             var time_geo = data[i];
             if (time_geo[1] != ''){
-                timelist.push(time_geo[0]);
-                var city_city = time_geo[1].split('\t').pop();
-                geolist.push(city_city);
-                addedlist[city_city] = '';
+                var unit_geo_list = time_geo[1].split('\t');
+                if (unit_geo_list[0] == '中国'){
+                    timelist.push(time_geo[0]);
+                    var city_city = unit_geo_list.pop();
+                    geolist.push(city_city);
+                    addedlist[city_city] = '';
+                }
             }
         }
         // marker
