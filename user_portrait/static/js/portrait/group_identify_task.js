@@ -204,6 +204,9 @@ function submit_control(that){
 			$('#group_control').modal();
 		 }
 	});	
+	// $('a[id^="group_commit_control"]').onMouseover(function(e){
+	// 	this.style.background='yellow';
+	// });
 }
 
 have_keys(['sdfa','asdfasg','1231','asdfa','dsga4','12sdfa']);
