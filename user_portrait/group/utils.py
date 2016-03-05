@@ -240,17 +240,25 @@ def search_group_results(task_name, module):
 def deal_geo_distribution(activity_geo_dict):
     results = {}
     for ts in activity_geo_dict:
-        results[ts] = {}
+        results[ts] = []
+        new_ts_dict = {}
         ts_dict = activity_geo_dict[ts]
         for geo_item in ts_dict:
             geo_item_list = geo_item.split('\t')
             new_geo_item = geo_item_list[-1]
             if new_geo_item:
                 try:
-                    results[ts][new_geo_item] += ts_dict[geo_item]
+                    new_ts_dict[new_geo_item] += ts_dict[geo_item]
                 except:
-                    results[ts][new_geo_item] = ts_dict[geo_item]
-    
+                    new_ts_dict[new_geo_item] = ts_dict[geo_item]
+        sort_new_ts_dict = sorted(new_ts_dict.items(), key=lambda x:x[1], reverse=True)
+        for i in range(0, 10):
+            try:
+                item = sort_new_ts_dict[i]
+            except:
+                sort_new_ts_dict.append(['', 0])
+
+        results[ts] = sort_new_ts_dict
     return results
 
 
