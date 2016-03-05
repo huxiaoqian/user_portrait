@@ -631,12 +631,13 @@ function group_activity(data){
 		yAxis_min.push(min_list[i][1])
 	};
 
-
    var mychart = echarts.init(document.getElementById('group_activity'));
    var option = {
+
     tooltip : {
         trigger: 'axis',
         formatter: function (params) {
+<<<<<<< HEAD
             var max_user_name = [];
             var min_user_name = [];
             for(var i=0; i<max_list.length;i++){
@@ -648,7 +649,6 @@ function group_activity(data){
                 }
                 max_user_name.push(max_list[i][2]);
                 min_user_name.push(min_list[i][2]);
-
             };
             var res = '' + params[0].name;
             var index = params[0].dataIndex;
@@ -674,6 +674,7 @@ function group_activity(data){
     xAxis : [
         {
             type : 'category',
+            scale : true,
             boundaryGap : false,
             
             data : xAxis_data

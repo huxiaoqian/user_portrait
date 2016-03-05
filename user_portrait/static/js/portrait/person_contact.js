@@ -339,9 +339,10 @@ $('.label-success').click(function(){
         return false;
     }
     else{
-    Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_table);
-    Search_weibo.Draw_picture(Search_weibo.data);
-    //Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_picture);
+    //Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_table);
+    //Search_weibo.Draw_picture(Search_weibo.data);
+    
+    ////Search_weibo.call_sync_ajax_request(url, Search_weibo.ajax_method, Search_weibo.Draw_picture);
     }
 });
 
