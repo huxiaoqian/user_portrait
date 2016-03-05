@@ -822,12 +822,29 @@ function draw_keyword(data){
     //   keyword.push(word);
     // }
     //最大是20
-    var word_num = Math.min(20, data.hashtag_top.length);
+    var key_value = [];
+    var key_name = [];
+    for(var i=0;i<data['hashtag_top'].length;i++){
+      key_value.push(data['hashtag_top'][i][1]+Math.random());
+      key_name.push(data['hashtag_top'][i][0]);
+    };
+
+    var word_num = Math.min(50, data['hashtag_top'].length);
+    var key_value2 = [];
+    var key_name2 = [];
+    for(var i=0; i<word_num; i++){ //取前20个最大值
+      a=key_value.indexOf(Math.max.apply(Math, key_value));
+      key_value2.push(key_value[a]);
+      key_name2.push(key_name[a]);
+      key_value[a]=0;
+    }
+    //var word_num = Math.min(20, data.hashtag_top.length);
     //console.log(data['hashtag_top'].length);
     for (var i=0;i<word_num;i++){
       var word = {};
-      word['name'] = data['hashtag_top'][i][0];
-      word['value'] =data['hashtag_top'][i][1]*10;
+      word['name'] = key_name2[i];
+      word['value'] =key_value2[i]*10;
+      console.log(word['value']);
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }
@@ -838,7 +855,7 @@ function draw_keyword(data){
             show: true,
             formatter:  function (params){
               var res  = '';
-              var value_after = params.value/10;
+              var value_after = parseInt(params.value/10);
               res += params.name+' : '+value_after;
               return res;
             }
@@ -851,7 +868,7 @@ function draw_keyword(data){
             textPadding: 0,
             autoSize: {
                 enable: true,
-                //minSize: 14
+                minSize: 14
             },
             data:keyword
         }]

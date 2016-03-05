@@ -77,22 +77,37 @@ function Draw_keyword(data, div_name, more_div, more){
       html += '</table>'; 
       $('#'+ more_div).append(html);
 
-    var word_num = Math.min(20, data.length);
+    var key_value = [];
+    var key_name = [];
+    for(var i=0;i<data.length;i++){
+      key_value.push(data[i][1]+Math.random());
+      key_name.push(data[i][0]);
+    };
+
+    var word_num = Math.min(50, data.length);
+    var key_value2 = [];
+    var key_name2 = [];
+    for(var i=0; i<word_num; i++){ //最多取前50个最大值
+      a=key_value.indexOf(Math.max.apply(Math, key_value));
+      key_value2.push(key_value[a]);
+      key_name2.push(key_name[a]);
+      key_value[a]=0;
+    }
+    
   	for (var i=0;i<word_num;i++){
   		var word = {};
-  		word['name'] = data[i][0];
-  		word['value'] =data[i][1]*100;
+  		word['name'] = key_name2[i];
+  		word['value'] = key_value2[i]*100;
   		word['itemStyle'] = createRandomItemStyle();
   		keyword.push(word);
   	}
-
   	var myChart = echarts.init(document.getElementById(div_name)); 
   	var option = {
       tooltip: {
           show: true,
           formatter:  function (params){
             var res  = '';
-            var value_after = params.value/100;
+            var value_after = parseInt(params.value/100);
             res += params.name+' : '+value_after;
             return res;
           }
