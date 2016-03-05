@@ -201,7 +201,9 @@ def search_group_results(task_name, module):
     elif module == 'activity':
         result['activity_trend'] = json.loads(source['activity_trend'])
         result['activity_time'] = json.loads(source['activity_time'])
-        result['activity_geo_disribution'] = json.loads(source['activity_geo_distribution'])
+        #result['activity_geo_disribution'] = json.loads(source['activity_geo_distribution'])
+        new_activity_geo_distribution = deal_geo_distribution(json.loads(source['activity_geo_distribution']))
+        result['activity_geo_disribution'] = new_activity_geo_distribution
         result['activiy_geo_vary'] = json.loads(source['activity_geo_vary'])
         result['activeness_trend'] = json.loads(source['activeness'])
         result['activeness_his'] = json.loads(source['activeness_his'])
@@ -233,6 +235,32 @@ def search_group_results(task_name, module):
         result['sentiment_pie'] = json.loads(source['sentiment_pie'])
         result['character'] = json.loads(source['character'])
     return result
+
+#activity_geo_dict: {ts:{geo1:count}, ts:{},...}
+def deal_geo_distribution(activity_geo_dict):
+    results = {}
+    for ts in activity_geo_dict:
+        results[ts] = []
+        new_ts_dict = {}
+        ts_dict = activity_geo_dict[ts]
+        for geo_item in ts_dict:
+            geo_item_list = geo_item.split('\t')
+            new_geo_item = geo_item_list[-1]
+            if new_geo_item:
+                try:
+                    new_ts_dict[new_geo_item] += ts_dict[geo_item]
+                except:
+                    new_ts_dict[new_geo_item] = ts_dict[geo_item]
+        sort_new_ts_dict = sorted(new_ts_dict.items(), key=lambda x:x[1], reverse=True)[:10]
+        for i in range(0, 10):
+            try:
+                item = sort_new_ts_dict[i]
+            except:
+                sort_new_ts_dict.append(['', 0])
+
+        results[ts] = sort_new_ts_dict
+    return results
+
 
 
 #abandon
