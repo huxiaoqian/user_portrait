@@ -431,9 +431,6 @@ function draw_activeness_chart(data){
     for (var i = 0;i < timeline.length;i++){
         data_time.push(timeline[i]);
     }
-    if(activeness.length > 7){
-        activeness.length = 7;
-	}
     for (var i = 0;i < activeness.length;i++){
         data_count.push(parseFloat(activeness[i].toFixed(2)));
     }
