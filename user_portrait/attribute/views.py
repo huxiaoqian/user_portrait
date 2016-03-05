@@ -100,7 +100,7 @@ def ajax_portrait_search():
                 condition_num += 1
         query.append({'bool':{'should':query_list}})
     else:
-        fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords', 'hashtag']
+        fuzz_item = ['uid', 'uname', 'location', 'activity_geo', 'keywords_string', 'hashtag']
         multi_item = ['character_sentiment','character_text','domain','topic_string']
         for item in fuzz_item:
             item_data = request.args.get(item, '')
