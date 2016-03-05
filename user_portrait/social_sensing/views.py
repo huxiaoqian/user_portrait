@@ -58,7 +58,8 @@ def ajax_create_task():
             tmp_list = keywords.split(",")
             keywords_list = []
             for item in tmp_list:
-                keywords_list.append(item.replace(' ', ''))
+                if item:
+                    keywords_list.append(item.replace(' ', ''))
             task_detail["keywords"] = json.dumps(keywords_list)
         else:
             task_detail["keywords"] = json.dumps([])
@@ -66,12 +67,13 @@ def ajax_create_task():
             tmp_list = sensitive_words.split(",")
             sensitive_words_list = []
             for item in tmp_list:
-                sensitive_words_list.append(item.replace(' ', ''))
+                if item:
+                    sensitive_words_list.append(item.replace(' ', ''))
             task_detail["sensitive_words"] = json.dumps(sensitive_words_list)
         else:
             task_detail["sensitive_words"] = json.dumps([])
         if not sensitive_words_list and keywords_list:
-            return json.dumps(['0'])
+            return json.dumps(['-1'])
         now_ts = int(time.time())
         task_detail["create_at"] = create_time # now_ts
         task_detail["warning_status"] = '0'
@@ -143,8 +145,8 @@ def ajax_revise_task():
     finish = request.args.get("finish", "10")
     stop_time = request.args.get('stop_time', '') # timestamp
 
-    now_ts = datetime2ts("2013-09-06")
-    #now_ts = time.time()
+    #now_ts = datetime2ts("2013-09-06")
+    now_ts = time.time()
     if stop_time and stop_time < now_ts:
         return json.dumps([])
 
@@ -202,7 +204,7 @@ def ajax_show_task():
                 for iter_item in history_status[:-1]:
                     if int(iter_item[-1]) != 0:
                         temp_list.append(iter_item)
-                        sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
+                sorted_list = sorted(temp_list, key=lambda x:x[0], reverse=True)
                 item['history_status'] = sorted_list
             else:
                 item['history_status'] = history_status
@@ -248,6 +250,7 @@ def ajax_get_task_detail_info():
             portrait_detail = sorted(portrait_detail, key=lambda x:x[5], reverse=True)
     task_detail['social_sensors_portrait'] = portrait_detail
 
+    print task_detail
     return json.dumps(task_detail)
 
 

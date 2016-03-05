@@ -728,6 +728,9 @@ function show_activity_track(data){
     var html = '';
     html += '<select id="select_track_weibo_user" style="max-width:150px;">';
     for (var i = 0; i < data.length; i++) {
+        if(data[i][1]=='unknown'){
+            data[i][1] = '未知';
+		}
         html += '<option value="' + data[i][0] + '">' + data[i][1] + '</option>';
     }
     html += '</select>';

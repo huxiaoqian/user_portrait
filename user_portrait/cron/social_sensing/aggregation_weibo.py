@@ -162,7 +162,7 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
                                     "lt": ts
                                 }
                             }},
-                            {"terms": {"keywords_string": keywords_list}},
+                            {"terms": {"keywords_string": keywords_list}}
                             #{"term": {"message_type": 1}} # origin weibo
                         ]
                     }
@@ -173,8 +173,10 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
         "size": 10000
     }
 
-    if int(query_type) == 1:
+    if social_sensors:
         query_body['query']['filtered']['filter']['bool']['must'].append({"terms": {"uid": social_sensors}})
+    if query_type == 1:
+        query_body['query']['filtered']['filter']['bool']['must'].append({"term": {"message_type": 1}})
 
     datetime = ts2datetime(ts)
     # test
@@ -185,13 +187,13 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
         search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body, fields=["root_mid"])["hits"]["hits"]
     else:
         search_results = []
-    origin_mid_list = [] # all related weibo mid list
+    origin_mid_list = set() # all related weibo mid list
     if search_results:
         for item in search_results:
-            if item.get("fields", ""):
-                origin_mid_list.append(item["fields"]["root_mid"][0])
-            else:
-                origin_mid_list.append(item["_id"])
+            #if item.get("fields", ""):
+            #    origin_mid_list.add(item["fields"]["root_mid"][0])
+            #else:
+            origin_mid_list.add(item["_id"])
 
     datetime_1 = ts2datetime(ts-time_segment)
     index_name_1 = flow_text_index_name_pre + datetime_1
@@ -200,13 +202,13 @@ def query_mid_list(ts, keywords_list, time_segment, query_type=0, social_sensors
         search_results_1 = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body, fields=['root_mid'])["hits"]["hits"]
         if search_results_1:
             for item in search_results_1:
-                if item.get("fields", ""):
-                    origin_mid_list.append(item["fields"]["root_mid"][0]) 
-                else:
-                    origin_mid_list.append(item["_id"])
+                #if item.get("fields", ""):
+                #    origin_mid_list.add(item["fields"]["root_mid"][0]) 
+                #else:
+                origin_mid_list.add(item["_id"])
 
 
-    return origin_mid_list
+    return list(origin_mid_list)
 
 
 # 给定所有原创微博list，搜索在time-time-interval时间内的热门微博root-mid
@@ -282,9 +284,6 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_
                                     "lt": ts
                                 }
                             }}
-                        ],
-                        "should": [
-                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -297,8 +296,6 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_
         }
     }
 
-    if int(query_type) == 1:
-        query_all_body['query']["filtered"]["filter"]["bool"]["should"].pop()
 
     datetime = ts2datetime(ts)
     # test
@@ -307,6 +304,7 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_
     exist_es = es_text.indices.exists(index_name)
     return_results = {"origin": 0, "retweeted": 0, "comment": 0}
     if origin_mid_list and exist_es:
+        query_all_body["query"]["filtered"]["filter"]["bool"]["should"] = []
         query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
         query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
         results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_count']['buckets']
@@ -327,6 +325,7 @@ def query_related_weibo(ts, origin_mid_list, time_segment, keywords_list, query_
     if datetime != datetime_1 and exist_bool:
         repost_count_1 = 0
         if origin_mid_list:
+            query_all_body["query"]["filtered"]["filter"]["bool"]["should"] = []
             query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
             query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
             results_1 = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_count']['buckets']
@@ -361,12 +360,6 @@ def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywo
                                     "lt": ts
                                 }
                             }}
-                        ],
-                        "should": [
-                            {"terms":{
-                                "keywords_string": keywords_list
-                                }
-                            }
                         ]
                     }
                 }
@@ -379,8 +372,6 @@ def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywo
         }
     }
 
-    if int(query_type) == 1:
-        query_all_body["query"]["filtered"]["filter"]["bool"]["should"].pop()
 
     datetime = ts2datetime(ts)
     results =dict()
@@ -393,6 +384,7 @@ def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywo
     index_name = flow_text_index_name_pre + datetime
     exist_es = es_text.indices.exists(index_name)
     if origin_mid_list and exist_es:
+        query_all_body["query"]["filtered"]["filter"]["bool"]["should"] = []
         query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
         query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
         search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_sentiments']['buckets']
@@ -410,6 +402,7 @@ def aggregation_sentiment_related_weibo(ts, origin_mid_list, time_segment, keywo
     if datetime != datetime_1 and exist_bool:
         repost_count_1 = 0
         if origin_mid_list:
+            query_all_body["query"]["filtered"]["filter"]["bool"]["should"] = []
             query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"root_mid": origin_mid_list}})
             query_all_body["query"]["filtered"]["filter"]["bool"]["should"].append({"terms": {"mid": origin_mid_list}})
             search_results = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_all_body)['aggregations']['all_sentiments']['buckets']
@@ -536,9 +529,10 @@ def specific_keywords_burst_dection(task_detail):
     sentiment_count = {"0": 0, "1": 0, "2": 0, "3": 0}
     datetime = ts2datetime(ts)
     datetime_1 = ts2datetime(ts-time_interval)
-    # test
-    #datetime = "2013-09-07"
-    index_name = flow_text_index_name_pre + datetime
+    if datetime != datetime_1:
+        index_name = flow_text_index_name_pre + datetime_1
+    else:
+        index_name = flow_text_index_name_pre + datetime
     exist_es = es_text.indices.exists(index_name)
     if exist_es:
         search_results = aggregation_sentiment_related_weibo(ts, all_mid_list, time_interval, keywords_list)
@@ -661,9 +655,11 @@ def specific_keywords_burst_dection(task_detail):
 
     # 7. 感知到的事, all_mid_list
     tmp_burst_reason = burst_reason
+    topic_list = []
     # 判断是否有敏感微博出现:有，则聚合敏感微博，replace；没有，聚合普通微博
     if burst_reason: # 有事情发生
         text_list = []
+        mid_set = set()
         if signal_sensitive_variation in burst_reason:
             query_sensitive_body = {
                 "query":{
@@ -697,11 +693,15 @@ def specific_keywords_burst_dection(task_detail):
                     temp_dict = dict()
                     temp_dict["mid"] = iter_mid
                     temp_dict["text"] = iter_text
-                    text_list.append(temp_dict) # 整理后的文本，mid，text
+                    if iter_mid not in mid_set:
+                        text_list.append(temp_dict) # 整理后的文本，mid，text
+                        mid_set.add(iter_mid)
             burst_reason.replace(signal_sensitive_variation, "")
 
-        if burst_reason and all_mid_list:
-            origin_sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": all_mid_list}, fields=["mid", "text"])["docs"]
+        current_origin_mid_list = query_mid_list(ts, keywords_list, time_interval, 1)
+        print "current_origin_mid_list:", len(current_origin_mid_list)
+        if burst_reason and current_mid_list:
+            origin_sensing_text = es_text.mget(index=index_name, doc_type=flow_text_index_type, body={"ids": current_origin_mid_list}, fields=["mid", "text"])["docs"]
             if origin_sensing_text:
                 for item in origin_sensing_text:
                     if item["found"]:
@@ -710,14 +710,16 @@ def specific_keywords_burst_dection(task_detail):
                         temp_dict = dict()
                         temp_dict["mid"] = iter_mid
                         temp_dict["text"] = iter_text
-                        text_list.append(temp_dict) # 整理后的文本，mid，text
+                        if iter_mid not in mid_set:
+                            text_list.append(temp_dict) # 整理后的文本，mid，text
+                            mid_set.add(iter_mid)
 
         if len(text_list) == 1:
-            top_word = freq_word(text_list)
+            top_word = freq_word(text_list[0])
             topic_list = top_word.keys()
         elif len(text_list) == 0:
             topic_list = []
-            burst_reason = "" #没有相关微博，归零
+            tmp_burst_reason = "" #没有相关微博，归零
             print "***********************************"
         else:
             feature_words, input_word_dict = tfidf(text_list) #生成特征词和输入数据
@@ -731,6 +733,11 @@ def specific_keywords_burst_dection(task_detail):
             if sorted_dict:
                 for item in sorted_dict:
                     topic_list.append(word_label[item[0]])
+        print "topic_list, ", topic_list
+
+    if not topic_list:
+        warning_status = signal_nothing
+        tmp_burst_reason = signal_nothing_variation
 
     results = dict()
     results['origin_weibo_number'] = current_origin_count
@@ -745,7 +752,7 @@ def specific_keywords_burst_dection(task_detail):
     results['important_users'] = json.dumps(filter_important_list)
     results['burst_reason'] = tmp_burst_reason
     results['timestamp'] = ts
-    if burst_reason:
+    if tmp_burst_reason:
         results['clustering_topic'] = json.dumps(topic_list)
     # es存储当前时段的信息
     doctype = task_name
@@ -754,7 +761,7 @@ def specific_keywords_burst_dection(task_detail):
     # 更新manage social sensing的es信息
     temporal_result = es_user_portrait.get(index=index_manage_social_task, doc_type=task_doc_type, id=task_name)['_source']
     temporal_result['warning_status'] = warning_status
-    temporal_result['burst_reason'] = burst_reason
+    temporal_result['burst_reason'] = tmp_burst_reason
     temporal_result['finish'] = finish
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
