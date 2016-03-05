@@ -142,7 +142,7 @@ Draw_pie_all0:function(data){
     $('#influence_conclusion_c').empty();
     var html='';
     if(data[0][0] != ''){
-      html += '该用户<span style="color:red">'+data[0][0]+'。</span>';
+      html += '该用户<span style="color:red">'+data[0][0]+'</span>。';
     }
     var conclu_s1 = [];
     // conclu_s.push()
