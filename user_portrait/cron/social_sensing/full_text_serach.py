@@ -171,7 +171,7 @@ def get_origin_weibo_detail(ts, social_sensors, keywords_list, size=100, message
             temp.append(list(common_keywords))
             temp.append(item['message_type'])
             results.append(temp)
-    print results
+    #print results
     return results
 
 
@@ -211,13 +211,13 @@ def query_mid_list(ts, keywords_list, time_segment, social_sensors=[]):
         search_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_body, fields=["root_mid"])["hits"]["hits"]
     else:
         search_results = []
-    origin_mid_list = [] # all related weibo mid list
+    origin_mid_list = set() # all related weibo mid list
     if search_results:
         for item in search_results:
-            if item.get("fields", ""):
-                origin_mid_list.append(item["fields"]["root_mid"][0])
-            else:
-                origin_mid_list.append(item["_id"])
+            #if item.get("fields", ""):
+            #    origin_mid_list.append(item["fields"]["root_mid"][0])
+            #else:
+            origin_mid_list.add(item["_id"])
 
     datetime_1 = ts2datetime(ts-time_segment)
     index_name_1 = flow_text_index_name_pre + datetime_1
@@ -226,12 +226,12 @@ def query_mid_list(ts, keywords_list, time_segment, social_sensors=[]):
         search_results_1 = es_text.search(index=index_name_1, doc_type=flow_text_index_type, body=query_body, fields=['root_mid'])["hits"]["hits"]
         if search_results_1:
             for item in search_results_1:
-                if item.get("fields", ""):
-                    origin_mid_list.append(item["fields"]["root_mid"][0])
-                else:
-                    origin_mid_list.append(item["_id"])
+                #if item.get("fields", ""):
+                #    origin_mid_list.append(item["fields"]["root_mid"][0])
+                #else:
+                origin_mid_list.add(item["_id"])
 
-    return origin_mid_list
+    return list(origin_mid_list)
 
 
 # 获得转发或者评论微博所对应的文本
@@ -260,7 +260,6 @@ def get_retweet_weibo_detail(ts, social_sensors, keywords_list, size, text_type)
                         "should":[
                             {"terms": {"root_mid": mid_list}},
                             {"terms": {"mid": mid_list}},
-                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -340,12 +339,11 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
                                     "gte": ts - time_interval,
                                     "lt": ts
                                 }
-                            }},
+                            }}
                         ],
                         "should":[
                             {"terms": {"root_mid": mid_list}},
                             {"terms": {"mid": mid_list}},
-                            {"terms":{"keywords_string": keywords_list}}
                         ]
                     }
                 }
@@ -363,7 +361,7 @@ def get_positive_weibo_detail(ts, social_sensors, keywords_list, size, sentiment
     if int(sentiment_type) == 1 or int(sentiment_type) == 0:
         query_body["query"]["filtered"]["filter"]["bool"]["must"].append({"term":{"sentiment":sentiment_type}})
     else:
-        query_body["query"]["filtered"]["filter"]["bool"]["should"] = [{"terms":{"sentiment": ["2", "3"]}}]
+        query_body["query"]["filtered"]["filter"]["bool"]["must"].append([{"terms":{"sentiment": ["2", "3"]}}])
 
     # 判断当前ts和ts-time_interval是否属于同一天，确定查询哪个es
     datetime = ts2datetime(ts)

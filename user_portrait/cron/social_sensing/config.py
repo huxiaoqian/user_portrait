@@ -6,7 +6,7 @@ import csv
 import scws
 import re
 
-sys.path.append('../')
+sys.path.append('../../')
 from parameter import PSY_ABS_PATH as abs_path
 
 s_label = ['anger','anx','sad']#第二层分类标签
