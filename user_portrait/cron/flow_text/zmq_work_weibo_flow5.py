@@ -152,14 +152,14 @@ def expand_index_action(item):
     if item['message_type'] == 3:
         #for retweet message: get directed retweet uname and uid 
         directed_uid, directed_uname = get_directed_retweet(item['text'], item['root_uid'])
-        index_body['directed_uid'] = directed_uid
+        index_body['directed_uid'] = int(directed_uid)
         index_body['directed_uname'] = directed_uname
         index_body['root_mid'] = str(item['root_mid'])
         index_body['root_uid'] = str(item['root_uid'])
     elif item['message_type'] == 2:
         #for comment meesage: get directed comment uname and uid
         directed_uid, directed_uname = get_directed_comment(item['text'], item['root_uid'])
-        index_body['directed_uid'] = directed_uid
+        index_body['directed_uid'] = int(directed_uid)
         index_body['directed_uname'] = directed_uname
         index_body['root_mid'] = str(item['root_mid'])
         index_body['root_uid'] = str(item['root_uid'])
@@ -193,6 +193,7 @@ if __name__ == "__main__":
     now_date = ts2datetime(tb)
     index_name_pre = flow_text_index_name_pre
     index_type = flow_text_index_type
+    start_date = '2013-09-06'
     now_index_name_date = ts2datetime(datetime2ts(start_date) - DAY)
     action = []
     xdata = []

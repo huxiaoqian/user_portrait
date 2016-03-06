@@ -180,23 +180,29 @@ function draw_character(data){
     var first_content = [];
     var second_content = [];
     for (var i = 0;i < 7; i++){
-        if (pie_data[i]){
+        if (pie_data[i] && pie_data[i] != 0){
+            console.log(i,pie_data[i]);
             var nod = {};
             nod['name'] = character_dict[i];
             nod['value'] = pie_data[i];
             second_content.push(nod);
-            if ((i == 0) || (i == 1)){
+            if ((i == 0 ) || (i == 1)){
+                console.log(2,nod);
                 first_content.push(nod);
             }
             else{
                 neg += pie_data[i];
+                console.log(neg);
             }
         }
     }
     var nod = {};
+    //console.log(neg);
     nod['name'] = '消极';
     nod['value'] = neg;
-    first_content.push(nod);
+    if (neg != 0){
+        first_content.push(nod);    
+    }
     var myChart = echarts.init(document.getElementById('pie_emotion'));
     var option = {
     tooltip : {

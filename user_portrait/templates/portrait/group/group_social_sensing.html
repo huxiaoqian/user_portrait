@@ -77,10 +77,10 @@
         });
     }
 function draw_social_sensing_table (data) {
-        //console.log(data);
+    console.log(data);
         //sensors
-        var sensors = data.social_sensors_detail;
-        $('#social_sensing #check_sensors_list').empty();
+    var sensors = data.social_sensors_detail;
+    $('#social_sensing #check_sensors_list').empty();
 		var html = '';
 		html += '<table class="table table-bordered table-striped table-condensed datatable">';
 		html += '<thead><tr>';
@@ -91,38 +91,42 @@ function draw_social_sensing_table (data) {
 		html += '<th>重要度</th>';
 		html += '</tr></thead>';
 		html += '<tbody>';
-        for(var i=0; i<sensors.length; i++){
-            var user_data = sensors[i];
+    for(var i=0; i<sensors.length; i++){
+      var user_data = sensors[i];
+      var user_name = user_data[1];
+      if(user_name == 'unknown'){
+          user_name = '未知' ;
+      }
 			html += '<tr>';
 			html += '<td>' + user_data[0] + '</td>';
-			html += '<td>' + user_data[1] + '</td>';
+			html += '<td>' + user_name + '</td>';
 			html += '<td>' + user_data[3] + '</td>';
 			html += '<td>' + user_data[4] + '</td>';
 			html += '<td>' + user_data[6] + '</td>';
 			html += '</tr>';
 		}
 		html += '</tbody></table>';	
-        $('#social_sensing #check_sensors_list').append(html);
+    $('#social_sensing #check_sensors_list').append(html);
 
-        //keywords
-        var keywords = data.keywords;
-        if (keywords.length == 0){
-            $('#social_sensing #sensing_keywords').html('无');
-        }
-        else{
-            $('#social_sensing #sensing_keywords').html(keywords.join(' '));
-        }    
-        //remarks
-        var remark = data.remark;
-        if (remark == ''){
-            $('#social_sensing #sensing_remarks').html(无);
-        }
-        else{
-            $('#social_sensing #sensing_remarks').html(remark);
-        }
-        // group_list
-        var group_list = data.group_list;
-        $('#social_sensing #social_sensing_table').empty();
+    //keywords
+    var keywords = data.keywords;
+    if (keywords.length == 0){
+        $('#social_sensing #sensing_keywords').html('无');
+    }
+    else{
+        $('#social_sensing #sensing_keywords').html(keywords.join(' '));
+    }    
+    //remarks
+    var remark = data.remark;
+    if (remark == ''){
+        $('#social_sensing #sensing_remarks').html(无);
+    }
+    else{
+        $('#social_sensing #sensing_remarks').html(remark);
+    }
+    // group_list
+    var group_list = data.group_list;
+    $('#social_sensing #social_sensing_table').empty();
 		var html = '';
 		html += '<table id="social_table" class="table table-bordered table-striped table-condensed datatable">';
 		html += '<thead><tr>';
