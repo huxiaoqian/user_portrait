@@ -832,7 +832,7 @@ function draw_keyword(data){
     var word_num = Math.min(50, data['hashtag_top'].length);
     var key_value2 = [];
     var key_name2 = [];
-    for(var i=0; i<word_num; i++){ //取前20个最大值
+    for(var i=0; i<word_num; i++){ //取前30个最大值
       a=key_value.indexOf(Math.max.apply(Math, key_value));
       key_value2.push(key_value[a]);
       key_name2.push(key_name[a]);
