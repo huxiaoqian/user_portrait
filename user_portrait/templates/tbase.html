@@ -255,7 +255,8 @@
                      $(this).parents().siblings().find(".thr_nr").hide();	
                      $(this).siblings(".thr_nr").toggle();
                 })
-				$("#showBtn").off("click").click(function(){
+                $("#showBtn").off("click").click(function(){
+                    advanced_attr_load(); 
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
 					return false;
