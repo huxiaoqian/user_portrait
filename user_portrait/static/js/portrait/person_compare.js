@@ -388,14 +388,14 @@ function compare_extra(portrait){
 function bind_close_click(portrait){
      $('.btn-round').live('click', function(){
         var cell = $('#table_compare').find('th').prevAll().length;
+        if (cell == 2){
+            $('.btn-round').css('display', 'none');
+        }
         $('#table_compare').css('table-layout', 'fixed');
         $('[name='+ $(this).attr("name") +']').remove();
         $('#table_compare').css('table-layout', 'auto');
         $("td[name^='list-']").attr('colspan',cell);
         $('#table_compare').css('table-layout', 'fixed');
-        if(cell == 1){
-            $('#table_compare').css('table-layout', 'fixed');
-        }
         var length = $("#head_id").find('th').length;
         for(var i = 1; i < length; i++){
             var obj = $("#head_id").find('th').eq(i);
