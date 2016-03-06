@@ -55,7 +55,7 @@ function createRandomItemStyle() {
     };
 }
 function Draw_keyword(data, div_name, more_div, more){
-	var keyword = [];
+	var keyword_person = [];
   var html = '';
 	$('#'+ more_div).empty();
   if(data.length == 0){
@@ -93,13 +93,12 @@ function Draw_keyword(data, div_name, more_div, more){
       key_name2.push(key_name[a]);
       key_value[a]=0;
     }
-    
   	for (var i=0;i<word_num;i++){
   		var word = {};
   		word['name'] = key_name2[i];
   		word['value'] = key_value2[i]*100;
   		word['itemStyle'] = createRandomItemStyle();
-  		keyword.push(word);
+  		keyword_person.push(word);
   	}
   	var myChart = echarts.init(document.getElementById(div_name)); 
   	var option = {
@@ -121,7 +120,7 @@ function Draw_keyword(data, div_name, more_div, more){
               enable: true,
               minSize: 14
           },
-          data: keyword
+          data: keyword_person
       }]
     };
     myChart.setOption(option);	

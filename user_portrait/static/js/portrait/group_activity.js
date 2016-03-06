@@ -673,7 +673,7 @@ function group_activity(data){
     xAxis : [
         {
             type : 'category',
-            scale : true,
+            //scale : true,
             boundaryGap : false,
             
             data : xAxis_data
@@ -785,8 +785,8 @@ function track_init(){
         var map = BMapExt.getMap();
         var container = BMapExt.getEchartsContainer();
         var startPoint = {
-            x: 85.114129,
-            y: 50.550339
+            x: 105.114129,
+            y: 40.550339
         };
 
         var point = new BMap.Point(startPoint.x, startPoint.y);

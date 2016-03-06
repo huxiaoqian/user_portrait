@@ -512,7 +512,11 @@ function activity_load(){
 var global_time_type = 'day';
 var pre_time = choose_time_for_mode();
 pre_time.setHours(0,0,0);
-pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
+if (global_test_mode == 0){
+    pre_time=Math.floor(pre_time.getTime()/1000) - 24*60*60;
+}else{
+    pre_time=Math.floor(pre_time.getTime()/1000);
+}
 
 var url = '/attribute/activity/?uid=' + uid;
 var global_active_data;

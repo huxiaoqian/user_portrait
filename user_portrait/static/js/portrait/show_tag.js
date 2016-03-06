@@ -94,14 +94,14 @@ Draw_value:function(data){
 	$('#attribute_value_zh').empty();
 	var html = '';
 	html += '<select id="select_attribute_value">';
-    if (data == 'no attribute'){
+        if (data == 'no attribute'){
 		html += '<option value="">暂无</option>';
-    }
-    else{
-        for(i=0;i<data.length;i++){
-            html += '<option value="'+data[i]+'">'+data[i]+'</option>';
         }
-    }
+        else{
+	    for(i=0;i<data.length;i++){
+		html += '<option value="'+data[i]+'">'+data[i]+'</option>';
+	    }
+        }
 	$('#attribute_value_zh').append(html);
   }
 }

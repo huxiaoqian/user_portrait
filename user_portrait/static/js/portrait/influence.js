@@ -157,7 +157,7 @@ Draw_pie_all0:function(data){
       //html += '<span>'+data[0][2]+'，</span>';
     }
     if(data[1][0] != ''){
-      var data1_0 = '属于<span style="color:red">'+data[1][0]+'</span>';
+      var data1_0 = '<span style="color:red">'+data[1][0]+'</span>';
       conclu_s1.push(data1_0);
       //html += '属于<span style="color:red">'+data[1][0]+'。</span>';
     }
@@ -171,7 +171,7 @@ Draw_pie_all0:function(data){
       //html += '<span>'+data[0][4]+'，</span>';
     }
     if(data[1][1] != ''){
-      var data1_1 = '属于<span style="color:red">'+data[1][1]+'</span>';
+      var data1_1 = '<span style="color:red">'+data[1][1]+'</span>';
       conclu_s2.push(data1_1);
       //html += '属于<span style="color:red">'+data[1][1]+'。</span>';
     }
@@ -199,7 +199,7 @@ Draw_pie_all0:function(data){
       //html += '<span>'+data[0][8]+'，</span>';
     }
     if(data[1][3] != ''){
-      var data1_3 = '属于<span style="color:red">'+data[1][2]+'</span>';
+      var data1_3 = '<span style="color:red">'+data[1][2]+'</span>';
       conclu_s4.push(data1_3);
       //html += '属于<span style="color:red">'+data[1][3]+'。</span>';
     }
@@ -290,7 +290,7 @@ Draw_pie_all0:function(data){
 
     Influence_motal(data_user_detail, 're_user_in', 're_user_out', 're_three_pie', 're_user_content');
     $('#re_conclusion').empty();
-    var html = '该类用户的平均影响力为'+data.influence_distribution.influence;
+    var html = '该类用户的平均影响力为'+data.influence_distribution.influence.toFixed(2);
     $('#re_conclusion').append(html);
     Draw_pie(data.influence_distribution.topic, 're_user_topic');
     Draw_pie(data.influence_distribution.domian, 're_user_domain');
