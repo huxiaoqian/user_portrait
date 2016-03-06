@@ -1451,7 +1451,7 @@ def search_sentiment_weibo(uid, start_ts, time_type, sentiment):
     try:
         flow_text_es_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, body={'query':{'bool':{'must': query}}, 'sort':'timestamp', 'size':1000000})['hits']['hits']
     except Exception, e:
-        raise e
+        flow_text_es_result = []
     for item in flow_text_es_result:
         weibo_list.append(item['_source'])
     return weibo_list
@@ -1936,8 +1936,11 @@ def search_character_psy(uid):
         iter_date_ts = start_date_ts + DAY * i
         flow_text_index_date = ts2datetime(iter_date_ts)
         flow_text_index_name = flow_text_index_name_pre + flow_text_index_date
-        flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, \
+        try:
+            flow_text_result = es_flow_text.search(index=flow_text_index_name, doc_type=flow_text_index_type, \
                 body={'query':{'filtered':{'filter':{'bool':{'must':[{'term':{'uid': uid}}, {'terms':{'sentiment':['0','1','2','3','4','5','6']}}]}}}}, 'aggs':{'all_sentiment':{'terms':{'field': 'sentiment'}}}}, _source=False, fields=['uid', 'sentiment'])['aggregations']['all_sentiment']['buckets']
+        except:
+            flow_text_result = []
         for item in flow_text_result:
             sentiment = item['key']
             try:
