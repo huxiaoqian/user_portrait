@@ -14,12 +14,11 @@ mod = Blueprint('overview', __name__, url_prefix='/overview')
 
 @mod.route('/show/')
 def ajax_recommentation_in():
+    results = {}
     date = request.args.get('date', '') # '2013-09-01'
     results = get_attr(date)
-    if results:
-        return json.dumps(results)
-    else:
-        return None
+    
+    return json.dumps(results)
 
 @mod.route('/retweeted_top_all/')
 def ajax_influence_top():
