@@ -133,8 +133,11 @@ NewTag:function(data){
 function tagAddFun(that){
 	$('#newTag').off("click").click(function(){
 		var url = that.url;
-		url += get_input_data();
-		that.call_sync_ajax_request(url,that.ajax_method,that.NewTag);
+        var choose_data = get_input_data();
+        if (choose_data != false){
+            url += choose_data;
+            that.call_sync_ajax_request(url,that.ajax_method,that.NewTag);
+        }
 	});
 }
 
@@ -148,7 +151,7 @@ function get_input_data(){
 	var reg = "^[a-zA-Z0-9_\u4e00-\u9fa5\uf900-\ufa2d]";
 	if(!input_value.match(reg)){
 		alert('标签类型只能包含英文、汉字、数字和下划线，请重新输入');
-		return;
+		return false;
 	}
 	temp += input_name;
     temp = temp + input_value +'&';
