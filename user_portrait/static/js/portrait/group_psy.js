@@ -34,17 +34,21 @@ function Draw_group_think(data){
 	}
 	//console.log(all_think+'  '+neg);
 	for(var key in g_think){
-		var nod = {};
-		if(key =='0' || key == '1'){
-			nod['name'] = planb[key];
-			nod['value'] = (g_think[key]/all_think).toFixed(2);		
-			content1.push(nod);	
-		}
-		nod['name'] = planb[key];
-		nod['value'] = (g_think[key]/all_think).toFixed(2);
-		content2.push(nod);
-	}
-	content1.push({'name':'消极','value':(neg/all_think).toFixed(2)});
+        if (g_think[key] != 0){        
+    		var nod = {};
+    		if((key =='0' || key == '1')){
+    			nod['name'] = planb[key];
+    			nod['value'] = (g_think[key]/all_think).toFixed(2);		
+    			content1.push(nod);	
+    		}
+    		nod['name'] = planb[key];
+    		nod['value'] = (g_think[key]/all_think).toFixed(2);
+    		content2.push(nod);
+    	}
+    }
+    if(neg != 0){
+        content1.push({'name':'消极','value':(neg/all_think).toFixed(2)});        
+    }
     var myChart = echarts.init(document.getElementById('group_think')); 
     var option = {
     tooltip : {
