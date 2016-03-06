@@ -94,9 +94,14 @@ Draw_value:function(data){
 	$('#attribute_value_zh').empty();
 	var html = '';
 	html += '<select id="select_attribute_value">';
-	for(i=0;i<data.length;i++){
-		html += '<option value="'+data[i]+'">'+data[i]+'</option>';
-	}
+    if (data == 'no attribute'){
+		html += '<option value="">暂无</option>';
+    }
+    else{
+        for(i=0;i<data.length;i++){
+            html += '<option value="'+data[i]+'">'+data[i]+'</option>';
+        }
+    }
 	$('#attribute_value_zh').append(html);
   }
 }
@@ -110,7 +115,7 @@ if(select_attribute_name != ''){
 	$('#attribute_value_zh').empty();
 	var html = '';
 	html += '<select id="select_attribute_value" >';
-	html += '<option value="null">暂无</option>';
+	html += '<option value="">暂无</option>';
 	$('#attribute_value_zh').append(html);
 }
 
@@ -125,7 +130,7 @@ $('#select_attribute_name').change(function(){
 	    $('#attribute_value_zh').empty();
 	    var html = '';
 	    html += '<select id="select_attribute_value" >';
-	    html += '<option value="null">暂无</option>';
+	    html += '<option value="">暂无</option>';
 	    $('#attribute_value_zh').append(html);
   }
     
@@ -183,7 +188,7 @@ function add_person_tag(){
 	//获取所有类别名
 	var new_attribute_name = $("#select_attribute_name").val();
 	var new_attribute_value = $("#select_attribute_value").val();
-    if(new_attribute_name !=''){
+    if((new_attribute_name !='') && (new_attribute_value != '')){
         var attributeNames = [];
 	    var  tagnames = $('.ptagName').length;
 	    for(i=0;i<tagnames;i++){
