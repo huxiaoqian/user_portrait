@@ -175,9 +175,14 @@ function bindAddFunction(){
 
     });
 }
-
+function advanced_attr_load(){
+    if (!global_attr_flag){
+        getAttributeName();
+        bindAddFunction();
+        global_attr_flag = true;
+    }
+}
 
 var base = new Base();
+var global_attr_flag = false;
 bindSearchFunc(base);
-getAttributeName();
-bindAddFunction();
