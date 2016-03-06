@@ -38,59 +38,46 @@ def if_empty_retweet_weibo(r):
     return is_empty_retweet
 
 
-'''define 3 kinds of seed emoticons'''
-zan_set = set()
-angry_set = set()
-sad_set = set()
-
+'''define 2 kinds of seed emoticons'''
+positive_set = set()
+negative_set = set()
 
 with open(os.path.join(AB_PATH, '4groups.csv')) as f:
     for l in f:
         pair = l.rstrip().split('\t')
         if pair[1] == '1' or pair[1] == '4':
-            zan_set.add(pair[0].decode('utf-8', 'ignore'))
+            positive_set.add(pair[0].decode('utf-8', 'ignore'))
 
-        if pair[1] == '2':
-            angry_set.add(pair[0].decode('utf-8', 'ignore'))
+        if pair[1] == '2' or pair[1] == '3':
+            negative_set.add(pair[0].decode('utf-8', 'ignore'))
 
-        if pair[1] == '3':
-            sad_set.add(pair[0].decode('utf-8', 'ignore'))
-
-HAPPY = 1
-ANGRY = 2
-SAD = 4
+POSITIVE = 1
+NEGATIVE = -1
+MIDDLE = 0
 
 
 def emoticon(text):
     """ Extract emoticons and define the overall sentiment """
 
     remotions = re.findall(emotion_pattern, text)
-    zan = 0
-    angry = 0
-    sad = 0
-    state = 0
+    positive = 0
+    negative = 0
 
     for e in remotions:
-        if not zan and e in zan_set:
-            zan = 1
-        elif not angry and e in angry_set:
-            angry = 1
-        elif not sad and e in sad_set:
-            sad = 1
 
-        # 优化
-        if zan + angry + sad > 1:
-            return state
+        if e in positive_set:
+            positive = positive + 1
+        elif e in negative_set:
+            negative = negative + 1
+        else:
+            pass
 
-    zan_angry_sad = (zan, angry, sad)
-    if zan_angry_sad == (1, 0, 0):
-        state = HAPPY
-    elif zan_angry_sad == (0, 1, 0):
-        state = ANGRY
-    elif zan_angry_sad == (0, 0, 1):
-        state = SAD
-
-    return state
+    if positive > negative:
+        return POSITIVE
+    elif positive < negative:
+        return NEGATIVE
+    else:
+        return MIDDLE
 
 
 '''define subjective dictionary and subjective words weight'''
@@ -102,13 +89,12 @@ with open(os.path.join(AB_PATH, 'triple_subjective_1.txt')) as f:
         step1_score[int(lis[0])] = [float(lis[1]), float(lis[2])]
 
 '''define polarity dictionary and polarity words weight'''
-dictionary_2 = corpora.Dictionary.load(os.path.join(AB_PATH, 'triple_polarity_1.dict'))
+dictionary_2 = corpora.Dictionary.load(os.path.join(AB_PATH, 'binary_polarity.dict'))
 step2_score = {}
-with open(os.path.join(AB_PATH, 'triple_polarity_1.txt')) as f:
+with open(os.path.join(AB_PATH, 'binary_weight.txt')) as f:
     for l in f:
         lis = l.rstrip().split()
-        step2_score[int(lis[0])] = [float(lis[1]), float(lis[2]), float(lis[3])]
-
+        step2_score[int(lis[0])] = [float(lis[1]), float(lis[2])]
 
 def triple_classifier(tweet):
     '''
@@ -126,21 +112,21 @@ def triple_classifier(tweet):
     keywords_list = []
 
     emoticon_sentiment = emoticon(text)
-    if emoticon_sentiment != 0:
-        entries = cut(cut_str, text)
+    if emoticon_sentiment != MIDDLE:
+        entries = cut(cut_str, text.encode('utf-8'))
         entry = [e.decode('utf-8', 'ignore') for e in entries]
         keywords_list = entry
-        if emoticon_sentiment == HAPPY:
+        if emoticon_sentiment == POSITIVE:
             sentiment = emoticon_sentiment
-            text = ''
+            text = u''
         else:
             sentiment = flow_psychology_classfiy(text)
             if sentiment == 0:
-                sentiment = emoticon_sentiment
-            text = ''
+                    sentiment = 6
+            text = u''
     
-    if text != '':
-        entries = cut(cut_str, text)
+    if text != u'':
+        entries = cut(cut_str, text.encode('utf-8'))
         entry = [e.decode('utf-8', 'ignore') for e in entries]
         keywords_list = entry
         
@@ -152,25 +138,18 @@ def triple_classifier(tweet):
             s[1] = s[1] * (step1_score[pair[0]][1] ** pair[1])
         if s[0] <= s[1]:
             bow = dictionary_2.doc2bow(entry)
-            s = [1, 1, 1]
+            s2 = [1, 1]
             for pair in bow:
-                s[0] = s[0] * (step2_score[pair[0]][0] ** pair[1])
-                s[1] = s[1] * (step2_score[pair[0]][1] ** pair[1])
-                s[2] = s[2] * (step2_score[pair[0]][2] ** pair[1])
-            if s[0] > s[1] and s[0] > s[2]:
-                sentiment = HAPPY
+                s2[0] = s2[0] * (step2_score[pair[0]][0] ** pair[1])
+                s2[1] = s2[1] * (step2_score[pair[0]][1] ** pair[1])
+            if s2[0] > s2[1]:
+                sentiment = POSITIVE
             else:
                 sentiment = flow_psychology_classfiy(text)
                 if sentiment == 0:
-                    if s[1] > s[0] and s[1] > s[2]:
-                        sentiment = SAD
-                    elif s[2] > s[1] and s[2] > s[0]:
-                        sentiment = ANGRY
-                    else:
-                        sentiment = 6
+                    sentiment = 6
         else:
-            sentiment = 0
-        
+            sentiment = MIDDLE        
 
     return sentiment
 

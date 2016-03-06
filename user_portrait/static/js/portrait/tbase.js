@@ -47,24 +47,24 @@ function get_base_input_data(){
     });
     temp = temp.substring(0, temp.length-1);
     
-    var psycho_status_by_emotion_url = '&psycho_status_by_emotion=';
-    $("[name='psycho_status_by_emotion']:checked").each(function(){
+    var character_sentiment_url = '&character_sentiment=';
+    $("[name='character_sentiment']:checked").each(function(){
         if($(this).val()=='未知'){
             $(this).val() = '其他';
         }
-        psycho_status_by_emotion_url += $(this).val() + ',';
+        character_sentiment_url += $(this).val() + ',';
     });
-    temp += psycho_status_by_emotion_url;
+    temp += character_sentiment_url;
     temp = temp.substring(0, temp.length-1);
 
-    var psycho_status_by_word_url = '&psycho_status_by_word=';
-    $("[name='psycho_status_by_word']:checked").each(function(){
+    var character_text_url = '&character_text=';
+    $("[name='character_text']:checked").each(function(){
         if($(this).val()=='未知'){
             $(this).val() = '其他';
         }
-        psycho_status_by_word_url += $(this).val() + ',';
+        character_text_url += $(this).val() + ',';
     });
-    temp += psycho_status_by_word_url;
+    temp += character_text_url;
     temp = temp.substring(0, temp.length-1);
     
     var domain_url = '&domain=';
@@ -153,24 +153,36 @@ function bindAddFunction(){
         }
         else{
             var html = '';
+
             html += '<span class="mouse" style="margin-right:40px;">'+ check_str;
+
             html += '&nbsp;<a class="cross" href="#">X</a></span>';
+
             $('#tags').append(html);
+
             chosen[check_str] = '1';
 
             $('.mouse>a').click(function(){
+
                 var text = $(this).parent().html();
                 text = text.split('&')[0];
                 delete chosen[text];
                 $(this).parent().remove();
+
             });
+
         }
 
     });
 }
-
+function advanced_attr_load(){
+    if (!global_attr_flag){
+        getAttributeName();
+        bindAddFunction();
+        global_attr_flag = true;
+    }
+}
 
 var base = new Base();
+var global_attr_flag = false;
 bindSearchFunc(base);
-getAttributeName();
-bindAddFunction();

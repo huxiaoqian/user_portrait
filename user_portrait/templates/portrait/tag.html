@@ -180,35 +180,38 @@ tbody td{text-align:center;}
 <script>
     var add_flag;
     var tagname = new Array();
+$(function(){
     $('a[id^="currentEdit"]').click(function(e){
         add_flag = false;
         var tagNames =  $(this).text();
+        console.log(tagNames);
         if (tagNames.indexOf('/') > -1){
             tagname = tagNames.split('/');
         }
-		$('#EDIT').empty();
-		var html = '';
-		html += '<div class="" style="margin-bottom:10px;"><span style="">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
-		html += '<span style="color:blue;" id="attributeName">'+$(this).parent().prev().html()+'</span ></div>';
-		html += '<div class="" id=""><span style="margin-right:15px;">标签名</span>';
-		for(i=0;i<tagname.length;i++){
-			html += '<span class="tagbg" id="" name="attrName"><span class="tagName">'+tagname[i]+'</span><a  class="delCon" id="delIcon"></a></span>';
-		}
-		//html += '<input name="attribute_value" class="inputbox " type="text" value="" style="line-height:36px;">'
-		html += '<span class="smallAdd"></span>'
-		html += '</div>';
-		$('#EDIT').append(html);
-		$(".smallAdd").click(function(){
-            //console.log("sadsd");
-            if (!add_flag){
-                add_flag = true;
-                $(".smallAdd").before('<input name="newtag" id="newtag" class="input_tag_box" style="width:110px;" onkeydown="javascript:if (event.keyCode==13) addNew();"type="text" value="" style="line-height:36px;">');
-            }
-        });
-		$('a[id^="delIcon"]').click(function(e){
-			$(this).parent().remove();
-		});
+  		$('#EDIT').empty();
+  		var html = '';
+  		html += '<div class="" style="margin-bottom:10px;"><span style="">标签类别&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+  		html += '<span style="color:blue;" id="attributeName">'+$(this).parent().prev().html()+'</span ></div>';
+  		html += '<div class="" id=""><span style="margin-right:15px;">标签名</span>';
+  		for(i=0;i<tagname.length;i++){
+  			html += '<span class="tagbg" id="" name="attrName"><span class="tagName">'+tagname[i]+'</span><a  class="delCon" id="delIcon"></a></span>';
+  		}
+  		//html += '<input name="attribute_value" class="inputbox " type="text" value="" style="line-height:36px;">'
+  		html += '<span class="smallAdd"></span>'
+  		html += '</div>';
+  		$('#EDIT').append(html);
+  		$(".smallAdd").click(function(){
+              //console.log("sadsd");
+              if (!add_flag){
+                  add_flag = true;
+                  $(".smallAdd").before('<input name="newtag" id="newtag" class="input_tag_box" style="width:110px;" onkeydown="javascript:if (event.keyCode==13) addNew();"type="text" value="" style="line-height:36px;">');
+              }
+          });
+  		$('a[id^="delIcon"]').click(function(e){
+  			$(this).parent().remove();
+  		});
 	});
+});
     $(".addIcon").off("click").click(function(){
         var html = '';
         html += '<div class="tagCols"><span style="margin-left:65px;">标签名</span><input name="attribute_value" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';

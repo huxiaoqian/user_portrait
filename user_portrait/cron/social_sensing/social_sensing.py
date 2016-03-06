@@ -4,8 +4,10 @@ import os
 import sys
 import time
 import json
-from aggregation_weibo import specific_keywords_burst_dection
-from sensing_strategy import sensors_keywords_detection
+#from aggregation_weibo import specific_keywords_burst_dection
+#from sensing_strategy import sensors_keywords_detection
+from aggregation_full_text_weibo import specific_keywords_burst_dection
+from sensing_full_text_strategy import sensors_keywords_detection
 reload(sys)
 sys.path.append("./../")
 from global_utils import es_user_profile as es_profile

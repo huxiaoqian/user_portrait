@@ -127,13 +127,13 @@
 				<span class="fleft lineh42 mright13">用户名</span>
 				<input name="uname" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入用户名" />
 				<span class="fleft lineh42 right30">地点</span>
-				<input name="location" class="inputbox fleft ad-search" type="text" value="" placeholder="北京"/>
+				<input name="activity_geo" class="inputbox fleft ad-search" type="text" value="" placeholder="北京"/>
 			</div>
 			<div class="cols">
 				<span class="fleft lineh42 mright5 ">hashtag</span>
 				<input name="hashtag" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入hashtag" />
 				<span class="fleft lineh42 mright15 ">关键字</span>
-				<input name="adkeyword" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入关键字" />
+				<input name="keywords_string" class="inputbox fleft ad-search" type="text" value="" placeholder="请输入关键字" />
 				<!--
 				<span class="fleft lineh42 mright30">心理状态</span>
 				<select name="psycho_status" class="fleft select-box ad-search">
@@ -149,18 +149,18 @@
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20 ">性格（情绪）</span>
-                    <label class="cols-label"><input name="psycho_status_by_emotion" class=" fleft chosebox" type="checkbox" value="冲动" />冲动</label>
-					<label class="cols-label"><input name="psycho_status_by_emotion" class=" fleft chosebox" type="checkbox" value="抑郁" />抑郁</label>
-					<label class="cols-label"><input name="psycho_status_by_emotion" class=" fleft chosebox" type="checkbox" value="其他" />其他</label>
+                    <label class="cols-label"><input name="character_sentiment" class=" fleft chosebox" type="checkbox" value="冲动" />冲动</label>
+					<label class="cols-label"><input name="character_sentiment" class=" fleft chosebox" type="checkbox" value="抑郁" />抑郁</label>
+					<label class="cols-label"><input name="character_sentiment" class=" fleft chosebox" type="checkbox" value="其他" />其他</label>
 					<span class="fleft lineh42 mright20 " style="margin-left:100px;">性格（语言）</span>
-                    <label class="cols-label"><input name="psycho_status_by_word" class=" fleft chosebox" type="checkbox" value="批判" />批判</label>
-					<label class="cols-label"><input name="psycho_status_by_word" class=" fleft chosebox" type="checkbox" value="其他" />其他</label>
+                    <label class="cols-label"><input name="character_text" class=" fleft chosebox" type="checkbox" value="批判" />批判</label>
+					<label class="cols-label"><input name="character_text" class=" fleft chosebox" type="checkbox" value="其他" />其他</label>
 				</form>
 			</div>
 			<div class="cols">
 				<form action="" method="get">
 					<span class="fleft lineh42 mright20 ">领域</span>
-                    <label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="律师机构及人士" />律师机构及人士</label>
+                    <label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="法律机构及人士" />法律机构及人士</label>
 					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="境内机构" />境内机构</label>
 					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="境外机构" />境外机构</label>
 					<label class="cols-label"><input name="domain" class=" fleft chosebox" type="checkbox" value="媒体" />媒体</label>
@@ -255,7 +255,8 @@
                      $(this).parents().siblings().find(".thr_nr").hide();	
                      $(this).siblings(".thr_nr").toggle();
                 })
-				$("#showBtn").off("click").click(function(){
+                $("#showBtn").off("click").click(function(){
+                    advanced_attr_load(); 
 					$("#float-wrap").removeClass("hidden");
 					$("#supersearch").removeClass("hidden");
 					return false;

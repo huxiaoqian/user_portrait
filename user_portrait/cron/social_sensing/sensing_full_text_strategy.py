@@ -149,12 +149,13 @@ def sensors_keywords_detection(task_detail):
         }
 
         if sensitive_words:
-            query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+            full_text_dict = {"bool":{"should":[]}}
+            query_sensitive_body['query']['filtered']['query'] = full_text_dict
             temp_list = []
             for word in sensitive_words:
                 small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
                 temp_list.append(small_sentence)
-            query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+            query_sensitive_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
 
         sensitive_results = es_text.search(index=index_name, doc_type=flow_text_index_type, body=query_sensitive_body)['aggregations']['all_list']["buckets"]
         if sensitive_results:
@@ -174,6 +175,7 @@ def sensors_keywords_detection(task_detail):
     burst_reason = signal_nothing_variation
     warning_status = signal_nothing
     finish = unfinish_signal # "0"
+    process_status = "1"
 
     if sensitive_total_weibo_number: # 敏感微博的数量异常
         print "======================"
@@ -204,6 +206,7 @@ def sensors_keywords_detection(task_detail):
 
     if int(stop_time) <= ts: # 检查任务是否已经完成
         finish = finish_signal
+        process_status = "0"
 
     tmp_burst_reason = burst_reason
     topic_list = []
@@ -233,12 +236,13 @@ def sensors_keywords_detection(task_detail):
                 "size": 10000
             }
             if sensitive_words:
-                query_sensitive_body['query']['filtered']['filter']['bool']['should'] = []
+                full_text_dict = {"bool":{"should": []}}
+                query_sensitive_body['query']['filtered']['query'] = full_text_dict
                 temp_list = []
                 for word in sensitive_words:
                     small_sentence = {"wildcard": {"text": {"wildcard": "*"+word+"*"}}}
                     temp_list.append(small_sentence)
-                query_sensitive_body['query']['filtered']['filter']['bool']['should'].extend(temp_list)
+                query_sensitive_body['query']['filtered']['query']['bool']['should'].extend(temp_list)
 
             if social_sensors:
                 query_sensitive_body['query']['filtered']['filter']['bool']['must'].append({"terms":{"uid": social_sensors}})
@@ -319,6 +323,7 @@ def sensors_keywords_detection(task_detail):
     temporal_result['warning_status'] = warning_status
     temporal_result['burst_reason'] = tmp_burst_reason
     temporal_result['finish'] = finish
+    temporal_result['processing_status'] = process_status
     history_status = json.loads(temporal_result['history_status'])
     history_status.append([ts, ' '.join(keywords_list), warning_status])
     temporal_result['history_status'] = json.dumps(history_status)
