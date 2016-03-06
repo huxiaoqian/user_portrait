@@ -101,16 +101,34 @@ Draw_value:function(data){
   }
 }
 var select_attribute_name = $("#select_attribute_name").val();
+if(select_attribute_name != ''){
+    url_attribute_value = "/tag/show_attribute_value/?attribute_name="+select_attribute_name;
+    //console.log(url_attribute_value);
+    var Show_value = new Show_value();
+    Show_value.call_sync_ajax_request(url_attribute_value, Show_value.ajax_method, Show_value.Draw_value);
+}else{
+	$('#attribute_value_zh').empty();
+	var html = '';
+	html += '<select id="select_attribute_value" >';
+	html += '<option value="null">无此类别</option>';
+	$('#attribute_value_zh').append(html);
+}
 
-url_attribute_value = "/tag/show_attribute_value/?attribute_name="+select_attribute_name;
-//console.log(url_attribute_value);
-var Show_value = new Show_value();
-Show_value.call_sync_ajax_request(url_attribute_value, Show_value.ajax_method, Show_value.Draw_value);
+
 $('#select_attribute_name').change(function(){
     var select_attribute_name = $("#select_attribute_name").val();
-    var url_attribute_value = '';
-    url_attribute_value = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
-    Show_value.call_sync_ajax_request(url_attribute_value, Show_value.ajax_method, Show_value.Draw_value);
+    if(select_attribute_name !=''){
+        var url_attribute_value = '';
+        url_attribute_value = '/tag/show_attribute_value/?attribute_name=' + select_attribute_name;
+        Show_value.call_sync_ajax_request(url_attribute_value, Show_value.ajax_method, Show_value.Draw_value);
+    }else{
+	    $('#attribute_value_zh').empty();
+	    var html = '';
+	    html += '<select id="select_attribute_value" >';
+	    html += '<option value="null">无此类别</option>';
+	    $('#attribute_value_zh').append(html);
+  }
+    
 });
 
 //添加
