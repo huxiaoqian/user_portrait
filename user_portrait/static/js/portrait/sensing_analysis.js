@@ -106,6 +106,7 @@ function Draw_mood_related_event(data){
 }
 
 function sensing_sensors_table (head, data, div_name) {
+    console.log(data);
 	var html = '';
     $('#'+div_name).empty();
     if (data.length==0) {
@@ -124,9 +125,13 @@ function sensing_sensors_table (head, data, div_name) {
 		html += '<tbody>';
 
 		for(var i=0; i<data.length; i++){
+            var sensor_name = data[i][1];
+            if(sensor_name == 'unknown'){
+                sensor_name = '未知';
+            }
 			html += '<tr>';
 			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
-			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][1] + '</td>';
+			html += '<td style="text-align:center;vertical-align:middle;">' + sensor_name + '</td>';
 			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
 			html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">';
 			html += ''+ data[i][4].join(', ');
@@ -151,6 +156,7 @@ function sensing_sensors_table (head, data, div_name) {
 }
 
 function sensing_participate_table (head, data, div_name) {
+    console.log(data);
     $('#'+div_name).empty();
 	if(data.length>6){
 		$('#'+div_name).css("overflow-y", "auto");
@@ -166,16 +172,20 @@ function sensing_participate_table (head, data, div_name) {
 
 	for(var i=0; i<data.length; i++){
 		//var s= i+1;
+        var user_name = data[i][1];
+        if(data[i][1] == 'unknown'){
+            user_name = '未知'
+        }
 		html += '<tr>';
 		html += '<td style="text-align:center;vertical-align:middle;"><a class="undlin" target="_blank" href="http://weibo.com/u/' + data[i][0] + '">'+ data[i][0] + '</a></td>';
-		html += '<td style="text-align:center;vertical-align:middle;"><a href="/index/personal/?uid='+data[i][0]+'" target="_blank">' + data[i][1] + '</a></td>';
+		html += '<td style="text-align:center;vertical-align:middle;"><a href="/index/personal/?uid='+data[i][0]+'" target="_blank">' + user_name + '</a></td>';
 		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
 		html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">';
 		html +=  data[i][4].join(',');
-		html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][5] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][6] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][7] + '</td>';
-		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][8] + '</td>';
+		html += '</td><td style="text-align:center;vertical-align:middle;">' + data[i][5].toFixed(2) + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][6].toFixed(2) + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][7].toFixed(2) + '</td>';
+		html += '<td style="text-align:center;vertical-align:middle;">' + data[i][8].toFixed(2) + '</td>';
 		html += '</tr>';
 	}
 	html += '</tbody></table>';
