@@ -35,22 +35,22 @@ function attention(data,UserID,UserName,texts){
     nod['value'] = 10;
     nodeContent.push(nod);
     var linkline =[];
-    var rename = '';
+    var rename_out = '';
     for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
             if(out_data[i][0]=='None'){
-              var nod_name_out = '';
+              var nod_name_out = '未知UID';
             }else{
               var nod_name_out = out_data[i][0];
             }
             if(out_data[i][1]=='unknown'){
-              rename = '未知';
+              rename_out = '未知';
             }else{
-              rename = out_data[i][1];
+              rename_out = out_data[i][1];
             }
-            nod['name'] = rename +'('+nod_name_out+')';
-            nod['label'] = rename;
+            nod['name'] = rename_out +'('+nod_name_out+')';
+            nod['label'] = rename_out;
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
@@ -60,30 +60,32 @@ function attention(data,UserID,UserName,texts){
             line['weight'] = 1;
             linkline.push(line);
     }
+    var rename_in = '';
     for (var i=0;i<in_data.length;i++){
-            nod = {};
-            nod['category'] = 1;
-            if(in_data[i][0]=='None'){
-              var nod_name_in = '';
-            }else{
-              var nod_name_in = in_data[i][0];
-            }
-            if(in_data[i][1]=='unknown'){
-              rename = '未知';
-            }else{
-              rename = in_data[i][1];
-            }
-            nod['name'] = rename +'('+nod_name_out+')';
-            //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
-            nod['label'] = rename;
-            nod['value'] = 1;
-            //nod['value'] = in_data[i][4];
-            nodeContent.push(nod);
-            var line ={};
-            line['source'] = nod['name'];
-            line['target'] = UserName+'('+UserID+')';
-            line['weight'] = 1;
-            linkline.push(line);
+      //console.log(in_data);
+      nod = {};
+      nod['category'] = 1;
+      if(in_data[i][0]=='None'){
+        var nod_name_in = '未知UID';
+      }else{
+        var nod_name_in = in_data[i][0];
+      }
+      if(in_data[i][1]=='unknown'){
+        rename_in = '未知';
+      }else{
+        rename_in = in_data[i][1];
+      }
+      nod['name'] = rename_in +'('+nod_name_in+')';
+      //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
+      nod['label'] = rename_in;
+      nod['value'] = 1;
+      //nod['value'] = in_data[i][4];
+      nodeContent.push(nod);
+      var line ={};
+      line['source'] = nod['name'];
+      line['target'] = UserName+'('+UserID+')';
+      line['weight'] = 1;
+      linkline.push(line);
     }
 	var myChart3 = echarts.init(document.getElementById('test1'));
 	var option = {
@@ -214,8 +216,8 @@ function draw_topic(data){
     $('#topic').empty();
     var datas = data['topic'];
     html = '';
-    //console.log(datas);
-    //console.log(datas.length);
+    console.log(datas);
+    console.log(datas.length);
     if(datas.length==0){
       html = '无入库用户';
     }else{
@@ -309,8 +311,8 @@ function draw_out_list(data){
       //item = replace_space(item);
       //global_data[item[0]] = item; // make global data\
       var list_id = '';
-      //console.log(item[0]=='' );
-      //console.log(item[0],item[1].length);
+      console.log(item[0]=='' );
+      console.log(item[0],item[1].length);
       if(item[0]=='None'){
         continue;
       }else if(item[0]=='' && item[1].length>0){
@@ -417,7 +419,7 @@ function out_list_button(){
         var a = confirm('您选择了预约计算，系统将在今日24:00自动启动计算！');
         if (a == true){
             var compute_url = '/recommentation/identify_in/?date='+recommend_date+'&uid_list='+cur_uids+'&status='+compute_type;
-            //console.log(compute_url);
+            console.log(compute_url);
             Attention.call_sync_ajax_request(compute_url, Attention.ajax_method, confirm_ok);
         }
       }
@@ -428,7 +430,7 @@ function out_list_button(){
             // var waiting_html = '<div style="text-align:center;vertical-align:middle;height:40px">数据正在加载中，请稍后...</div>';
             // $('#out_list').append(waiting_html);
             var recommend_confirm_url = '/recommentation/identify_in/?date=' + recommend_date + '&uid_list=' + cur_uids + '&status=' + compute_type;
-            //console.log(recommend_confirm_url);
+            console.log(recommend_confirm_url);
             Attention.call_sync_ajax_request(recommend_confirm_url, Attention.ajax_method, confirm_ok);
           }    
       }

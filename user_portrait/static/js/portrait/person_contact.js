@@ -98,12 +98,13 @@ Search_weibo.prototype = {
     $('#attribute_name').empty();
     html = '';
     html += '<select id="select_attribute_name">';
-    for (var i = 0; i < data.length; i++) {
+
+    for (var i = 0; i < data.length-1; i++) {
       var s = i.toString();
       html += '<option value="' + data[s] + '">' + data[s] + '</option>';
     }
-    //var t = (data.length-1).toString();
-    //html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
+    var t = (data.length-1).toString();
+    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
     $('#attribute_name').append(html);
   },
 
@@ -112,17 +113,12 @@ Search_weibo.prototype = {
     html = '';
     html += '';
     html += '<select id="select_attribute_value">';
-    if (data == 'no attribute'){
-        html += '<option value="">暂无</option>';
+    for (var i = 0; i < data.length-1; i++) {
+      var s = i.toString();
+      html += '<option value="' + data[s] + '">' + data[s] + '</option>';
     }
-    else{
-	    for (var i = 0; i < data.length; i++) {
-	      var s = i.toString();
-	      html += '<option value="' + data[s] + '">' + data[s] + '</option>';
-	    }
-    }
-    //var t = (data.length-1).toString();
-    //html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
+    var t = (data.length-1).toString();
+    html += '<option value="' + data[t] + '" selected="selected">' + data[t] + '</option></select>';
     $('#attribute_value').append(html);
   },
 
@@ -145,11 +141,11 @@ Search_weibo.prototype = {
             if(data[item][1]=='unknown'){
                 data[item][1] = '未知';
                 Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':2*Math.sqrt(data[item][5])});
-                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':Math.sqrt(data[item][5])/2}}});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':Math.sqrt(data[item][5])}}});
             }
             else{
                 Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':2*Math.sqrt(data[item][5])});
-                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':Math.sqrt(data[item][5])/2}}});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':Math.sqrt(data[item][5])}}});
             }
         }
         var option = {
@@ -329,18 +325,8 @@ function add_group_tag(){
     };
     var add_tag_attribute_name = $("#select_attribute_name").val();
     var add_tag_attribute_value = $("#select_attribute_value").val();
-    if ((add_tag_attribute_name != '') && (add_tag_attribute_value != '')){
-        if (select_uids.length == 0){
-            alert('至少选择一名用户！');
-        }
-	else{
-            var add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
-	    Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
-	}
-    }
-    else{
-        alert('不能添加空白标签！');
-    }
+    var add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
+    Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
 }
 
 $('.label-success').click(function(){

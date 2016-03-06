@@ -829,7 +829,7 @@ function draw_keyword(data){
       key_name.push(data['hashtag_top'][i][0]);
     };
 
-    var word_num = Math.min(30, data['hashtag_top'].length);
+    var word_num = Math.min(50, data['hashtag_top'].length);
     var key_value2 = [];
     var key_name2 = [];
     for(var i=0; i<word_num; i++){ //取前30个最大值
@@ -844,7 +844,7 @@ function draw_keyword(data){
       var word = {};
       word['name'] = key_name2[i];
       word['value'] =key_value2[i]*10;
-      //console.log(word['value']);
+      console.log(word['value']);
       word['itemStyle'] = createRandomItemStyle();
       keyword.push(word);
     }

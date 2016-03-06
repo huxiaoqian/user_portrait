@@ -30,15 +30,10 @@ Search_weibo.prototype = {
     $('#attribute_value').empty();
     html = '';
     html += '<select id="select_attribute_value" style="min-width:75px;">';
-    if (data == 'no attribute'){
-        html += '<option value="">暂无</option>';
-    }
-    else{
-        for (var i = 0; i < data.length; i++) {
-            var s = i.toString();
-            html += '<option value="' + data[s] + '">' + data[s] + '</option>';
-        }
-    } 
+    for (var i = 0; i < data.length; i++) {
+        var s = i.toString();
+        html += '<option value="' + data[s] + '">' + data[s] + '</option>';
+} 
     $('#attribute_value').append(html);
   },
   Draw_add_group_tag: function(data){
@@ -279,15 +274,10 @@ function add_group_tag(){
     add_tag_attribute_value = $("#select_attribute_value").val();
     add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
     //console.log(add_group_tag_url);
-    if ((add_tag_attribute_name != '') && (add_tag_attribute_value != '')){
-	    if(select_uids.length!=0){
-		Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
-	    }else{
-		alert('请至少选择一名用户！');
-	    }
-    }
-    else{
-        alert('无法添加空白标签！');
+    if(select_uids.length!=0){
+        Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
+    }else{
+        alert('请至少选择一名用户！')
     }
 
 }

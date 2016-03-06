@@ -212,7 +212,11 @@ function location_all(){
         //day
         //console.log(data);
         var tag_vector = data.tag_vector;
-        global_tag_vector.push(tag_vector);
+        var activity_city = tag_vector[1];
+        if (activity_city == ''){
+            activity_city = '暂无数据';
+        }
+        global_tag_vector.push([tag_vector[0], activity_city]);
 
         location_geo = data.sort_results;
         html += '<tr><th style="text-align:center">当日</th>';

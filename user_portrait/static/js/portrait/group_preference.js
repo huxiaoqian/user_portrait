@@ -24,8 +24,8 @@ Show_pref.prototype = {
     var hashtag_more = 'hashtag_WordList';
     var topic_data = data['topic'];
     var domain_data = data['domain'];
-    Draw_keyword(keywords_data, keywords_name, keywords_more, 'showmore_keyWords');
-    Draw_keyword(hashtag_data, hashtag_name, hashtag_more, 'showmore_hashtagWords');
+    Draw_keyword(keywords_data, keywords_name, keywords_more, showmore_keyWords);
+    Draw_keyword(hashtag_data, hashtag_name, hashtag_more, showmore_hashtagWords);
     Draw_topic(topic_data,'preference_topic', 'topic_WordList');
     Draw_topic(domain_data,'preference_domain', 'domain_WordList');
   }
@@ -51,19 +51,12 @@ function createRandomItemStyle() {
     };
 }
 function Draw_keyword(data, div_name, more_div, hide_more){
-  //console.log(data);
   var keyword = [];
   var html = '';
   $('#'+ more_div).empty();
   if(data.length == 0){
      //console.log(div_name);
-      html = '<h4 style="text-align:center;padding-top:40%;margin:0;">暂无数据</h4>';
-      //$('#'+ more_div).append(html);
-      $('#'+ div_name).append(html);
-      $('#'+ hide_more).css('display', 'none');
-  }else if(data[0][0] == ""){
-      //console.log(div_name);
-      html = '<h4 style="text-align:center;padding-top:40%;margin:0;">暂无数据</h4>';
+      html = '<h4 style="text-align:center;margin-top:50%;">暂无数据</h4>';
       //$('#'+ more_div).append(html);
       $('#'+ div_name).append(html);
       $('#'+ hide_more).empty();

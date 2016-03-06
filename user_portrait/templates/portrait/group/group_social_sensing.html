@@ -20,7 +20,7 @@
                      <span class="input-group-addon" style="margin-left:5px;border:1px solid white;background-color:white; display:inline-block" id="sensing_remarks"></span>
                  </div>
             </div>
-            <div id="social_sensing_table" style="max-height: 250px;overflow-y: auto;/* float: right; */display: inline-block;margin-left:20px;">
+            <div id="social_sensing_table" style="width:730px;max-height: 250px;overflow-y: auto;/* float: right; */display: inline-block;margin-left:20px;">
   			</div>
             <hr style='width:750px;margin-bottom:0px;'>
             <div id="information" class="col-md-12" style="padding-top:5px;padding-left:0px;">
@@ -130,25 +130,24 @@ function draw_social_sensing_table (data) {
 		var html = '';
 		html += '<table id="social_table" class="table table-bordered table-striped table-condensed datatable">';
 		html += '<thead><tr>';
-		html += '<th>ID</th>';
+		html += '<th style="width:95px;">ID</th>';
 		html += '<th style="width:120px;">昵称</th>';
-		html += '<th>领域</th>';
-		html += '<th>话题</th>';
-		html += '<th>热度</th>';
-		html += '<th>重要度</th>';
+		html += '<th style="width:70px;">领域</th>';
+		html += '<th style="width:305px;">话题</th>';
+		html += '<th style="width:42px;">热度</th>';
+		html += '<th style="width:54px;">重要度</th>';
 		html += '<th> <input name="social_select_all" id="social_select_all" type="checkbox" value="" onclick="social_sensing_select_all()" /></th>';
 		html += '</tr></thead>';
 		html += '<tbody>';
-    for(var i=0; i<group_list.length; i++){
-
-      var user_data = group_list[i];
-      var user_list_name = user_data[1];
-      if(user_list_name == 'unknown'){
-          user_list_name = '未知' ;
-      }
-			html += '<tr>';
+        for(var i=0; i<group_list.length; i++){
+            var user_data = group_list[i];
+            html += '<tr>';
 			html += '<td>' + user_data[0] + '</td>';
-			html += '<td>' + user_list_name + '</td>';
+            var user_name = user_data[1];
+            if (user_name == 'unknown'){
+                user_name = '未知';
+            }
+			html += '<td>' + user_name + '</td>';
 			html += '<td>' + user_data[3] + '</td>';
 			html += '<td>' + user_data[4] + '</td>';
 			html += '<td>' + user_data[5] + '</td>';

@@ -21,7 +21,7 @@ Search_weibo_recommend.prototype = {
     var user_url;
     html = '';
     html += '<table id="recommend_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th style="width:140px">用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th style="width:100px">用户详情</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
+    html += '<thead><tr><th style="width:140px">用户ID</th><th style="width:220px">昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th style="width:100px">用户详情</th><th>' + '<input name="recommend_all" id="recommend_all" type="checkbox" value="" onclick="recommend_all()" />' + '</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -173,7 +173,7 @@ Search_weibo_history.prototype = {
     var user_url ;
     html = '';
     html += '<table id="history_table_new" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th style="width:140px">用户ID</th><th>昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th>计算状态</th></tr></thead>';
+    html += '<thead><tr><th style="width:140px">用户ID</th><th style="width:220px">昵称</th><th>注册地</th><th style="width:100px">粉丝数</th><th style="width:100px">微博数</th><th style="width:100px">影响力</th><th>计算状态</th></tr></thead>';
     var item = data;
     html += '<tbody>';
     for(var i in item){
@@ -215,6 +215,7 @@ Search_weibo_history.prototype = {
     $('#history_table_new').dataTable({
         "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
         "sPaginationType": "history_boot",
+        //"aoColumnDefs": [{ "sWidth": "15%", "aTargets": [1] }],
         //"aoColumnDefs":[ {"bSortable": false, "aTargets":[6]}],
         "oLanguage": {
             "sLengthMenu": "_MENU_ 每页"
