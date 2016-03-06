@@ -297,14 +297,17 @@ function Show_tag(data){
     }
     else{
       for(var i = 0; i < data.length; i++){
-        html += '<div class="col-lg-3" >';
+        html += '<div class="col-lg-3" style="margin-bottom:4px">';
         html += '<input type="checkbox" class="inline-checkbox" value="option1">';
         html += '<span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="'+ data[i] +'">'+ data[i] +' *</span>';
         html += '<input type="text" class="form-control" style="width:40%; display:inline;height:25px;margin-left:7px" disabled>';
         html += '</div>';
       }
-      html +='<div style="font-size:12px;line-height:28px">注：带*表明此属性为自定义属性</div>'
+      html +='<div style="font-size:12px;line-height:28px;margin-left:20px;">注：带*表明此属性为自定义属性</div>'
       $('#tag').append(html);
+      var each_height =  Math.ceil(data.length/4)*30 + 200;
+      var height = each_height.toString() + 'px';
+      $('#contact_select').css('height', height);
     }
 }
 

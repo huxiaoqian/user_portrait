@@ -88,7 +88,7 @@
         <div class="box-header" style="background-color:rgba(195,220,224,0.4)">
             <h2 style='margin-left:5px'>条件选择</h2>
         </div>
-        <div class="box-content" style="height:260px">
+        <div id="contact_select" class="box-content" style="height:200px;">
             <div class="col-md-12">
                 <label class='control-label'>关联维度（权重从1到10）：</label>
                 <div class='controls'>
@@ -113,8 +113,9 @@
                             <input type='checkbox' class='inline-checkbox' value='option1'>
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="activity_geo">地理特征</span>
                              <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
-                        </div>                    </div>
-                    <div class='col-md-12' >
+                        </div>
+                    </div>
+                    <div class='col-md-12' style="margin-bottom:4px" >
                         <div class='col-lg-3'>
                             <input type='checkbox' class='inline-checkbox' value='option1'>
                             <span class="input-group-addon" style="width:96px;border:1px solid white; background-color:white;display:inline-block" id="character_sentiment">性格（情绪）</span>
@@ -130,7 +131,7 @@
                              <input type='text' class="form-control" style='width:40%; display:inline;height:25px' disabled>
                         </div>
                     </div>
-                    <div class='col-md-12' id='tag'>
+                    <div class='col-md-12' id='tag' >
                         
                     </div>
                 </div>
@@ -327,18 +328,21 @@
         img.src = personalData.photo_url;
     }
     var influencePower = document.getElementById('FPnum');
-    if(personalData.influence){
-        influencePower.innerHTML = personalData.influence.toFixed(2);
-    }else{
-        influencePower.innerHTML = "无此数据";
-    }
+    influencePower.innerHTML = personalData.influence.toFixed(2);
+    // if(personalData.influence){
+    //     influencePower.innerHTML = personalData.influence.toFixed(2);
+    // }else{
+    //     influencePower.innerHTML = "无此数据";
+    // }
     var importantPower = document.getElementById('IPnum');
-    if(personalData.importance){
-        importantPower.innerHTML = personalData.importance.toFixed(2);
-    }else{
-        importantPower.innertHTML = "无此数据";
-    }
+    importantPower.innerHTML = personalData.importance.toFixed(2);
+    // if(personalData.importance){
+    //     importantPower.innerHTML = personalData.importance.toFixed(2);
+    // }else{
+    //     importantPower.innertHTML = "无此数据";
+    // }
     var activePower = document.getElementById('APnum');
+    activePower.innerHTML = personalData.activeness.toFixed(2);
     if(personalData.activeness){
         activePower.innerHTML = personalData.activeness.toFixed(2);
     }else{
@@ -347,7 +351,7 @@
     var nickName = document.getElementById('nickname');
     if(personalData.uname){
         if(personalData.uname=='unknown'){
-            personalData.uname='未知';
+            personalData.uname=uid.toString();
             nickName.innerHTML = personalData.uname;
         }else{
             nickName.innerHTML = personalData.uname;
@@ -362,23 +366,26 @@
         detailPortrait.innerHTML = personalData.description;
     }
     var I_rank = document.getElementById('IPrank');
-    if(personalData.importance_rank){
-        I_rank.innerHTML = personalData.importance_rank;
-    }else{
-        I_rank.innerHTML = "无此数据";
-    }
+    I_rank.innerHTML = personalData.importance_rank;
+    // if(personalData.importance_rank){
+    //     I_rank.innerHTML = personalData.importance_rank;
+    // }else{
+    //     I_rank.innerHTML = "无此数据";
+    // }
     var A_rank = document.getElementById('APrank');
-    if(personalData.activeness_rank){
-        A_rank.innerHTML = personalData.activeness_rank;
-    }else{
-        A_rank.innerHTML = "无此数据";
-    }
+    A_rank.innerHTML = personalData.activeness_rank;
+    // if(personalData.activeness_rank){
+    //     A_rank.innerHTML = personalData.activeness_rank;
+    // }else{
+    //     A_rank.innerHTML = "无此数据";
+    // }
     var F_rank = document.getElementById('FPrank');
-    if(personalData.influence_rank){
-        F_rank.innerHTML = personalData.influence_rank;
-    }else{
-        F_rank.innerHTML = "无此数据";
-    }
+    F_rank.innerHTML = personalData.influence_rank;
+    // if(personalData.influence_rank){
+    //     F_rank.innerHTML = personalData.influence_rank;
+    // }else{
+    //     F_rank.innerHTML = "无此数据";
+    // }
     var uid_div = document.getElementById('userId');
     if(personalData.uid){
         uid_div.innerHTML = personalData.uid;
