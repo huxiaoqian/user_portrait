@@ -110,7 +110,7 @@ if(select_attribute_name != ''){
 	$('#attribute_value_zh').empty();
 	var html = '';
 	html += '<select id="select_attribute_value" >';
-	html += '<option value="null">无此类别</option>';
+	html += '<option value="null">暂无</option>';
 	$('#attribute_value_zh').append(html);
 }
 
@@ -125,7 +125,7 @@ $('#select_attribute_name').change(function(){
 	    $('#attribute_value_zh').empty();
 	    var html = '';
 	    html += '<select id="select_attribute_value" >';
-	    html += '<option value="null">无此类别</option>';
+	    html += '<option value="null">暂无</option>';
 	    $('#attribute_value_zh').append(html);
   }
     
@@ -183,32 +183,37 @@ function add_person_tag(){
 	//获取所有类别名
 	var new_attribute_name = $("#select_attribute_name").val();
 	var new_attribute_value = $("#select_attribute_value").val();
-	var attributeNames = [];
-	var  tagnames = $('.ptagName').length;
-	for(i=0;i<tagnames;i++){
-		attributeNames.push($('.ptagName').eq(i).html());
-	}
-	//判断是否重复
-	var count = 0;
-	for(i=0;i<attributeNames.length;i++){
-		if(new_attribute_name==attributeNames[i]){
-			count += 0;
-		}else{
-			count ++;
-		}
-	}
-	if(count==attributeNames.length){
-		//添加新tag
-		var add_url = '';
-		add_url = '/tag/add_attribute/?uid=' + uid + '&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value + '&user=admint';
-        Tag_add.call_sync_ajax_request(add_url, Tag_add.ajax_method, Tag_add.Draw_tag_add);
+    if(new_attribute_name !=''){
+        var attributeNames = [];
+	    var  tagnames = $('.ptagName').length;
+	    for(i=0;i<tagnames;i++){
+		    attributeNames.push($('.ptagName').eq(i).html());
+	    }
+	     //判断是否重复
+	    var count = 0;
+	    for(i=0;i<attributeNames.length;i++){
+		    if(new_attribute_name==attributeNames[i]){
+			    count += 0;
+		    }else{
+			    count ++;
+		    }
+	    }
+	    if(count==attributeNames.length){
+		    //添加新tag
+		    var add_url = '';
+		    add_url = '/tag/add_attribute/?uid=' + uid + '&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value + '&user=admint';
+            Tag_add.call_sync_ajax_request(add_url, Tag_add.ajax_method, Tag_add.Draw_tag_add);
+	    }else{
+		    alert("已经存在相同的标签类型，新的标签名将替换原有的标签名！");
+		    var change_url = '';
+		    change_url = '/tag/change_attribute_portrait/?uid=' + uid + '&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
+		    //console.log(change_url);
+		    Tag_change.call_sync_ajax_request(change_url, Tag_change.ajax_method, Tag_change.Draw_tag_change);
+	    }
 	}else{
-		alert("已经存在相同的标签类型，新的标签名将替换原有的标签名！");
-		var change_url = '';
-		change_url = '/tag/change_attribute_portrait/?uid=' + uid + '&attribute_name='+new_attribute_name+'&attribute_value='+new_attribute_value+'&user=admint';
-		//console.log(change_url);
-		Tag_change.call_sync_ajax_request(change_url, Tag_change.ajax_method, Tag_change.Draw_tag_change);
+        alert("标签类别不能为空，请先到自定义标签页面添加标签类别！");
 	}
+	
 }
 //删除
 function Tag_del(){
