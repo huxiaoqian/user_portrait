@@ -379,7 +379,7 @@ function Draw_top_location(data){
                 ];
                 option_data.push(option_single_data);
         	};
-        	console.log(option_data);
+        	//console.log(option_data);
         	return option_data;
         }
         )()
@@ -637,7 +637,6 @@ function group_activity(data){
     tooltip : {
         trigger: 'axis',
         formatter: function (params) {
-<<<<<<< HEAD
             var max_user_name = [];
             var min_user_name = [];
             for(var i=0; i<max_list.length;i++){
