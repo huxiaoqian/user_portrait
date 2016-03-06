@@ -118,9 +118,9 @@ function sensing_sensors_table (head, data, div_name) {
 		}
 		html += '<table id="sensor_table" class="table table-bordered table-striped table-condensed datatable">';
 		html += '<thead><tr>';
-		for(var i=0; i<head.length; i++){
-		html += '<th style="text-align:center">'+head[i]+'</th>';
-		}
+		//for(var i=0; i<head.length; i++){
+		html += '<th style="text-align:center;width:100px;">用户ID</th><th style="text-align:center;width:138px;">昵称</th><th style="text-align:center;width:123px;">领域</th><th style="text-align:center;width:200px;">话题</th><th style="text-align:center;width:62px;">重要度</th><th style="text-align:center;width:62px;">影响力</th><th style="text-align:center;width:62px;">活跃度</th>';
+		//}
 		html += '</tr></thead>';
 		html += '<tbody>';
 
@@ -130,8 +130,8 @@ function sensing_sensors_table (head, data, div_name) {
                 sensor_name = '未知';
             }
 			html += '<tr>';
-			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][0] + '</td>';
-			html += '<td style="text-align:center;vertical-align:middle;">' + sensor_name + '</td>';
+			html += '<td style="text-align:center;vertical-align:middle;"><a class="undlin" target="_blank" href="http://weibo.com/u/' + data[i][0] + '">' + data[i][0] + '</a></td>';
+			html += '<td style="text-align:center;vertical-align:middle;"><a href="/index/personal/?uid='+data[i][0]+'" target="_blank">' + sensor_name + '</a></td>';
 			html += '<td style="text-align:center;vertical-align:middle;">' + data[i][3] + '</td>';
 			html += '<td class="sensing_topic" style="text-align:center;vertical-align:middle;">';
 			html += ''+ data[i][4].join(', ');
@@ -142,7 +142,8 @@ function sensing_sensors_table (head, data, div_name) {
 		}
 		html += '</tbody></table>';
 	}
-	
+
+
 	$('#'+div_name).append(html);
 	$('#sensor_table').DataTable({
 	   "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",

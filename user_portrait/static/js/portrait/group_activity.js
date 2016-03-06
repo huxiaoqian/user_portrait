@@ -637,7 +637,6 @@ function group_activity(data){
     tooltip : {
         trigger: 'axis',
         formatter: function (params) {
-<<<<<<< HEAD
             var max_user_name = [];
             var min_user_name = [];
             for(var i=0; i<max_list.length;i++){
