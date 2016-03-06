@@ -129,7 +129,7 @@ def imagine(uid, query_fields_dict,index_name=portrait_index_name, doctype=portr
     return_list = []
     count = 0
 
-    if result:
+    if number > 1 and result:
         if result[0]['_id'] != uid:
             top_score = result[0]['_score']
         else:
