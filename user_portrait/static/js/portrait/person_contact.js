@@ -50,8 +50,8 @@ Search_weibo.prototype = {
     Draw_table: function(data){
         //console.log(data);
         that.data = data;
-        if(data=='0'){
-            alert("没有相关人物推荐");
+        if(data.length == 2){
+            alert("暂无相关人物！");
             return false;
         }
         $('#table').empty();
@@ -71,13 +71,13 @@ Search_weibo.prototype = {
                     html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i].toFixed(2) +'</td>';
                 }
                 else{
-                if(i == 0){
-                   var user_url = personal_url + data[item][0];
-                   save_id.push(data[item][0]);
-                    html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+user_url +' target="_blank">'+ data[item][i] +'</a></td>';
-                }else{
-                   html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>'; 
-                }
+                    if(i == 0){
+                       var user_url = personal_url + data[item][0];
+                       save_id.push(data[item][0]);
+                        html += '<td class="center" style="text-align:center;vertical-align:middle"><a href='+user_url +' target="_blank">'+ data[item][i] +'</a></td>';
+                    }else{
+                       html += '<td class="center" style="text-align:center;vertical-align:middle">'+ data[item][i] +'</td>'; 
+                    }
                 }            
             }
             html += '<td class="center"><input name="search_result_option" class="search_result_option" type="checkbox" value="' + item + '" /></td>';
@@ -88,7 +88,7 @@ Search_weibo.prototype = {
         $('#table').css('height',height);
         $('#table').append(html);
         for (var i = 0; i < save_id.length; i++) {
-            s=i.toString();
+            var s=i.toString();
             id_string += save_id[s] + ',';
         };
         id_string=id_string.substring(0,id_string.length-1)
@@ -123,8 +123,8 @@ Search_weibo.prototype = {
   },
 
     Draw_picture: function(data){
-        if(data==0){
-            alert("");
+        if(data.length == 2){
+            alert("暂无相关人物！");
             return false;
         }
         var Related_Node = new Array();
@@ -133,18 +133,19 @@ Search_weibo.prototype = {
         if(main_name == 'unknown'){
             main_name = '未知';
         }
-        Related_Node.push({'name':data[0][0],'value':data[0][5],'label':main_name,'category':0,'symbolSize':20*Math.sqrt(data[0][5]),'itemStyle':{'normal':{'color':'rgba(255,215,0,0.4)'}}});
+        var user_value = 100;
+        Related_Node.push({'name':data[0][0],'value':user_value,'label':main_name,'category':0,'symbolSize':2*Math.sqrt(user_value),'itemStyle':{'normal':{'color':'rgba(255,215,0,0.4)'}}});
         var user_name = data[0][0];
          var personal_url = 'http://'+ window.location.host + '/index/personal/?uid=';
         for(var item =1; item < data.length-1; item++){
             if(data[item][1]=='unknown'){
                 data[item][1] = '未知';
-                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':20*Math.sqrt(data[item][5])});
-                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':2*data[item][5]}}});
+                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':2*Math.sqrt(data[item][5])});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':Math.sqrt(data[item][5])}}});
             }
             else{
-                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':20*Math.sqrt(data[item][5])});
-                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':2*data[item][5]}}});
+                Related_Node.push({'name':data[item][0], 'value':data[item][5], 'label':data[item][1],'category':1,'symbolSize':2*Math.sqrt(data[item][5])});
+                Related_Link.push({'source':user_name, 'target':data[item][0], 'weight':data[item][5],'itemStyle':{'normal':{'width':Math.sqrt(data[item][5])}}});
             }
         }
         var option = {
@@ -256,8 +257,6 @@ Search_weibo.prototype = {
 }
 var save_id = [];
 var id_string = '';
-var test_uids = [];
-var test_uids_string = '';
 var Search_weibo = new Search_weibo();
 //get tag
 var user_tag = '/tag/show_user_attribute_name/?uid='+ uid;
@@ -292,7 +291,7 @@ function Show_tag(data){
     // else{
     //     $('#box-height').css('height',height+20*3);
     // }
-    html = '';
+    var html = '';
     if(data.length == 0){
       return false;
     }
@@ -310,28 +309,20 @@ function Show_tag(data){
 }
 
 function add_group_tag(){
-    select_uids = [];
-    select_uids_string = '';
+    var select_uids = [];
+    var select_uids_string = '';
     $('input[name="in_status"]:checked').each(function(){
         select_uids.push($(this).attr('value'));
     })
-    console.log(select_uids);
+    //console.log(select_uids);
 
-    for (var i = 0; i < test_uids.length; i++) {
-        t=i.toString();
-        test_uids_string += test_uids + ',';
-    };
-    console.log(test_uids);
     for (var i = 0; i < select_uids.length; i++) {
-        s=i.toString();
+        var s=i.toString();
         select_uids_string += select_uids[s] + ',';
     };
-    total_uids = select_uids_string + test_uids_string;
-    total_uids = total_uids.substring(0,total_uids.length-1);
-    console.log(total_uids);
-    add_tag_attribute_name = $("#select_attribute_name").val();
-    add_tag_attribute_value = $("#select_attribute_value").val();
-    add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
+    var add_tag_attribute_name = $("#select_attribute_name").val();
+    var add_tag_attribute_value = $("#select_attribute_value").val();
+    var add_group_tag_url = '/tag/add_group_tag/?uid_list=' + select_uids_string + "&attribute_name=" + add_tag_attribute_name + "&attribute_value=" + add_tag_attribute_value;
     Search_weibo.call_sync_ajax_request(add_group_tag_url, Search_weibo.ajax_method, Search_weibo.Draw_add_group_tag);
 }
 
@@ -350,7 +341,6 @@ $('.label-success').click(function(){
 });
 
 $('.inline-checkbox').click(function(){
-    console.log('dddd');
     if($(this).is(':checked')){
         $(this).next().next().val('1');
         $(this).next().next().attr('disabled',false);
@@ -385,7 +375,7 @@ function get_choose_data(uid){
         }
     });
     if(isflag == 1){
-    url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +field ;
+        url = url + keywords.join(',') + '&weight=' + weight.join(',') + '&field=' +field ;
     }
     else{
         url = '';
@@ -395,7 +385,7 @@ function get_choose_data(uid){
 }
 
 // 保留原有的html代码
-var origin_html = $('#ADD').html();
+//var origin_html = $('#ADD').html();
 
 function diy_button(){
  // $('#ADD').html(origin_html);
@@ -407,31 +397,17 @@ function diy_button(){
   //   alert('请选择至少1个用户');
   // }
   // else{
-      $('#Diymodal').modal();
+  //  $('#Diymodal').modal();
   // }
-  $(".addIcon").off("click").click(function(){
-    var html = '';
-    html += '<div class="tagCols"><span >标签名</span><input name="tagname" class="inputbox " type="text" value="" style="margin-left:35px;line-height:36px;"></div>';
-    $('#ADD').append(html);
-  });
-
+  $('#Diymodal').modal();
 }
 
 
 function compare_button(){
-  var cur_uids = []
+  var compare_uids = []
   $('input[name="search_result_option"]:checked').each(function(){
-      cur_uids.push($(this).attr('value'));
+      compare_uids.push($(this).attr('value'));
   });
-  // global_choose_uids[global_pre_page] = cur_uids;
-  var compare_uids = [];
-  // for (var key in cur_uids){
-      // var temp_list = global_choose_uids[key];
-  for (var i = 0; i < cur_uids.length; i++){
-    compare_uids.push(cur_uids[i]);
-  }
-  // }
-  console.log(compare_uids);
   var len = compare_uids.length;
   if(len>3 || len<2){
     alert("请选择2至3个用户！");
@@ -443,22 +419,10 @@ function compare_button(){
 }
 
 function group_button(){
-  var cur_uids = []
+  var group_uids = []
   $('input[name="search_result_option"]:checked').each(function(){
-      cur_uids.push($(this).attr('value'));
+      group_uids.push($(this).attr('value'));
   });
-  // global_choose_uids[global_pre_page] = cur_uids;
-  var group_uids = [];
-for (var i = 0; i < cur_uids.length; i++){
-    group_uids.push(cur_uids[i]);
-  }
-  // for (var key in global_choose_uids){
-  //     var temp_list = global_choose_uids[key];
-  //     for (var i = 0; i < temp_list.length; i++){
-  //       group_uids.push(temp_list[i]);
-  //     }
-  // }
-  console.log(group_uids);
   var len = group_uids.length;
   if (len < 1){
       alert("请选择至少1个用户!");
@@ -466,30 +430,6 @@ for (var i = 0; i < cur_uids.length; i++){
   else{
       draw_table_group_confirm(group_uids, "#group_comfirm");
       $("#group").modal();
-  }
-}
-
-function delete_button(){
-  var cur_uids = []
-  $('input[name="search_result_option"]:checked').each(function(){
-      cur_uids.push($(this).attr('value'));
-  });
-  global_choose_uids[global_pre_page] = cur_uids;
-  var delete_uids = [];
-  for (var key in global_choose_uids){
-      var temp_list = global_choose_uids[key];
-      for (var i = 0; i < temp_list.length; i++){
-        delete_uids.push(temp_list[i]);
-      }
-  }
-  console.log(delete_uids);
-  var len = delete_uids.length;
-  if (len < 1){
-      alert("请选择至少1个用户!");
-  }
-  else{
-      draw_table_delete_confirm(delete_uids, "#delete_comfirm");
-      $('#delete').modal();
   }
 }
 
@@ -517,14 +457,6 @@ function draw_table_compare_confirm(uids, div){
     }
     html += '</tbody>';
     html += '</table>';
-    $('#compare_cofirm_table').DataTable({
-       "sDom": "<'row'<'col-md-6'l ><'col-md-6'f>r>t<'row'<'col-md-12'i><'col-md-12 center-block'p>>",
-       "sPaginationType": "bootstrap",
-        //"aaSorting": [[ 4, "desc" ]],
-       "oLanguage": {
-           "sLengthMenu": "_MENU_ 每页"
-       }
-    });
     $(div).append(html);
 }
 
@@ -551,30 +483,6 @@ function draw_table_group_confirm(uids, div){
     $(div).append(html);
 }
 
-function draw_table_delete_confirm(uids, div){
-  $(div).empty();
-    var html = '';
-    html += '<table id="delete_confirm_table" class="table table-striped table-bordered bootstrap-datatable datatable responsive">';
-    html += '<thead><tr><th>用户ID</th><th>用户名</th><th>注册地</th><th>活跃度</th><th>重要度</th><th>影响力</th><th>得分</th><th></th></tr></thead>';
-    html += '<tbody>';
-    for(var i in uids){
-      var item = global_data[uids[i]];
-      html += '<tr id=' + uids[1] +'>';
-      html += '<td class="center" name="delete_confirm_uids">'+ uids[i] +'</td>';
-      html += '<td class="center">'+ item[1] + '</td>';
-      html += '<td class="center">'+ item[2] + '</td>';
-      html += '<td class="center" style="width:100px;">'+ item[3] + '</td>';
-      html += '<td class="center" style="width:100px;">'+ item[4] + '</td>';
-      html += '<td class="center" style="width:100px;">'+ item[5] + '</td>';
-      html += '<td class="center" style="width:100px;">'+ item[6] + '</td>';
-      html += '<td class="center" style="width:80px;"><button class="btn btn-primary btn-sm" style="width:60px;height:30px" onclick="delRow(this)">移除</button></td>';
-      html += '</tr>';
-    }
-    html += '</tbody>';
-    html += '</table>';
-    $(div).append(html);
-}
-
 function delRow(obj){
   var Row = obj.parentNode;
   while(Row.tagName.toLowerCase()!="tr"){
@@ -593,7 +501,7 @@ function compare_confirm_button(){
       return;
   }
   var compare_url = '/index/contrast/?uid_list='+ compare_confirm_uids.join(',');
-  console.log(compare_url);
+  //console.log(compare_url);
   window.open(compare_url);
 }
 
@@ -602,12 +510,12 @@ function group_confirm_button(){
   $('[name="group_confirm_uids"]').each(function(){
       group_confirm_uids.push($(this).text());
   })
-  console.log(group_confirm_uids);
+  //console.log(group_confirm_uids);
   var group_ajax_url = '/group/submit_task/';
   var group_url = '/index/group/';
   var group_name = $('input[name="group_name"]').val();
   var remark = $('input[name="remark"]').val();
-  console.log(group_name, remark);
+  //console.log(group_name, remark);
   if (group_name.length == 0){
       alert('群体名称不能为空');
       return;
@@ -647,50 +555,3 @@ function group_confirm_button(){
   }
 }
 
-function delete_confirm_button(){
-  var now_date = new Date();
-  var now = now_date.getFullYear()+"-"+((now_date.getMonth()+1)<10?"0":"")+(now_date.getMonth()+1)+"-"+((now_date.getDate())<10?"0":"")+(now_date.getDate());
-  var delete_confirm_uids = [];
-  $('[name="delete_confirm_uids"]').each(function(){
-      delete_confirm_uids.push($(this).text());
-  })
-  console.log(delete_confirm_uids);
-  var delete_uid_list = '';
-  for(var i in delete_confirm_uids){
-      delete_uid_list += delete_confirm_uids[i];
-      if(i<(delete_confirm_uids.length-1))
-        delete_uid_list += ',';
-  }
-  if(confirm("确认要删除吗?")){
-      var delete_url = '/recommentation/search_delete/?date=' + now + '&uid_list=' + delete_uid_list;
-      console.log(delete_url);
-      $.ajax({
-          type:'get',
-          url: delete_url,
-          dataType: "json",
-          success: callback
-      });
-      function callback(data){
-           console.log(data);
-           if (data == '1'){
-               for (var i = 0; i < delete_confirm_uids.length; i++){
-                   global_data[delete_confirm_uids[i]] = '';
-               }
-               alert('出库成功！');
-               draw_table_search_result.Re_Draw_table(global_data);
-           }
-           else{
-               alert('fail');
-           }
-      }
-  }
-}
-
-function replace_space(data){
-  for(var i in data){
-    if(data[i]===""||data[i]==="unknown"){
-      data[i] = "未知";
-    }
-  }
-  return data;
-}
