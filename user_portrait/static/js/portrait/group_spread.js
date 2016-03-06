@@ -1,3 +1,6 @@
+//粉丝、朋友、微博
+
+
 //影响力分布
 function draw_influ_distribution(data,radar_div, title){
     //console.log(data);
@@ -265,11 +268,13 @@ Show_influ.prototype = {
     }
     //console.log(domains);
     if(topics.length == 0){
+        $('#showmore_topic_influ').css('display', 'none');
         $('#influence_topic').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
     }else{
         Draw_topic_group_spread(topics,'influence_topic', 'influ_topic_WordList','showmore_topic_influ');
     };
     if(domains.length == 0){
+        $('#showmore_domain_influ').css('display', 'none');
         $('#influence_domain').append('<div style="padding-top: 40%;margin-left:40%;">暂无数据</div>');
     }else{
         Draw_topic_group_spread(domains,'influence_domain', 'influ_domain_WordList','showmore_domain_influ');

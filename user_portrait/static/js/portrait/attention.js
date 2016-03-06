@@ -35,22 +35,22 @@ function attention(data,UserID,UserName,texts){
     nod['value'] = 10;
     nodeContent.push(nod);
     var linkline =[];
-    var rename = '';
+    var rename_out = '';
     for (var i=0;i<out_data.length;i++){
             nod = {};
             nod['category'] = 2;
             if(out_data[i][0]=='None'){
-              var nod_name_out = '';
+              var nod_name_out = '未知UID';
             }else{
               var nod_name_out = out_data[i][0];
             }
             if(out_data[i][1]=='unknown'){
-              rename = '未知';
+              rename_out = '未知';
             }else{
-              rename = out_data[i][1];
+              rename_out = out_data[i][1];
             }
-            nod['name'] = rename +'('+nod_name_out+')';
-            nod['label'] = rename;
+            nod['name'] = rename_out +'('+nod_name_out+')';
+            nod['label'] = rename_out;
             nod['value'] = 1;
             //nod['value'] = out_data[i][3];
             nodeContent.push(nod);
@@ -60,30 +60,32 @@ function attention(data,UserID,UserName,texts){
             line['weight'] = 1;
             linkline.push(line);
     }
+    var rename_in = '';
     for (var i=0;i<in_data.length;i++){
-            nod = {};
-            nod['category'] = 1;
-            if(in_data[i][0]=='None'){
-              var nod_name_in = '';
-            }else{
-              var nod_name_in = in_data[i][0];
-            }
-            if(in_data[i][1]=='unknown'){
-              rename = '未知';
-            }else{
-              rename = in_data[i][1];
-            }
-            nod['name'] = rename +'('+nod_name_out+')';
-            //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
-            nod['label'] = rename;
-            nod['value'] = 1;
-            //nod['value'] = in_data[i][4];
-            nodeContent.push(nod);
-            var line ={};
-            line['source'] = nod['name'];
-            line['target'] = UserName+'('+UserID+')';
-            line['weight'] = 1;
-            linkline.push(line);
+      //console.log(in_data);
+      nod = {};
+      nod['category'] = 1;
+      if(in_data[i][0]=='None'){
+        var nod_name_in = '未知UID';
+      }else{
+        var nod_name_in = in_data[i][0];
+      }
+      if(in_data[i][1]=='unknown'){
+        rename_in = '未知';
+      }else{
+        rename_in = in_data[i][1];
+      }
+      nod['name'] = rename_in +'('+nod_name_in+')';
+      //nod['name'] = in_data[i][1] +'('+nod_name_in+')';
+      nod['label'] = rename_in;
+      nod['value'] = 1;
+      //nod['value'] = in_data[i][4];
+      nodeContent.push(nod);
+      var line ={};
+      line['source'] = nod['name'];
+      line['target'] = UserName+'('+UserID+')';
+      line['weight'] = 1;
+      linkline.push(line);
     }
 	var myChart3 = echarts.init(document.getElementById('test1'));
 	var option = {
