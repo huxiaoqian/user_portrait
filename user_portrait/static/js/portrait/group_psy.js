@@ -123,20 +123,24 @@ function draw_group_kind(data){
 		all_text += g_text[key];
 	}
 	for(var key in g_text){
-		var nod = {};
-		nod['name'] = key;
-		nod['value'] = (g_text[key]/all_text).toFixed(2);
-		content1.push(nod);
+        if(g_text[key] !=0){
+    		var nod = {};
+    		nod['name'] = key;
+    		nod['value'] = (g_text[key]/all_text).toFixed(2);
+    		content1.push(nod);
+        }
 	}
 	for(var key in g_sen){
 		all_sen += g_sen[key];
 	}
 	for(var key in g_sen){
-		var nod = {};
-		nod['name'] = key;
-		nod['value'] = (g_sen[key]/all_text).toFixed(2);
-		content2.push(nod);
-	}
+        if(g_sen[key] != 0){
+    		var nod = {};
+    		nod['name'] = key;
+    		nod['value'] = (g_sen[key]/all_text).toFixed(2);
+    		content2.push(nod);
+    	}
+    }
 	var myChart1 = echarts.init(document.getElementById('group_kind')); 
     var option = {
     title : {
