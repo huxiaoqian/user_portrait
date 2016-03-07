@@ -4,7 +4,16 @@ function Base(){
 Base.prototype.simple_search_url = function (term){
     return "/index/search_result/?stype=1&term=" + term;
 }
-
+$('#logout').click(function (){
+    var logout_url = '/login/logout/';
+    base_call_ajax_request(logout_url, logout_callback);
+    function logout_callback(data){
+        if (data == 'true'){
+            console.log(data);
+            window.location.href = '/login/';
+        }
+    }
+});
 
 function bindSearchFunc(that){ 
     $("#keyword").bind('keyup', function(e){

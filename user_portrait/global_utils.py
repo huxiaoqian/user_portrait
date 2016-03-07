@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import redis
+from extensions import login_manager
 from elasticsearch import Elasticsearch
 from rediscluster import RedisCluster
 from global_config import ZMQ_VENT_PORT_FLOW1, ZMQ_CTRL_VENT_PORT_FLOW1, ZMQ_VENT_HOST_FLOW1, ZMQ_CTRL_HOST_FLOW1, BIN_FILE_PATH
@@ -149,4 +150,6 @@ def get_client(api_host=WEIBO_API_HOST, api_port=WEIBO_API_PORT):
 
 ES_DAILY_RANK = _default_es_cluster_flow1(host=ES_CLUSTER_HOST_FLOW1)
 
-
+@login_manager.user_loader
+def load_user(user_id):
+    return UserModel.query.get(user_id)

@@ -3,7 +3,7 @@
 from flask import Flask
 from elasticsearch import Elasticsearch
 from flask_debugtoolbar import DebugToolbarExtension
-from user_portrait.extensions import admin
+from user_portrait.extensions import admin, login_manager
 from user_portrait.jinja import gender, tsfmt, Int2string, gender_text, user_email, user_location, user_birth, user_vertify, weibo_source
 from user_portrait.index.views import mod as indexModule
 from user_portrait.attribute.views import mod as attributeModule
@@ -115,6 +115,9 @@ def register_extensions(app):
     app.extensions['es_user_profile'] = Elasticsearch(app.config['ES_USER_PROFILE_URL'])
     app.config.setdefault('ES_USER_PORTRAIT_URL', 'http://219.224.135.93:9200/')
     app.extensions['es_user_portrait'] = Elasticsearch(app.config['ES_USER_PORTRAIT_URL'])
+
+    login_manager.init_app(app);
+    login_manager.login_view = 'login.user'
 
 def register_jinja_funcs(app):
     funcs = dict(gender=gender,
