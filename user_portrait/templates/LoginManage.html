@@ -160,18 +160,6 @@ html,body {
 </html>
 
   <script>
-  // var ajax_method = 'GET';
-  // function call_sync_ajax_request(url, method, callback){
-  // 	console.log('dfsd');
-  //   $.ajax({
-  //     url: url,
-  //     type: method,
-  //     dataType: 'json',
-  //     contentType:"application/json",
-  //     async: false,
-  //     success:callback
-  //   });
-  // }
   function submit_login(){
 	  var uname = $('#username').val();
 	  //eval(document.getElementById('username')).value;
@@ -181,35 +169,31 @@ html,body {
 	  $.ajax({
       url: login_url,
       type: 'GET',
-      dataType: 'json',
-      contentType:"application/json",
-      //async: false,
-      success:callback
+      //dataType: 'json',
+      //contentType:"application/json",
+      async: false,
+      success:login_callback
     });
-	  alert('1234');
-	  //call_sync_ajax_request(login_url, ajax_method, login);
+    function login_callback(data){
+        //console.log(data);
+        if(data == 'true'){
+            window.location.href='/index/';
+        };
+        if(data == 'please enter username or password'){
+            alert('用户名密码不能为空！')
+        }
+        if(data == 'password is not correct'){
+            alert('密码不正确，请重新输入！');
+        }
+        if(data == 'username is not correct'){
+            alert('用户名不存在，请重新输入！')
+        }
+    }
   }
 
-function callback(data){
-	alert('aaa');
-	console.log(data);
-	if(data == 'true'){
-		alert('success');
-		//window.location.href='/index/';
-	};
-	if(data == 'please enter username or password'){
-		alert('用户名密码不能为空！')
-	}
-	if(data == 'password is not correct'){
-		alert('密码不正确，请重新输入！');
-	}
-	if(data == 'username is not correct'){
-		alert('用户名不存在，请重新输入！')
-	}
-}
 
   </script>
-            <script src="/static/js/portrait/tbase.js"></script>
+  <!--        <script src="/static/js/portrait/tbase.js"></script>-->
 <!-- 引入js -->
 {% block end_js %}
 <script src="/static/bower_components/bootstrap/css_js/js/bootstrap.min.js"></script>
