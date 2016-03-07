@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask.ext import admin
+from flask.ext.login import LoginManager
 #from flask.ext.pymongo import PyMongo
 #from flask.ext.sqlalchemy import SQLAlchemy
 #from flask.ext.mongoengine import MongoEngine
@@ -13,4 +14,5 @@ __all__ = ['admin']
 #mongo = PyMongo()
 #mongo_engine = MongoEngine()
 admin = admin.Admin(name=u'系统 数据库管理')
+login_manager = LoginManager()
 

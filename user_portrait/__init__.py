@@ -3,9 +3,10 @@
 from flask import Flask
 from elasticsearch import Elasticsearch
 from flask_debugtoolbar import DebugToolbarExtension
-from user_portrait.extensions import admin
+from user_portrait.extensions import admin, login_manager
 from user_portrait.jinja import gender, tsfmt, Int2string, gender_text, user_email, user_location, user_birth, user_vertify, weibo_source
 from user_portrait.index.views import mod as indexModule
+from user_portrait.home.views import mod as homeModule
 from user_portrait.attribute.views import mod as attributeModule
 from user_portrait.manage.views import mod as manageModule
 from user_portrait.recommentation.views import mod as recommentationModule
@@ -28,6 +29,7 @@ def create_app():
 
     # Create modules
     app.register_blueprint(indexModule)
+    app.register_blueprint(homeModule)
     app.register_blueprint(manageModule)
     app.register_blueprint(attributeModule)
     app.register_blueprint(recommentationModule)
@@ -115,6 +117,9 @@ def register_extensions(app):
     app.extensions['es_user_profile'] = Elasticsearch(app.config['ES_USER_PROFILE_URL'])
     app.config.setdefault('ES_USER_PORTRAIT_URL', 'http://219.224.135.93:9200/')
     app.extensions['es_user_portrait'] = Elasticsearch(app.config['ES_USER_PORTRAIT_URL'])
+
+    login_manager.init_app(app);
+    login_manager.login_view = 'home.index'
 
 def register_jinja_funcs(app):
     funcs = dict(gender=gender,
