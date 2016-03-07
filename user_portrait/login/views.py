@@ -6,17 +6,17 @@ import time
 from flask import Flask, Blueprint, url_for, render_template, request,  session, redirect, escape
 # temporary use
 from user_portrait.global_utils import R_ADMIN as r
-mod = Blueprint('LoginManage', __name__, url_prefix='/LoginManage')
+mod = Blueprint('login', __name__, url_prefix='/login')
 
 
 @mod.route('/welcome')
 def index():
     if 'username' in session:
         return 'Logged in as %s' % escape(session['username'])
-    return render_template('test.html')
+    return render_template('LoginManage.html')
 
 
-@mod.route('/login', methods=['GET','POST'])
+@mod.route('/login/')
 def login():
     username = request.args.get('username','')
     password = request.args.get('password','')
@@ -37,10 +37,11 @@ def login():
 
     if vertify_result:
         session['username'] = username
-        return redirect(url_for('portrait.personal'))
+        return 'true'
+        #return redirect('/index/');
 
 
-@mod.route('/logout') # log out
+@mod.route('/logout/') # log out
 def logout():
     session.pop('username', None)
     return redirect(url_for('.index'))
