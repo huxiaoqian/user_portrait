@@ -1264,7 +1264,7 @@ def get_attr_sentiment_word(uid_list):
             #filter null item in sentiment word result
             new_sentiment_word_result = [item for item in sentiment_word_result if item != None]
             if new_sentiment_word_result != []:
-                date_sentiment_word_result = union_dict_list(sentiment_word_result)
+                date_sentiment_word_result = union_dict_list(new_sentiment_word_result)
                 week_result_list.append(date_sentiment_word_result)
         if week_result_list != []:
             week_sentiment_word_result = union_dict_list(week_result_list)

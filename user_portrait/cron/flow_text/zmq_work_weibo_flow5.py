@@ -125,7 +125,7 @@ def get_weibo_keywords(keywords_list):
     keywords_string = ''
     filter_keywords_set = set()
     for word in keywords_list:
-        if set(word) & black_words:
+        if word in black_words:
             try:
                 keywords_dict[word] += 1
             except:
@@ -152,14 +152,20 @@ def expand_index_action(item):
     if item['message_type'] == 3:
         #for retweet message: get directed retweet uname and uid 
         directed_uid, directed_uname = get_directed_retweet(item['text'], item['root_uid'])
-        index_body['directed_uid'] = int(directed_uid)
+        try:
+            index_body['directed_uid'] = int(directed_uid)
+        except:
+            index_body['directed_uid'] = ''
         index_body['directed_uname'] = directed_uname
         index_body['root_mid'] = str(item['root_mid'])
         index_body['root_uid'] = str(item['root_uid'])
     elif item['message_type'] == 2:
         #for comment meesage: get directed comment uname and uid
         directed_uid, directed_uname = get_directed_comment(item['text'], item['root_uid'])
-        index_body['directed_uid'] = int(directed_uid)
+        try:
+            index_body['directed_uid'] = int(directed_uid)
+        except:
+            index_body['directed_uid'] = ''
         index_body['directed_uname'] = directed_uname
         index_body['root_mid'] = str(item['root_mid'])
         index_body['root_uid'] = str(item['root_uid'])
